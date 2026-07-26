@@ -1,0 +1,13 @@
+- Algorithm: GRPO
+- Dataset: MBPP 
+- Model: Qwen/Qwen3.5-0.8B
+- Instructions:
+    - Write a script that loads in the data from Huggingface, then runs the algorithm to train the model, then does evaluations. The code should evaluate at intermediate stages during training and at the end.
+    - Follow an 80:20 train-test split. No validation data needed for now.
+    - Code structure: 
+        - configs folder holding YAML files for diftraining runs
+        - train.py where training occurs
+        - evaluate.py where evaluation occurs
+        - data.py where loading and processing data is handled
+        - sandbox.py where we handle the sandbox where code can be generated and executed
+    - Make sure there is a flow diagram in the ReadMe file kept to up-to-date after any code changes. This contains a mermaid diagram showing how, from the time the user runs the main command, what functions get called, what functions call what other functions, how output of one function passes into another, what gets saved, etc, until the end.
