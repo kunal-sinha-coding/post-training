@@ -14,7 +14,7 @@ import yaml
 from dotenv import load_dotenv
 
 from data import prepare_datasets
-from evaluate import append_evaluation_log, evaluate_model, save_evaluation, start_run_log
+from evaluate import append_training_step_header, append_training_step_metrics, append_training_step_samples, append_evaluation_log, evaluate_model, save_evaluation, start_run_log
 from sandbox import reward_function
 
 
@@ -91,26 +91,38 @@ def _make_reward(config: dict[str, Any]):
 
     def reward(completions: list[object], test_code: list[str], **kwargs: object) -> list[float]:
         """Score the current GRPO completion batch."""
+        append_training_step_samples(config.get("log_path", "logs/logs.txt"), completions)
         return reward_function(completions, test_code, timeout, **kwargs)
 
     return reward
 
-
 def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[str, Any], wandb: Any | None):
-    """Create a callback that evaluates at trainer save steps."""
+    """Create callbacks for step logging and checkpoint evaluation."""
     from transformers import TrainerCallback
 
-    class EvaluationCallback(TrainerCallback):
-        """Run sandbox evaluation whenever the trainer saves a checkpoint."""
+    class TrainingCallback(TrainerCallback):
+        """Log each training step and evaluate saved checkpoints."""
+
+        def on_step_begin(self, args: Any, state: Any, control: Any, **_: Any) -> Any:
+            """Write the step header before generation begins."""
+            append_training_step_header(config.get("log_path", "logs/logs.txt"), state.global_step + 1, state.max_steps)
+            return control
+
+        def on_log(self, args: Any, state: Any, control: Any, logs: dict[str, Any] | None = None, **_: Any) -> Any:
+            """Write trainer metrics when the trainer emits them."""
+            if logs:
+                append_training_step_metrics(config.get("log_path", "logs/logs.txt"), logs)
+            return control
 
         def on_save(self, args: Any, state: Any, control: Any, **_: Any) -> Any:
             """Evaluate the current model and persist checkpoint metrics."""
+            if not config.get("run_intermediate_evals", False):
+                return control
             metrics, details = evaluate_model(model, tokenizer, test_dataset, config, f"checkpoint-{state.global_step}")
             save_evaluation(args.output_dir, f"checkpoint-{state.global_step}", metrics, details)
             log_evaluation(wandb, metrics, "evaluation/checkpoint", state.global_step)
             return control
-
-    return EvaluationCallback()
+    return TrainingCallback()
 
 
 def run_training(config: dict[str, Any]) -> None:
@@ -161,7 +173,7 @@ def run_training(config: dict[str, Any]) -> None:
         use_cpu=not torch.cuda.is_available(),
         seed=int(config.get("seed", 42)),
     )
-    callbacks = [_make_callback(model, tokenizer, test_dataset, config, wandb)] if config.get("run_intermediate_evals", False) else []
+    callbacks = [_make_callback(model, tokenizer, test_dataset, config, wandb)]
     print(f"Intermediate evaluations enabled: {bool(callbacks)}", flush=True)
     trainer = GRPOTrainer(
         model=model,

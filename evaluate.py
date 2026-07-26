@@ -21,6 +21,41 @@ def start_run_log(log_path: str | Path) -> None:
         handle.write(f"{prefix}{separator}\nRUN STARTING\nTimestamp: {timestamp}\n{separator}\n")
 
 
+def append_training_step_header(log_path: str | Path, step: int, total_steps: int) -> None:
+    """Append a header that identifies one training step in the run log."""
+    # Write the step header before the trainer generates that step's samples.
+    path = Path(log_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as handle:
+        handle.write(f"\nTraining Step {step}/{total_steps}\n")
+
+
+def append_training_step_samples(log_path: str | Path, completions: list[object]) -> None:
+    """Append the post-processed samples generated during one training step."""
+    # Record exactly what the reward function sends to the execution sandbox.
+    path = Path(log_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as handle:
+        for completion in completions:
+            if isinstance(completion, list):
+                text = "".join(str(part.get("text", "")) if isinstance(part, dict) else str(part) for part in completion)
+            elif isinstance(completion, dict):
+                text = str(completion.get("content", completion.get("text", "")))
+            else:
+                text = str(completion)
+            handle.write(f"Generated code:\n{extract_code(text)}\n\n")
+
+
+def append_training_step_metrics(log_path: str | Path, metrics: dict[str, Any]) -> None:
+    """Append scalar trainer metrics for one training step."""
+    # Keep metrics structured so each step can be inspected without W&B.
+    path = Path(log_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as handle:
+        handle.write(f"Training metrics:\n{json.dumps(metrics, indent=2, default=str)}\n\n")
+
+
+
 def append_evaluation_log(log_path: str | Path, evaluation_name: str, records: list[dict[str, Any]], details: list[dict[str, Any]]) -> None:
     """Append prompt, completion, execution result, and reward for every example."""
     path = Path(log_path)
