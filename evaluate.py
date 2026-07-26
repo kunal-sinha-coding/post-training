@@ -60,8 +60,10 @@ def evaluate_texts(completions: list[str], records: list[dict[str, Any]], timeou
     """Execute one generated completion per record and aggregate its results."""
     details = []
     for completion, record in zip(completions, records):
-        result = execute_code(extract_code(completion), record["test_code"], timeout_seconds)
-        details.append({"task_id": record.get("task_id"), "completion": completion, "reward": float(result.passed), **result.to_dict()})
+        # Execute the same cleaned code that is recorded for evaluation.
+        executed_completion = extract_code(completion)
+        result = execute_code(executed_completion, record["test_code"], timeout_seconds)
+        details.append({"task_id": record.get("task_id"), "completion": executed_completion, "reward": float(result.passed), **result.to_dict()})
     append_evaluation_log(log_path, evaluation_name, records, details)
     return aggregate_results(details), details
 
