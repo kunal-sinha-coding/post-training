@@ -11,6 +11,10 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 
 
+# These markers identify reasoning tags that should not reach the Python parser.
+THINK_TAGS = ["<think>", "</think>"]
+
+
 @dataclass
 class ExecutionResult:
     """Represent the observable outcome of one candidate execution."""
@@ -27,9 +31,18 @@ class ExecutionResult:
 
 
 def extract_code(text: str) -> str:
-    """Extract Python from a fenced response or return the trimmed response."""
-    match = re.search(r"```(?:python|py)?\s*(.*?)```", text, flags=re.IGNORECASE | re.DOTALL)
-    return (match.group(1) if match else text).strip()
+    """Extract Python from reasoning blocks, fences, or a plain response."""
+    # Remove complete reasoning blocks before looking for executable code.
+    block_pattern = rf"{re.escape(THINK_TAGS[0])}.*?{re.escape(THINK_TAGS[1])}"
+    cleaned = re.sub(block_pattern, "", text, flags=re.DOTALL | re.IGNORECASE)
+    # Remove an unfinished reasoning block so its contents cannot cause a syntax error.
+    cleaned = re.sub(rf"{re.escape(THINK_TAGS[0])}.*$", "", cleaned, flags=re.DOTALL | re.IGNORECASE)
+    # Remove any remaining standalone reasoning markers from the response.
+    for tag in THINK_TAGS:
+        cleaned = cleaned.replace(tag, "")
+    # Extract a fenced Python response when the model adds Markdown formatting.
+    match = re.search(r"```(?:python|py)?\s*(.*?)```", cleaned, flags=re.IGNORECASE | re.DOTALL)
+    return (match.group(1) if match else cleaned).strip()
 
 
 def _safe_environment() -> dict[str, str]:

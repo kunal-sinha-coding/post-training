@@ -5,6 +5,10 @@ def test_extract_code_supports_fences():
     assert extract_code("Here is code:\n```python\nprint(1)\n```") == "print(1)"
 
 
+def test_extract_code_removes_thinking_blocks():
+    assert extract_code("<think>Reason about it.</think>\ndef add(a, b):\n    return a + b") == "def add(a, b):\n    return a + b"
+
+
 def test_execute_code_passes_and_rewards():
     result = execute_code("def add(a, b):\n    return a + b", "assert add(1, 2) == 3")
     assert result.passed is True
