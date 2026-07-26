@@ -11,6 +11,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 
 
+OUTPUT_FORMAT_ERROR = "Did not follow proper output formatting"
 # These markers identify reasoning tags that should not reach the Python parser.
 THINK_TAGS = ["<think>", "</think>"]
 
@@ -31,18 +32,16 @@ class ExecutionResult:
 
 
 def extract_code(text: str) -> str:
-    """Extract Python from reasoning blocks, fences, or a plain response."""
-    # Remove complete reasoning blocks before looking for executable code.
-    block_pattern = rf"{re.escape(THINK_TAGS[0])}.*?{re.escape(THINK_TAGS[1])}"
-    cleaned = re.sub(block_pattern, "", text, flags=re.DOTALL | re.IGNORECASE)
-    # Remove an unfinished reasoning block so its contents cannot cause a syntax error.
-    cleaned = re.sub(rf"{re.escape(THINK_TAGS[0])}.*$", "", cleaned, flags=re.DOTALL | re.IGNORECASE)
-    # Remove any remaining standalone reasoning markers from the response.
+    """Extract code from the required Code markdown format."""
+    # Require the explicit Code label and a closed Python Markdown fence.
+    match = re.search(r"Code:\s*```(?:python|py)?\s*(.*?)```", text, flags=re.IGNORECASE | re.DOTALL)
+    if match is None:
+        raise ValueError(OUTPUT_FORMAT_ERROR)
+    # Remove the legacy reasoning markers if they occur inside the extracted block.
+    cleaned = match.group(1)
     for tag in THINK_TAGS:
         cleaned = cleaned.replace(tag, "")
-    # Extract a fenced Python response when the model adds Markdown formatting.
-    match = re.search(r"```(?:python|py)?\s*(.*?)```", cleaned, flags=re.IGNORECASE | re.DOTALL)
-    return (match.group(1) if match else cleaned).strip()
+    return cleaned.strip()
 
 
 def _safe_environment() -> dict[str, str]:
@@ -77,8 +76,10 @@ def execute_code(code: str, tests: str, timeout_seconds: float = 3.0) -> Executi
 
 def reward_for_completion(completion: str, tests: str, timeout_seconds: float = 3.0) -> float:
     """Return one for a passing candidate and zero for every other outcome."""
-    return float(execute_code(extract_code(completion), tests, timeout_seconds).passed)
-
+    try:
+        return float(execute_code(extract_code(completion), tests, timeout_seconds).passed)
+    except ValueError:
+        return 0.0
 
 def reward_function(completions: list[object], test_code: list[str], sandbox_timeout_seconds: float = 3.0, **_: object) -> list[float]:
     """Score a GRPO batch using the supplied MBPP tests."""

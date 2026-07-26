@@ -8,8 +8,10 @@ from typing import Any
 DEFAULT_PROMPT_TEMPLATE = (
     "You are an expert Python programmer. Implement the function described below.\n\n"
     "Task:\n{prompt}\n\nTests:\n{tests}\n\n"
-    "Do not include reasoning, explanations, Markdown code fences, or <think>...</think> blocks.\n"
-    "Return only the Python implementation, without explanation."
+    "Your entire response must follow this exact format:\n\n"
+    "Code: \n```python\ndef example():\n    pass\n```\n\n"
+    "Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.\n"
+    "Code: "
 )
 
 

@@ -3,11 +3,11 @@
 from __future__ import annotations
 
 import json
+from zoneinfo import ZoneInfo
 from datetime import datetime
 from pathlib import Path
 from typing import Any
-
-from sandbox import execute_code, extract_code
+from sandbox import ExecutionResult, execute_code, extract_code
 
 
 def start_run_log(log_path: str | Path) -> None:
@@ -16,7 +16,7 @@ def start_run_log(log_path: str | Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     separator = "-" * 72
     prefix = "\n\n\n" if path.exists() and path.stat().st_size else ""
-    timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S %Z")
+    timestamp = datetime.now(ZoneInfo("America/Los_Angeles")).strftime("%Y-%m-%d %H:%M:%S %Z")
     with path.open("a", encoding="utf-8") as handle:
         handle.write(f"{prefix}{separator}\nRUN STARTING\nTimestamp: {timestamp}\n{separator}\n")
 
@@ -43,7 +43,16 @@ def append_training_step_samples(log_path: str | Path, completions: list[object]
                 text = str(completion.get("content", completion.get("text", "")))
             else:
                 text = str(completion)
-            handle.write(f"Generated code:\n{extract_code(text)}\n\n")
+            try:
+                executed_code = extract_code(text)
+                format_error = ""
+            except ValueError as exc:
+                executed_code = ""
+                format_error = str(exc)
+            handle.write(f"Generated code:\n{executed_code}\n")
+            if format_error:
+                handle.write(f"Format error: {format_error}\n")
+            handle.write("\n")
 
 
 def append_training_step_metrics(log_path: str | Path, metrics: dict[str, Any]) -> None:
@@ -95,9 +104,13 @@ def evaluate_texts(completions: list[str], records: list[dict[str, Any]], timeou
     """Execute one generated completion per record and aggregate its results."""
     details = []
     for completion, record in zip(completions, records):
-        # Execute the same cleaned code that is recorded for evaluation.
-        executed_completion = extract_code(completion)
-        result = execute_code(executed_completion, record["test_code"], timeout_seconds)
+        # Execute and record only code extracted from the required output format.
+        try:
+            executed_completion = extract_code(completion)
+            result = execute_code(executed_completion, record["test_code"], timeout_seconds)
+        except ValueError as exc:
+            executed_completion = ""
+            result = ExecutionResult(False, "format_error", stderr=str(exc))
         details.append({"task_id": record.get("task_id"), "completion": executed_completion, "reward": float(result.passed), **result.to_dict()})
     append_evaluation_log(log_path, evaluation_name, records, details)
     return aggregate_results(details), details
