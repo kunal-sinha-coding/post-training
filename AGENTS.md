@@ -7,7 +7,7 @@
 
 ## Git workflow
 
-- After making any set of changes to the code, always commit and push the changes to the repository.
+- After making any set of changes to the code, always commit the changes directly on the `main` branch and push `main` to the repository.
 
 ## Command error handling
 
