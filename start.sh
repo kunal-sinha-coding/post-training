@@ -40,6 +40,7 @@ fi
 tmux new-session -d -s "$SESSION_NAME" -n shell
 tmux new-window -d -t "$SESSION_NAME" -n codex
 tmux send-keys -t "$SESSION_NAME:codex" "codex" C-m
+tmux select-window -t "$SESSION_NAME:codex"
 
-# Attach to the new session so the shell window and Codex window are immediately available.
+# Attach to the new session with the Codex window visible.
 tmux attach-session -t "$SESSION_NAME"
