@@ -8,3 +8,9 @@ outputs/
 __pycache__/
 *.py[cod]
 .pytest_cache/
+
+# Local run logs.
+logs/
+
+# Local W&B run data.
+wandb/

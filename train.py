@@ -14,7 +14,7 @@ import yaml
 from dotenv import load_dotenv
 
 from data import prepare_datasets
-from evaluate import evaluate_model, save_evaluation
+from evaluate import append_evaluation_log, evaluate_model, save_evaluation, start_run_log
 from sandbox import reward_function
 
 
@@ -72,6 +72,19 @@ def log_evaluation(wandb: Any | None, metrics: dict[str, Any], prefix: str, step
         wandb.log(payload, step=step) if step is not None else wandb.log(payload)
 
 
+def load_cached_evaluation(output_dir: Path, name: str) -> tuple[dict[str, Any], list[dict[str, Any]]] | None:
+    """Load a complete cached evaluation when both JSON artifacts are present."""
+    metrics_path = output_dir / f"{name}-metrics.json"
+    details_path = output_dir / f"{name}-details.json"
+    if not metrics_path.is_file() or not details_path.is_file():
+        return None
+    with metrics_path.open(encoding="utf-8") as handle:
+        metrics = json.load(handle)
+    with details_path.open(encoding="utf-8") as handle:
+        details = json.load(handle)
+    return metrics, details
+
+
 def _make_reward(config: dict[str, Any]):
     """Bind sandbox configuration to the TRL reward-function contract."""
     timeout = float(config.get("sandbox_timeout_seconds", 3))
@@ -92,7 +105,7 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
 
         def on_save(self, args: Any, state: Any, control: Any, **_: Any) -> Any:
             """Evaluate the current model and persist checkpoint metrics."""
-            metrics, details = evaluate_model(model, tokenizer, test_dataset, config)
+            metrics, details = evaluate_model(model, tokenizer, test_dataset, config, f"checkpoint-{state.global_step}")
             save_evaluation(args.output_dir, f"checkpoint-{state.global_step}", metrics, details)
             log_evaluation(wandb, metrics, "evaluation/checkpoint", state.global_step)
             return control
@@ -106,6 +119,7 @@ def run_training(config: dict[str, Any]) -> None:
     from transformers import AutoModelForCausalLM, AutoTokenizer
     from trl import GRPOConfig, GRPOTrainer
 
+    start_run_log(config.get("log_path", "logs/logs.txt"))
     wandb = configure_wandb(config)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Selected device: {device}", flush=True)
@@ -119,8 +133,15 @@ def run_training(config: dict[str, Any]) -> None:
     model = AutoModelForCausalLM.from_pretrained(config["model_name_or_path"], trust_remote_code=bool(config.get("trust_remote_code", False)))
     model.to(device)
     print(f"Model device: {model.device}", flush=True)
-    baseline_metrics, baseline_details = evaluate_model(model, tokenizer, test_dataset, config)
-    save_evaluation(output_dir, "baseline", baseline_metrics, baseline_details)
+    cached_baseline = load_cached_evaluation(output_dir, "baseline") if config.get("reuse_baseline", True) else None
+    if cached_baseline is None:
+        print("Computing baseline evaluation.", flush=True)
+        baseline_metrics, baseline_details = evaluate_model(model, tokenizer, test_dataset, config, "baseline")
+        save_evaluation(output_dir, "baseline", baseline_metrics, baseline_details)
+    else:
+        print("Reusing cached baseline evaluation.", flush=True)
+        baseline_metrics, baseline_details = cached_baseline
+        append_evaluation_log(config.get("log_path", "logs/logs.txt"), "baseline-cached", [test_dataset[index] for index in range(len(test_dataset))], baseline_details)
     training_args = GRPOConfig(
         output_dir=str(output_dir),
         learning_rate=float(config["learning_rate"]),
@@ -140,18 +161,20 @@ def run_training(config: dict[str, Any]) -> None:
         use_cpu=not torch.cuda.is_available(),
         seed=int(config.get("seed", 42)),
     )
+    callbacks = [_make_callback(model, tokenizer, test_dataset, config, wandb)] if config.get("run_intermediate_evals", False) else []
+    print(f"Intermediate evaluations enabled: {bool(callbacks)}", flush=True)
     trainer = GRPOTrainer(
         model=model,
         processing_class=tokenizer,
         reward_funcs=_make_reward(config),
         train_dataset=train_dataset,
         args=training_args,
-        callbacks=[_make_callback(model, tokenizer, test_dataset, config, wandb)],
+        callbacks=callbacks,
     )
     log_evaluation(wandb, baseline_metrics, "evaluation/baseline", trainer.state.global_step)
     trainer.train()
     trainer.save_model(str(output_dir / "final"))
-    final_metrics, final_details = evaluate_model(model, tokenizer, test_dataset, config)
+    final_metrics, final_details = evaluate_model(model, tokenizer, test_dataset, config, "final")
     save_evaluation(output_dir, "final", final_metrics, final_details)
     log_evaluation(wandb, final_metrics, "evaluation/final", trainer.state.global_step)
     (output_dir / "config.json").write_text(json.dumps(config, indent=2), encoding="utf-8")

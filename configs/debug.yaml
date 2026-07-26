@@ -5,7 +5,10 @@ dataset_split: train
 seed: 42
 train_fraction: 0.8
 max_train_samples: 8
+reuse_baseline: true
+run_intermediate_evals: false
 max_eval_samples: 4
+log_path: logs/logs.txt
 output_dir: outputs/grpo-mbpp-debug
 num_train_epochs: 1
 max_steps: 2

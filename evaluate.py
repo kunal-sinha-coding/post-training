@@ -3,10 +3,45 @@
 from __future__ import annotations
 
 import json
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
 from sandbox import execute_code, extract_code
+
+
+def start_run_log(log_path: str | Path) -> None:
+    """Append a clearly separated, human-readable run-start header."""
+    path = Path(log_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    separator = "-" * 72
+    prefix = "\n\n\n" if path.exists() and path.stat().st_size else ""
+    timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S %Z")
+    with path.open("a", encoding="utf-8") as handle:
+        handle.write(f"{prefix}{separator}\nRUN STARTING\nTimestamp: {timestamp}\n{separator}\n")
+
+
+def append_evaluation_log(log_path: str | Path, evaluation_name: str, records: list[dict[str, Any]], details: list[dict[str, Any]]) -> None:
+    """Append prompt, completion, execution result, and reward for every example."""
+    path = Path(log_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as handle:
+        for record, detail in zip(records, details):
+            execution = {
+                "status": detail.get("status"),
+                "passed": detail.get("passed"),
+                "returncode": detail.get("returncode"),
+                "stdout": detail.get("stdout", ""),
+                "stderr": detail.get("stderr", ""),
+            }
+            handle.write(
+                f"Evaluation: {evaluation_name}\n"
+                f"Task ID: {record.get('task_id')}\n\n"
+                f"Prompt:\n{record.get('prompt', '')}\n\n"
+                f"Code output:\n{detail.get('completion', '')}\n\n"
+                f"Code execution result:\n{json.dumps(execution, indent=2)}\n\n"
+                f"Award:\n{detail.get('reward', 0.0)}\n\n\n"
+            )
 
 
 def aggregate_results(results: list[dict[str, Any]]) -> dict[str, Any]:
@@ -21,12 +56,13 @@ def aggregate_results(results: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def evaluate_texts(completions: list[str], records: list[dict[str, Any]], timeout_seconds: float = 3.0) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+def evaluate_texts(completions: list[str], records: list[dict[str, Any]], timeout_seconds: float = 3.0, log_path: str | Path = "logs/logs.txt", evaluation_name: str = "evaluation") -> tuple[dict[str, Any], list[dict[str, Any]]]:
     """Execute one generated completion per record and aggregate its results."""
     details = []
     for completion, record in zip(completions, records):
         result = execute_code(extract_code(completion), record["test_code"], timeout_seconds)
         details.append({"task_id": record.get("task_id"), "completion": completion, "reward": float(result.passed), **result.to_dict()})
+    append_evaluation_log(log_path, evaluation_name, records, details)
     return aggregate_results(details), details
 
 
@@ -38,7 +74,7 @@ def save_evaluation(output_dir: str | Path, name: str, metrics: dict[str, Any], 
     (directory / f"{name}-details.json").write_text(json.dumps(details, indent=2), encoding="utf-8")
 
 
-def evaluate_model(model: Any, tokenizer: Any, dataset: Any, config: dict[str, Any]) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+def evaluate_model(model: Any, tokenizer: Any, dataset: Any, config: dict[str, Any], evaluation_name: str = "evaluation") -> tuple[dict[str, Any], list[dict[str, Any]]]:
     """Generate completions from a model and evaluate them in the sandbox."""
     import torch
 
@@ -50,4 +86,4 @@ def evaluate_model(model: Any, tokenizer: Any, dataset: Any, config: dict[str, A
         with torch.no_grad():
             output = model.generate(**inputs, max_new_tokens=int(config.get("max_completion_length", 512)), do_sample=False)
         completions.append(tokenizer.decode(output[0][inputs["input_ids"].shape[-1]:], skip_special_tokens=True))
-    return evaluate_texts(completions, records, float(config.get("sandbox_timeout_seconds", 3)))
+    return evaluate_texts(completions, records, float(config.get("sandbox_timeout_seconds", 3)), config.get("log_path", "logs/logs.txt"), evaluation_name)
