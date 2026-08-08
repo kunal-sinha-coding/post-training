@@ -179,3 +179,39 @@ Starting log position: New `logs/batched-final-left.log` file for the rerun.
 1. Keep batched, left-padded evaluation and use the same batch size for future baseline/final comparisons.
 2. Run a larger approved training batch and repeat the full evaluation to determine whether the 32% to 36% improvement persists.
 3. Continue grouping the remaining failed executions now that format errors are no longer the dominant failure mode.
+
+
+------------------------------------------------------------------------
+ERROR ANALYSIS
+Timestamp: 2026-08-08 16:44:44 PDT
+------------------------------------------------------------------------
+Command: Full one-epoch GRPO training with gradient accumulation increased from 8 to 32, `save_steps: 25`, and full batched evaluation.
+Batch mode: Physical training batch size 1; effective batch size 32; 37 optimizer steps over one epoch; full 75-example evaluation.
+Starting log position: New run in `logs/logs.txt`, with evaluation metadata in `logs/results.txt`.
+
+## Iteration comparison
+
+- The prior one-step batched run scored 24/75 passed at baseline (32.00%) and 27/75 after training (36.00%).
+- This run scored 25/75 passed at baseline (33.33%) and 28/75 after the selected-checkpoint final evaluation (37.33%).
+- Final status counts were 28 passed, 43 failed, and 4 format errors; average reward and pass@1 were both 0.3733.
+- The run completed one epoch with 37 optimizer steps while preserving the physical per-device batch size of 1.
+
+## Observed evidence
+
+- `training/average_reward` was emitted at every logged training step and reached 0.01267 at the end of the epoch.
+- The checkpoint saved at step 25 was retained as the best checkpoint according to the configured `pass_at_1` metric, and it was reloaded for final evaluation.
+- Only `outputs/grpo-mbpp/checkpoint-25` remains in the output directory; other checkpoint directories were discarded.
+- The checkpoint-25 intermediate evaluation was stochastic and recorded 0/75, while the final evaluation after reloading that same checkpoint recorded 28/75. This indicates that single-sample checkpoint selection is noisy and should be stabilized if checkpoint ranking becomes important.
+
+## Triage
+
+- **Optimization:** Increasing effective batch size from 8 to 32 reduced update noise while keeping the same physical batch size. The run completed without training or CUDA errors.
+- **Evaluation:** Batched evaluation completed over all 75 examples. The parser continued to eliminate most formatting failures, leaving execution/model failures as the dominant error category.
+- **Checkpointing:** Best-checkpoint retention worked mechanically, but one-completion checkpoint evaluation produced a noisy ranking signal. The selected checkpoint still improved the final full evaluation over baseline in this run.
+- **Logging:** `logs/results.txt` contains the exact YAML contents, training context, epoch, commit, metrics, and change description for baseline, checkpoint, and final evaluations. W&B run `giddy-galaxy-12` recorded the training logs and running average reward.
+
+## Proposed solutions
+
+1. Keep effective batch size 32 and the physical batch size 1 for the next training comparison.
+2. Increase checkpoint evaluation completions or repeat checkpoint evaluation before ranking when best-checkpoint selection is material.
+3. Cluster the 43 execution failures by exception and expected-output mismatch; format errors are only 4/75 and are no longer the primary bottleneck.
