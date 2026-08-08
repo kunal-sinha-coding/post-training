@@ -142,18 +142,32 @@ fi
 SESSION_NAME="${TMUX_SESSION_NAME:-codex-work}"
 SKILLS_WORKSPACE_DIR="${SKILLS_WORKSPACE_DIR:-/workspace/skills}"
 SKILLS_WORKSPACE_SETUP_COMMAND="if [[ -d \"${SKILLS_WORKSPACE_DIR}/.git\" ]]; then git -C \"${SKILLS_WORKSPACE_DIR}\" pull --ff-only origin main; else git clone \"${SKILLS_REPOSITORY_URL}\" \"${SKILLS_WORKSPACE_DIR}\"; fi; cd \"${SKILLS_WORKSPACE_DIR}\"; exec bash"
+PERSONAL_WEBSITE_REPOSITORY_URL="${PERSONAL_WEBSITE_REPOSITORY_URL:-https://github.com/kunal-sinha-coding/personal-website.git}"
+PERSONAL_WEBSITE_WORKSPACE_DIR="${PERSONAL_WEBSITE_WORKSPACE_DIR:-/workspace/personal-website}"
+PERSONAL_WEBSITE_WORKSPACE_SETUP_COMMAND="if [[ -d \"${PERSONAL_WEBSITE_WORKSPACE_DIR}/.git\" ]]; then git -C \"${PERSONAL_WEBSITE_WORKSPACE_DIR}\" pull --ff-only origin main; else git clone \"${PERSONAL_WEBSITE_REPOSITORY_URL}\" \"${PERSONAL_WEBSITE_WORKSPACE_DIR}\"; fi; cd \"${PERSONAL_WEBSITE_WORKSPACE_DIR}\"; exec bash"
+
+# Create a tmux window only when the requested window does not already exist.
+ensure_tmux_window() {
+    local window_name="$1"
+    local startup_command="$2"
+
+    if tmux list-windows -t "$SESSION_NAME" -F '#{window_name}' | grep -Fxq "$window_name"; then
+        return 0
+    fi
+
+    tmux new-window -d -t "$SESSION_NAME" -n "$window_name"
+    tmux send-keys -t "$SESSION_NAME:$window_name" "$startup_command" C-m
+}
+
+# Create the tmux session before checking each requested window.
 if ! tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
     tmux new-session -d -s "$SESSION_NAME" -n shell
-    tmux new-window -d -t "$SESSION_NAME" -n codex
-    tmux send-keys -t "$SESSION_NAME:codex" "codex" C-m
-elif ! tmux list-windows -t "$SESSION_NAME" -F '#{window_name}' | grep -Fxq codex; then
-    tmux new-window -d -t "$SESSION_NAME" -n codex
-    tmux send-keys -t "$SESSION_NAME:codex" "codex" C-m
 fi
-if ! tmux list-windows -t "$SESSION_NAME" -F '#{window_name}' | grep -Fxq skills; then
-    tmux new-window -d -t "$SESSION_NAME" -n skills
-    tmux send-keys -t "$SESSION_NAME:skills" "$SKILLS_WORKSPACE_SETUP_COMMAND" C-m
-fi
+
+# Open the development windows while reusing any existing windows.
+ensure_tmux_window codex "codex"
+ensure_tmux_window skills "$SKILLS_WORKSPACE_SETUP_COMMAND"
+ensure_tmux_window personal-website "$PERSONAL_WEBSITE_WORKSPACE_SETUP_COMMAND"
 tmux select-window -t "$SESSION_NAME:codex"
 
 # Attach to the new session with the Codex window visible.
