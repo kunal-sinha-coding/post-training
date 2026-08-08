@@ -1,9 +1,18 @@
 # Repository Instructions
 
-## Style guidelines
+## Code style
 
 - Favor simplicity over complexity. Do the minimal possible code changes required to achieve the objective.
 - Leave inline comments on every function and block of code. Each comment should use complete sentences, but should be as short and simple as possible to communicate the idea. All inline comments must be between 1-2 sentences.
+
+## Writing style
+
+- Be concise when writing. Only include the minimal amount of writing needed to communicate the point.
+- Always use complete sentences rather than sentence fragments.
+- Do not use punctuation like semicolons, hyphens, or arrows to join sentence fragments together.
+- Instead of writing long paragraphs, break up content into short paragraphs.
+- Feel free to use bullet point and numbered lists whenever appropriate.
+- Feel free to insert Markdown code blocks or LaTeX math whenever appropriate.
 
 ## Parallelization
 
@@ -19,3 +28,8 @@
 
 - In this environment, the direct patch helper may fail because its sandbox cannot create an unprivileged user namespace. Apply patches through an elevated `exec_command` invocation instead.
 - When passing a patch through a nested shell, protect `$` variables, backticks, and quotes from shell interpolation. Base64-encode the patch and pipe it through `base64 -d | apply_patch` when necessary.
+
+## Synchronization
+
+- Keep this `AGENTS.md` synchronized with the `AGENTS.md` files in the other local repositories.
+- Synchronize any change made to any local `AGENTS.md` across all three repositories.
