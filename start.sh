@@ -1,6 +1,56 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Resolve the repository directory so the local environment file is independent of the current directory.
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ENV_FILE="${SCRIPT_DIR}/.env"
+
+# Load local environment values before any setup commands use them.
+if [[ -f "$ENV_FILE" ]]; then
+    set -a
+    # shellcheck disable=SC1090
+    source "$ENV_FILE"
+    set +a
+fi
+
+# Prompt for the W&B key and persist it in the local environment file when it is absent.
+ensure_wandb_api_key() {
+    if ! grep -qE "^WANDB_API_KEY=[^[:space:]]+$" "$ENV_FILE" 2>/dev/null; then
+        read -r -s -p "Enter your WANDB_API_KEY: " WANDB_API_KEY
+        printf '\n' >&2
+        if [[ -z "$WANDB_API_KEY" ]]; then
+            echo "WANDB_API_KEY is required to authenticate with Weights & Biases." >&2
+            return 1
+        fi
+
+        umask 077
+        local temporary_env_file
+        temporary_env_file="$(mktemp "${ENV_FILE}.XXXXXX")"
+        if [[ -f "$ENV_FILE" ]]; then
+            awk -v key="$WANDB_API_KEY" '
+                BEGIN { replaced = 0 }
+                /^WANDB_API_KEY=/ {
+                    if (!replaced) {
+                        print "WANDB_API_KEY=" key
+                        replaced = 1
+                    }
+                    next
+                }
+                { print }
+                END {
+                    if (!replaced) print "WANDB_API_KEY=" key
+                }
+            ' "$ENV_FILE" > "$temporary_env_file"
+        else
+            printf 'WANDB_API_KEY=%s\n' "$WANDB_API_KEY" > "$temporary_env_file"
+        fi
+        mv "$temporary_env_file" "$ENV_FILE"
+        export WANDB_API_KEY
+    fi
+}
+
+# Require a local W&B key before installing and configuring external services.
+ensure_wandb_api_key
 # Install the Codex CLI using the official installer.
 curl -fsSL https://chatgpt.com/codex/install.sh | sh
 
@@ -26,11 +76,7 @@ done < <(find "$SKILLS_REPOSITORY_DIR" -mindepth 2 -maxdepth 2 -type f -name SKI
 # Install the Python dependencies listed for this repository.
 python3 -m pip install -r "$(dirname "$0")/requirements.txt"
 
-# Authenticate W&B with the API key supplied through the environment.
-if [[ -z "${WANDB_API_KEY:-}" ]]; then
-    echo "WANDB_API_KEY is required to authenticate with Weights & Biases." >&2
-    exit 1
-fi
+# Authenticate W&B with the API key loaded from or saved to the local environment file.
 export WANDB_API_KEY
 wandb login --cloud --verify
 
