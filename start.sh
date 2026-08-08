@@ -51,6 +51,25 @@ ensure_wandb_api_key() {
 
 # Require a local W&B key before installing and configuring external services.
 ensure_wandb_api_key
+
+# Persist each valid .env variable in .bashrc before any tmux windows are created.
+sync_env_to_bashrc() {
+    local bashrc_file="${BASHRC_FILE:-${HOME}/.bashrc}"
+    local variable_name
+    local exported_value
+
+    touch "$bashrc_file"
+    while IFS= read -r variable_name; do
+        if ! grep -qE "^[[:space:]]*export[[:space:]]+${variable_name}(=|[[:space:]]|$)" "$bashrc_file"; then
+            printf -v exported_value '%q' "${!variable_name}"
+            printf 'export %s=%s\n' "$variable_name" "$exported_value" >> "$bashrc_file"
+        fi
+    done < <(sed -nE 's/^[[:space:]]*(export[[:space:]]+)?([A-Za-z_][A-Za-z0-9_]*)=.*/\2/p' "$ENV_FILE" | sort -u)
+}
+
+# Make the loaded .env values available to every shell started by tmux.
+sync_env_to_bashrc
+
 # Install the Codex CLI using the official installer.
 curl -fsSL https://chatgpt.com/codex/install.sh | sh
 
