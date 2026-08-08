@@ -3,6 +3,7 @@ from sandbox import execute_code, extract_code, reward_for_completion
 
 def test_extract_code_supports_fences():
     assert extract_code("Code: ```python\nprint(1)\n```") == "print(1)"
+    assert extract_code("```python\nprint(1)\n```") == "print(1)"
 
 
 def test_extract_code_removes_thinking_blocks():

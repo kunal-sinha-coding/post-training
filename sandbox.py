@@ -32,9 +32,9 @@ class ExecutionResult:
 
 
 def extract_code(text: str) -> str:
-    """Extract code from the required Code markdown format."""
-    # Require the explicit Code label and a closed Python Markdown fence.
-    match = re.search(r"Code:\s*```(?:python|py)?\s*(.*?)```", text, flags=re.IGNORECASE | re.DOTALL)
+    """Extract code from a labeled or continuation-starting Markdown fence."""
+    # Accept the legacy Code label or a fenced block that starts the continuation.
+    match = re.search(r"(?:Code:\s*)?```(?:python|py)?\s*(.*?)```", text, flags=re.IGNORECASE | re.DOTALL)
     if match is None:
         raise ValueError(OUTPUT_FORMAT_ERROR)
     # Remove the legacy reasoning markers if they occur inside the extracted block.
