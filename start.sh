@@ -30,7 +30,7 @@ if [[ -z "${WANDB_API_KEY:-}" ]]; then
     echo "WANDB_API_KEY is required to authenticate with Weights & Biases." >&2
     exit 1
 fi
-wandb login --cloud --relogin --verify
+wandb login --cloud --verify
 
 # Configure the Git identity while allowing environment-specific overrides.
 GIT_USER_NAME="${GIT_USER_NAME:-Kunal Sinha}"
@@ -59,21 +59,22 @@ if ! gh auth status >/dev/null 2>&1; then
     gh auth login
 fi
 
-# Require tmux before creating the two-window development session.
+# Require tmux before creating or reusing the development session.
 if ! command -v tmux >/dev/null 2>&1; then
     echo "tmux is required but was not found." >&2
     exit 1
 fi
 
-# Create a detached session with a shell window followed by a Codex window.
+# Create the session and windows only when they do not already exist.
 SESSION_NAME="${TMUX_SESSION_NAME:-codex-work}"
-if tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
-    echo "tmux session already exists: $SESSION_NAME" >&2
-    exit 1
+if ! tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
+    tmux new-session -d -s "$SESSION_NAME" -n shell
+    tmux new-window -d -t "$SESSION_NAME" -n codex
+    tmux send-keys -t "$SESSION_NAME:codex" "codex" C-m
+elif ! tmux list-windows -t "$SESSION_NAME" -F '#{window_name}' | grep -Fxq codex; then
+    tmux new-window -d -t "$SESSION_NAME" -n codex
+    tmux send-keys -t "$SESSION_NAME:codex" "codex" C-m
 fi
-tmux new-session -d -s "$SESSION_NAME" -n shell
-tmux new-window -d -t "$SESSION_NAME" -n codex
-tmux send-keys -t "$SESSION_NAME:codex" "codex" C-m
 tmux select-window -t "$SESSION_NAME:codex"
 
 # Attach to the new session with the Codex window visible.
