@@ -1,6 +1,6 @@
 import os
 
-from evaluate import aggregate_results, cleanup_run_logs, start_run_log
+from evaluate import aggregate_results, append_evaluation_result, cleanup_run_logs, start_run_log
 
 
 def test_aggregate_results_reports_pass_rate_and_statuses():
@@ -38,3 +38,27 @@ def test_cleanup_run_logs_keeps_all_logs_when_disabled(tmp_path, monkeypatch):
     cleanup_run_logs(log_directory / "run-new.txt")
 
     assert len(list(log_directory.glob("*.txt"))) == 3
+
+
+def test_results_log_records_header_metadata_and_metrics(tmp_path):
+    """Record a reproducible evaluation result beside the detailed run log."""
+    results_path = tmp_path / "results.txt"
+    start_run_log(tmp_path / "logs.txt", results_path)
+    append_evaluation_result(
+        results_path,
+        "baseline",
+        {"examples": 2, "pass_at_1": 0.5},
+        {
+            "results_log_path": results_path,
+            "training_context": "baseline",
+            "_evaluation_epoch": "baseline",
+            "_config_path": "configs/test.yaml",
+            "config_yaml": "max_steps: 1\n",
+        },
+    )
+    contents = results_path.read_text(encoding="utf-8")
+    assert "RUN STARTING" in contents
+    assert "EVALUATION RESULTS" in contents
+    assert "Training context: baseline" in contents
+    assert "pass_at_1" in contents
+    assert "max_steps: 1" in contents

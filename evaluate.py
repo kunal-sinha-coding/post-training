@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 from zoneinfo import ZoneInfo
 from datetime import datetime
 from pathlib import Path
@@ -12,15 +13,23 @@ from sandbox import ExecutionResult, execute_code, extract_code
 MAX_RUN_LOGS = 10
 
 
-def start_run_log(log_path: str | Path) -> None:
-    """Append a clearly separated, human-readable run-start header."""
-    path = Path(log_path)
+def _append_run_header(path: Path, timestamp: str) -> None:
+    """Append one standard run header to a log file."""
+    # Keep results and detailed logs visually aligned at every run boundary.
     path.parent.mkdir(parents=True, exist_ok=True)
-    separator = "-" * 72
     prefix = "\n\n\n" if path.exists() and path.stat().st_size else ""
-    timestamp = datetime.now(ZoneInfo("America/Los_Angeles")).strftime("%Y-%m-%d %H:%M:%S %Z")
+    separator = "-" * 72
     with path.open("a", encoding="utf-8") as handle:
         handle.write(f"{prefix}{separator}\nRUN STARTING\nTimestamp: {timestamp}\n{separator}\n")
+
+
+def start_run_log(log_path: str | Path, results_log_path: str | Path | None = None) -> None:
+    """Append a clearly separated, human-readable run-start header."""
+    path = Path(log_path)
+    timestamp = datetime.now(ZoneInfo("America/Los_Angeles")).strftime("%Y-%m-%d %H:%M:%S %Z")
+    _append_run_header(path, timestamp)
+    if results_log_path is not None:
+        _append_run_header(Path(results_log_path), timestamp)
     cleanup_run_logs(path)
 
 
@@ -36,7 +45,7 @@ def cleanup_run_logs(log_path: str | Path) -> None:
     log_files = [
         candidate
         for candidate in directory.iterdir()
-        if candidate.is_file() and candidate.suffix in {".log", ".txt"}
+        if candidate.is_file() and candidate.suffix in {".log", ".txt"} and candidate.name != "results.txt"
     ]
     log_files.sort(key=lambda candidate: candidate.stat().st_mtime, reverse=True)
     for stale_log in log_files[MAX_RUN_LOGS:]:
@@ -138,12 +147,70 @@ def evaluate_texts(completions: list[str], records: list[dict[str, Any]], timeou
     return aggregate_results(details), details
 
 
-def save_evaluation(output_dir: str | Path, name: str, metrics: dict[str, Any], details: list[dict[str, Any]]) -> None:
-    """Persist evaluation metrics and per-example details as JSON."""
+def _change_description(results_log_path: str | Path, config: dict[str, Any]) -> tuple[str, str]:
+    """Describe repository changes since the previous recorded evaluation."""
+    # Use the previous result commit as a stable comparison point when Git is available.
+    current_commit = "unknown"
+    try:
+        current_commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True, check=True).stdout.strip()
+        previous_commits = []
+        results_path = Path(results_log_path)
+        if results_path.is_file():
+            for line in results_path.read_text(encoding="utf-8").splitlines():
+                if line.startswith("Git commit: "):
+                    previous_commits.append(line.removeprefix("Git commit: ").strip())
+        previous_commit = previous_commits[-1] if previous_commits else ""
+        if previous_commit:
+            changes = subprocess.run(["git", "log", "--oneline", f"{previous_commit}..{current_commit}"], capture_output=True, text=True, check=True).stdout.strip()
+            description = changes or "No committed code changes since the previous evaluation."
+        else:
+            description = "No previous evaluation result was available for comparison."
+    except (OSError, subprocess.CalledProcessError):
+        description = "Git change history was unavailable; compare the YAML and artifacts manually."
+    return current_commit, description
+
+
+def append_evaluation_result(results_log_path: str | Path, name: str, metrics: dict[str, Any], metadata: dict[str, Any]) -> None:
+    """Append metrics, context, configuration, and change metadata to results.txt."""
+    # Store the complete YAML text so each result is independently reproducible.
+    config_yaml = metadata.get("config_yaml", "")
+    current_commit, changes = _change_description(results_log_path, metadata)
+    path = Path(results_log_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    training_context = metadata.get("training_context", "unknown")
+    epoch = metadata.get("_evaluation_epoch", "unknown")
+    timestamp = datetime.now(ZoneInfo("America/Los_Angeles")).strftime("%Y-%m-%d %H:%M:%S %Z")
+    config_path = metadata.get("_config_path", "unknown")
+    with path.open("a", encoding="utf-8") as handle:
+        handle.write(
+            "\n"
+            + "-" * 72
+            + "\nEVALUATION RESULTS\n"
+            + f"Evaluation: {name}\n"
+            + f"Training context: {training_context}\n"
+            + f"Epoch: {epoch}\n"
+            + f"Timestamp: {timestamp}\n"
+            + f"Git commit: {current_commit}\n"
+            + f"Change description: {changes}\n"
+            + "Metrics:\n"
+            + json.dumps(metrics, indent=2, sort_keys=True)
+            + "\nYAML path: "
+            + f"{config_path}\nYAML contents:\n"
+            + str(config_yaml)
+            + "\n"
+            + "-" * 72
+            + "\n"
+        )
+
+
+def save_evaluation(output_dir: str | Path, name: str, metrics: dict[str, Any], details: list[dict[str, Any]], metadata: dict[str, Any] | None = None) -> None:
+    """Persist evaluation artifacts and append a reproducible results record."""
     directory = Path(output_dir)
     directory.mkdir(parents=True, exist_ok=True)
     (directory / f"{name}-metrics.json").write_text(json.dumps(metrics, indent=2), encoding="utf-8")
     (directory / f"{name}-details.json").write_text(json.dumps(details, indent=2), encoding="utf-8")
+    if metadata:
+        append_evaluation_result(metadata["results_log_path"], name, metrics, metadata)
 
 
 def _prepare_generation_inputs(tokenizer: Any, prompt: str, max_length: int, torch: Any) -> dict[str, Any]:

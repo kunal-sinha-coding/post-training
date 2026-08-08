@@ -119,7 +119,9 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
             if not config.get("run_intermediate_evals", False):
                 return control
             metrics, details = evaluate_model(model, tokenizer, test_dataset, config, f"checkpoint-{state.global_step}")
-            save_evaluation(args.output_dir, f"checkpoint-{state.global_step}", metrics, details)
+            config["training_context"] = "checkpoint"
+            config["_evaluation_epoch"] = state.epoch
+            save_evaluation(args.output_dir, f"checkpoint-{state.global_step}", metrics, details, config)
             log_evaluation(wandb, metrics, "evaluation/checkpoint", state.global_step)
             return control
     return TrainingCallback()
@@ -131,7 +133,7 @@ def run_training(config: dict[str, Any]) -> None:
     from transformers import AutoModelForCausalLM, AutoTokenizer
     from trl import GRPOConfig, GRPOTrainer
 
-    start_run_log(config.get("log_path", "logs/logs.txt"))
+    start_run_log(config.get("log_path", "logs/logs.txt"), config.get("results_log_path", "logs/results.txt"))
     wandb = configure_wandb(config)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Selected device: {device}", flush=True)
@@ -149,7 +151,9 @@ def run_training(config: dict[str, Any]) -> None:
     if cached_baseline is None:
         print("Computing baseline evaluation.", flush=True)
         baseline_metrics, baseline_details = evaluate_model(model, tokenizer, test_dataset, config, "baseline")
-        save_evaluation(output_dir, "baseline", baseline_metrics, baseline_details)
+        config["training_context"] = "baseline"
+        config["_evaluation_epoch"] = "baseline"
+        save_evaluation(output_dir, "baseline", baseline_metrics, baseline_details, config)
     else:
         print("Reusing cached baseline evaluation.", flush=True)
         baseline_metrics, baseline_details = cached_baseline
@@ -187,7 +191,9 @@ def run_training(config: dict[str, Any]) -> None:
     trainer.train()
     trainer.save_model(str(output_dir / "final"))
     final_metrics, final_details = evaluate_model(model, tokenizer, test_dataset, config, "final")
-    save_evaluation(output_dir, "final", final_metrics, final_details)
+    config["training_context"] = "final"
+    config["_evaluation_epoch"] = trainer.state.epoch
+    save_evaluation(output_dir, "final", final_metrics, final_details, config)
     log_evaluation(wandb, final_metrics, "evaluation/final", trainer.state.global_step)
     (output_dir / "config.json").write_text(json.dumps(config, indent=2), encoding="utf-8")
 
@@ -199,6 +205,8 @@ def main() -> None:
     args = parser.parse_args()
     load_dotenv()
     config = load_config(args.config)
+    config["_config_path"] = str(args.config)
+    config["_config_yaml"] = Path(args.config).read_text(encoding="utf-8")
     print("Experiment configuration:")
     print(pformat(config, sort_dicts=False), flush=True)
     run_training(config)
