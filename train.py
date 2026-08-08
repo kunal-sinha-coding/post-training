@@ -125,8 +125,6 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
                     self.reward_count += 1
                     average_reward = self.reward_sum / self.reward_count
                     logs["training/average_reward"] = average_reward
-                    if wandb is not None and wandb.run is not None:
-                        wandb.log({"training/average_reward": average_reward}, step=state.global_step)
                 append_training_step_metrics(config.get("log_path", "logs/logs.txt"), logs)
             return control
 
