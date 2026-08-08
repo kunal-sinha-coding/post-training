@@ -9,6 +9,8 @@ from pathlib import Path
 from typing import Any
 from sandbox import ExecutionResult, execute_code, extract_code
 
+MAX_RUN_LOGS = 10
+
 
 def start_run_log(log_path: str | Path) -> None:
     """Append a clearly separated, human-readable run-start header."""
@@ -19,6 +21,26 @@ def start_run_log(log_path: str | Path) -> None:
     timestamp = datetime.now(ZoneInfo("America/Los_Angeles")).strftime("%Y-%m-%d %H:%M:%S %Z")
     with path.open("a", encoding="utf-8") as handle:
         handle.write(f"{prefix}{separator}\nRUN STARTING\nTimestamp: {timestamp}\n{separator}\n")
+    cleanup_run_logs(path)
+
+
+def cleanup_run_logs(log_path: str | Path) -> None:
+    """Keep only the newest configured number of run logs in the log directory."""
+    if MAX_RUN_LOGS == -1:
+        return
+    if MAX_RUN_LOGS < -1:
+        raise ValueError("MAX_RUN_LOGS must be -1 or a non-negative integer.")
+
+    # Treat the existing text and log files in the configured directory as run logs.
+    directory = Path(log_path).parent
+    log_files = [
+        candidate
+        for candidate in directory.iterdir()
+        if candidate.is_file() and candidate.suffix in {".log", ".txt"}
+    ]
+    log_files.sort(key=lambda candidate: candidate.stat().st_mtime, reverse=True)
+    for stale_log in log_files[MAX_RUN_LOGS:]:
+        stale_log.unlink()
 
 
 def append_training_step_header(log_path: str | Path, step: int, total_steps: int) -> None:
