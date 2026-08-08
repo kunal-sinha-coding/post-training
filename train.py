@@ -108,6 +108,8 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
             """Track the best checkpoint selected by intermediate pass rate."""
             self.best_checkpoint_path: Path | None = None
             self.best_metric = float("-inf")
+            self.reward_sum = 0.0
+            self.reward_count = 0
 
         def on_step_begin(self, args: Any, state: Any, control: Any, **_: Any) -> Any:
             """Write the step header before generation begins."""
@@ -117,6 +119,14 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
         def on_log(self, args: Any, state: Any, control: Any, logs: dict[str, Any] | None = None, **_: Any) -> Any:
             """Write trainer metrics when the trainer emits them."""
             if logs:
+                reward = logs.get("rewards/reward/mean")
+                if isinstance(reward, (int, float)):
+                    self.reward_sum += float(reward)
+                    self.reward_count += 1
+                    average_reward = self.reward_sum / self.reward_count
+                    logs["training/average_reward"] = average_reward
+                    if wandb is not None and wandb.run is not None:
+                        wandb.log({"training/average_reward": average_reward}, step=state.global_step)
                 append_training_step_metrics(config.get("log_path", "logs/logs.txt"), logs)
             return control
 
