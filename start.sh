@@ -25,6 +25,13 @@ done < <(find "$SKILLS_REPOSITORY_DIR" -mindepth 2 -maxdepth 2 -type f -name SKI
 # Install the Python dependencies listed for this repository.
 python3 -m pip install -r "$(dirname "$0")/requirements.txt"
 
+# Authenticate W&B with the API key supplied through the environment.
+if [[ -z "${WANDB_API_KEY:-}" ]]; then
+    echo "WANDB_API_KEY is required to authenticate with Weights & Biases." >&2
+    exit 1
+fi
+wandb login --cloud --relogin --verify
+
 # Configure the Git identity while allowing environment-specific overrides.
 GIT_USER_NAME="${GIT_USER_NAME:-Kunal Sinha}"
 GIT_USER_EMAIL="${GIT_USER_EMAIL:-kunalsinha@live.com}"
