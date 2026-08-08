@@ -11,7 +11,6 @@ DEFAULT_PROMPT_TEMPLATE = (
     "Your entire response must follow this exact format:\n\n"
     "Code: \n```python\ndef example():\n    pass\n```\n\n"
     "Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.\n"
-    "Code: "
 )
 
 

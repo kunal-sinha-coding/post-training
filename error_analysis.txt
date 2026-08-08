@@ -81,3 +81,37 @@ Grouping rule: each of the four examples is assigned to its single recorded eval
 1. Preserve raw completions for format failures, then inspect exactly what the chat-formatted and raw paths generate before changing training.
 2. Test a training-compatible chat-message representation in a new approved batch, rather than changing evaluation alone.
 3. Consider a narrowly scoped parser/prompt alignment change only after raw outputs show a stable alternative format; do not claim success without a repeated comparison.
+
+
+------------------------------------------------------------------------
+ERROR ANALYSIS
+Timestamp: 2026-08-08 14:50:45 PDT
+------------------------------------------------------------------------
+Command: Baseline-only Python evaluation after removing the trailing `Code:` prompt prefill.
+Batch mode: No training steps; four evaluation examples (task IDs 744, 965, 916, and 925).
+Starting log position: New `logs/no-prefill-baseline.log` file.
+
+## Iteration comparison
+
+- The no-prefill baseline still scored 0/4 pass@1, with 4/4 reported as `format_error`.
+- A raw-generation probe of the same four examples showed that every completion contained a fenced Python block but none contained the literal `Code:` label.
+- Therefore the model is producing code blocks; the current extractor rejects them because it requires `Code:` before the fence.
+
+## Observed evidence
+
+- Task 744 generated a fenced `check_none` function.
+- Task 965 generated a fenced `camel_to_snake` function.
+- Task 916 generated a fenced `find_triplet_array` function.
+- Task 925 generated a fenced `example` function.
+- All four continuations began with ` ```python` rather than `Code: ```python`.
+
+## Triage
+
+- **Prompt:** Removing the trailing `Code:` prefill prevents the prompt from supplying a label that is absent from the continuation, but it does not make this checkpoint emit that label.
+- **Parser:** `extract_code()` searches only the generated continuation and requires the exact `Code:` label followed by a fenced block. This is the direct cause of the observed `format_error` statuses.
+- **Model behavior:** The model consistently follows the fenced-code portion of the instruction but omits the wrapper label. This is a stable, narrower mismatch than the earlier raw-output evidence suggested.
+- **Training:** Because format failures receive reward `0.0`, this parser mismatch turns otherwise extractable code into zero-reward samples and blocks useful GRPO feedback.
+
+## Proposed solution
+
+- Align the parser with the model output by accepting a fenced Python block at the start of a completion while retaining support for the existing `Code:` format. Re-run the same four examples and compare execution statuses and rewards before any training.
