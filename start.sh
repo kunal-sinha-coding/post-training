@@ -4,6 +4,9 @@ set -euo pipefail
 # Install the Codex CLI using the official installer.
 curl -fsSL https://chatgpt.com/codex/install.sh | sh
 
+# Install the Python dependencies listed for this repository.
+python3 -m pip install -r "$(dirname "$0")/requirements.txt"
+
 # Install GitHub CLI when it is not already available.
 if ! command -v gh >/dev/null 2>&1; then
     if command -v apt-get >/dev/null 2>&1; then
