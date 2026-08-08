@@ -6,6 +6,7 @@ import argparse
 import json
 import os
 import random
+import shutil
 from pathlib import Path
 from pprint import pformat
 from typing import Any
@@ -103,6 +104,11 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
     class TrainingCallback(TrainerCallback):
         """Log each training step and evaluate saved checkpoints."""
 
+        def __init__(self) -> None:
+            """Track the best checkpoint selected by intermediate pass rate."""
+            self.best_checkpoint_path: Path | None = None
+            self.best_metric = float("-inf")
+
         def on_step_begin(self, args: Any, state: Any, control: Any, **_: Any) -> Any:
             """Write the step header before generation begins."""
             append_training_step_header(config.get("log_path", "logs/logs.txt"), state.global_step + 1, state.max_steps)
@@ -123,6 +129,16 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
             config["_evaluation_epoch"] = state.epoch
             save_evaluation(args.output_dir, f"checkpoint-{state.global_step}", metrics, details, config)
             log_evaluation(wandb, metrics, "evaluation/checkpoint", state.global_step)
+            checkpoint_path = Path(args.output_dir) / f"checkpoint-{state.global_step}"
+            metric = float(metrics.get(config.get("best_checkpoint_metric", "pass_at_1"), float("-inf")))
+            if metric > self.best_metric:
+                previous_best = self.best_checkpoint_path
+                self.best_checkpoint_path = checkpoint_path
+                self.best_metric = metric
+                if previous_best is not None and previous_best.exists():
+                    shutil.rmtree(previous_best)
+            elif checkpoint_path.exists():
+                shutil.rmtree(checkpoint_path)
             return control
     return TrainingCallback()
 
@@ -140,6 +156,9 @@ def run_training(config: dict[str, Any]) -> None:
     seed_everything(int(config.get("seed", 42)))
     output_dir = Path(config["output_dir"])
     output_dir.mkdir(parents=True, exist_ok=True)
+    for checkpoint_path in output_dir.glob("checkpoint-*"):
+        if checkpoint_path.is_dir():
+            shutil.rmtree(checkpoint_path)
     train_dataset, test_dataset = prepare_datasets(config)
     tokenizer = AutoTokenizer.from_pretrained(config["model_name_or_path"], trust_remote_code=bool(config.get("trust_remote_code", False)))
     if tokenizer.pad_token is None:
@@ -177,7 +196,8 @@ def run_training(config: dict[str, Any]) -> None:
         use_cpu=not torch.cuda.is_available(),
         seed=int(config.get("seed", 42)),
     )
-    callbacks = [_make_callback(model, tokenizer, test_dataset, config, wandb)]
+    training_callback = _make_callback(model, tokenizer, test_dataset, config, wandb)
+    callbacks = [training_callback]
     print(f"Intermediate evaluations enabled: {bool(callbacks)}", flush=True)
     trainer = GRPOTrainer(
         model=model,
@@ -189,9 +209,18 @@ def run_training(config: dict[str, Any]) -> None:
     )
     log_evaluation(wandb, baseline_metrics, "evaluation/baseline", trainer.state.global_step)
     trainer.train()
+    best_checkpoint_path = training_callback.best_checkpoint_path
+    if best_checkpoint_path is not None and best_checkpoint_path.exists():
+        print(f"Loading best checkpoint for final evaluation: {best_checkpoint_path}", flush=True)
+        tokenizer = AutoTokenizer.from_pretrained(best_checkpoint_path, trust_remote_code=bool(config.get("trust_remote_code", False)))
+        if tokenizer.pad_token is None:
+            tokenizer.pad_token = tokenizer.eos_token
+        model = AutoModelForCausalLM.from_pretrained(best_checkpoint_path, trust_remote_code=bool(config.get("trust_remote_code", False)))
+        model.to(device)
+        trainer.model = model
     trainer.save_model(str(output_dir / "final"))
     final_metrics, final_details = evaluate_model(model, tokenizer, test_dataset, config, "final")
-    config["training_context"] = "final"
+    config["training_context"] = "best-checkpoint-final" if best_checkpoint_path is not None else "final"
     config["_evaluation_epoch"] = trainer.state.epoch
     save_evaluation(output_dir, "final", final_metrics, final_details, config)
     log_evaluation(wandb, final_metrics, "evaluation/final", trainer.state.global_step)

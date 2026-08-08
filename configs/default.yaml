@@ -6,7 +6,7 @@ seed: 42
 train_fraction: 0.8
 max_train_samples: null
 reuse_baseline: false
-run_intermediate_evals: false
+run_intermediate_evals: true
 max_eval_samples: null
 log_path: logs/logs.txt
 output_dir: outputs/grpo-mbpp
@@ -20,8 +20,9 @@ max_prompt_length: 512
 max_completion_length: 512
 evaluation_batch_size: 8
 results_log_path: logs/results.txt
+best_checkpoint_metric: pass_at_1
 logging_steps: 1
-save_steps: 100
+save_steps: 25
 eval_steps: 100
 evaluation_num_completions: 1
 sandbox_timeout_seconds: 3
