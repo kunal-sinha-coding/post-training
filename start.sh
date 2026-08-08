@@ -6,6 +6,7 @@ curl -fsSL https://chatgpt.com/codex/install.sh | sh
 
 # Register every skill from the shared skills repository with Codex.
 CODEX_HOME_DIR="${CODEX_HOME:-${HOME}/.codex}"
+export CODEX_HOME="$CODEX_HOME_DIR"
 CODEX_SKILLS_DIR="${CODEX_HOME_DIR}/skills"
 SKILLS_REPOSITORY_URL="${SKILLS_REPOSITORY_URL:-https://github.com/kunal-sinha-coding/skills.git}"
 SKILLS_REPOSITORY_DIR="${CODEX_HOME_DIR}/skills-repository"
@@ -30,7 +31,14 @@ if [[ -z "${WANDB_API_KEY:-}" ]]; then
     echo "WANDB_API_KEY is required to authenticate with Weights & Biases." >&2
     exit 1
 fi
+export WANDB_API_KEY
 wandb login --cloud --verify
+
+# Register the hosted W&B MCP server with Codex when it is not configured.
+WANDB_MCP_URL="${WANDB_MCP_URL:-https://mcp.withwandb.com/mcp}"
+if ! codex mcp get wandb >/dev/null 2>&1; then
+    codex mcp add wandb --url "$WANDB_MCP_URL" --bearer-token-env-var WANDB_API_KEY
+fi
 
 # Configure the Git identity while allowing environment-specific overrides.
 GIT_USER_NAME="${GIT_USER_NAME:-Kunal Sinha}"
