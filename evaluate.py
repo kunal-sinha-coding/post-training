@@ -124,6 +124,27 @@ def save_evaluation(output_dir: str | Path, name: str, metrics: dict[str, Any], 
     (directory / f"{name}-details.json").write_text(json.dumps(details, indent=2), encoding="utf-8")
 
 
+def _prepare_generation_inputs(tokenizer: Any, prompt: str, max_length: int, torch: Any) -> dict[str, Any]:
+    """Prepare a user-turn prompt with the tokenizer chat template when available."""
+    # Preserve a raw-tokenizer fallback for models without a chat template.
+    if not getattr(tokenizer, "chat_template", None):
+        return tokenizer(prompt, return_tensors="pt", truncation=True, max_length=max_length)
+    messages = [{"role": "user", "content": prompt}]
+    input_ids = tokenizer.apply_chat_template(
+        messages,
+        tokenize=True,
+        add_generation_prompt=True,
+        return_tensors="pt",
+        truncation=True,
+        max_length=max_length,
+    )
+    if hasattr(input_ids, "input_ids"):
+        return dict(input_ids)
+    if isinstance(input_ids, dict):
+        return input_ids
+    return {"input_ids": input_ids, "attention_mask": torch.ones_like(input_ids)}
+
+
 def evaluate_model(model: Any, tokenizer: Any, dataset: Any, config: dict[str, Any], evaluation_name: str = "evaluation") -> tuple[dict[str, Any], list[dict[str, Any]]]:
     """Generate completions from a model and evaluate them in the sandbox."""
     import torch
@@ -131,7 +152,7 @@ def evaluate_model(model: Any, tokenizer: Any, dataset: Any, config: dict[str, A
     records = [dataset[index] for index in range(len(dataset))]
     completions: list[str] = []
     for record in records:
-        inputs = tokenizer(record["prompt"], return_tensors="pt", truncation=True, max_length=int(config.get("max_prompt_length", 512)))
+        inputs = _prepare_generation_inputs(tokenizer, record["prompt"], int(config.get("max_prompt_length", 512)), torch)
         inputs = {key: value.to(model.device) for key, value in inputs.items()}
         with torch.no_grad():
             output = model.generate(**inputs, max_new_tokens=int(config.get("max_completion_length", 512)), do_sample=False)

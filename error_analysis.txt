@@ -46,3 +46,38 @@ The dominant shared cause is response-format noncompliance. It affects baseline 
 2. **Run a larger approved training batch after the format issue is addressed.** One step generated only four samples and had zero reward variance, so it cannot establish learning progress. Confirmation: nonzero reward variance, nonzero gradient/loss, and improved final pass@1 across a repeated batch with the same configuration.
 3. **Inspect generation and prompt-template behavior.** The training samples contain instruction-confused text and truncated outputs, suggesting the model is not reliably following the required output contract. Confirmation: sampled completions consistently contain exactly one extractable Python block before any model-architecture change.
 4. **Improve W&B metric logging for evaluation results.** The W&B run finished but its history exposed only profiling and `train/global_step` keys to the diagnostic, so baseline/final pass metrics were not available there. Confirmation: a subsequent run exposes `evaluation/baseline/pass_at_1` and `evaluation/final/pass_at_1` in W&B history or summary.
+
+
+------------------------------------------------------------------------
+ERROR ANALYSIS
+Timestamp: 2026-08-08 14:39:56 PDT
+------------------------------------------------------------------------
+Command: Baseline-only Python evaluation using the chat-template evaluation path.
+Batch mode: No training steps; four evaluation examples (task IDs 744, 965, 916, and 925).
+Starting log position: New `logs/chat-template-baseline.log` file.
+
+## Iteration comparison
+
+- The original raw-prompt baseline on these same four task IDs produced 2 format errors and 2 executable-but-failing outputs, with pass@1 0/4.
+- The chat-template baseline produced 4 format errors and 0 executable outputs, with pass@1 0/4.
+- This experiment did not improve formatting and made the observed format-error rate worse on this small comparison batch.
+
+## Observed error patterns
+
+- **Chat-template format failure: 4/4 (100.00%).** Every completion failed `extract_code` with `Did not follow proper output formatting`, so no generated text reached Python execution.
+- **No passed examples: 0/4 (0.00%).** The chat-template change produced no measurable pass-rate improvement.
+
+Grouping rule: each of the four examples is assigned to its single recorded evaluation status. Raw baseline counts are taken from the earlier full-run details for the same task IDs.
+
+## Triage
+
+- **Code:** The evaluation path now calls `tokenizer.apply_chat_template` with a user message and generation prompt, while retaining a raw-tokenizer fallback. The focused test suite still passes: 11 tests passed.
+- **Observed result:** Chat templating alone did not cause the model to emit the required `Code:` plus fenced-Python structure. The evaluator stores an empty extracted completion for format failures, so raw invalid completions are not preserved in the details artifact.
+- **Training scope:** This experiment changed only `evaluate_model`; the GRPO training dataset still supplies plain prompt strings. Therefore this result does not establish whether chat formatting would improve a trained GRPO run.
+- **Hypothesis:** The model may require a different prompt/template arrangement, or the strict output parser may be mismatched with the model’s learned output style. The chat-template change by itself is not supported as a fix by this batch.
+
+## Proposed solutions
+
+1. Preserve raw completions for format failures, then inspect exactly what the chat-formatted and raw paths generate before changing training.
+2. Test a training-compatible chat-message representation in a new approved batch, rather than changing evaluation alone.
+3. Consider a narrowly scoped parser/prompt alignment change only after raw outputs show a stable alternative format; do not claim success without a repeated comparison.
