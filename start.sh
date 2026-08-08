@@ -7,6 +7,12 @@ curl -fsSL https://chatgpt.com/codex/install.sh | sh
 # Install the Python dependencies listed for this repository.
 python3 -m pip install -r "$(dirname "$0")/requirements.txt"
 
+# Configure the Git identity while allowing environment-specific overrides.
+GIT_USER_NAME="${GIT_USER_NAME:-Kunal Sinha}"
+GIT_USER_EMAIL="${GIT_USER_EMAIL:-kunalsinha@live.com}"
+git config --global user.name "$GIT_USER_NAME"
+git config --global user.email "$GIT_USER_EMAIL"
+
 # Install GitHub CLI when it is not already available.
 if ! command -v gh >/dev/null 2>&1; then
     if command -v apt-get >/dev/null 2>&1; then
