@@ -18,6 +18,7 @@ learning_rate: 0.000001
 num_generations: 4
 max_prompt_length: 512
 max_completion_length: 512
+evaluation_batch_size: 8
 logging_steps: 1
 save_steps: 100
 eval_steps: 100

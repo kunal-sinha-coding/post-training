@@ -167,16 +167,45 @@ def _prepare_generation_inputs(tokenizer: Any, prompt: str, max_length: int, tor
     return {"input_ids": input_ids, "attention_mask": torch.ones_like(input_ids)}
 
 
+def _prepare_generation_batch(tokenizer: Any, prompts: list[str], max_length: int, torch: Any) -> dict[str, Any]:
+    """Tokenize multiple prompts together for more efficient generation."""
+    # Use the configured padding token for batched generation.
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+    tokenizer.padding_side = "left"
+    if getattr(tokenizer, "chat_template", None):
+        messages = [[{"role": "user", "content": prompt}] for prompt in prompts]
+        encoded = tokenizer.apply_chat_template(
+            messages,
+            tokenize=True,
+            add_generation_prompt=True,
+            return_tensors="pt",
+            padding=True,
+            truncation=True,
+            max_length=max_length,
+        )
+    else:
+        encoded = tokenizer(prompts, return_tensors="pt", padding=True, truncation=True, max_length=max_length)
+    if hasattr(encoded, "input_ids"):
+        return dict(encoded)
+    if isinstance(encoded, dict):
+        return encoded
+    return {"input_ids": encoded, "attention_mask": torch.ones_like(encoded)}
+
+
 def evaluate_model(model: Any, tokenizer: Any, dataset: Any, config: dict[str, Any], evaluation_name: str = "evaluation") -> tuple[dict[str, Any], list[dict[str, Any]]]:
     """Generate completions from a model and evaluate them in the sandbox."""
     import torch
 
     records = [dataset[index] for index in range(len(dataset))]
     completions: list[str] = []
-    for record in records:
-        inputs = _prepare_generation_inputs(tokenizer, record["prompt"], int(config.get("max_prompt_length", 512)), torch)
+    batch_size = max(1, int(config.get("evaluation_batch_size", 8)))
+    for start in range(0, len(records), batch_size):
+        batch_records = records[start : start + batch_size]
+        inputs = _prepare_generation_batch(tokenizer, [record["prompt"] for record in batch_records], int(config.get("max_prompt_length", 512)), torch)
         inputs = {key: value.to(model.device) for key, value in inputs.items()}
         with torch.no_grad():
             output = model.generate(**inputs, max_new_tokens=int(config.get("max_completion_length", 512)), do_sample=False)
-        completions.append(tokenizer.decode(output[0][inputs["input_ids"].shape[-1]:], skip_special_tokens=True))
+        prompt_width = inputs["input_ids"].shape[-1]
+        completions.extend(tokenizer.decode(item[prompt_width:], skip_special_tokens=True) for item in output)
     return evaluate_texts(completions, records, float(config.get("sandbox_timeout_seconds", 3)), config.get("log_path", "logs/logs.txt"), evaluation_name)

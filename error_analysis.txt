@@ -149,3 +149,33 @@ Starting log position: New `logs/flexible-parser-baseline.log` file.
 1. Keep this parser alignment and rerun a larger approved baseline subset to measure whether the improvement persists beyond four examples.
 2. Use the now-nonzero execution rewards for a training batch, then compare the same evaluation subset before and after training.
 3. Analyze the three execution failures separately; they are now modeling/code-generation errors rather than formatting artifacts.
+
+
+------------------------------------------------------------------------
+ERROR ANALYSIS
+Timestamp: 2026-08-08 15:34:08 PDT
+------------------------------------------------------------------------
+Command: Batched baseline/final evaluation using `evaluation_batch_size: 8`.
+Batch mode: One training step was completed; full 75-example evaluation rerun from the saved one-step model.
+Starting log position: New `logs/batched-final-left.log` file for the rerun.
+
+## Iteration comparison
+
+- The original unbatched full run completed its fresh baseline and one training step, but its final evaluation was interrupted before final metrics were written.
+- The batched rerun used the saved one-step model and evaluated all 75 examples with left-padded batches of eight.
+- Baseline metrics were 24/75 passed (32.00%), 48 failed, and 3 format errors.
+- Batched final metrics were 27/75 passed (36.00%), 46 failed, and 2 format errors.
+- pass@1 and average reward both improved by 4 percentage points, while format errors decreased by one.
+
+## Triage
+
+- **Code:** Evaluation now tokenizes and generates prompts in batches, with left padding required for decoder-only generation. The test suite passes with 13 tests.
+- **Execution:** The first batched attempt used right padding and was discarded because Transformers warned that decoder-only generation would be incorrect. The verified rerun used left padding and completed normally.
+- **Performance:** The batched run increased GPU utilization and reduced CPU pressure compared with the sequential loop, confirming that the evaluation bottleneck was partly per-example orchestration and synchronization.
+- **Training:** The one-step training metrics had nonzero reward and gradients (`reward: 0.125`, `loss: 0.1515`, `grad_norm: 15.62`). The final result shows a small improvement over the fresh baseline, but one step is insufficient to establish a durable training effect.
+
+## Proposed solutions
+
+1. Keep batched, left-padded evaluation and use the same batch size for future baseline/final comparisons.
+2. Run a larger approved training batch and repeat the full evaluation to determine whether the 32% to 36% improvement persists.
+3. Continue grouping the remaining failed executions now that format errors are no longer the dominant failure mode.
