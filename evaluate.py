@@ -173,7 +173,7 @@ def _change_description(results_log_path: str | Path, config: dict[str, Any]) ->
 def append_evaluation_result(results_log_path: str | Path, name: str, metrics: dict[str, Any], metadata: dict[str, Any]) -> None:
     """Append metrics, context, configuration, and change metadata to results.txt."""
     # Store the complete YAML text so each result is independently reproducible.
-    config_yaml = metadata.get("config_yaml", "")
+    config_yaml = metadata.get("_config_yaml", "")
     current_commit, changes = _change_description(results_log_path, metadata)
     path = Path(results_log_path)
     path.parent.mkdir(parents=True, exist_ok=True)

@@ -53,7 +53,7 @@ def test_results_log_records_header_metadata_and_metrics(tmp_path):
             "training_context": "baseline",
             "_evaluation_epoch": "baseline",
             "_config_path": "configs/test.yaml",
-            "config_yaml": "max_steps: 1\n",
+            "_config_yaml": "max_steps: 1\n",
         },
     )
     contents = results_path.read_text(encoding="utf-8")
