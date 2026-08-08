@@ -140,6 +140,8 @@ fi
 
 # Create the session and windows only when they do not already exist.
 SESSION_NAME="${TMUX_SESSION_NAME:-codex-work}"
+SKILLS_WORKSPACE_DIR="${SKILLS_WORKSPACE_DIR:-/workspace/skills}"
+SKILLS_WORKSPACE_SETUP_COMMAND="if [[ -d \"${SKILLS_WORKSPACE_DIR}/.git\" ]]; then git -C \"${SKILLS_WORKSPACE_DIR}\" pull --ff-only origin main; else git clone \"${SKILLS_REPOSITORY_URL}\" \"${SKILLS_WORKSPACE_DIR}\"; fi; cd \"${SKILLS_WORKSPACE_DIR}\"; exec bash"
 if ! tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
     tmux new-session -d -s "$SESSION_NAME" -n shell
     tmux new-window -d -t "$SESSION_NAME" -n codex
@@ -147,6 +149,10 @@ if ! tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
 elif ! tmux list-windows -t "$SESSION_NAME" -F '#{window_name}' | grep -Fxq codex; then
     tmux new-window -d -t "$SESSION_NAME" -n codex
     tmux send-keys -t "$SESSION_NAME:codex" "codex" C-m
+fi
+if ! tmux list-windows -t "$SESSION_NAME" -F '#{window_name}' | grep -Fxq skills; then
+    tmux new-window -d -t "$SESSION_NAME" -n skills
+    tmux send-keys -t "$SESSION_NAME:skills" "$SKILLS_WORKSPACE_SETUP_COMMAND" C-m
 fi
 tmux select-window -t "$SESSION_NAME:codex"
 
