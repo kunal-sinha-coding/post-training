@@ -8,6 +8,8 @@ This repository contains a small GRPO experiment that trains `Qwen/Qwen3.5-0.8B`
 python -m pip install -r requirements.txt
 ```
 
+`start.sh` also clones or updates the skills repository and registers every child directory containing `SKILL.md` under `${CODEX_HOME:-~/.codex}/skills`. Set `SKILLS_REPOSITORY_URL` to use a different skills repository.
+
 The first run downloads the model and MBPP from Hugging Face. A CUDA-capable environment is recommended. Copy `.env.example` to `.env` and set `WANDB_API_KEY`; `.env` is ignored by Git and must never be committed.
 
 ## Run

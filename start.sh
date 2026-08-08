@@ -4,6 +4,24 @@ set -euo pipefail
 # Install the Codex CLI using the official installer.
 curl -fsSL https://chatgpt.com/codex/install.sh | sh
 
+# Register every skill from the shared skills repository with Codex.
+CODEX_HOME_DIR="${CODEX_HOME:-${HOME}/.codex}"
+CODEX_SKILLS_DIR="${CODEX_HOME_DIR}/skills"
+SKILLS_REPOSITORY_URL="${SKILLS_REPOSITORY_URL:-https://github.com/kunal-sinha-coding/skills.git}"
+SKILLS_REPOSITORY_DIR="${CODEX_HOME_DIR}/skills-repository"
+mkdir -p "$CODEX_SKILLS_DIR"
+if [[ -d "$SKILLS_REPOSITORY_DIR/.git" ]]; then
+    git -C "$SKILLS_REPOSITORY_DIR" pull --ff-only
+else
+    rm -rf "$SKILLS_REPOSITORY_DIR"
+    git clone "$SKILLS_REPOSITORY_URL" "$SKILLS_REPOSITORY_DIR"
+fi
+while IFS= read -r -d '' skill_file; do
+    skill_dir="$(dirname "$skill_file")"
+    skill_name="$(basename "$skill_dir")"
+    ln -sfn "$skill_dir" "$CODEX_SKILLS_DIR/$skill_name"
+done < <(find "$SKILLS_REPOSITORY_DIR" -mindepth 2 -maxdepth 2 -type f -name SKILL.md -print0)
+
 # Install the Python dependencies listed for this repository.
 python3 -m pip install -r "$(dirname "$0")/requirements.txt"
 
