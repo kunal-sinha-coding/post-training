@@ -22,6 +22,7 @@ evaluation_batch_size: 8
 results_log_path: logs/results.txt
 best_checkpoint_metric: pass_at_1
 logging_steps: 1
+reward_rolling_window: 10
 save_steps: 25
 eval_steps: 100
 evaluation_num_completions: 1
