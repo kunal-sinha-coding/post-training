@@ -383,3 +383,182 @@ The evaluation remains stochastic at the generation and model level, although ch
 The report uses local W&B metadata. Detailed W&B history was not available through a diagnostic connection.
 
 The results measure pass@1 with one completion per task and do not estimate pass@k.
+
+------------------------------------------------------------------------
+ERROR ANALYSIS
+Timestamp: 2026-08-09 11:45:41 PDT
+------------------------------------------------------------------------
+Command: accelerate launch --num_processes 1 train.py --config configs/default.yaml
+Batch mode: Five training steps with dense rewards, physical batch size 1, effective batch size 32, and full 75-example evaluation.
+
+## Iteration comparison
+
+The previous corrected binary-reward run produced 21/75 at baseline, 20/75 at checkpoint, and 20/75 at final. Three of five training steps had zero reward variance, zero loss, and zero gradient norm.
+
+This run used dense format, syntax, execution, and partial-test rewards. It produced 21/75 at baseline, 19/75 at checkpoint, and 19/75 at final.
+
+The checkpoint and final distributions match exactly. Dense rewards changed the training dynamics as intended:
+
+- All five steps had nonzero reward standard deviation and nonzero gradient norm.
+- Four of five steps had mixed rewards in all eight generation groups.
+- The remaining step had mixed rewards in seven of eight groups.
+- Reward means ranged from 0.1193 to 0.1979.
+- The all-zero reward fraction decreased from 0.4375 on step 1 to 0.1875 on step 5.
+
+This improves learning-signal availability but not held-out performance. Final pass rate decreased from the previous 20/75 to 19/75 and remained below the fresh baseline of 21/75. The reward change solved signal sparsity without yet proving directional learning.
+
+## Run context and data coverage
+
+The run used configs/default.yaml with max_steps 5, max_eval_samples null, seed 42, gradient_accumulation_steps 32, num_generations 4, evaluation_batch_size 8, and run_intermediate_evals true.
+
+All five optimizer steps completed. Checkpoint-5 was saved, evaluated, selected, reloaded, and evaluated again as final. Baseline, checkpoint, and final each covered all 75 test examples.
+
+The dense reward was:
+
+R = 0.05 I_format + 0.10 I_syntax + 0.05 I_execution + 0.80 tests_passed / total_tests.
+
+W&B run vivid-firefly-15 was created at https://wandb.ai/kunal-personal/grpo-mbpp/runs/wbt8zajw. Group diagnostics were emitted in trainer metrics and mirrored to logs/logs.txt.
+
+## Error-pattern distribution
+
+Primary categories are mutually exclusive and use 75 evaluated examples as the denominator.
+
+| Primary pattern | Count | Percentage | Definition |
+|---|---:|---:|---|
+| Wrong algorithm or task semantics | 23 | 30.67% | Executable code implemented the wrong computation. |
+| Undefined function or wrong execution scope | 13 | 17.33% | The required function was unavailable at module scope. |
+| Wrong function signature | 9 | 12.00% | The function accepted the wrong number of arguments. |
+| Exact output or collection contract mismatch | 4 | 5.33% | The code violated exact type, ordering, multiplicity, or representation requirements. |
+| Output-format extraction failure | 4 | 5.33% | The evaluator could not extract executable code. |
+| Missing import or runtime dependency | 1 | 1.33% | The code referenced an unimported module. |
+| Invalid numeric edge case | 1 | 1.33% | A valid input caused division by zero. |
+| Index boundary failure | 1 | 1.33% | The code accessed an invalid array position. |
+| Passed | 19 | 25.33% | All supplied assertions passed. |
+
+The categories sum to 75. The 23 wrong-algorithm examples and 4 exact-contract examples are the 27 assertion mismatches. The 13 scope failures and one missing-import failure are separated even though both raised NameError.
+
+## Observed error patterns
+
+### Wrong algorithm or task semantics: 23 examples
+
+The executable completions still solved different problems from the prompts. Representative examples included CamelCase splitting implemented as uppercase-character extraction, maximum-list-sum implemented as maximum-element selection, and corner-based sorting implemented as endpoint comparison.
+
+Dense reward does not automatically correct semantic errors. It gives partial credit when individual assertions pass, but a partially relevant implementation can still be fundamentally wrong.
+
+### Undefined function or wrong execution scope: 13 examples
+
+The generated functions were nested inside example, returned as values rather than exposed at module scope, renamed, or invoked through an unavailable wrapper. The evaluator raised NameError before reaching the intended assertions.
+
+This increased from 11 examples in the prior corrected run. Dense reward does not currently contain a specific interface reward.
+
+### Wrong function signature: 9 examples
+
+The tests supplied more parameters than the generated functions accepted. Representative cases included is_Product_Even, get_Pairs_Count, find_Extra, find_Min_Swaps, divisible_by_digits, and count_Rotation.
+
+This increased from 7 examples in the prior corrected run. The model continues to ignore signatures visible in the test calls.
+
+### Exact output or collection contract mismatch: 4 examples
+
+The completions computed related values but violated exact ordering, duplicate, type, or representation requirements. The tuple-combination task still used set and sorting, which removed duplicates and changed order.
+
+### Output-format extraction failure: 4 examples
+
+Four completions failed code extraction. Their raw malformed responses are not retained, so the report cannot distinguish prose, incomplete fences, or truncation.
+
+### Missing import or runtime dependency: 1 example
+
+One completion called heapq.heappush without importing heapq.
+
+### Invalid numeric edge case: 1 example
+
+One completion divided by zero while evaluating a binomial expression at a valid boundary value.
+
+### Index boundary failure: 1 example
+
+One completion accessed fixed offsets beyond the input bounds.
+
+## Success patterns and controls
+
+Nineteen final examples passed all assertions. Checkpoint and final evaluations match exactly, confirming consistent evaluation mode.
+
+The dense reward produced the intended training controls. On step 1, all eight groups were mixed and mean group standard deviation was 0.1023. On step 2, all eight groups were mixed with mean group standard deviation 0.1163. On step 3, seven of eight groups were mixed. On steps 4 and 5, all eight groups were mixed.
+
+These results rule out the original diagnosis that training was completely gradient-starved. They do not show that the gradients point toward better held-out solutions.
+
+## Deep triage
+
+### Wrong algorithm or task semantics
+
+The 23 failures span strings, arrays, arithmetic, heaps, tuples, and combinatorial tasks. The common mechanism is plausible-looking executable code that solves a different problem.
+
+The likely issue is shallow matching to familiar task keywords rather than deriving behavior from every test. The dense reward increases feedback but does not guarantee that partial-test progress correlates with general task correctness.
+
+The next diagnostic should compare partial-test reward against held-out pass rate. If partial reward rises while pass rate falls, the reward is encouraging local test fitting rather than general task solving.
+
+### Undefined function or wrong execution scope
+
+The 13 NameError failures show that interface errors remain prominent. The dense reward gives these candidates a small base reward, but that base is not tied to defining the exact required function at module scope.
+
+The targeted fix is explicit static validation for the required function name and signature, followed by a distinct diagnostic and reward for satisfying the interface.
+
+### Wrong function signature
+
+The nine TypeErrors show that the model ignores argument counts visible in test calls. Dense test rewards cannot help when the test invocation never reaches the intended function.
+
+The targeted fix is to parse the expected callable name and parameters from the assertions and validate the submitted module before running tests.
+
+### Exact output or collection contract mismatch
+
+The four assertion failures show that broad operation recognition is insufficient. Order, duplicates, exact type, and representation remain wrong.
+
+The targeted fix is to preserve expected and actual values and add output-contract examples. Reward shaping should not be considered successful until these failures decrease.
+
+### Output-format extraction failure
+
+The four parser failures remain upstream of code execution. The current artifact cannot distinguish missing delimiters, extra prose, or truncation because raw malformed completions are discarded.
+
+The targeted fix is to preserve raw format-failure responses and record the exact extraction reason.
+
+### Missing import or runtime dependency
+
+The unresolved heapq name shows incomplete self-review. A static unresolved-name check can identify this before expensive test execution and provide a distinct signal.
+
+### Invalid numeric edge case
+
+The division-by-zero failure shows that the model needs endpoint-aware reasoning. Dense reward does not create useful partial progress if the first test crashes before assertions execute.
+
+### Index boundary failure
+
+The out-of-range access shows that the model does not reliably derive loop bounds from neighborhood size. Boundary-specific tests and diagnostics are needed.
+
+## Shared causes and interactions
+
+Dense reward changed the optimization signal from mostly flat zero groups to consistently mixed groups. The training metrics confirm that this removed the immediate no-gradient condition.
+
+However, the reward is partly structural rather than semantic. A valid fence, compilable code, and partial assertion progress contribute 0.20 before task correctness is considered. This may break the deadlock, but it can also reward executable code that is not meaningfully closer to the correct algorithm.
+
+The experiment separates two questions:
+
+1. Can the model receive a nonzero learning signal?
+2. Does that signal improve general task performance?
+
+This run answers the first question positively and the second question negatively or inconclusively. Five steps are still a small budget, but the lower final score is evidence against claiming improvement.
+
+## Proposed solutions and confirmation tests
+
+1. Keep dense rewards and group diagnostics. Confirm that mixed-group fraction and nonzero gradient norms remain high across a longer controlled run.
+2. Add exact function-name and signature validation. Confirm reductions in the 13 scope failures and 9 signature failures.
+3. Preserve raw format-failure completions. Confirm whether the four format failures are missing fences, truncation, or extra prose.
+4. Compare partial-test reward against held-out pass rate. Confirm that higher partial reward predicts later task success rather than merely easier assertion matching.
+5. Run more than five steps with the same reward and fixed evaluation protocol. Confirm whether the 19/75 result is noise or a repeatable regression.
+6. If longer training increases reward diagnostics but not pass rate, add supervised warm-start data or reduce the structural reward weights. Confirm that semantic and exact-output patterns decrease.
+
+## Limitations
+
+The reward diagnostics describe training completions, while final evaluation uses one greedy completion per task. Their distributions are not directly identical.
+
+The raw completions for format failures are not retained.
+
+The run uses one completion per evaluation task, so pass@1 is noisy.
+
+The dense reward requires separate assertion execution and may introduce test-specific reward hacking. Longer controlled comparisons are needed before changing the reward again.

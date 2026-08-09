@@ -92,8 +92,12 @@ def _make_reward(config: dict[str, Any]):
 
     def reward(completions: list[object], test_code: list[str], **kwargs: object) -> list[float]:
         """Score the current GRPO completion batch."""
+        # Share reward diagnostics with the training callback for W&B and local logs.
+        diagnostics: dict[str, float] = {}
         append_training_step_samples(config.get("log_path", "logs/logs.txt"), completions)
-        return reward_function(completions, test_code, timeout, **kwargs)
+        rewards = reward_function(completions, test_code, timeout, diagnostics=diagnostics, group_size=int(config.get("num_generations", 4)), **kwargs)
+        config["_reward_diagnostics"] = diagnostics
+        return rewards
 
     return reward
 
@@ -126,6 +130,8 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
                     self.reward_count += 1
                     average_reward = self.reward_sum / self.reward_count
                     logs["training/average_reward"] = average_reward
+                # Add dense reward and group statistics to the trainer's W&B record.
+                logs.update(config.pop("_reward_diagnostics", {}))
                 append_training_step_metrics(config.get("log_path", "logs/logs.txt"), logs)
             return control
 
