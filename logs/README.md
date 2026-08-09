@@ -20,3 +20,5 @@ During training, entries are appended in this order:
 Evaluation entries contain the evaluation name, task ID, prompt, generated code, a `Code execution result:` JSON object, and the numeric `Award`. Evaluation names identify baseline, checkpoint, final, or other evaluation passes.
 
 The configured `log_path` in `configs/default.yaml` and `configs/debug.yaml` controls the destination. Evaluation and training helpers create the parent directory and append to the file rather than replacing earlier runs.
+
+At the start of a run, cleanup retains only the newest configured number of standalone experiment logs. It also trims older `ERROR ANALYSIS` reports from `logs/error_analysis.txt`. `logs/results.txt` is retained in full.

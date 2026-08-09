@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 from zoneinfo import ZoneInfo
 from datetime import datetime
@@ -45,11 +46,28 @@ def cleanup_run_logs(log_path: str | Path) -> None:
     log_files = [
         candidate
         for candidate in directory.iterdir()
-        if candidate.is_file() and candidate.suffix in {".log", ".txt"} and candidate.name != "results.txt"
+        if candidate.is_file() and candidate.suffix in {".log", ".txt"} and candidate.name not in {"results.txt", "error_analysis.txt"}
     ]
     log_files.sort(key=lambda candidate: candidate.stat().st_mtime, reverse=True)
     for stale_log in log_files[MAX_RUN_LOGS:]:
         stale_log.unlink()
+    _truncate_error_analysis(directory / "error_analysis.txt")
+
+
+def _truncate_error_analysis(path: Path) -> None:
+    """Keep only the newest configured number of error analysis reports."""
+    # Treat each ERROR ANALYSIS header as the beginning of one report.
+    if not path.is_file() or MAX_RUN_LOGS == -1:
+        return
+    contents = path.read_text(encoding="utf-8")
+    starts = [match.start() for match in re.finditer(r"(?m)^-{72}\nERROR ANALYSIS\n", contents)]
+    if MAX_RUN_LOGS == 0:
+        path.write_text("", encoding="utf-8")
+        return
+    if len(starts) <= MAX_RUN_LOGS:
+        return
+    kept_start = starts[-MAX_RUN_LOGS]
+    path.write_text(contents[kept_start:], encoding="utf-8")
 
 
 def append_training_step_header(log_path: str | Path, step: int, total_steps: int) -> None:

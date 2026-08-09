@@ -40,6 +40,26 @@ def test_cleanup_run_logs_keeps_all_logs_when_disabled(tmp_path, monkeypatch):
     assert len(list(log_directory.glob("*.txt"))) == 3
 
 
+def test_cleanup_run_logs_keeps_newest_error_analysis_reports(tmp_path, monkeypatch):
+    """Keep recent analysis reports while preserving the results log."""
+    monkeypatch.setattr("evaluate.MAX_RUN_LOGS", 2)
+    analysis_path = tmp_path / "error_analysis.txt"
+    reports = []
+    for index in range(3):
+        reports.append(f"{'-' * 72}\nERROR ANALYSIS\nTimestamp: run-{index}\nReport {index}\n")
+    analysis_path.write_text("\n".join(reports), encoding="utf-8")
+    results_path = tmp_path / "results.txt"
+    results_path.write_text("all historical results", encoding="utf-8")
+
+    cleanup_run_logs(tmp_path / "logs.txt")
+
+    contents = analysis_path.read_text(encoding="utf-8")
+    assert "Report 0" not in contents
+    assert "Report 1" in contents
+    assert "Report 2" in contents
+    assert results_path.read_text(encoding="utf-8") == "all historical results"
+
+
 def test_results_log_records_header_metadata_and_metrics(tmp_path):
     """Record a reproducible evaluation result beside the detailed run log."""
     results_path = tmp_path / "results.txt"
