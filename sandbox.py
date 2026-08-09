@@ -203,14 +203,14 @@ def summarize_reward_groups(rewards: list[float], details: list[dict[str, object
         "reward/max": max(rewards),
     }
     # Emit mean, standard deviation, minimum, and maximum for every dense reward component.
-    for component in ("format", "syntax", "interface", "execution", "tests"):
-        values = [float(detail.get("reward_components", {}).get(component, 0.0)) for detail in details]
+    for component in ("format", "syntax", "interface", "execution", "test_progress"):
+        values = [float(detail.get("reward_components", {}).get("tests" if component == "test_progress" else component, 0.0)) for detail in details]
         mean = sum(values) / len(values)
         std = math.sqrt(sum((value - mean) ** 2 for value in values) / len(values))
-        diagnostics[f"reward/components/{component}/mean"] = mean
-        diagnostics[f"reward/components/{component}/std"] = std
-        diagnostics[f"reward/components/{component}/min"] = min(values)
-        diagnostics[f"reward/components/{component}/max"] = max(values)
+        diagnostics[f"reward/{component}/mean"] = mean
+        diagnostics[f"reward/{component}/std"] = std
+        diagnostics[f"reward/{component}/min"] = min(values)
+        diagnostics[f"reward/{component}/max"] = max(values)
     return diagnostics
 
 

@@ -115,6 +115,8 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
             self.best_metric = float("-inf")
             self.reward_sum = 0.0
             self.reward_count = 0
+            self.component_reward_sums: dict[str, float] = {}
+            self.component_reward_counts: dict[str, int] = {}
 
         def on_step_begin(self, args: Any, state: Any, control: Any, **_: Any) -> Any:
             """Write the step header before generation begins."""
@@ -133,6 +135,12 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
                     logs["training/average_reward"] = average_reward
                 # Add dense reward and group statistics to the trainer's W&B record.
                 logs.update(config.pop("_reward_diagnostics", {}))
+                for component in ("format", "syntax", "interface", "execution", "test_progress"):
+                    component_mean = logs.get(f"reward/{component}/mean")
+                    if isinstance(component_mean, (int, float)):
+                        self.component_reward_sums[component] = self.component_reward_sums.get(component, 0.0) + float(component_mean)
+                        self.component_reward_counts[component] = self.component_reward_counts.get(component, 0) + 1
+                        logs[f"training/average_reward/{component}"] = self.component_reward_sums[component] / self.component_reward_counts[component]
                 append_training_step_metrics(config.get("log_path", "logs/logs.txt"), logs)
                 if wandb is not None and wandb.run is not None:
                     # Log callback-added metrics after the built-in W&B callback so every scalar is graphable.

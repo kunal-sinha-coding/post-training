@@ -73,7 +73,7 @@ def test_reward_group_summary_reports_variation():
     )
     assert diagnostics["reward/flat_group_fraction"] == 0.5
     assert diagnostics["reward/mixed_group_fraction"] == 0.5
-    assert diagnostics["reward/components/tests/mean"] > 0.0
+    assert diagnostics["reward/test_progress/mean"] > 0.0
 
 
 def test_execute_code_reports_assertion_failure():
