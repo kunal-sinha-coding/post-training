@@ -70,7 +70,8 @@ def log_evaluation(wandb: Any | None, metrics: dict[str, Any], prefix: str, step
             for status, count in value.items():
                 payload[f"{prefix}/status_{status}"] = count
     if payload:
-        wandb.log(payload, step=step) if step is not None else wandb.log(payload)
+        # Avoid explicit trainer steps because TRL may already advance W&B by token-level records.
+        wandb.log(payload)
 
 
 def load_cached_evaluation(output_dir: Path, name: str) -> tuple[dict[str, Any], list[dict[str, Any]]] | None:
@@ -133,6 +134,11 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
                 # Add dense reward and group statistics to the trainer's W&B record.
                 logs.update(config.pop("_reward_diagnostics", {}))
                 append_training_step_metrics(config.get("log_path", "logs/logs.txt"), logs)
+                if wandb is not None and wandb.run is not None:
+                    # Log callback-added metrics after the built-in W&B callback so every scalar is graphable.
+                    payload = {key: value for key, value in logs.items() if isinstance(value, (int, float))}
+                    payload["trainer_step"] = float(state.global_step)
+                    wandb.log(payload)
             return control
 
         def on_save(self, args: Any, state: Any, control: Any, **_: Any) -> Any:

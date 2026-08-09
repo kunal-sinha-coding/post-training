@@ -1,6 +1,6 @@
 import pytest
 
-from sandbox import execute_code, extract_code, reward_for_completion, score_completion, split_test_cases, summarize_reward_groups
+from sandbox import execute_code, expected_interface, extract_code, reward_for_completion, score_completion, split_test_cases, summarize_reward_groups, validate_interface
 
 
 def test_extract_code_supports_fences():
@@ -34,8 +34,19 @@ def test_dense_reward_counts_partial_assertion_progress():
         "Code: ```python\ndef add(a, b):\n    return a + b\n```",
         "assert add(1, 2) == 3\nassert add(1, 2) == 4",
     )
-    assert reward == pytest.approx(0.6)
-    assert detail == {"status": "partial", "passed_tests": 1, "total_tests": 2}
+    assert reward == pytest.approx(0.625)
+    assert detail["status"] == "partial"
+    assert detail["interface_valid"] is True
+    assert detail["reward_components"] == {"format": 0.05, "syntax": 0.10, "interface": 0.05, "execution": 0.05, "tests": 0.375}
+
+
+def test_interface_validation_checks_name_and_arity():
+    """Reject nested, renamed, and incorrectly parameterized task functions."""
+    tests = "assert add(1, 2) == 3"
+    assert expected_interface(tests) == ("add", {2})
+    assert validate_interface("def add(a, b):\n    return a + b", tests) is True
+    assert validate_interface("def example(a, b):\n    return a + b", tests) is False
+    assert validate_interface("def add(a):\n    return a", tests) is False
 
 
 def test_split_test_cases_preserves_shared_imports():
@@ -50,18 +61,19 @@ def test_reward_group_summary_reports_variation():
     diagnostics = summarize_reward_groups(
         [0.2, 0.2, 0.6, 0.2, 1.0, 1.0, 1.0, 1.0],
         [
-            {"status": "partial", "passed_tests": 0, "total_tests": 1},
-            {"status": "partial", "passed_tests": 0, "total_tests": 1},
-            {"status": "partial", "passed_tests": 1, "total_tests": 1},
-            {"status": "partial", "passed_tests": 0, "total_tests": 1},
-            {"status": "passed", "passed_tests": 1, "total_tests": 1},
-            {"status": "passed", "passed_tests": 1, "total_tests": 1},
-            {"status": "passed", "passed_tests": 1, "total_tests": 1},
-            {"status": "passed", "passed_tests": 1, "total_tests": 1},
+            {"status": "partial", "passed_tests": 0, "total_tests": 1, "reward_components": {"format": 0.05, "syntax": 0.10, "interface": 0.0, "execution": 0.05, "tests": 0.0}},
+            {"status": "partial", "passed_tests": 0, "total_tests": 1, "reward_components": {"format": 0.05, "syntax": 0.10, "interface": 0.0, "execution": 0.05, "tests": 0.0}},
+            {"status": "partial", "passed_tests": 1, "total_tests": 1, "reward_components": {"format": 0.05, "syntax": 0.10, "interface": 0.05, "execution": 0.05, "tests": 0.75}},
+            {"status": "partial", "passed_tests": 0, "total_tests": 1, "reward_components": {"format": 0.05, "syntax": 0.10, "interface": 0.0, "execution": 0.05, "tests": 0.0}},
+            {"status": "passed", "passed_tests": 1, "total_tests": 1, "reward_components": {"format": 0.05, "syntax": 0.10, "interface": 0.05, "execution": 0.05, "tests": 0.75}},
+            {"status": "passed", "passed_tests": 1, "total_tests": 1, "reward_components": {"format": 0.05, "syntax": 0.10, "interface": 0.05, "execution": 0.05, "tests": 0.75}},
+            {"status": "passed", "passed_tests": 1, "total_tests": 1, "reward_components": {"format": 0.05, "syntax": 0.10, "interface": 0.05, "execution": 0.05, "tests": 0.75}},
+            {"status": "passed", "passed_tests": 1, "total_tests": 1, "reward_components": {"format": 0.05, "syntax": 0.10, "interface": 0.05, "execution": 0.05, "tests": 0.75}},
         ],
     )
     assert diagnostics["reward/flat_group_fraction"] == 0.5
     assert diagnostics["reward/mixed_group_fraction"] == 0.5
+    assert diagnostics["reward/components/tests/mean"] > 0.0
 
 
 def test_execute_code_reports_assertion_failure():

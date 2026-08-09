@@ -562,3 +562,155 @@ The raw completions for format failures are not retained.
 The run uses one completion per evaluation task, so pass@1 is noisy.
 
 The dense reward requires separate assertion execution and may introduce test-specific reward hacking. Longer controlled comparisons are needed before changing the reward again.
+\n\n------------------------------------------------------------------------
+ERROR ANALYSIS
+Timestamp: 2026-08-09 19:37:01 UTC
+------------------------------------------------------------------------
+Command: accelerate launch --num_processes 1 train.py --config configs/default.yaml
+Batch mode: Full one-epoch training run with 37 optimizer steps and full 75-example evaluation.
+W&B local run artifact: wandb/run-20260809_193759-dspgy7if
+
+## Run summary
+
+The W&B logging fix was exercised during a complete 37-step run. The fresh local W&B artifact contains 37 training records with group diagnostics and 20 component series covering mean, standard deviation, minimum, and maximum for format, syntax, interface, execution, and test-progress rewards. The remote W&B API could not be queried because DNS resolution for api.wandb.ai failed, so remote chart rendering remains unverified from this environment.
+
+Baseline scored 21/75, or 28.00 percent. Checkpoint-25 scored 21/75. Checkpoint-37 and final scored 22/75, or 29.33 percent. This is a one-example improvement over baseline and a two-example improvement over checkpoint-25, but it is small relative to stochastic variation. The dominant final failure pattern was wrong algorithm or exact-output behavior, with 33 examples. The next action is to use the now-visible component curves to determine whether test-progress reward rises without increasing semantic regressions.
+
+## Iteration comparison
+
+| Evaluation | Passed | Failed | Format errors | Pass@1 |
+| --- | ---: | ---: | ---: | ---: |
+| Baseline | 21 | 51 | 3 | 28.00% |
+| Checkpoint-25 | 21 | 51 | 3 | 28.00% |
+| Checkpoint-37 | 22 | 51 | 2 | 29.33% |
+| Final | 22 | 51 | 2 | 29.33% |
+
+Compared with baseline, the final gained one pass and removed one format failure. Runtime and interface composition changed: the final had 8 undefined-name failures and 6 wrong-arity failures, compared with 11 and 8 respectively in baseline. Assertion failures increased from 29 to 33, so the interface and format improvement did not translate into a broad semantic gain. Checkpoint-25 was not better than baseline, while checkpoint-37 and final were marginally better.
+
+The W&B logging change itself cannot be credited with changing model quality because it changes observation and callback logging, not the reward weights or evaluation protocol.
+
+## Run context and data coverage
+
+The run used configs/default.yaml with max_steps: -1, one full epoch, four generations per prompt, gradient accumulation 32, learning rate 1e-6, full 75-example evaluation, and intermediate evaluation at checkpoint-25. The final evaluation used checkpoint-37 because it had the best pass@1 in this run. All 75 evaluation details and all 37 local training metric records were present.
+
+The local W&B output artifact recorded the same trainer metric dictionaries that were sent by the explicit callback log. It contains keys such as reward/interface_valid_fraction, reward/mixed_group_fraction, reward/components/format/mean, reward/components/interface/std, and reward/components/tests/mean. The remote W&B history could not be fetched because api.wandb.ai DNS lookups failed repeatedly.
+
+## Error-pattern distribution
+
+The primary grouping is mutually exclusive. Each example is assigned to the earliest observable failure stage, with assertion failures used for executable candidates whose assertions failed. The final 75 examples distribute as follows.
+
+| Pattern | Count | Share | Concrete definition |
+| --- | ---: | ---: | --- |
+| Wrong algorithm or exact output | 33 | 44.00% | Code ran but an assertion failed. |
+| Undefined function or scope name | 8 | 10.67% | Code referenced an undefined callable or helper. |
+| Wrong function signature or arity | 6 | 8.00% | The tested function rejected the number of arguments. |
+| Output-format extraction failure | 2 | 2.67% | No accepted fenced code block was extracted. |
+| Wrong return type or collection contract | 1 | 1.33% | A tuple and dictionary were combined incompatibly. |
+| Recursion failure | 1 | 1.33% | The candidate recursed until Python’s recursion limit. |
+| Index boundary failure | 1 | 1.33% | The candidate indexed outside the available list. |
+| Passed all tests | 22 | 29.33% | Every supplied assertion passed. |
+| **Total** | **75** | **100.00%** | |
+
+## Observed error patterns
+
+### Wrong algorithm or exact output: 33 examples
+
+Task IDs 965, 916, 651, 652, 748, 733, 929, 937, 646, 829, 772, 953, 903, 741, 647, 665, 832, 951, 627, 943, 840, 885, 818, 850, 657, 769, 620, 784, 751, 911, 780, 899, and 805 executed but raised AssertionError. The generated functions were syntactically executable, but returned values that did not equal the expected assertion values. The stored artifact has the exception but not the expected and actual values, so this pattern is certain while its subtypes remain unresolved.
+
+### Undefined function or scope name: 8 examples
+
+Tasks 659, 794, 609, 662, 601, 835, 866, and 853 raised NameError. Examples include Repeat, text_starta_endb, floor_Min, sorted_dict, Pair, slope, example, and sum_of_odd_Factors. The candidate either defined a different top-level function, invented a helper, or used a misspelled symbol. Python could not call the requested behavior because the name resolution contract was broken.
+
+### Wrong function signature or arity: 6 examples
+
+Tasks 767, 890, 804, 856, 745, and 802 were called with three or two positional arguments while the generated definitions accepted fewer. The errors explicitly identify get_Pairs_Count, find_Extra, is_Product_Even, find_Min_Swaps, divisible_by_digits, and count_Rotation. These are direct function-interface failures.
+
+### Output-format extraction failure: 2 examples
+
+Tasks 735 and 603 were rejected before execution with Did not follow proper output formatting. No code reached Python, and the saved detail contains no raw malformed continuation. The flexible parser reduced but did not eliminate this upstream failure.
+
+### Wrong return type or collection contract: 1 example
+
+Task 720 raised TypeError because the candidate tried to concatenate a tuple and a dictionary. The function was reached, but its output representation or intermediate collection contract was incompatible with the expected operation.
+
+### Recursion failure: 1 example
+
+Task 851 raised RecursionError: maximum recursion depth exceeded. The candidate did not terminate on the evaluator’s input, likely because its recursive base case or recursive state transition was wrong.
+
+### Index boundary failure: 1 example
+
+Task 701 raised IndexError: list index out of range. The candidate accessed a position outside the input rather than deriving a safe loop bound from the input length.
+
+## Success patterns and controls
+
+Twenty-two final examples passed all assertions. The matching checkpoint-37 and final counts show that final evaluation used the selected checkpoint without a protocol discrepancy. The baseline and final used the same flexible fenced-code extraction and batched evaluation path.
+
+The reward signal was non-flat. Across 37 steps, mean reward was 0.1481, mixed-group fraction averaged 96.96 percent, flat-group fraction averaged 3.04 percent, and interface-valid fraction averaged 21.88 percent. Component means were format 0.0354, syntax 0.0595, interface 0.0109, execution 0.0075, and test progress 0.0348. The component curves were emitted to the local W&B run artifact on all 37 steps.
+
+These controls show that the optimizer received varied reward. They do not show that the reward was aligned with held-out algorithmic correctness, because assertion failures remained the largest category and increased from baseline.
+
+## Deep triage
+
+### Wrong algorithm or exact output
+
+Observed evidence is executable code followed by AssertionError across 33 tasks. The model should implement the exact behavior encoded by all assertions, including ordering, duplicates, boundary cases, and return types. The likely mechanism is broad pattern completion that produces plausible code without fully deriving the test contract. A competing explanation is that the one-completion greedy evaluation is noisy. The targeted fix is to preserve expected and actual assertion values, classify this category into algorithm, ordering, duplicate, type, and edge-case failures, and add targeted reward or supervised examples only for the dominant subtype. Confirmation requires a reduction in the corresponding assertion subtype on a matched 75-task evaluation.
+
+### Undefined function or scope name
+
+Observed evidence is eight explicit NameErrors. The model should define the exact top-level callable and define every helper it invokes. The interface validator gives a small structural reward, but the final still contains eight scope failures. The likely cause is weak adherence to the task’s required function name and incomplete self-review of helper references. A competing explanation is that some tasks contain unusual names that the AST inference does not robustly identify. The targeted fix is to retain the interface reward and add separate counts for exact name, arity, and unresolved helper names. Confirmation requires lower name and scope counts without a compensating rise in assertion failures.
+
+### Wrong function signature or arity
+
+Observed evidence is six TypeErrors naming the expected call and the accepted argument count. The model should infer its signature from the test calls. The likely cause is that prompt semantics are being used without mechanically checking the invocation. The targeted fix is exact name and arity validation before test execution, with a distinct interface component. Confirmation requires the wrong-arity count to fall on the same task set and the training interface-valid curve to rise.
+
+### Output-format extraction
+
+Observed evidence is two parser rejections. The model should emit one accepted fenced Python block. The likely cause is residual instruction-following or truncation behavior. The raw continuation is unavailable, so missing fences and truncation remain alternatives. The targeted fix is to preserve raw completions and extraction reasons, then align prompting or parser acceptance to the actual dominant form. Confirmation requires fewer format errors and nonempty raw artifacts for every remaining failure.
+
+### Wrong return type or collection contract
+
+Task 720’s tuple and dictionary TypeError shows that the candidate reached execution but violated an intermediate or output representation contract. The likely cause is semantic type reasoning failure. A targeted fix is to record expected and actual types at assertion boundaries and add a return-type component only when the test contract exposes it. Confirmation requires this exact contract category to decrease without simply converting it into assertion failures.
+
+### Recursion failure
+
+Task 851 exhausted the recursion limit. The candidate should terminate for the supplied input. The likely causes are a missing base case or a recursive call that does not reduce the problem. A targeted fix is a recursion timeout and static or dynamic termination diagnostic, followed by edge-case training examples. Confirmation requires this task to terminate and the category to shrink.
+
+### Index boundary failure
+
+Task 701 accessed beyond the list boundary. The candidate should guard or derive the loop range from the actual input length. The likely cause is a copied fixed-offset algorithm. A targeted fix is to preserve the failing assertion inputs and add boundary-focused examples. Confirmation requires task 701 to pass and similar boundary failures to decrease.
+
+## Shared causes and interactions
+
+The primary upstream chain is response generation to parser to interface to execution to assertions. Two outputs fail at parsing. Fourteen fail at the interface or immediate runtime boundary when the eight scope, six arity, and one collection-contract failures are considered. The remaining executable failures are dominated by 33 assertion failures, plus recursion and index errors.
+
+The interface reward creates a useful structural distinction, but its mean contribution was only 0.0109 out of the total mean reward 0.1481. The test-progress component averaged 0.0348, so most reward mass still came from format, syntax, and execution components for candidates that did not solve the task. This can create varied groups without reliably selecting correct algorithms.
+
+The explicit callback solved the prior W&B visibility problem locally by logging callback-added scalars after the built-in integration. Removing explicit step arguments also avoided the prior trainer-step versus token-step conflict. Remote verification remains blocked by DNS, not by a training or logging exception.
+
+## Underlying root-cause synthesis
+
+One upstream mechanism explains the 8 scope failures and 6 arity failures: the model produces code-shaped answers without consistently honoring the exact tested interface. The interface validator targets this mechanism, and both counts are lower than baseline, but the validator’s average valid fraction of 21.88 percent shows the mechanism remains active.
+
+A second mechanism explains the 33 assertion failures, the collection-contract failure, the recursion failure, and the index failure: executable code is being produced without sufficiently reliable task-specific algorithm and edge-case reasoning. This branch accounts for 36 of 53 final failures. It is not explained by formatting or interface validation.
+
+A third mechanism explains the 2 format failures: residual output-contract noncompliance or truncation before code extraction. It is upstream of all code rewards and remains under-observed because raw malformed continuations are discarded.
+
+Evidence for these mechanisms is the mutually exclusive exception distribution and the component curves. The main alternative is evaluation noise from one greedy completion per task, which could explain some count movement but not the repeated concrete exception classes. The smallest distinguishing experiment is a repeated matched evaluation with raw completion preservation and expected-versus-actual assertion traces.
+
+## Proposed solutions and confirmation tests
+
+1. Keep the explicit W&B callback logging and fix remote verification. The affected files are train.py and the W&B environment. Confirm that a network-enabled run displays all 37 rows for reward/interface_valid_fraction and all 20 component series without ordering warnings.
+2. Preserve raw malformed completions and assertion expected-versus-actual values in evaluate.py. Confirm that every format and assertion failure is auditable and that the 33 assertion failures split into actionable subpatterns.
+3. Keep exact interface validation and add separate exact-name, arity, and unresolved-helper diagnostics. Confirm that interface-valid fraction rises above 21.88 percent and scope plus arity failures fall on a matched evaluation.
+4. Use the component curves as gates for another training comparison. Require test-progress mean to rise with pass@1, rather than accepting mixed-group fraction or total reward alone. The risk is selecting a reward-hacking checkpoint, so checkpoint selection must remain pass@1.
+5. Add targeted training or supervised warm-start data for the dominant assertion subpatterns after traces identify them. Confirm that the target subtype falls without increasing format or interface failures.
+
+## Limitations
+
+The remote W&B API was unavailable because api.wandb.ai DNS resolution failed. The local W&B run artifact proves that the payload was emitted, but not that the remote dashboard rendered it.
+
+The evaluator stores stderr but not raw malformed completions or expected-versus-actual assertion values. The 33 assertion failures therefore cannot yet be split into exact semantic subpatterns.
+
+Pass@1 uses one greedy completion per task and is noisy. The one-pass improvement from 21 to 22 is smaller than the checkpoint variation observed in the previous run.
+
+The interface reward is a training signal, while evaluation categories are inferred from runtime stderr. The lower scope and arity counts are consistent with improvement, but the logging change itself is not a causal intervention on model behavior.

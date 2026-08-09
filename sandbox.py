@@ -16,6 +16,7 @@ from pathlib import Path
 OUTPUT_FORMAT_ERROR = "Did not follow proper output formatting"
 # These markers identify reasoning tags that should not reach the Python parser.
 THINK_TAGS = ["<think>", "</think>"]
+INTERFACE_IGNORED_NAMES = {"bool", "float", "int", "len", "list", "print", "set", "sorted", "str", "sum", "tuple"}
 
 
 @dataclass
@@ -104,22 +105,63 @@ def execute_test_cases(code: str, test_cases: list[str], timeout_seconds: float 
     return passed, len(test_cases), executed
 
 
+def expected_interface(tests: str) -> tuple[str | None, set[int]]:
+    """Infer the tested function name and positional arities from the assertions."""
+    # Select the outer task call and ignore common helpers used around it.
+    try:
+        tree = ast.parse(tests)
+    except SyntaxError:
+        return None, set()
+    calls = [node for node in ast.walk(tree) if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id not in INTERFACE_IGNORED_NAMES]
+    if not calls:
+        return None, set()
+    name = calls[0].func.id
+    arities = {len(node.args) for node in calls if node.func.id == name}
+    return name, arities
+
+
+def validate_interface(code: str, tests: str) -> bool:
+    """Check that the candidate exposes the exact function tested by MBPP."""
+    # Compare the top-level definition with the calls found in the test assertions.
+    expected_name, expected_arities = expected_interface(tests)
+    if expected_name is None or len(expected_arities) != 1:
+        return False
+    try:
+        tree = ast.parse(code)
+    except SyntaxError:
+        return False
+    definitions = [node for node in tree.body if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name == expected_name]
+    if len(definitions) != 1:
+        return False
+    function = definitions[0]
+    positional_count = len(function.args.posonlyargs) + len(function.args.args)
+    return not function.args.vararg and not function.args.kwarg and positional_count == next(iter(expected_arities))
+
+
 def score_completion(completion: str, tests: str, timeout_seconds: float = 3.0) -> tuple[float, dict[str, object]]:
     """Return the dense reward and diagnostics for one completion."""
+    # Keep every reward component explicit so training dashboards can show what produced the total.
+    components = {"format": 0.0, "syntax": 0.0, "interface": 0.0, "execution": 0.0, "tests": 0.0}
     try:
         code = extract_code(completion)
     except ValueError:
-        return 0.0, {"status": "format_error", "passed_tests": 0, "total_tests": 0}
+        return 0.0, {"status": "format_error", "passed_tests": 0, "total_tests": 0, "interface_valid": False, "reward_components": components}
+    components["format"] = 0.05
     try:
         compile(code, "<candidate>", "exec")
     except SyntaxError:
-        return 0.05, {"status": "syntax_error", "passed_tests": 0, "total_tests": 0}
+        return 0.05, {"status": "syntax_error", "passed_tests": 0, "total_tests": 0, "interface_valid": False, "reward_components": components}
+    components["syntax"] = 0.10
+    interface_valid = validate_interface(code, tests)
+    components["interface"] = 0.05 if interface_valid else 0.0
     test_cases = split_test_cases(tests)
     passed, total, executed = execute_test_cases(code, test_cases, timeout_seconds)
+    components["execution"] = 0.05 if executed else 0.0
     fraction = passed / total if total else 0.0
-    reward = 0.05 + 0.10 + (0.05 if executed else 0.0) + 0.80 * fraction
+    components["tests"] = 0.75 * fraction
+    reward = sum(components.values())
     status = "passed" if passed == total else "partial" if passed else "failed"
-    return reward, {"status": status, "passed_tests": passed, "total_tests": total}
+    return reward, {"status": status, "passed_tests": passed, "total_tests": total, "interface_valid": interface_valid, "reward_components": components}
 
 
 def reward_for_completion(completion: str, tests: str, timeout_seconds: float = 3.0) -> float:
@@ -145,19 +187,31 @@ def summarize_reward_groups(rewards: list[float], details: list[dict[str, object
         mixed_groups += int(std > 0.0)
     total_tests = sum(int(detail["total_tests"]) for detail in details)
     passed_tests = sum(int(detail["passed_tests"]) for detail in details)
-    return {
+    diagnostics = {
         "reward/group_count": float(len(groups)),
         "reward/flat_group_fraction": flat_groups / len(groups),
         "reward/mixed_group_fraction": mixed_groups / len(groups),
         "reward/mean_group_std": sum(group_stds) / len(group_stds),
         "reward/all_zero_fraction": sum(reward == 0.0 for reward in rewards) / len(rewards),
         "reward/format_error_fraction": sum(detail["status"] == "format_error" for detail in details) / len(details),
+        "reward/interface_valid_fraction": sum(bool(detail.get("interface_valid", False)) for detail in details) / len(details),
+        "reward/interface_error_fraction": sum(not bool(detail.get("interface_valid", False)) for detail in details) / len(details),
         "reward/partial_test_fraction": passed_tests / total_tests if total_tests else 0.0,
         "reward/full_pass_fraction": sum(detail["status"] == "passed" for detail in details) / len(details),
         "reward/mean": sum(rewards) / len(rewards),
         "reward/min": min(rewards),
         "reward/max": max(rewards),
     }
+    # Emit mean, standard deviation, minimum, and maximum for every dense reward component.
+    for component in ("format", "syntax", "interface", "execution", "tests"):
+        values = [float(detail.get("reward_components", {}).get(component, 0.0)) for detail in details]
+        mean = sum(values) / len(values)
+        std = math.sqrt(sum((value - mean) ** 2 for value in values) / len(values))
+        diagnostics[f"reward/components/{component}/mean"] = mean
+        diagnostics[f"reward/components/{component}/std"] = std
+        diagnostics[f"reward/components/{component}/min"] = min(values)
+        diagnostics[f"reward/components/{component}/max"] = max(values)
+    return diagnostics
 
 
 def reward_function(completions: list[object], test_code: list[str], sandbox_timeout_seconds: float = 3.0, diagnostics: dict[str, float] | None = None, group_size: int = 4, **_: object) -> list[float]:
