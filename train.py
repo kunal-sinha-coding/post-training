@@ -117,10 +117,11 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
             return control
 
         def on_log(self, args: Any, state: Any, control: Any, logs: dict[str, Any] | None = None, **_: Any) -> Any:
-            """Write trainer metrics when the trainer emits them."""
+            """Write trainer metrics and the cumulative reward average."""
             if logs:
                 reward = logs.get("rewards/reward/mean")
                 if isinstance(reward, (int, float)):
+                    # Accumulate every emitted batch mean across the entire run, including epoch boundaries.
                     self.reward_sum += float(reward)
                     self.reward_count += 1
                     average_reward = self.reward_sum / self.reward_count

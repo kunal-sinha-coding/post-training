@@ -1,0 +1,3882 @@
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-08-08 15:33:06 PDT
+------------------------------------------------------------------------
+Evaluation: batched-final-left
+Task ID: 744
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to check if the given tuple has any none value or not.
+
+Tests:
+assert check_none((10, 4, 5, 6, None)) == True
+assert check_none((7, 8, 9, 11, 14)) == False
+assert check_none((1, 2, 3, 4, None)) == True
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def check_none(tuple):
+    for item in tuple:
+        if item is None:
+            return True
+    return False
+
+Code execution result:
+{
+  "status": "passed",
+  "passed": true,
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}
+
+Award:
+1.0
+
+
+Evaluation: batched-final-left
+Task ID: 965
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to convert camel case string to snake case string.
+
+Tests:
+assert camel_to_snake('PythonProgram')==('python_program')
+assert camel_to_snake('pythonLanguage')==('python_language')
+assert camel_to_snake('ProgrammingLanguage')==('programming_language')
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def camel_to_snake(s):
+    if not s:
+        return s
+    result = []
+    for char in s:
+        if char.isupper():
+            result.append(char)
+        elif char in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ':
+            result.append(char)
+        else:
+            if result and result[-1].isupper():
+                result.append('_')
+            result.append(char)
+    return ''.join(result)
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-2pkrpm6n/candidate.py\", line 16, in <module>\n    assert camel_to_snake('PythonProgram')==('python_program')\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 916
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to find if there is a triplet in the array whose sum is equal to a given value.
+
+Tests:
+assert find_triplet_array([1, 4, 45, 6, 10, 8], 6, 22) == (4, 10, 8)
+assert find_triplet_array([12, 3, 5, 2, 6, 9], 6, 24) == (12, 3, 9)
+assert find_triplet_array([1, 2, 3, 4, 5], 5, 9) == (1, 3, 5)
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def find_triplet_array(arr, target, k):
+    """
+    Find if there is a triplet in the array whose sum is equal to a given value.
+    
+    Args:
+        arr (list): List of integers
+        target (int): Target sum
+        k (int): Number of elements in the triplet (must be >= 3)
+    
+    Returns:
+        tuple: (first_element, second_element, third_element) if found, else None
+    """
+    if len(arr) < k:
+        return None
+    
+    # Sort the array to optimize the search
+    arr.sort()
+    
+    # Use two pointers to find the triplet
+    left, right = 0, len(arr) - 1
+    
+    while left < right:
+        current_sum = arr[left] + arr[right] + arr[left + 1]
+        
+        if current_sum == target:
+            return (arr[left], arr[right], arr[left + 1])
+        
+        elif current_sum < target:
+            left += 1
+        else:
+            right -= 1
+    
+    return None
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-hnqkff6i/candidate.py\", line 35, in <module>\n    assert find_triplet_array([1, 4, 45, 6, 10, 8], 6, 22) == (4, 10, 8)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 925
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a python function to calculate the product of all the numbers of a given tuple.
+
+Tests:
+assert mutiple_tuple((4, 3, 2, 2, -1, 18)) == -864
+assert mutiple_tuple((1,2,3)) == 6
+assert mutiple_tuple((-2,-4,-6)) == -48
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def example():
+    def mutiple_tuple(*args):
+        product = 1
+        for num in args:
+            product *= num
+        return product
+    return mutiple_tuple
+
+example()
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-y_8gxnc8/candidate.py\", line 11, in <module>\n    assert mutiple_tuple((4, 3, 2, 2, -1, 18)) == -864\n           ^^^^^^^^^^^^^\nNameError: name 'mutiple_tuple' is not defined\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 720
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to add a dictionary to the tuple.
+
+Tests:
+assert add_dict_to_tuple((4, 5, 6), {"MSAM" : 1, "is" : 2, "best" : 3} ) == (4, 5, 6, {'MSAM': 1, 'is': 2, 'best': 3})
+assert add_dict_to_tuple((1, 2, 3), {"UTS" : 2, "is" : 3, "Worst" : 4} ) == (1, 2, 3, {'UTS': 2, 'is': 3, 'Worst': 4})
+assert add_dict_to_tuple((8, 9, 10), {"POS" : 3, "is" : 4, "Okay" : 5} ) == (8, 9, 10, {'POS': 3, 'is': 4, 'Okay': 5})
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def add_dict_to_tuple(tuple_dict, new_dict):
+    return tuple(tuple_dict) + new_dict
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-iu70ei1d/candidate.py\", line 4, in <module>\n    assert add_dict_to_tuple((4, 5, 6), {\"MSAM\" : 1, \"is\" : 2, \"best\" : 3} ) == (4, 5, 6, {'MSAM': 1, 'is': 2, 'best': 3})\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/grpo-mbpp-iu70ei1d/candidate.py\", line 2, in add_dict_to_tuple\n    return tuple(tuple_dict) + new_dict\n           ~~~~~~~~~~~~~~~~~~^~~~~~~~~~\nTypeError: can only concatenate tuple (not \"dict\") to tuple\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 735
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a python function to toggle bits of the number except the first and the last bit.
+
+Tests:
+assert toggle_middle_bits(9) == 15
+assert toggle_middle_bits(10) == 12
+assert toggle_middle_bits(11) == 13
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def toggle_middle_bits(n):
+    # Convert to binary string
+    binary_str = bin(n)[2:]
+    
+    # Find the middle index (0-based)
+    middle_index = len(binary_str) // 2
+    
+    # Toggle bits at middle index
+    result = 0
+    for i in range(len(binary_str)):
+        if i == middle_index:
+            result |= (1 << (i + 1))
+        else:
+            result &= ~(1 << (i + 1))
+    
+    # Convert back to integer
+    return int(result, 2)
+
+print(toggle_middle_bits(9))  # 15
+print(toggle_middle_bits(10)) # 12
+print(toggle_middle_bits(11)) # 13
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-jmq1ihlm/candidate.py\", line 19, in <module>\n    print(toggle_middle_bits(9))  # 15\n          ^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/grpo-mbpp-jmq1ihlm/candidate.py\", line 17, in toggle_middle_bits\n    return int(result, 2)\n           ^^^^^^^^^^^^^^\nTypeError: int() can't convert non-string with explicit base\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 767
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a python function to count the number of pairs whose sum is equal to ‘sum’.
+
+Tests:
+assert get_Pairs_Count([1,1,1,1],4,2) == 6
+assert get_Pairs_Count([1,5,7,-1,5],5,6) == 3
+assert get_Pairs_Count([1,-2,3],3,1) == 1
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def get_Pairs_Count(nums, target_sum):
+    count = 0
+    for num in nums:
+        if num == target_sum:
+            count += 1
+        elif num + target_sum in nums:
+            count += 1
+    return count
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-ccy7bx40/candidate.py\", line 10, in <module>\n    assert get_Pairs_Count([1,1,1,1],4,2) == 6\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: get_Pairs_Count() takes 2 positional arguments but 3 were given\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 806
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to find maximum run of uppercase characters in the given string.
+
+Tests:
+assert max_run_uppercase('GeMKSForGERksISBESt') == 5
+assert max_run_uppercase('PrECIOusMOVemENTSYT') == 6
+assert max_run_uppercase('GooGLEFluTTER') == 4
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def max_run_uppercase(s):
+    if not s:
+        return 0
+    max_run = 0
+    current_run = 0
+    for char in s:
+        if char.isupper():
+            current_run += 1
+            max_run = max(max_run, current_run)
+        else:
+            current_run = 0
+    return max_run
+
+Code execution result:
+{
+  "status": "passed",
+  "passed": true,
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}
+
+Award:
+1.0
+
+
+Evaluation: batched-final-left
+Task ID: 766
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to iterate over all pairs of consecutive items in a given list.
+
+Tests:
+assert pair_wise([1,1,2,3,3,4,4,5])==[(1, 1), (1, 2), (2, 3), (3, 3), (3, 4), (4, 4), (4, 5)]
+assert pair_wise([1,5,7,9,10])==[(1, 5), (5, 7), (7, 9), (9, 10)]
+assert pair_wise([1,2,3,4,5,6,7,8,9,10])==[(1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 7), (7, 8), (8, 9), (9, 10)]
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def pair_wise(lst):
+    result = []
+    for i in range(len(lst) - 1):
+        result.append((lst[i], lst[i + 1]))
+    return result
+
+Code execution result:
+{
+  "status": "passed",
+  "passed": true,
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}
+
+Award:
+1.0
+
+
+Evaluation: batched-final-left
+Task ID: 651
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to check if one tuple is a subset of another tuple.
+
+Tests:
+assert check_subset((10, 4, 5, 6), (5, 10)) == True
+assert check_subset((1, 2, 3, 4), (5, 6)) == False
+assert check_subset((7, 8, 9, 10), (10, 8)) == True
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def check_subset(sub, sup):
+    if len(sub) != len(sup):
+        return False
+    for x in sub:
+        if x not in sup:
+            return False
+    return True
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-hjh3hfa5/candidate.py\", line 9, in <module>\n    assert check_subset((10, 4, 5, 6), (5, 10)) == True\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 659
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a python function to print duplicants from a list of integers.
+
+Tests:
+assert Repeat([10, 20, 30, 20, 20, 30, 40, 50, -20, 60, 60, -20, -20]) == [20, 30, -20, 60]
+assert Repeat([-1, 1, -1, 8]) == [-1]
+assert Repeat([1, 2, 3, 1, 2,]) == [1, 2]
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def example():
+    def repeat(lst):
+        result = []
+        for x in lst:
+            if x in result:
+                result.append(x)
+            else:
+                result.append(x)
+        return result
+    return repeat
+
+if __name__ == "__main__":
+    example()
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-eeopw0li/candidate.py\", line 15, in <module>\n    assert Repeat([10, 20, 30, 20, 20, 30, 40, 50, -20, 60, 60, -20, -20]) == [20, 30, -20, 60]\n           ^^^^^^\nNameError: name 'Repeat' is not defined\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 652
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to flatten the given tuple matrix into the tuple list with each tuple representing each column.
+
+Tests:
+assert matrix_to_list([[(4, 5), (7, 8)], [(10, 13), (18, 17)], [(0, 4), (10, 1)]]) == '[(4, 7, 10, 18, 0, 10), (5, 8, 13, 17, 4, 1)]'
+assert matrix_to_list([[(5, 6), (8, 9)], [(11, 14), (19, 18)], [(1, 5), (11, 2)]]) == '[(5, 8, 11, 19, 1, 11), (6, 9, 14, 18, 5, 2)]'
+assert matrix_to_list([[(6, 7), (9, 10)], [(12, 15), (20, 21)], [(23, 7), (15, 8)]]) == '[(6, 9, 12, 20, 23, 15), (7, 10, 15, 21, 7, 8)]'
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def matrix_to_list(matrix):
+    """
+    Flattens a tuple matrix into a tuple list where each tuple represents a column.
+    
+    Args:
+        matrix: A list of tuples, where each inner tuple represents a column.
+    
+    Returns:
+        A tuple list where each element is a tuple representing a column.
+    """
+    if not matrix:
+        return []
+    
+    # Flatten the matrix by concatenating all tuples
+    flattened = []
+    for col in matrix:
+        flattened.append(tuple(col))
+    
+    return flattened
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-wa97byky/candidate.py\", line 21, in <module>\n    assert matrix_to_list([[(4, 5), (7, 8)], [(10, 13), (18, 17)], [(0, 4), (10, 1)]]) == '[(4, 7, 10, 18, 0, 10), (5, 8, 13, 17, 4, 1)]'\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 883
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to find numbers divisible by m and n from a list of numbers using lambda function.
+
+Tests:
+assert div_of_nums([19, 65, 57, 39, 152, 639, 121, 44, 90, 190],2,4)==[ 152,44]
+assert div_of_nums([1, 2, 3, 5, 7, 8, 10],2,5)==[10]
+assert div_of_nums([10,15,14,13,18,12,20],10,5)==[10,20]
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def div_of_nums(nums, m, n):
+    return [x for x in nums if x % m == 0 and x % n == 0]
+
+Code execution result:
+{
+  "status": "passed",
+  "passed": true,
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}
+
+Award:
+1.0
+
+
+Evaluation: batched-final-left
+Task ID: 973
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a python function to left rotate the string.
+
+Tests:
+assert left_rotate("python",2) == "thonpy"   
+assert left_rotate("bigdata",3 ) == "databig" 
+assert left_rotate("hadoop",1 ) == "adooph" 
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def left_rotate(s, n):
+    return s[n:] + s[:n]
+
+Code execution result:
+{
+  "status": "passed",
+  "passed": true,
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}
+
+Award:
+1.0
+
+
+Evaluation: batched-final-left
+Task ID: 654
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to find the perimeter of a rectangle.
+
+Tests:
+assert rectangle_perimeter(10,20)==60
+assert rectangle_perimeter(10,5)==30
+assert rectangle_perimeter(4,2)==12
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def rectangle_perimeter(width, height):
+    return 2 * (width + height)
+
+Code execution result:
+{
+  "status": "passed",
+  "passed": true,
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}
+
+Award:
+1.0
+
+
+Evaluation: batched-final-left
+Task ID: 748
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to put spaces between words starting with capital letters in a given string by using regex.
+
+Tests:
+assert capital_words_spaces("Python") == 'Python'
+assert capital_words_spaces("PythonProgrammingExamples") == 'Python Programming Examples'
+assert capital_words_spaces("GetReadyToBeCodingFreak") == 'Get Ready To Be Coding Freak'
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+import re
+
+def capital_words_spaces(s):
+    # Pattern to match words starting with capital letters
+    # We use a negative lookahead to ensure the word is not followed by another word
+    pattern = r'^(?P<word>[\w]+(?!\w))'
+    # Split by the pattern and join with spaces
+    return re.split(pattern, s)
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-wy53vryi/candidate.py\", line 10, in <module>\n    assert capital_words_spaces(\"Python\") == 'Python'\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 733
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to find the index of the first occurrence of a given number in a sorted array.
+
+Tests:
+assert find_first_occurrence([2, 5, 5, 5, 6, 6, 8, 9, 9, 9], 5) == 1
+assert find_first_occurrence([2, 3, 5, 5, 6, 6, 8, 9, 9, 9], 5) == 2
+assert find_first_occurrence([2, 4, 1, 5, 6, 6, 8, 9, 9, 9], 6) == 4
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def find_first_occurrence(arr, target):
+    """
+    Find the index of the first occurrence of a given number in a sorted array.
+    
+    Parameters:
+    arr (list): A sorted list of integers.
+    target (int): The number to search for.
+    
+    Returns:
+    int: The index of the first occurrence of target, or -1 if not found.
+    """
+    left = 0
+    right = len(arr) - 1
+    while left < right:
+        mid = (left + right) // 2
+        if arr[mid] == target:
+            return mid
+        elif arr[mid] < target:
+            left = mid + 1
+        else:
+            right = mid
+    return -1
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-56jlul3x/candidate.py\", line 24, in <module>\n    assert find_first_occurrence([2, 5, 5, 5, 6, 6, 8, 9, 9, 9], 5) == 1\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 794
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function that matches a string that has an 'a' followed by anything, ending in 'b'.
+
+Tests:
+assert text_starta_endb("aabbbb")==('Found a match!')
+assert text_starta_endb("aabAbbbc")==('Not matched!')
+assert text_starta_endb("accddbbjjj")==('Not matched!')
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def example():
+    def text_starta_endb(text):
+        if not text.startswith("a"):
+            return None
+        if not text.endswith("b"):
+            return None
+        return "Found a match!"
+    
+    assert text_starta_endb("aabbbb") == ("Found a match!",)
+    assert text_starta_endb("aabAbbbc") == ("Not matched!",)
+    assert text_starta_endb("accddbbjjj") == ("Not matched!",)
+    
+    return None
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-40ovukn8/candidate.py\", line 15, in <module>\n    assert text_starta_endb(\"aabbbb\")==('Found a match!')\n           ^^^^^^^^^^^^^^^^\nNameError: name 'text_starta_endb' is not defined\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 905
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a python function to find the sum of squares of binomial co-efficients.
+
+Tests:
+assert sum_of_square(4) == 70
+assert sum_of_square(5) == 252
+assert sum_of_square(2) == 6
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def sum_of_square(n):
+    """
+    Calculate the sum of squares of binomial coefficients C(n, k) for k from 0 to n.
+    """
+    total = 0
+    for k in range(n + 1):
+        total += binomial(n, k)
+    return total
+
+def binomial(n, k):
+    """
+    Calculate the binomial coefficient C(n, k) = n! / (k! * (n-k)!)
+    """
+    if k < 0 or k > n:
+        return 0
+    if k == 0 or k == n:
+        return 1
+    if k == 1 or k == n - 1:
+        return 1
+    # Use the property C(n, k) = C(n, n-k)
+    return n * binomial(n - 1, k - 1)
+
+example()
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-pt1imx88/candidate.py\", line 23, in <module>\n    example()\n    ^^^^^^^\nNameError: name 'example' is not defined\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 609
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a python function to find minimum possible value for the given periodic function.
+
+Tests:
+assert floor_Min(10,20,30) == 15
+assert floor_Min(1,2,1) == 0
+assert floor_Min(11,10,9) == 9
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def floor_Min(a, b, c):
+    """
+    Find the minimum possible value for a periodic function.
+    Based on the test cases, this function returns the minimum value
+    that satisfies the periodicity constraints.
+    """
+    # The function returns the minimum value that satisfies the periodicity
+    # constraints. For the given test cases, it seems to be related to
+    # finding the smallest value that can be achieved under certain conditions.
+    return min(a, b, c)
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-wdn6dnhi/candidate.py\", line 12, in <module>\n    assert floor_Min(10,20,30) == 15\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 929
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to count repeated items of a tuple.
+
+Tests:
+assert count_tuplex((2, 4, 5, 6, 2, 3, 4, 4, 7),4)==3
+assert count_tuplex((2, 4, 5, 6, 2, 3, 4, 4, 7),2)==2
+assert count_tuplex((2, 4, 7, 7, 7, 3, 4, 4, 7),7)==4
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def count_tuplex(tuple_items, count):
+    """
+    Count the number of repeated items in a tuple.
+    
+    Parameters:
+    tuple_items (tuple): The input tuple to analyze.
+    count (int): The number of times each item should be counted.
+    
+    Returns:
+    int: The total count of repeated items.
+    """
+    count = 0
+    for item in tuple_items:
+        if item in tuple_items:
+            count += tuple_items.count(item)
+    return count
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-o9f28559/candidate.py\", line 18, in <module>\n    assert count_tuplex((2, 4, 5, 6, 2, 3, 4, 4, 7),4)==3\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 603
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to get a lucid number smaller than or equal to n.
+
+Tests:
+assert get_ludic(10) == [1, 2, 3, 5, 7]
+assert get_ludic(25) == [1, 2, 3, 5, 7, 11, 13, 17, 23, 25]
+assert get_ludic(45) == [1, 2, 3, 5, 7, 11, 13, 17, 23, 25, 29, 37, 41, 43]
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+
+
+Code execution result:
+{
+  "status": "format_error",
+  "passed": false,
+  "returncode": null,
+  "stdout": "",
+  "stderr": "Did not follow proper output formatting"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 851
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a python function to find sum of inverse of divisors.
+
+Tests:
+assert Sum_of_Inverse_Divisors(6,12) == 2
+assert Sum_of_Inverse_Divisors(9,13) == 1.44
+assert Sum_of_Inverse_Divisors(1,4) == 4
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def Sum_of_Inverse_Divisors(n, m):
+    """
+    Calculate the sum of the inverse of divisors of n.
+    The inverse of a divisor d is 1/d.
+    """
+    if n < 0:
+        raise ValueError("n must be non-negative")
+    if m < 0:
+        raise ValueError("m must be non-negative")
+    
+    if n == 0:
+        return 0
+    
+    total = 0
+    for i in range(1, n + 1):
+        if n % i == 0:
+            d = i
+            inv_d = 1.0 / d
+            total += inv_d
+    return total
+
+# Test cases
+assert Sum_of_Inverse_Divisors(6, 12) == 2
+assert Sum_of_Inverse_Divisors(9, 13) == 1.44
+assert Sum_of_Inverse_Divisors(1, 4) == 4
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-d76x3exb/candidate.py\", line 24, in <module>\n    assert Sum_of_Inverse_Divisors(9, 13) == 1.44\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 857
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to list out the list of given strings individually using map function.
+
+Tests:
+assert listify_list(['Red', 'Blue', 'Black', 'White', 'Pink'])==[['R', 'e', 'd'], ['B', 'l', 'u', 'e'], ['B', 'l', 'a', 'c', 'k'], ['W', 'h', 'i', 't', 'e'], ['P', 'i', 'n', 'k']]
+assert listify_list(['python'])==[['p', 'y', 't', 'h', 'o', 'n']]
+assert listify_list([' red ', 'green',' black', 'blue ',' orange', 'brown'])==[[' ', 'r', 'e', 'd', ' '], ['g', 'r', 'e', 'e', 'n'], [' ', 'b', 'l', 'a', 'c', 'k'], ['b', 'l', 'u', 'e', ' '], [' ', 'o', 'r', 'a', 'n', 'g', 'e'], ['b', 'r', 'o', 'w', 'n']]
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def listify_list(lst):
+    return [list(item) for item in lst]
+
+Code execution result:
+{
+  "status": "passed",
+  "passed": true,
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}
+
+Award:
+1.0
+
+
+Evaluation: batched-final-left
+Task ID: 697
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to find number of even elements in the given list using lambda function.
+
+Tests:
+assert count_even([1, 2, 3, 5, 7, 8, 9, 10])==3
+assert count_even([10,15,14,13,-18,12,-20])==5
+assert count_even([1, 2, 4, 8, 9])==3
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def count_even(nums):
+    return sum(1 for x in nums if x % 2 == 0)
+
+assert count_even([1, 2, 3, 5, 7, 8, 9, 10])==3
+assert count_even([10,15,14,13,-18,12,-20])==5
+assert count_even([1, 2, 4, 8, 9])==3
+
+Code execution result:
+{
+  "status": "passed",
+  "passed": true,
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}
+
+Award:
+1.0
+
+
+Evaluation: batched-final-left
+Task ID: 937
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to count the most common character in a given string.
+
+Tests:
+assert max_char("hello world")==('l')
+assert max_char("hello ")==('l')
+assert max_char("python pr")==('p')
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def max_char(s):
+    if not s:
+        return None
+    max_char = s[0]
+    for char in s[1:]:
+        if char != max_char:
+            max_char = char
+    return max_char
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-6pvhhxrs/candidate.py\", line 10, in <module>\n    assert max_char(\"hello world\")==('l')\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 662
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to sort a list in a dictionary.
+
+Tests:
+assert sorted_dict({'n1': [2, 3, 1], 'n2': [5, 1, 2], 'n3': [3, 2, 4]})=={'n1': [1, 2, 3], 'n2': [1, 2, 5], 'n3': [2, 3, 4]}
+assert sorted_dict({'n1': [25,37,41], 'n2': [41,54,63], 'n3': [29,38,93]})=={'n1': [25, 37, 41], 'n2': [41, 54, 63], 'n3': [29, 38, 93]}
+assert sorted_dict({'n1': [58,44,56], 'n2': [91,34,58], 'n3': [100,200,300]})=={'n1': [44, 56, 58], 'n2': [34, 58, 91], 'n3': [100, 200, 300]}
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def example():
+    def sorted_dict(d):
+        return {k: sorted(v) for k, v in d.items()}
+    return sorted_dict
+
+example()
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-ohsx6uql/candidate.py\", line 8, in <module>\n    assert sorted_dict({'n1': [2, 3, 1], 'n2': [5, 1, 2], 'n3': [3, 2, 4]})=={'n1': [1, 2, 3], 'n2': [1, 2, 5], 'n3': [2, 3, 4]}\n           ^^^^^^^^^^^\nNameError: name 'sorted_dict' is not defined\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 646
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a python function to count number of cubes of size k in a cube of size n.
+
+Tests:
+assert No_of_cubes(2,1) == 8
+assert No_of_cubes(5,2) == 64
+assert No_of_cubes(1,1) == 1
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def No_of_cubes(n, k):
+    if n < k:
+        return 0
+    count = 0
+    for i in range(1, n + 1):
+        if i * i * i <= n:
+            count += 1
+    return count
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-ofh8z6cj/candidate.py\", line 10, in <module>\n    assert No_of_cubes(2,1) == 8\n           ^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 601
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to find the longest chain which can be formed from the given set of pairs.
+
+Tests:
+assert max_chain_length([Pair(5, 24), Pair(15, 25),Pair(27, 40), Pair(50, 60)], 4) == 3
+assert max_chain_length([Pair(1, 2), Pair(3, 4),Pair(5, 6), Pair(7, 8)], 4) == 4
+assert max_chain_length([Pair(19, 10), Pair(11, 12),Pair(13, 14), Pair(15, 16), Pair(31, 54)], 5) == 5
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def max_chain_length(pairs):
+    """
+    Find the length of the longest chain of pairs that can be formed.
+    A chain is a sequence of pairs where each pair is a successor of the previous one.
+    """
+    if not pairs:
+        return 0
+    
+    # Sort pairs by the first element of the pair
+    sorted_pairs = sorted(pairs, key=lambda p: p[0])
+    
+    # Initialize the longest chain length
+    max_chain_length = 1
+    
+    # Iterate through the sorted pairs
+    for i in range(1, len(sorted_pairs)):
+        current_pair = sorted_pairs[i]
+        prev_pair = sorted_pairs[i - 1]
+        
+        # If the first element of the current pair is greater than the first element of the previous pair,
+        # we can extend the chain. Otherwise, we can't.
+        if current_pair[0] > prev_pair[0]:
+            max_chain_length += 1
+        else:
+            # If the first element is smaller or equal, we can't extend the chain
+            # because we need strictly increasing first elements.
+            break
+    
+    return max_chain_length
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-_c90zdjs/candidate.py\", line 31, in <module>\n    assert max_chain_length([Pair(5, 24), Pair(15, 25),Pair(27, 40), Pair(50, 60)], 4) == 3\n                             ^^^^\nNameError: name 'Pair' is not defined\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 908
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to find the fixed point in the given array.
+
+Tests:
+assert find_fixed_point([-10, -1, 0, 3, 10, 11, 30, 50, 100],9) == 3
+assert find_fixed_point([1, 2, 3, 4, 5, 6, 7, 8],8) == -1
+assert find_fixed_point([0, 2, 5, 8, 17],5) == 0
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def find_fixed_point(arr, n):
+    """
+    Find the fixed point in the given array.
+    A fixed point is an element that equals its index.
+    
+    Parameters:
+    arr (list): The input array.
+    n (int): The length of the array.
+    
+    Returns:
+    int: The fixed point index.
+    """
+    for i in range(n):
+        if arr[i] == i:
+            return i
+    return -1
+
+# Test cases
+assert find_fixed_point([-10, -1, 0, 3, 10, 11, 30, 50, 100], 9) == 3
+assert find_fixed_point([1, 2, 3, 4, 5, 6, 7, 8], 8) == -1
+assert find_fixed_point([0, 2, 5, 8, 17], 5) == 0
+
+Code execution result:
+{
+  "status": "passed",
+  "passed": true,
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}
+
+Award:
+1.0
+
+
+Evaluation: batched-final-left
+Task ID: 829
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to find out the second most repeated (or frequent) string in the given sequence.
+
+Tests:
+assert second_frequent(['aaa','bbb','ccc','bbb','aaa','aaa']) == 'bbb'
+assert second_frequent(['abc','bcd','abc','bcd','bcd','bcd']) == 'abc'
+assert second_frequent(['cdma','gsm','hspa','gsm','cdma','cdma']) == 'gsm'
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def second_frequent(seq):
+    from collections import Counter
+    counts = Counter(seq)
+    freqs = sorted(counts.values(), reverse=True)
+    if len(freqs) < 2:
+        return seq[0]
+    return freqs[1]
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-g7of7ak0/candidate.py\", line 9, in <module>\n    assert second_frequent(['aaa','bbb','ccc','bbb','aaa','aaa']) == 'bbb'\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 772
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to remove all the words with k length in the given string.
+
+Tests:
+assert remove_length('The person is most value tet', 3) == 'person is most value'
+assert remove_length('If you told me about this ok', 4) == 'If you me about ok'
+assert remove_length('Forces of darkeness is come into the play', 4) == 'Forces of darkeness is the'
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def remove_length(s, k):
+    result = []
+    for char in s:
+        if len(char) == k:
+            result.append(char)
+    return ''.join(result)
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-21s_vgk0/candidate.py\", line 8, in <module>\n    assert remove_length('The person is most value tet', 3) == 'person is most value'\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 835
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a python function to find the slope of a line.
+
+Tests:
+assert slope(4,2,2,5) == -1.5
+assert slope(2,4,4,6) == 1
+assert slope(1,2,4,2) == 0
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def slope(x1, y1, x2, y2):
+    return (y2 - y1) / (x2 - x1)
+
+Code execution result:
+{
+  "status": "passed",
+  "passed": true,
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}
+
+Award:
+1.0
+
+
+Evaluation: batched-final-left
+Task ID: 953
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a python function to find the minimun number of subsets with distinct elements.
+
+Tests:
+assert subset([1, 2, 3, 4],4) == 1
+assert subset([5, 6, 9, 3, 4, 3, 4],7) == 2
+assert subset([1, 2, 3 ],3) == 1
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def subset(subset, k):
+    n = len(subset)
+    if k == 0:
+        return 1
+    if k == 1:
+        return 1 if subset[0] != subset[1] else 0
+    if k == 2:
+        return 1 if subset[0] != subset[1] and subset[1] != subset[2] else 0
+    if k == 3:
+        return 1 if subset[0] != subset[1] and subset[1] != subset[2] and subset[2] != subset[3] else 0
+    if k == 4:
+        return 1 if subset[0] != subset[1] and subset[1] != subset[2] and subset[2] != subset[3] and subset[3] != subset[4] else 0
+    return 0
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-ota81zns/candidate.py\", line 15, in <module>\n    assert subset([1, 2, 3, 4],4) == 1\n           ^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/grpo-mbpp-ota81zns/candidate.py\", line 12, in subset\n    return 1 if subset[0] != subset[1] and subset[1] != subset[2] and subset[2] != subset[3] and subset[3] != subset[4] else 0\n                                                                                                              ~~~~~~^^^\nIndexError: list index out of range\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 890
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a python function to find the index of an extra element present in one sorted array.
+
+Tests:
+assert find_Extra([1,2,3,4],[1,2,3],3) == 3
+assert find_Extra([2,4,6,8,10],[2,4,6,8],4) == 4
+assert find_Extra([1,3,5,7,9,11],[1,3,5,7,9],5) == 5
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def find_Extra(sorted_array, extra_index):
+    """
+    Find the index of an extra element in a sorted array.
+    
+    Parameters:
+    sorted_array (list): A sorted list of integers.
+    extra_index (int): The index of the extra element to find.
+    
+    Returns:
+    int: The index of the extra element, or -1 if not found.
+    """
+    # Check if the extra index is within the bounds of the array
+    if extra_index < 0 or extra_index >= len(sorted_array):
+        return -1
+    
+    # Check if the extra element is already present in the array
+    for i in range(len(sorted_array)):
+        if sorted_array[i] == sorted_array[extra_index]:
+            return i
+    
+    return -1
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-0m05cbg6/candidate.py\", line 23, in <module>\n    assert find_Extra([1,2,3,4],[1,2,3],3) == 3\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: find_Extra() takes 2 positional arguments but 3 were given\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 839
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to sort the tuples alphabetically by the first item of each tuple.
+
+Tests:
+assert sort_tuple([("Amana", 28), ("Zenat", 30), ("Abhishek", 29),("Nikhil", 21), ("B", "C")]) == [('Abhishek', 29), ('Amana', 28), ('B', 'C'), ('Nikhil', 21), ('Zenat', 30)]
+assert sort_tuple([("aaaa", 28), ("aa", 30), ("bab", 29), ("bb", 21), ("csa", "C")]) == [('aa', 30), ('aaaa', 28), ('bab', 29), ('bb', 21), ('csa', 'C')]
+assert sort_tuple([("Sarala", 28), ("Ayesha", 30), ("Suman", 29),("Sai", 21), ("G", "H")]) == [('Ayesha', 30), ('G', 'H'), ('Sai', 21), ('Sarala', 28), ('Suman', 29)]
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def sort_tuple(tuples):
+    return sorted(tuples, key=lambda x: x[0])
+
+Code execution result:
+{
+  "status": "passed",
+  "passed": true,
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}
+
+Award:
+1.0
+
+
+Evaluation: batched-final-left
+Task ID: 716
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to find the perimeter of a rombus.
+
+Tests:
+assert rombus_perimeter(10)==40
+assert rombus_perimeter(5)==20
+assert rombus_perimeter(4)==16
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def rombus_perimeter(n):
+    """
+    Calculate the perimeter of a rombus (a polygon with 4 sides and 4 vertices).
+    The sides are equal in length, and the diagonals are equal in length.
+    The perimeter is 4 * side_length.
+    """
+    return 4 * n
+
+Code execution result:
+{
+  "status": "passed",
+  "passed": true,
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}
+
+Award:
+1.0
+
+
+Evaluation: batched-final-left
+Task ID: 903
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a python function to count the total unset bits from 1 to n.
+
+Tests:
+assert count_Unset_Bits(2) == 1
+assert count_Unset_Bits(5) == 4
+assert count_Unset_Bits(14) == 17
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def count_Unset_Bits(n):
+    count = 0
+    for i in range(1, n + 1):
+        count += bin(i).count('1')
+    return count
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-but86a8p/candidate.py\", line 7, in <module>\n    assert count_Unset_Bits(2) == 1\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 866
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to check whether the given month name contains 31 days or not.
+
+Tests:
+assert check_monthnumb("February")==False
+assert check_monthnumb("January")==True
+assert check_monthnumb("March")==True
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def check_monthnumb(month_name):
+    months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    if month_name in months:
+        return True
+    return False
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-9d7kw1ag/candidate.py\", line 7, in <module>\n    assert check_monthnumb(\"February\")==False\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 924
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to find maximum of two numbers.
+
+Tests:
+assert max_of_two(10,20)==20
+assert max_of_two(19,15)==19
+assert max_of_two(-10,-20)==-10
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def max_of_two(a, b):
+    return max(a, b)
+
+Code execution result:
+{
+  "status": "passed",
+  "passed": true,
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}
+
+Award:
+1.0
+
+
+Evaluation: batched-final-left
+Task ID: 741
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a python function to check whether all the characters are same or not.
+
+Tests:
+assert all_Characters_Same("python") == False
+assert all_Characters_Same("aaa") == True
+assert all_Characters_Same("data") == False
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def all_Characters_Same(s):
+    return all(c == s[0] for c in s)
+
+assert all_Characters_Same("python") == False
+assert all_Characters_Same("aaa") == True
+assert all_Characters_Same("data") == False
+
+Code execution result:
+{
+  "status": "passed",
+  "passed": true,
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}
+
+Award:
+1.0
+
+
+Evaluation: batched-final-left
+Task ID: 889
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to reverse each list in a given list of lists.
+
+Tests:
+assert reverse_list_lists([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]])==[[4, 3, 2, 1], [8, 7, 6, 5], [12, 11, 10, 9], [16, 15, 14, 13]]
+assert reverse_list_lists([[1,2],[2,3],[3,4]])==[[2,1],[3,2],[4,3]]
+assert reverse_list_lists([[10,20],[30,40]])==[[20,10],[40,30]]
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def reverse_list_lists(lst):
+    result = []
+    for sublist in lst:
+        result.append(list(reversed(sublist)))
+    return result
+
+Code execution result:
+{
+  "status": "passed",
+  "passed": true,
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}
+
+Award:
+1.0
+
+
+Evaluation: batched-final-left
+Task ID: 647
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to split a string at uppercase letters.
+
+Tests:
+assert split_upperstring("PythonProgramLanguage")==['Python','Program','Language']
+assert split_upperstring("PythonProgram")==['Python','Program']
+assert split_upperstring("ProgrammingLanguage")==['Programming','Language']
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def split_upperstring(s):
+    return [char for char in s if char.isupper()]
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-bz9edq7a/candidate.py\", line 4, in <module>\n    assert split_upperstring(\"PythonProgramLanguage\")==['Python','Program','Language']\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 804
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a python function to check whether the product of numbers is even or not.
+
+Tests:
+assert is_Product_Even([1,2,3],3) == True
+assert is_Product_Even([1,2,1,4],4) == True
+assert is_Product_Even([1,1],2) == False
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def is_Product_Even(numbers, n):
+    """
+    Check if the product of numbers is even.
+    
+    Parameters:
+    numbers (list): List of numbers to multiply
+    n (int): The number of elements in the list
+    
+    Returns:
+    bool: True if the product is even, False otherwise
+    """
+    product = 1
+    for num in numbers:
+        product *= num
+    return product % 2 == 0
+
+Code execution result:
+{
+  "status": "passed",
+  "passed": true,
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}
+
+Award:
+1.0
+
+
+Evaluation: batched-final-left
+Task ID: 665
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a python function to shift first element to the end of given list.
+
+Tests:
+assert move_last([1,2,3,4]) == [2,3,4,1]
+assert move_last([2,3,4,1,5,0]) == [3,4,1,5,0,2]
+assert move_last([5,4,3,2,1]) == [4,3,2,1,5]
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def move_last(lst):
+    lst = lst.copy()
+    lst.pop(0)
+    lst.insert(0, lst[-1])
+    return lst
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-v5629fqy/candidate.py\", line 7, in <module>\n    assert move_last([1,2,3,4]) == [2,3,4,1]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 832
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to extract the maximum numeric value from a string by using regex.
+
+Tests:
+assert extract_max('100klh564abc365bg') == 564
+assert extract_max('hello300how546mer231') == 546
+assert extract_max('its233beenalong343journey234') == 343
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+import re
+
+def extract_max(s):
+    # Pattern to match digits only
+    pattern = r'\d+'
+    # Find all matches and return the maximum one
+    matches = re.findall(pattern, s)
+    if matches:
+        return max(matches)
+    return None
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-j1f2vnpo/candidate.py\", line 12, in <module>\n    assert extract_max('100klh564abc365bg') == 564\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 681
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a python function to find the smallest prime divisor of a number.
+
+Tests:
+assert smallest_Divisor(10) == 2
+assert smallest_Divisor(25) == 5
+assert smallest_Divisor(31) == 31
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def smallest_Divisor(n):
+    if n < 2:
+        return 1
+    if n == 2:
+        return 2
+    if n % 2 == 0:
+        return 2
+    for i in range(3, int(n**0.5) + 1, 2):
+        if n % i == 0:
+            return i
+    return n
+
+Code execution result:
+{
+  "status": "passed",
+  "passed": true,
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}
+
+Award:
+1.0
+
+
+Evaluation: batched-final-left
+Task ID: 856
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a python function to find minimum adjacent swaps required to sort binary array.
+
+Tests:
+assert find_Min_Swaps([1,0,1,0],4) == 3
+assert find_Min_Swaps([0,1,0],3) == 1
+assert find_Min_Swaps([0,0,1,1,0],5) == 2
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def find_Min_Swaps(arr):
+    """
+    Find the minimum number of adjacent swaps required to sort a binary array.
+    
+    This is equivalent to finding the number of inversions in the array.
+    """
+    n = len(arr)
+    inversions = 0
+    for i in range(n):
+        for j in range(i + 1, n):
+            if arr[i] > arr[j]:
+                inversions += 1
+    return inversions
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-uvgpr3ss/candidate.py\", line 15, in <module>\n    assert find_Min_Swaps([1,0,1,0],4) == 3\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: find_Min_Swaps() takes 1 positional argument but 2 were given\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 847
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a python function to copy a list from a singleton tuple.
+
+Tests:
+assert lcopy([1, 2, 3]) == [1, 2, 3]
+assert lcopy([4, 8, 2, 10, 15, 18]) == [4, 8, 2, 10, 15, 18]
+assert lcopy([4, 5, 6]) == [4, 5, 6]
+
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def lcopy(lst):
+    return lst[:]
+
+Code execution result:
+{
+  "status": "passed",
+  "passed": true,
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}
+
+Award:
+1.0
+
+
+Evaluation: batched-final-left
+Task ID: 701
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to find the equilibrium index of the given array.
+
+Tests:
+assert equilibrium_index([1, 2, 3, 4, 1, 2, 3]) == 3
+assert equilibrium_index([-7, 1, 5, 2, -4, 3, 0]) == 3
+assert equilibrium_index([1, 2, 3]) == -1
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def equilibrium_index(arr):
+    """
+    Find the equilibrium index of the given array.
+    
+    An equilibrium index is an index i such that:
+    - arr[i] == arr[i + 1]
+    - arr[i] == arr[i - 1]
+    - arr[i] == arr[i + 2]
+    - arr[i] == arr[i - 2]
+    
+    Returns the index i if it exists, otherwise -1.
+    """
+    n = len(arr)
+    for i in range(n - 2):
+        if arr[i] == arr[i + 1] and arr[i] == arr[i - 1] and arr[i] == arr[i + 2] and arr[i] == arr[i - 2]:
+            return i
+    return -1
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-e4ltf9k2/candidate.py\", line 19, in <module>\n    assert equilibrium_index([1, 2, 3, 4, 1, 2, 3]) == 3\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 853
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a python function to find sum of odd factors of a number.
+
+Tests:
+assert sum_of_odd_Factors(30) == 24
+assert sum_of_odd_Factors(18) == 13
+assert sum_of_odd_Factors(2) == 1
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def sum_of_odd_factors(n):
+    """
+    Calculate the sum of all odd factors of a given number n.
+    
+    Parameters:
+    n (int): The number to find factors of
+    
+    Returns:
+    int: Sum of odd factors
+    """
+    if n <= 1:
+        return 0
+    
+    odd_sum = 0
+    odd_factors = []
+    
+    # Check for odd factors from 1 to sqrt(n)
+    for i in range(1, int(n**0.5) + 1):
+        if n % i == 0:
+            if i % 2 == 1:  # Check if i is odd
+                odd_sum += i
+                if i != n // i:
+                    odd_factors.append(i)
+    
+    # If n is a perfect square, add the root if it's odd
+    if n % 2 == 0:
+        if n % 2 == 1:
+            odd_sum += n // 2
+            odd_factors.append(n // 2)
+    
+    return odd_sum
+
+# Test cases
+assert sum_of_odd_factors(30) == 24
+assert sum_of_odd_factors(18) == 13
+assert sum_of_odd_factors(2) == 1
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-_184za_9/candidate.py\", line 34, in <module>\n    assert sum_of_odd_factors(30) == 24\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 870
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to calculate the sum of the positive numbers of a given list of numbers using lambda function.
+
+Tests:
+assert sum_positivenum([2, 4, -6, -9, 11, -12, 14, -5, 17])==48
+assert sum_positivenum([10,15,-14,13,-18,12,-20])==50
+assert sum_positivenum([19, -65, 57, 39, 152,-639, 121, 44, 90, -190])==522
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def sum_positivenum(numbers):
+    return sum(x for x in numbers if x > 0)
+
+Code execution result:
+{
+  "status": "passed",
+  "passed": true,
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}
+
+Award:
+1.0
+
+
+Evaluation: batched-final-left
+Task ID: 951
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to find the maximum of similar indices in two lists of tuples.
+
+Tests:
+assert max_similar_indices([(2, 4), (6, 7), (5, 1)],[(5, 4), (8, 10), (8, 14)]) == [(5, 4), (8, 10), (8, 14)]
+assert max_similar_indices([(3, 5), (7, 8), (6, 2)],[(6, 5), (9, 11), (9, 15)]) == [(6, 5), (9, 11), (9, 15)]
+assert max_similar_indices([(4, 6), (8, 9), (7, 3)],[(7, 6), (10, 12), (10, 16)]) == [(7, 6), (10, 12), (10, 16)]
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def max_similar_indices(list1, list2):
+    """
+    Find the maximum of similar indices in two lists of tuples.
+    
+    Two lists are considered "similar" if they have the same length and
+    the same number of elements. We compare the first element of each
+    tuple in list1 with the first element of the corresponding tuple in list2.
+    If they match, we return the list of indices where this match occurred.
+    If they don't match, we return an empty list.
+    
+    Parameters:
+    list1 (list of tuples): First list of tuples
+    list2 (list of tuples): Second list of tuples
+    
+    Returns:
+    list of tuples: Maximum similar indices
+    """
+    if len(list1) != len(list2):
+        return []
+    
+    max_indices = []
+    
+    for i in range(len(list1)):
+        if list1[i][0] == list2[i][0]:
+            max_indices.append((list1[i], i))
+    
+    return max_indices
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-rv9d7azh/candidate.py\", line 29, in <module>\n    assert max_similar_indices([(2, 4), (6, 7), (5, 1)],[(5, 4), (8, 10), (8, 14)]) == [(5, 4), (8, 10), (8, 14)]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 625
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a python function to interchange first and last elements in a given list.
+
+Tests:
+assert swap_List([1,2,3]) == [3,2,1]
+assert swap_List([1,2,3,4,4]) == [4,2,3,4,1]
+assert swap_List([4,5,6]) == [6,5,4]
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def swap_List(lst):
+    first = lst[0]
+    last = lst[-1]
+    lst[0], lst[-1] = last, first
+    return lst
+
+Code execution result:
+{
+  "status": "passed",
+  "passed": true,
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}
+
+Award:
+1.0
+
+
+Evaluation: batched-final-left
+Task ID: 745
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to find numbers within a given range where every number is divisible by every digit it contains.
+
+Tests:
+assert divisible_by_digits(1,22)==[1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 15, 22]
+assert divisible_by_digits(1,15)==[1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 15]
+assert divisible_by_digits(20,25)==[22, 24]
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def divisible_by_digits(n):
+    if n < 0:
+        return []
+    digits = [int(d) for d in str(n)]
+    result = []
+    for d in digits:
+        if d == 0:
+            continue
+        for i in range(1, 10):
+            if n % i == 0:
+                result.append(n)
+    return result
+
+print(divisible_by_digits(1, 22))
+print(divisible_by_digits(1, 15))
+print(divisible_by_digits(20, 25))
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-azhw6gk9/candidate.py\", line 14, in <module>\n    print(divisible_by_digits(1, 22))\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: divisible_by_digits() takes 1 positional argument but 2 were given\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 627
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a python function to find the smallest missing number from the given array.
+
+Tests:
+assert find_First_Missing([0,1,2,3],0,3) == 4
+assert find_First_Missing([0,1,2,6,9],0,4) == 3
+assert find_First_Missing([2,3,5,8,9],0,4) == 0
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def find_First_Missing(nums, start, end):
+    """
+    Find the smallest missing number from the given array.
+    
+    Args:
+        nums (list): The input array of numbers.
+        start (int): The starting index to consider.
+        end (int): The ending index to consider.
+    
+    Returns:
+        int: The smallest missing number from the range [start, end].
+    """
+    if not nums:
+        return start + 1
+    
+    # Count occurrences of each number in the range [start, end]
+    count = {}
+    for i in range(start, end + 1):
+        count[nums[i]] = count.get(nums[i], 0) + 1
+    
+    # Find the first number that appears exactly once
+    for num in count:
+        if count[num] == 1:
+            return num
+    
+    # If no number appears exactly once, return end + 1
+    return end + 1
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-2tnaovnw/candidate.py\", line 29, in <module>\n    assert find_First_Missing([0,1,2,3],0,3) == 4\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 943
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to combine two given sorted lists using heapq module.
+
+Tests:
+assert combine_lists([1, 3, 5, 7, 9, 11],[0, 2, 4, 6, 8, 10])==[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+assert combine_lists([1, 3, 5, 6, 8, 9], [2, 5, 7, 11])==[1,2,3,5,5,6,7,8,9,11]
+assert combine_lists([1,3,7],[2,4,6])==[1,2,3,4,6,7]
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+import heapq
+
+def combine_lists(sorted_list1, sorted_list2):
+    """
+    Combines two sorted lists using the heapq module.
+    The function returns a new list containing all elements from both lists.
+    """
+    # Create a list of tuples to sort by the first element of the list
+    # This allows us to use heapq to combine them
+    combined = []
+    for i in range(len(sorted_list1)):
+        combined.append((sorted_list1[i], i))
+    for i in range(len(sorted_list2)):
+        combined.append((sorted_list2[i], i))
+    
+    # Sort the combined list by the first element of the list
+    heapq.heapify(combined)
+    
+    # Combine the elements
+    result = []
+    while True:
+        first, index = heapq.heappop(combined)
+        result.append(first)
+        if index < len(sorted_list1):
+            break
+        if index < len(sorted_list2):
+            break
+    
+    return result
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-ip37twcz/candidate.py\", line 31, in <module>\n    assert combine_lists([1, 3, 5, 7, 9, 11],[0, 2, 4, 6, 8, 10])==[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 840
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a python function to check whether the roots of a quadratic equation are numerically equal but opposite in sign or not.
+
+Tests:
+assert Check_Solution(2,0,-1) == "Yes"
+assert Check_Solution(1,-5,6) == "No"
+assert Check_Solution(2,0,2) == "Yes"
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+
+
+Code execution result:
+{
+  "status": "format_error",
+  "passed": false,
+  "returncode": null,
+  "stdout": "",
+  "stderr": "Did not follow proper output formatting"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 885
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a python function to check whether the two given strings are isomorphic to each other or not.
+
+Tests:
+assert is_Isomorphic("paper","title") == True
+assert is_Isomorphic("ab","ba") == True
+assert is_Isomorphic("ab","aa") == False
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def is_Isomorphic(s1, s2):
+    if len(s1) != len(s2):
+        return False
+    mapping = {}
+    for char in s1:
+        if char not in mapping:
+            mapping[char] = 0
+        mapping[char] += 1
+    for char in s2:
+        if char not in mapping:
+            mapping[char] = 0
+        mapping[char] += 1
+    return mapping == s1
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-d1hsm4ps/candidate.py\", line 15, in <module>\n    assert is_Isomorphic(\"paper\",\"title\") == True\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 865
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to print n-times a list using map function.
+
+Tests:
+assert ntimes_list([1, 2, 3, 4, 5, 6, 7],3)==[3, 6, 9, 12, 15, 18, 21]
+assert ntimes_list([1, 2, 3, 4, 5, 6, 7],4)==[4, 8, 12, 16, 20, 24, 28]
+assert ntimes_list([1, 2, 3, 4, 5, 6, 7],10)==[10, 20, 30, 40, 50, 60, 70]
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def ntimes_list(lst, n):
+    return [x * n for x in lst]
+
+times_list = [1, 2, 3, 4, 5, 6, 7]
+print(ntimes_list(times_list, 3))
+
+Code execution result:
+{
+  "status": "passed",
+  "passed": true,
+  "returncode": 0,
+  "stdout": "[3, 6, 9, 12, 15, 18, 21]\n",
+  "stderr": ""
+}
+
+Award:
+1.0
+
+
+Evaluation: batched-final-left
+Task ID: 818
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a python function to count lower case letters in a given string.
+
+Tests:
+assert lower_ctr('abc') == 3
+assert lower_ctr('string') == 6
+assert lower_ctr('Python') == 5
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def lower_ctr(s):
+    return sum(1 for c in s.lower() if c.islower())
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-5f2x8jps/candidate.py\", line 6, in <module>\n    assert lower_ctr('Python') == 5\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 850
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to check if a triangle of positive area is possible with the given angles.
+
+Tests:
+assert is_triangleexists(50,60,70)==True
+assert is_triangleexists(90,45,45)==True
+assert is_triangleexists(150,30,70)==False
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def is_triangleexists(a, b, c):
+    """
+    Check if a triangle with given angles is possible.
+    A triangle with angles A, B, C is possible if:
+    1. A + B + C = 180
+    2. A, B, C > 0
+    """
+    if a + b + c != 180:
+        return False
+    if a <= 0 or b <= 0 or c <= 0:
+        return False
+    return True
+
+Code execution result:
+{
+  "status": "passed",
+  "passed": true,
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}
+
+Award:
+1.0
+
+
+Evaluation: batched-final-left
+Task ID: 802
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a python function to count the number of rotations required to generate a sorted array.
+
+Tests:
+assert count_Rotation([3,2,1],3) == 1
+assert count_Rotation([4,5,1,2,3],5) == 2
+assert count_Rotation([7,8,9,1,2,3],6) == 3
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def count_Rotation(arr):
+    n = len(arr)
+    if n == 0:
+        return 0
+    if n == 1:
+        return 0
+    
+    # Count the number of inversions
+    inversions = 0
+    for i in range(n):
+        for j in range(i + 1, n):
+            if arr[i] > arr[j]:
+                inversions += 1
+    
+    # The number of rotations to sort is the number of inversions
+    return inversions
+
+if __name__ == "__main__":
+    print(count_Rotation([3, 2, 1]))
+    print(count_Rotation([4, 5, 1, 2, 3]))
+    print(count_Rotation([7, 8, 9, 1, 2, 3]))
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "3\n6\n9\n",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-v_9bcz0m/candidate.py\", line 23, in <module>\n    assert count_Rotation([3,2,1],3) == 1\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: count_Rotation() takes 1 positional argument but 2 were given\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 657
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a python function to find the first digit in factorial of a given number.
+
+Tests:
+assert first_Digit(5) == 1
+assert first_Digit(10) == 3
+assert first_Digit(7) == 5
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def first_Digit(n):
+    if n < 1:
+        return None
+    result = 1
+    while n > 0:
+        result *= n
+        n -= 1
+    return result % 10
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-mwe_7oxy/candidate.py\", line 10, in <module>\n    assert first_Digit(5) == 1\n           ^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 769
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a python function to get the difference between two lists.
+
+Tests:
+assert (Diff([10, 15, 20, 25, 30, 35, 40], [25, 40, 35])) == [10, 20, 30, 15]
+assert (Diff([1,2,3,4,5], [6,7,1])) == [2,3,4,5,6,7]
+assert (Diff([1,2,3], [6,7,1])) == [2,3,6,7]
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def Diff(lst1, lst2):
+    return [x for x in lst1 if x not in lst2]
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-mkzpq0ta/candidate.py\", line 4, in <module>\n    assert (Diff([10, 15, 20, 25, 30, 35, 40], [25, 40, 35])) == [10, 20, 30, 15]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 620
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to find the largest subset where each pair is divisible.
+
+Tests:
+assert largest_subset([ 1, 3, 6, 13, 17, 18 ], 6) == 4
+assert largest_subset([10, 5, 3, 15, 20], 5) == 3
+assert largest_subset([18, 1, 3, 6, 13, 17], 6) == 4
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def largest_subset(nums, k):
+    """
+    Find the size of the largest subset of nums such that every pair in the subset
+    is divisible.
+    
+    A subset is valid if for all distinct elements a, b in the subset,
+    a % b == 0.
+    """
+    if not nums:
+        return 0
+    
+    # Sort the array in descending order to prioritize larger elements
+    nums.sort(reverse=True)
+    
+    # Initialize the largest subset size
+    max_subset_size = 1
+    
+    # Iterate through the sorted array
+    for i in range(1, len(nums)):
+        # If the current element is divisible by the previous one,
+        # we can potentially extend the subset
+        if nums[i] % nums[i-1] == 0:
+            # Update the maximum subset size
+            max_subset_size = max(max_subset_size, i)
+    
+    return max_subset_size
+
+# Test cases
+assert largest_subset([1, 3, 6, 13, 17, 18], 6) == 4
+assert largest_subset([10, 5, 3, 15, 20], 5) == 3
+assert largest_subset([18, 1, 3, 6, 13, 17], 6) == 4
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-uhnakuyh/candidate.py\", line 29, in <module>\n    assert largest_subset([1, 3, 6, 13, 17, 18], 6) == 4\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 931
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to calculate the sum of series 1³+2³+3³+….+n³.
+
+Tests:
+assert sum_series(7)==784
+assert sum_series(5)==225
+assert sum_series(15)==14400
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def sum_series(n):
+    total = 0
+    for i in range(1, n + 1):
+        total += i ** 3
+    return total
+
+assert sum_series(7) == 784
+assert sum_series(5) == 225
+assert sum_series(15) == 14400
+
+Code execution result:
+{
+  "status": "passed",
+  "passed": true,
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}
+
+Award:
+1.0
+
+
+Evaluation: batched-final-left
+Task ID: 784
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to find the product of first even and odd number of a given list.
+
+Tests:
+assert mul_even_odd([1,3,5,7,4,1,6,8])==4
+assert mul_even_odd([1,2,3,4,5,6,7,8,9,10])==2
+assert mul_even_odd([1,5,7,9,10])==10
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def mul_even_odd(nums):
+    even_count = 0
+    odd_count = 0
+    for num in nums:
+        if num % 2 == 0:
+            even_count += 1
+        else:
+            odd_count += 1
+    return even_count * odd_count
+
+print(mul_even_odd([1,3,5,7,4,1,6,8]))
+print(mul_even_odd([1,2,3,4,5,6,7,8,9,10]))
+print(mul_even_odd([1,5,7,9,10]))
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "15\n25\n4\n",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-fr1foh6e/candidate.py\", line 15, in <module>\n    assert mul_even_odd([1,3,5,7,4,1,6,8])==4\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 678
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a python function to remove spaces from a given string.
+
+Tests:
+assert remove_spaces("a b c") == "abc"
+assert remove_spaces("1 2 3") == "123"
+assert remove_spaces(" b c") == "bc"
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def remove_spaces(s):
+    return s.replace(" ", "")
+
+Code execution result:
+{
+  "status": "passed",
+  "passed": true,
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}
+
+Award:
+1.0
+
+
+Evaluation: batched-final-left
+Task ID: 751
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to check if the given array represents min heap or not.
+
+Tests:
+assert check_min_heap([1, 2, 3, 4, 5, 6], 0) == True
+assert check_min_heap([2, 3, 4, 5, 10, 15], 0) == True
+assert check_min_heap([2, 10, 4, 5, 3, 15], 0) == False
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def check_min_heap(arr, k):
+    """
+    Check if the array represents a min heap.
+    
+    A min heap is a complete binary tree where the parent node is less than or equal to
+    its children.
+    
+    Args:
+        arr (list): List of integers representing the heap.
+        k (int): The index of the root node (0-based).
+    
+    Returns:
+        bool: True if the array represents a min heap, False otherwise.
+    """
+    if len(arr) < k + 1:
+        return False
+    
+    # Check if the root is smaller than all its children
+    for i in range(k + 1, len(arr)):
+        if arr[i] > arr[k]:
+            return False
+    
+    return True
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-0_4ne2ri/candidate.py\", line 25, in <module>\n    assert check_min_heap([1, 2, 3, 4, 5, 6], 0) == True\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 911
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to compute maximum product of three numbers of a given array of integers using heap queue algorithm.
+
+Tests:
+assert maximum_product( [12, 74, 9, 50, 61, 41])==225700
+assert maximum_product([25, 35, 22, 85, 14, 65, 75, 25, 58])==414375
+assert maximum_product([18, 14, 10, 9, 8, 7, 9, 3, 2, 4, 1])==2520
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def maximum_product(arr):
+    if not arr:
+        return 0
+    
+    # Sort the array in descending order
+    arr.sort(reverse=True)
+    
+    # Initialize max product
+    max_product = 0
+    
+    # Iterate through the sorted array
+    for i in range(len(arr) - 2):
+        # If we have at least 3 elements, we can form a product of 3
+        if i + 2 < len(arr):
+            # Calculate product of the last 3 elements
+            product = arr[i] * arr[i + 1] * arr[i + 2]
+            if product > max_product:
+                max_product = product
+    
+    return max_product
+
+Code execution result:
+{
+  "status": "passed",
+  "passed": true,
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}
+
+Award:
+1.0
+
+
+Evaluation: batched-final-left
+Task ID: 780
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to find the combinations of sums with tuples in the given tuple list.
+
+Tests:
+assert find_combinations([(2, 4), (6, 7), (5, 1), (6, 10)]) == [(8, 11), (7, 5), (8, 14), (11, 8), (12, 17), (11, 11)]
+assert find_combinations([(3, 5), (7, 8), (6, 2), (7, 11)]) == [(10, 13), (9, 7), (10, 16), (13, 10), (14, 19), (13, 13)]
+assert find_combinations([(4, 6), (8, 9), (7, 3), (8, 12)]) == [(12, 15), (11, 9), (12, 18), (15, 12), (16, 21), (15, 15)]
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def find_combinations(tup_list):
+    """
+    Find all combinations of sums from the given tuple list.
+    
+    Args:
+        tup_list (list of tuples): List of tuples representing numbers.
+        
+    Returns:
+        list of tuples: Combinations of sums.
+    """
+    if not tup_list:
+        return []
+    
+    # Sort the list to ensure consistent ordering
+    tup_list.sort()
+    
+    # Generate all possible sums
+    sums = []
+    for i in range(len(tup_list)):
+        for j in range(i + 1, len(tup_list)):
+            sums.append(tup_list[i] + tup_list[j])
+    
+    # Filter out duplicates (sums that are equal to another sum)
+    unique_sums = list(set(sums))
+    
+    return unique_sums
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-ac3p2i_4/candidate.py\", line 28, in <module>\n    assert find_combinations([(2, 4), (6, 7), (5, 1), (6, 10)]) == [(8, 11), (7, 5), (8, 14), (11, 8), (12, 17), (11, 11)]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 899
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a python function to check whether an array can be sorted or not by picking only the corner elements.
+
+Tests:
+assert check([3,2,1,2,3,4],6) == True
+assert check([2,1,4,5,1],5) == True
+assert check([1,2,2,1,2,3],6) == True
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def check(arr, n):
+    if n == 0:
+        return True
+    if n == 1:
+        return True
+    
+    # Corner elements are arr[0] and arr[n-1]
+    # If arr[0] > arr[n-1], then the array is sorted
+    if arr[0] > arr[n-1]:
+        return True
+    
+    # If arr[0] <= arr[n-1], we need to check if the array is sorted
+    # by comparing adjacent elements
+    for i in range(1, n - 1):
+        if arr[i] > arr[i + 1]:
+            return False
+    
+    return True
+
+print(check([3,2,1,2,3,4], 6))
+print(check([2,1,4,5,1], 5))
+print(check([1,2,2,1,2,3], 6))
+
+Code execution result:
+{
+  "status": "failed",
+  "passed": false,
+  "returncode": 1,
+  "stdout": "False\nTrue\nFalse\n",
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/grpo-mbpp-r1j1855z/candidate.py\", line 24, in <module>\n    assert check([3,2,1,2,3,4],6) == True\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
+
+Award:
+0.0
+
+
+Evaluation: batched-final-left
+Task ID: 805
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to find the list in a list of lists whose sum of elements is the highest.
+
+Tests:
+assert max_sum_list([[1,2,3], [4,5,6], [10,11,12], [7,8,9]])==[10, 11, 12] 
+assert max_sum_list([[3,2,1], [6,5,4], [12,11,10]])==[12,11,10] 
+assert max_sum_list([[2,3,1]])==[2,3,1] 
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def max_sum_list(lst):
+    if not lst:
+        return []
+    
+    max_sum = 0
+    max_list = []
+    
+    for sublist in lst:
+        current_sum = sum(sublist)
+        if current_sum > max_sum:
+            max_sum = current_sum
+            max_list = sublist
+    
+    return max_list
+
+Code execution result:
+{
+  "status": "passed",
+  "passed": true,
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}
+
+Award:
+1.0
+
+
+Evaluation: batched-final-left
+Task ID: 604
+
+Prompt:
+You are an expert Python programmer. Implement the function described below.
+
+Task:
+Write a function to reverse words in a given string.
+
+Tests:
+assert reverse_words("python program")==("program python")
+assert reverse_words("java language")==("language java")
+assert reverse_words("indian man")==("man indian")
+
+Your entire response must follow this exact format:
+
+Code: 
+```python
+def example():
+    pass
+```
+
+Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.
+Code: 
+
+Code output:
+def reverse_words(s):
+    words = s.split()
+    return ' '.join(reversed(words))
+
+Code execution result:
+{
+  "status": "passed",
+  "passed": true,
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}
+
+Award:
+1.0
+
+
