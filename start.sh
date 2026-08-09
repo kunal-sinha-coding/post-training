@@ -73,6 +73,12 @@ sync_env_to_bashrc
 # Install the Codex CLI using the official installer.
 curl -fsSL https://chatgpt.com/codex/install.sh | sh
 
+# Make the installed Codex binary available to this script immediately.
+CODEX_BIN_DIR="${HOME}/.local/bin"
+if [[ -x "${CODEX_BIN_DIR}/codex" && ":${PATH}:" != *":${CODEX_BIN_DIR}:"* ]]; then
+    export PATH="${CODEX_BIN_DIR}:${PATH}"
+fi
+
 # Register every skill from the shared skills repository with Codex.
 CODEX_HOME_DIR="${CODEX_HOME:-${HOME}/.codex}"
 export CODEX_HOME="$CODEX_HOME_DIR"
