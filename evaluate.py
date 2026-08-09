@@ -282,15 +282,21 @@ def evaluate_model(model: Any, tokenizer: Any, dataset: Any, config: dict[str, A
     """Generate completions from a model and evaluate them in the sandbox."""
     import torch
 
+    # Disable dropout during every evaluation and restore the caller's mode afterward.
+    was_training = bool(model.training)
+    model.eval()
     records = [dataset[index] for index in range(len(dataset))]
     completions: list[str] = []
     batch_size = max(1, int(config.get("evaluation_batch_size", 8)))
-    for start in range(0, len(records), batch_size):
-        batch_records = records[start : start + batch_size]
-        inputs = _prepare_generation_batch(tokenizer, [record["prompt"] for record in batch_records], int(config.get("max_prompt_length", 512)), torch)
-        inputs = {key: value.to(model.device) for key, value in inputs.items()}
-        with torch.no_grad():
-            output = model.generate(**inputs, max_new_tokens=int(config.get("max_completion_length", 512)), do_sample=False)
-        prompt_width = inputs["input_ids"].shape[-1]
-        completions.extend(tokenizer.decode(item[prompt_width:], skip_special_tokens=True) for item in output)
-    return evaluate_texts(completions, records, float(config.get("sandbox_timeout_seconds", 3)), config.get("log_path", "logs/logs.txt"), evaluation_name)
+    try:
+        for start in range(0, len(records), batch_size):
+            batch_records = records[start : start + batch_size]
+            inputs = _prepare_generation_batch(tokenizer, [record["prompt"] for record in batch_records], int(config.get("max_prompt_length", 512)), torch)
+            inputs = {key: value.to(model.device) for key, value in inputs.items()}
+            with torch.no_grad():
+                output = model.generate(**inputs, max_new_tokens=int(config.get("max_completion_length", 512)), do_sample=False)
+            prompt_width = inputs["input_ids"].shape[-1]
+            completions.extend(tokenizer.decode(item[prompt_width:], skip_special_tokens=True) for item in output)
+        return evaluate_texts(completions, records, float(config.get("sandbox_timeout_seconds", 3)), config.get("log_path", "logs/logs.txt"), evaluation_name)
+    finally:
+        model.train(was_training)

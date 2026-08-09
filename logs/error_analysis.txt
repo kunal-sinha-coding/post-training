@@ -215,3 +215,171 @@ Starting log position: New run in `logs/logs.txt`, with evaluation metadata in `
 1. Keep effective batch size 32 and the physical batch size 1 for the next training comparison.
 2. Increase checkpoint evaluation completions or repeat checkpoint evaluation before ranking when best-checkpoint selection is material.
 3. Cluster the 43 execution failures by exception and expected-output mismatch; format errors are only 4/75 and are no longer the primary bottleneck.
+
+------------------------------------------------------------------------
+ERROR ANALYSIS
+Timestamp: 2026-08-09 11:22:05 PDT
+------------------------------------------------------------------------
+Command: accelerate launch --num_processes 1 train.py --config configs/default.yaml
+Batch mode: Five training steps with physical batch size 1, effective batch size 32, and full 75-example evaluation.
+
+## Iteration comparison
+
+The immediately preceding run used the same five-step configuration before the evaluation-mode fix. Its baseline was 21/75, its checkpoint evaluation was 0/75 with 75 format errors, and its final evaluation was 21/75 with 53 execution failures and 1 format error.
+
+After adding explicit model.eval() behavior, this run produced 21/75 at baseline, 20/75 at checkpoint, and 20/75 at final.
+
+The checkpoint and final evaluations now match exactly: 20 passes, 51 execution failures, and 4 format failures. The previous checkpoint-only collapse to 0/75 format failures did not recur. This confirms that the model-mode mismatch was the cause of the checkpoint and final disagreement.
+
+Compared with the previous final result, corrected final pass rate decreased by one example from 21/75 to 20/75. That is a stochastic or training outcome difference, not a regression caused by the evaluation-mode fix. The fix changed evaluation consistency, not the model or training hyperparameters.
+
+## Run context and data coverage
+
+The run used configs/default.yaml with max_steps 5, max_eval_samples null, seed 42, gradient_accumulation_steps 32, num_generations 4, evaluation_batch_size 8, and run_intermediate_evals true.
+
+All five training steps completed. Checkpoint-5 was saved, evaluated, selected, reloaded, and evaluated again as final. Baseline, checkpoint, and final each covered all 75 test examples.
+
+The training reward means were 0.0, 0.03125, 0.0, 0.03125, and 0.0. The final training average reward was 0.0125. W&B run wild-smoke-14 was created at https://wandb.ai/kunal-personal/grpo-mbpp/runs/vizfiyn2. Detailed W&B history was not queried through an MCP diagnostic in this session.
+
+## Error-pattern distribution
+
+Primary categories are mutually exclusive and use 75 evaluated examples as the denominator.
+
+| Primary pattern | Count | Percentage | Definition |
+|---|---:|---:|---|
+| Wrong algorithm or task semantics | 26 | 34.67% | Executable code implemented the wrong computation. |
+| Undefined function or wrong execution scope | 11 | 14.67% | The required function was unavailable at module scope. |
+| Wrong function signature | 7 | 9.33% | The function accepted the wrong number of arguments. |
+| Exact output or collection contract mismatch | 4 | 5.33% | The code violated exact type, ordering, multiplicity, or representation requirements. |
+| Output-format extraction failure | 4 | 5.33% | The evaluator could not extract executable code. |
+| Missing import or runtime dependency | 1 | 1.33% | The code referenced an unimported module. |
+| Invalid numeric edge case | 1 | 1.33% | A valid input caused division by zero. |
+| Index boundary failure | 1 | 1.33% | The code accessed an invalid array position. |
+| Passed | 20 | 26.67% | All supplied assertions passed. |
+
+The categories sum to 75. The 26 wrong-algorithm examples and 4 exact-contract examples are the 30 assertion mismatches. The 11 scope failures and one missing-import failure are separated even though both raised NameError.
+
+## Observed error patterns
+
+### Wrong algorithm or task semantics: 26 examples
+
+Task IDs were 965, 916, 651, 748, 733, 609, 929, 937, 646, 772, 953, 903, 647, 665, 832, 951, 625, 627, 885, 818, 657, 620, 784, 751, 899, and 805.
+
+Task 647 asked for CamelCase word splitting, but the completion returned only uppercase characters. Task 805 asked for the list with the largest sum, but the completion compared individual elements rather than list totals. Task 899 asked about sorting through corner choices, but the completion used endpoint and adjacent comparisons instead of the required selection process.
+
+These completions ran Python successfully, but their central behavior did not match the task or assertions.
+
+### Undefined function or wrong execution scope: 11 examples
+
+Task IDs were 925, 659, 794, 662, 601, 835, 866, 681, 853, 850, and 769.
+
+The completions nested the required function inside example, returned a nested function, used a different capitalization or spelling, or invoked an unavailable wrapper. For example, task 925 raised NameError for mutiple_tuple, and task 835 defined slope inside example while the test called slope at module scope.
+
+The evaluator could not reach the intended assertions because the required callable was absent from the module namespace.
+
+### Wrong function signature: 7 examples
+
+Task IDs were 720, 767, 890, 804, 856, 745, and 802.
+
+The tests supplied more parameters than the generated functions accepted. Task 804 called is_Product_Even with two arguments, while the completion defined only one parameter. The same issue occurred for get_Pairs_Count, find_Extra, find_Min_Swaps, divisible_by_digits, and count_Rotation.
+
+### Exact output or collection contract mismatch: 4 examples
+
+Task IDs were 652, 829, 943, and 780.
+
+Task 780 converted combinations to a set and sorted them, removing duplicates and changing required order. Task 652 returned a different matrix representation from the exact expected result. Task 829 returned a frequency count instead of the second-most-frequent item. Task 943 returned the wrong merged-list ordering.
+
+### Output-format extraction failure: 4 examples
+
+Task IDs were 735, 603, 851, and 840. The parser recorded Did not follow proper output formatting and supplied no extracted code for these examples. Their underlying algorithms cannot be classified from the current details artifact because malformed raw completions are not retained.
+
+### Missing import or runtime dependency: 1 example
+
+Task 911 called heapq.heappush without importing heapq. The generated implementation could not execute as a self-contained submission.
+
+### Invalid numeric edge case: 1 example
+
+Task 905 evaluated a binomial-coefficient expression with a zero denominator at a boundary loop value and raised ZeroDivisionError.
+
+### Index boundary failure: 1 example
+
+Task 701 accessed fixed offsets such as i + 2 and i - 2 without guarding the valid index range and raised IndexError.
+
+## Success patterns and controls
+
+Twenty final examples passed all assertions. Model loading, batched generation, code execution, and evaluation worked for part of the set.
+
+The exact equality of checkpoint and final status distributions is a direct control for the evaluation-mode change. It rules out the previous explanation that checkpoint evaluation was sampling a training-mode model while final evaluation used an evaluation-mode model.
+
+## Deep triage
+
+### Wrong algorithm or task semantics
+
+The 26 failures span strings, arrays, arithmetic, heaps, tuples, and combinatorial tasks. The common mechanism is plausible-looking executable code that solves a different problem.
+
+The likely cause is shallow matching to familiar task keywords rather than deriving behavior from every test. Sparse rewards also limit correction: only steps 2 and 4 had nonzero reward means, and those means were 0.03125 with 87.5% zero-reward fraction.
+
+A targeted fix is to preserve expected-versus-actual values and classify semantic failures by task family. Confirmation requires fewer failures in this group on the same 75 tasks.
+
+### Undefined function or wrong execution scope
+
+The direct evidence is 11 NameError failures involving nested, renamed, or unavailable functions. The likely cause is confusion between the prompt's illustrative example wrapper and the evaluator's requirement for the exact named function at module scope.
+
+A targeted fix is to validate the required function name and module-level namespace before execution. Confirmation requires these task IDs to stop raising NameError.
+
+### Wrong function signature
+
+The seven TypeErrors show that the model ignored argument counts visible in the test calls. The likely cause is memorized task signatures overriding explicit prompt evidence.
+
+A targeted fix is to extract and validate the tested signature before execution. Confirmation requires zero argument-count TypeErrors in this group.
+
+### Exact output or collection contract mismatch
+
+The four assertion failures show that broad operation recognition is not enough. Order, duplicates, exact type, and representation remain wrong.
+
+A targeted fix is to preserve expected and actual values and add contract-focused examples. Confirmation requires these four tasks to pass without shifting into runtime failures.
+
+### Output-format extraction failure
+
+The four parser failures remain upstream of code execution. The current artifact cannot distinguish missing delimiters, extra prose, or truncation because raw malformed completions are discarded.
+
+A targeted fix is to preserve raw format-failure responses and record the exact extraction reason. Confirmation requires fewer parser failures and inspectable raw outputs.
+
+### Missing import or runtime dependency
+
+Task 911 demonstrates incomplete self-review of a library-based solution. A static unresolved-name check or import-completeness diagnostic should catch this before sandbox execution.
+
+### Invalid numeric edge case
+
+Task 905 applies a general formula at an endpoint where its intermediate denominator is invalid. Edge-case-focused diagnostics and examples should target this failure.
+
+### Index boundary failure
+
+Task 701 assumes a full fixed-size neighborhood at every index. Boundary-focused tests and static diagnostics should target unsafe offset access.
+
+## Shared causes and interactions
+
+The dominant shared cause is incomplete adherence to the complete test contract. It appears as wrong semantics, wrong signatures, scope errors, exact-output mistakes, and boundary mistakes through different mechanisms.
+
+The evaluation-mode fix removed the upstream checkpoint artifact. Before the fix, checkpoint evaluation used the in-memory model without an explicit eval-mode switch. Dropout could perturb logits during greedy generation, causing malformed output and format errors. After the fix, checkpoint and final results matched exactly.
+
+The run still had sparse learning signal. Three of five steps had zero reward variance, zero loss, and zero gradient norm. The unchanged or slightly lower pass rate should not be interpreted as evidence of useful training progress.
+
+## Proposed solutions and confirmation tests
+
+1. Preserve raw completions for format failures and expected-versus-actual values for assertion failures. Confirm that every future failure can be classified from direct evidence.
+2. Keep explicit model.eval() behavior for every evaluation path and retain the mode restoration logic. Confirm checkpoint and final status distributions remain equal.
+3. Add exact function-name and signature validation before sandbox execution. Confirm that the 11 scope failures and 7 signature failures decrease.
+4. Add task-family and edge-case diagnostics for semantic, output-contract, numeric, and indexing failures. Confirm that named pattern counts decrease rather than merely changing status labels.
+5. Increase checkpoint evaluation completions or repeat evaluations before ranking checkpoints. Confirm stable metrics across repeated evaluations.
+6. Do not claim this five-step run improved the model. Repeat the same comparison after diagnostic improvements and require a final score higher than the 21/75 baseline under comparable evaluation conditions.
+
+## Limitations
+
+Raw malformed completions are not retained, so the four format failures cannot be analyzed beyond the parser message.
+
+The evaluation remains stochastic at the generation and model level, although checkpoint and final are now consistent within this run.
+
+The report uses local W&B metadata. Detailed W&B history was not available through a diagnostic connection.
+
+The results measure pass@1 with one completion per task and do not estimate pass@k.
