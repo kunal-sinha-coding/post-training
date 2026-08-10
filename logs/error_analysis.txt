@@ -714,3 +714,145 @@ The evaluator stores stderr but not raw malformed completions or expected-versus
 Pass@1 uses one greedy completion per task and is noisy. The one-pass improvement from 21 to 22 is smaller than the checkpoint variation observed in the previous run.
 
 The interface reward is a training signal, while evaluation categories are inferred from runtime stderr. The lower scope and arity counts are consistent with improvement, but the logging change itself is not a causal intervention on model behavior.
+
+
+------------------------------------------------------------------------
+ERROR ANALYSIS
+Timestamp: 2026-08-10 00:10:00 UTC
+------------------------------------------------------------------------
+Command: accelerate launch --num_processes 1 train.py --config configs/default.yaml
+Batch mode: Ten training epochs, 370 optimizer steps, and full 75-example evaluation.
+W&B run: local artifact wandb/run-20260809_201608-wvx9f3bt
+
+## Run summary
+
+The ten-epoch run completed all 370 steps and full evaluation. Baseline was 21/75, or 28.00 percent. Final evaluation scored 30/75, or 40.00 percent, a gain of 9 percentage points. The best observed intermediate checkpoint was checkpoint-200 at 27/75, while final exceeded it at 30/75. The dominant residual pattern is executable but semantically incorrect code, with 30 assertion failures.
+
+The reward curves rose over training. Total reward mean increased from 0.1234 to 0.4109, test-progress mean increased from 0.0312 to 0.2031, and interface mean increased from 0.0063 to 0.0422. This is stronger evidence of useful learning than the earlier five-step runs, although the final assertion residual remains large.
+
+## Iteration comparison
+
+| Evaluation | Passed | Failed | Format errors | Pass@1 |
+| --- | ---: | ---: | ---: | ---: |
+| Baseline | 21 | 51 | 3 | 28.00% |
+| Checkpoint-25 | 24 | 51 | 4 | 32.00% |
+| Checkpoint-100 | 24 | 51 | 3 | 32.00% |
+| Checkpoint-200 | 27 | 48 | 2 | 36.00% |
+| Checkpoint-300 | 27 | 48 | 4 | 36.00% |
+| Checkpoint-370 | 26 | 49 | 2 | 34.67% |
+| Final | 30 | 45 | 2 | 40.00% |
+
+Final improved over baseline by 9 percentage points. Scope failures fell from 11 to 3, aggregate signature or type failures fell from 8 to 7, and format failures fell from 3 to 2. Assertion failures rose slightly from 29 to 30, but the large pass-rate gain indicates that many earlier structural failures were converted into successful solutions. Final also exceeded the best intermediate checkpoint because final selected the best saved model state according to the run’s selection path.
+
+## Run context and data coverage
+
+The run used ten epochs, max_steps -1, full evaluation, four generations per prompt, gradient accumulation 32, learning rate 1e-6, and the fixed seed 42. All 75 final evaluation details and 371 local metric records were available. The rolling-average code was added after this run started, so this run contains per-batch and cumulative averages but not the newly added ten-batch rolling series.
+
+The W&B MCP history request for run wvx9f3bt failed at the MCP transport layer. The local W&B artifact contains the emitted time-series dictionaries and was used for curve analysis. No remote W&B curve was claimed as inspected.
+
+## Error-pattern distribution
+
+The primary grouping is mutually exclusive and assigns each example to its earliest observed failure. The final distribution is:
+
+| Pattern | Count | Share | Description |
+| --- | ---: | ---: | --- |
+| Passed all tests | 30 | 40.00% | Every assertion passed. |
+| Wrong algorithm or exact output | 30 | 40.00% | Code executed but an assertion failed. |
+| Wrong signature or return/type contract | 7 | 9.33% | The call or a collection/type contract failed. |
+| Undefined function or scope name | 3 | 4.00% | A required name was unresolved. |
+| Output-format extraction failure | 2 | 2.67% | Code extraction rejected the response. |
+| Index boundary failure | 1 | 1.33% | A list index was out of bounds. |
+| Other runtime contract failures | 2 | 2.67% | Value unpacking or substring handling failed. |
+| **Total** | **75** | **100.00%** | |
+
+## Observed error patterns
+
+### Wrong algorithm or exact output: 30 examples
+
+Tasks 965, 916, 651, 652, 973, 748, 794, 851, 937, 646, 829, 772, 953, 903, 866, 647, 665, 832, 853, 951, 627, 840, 885, 818, 850, 802, 657, 769, 784, and 751 executed but raised AssertionError. These candidates produced executable functions that returned the wrong value, ordering, duplicate behavior, or edge-case result. The current artifact records the assertion exception but not expected-versus-actual values.
+
+### Wrong signature or return/type contract: 7 examples
+
+Tasks 720, 735, 767, 890, 804, 856, and 745 failed with TypeError. Examples include get_Pairs_Count receiving three arguments while accepting two, and int conversion or tuple/dictionary operations receiving incompatible values. These combine six direct call or signature errors with one broader type-contract failure.
+
+### Undefined function or scope name: 3 examples
+
+Tasks 659, 609, and 601 raised NameError for Repeat, floor_Min, and Pair. The generated code either used a misspelled symbol or relied on an undefined helper.
+
+### Output-format extraction failure: 2 examples
+
+Tasks 905 and 603 were rejected before execution with the output-format error. Their raw malformed continuations were not retained, so missing fences, extra prose, and truncation cannot be distinguished.
+
+### Index boundary failure: 1 example
+
+Task 701 raised IndexError because the candidate accessed outside the available list range.
+
+### Other runtime contract failures: 2 examples
+
+Task 885 raised ValueError from a failed substring lookup, and task 780 raised ValueError from unpacking too many values. Both candidates reached execution but violated assumptions about input structure or intermediate values.
+
+## Success patterns and controls
+
+Thirty tasks passed in final evaluation, ruling out a total format collapse, total interface collapse, or complete optimizer failure. Format failures were only 2/75. The large reduction in NameError failures shows that the model increasingly honored required callable names and helper scope.
+
+Local curve statistics across 370 steps were: total reward mean 0.3163 across batches, first 0.1234, last 0.4109, minimum 0.1000, maximum 0.5906; reward standard deviation mean 0.2862; cumulative average reward ended at 0.3163. Format, syntax, interface, execution, and test-progress component means ended at 0.0469, 0.0875, 0.0422, 0.0312, and 0.2031. Test-progress mean rose substantially, while format and syntax components approached their ceilings.
+
+The curves were not monotonic. Batch reward standard deviation remained volatile, and intermediate pass rates peaked at 36% before final reached 40%. This indicates noisy updates around a generally improving trajectory rather than a smooth deterministic climb.
+
+## Deep triage
+
+### Wrong algorithm or exact output
+
+The 30 assertion failures are the largest residual. The model reached execution but did not satisfy exact task behavior. The likely cause is incomplete algorithmic or edge-case reasoning after structural correctness is achieved. An alternative is greedy pass@1 noise, but the repeated task-level failures and rising test-progress reward suggest a real semantic bottleneck. Preserve expected and actual assertion values, classify ordering, duplicates, types, and edge cases, then target the largest subtype. Confirmation is a reduction in each subtype on a matched 75-task evaluation.
+
+### Wrong signature or return/type contract
+
+Seven TypeErrors show that interface and type adherence remains imperfect. Six are direct arity or call-contract failures, while one is a tuple/dictionary mismatch or incompatible conversion. Exact AST interface validation should continue targeting the six arity failures. Return-type diagnostics or supervised examples should address the remaining semantic type failures. Confirmation requires lower signature failures without replacing them with assertion failures.
+
+### Undefined function or scope name
+
+Three NameErrors remain, down from 11 baseline failures. The interface reward and longer training likely helped, but unresolved helper names remain. Add separate exact-name and unresolved-helper diagnostics. Confirmation requires the residual three tasks to define or import every referenced symbol.
+
+### Output-format extraction
+
+Two parser failures remain. Because raw continuations are unavailable, parser and model causes cannot be separated. Preserve raw responses and extraction reasons before changing the parser again. Confirmation requires fewer format errors and auditable raw evidence for every remaining failure.
+
+### Index boundary
+
+Task 701 still accesses an invalid list index. The likely cause is a fixed-offset algorithm that does not derive bounds from input length. Add boundary-focused examples and preserve failing inputs. Confirmation requires task 701 and similar boundary tasks to terminate safely.
+
+### Other runtime contracts
+
+The substring and unpacking failures show assumptions about input shape that are not guarded. Add expected and actual type or shape traces at assertion boundaries and train on malformed or boundary inputs. Confirmation requires these two tasks to pass without becoming generic assertion failures.
+
+## Shared causes and interactions
+
+The main upstream chain is improving structural validity followed by incomplete semantic generalization. Structural failures decreased substantially, which allowed more candidates to reach the assertion stage. That explains why assertion counts stayed high even while pass@1 improved: the run converted non-executable outputs into executable but sometimes incorrect programs.
+
+The local curve shape supports this interpretation. Interface and execution reward components rose over time, and test-progress reward rose from 0.0312 to 0.2031. The improvement was not merely a formatting artifact. However, reward standard deviation remained high, so some updates still favored unstable or partially correct candidates.
+
+## Underlying root-cause synthesis
+
+One root cause is improved but incomplete interface adherence. It explains the reduction from 11 to 3 scope failures and most of the reduction in signature failures. The causal chain is structural reward, longer optimization, more valid callable definitions, and fewer immediate NameErrors or calls with incompatible arity. The residual three scope failures and six direct signature or type failures show the mechanism is not solved.
+
+A second root cause is insufficient exact algorithmic and edge-case reasoning. It explains the 30 assertion failures, the index failure, and the two other runtime contracts. Longer training increased executable and partial-test behavior but did not remove the semantic residual. The competing explanation is evaluation variance, which can be tested by repeated greedy or sampled evaluations on the same checkpoints.
+
+A third root cause is residual output-format noncompliance, explaining two failures. It is upstream of all code rewards and remains uncertain because malformed raw text is discarded.
+
+## Proposed solutions and confirmation tests
+
+1. Preserve raw completions, expected-versus-actual assertion values, and assertion inputs in evaluate.py. Confirm that the 30 assertion failures split into actionable subpatterns.
+2. Keep the interface reward and add separate exact-name, arity, and unresolved-helper metrics. Confirm that the remaining scope and signature counts decrease on a matched evaluation.
+3. Use the new ten-batch rolling averages on the next run. Compare rolling reward and component curves with pass@1 to distinguish sustained improvement from batch noise.
+4. Run repeated evaluation of checkpoints 200, 300, 370, and final. Confirm whether final’s 40% result is stable and whether the semantic residual is checkpoint-specific.
+5. Add targeted examples for the largest assertion subtype after classification. Confirm that the target subtype decreases without harming interface or format rates.
+
+## Limitations
+
+The W&B MCP history request failed due transport failure, so curve shape was analyzed from the local W&B artifact rather than remote MCP history. The local artifact is evidence of emitted metrics, not proof that remote charts rendered correctly.
+
+The evaluator does not retain raw malformed completions or expected-versus-actual assertion values. Semantic subpattern classification is therefore incomplete.
+
+This run predates the ten-batch rolling-average implementation, so rolling curves are not available for this run. The next run must be used to evaluate them.
+
+Pass@1 uses one completion per task and remains stochastic despite the large improvement.

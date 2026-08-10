@@ -117,20 +117,40 @@ GIT_USER_EMAIL="${GIT_USER_EMAIL:-kunalsinha@live.com}"
 git config --global user.name "$GIT_USER_NAME"
 git config --global user.email "$GIT_USER_EMAIL"
 
-# Install GitHub CLI when it is not already available.
-if ! command -v gh >/dev/null 2>&1; then
+# Install GitHub CLI and a browser launcher when they are not already available.
+if ! command -v gh >/dev/null 2>&1 || ! command -v xdg-open >/dev/null 2>&1 && ! command -v x-www-browser >/dev/null 2>&1 && ! command -v www-browser >/dev/null 2>&1 && ! command -v wslview >/dev/null 2>&1; then
     if command -v apt-get >/dev/null 2>&1; then
-        if [[ "$(id -u)" -eq 0 ]]; then
-            apt-get update
-            apt-get install -y gh
-        else
-            sudo apt-get update
-            sudo apt-get install -y gh
+        apt_packages=()
+        if ! command -v gh >/dev/null 2>&1; then
+            apt_packages+=(gh)
         fi
-    else
+
+        if grep -qi microsoft /proc/version 2>/dev/null; then
+            if ! command -v wslview >/dev/null 2>&1; then
+                apt_packages+=(wslu)
+            fi
+        elif ! command -v xdg-open >/dev/null 2>&1 && ! command -v x-www-browser >/dev/null 2>&1 && ! command -v www-browser >/dev/null 2>&1; then
+            apt_packages+=(xdg-utils)
+        fi
+
+        if ((${#apt_packages[@]} > 0)); then
+            if [[ "$(id -u)" -eq 0 ]]; then
+                apt-get update
+                apt-get install -y "${apt_packages[@]}"
+            else
+                sudo apt-get update
+                sudo apt-get install -y "${apt_packages[@]}"
+            fi
+        fi
+    elif ! command -v gh >/dev/null 2>&1; then
         echo "GitHub CLI is not installed and apt-get is unavailable." >&2
         exit 1
     fi
+fi
+
+# Prefer the Windows browser launcher when running under WSL.
+if command -v wslview >/dev/null 2>&1; then
+    export GH_BROWSER=wslview
 fi
 
 # Authenticate GitHub interactively only when this environment is not already authenticated.
