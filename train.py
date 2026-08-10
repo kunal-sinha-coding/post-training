@@ -59,20 +59,21 @@ def configure_wandb(config: dict[str, Any]) -> Any | None:
     return wandb
 
 
-def log_evaluation(wandb: Any | None, metrics: dict[str, Any], prefix: str, step: int | None = None) -> None:
-    """Send scalar evaluation metrics to the active W&B run without logging secrets."""
+def log_evaluation(wandb: Any | None, metrics: dict[str, Any], evaluation_name: str, step: int | None = None) -> None:
+    """Log one evaluation event with a shared custom W&B x-axis."""
     if wandb is None or wandb.run is None:
         return
-    payload = {}
+    payload: dict[str, Any] = {
+        "evaluation/step": float(step or 0),
+        "evaluation/name": evaluation_name,
+    }
     for key, value in metrics.items():
         if isinstance(value, (int, float)):
-            payload[f"{prefix}/{key}"] = value
+            payload[f"evaluation/{key}"] = value
         elif key == "status_counts" and isinstance(value, dict):
             for status, count in value.items():
-                payload[f"{prefix}/status_{status}"] = count
-    if payload:
-        # Avoid explicit trainer steps because TRL may already advance W&B by token-level records.
-        wandb.log(payload)
+                payload[f"evaluation/status_{status}"] = count
+    wandb.log(payload)
 
 
 def load_cached_evaluation(output_dir: Path, name: str) -> tuple[dict[str, Any], list[dict[str, Any]]] | None:
@@ -169,7 +170,7 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
             config["training_context"] = "checkpoint"
             config["_evaluation_epoch"] = state.epoch
             save_evaluation(args.output_dir, f"checkpoint-{state.global_step}", metrics, details, config)
-            log_evaluation(wandb, metrics, "evaluation/checkpoint", state.global_step)
+            log_evaluation(wandb, metrics, f"checkpoint-{state.global_step}", state.global_step)
             checkpoint_path = Path(args.output_dir) / f"checkpoint-{state.global_step}"
             metric = float(metrics.get(config.get("best_checkpoint_metric", "pass_at_1"), float("-inf")))
             if metric > self.best_metric:
@@ -248,7 +249,10 @@ def run_training(config: dict[str, Any]) -> None:
         args=training_args,
         callbacks=callbacks,
     )
-    log_evaluation(wandb, baseline_metrics, "evaluation/baseline", trainer.state.global_step)
+    if wandb is not None and wandb.run is not None:
+        wandb.define_metric("evaluation/step")
+        wandb.define_metric("evaluation/*", step_metric="evaluation/step")
+    log_evaluation(wandb, baseline_metrics, "baseline", 0)
     trainer.train()
     best_checkpoint_path = training_callback.best_checkpoint_path
     if best_checkpoint_path is not None and best_checkpoint_path.exists():
@@ -264,7 +268,7 @@ def run_training(config: dict[str, Any]) -> None:
     config["training_context"] = "best-checkpoint-final" if best_checkpoint_path is not None else "final"
     config["_evaluation_epoch"] = trainer.state.epoch
     save_evaluation(output_dir, "final", final_metrics, final_details, config)
-    log_evaluation(wandb, final_metrics, "evaluation/final", trainer.state.global_step)
+    log_evaluation(wandb, final_metrics, "final", trainer.state.global_step)
     (output_dir / "config.json").write_text(json.dumps(config, indent=2), encoding="utf-8")
 
 
