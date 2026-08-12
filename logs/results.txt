@@ -2429,3 +2429,153 @@ Timestamp: 2026-08-12 08:03:10 PDT
 RUN STARTING
 Timestamp: 2026-08-12 08:06:10 PDT
 ------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-08-12 08:40:14 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: sft-baseline
+Training context: sft-baseline
+Epoch: 0
+Timestamp: 2026-08-12 08:42:30 PDT
+Git commit: 1d29cd5
+Change description: 1d29cd5 Evaluate SFT at each epoch
+e438152 Record successful five batch SFT run
+75eb586 Record failed SFT run result
+51e5604 Skip baseline for SFT only runs
+ea5020d Add supervised warm start before GRPO
+2511bf0 Clarify skill file commit requirements
+f5818d5 Clarify elevated patch workflow and set 100 epochs
+16e7abb Log every evaluation in W&B
+bed02b4 Require pushing command-created files
+1994b6a Record latest run artifacts
+f3fc9f9 Record latest evaluation results
+afc68d3 Document GitHub DNS push retries
+Metrics:
+{
+  "average_reward": 0.29333333333333333,
+  "examples": 75,
+  "pass_at_1": 0.29333333333333333,
+  "status_counts": {
+    "failed": 49,
+    "format_error": 4,
+    "passed": 22
+  }
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen3.5-0.8B
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+dataset_split: train
+seed: 42
+train_fraction: 0.8
+max_train_samples: null
+reuse_baseline: false
+run_intermediate_evals: true
+max_eval_samples: null
+sft_enabled: true
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp
+num_train_epochs: 100
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000001
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 512
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass_at_1
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 25
+eval_steps: 100
+evaluation_num_completions: 1
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: false
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: sft-epoch-1
+Training context: sft
+Epoch: 1
+Timestamp: 2026-08-12 08:47:16 PDT
+Git commit: 1d29cd5
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.36,
+  "examples": 75,
+  "pass_at_1": 0.36,
+  "status_counts": {
+    "failed": 47,
+    "format_error": 1,
+    "passed": 27
+  }
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen3.5-0.8B
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+dataset_split: train
+seed: 42
+train_fraction: 0.8
+max_train_samples: null
+reuse_baseline: false
+run_intermediate_evals: true
+max_eval_samples: null
+sft_enabled: true
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp
+num_train_epochs: 100
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000001
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 512
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass_at_1
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 25
+eval_steps: 100
+evaluation_num_completions: 1
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: false
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
