@@ -56,6 +56,9 @@ def configure_wandb(config: dict[str, Any]) -> Any | None:
         raise RuntimeError("W&B logging is enabled, but WANDB_API_KEY is missing from the environment.")
     wandb.login(key=api_key, relogin=False)
     os.environ.setdefault("WANDB_PROJECT", str(config.get("wandb_project", "grpo-mbpp")))
+    if wandb.run is None:
+        # Start one shared run before baseline evaluation and both training stages.
+        wandb.init(project=str(config.get("wandb_project", "grpo-mbpp")), name=config.get("wandb_run_name"))
     return wandb
 
 
@@ -185,8 +188,8 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
     return TrainingCallback()
 
 
-def _make_sft_callback(config: dict[str, Any], wandb: Any | None):
-    """Create a callback that tracks per-batch and averaged SFT loss."""
+def _make_sft_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[str, Any], wandb: Any | None):
+    """Create a callback that tracks loss and evaluates each SFT epoch."""
     from transformers import TrainerCallback
 
     class SFTTrainingCallback(TrainerCallback):
@@ -198,6 +201,8 @@ def _make_sft_callback(config: dict[str, Any], wandb: Any | None):
             self.loss_count = 0
             self.rolling_window_size = max(1, int(config.get("sft_loss_rolling_window", 10)))
             self.rolling_losses: deque[float] = deque(maxlen=self.rolling_window_size)
+            self.latest_metrics: dict[str, Any] | None = None
+            self.latest_details: list[dict[str, Any]] | None = None
 
         def on_log(self, args: Any, state: Any, control: Any, logs: dict[str, Any] | None = None, **_: Any) -> Any:
             """Add the three requested SFT loss series to each batch log."""
@@ -220,10 +225,25 @@ def _make_sft_callback(config: dict[str, Any], wandb: Any | None):
                 wandb.log(metrics)
             return control
 
+        def on_epoch_end(self, args: Any, state: Any, control: Any, **_: Any) -> Any:
+            """Evaluate the SFT model after each completed epoch."""
+            epoch = max(1, int(round(float(state.epoch or 0))))
+            name = f"sft-epoch-{epoch}"
+            metrics, details = evaluate_model(model, tokenizer, test_dataset, config, name)
+            config["training_context"] = "sft"
+            config["_evaluation_epoch"] = epoch
+            save_evaluation(args.output_dir, name, metrics, details, config)
+            log_evaluation(wandb, metrics, name, state.global_step)
+            self.latest_metrics = metrics
+            self.latest_details = details
+            # Resume training mode if another SFT epoch follows.
+            model.train()
+            return control
+
     return SFTTrainingCallback()
 
 
-def run_sft(model: Any, tokenizer: Any, train_dataset: Any, config: dict[str, Any], wandb: Any | None) -> Any:
+def run_sft(model: Any, tokenizer: Any, train_dataset: Any, test_dataset: Any, config: dict[str, Any], wandb: Any | None) -> tuple[Any, Any]:
     """Warm-start the model with response-only supervised fine-tuning."""
     import torch
     from transformers import DataCollatorForSeq2Seq, Trainer, TrainingArguments
@@ -246,16 +266,17 @@ def run_sft(model: Any, tokenizer: Any, train_dataset: Any, config: dict[str, An
     )
     # Pad inputs and masked labels dynamically for each batch.
     collator = DataCollatorForSeq2Seq(tokenizer=tokenizer, model=model, padding=True)
+    sft_callback = _make_sft_callback(model, tokenizer, test_dataset, config, wandb)
     trainer = Trainer(
         model=model,
         args=training_args,
         train_dataset=sft_dataset,
         data_collator=collator,
-        callbacks=[_make_sft_callback(config, wandb)],
+        callbacks=[sft_callback],
     )
     trainer.train()
     trainer.save_model(str(sft_output_dir / "final"))
-    return trainer
+    return trainer, sft_callback
 
 
 def run_training(config: dict[str, Any], stage: str = "all") -> None:
@@ -266,6 +287,10 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
 
     start_run_log(config.get("log_path", "logs/logs.txt"), config.get("results_log_path", "logs/results.txt"))
     wandb = configure_wandb(config)
+    if wandb is not None and wandb.run is not None:
+        # Use one evaluation axis across the SFT and GRPO stages.
+        wandb.define_metric("evaluation/step")
+        wandb.define_metric("evaluation/*", step_metric="evaluation/step")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Selected device: {device}", flush=True)
     seed_everything(int(config.get("seed", 42)))
@@ -281,8 +306,20 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
     model = AutoModelForCausalLM.from_pretrained(config["model_name_or_path"], trust_remote_code=bool(config.get("trust_remote_code", False)))
     model.to(device)
     print(f"Model device: {model.device}", flush=True)
-    if stage != "sft":
-        # Skip evaluation when validating only the supervised training stage.
+    if config.get("sft_enabled", False):
+        # Evaluate the base model once before supervised updates begin.
+        baseline_metrics, baseline_details = evaluate_model(model, tokenizer, test_dataset, config, "sft-baseline")
+        config["training_context"] = "sft-baseline"
+        config["_evaluation_epoch"] = 0
+        save_evaluation(output_dir / "sft", "sft-baseline", baseline_metrics, baseline_details, config)
+        log_evaluation(wandb, baseline_metrics, "sft-baseline", 0)
+        _, sft_callback = run_sft(model, tokenizer, train_dataset, test_dataset, config, wandb)
+        baseline_metrics = sft_callback.latest_metrics
+        baseline_details = sft_callback.latest_details
+        if baseline_metrics is None or baseline_details is None:
+            raise RuntimeError("SFT completed without an end-of-epoch evaluation.")
+    else:
+        # Evaluate the base model before direct GRPO training.
         cached_baseline = load_cached_evaluation(output_dir, "baseline") if config.get("reuse_baseline", True) else None
         if cached_baseline is None:
             print("Computing baseline evaluation.", flush=True)
@@ -294,9 +331,6 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
             print("Reusing cached baseline evaluation.", flush=True)
             baseline_metrics, baseline_details = cached_baseline
             append_evaluation_log(config.get("log_path", "logs/logs.txt"), "baseline-cached", [test_dataset[index] for index in range(len(test_dataset))], baseline_details)
-    if config.get("sft_enabled", False):
-        # Warm-start the same model instance before constructing the GRPO trainer.
-        run_sft(model, tokenizer, train_dataset, config, wandb)
     if stage == "sft":
         # Stop after SFT so short validation runs do not launch GRPO.
         return
@@ -330,10 +364,9 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         args=training_args,
         callbacks=callbacks,
     )
-    if wandb is not None and wandb.run is not None:
-        wandb.define_metric("evaluation/step")
-        wandb.define_metric("evaluation/*", step_metric="evaluation/step")
-    log_evaluation(wandb, baseline_metrics, "baseline", 0)
+    if not config.get("sft_enabled", False):
+        # The final SFT evaluation already logged the GRPO starting policy.
+        log_evaluation(wandb, baseline_metrics, "baseline", 0)
     trainer.train()
     best_checkpoint_path = training_callback.best_checkpoint_path
     if best_checkpoint_path is not None and best_checkpoint_path.exists():

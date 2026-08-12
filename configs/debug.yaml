@@ -16,6 +16,7 @@ sft_gradient_accumulation_steps: 1
 sft_learning_rate: 0.00001
 sft_loss_rolling_window: 3
 log_path: logs/logs.txt
+results_log_path: logs/results.txt
 output_dir: outputs/grpo-mbpp-debug
 num_train_epochs: 1
 max_steps: 2
