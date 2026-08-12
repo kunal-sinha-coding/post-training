@@ -281,17 +281,19 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
     model = AutoModelForCausalLM.from_pretrained(config["model_name_or_path"], trust_remote_code=bool(config.get("trust_remote_code", False)))
     model.to(device)
     print(f"Model device: {model.device}", flush=True)
-    cached_baseline = load_cached_evaluation(output_dir, "baseline") if config.get("reuse_baseline", True) else None
-    if cached_baseline is None:
-        print("Computing baseline evaluation.", flush=True)
-        baseline_metrics, baseline_details = evaluate_model(model, tokenizer, test_dataset, config, "baseline")
-        config["training_context"] = "baseline"
-        config["_evaluation_epoch"] = "baseline"
-        save_evaluation(output_dir, "baseline", baseline_metrics, baseline_details, config)
-    else:
-        print("Reusing cached baseline evaluation.", flush=True)
-        baseline_metrics, baseline_details = cached_baseline
-        append_evaluation_log(config.get("log_path", "logs/logs.txt"), "baseline-cached", [test_dataset[index] for index in range(len(test_dataset))], baseline_details)
+    if stage != "sft":
+        # Skip evaluation when validating only the supervised training stage.
+        cached_baseline = load_cached_evaluation(output_dir, "baseline") if config.get("reuse_baseline", True) else None
+        if cached_baseline is None:
+            print("Computing baseline evaluation.", flush=True)
+            baseline_metrics, baseline_details = evaluate_model(model, tokenizer, test_dataset, config, "baseline")
+            config["training_context"] = "baseline"
+            config["_evaluation_epoch"] = "baseline"
+            save_evaluation(output_dir, "baseline", baseline_metrics, baseline_details, config)
+        else:
+            print("Reusing cached baseline evaluation.", flush=True)
+            baseline_metrics, baseline_details = cached_baseline
+            append_evaluation_log(config.get("log_path", "logs/logs.txt"), "baseline-cached", [test_dataset[index] for index in range(len(test_dataset))], baseline_details)
     if config.get("sft_enabled", False):
         # Warm-start the same model instance before constructing the GRPO trainer.
         run_sft(model, tokenizer, train_dataset, config, wandb)
