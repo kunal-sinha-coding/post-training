@@ -15,7 +15,7 @@ from typing import Any
 import yaml
 from dotenv import load_dotenv
 
-from data import prepare_datasets
+from data import build_sft_dataset, prepare_datasets
 from evaluate import append_training_step_header, append_training_step_metrics, append_training_step_samples, append_evaluation_log, evaluate_model, save_evaluation, start_run_log
 from sandbox import reward_function
 
@@ -185,7 +185,80 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
     return TrainingCallback()
 
 
-def run_training(config: dict[str, Any]) -> None:
+def _make_sft_callback(config: dict[str, Any], wandb: Any | None):
+    """Create a callback that tracks per-batch and averaged SFT loss."""
+    from transformers import TrainerCallback
+
+    class SFTTrainingCallback(TrainerCallback):
+        """Log current, cumulative, and moving-average SFT loss."""
+
+        def __init__(self) -> None:
+            """Initialize loss accumulators for the complete SFT stage."""
+            self.loss_sum = 0.0
+            self.loss_count = 0
+            self.rolling_window_size = max(1, int(config.get("sft_loss_rolling_window", 10)))
+            self.rolling_losses: deque[float] = deque(maxlen=self.rolling_window_size)
+
+        def on_log(self, args: Any, state: Any, control: Any, logs: dict[str, Any] | None = None, **_: Any) -> Any:
+            """Add the three requested SFT loss series to each batch log."""
+            loss = logs.get("loss") if logs else None
+            if not isinstance(loss, (int, float)):
+                return control
+            self.loss_sum += float(loss)
+            self.loss_count += 1
+            self.rolling_losses.append(float(loss))
+            metrics = {
+                "sft/loss": float(loss),
+                "sft/average_loss": self.loss_sum / self.loss_count,
+                "sft/rolling_average_loss": sum(self.rolling_losses) / len(self.rolling_losses),
+                "sft/loss_rolling_window": float(self.rolling_window_size),
+                "sft/batch": float(state.global_step),
+            }
+            logs.update(metrics)
+            if wandb is not None and wandb.run is not None:
+                # Log callback-added metrics explicitly so W&B retains every batch.
+                wandb.log(metrics)
+            return control
+
+    return SFTTrainingCallback()
+
+
+def run_sft(model: Any, tokenizer: Any, train_dataset: Any, config: dict[str, Any], wandb: Any | None) -> Any:
+    """Warm-start the model with response-only supervised fine-tuning."""
+    import torch
+    from transformers import DataCollatorForSeq2Seq, Trainer, TrainingArguments
+
+    sft_output_dir = Path(config["output_dir"]) / "sft"
+    sft_dataset = build_sft_dataset(train_dataset, tokenizer, config)
+    training_args = TrainingArguments(
+        output_dir=str(sft_output_dir),
+        learning_rate=float(config.get("sft_learning_rate", 1e-5)),
+        num_train_epochs=float(config.get("sft_num_train_epochs", 1)),
+        max_steps=int(config.get("sft_max_steps", -1)),
+        per_device_train_batch_size=int(config.get("sft_per_device_train_batch_size", 1)),
+        gradient_accumulation_steps=int(config.get("sft_gradient_accumulation_steps", 1)),
+        logging_steps=1,
+        save_strategy="no",
+        report_to=[] if config.get("report_to") in (None, "none") else [config["report_to"]],
+        run_name=config.get("wandb_run_name"),
+        use_cpu=not torch.cuda.is_available(),
+        seed=int(config.get("seed", 42)),
+    )
+    # Pad inputs and masked labels dynamically for each batch.
+    collator = DataCollatorForSeq2Seq(tokenizer=tokenizer, model=model, padding=True)
+    trainer = Trainer(
+        model=model,
+        args=training_args,
+        train_dataset=sft_dataset,
+        data_collator=collator,
+        callbacks=[_make_sft_callback(config, wandb)],
+    )
+    trainer.train()
+    trainer.save_model(str(sft_output_dir / "final"))
+    return trainer
+
+
+def run_training(config: dict[str, Any], stage: str = "all") -> None:
     """Run baseline evaluation, GRPO training, intermediate evaluations, and final evaluation."""
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -219,6 +292,12 @@ def run_training(config: dict[str, Any]) -> None:
         print("Reusing cached baseline evaluation.", flush=True)
         baseline_metrics, baseline_details = cached_baseline
         append_evaluation_log(config.get("log_path", "logs/logs.txt"), "baseline-cached", [test_dataset[index] for index in range(len(test_dataset))], baseline_details)
+    if config.get("sft_enabled", False):
+        # Warm-start the same model instance before constructing the GRPO trainer.
+        run_sft(model, tokenizer, train_dataset, config, wandb)
+    if stage == "sft":
+        # Stop after SFT so short validation runs do not launch GRPO.
+        return
     training_args = GRPOConfig(
         output_dir=str(output_dir),
         learning_rate=float(config["learning_rate"]),
@@ -276,6 +355,7 @@ def main() -> None:
     """Parse the command line and launch the configured experiment."""
     parser = argparse.ArgumentParser(description="Train Qwen with GRPO on MBPP.")
     parser.add_argument("--config", default="configs/default.yaml", help="Path to a YAML experiment configuration.")
+    parser.add_argument("--stage", choices=("all", "sft"), default="all", help="Run the full pipeline or stop after SFT.")
     args = parser.parse_args()
     load_dotenv()
     config = load_config(args.config)
@@ -283,7 +363,7 @@ def main() -> None:
     config["_config_yaml"] = Path(args.config).read_text(encoding="utf-8")
     print("Experiment configuration:")
     print(pformat(config, sort_dicts=False), flush=True)
-    run_training(config)
+    run_training(config, stage=args.stage)
 
 
 if __name__ == "__main__":

@@ -100,3 +100,29 @@ def prepare_datasets(config: dict[str, Any]) -> tuple[Any, Any]:
     if max_eval:
         test_dataset = test_dataset.select(range(min(int(max_eval), len(test_dataset))))
     return train_dataset, test_dataset
+
+
+def build_sft_dataset(dataset: Any, tokenizer: Any, config: dict[str, Any]) -> Any:
+    """Tokenize MBPP demonstrations with loss masked over prompt tokens."""
+    max_prompt_length = int(config.get("max_prompt_length", 512))
+    max_completion_length = int(config.get("max_completion_length", 512))
+
+    def tokenize_record(record: dict[str, Any]) -> dict[str, list[int]]:
+        """Create one response-only language-modeling example."""
+        prompt_ids = tokenizer(str(record["prompt"]), add_special_tokens=True, truncation=True, max_length=max_prompt_length)["input_ids"]
+        response = f"Code: \n```python\n{record['reference_code'].strip()}\n```"
+        response_ids = tokenizer(response, add_special_tokens=False, truncation=True, max_length=max_completion_length)["input_ids"]
+        if tokenizer.eos_token_id is not None and len(response_ids) < max_completion_length:
+            # End each demonstration with the model's end-of-sequence token.
+            response_ids.append(tokenizer.eos_token_id)
+        input_ids = [*prompt_ids, *response_ids]
+        return {
+            "input_ids": input_ids,
+            "attention_mask": [1] * len(input_ids),
+            "labels": [-100] * len(prompt_ids) + response_ids.copy(),
+        }
+
+    # Remove source columns because the language-modeling collator only needs token fields.
+    if hasattr(dataset, "map"):
+        return dataset.map(tokenize_record, remove_columns=dataset.column_names)
+    return _to_dataset([tokenize_record(record) for record in dataset])

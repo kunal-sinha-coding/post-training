@@ -1,4 +1,4 @@
-from data import build_prompt, normalize_record, split_dataset
+from data import build_prompt, build_sft_dataset, normalize_record, split_dataset
 
 
 def test_normalize_record_builds_prompt_and_tests():
@@ -21,3 +21,26 @@ def test_split_dataset_is_deterministic():
 
 def test_prompt_template_can_be_overridden():
     assert build_prompt({"prompt": "Do it", "test_list": []}, "TASK: {prompt}\nTESTS: {tests}") == "TASK: Do it\nTESTS: "
+
+
+def test_build_sft_dataset_masks_prompt_tokens():
+    """SFT labels should ignore the prompt and supervise the reference response."""
+    class Tokenizer:
+        """Provide deterministic token IDs for the focused dataset test."""
+
+        eos_token_id = 99
+
+        def __call__(self, text, add_special_tokens, truncation, max_length):
+            """Return distinct IDs for prompt and response text."""
+            del truncation, max_length
+            if add_special_tokens:
+                return {"input_ids": [1, 2]}
+            assert "def solve" in text
+            return {"input_ids": [3, 4]}
+
+    dataset = [{"prompt": "Task", "reference_code": "def solve():\n    return 1"}]
+    result = build_sft_dataset(dataset, Tokenizer(), {"max_prompt_length": 8, "max_completion_length": 8})
+
+    assert result[0]["input_ids"] == [1, 2, 3, 4, 99]
+    assert result[0]["labels"] == [-100, -100, 3, 4, 99]
+    assert result[0]["attention_mask"] == [1, 1, 1, 1, 1]
