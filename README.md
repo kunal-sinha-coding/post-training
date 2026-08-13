@@ -30,28 +30,3 @@ W&B logging is enabled by default. TRL logs reward, reward variance, loss, gradi
 Every evaluation appends each prompt, code output, execution result, and award to `logs/logs.txt`. Each run starts with a timestamped `RUN STARTING` header; `logs/` is ignored by Git.
 
 The subprocess sandbox is intended for local experiments. It is not a production-grade hostile-code isolation boundary; use containers or a separate execution service for untrusted workloads.
-
-## Execution flow
-
-```mermaid
-flowchart TD
-    A[User runs accelerate launch train.py --config] --> B[load_config]
-    B --> C[seed_everything]
-    C --> D[prepare_datasets]
-    D --> E[load_mbpp]
-    E --> F[normalize_record and split_dataset]
-    F --> G[Train and test Dataset]
-    G --> H[Load tokenizer and model]
-    H --> I[evaluate_model baseline]
-    I --> J[evaluate_texts]
-    J --> K[execute_code in sandbox]
-    K --> L[Save baseline metrics and details]
-    L --> M[Authenticate W&B and create GRPOConfig and GRPOTrainer]
-    M --> N[trainer.train]
-    N --> O[Checkpoint save callback]
-    P --> I2[evaluate_model checkpoint]
-    I2 --> R2[Save checkpoint metrics, details, and logs]
-    Q --> S[Save final model and tokenizer]
-    S --> R[evaluate_model final]
-    R --> T[Save final metrics, details, and logs]
-```
