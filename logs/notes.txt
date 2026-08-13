@@ -268,3 +268,45 @@ Durable stopping automation depends on verifying external control permissions be
 ### Next Hypothesis
 
 Fix RunPod authorization or use a reliable local process-stop mechanism, then run the dynamic-reward experiment with early stopping and best-checkpoint restoration.
+
+## Agentic Coding
+
+### Skills Created or Updated
+
+- The `take-meeting-notes` skill was created to turn long working sessions into durable notes. Commit `db40517` added the skill.
+- The skill was revised to organize notes as chronological hypothesis and experiment cycles. Commit `0e67c96` added the cycle format.
+- The skill was revised again to require a dedicated Agentic Coding section for skills, automation, orchestration, repository changes, failures, and reusable lessons.
+
+### Workflows and Automation
+
+- The `run-iteratively` skill governed the five-batch SFT smoke test and the full-epoch SFT validation. Each loop used an explicit stopping condition and preserved failed and successful run evidence.
+- The `runpod-auto-stop` skill separated local plateau detection from remote pod shutdown. The supervisor remained disarmed when RunPod authorization could not be verified.
+- The `publish-blog-post` workflow kept the tiny LLM article synchronized with measured SFT and GRPO findings. Website commits included `007f921`, `6f8d45e`, `699d12a`, and `8985514`.
+- Parallel agents inspected SFT interfaces, designed checkpoint evaluation, analyzed performance options, and updated the blog. The main agent integrated and verified their outputs.
+- The W&B connector was used to inspect the active run directly instead of inferring behavior from summary logs alone.
+
+### Code and Infrastructure Changes
+
+- Commit `ea5020d` added response-only SFT, stage configuration, and W&B loss metrics for the current batch, cumulative average, and moving average.
+- Commits `51e5604`, `75eb586`, and `e438152` fixed the SFT-only execution path and recorded failed and successful smoke runs.
+- Commit `1d29cd5` added initial and per-epoch SFT evaluation while preventing duplicate evaluation at the SFT to GRPO boundary. Commit `4e31d8a` recorded the successful full-epoch run.
+- Commits `2ab7715` and `0bda995` captured the extended SFT experiment, stopped the overfitting run, and restored the one-epoch warm start.
+- Commits `115a078` and `dfec620` created and then restructured this durable notes file.
+
+### What Worked
+
+- Explicit stopping conditions made training validation concrete. Five successful SFT batches and one completed epoch each had an unambiguous completion test.
+- Stage-specific evaluation and metric logging exposed overfitting early and prevented duplicated boundary evaluations.
+- Parallel read-only investigation reduced implementation latency while isolated edit ownership avoided file conflicts.
+- Small commits linked code, run artifacts, and conclusions into a reproducible history.
+
+### What Failed
+
+- The first SFT-only smoke run failed because the debug configuration omitted a logging path required by baseline evaluation.
+- RunPod automatic shutdown could not be armed because pod verification returned HTTP 403.
+- A skills repository push was rejected because the remote branch had advanced. Rebasing resolved the divergence.
+- One repository push encountered transient GitHub DNS failure. A retry succeeded.
+
+### Learning
+
+Agentic workflows are most reliable when each loop has a measurable stopping condition, each external action fails closed, and every conclusion points to a durable metric, artifact, or commit. Skills should capture reusable process, while session notes should preserve how that process actually behaved.
