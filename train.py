@@ -22,6 +22,18 @@ from evaluate import append_training_step_header, append_training_step_metrics, 
 from sandbox import reward_function
 
 
+def reward_pass_weight(step: int, transition_start: int, transition_end: int, final_weight: float) -> float:
+    """Return the binary pass weight for the configured linear transition."""
+    # Keep the early reward fully dense until the transition starts.
+    if step <= transition_start:
+        return 0.0
+    # Hold the configured late pass weight after the transition finishes.
+    if step >= transition_end:
+        return final_weight
+    # Interpolate smoothly to avoid an abrupt change in GRPO advantages.
+    return final_weight * (step - transition_start) / (transition_end - transition_start)
+
+
 def load_config(path: str | Path) -> dict[str, Any]:
     """Load one YAML experiment configuration."""
     with Path(path).open(encoding="utf-8") as handle:
@@ -112,13 +124,22 @@ def _make_reward(config: dict[str, Any]):
     """Bind sandbox configuration to the TRL reward-function contract."""
     # Resolve the sandbox timeout once for the reward closure.
     timeout = float(config.get("sandbox_timeout_seconds", 3))
+    transition_start = int(config.get("dynamic_reward_transition_start", 150))
+    transition_end = int(config.get("dynamic_reward_transition_end", 200))
+    final_pass_weight = float(config.get("dynamic_reward_final_pass_weight", 0.9))
+    # Reject invalid schedules before the expensive training run begins.
+    if transition_end <= transition_start or not 0.0 <= final_pass_weight <= 1.0:
+        raise ValueError("The dynamic reward transition and final pass weight are invalid.")
 
     def reward(completions: list[object], test_code: list[str], **kwargs: object) -> list[float]:
         """Score the current GRPO completion batch."""
         # Share reward diagnostics with the training callback for W&B and local logs.
         diagnostics: dict[str, float] = {}
+        trainer_state = kwargs.get("trainer_state")
+        step = int(getattr(trainer_state, "global_step", 0))
+        pass_weight = reward_pass_weight(step, transition_start, transition_end, final_pass_weight)
         append_training_step_samples(config.get("log_path", "logs/logs.txt"), completions)
-        rewards = reward_function(completions, test_code, timeout, diagnostics=diagnostics, group_size=int(config.get("num_generations", 4)), **kwargs)
+        rewards = reward_function(completions, test_code, timeout, diagnostics=diagnostics, group_size=int(config.get("num_generations", 4)), pass_weight=pass_weight, **kwargs)
         config["_reward_diagnostics"] = diagnostics
         return rewards
 
@@ -146,7 +167,7 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
             self.rolling_reward_values: deque[float] = deque(maxlen=self.rolling_window_size)
             self.rolling_component_values: dict[str, deque[float]] = {
                 component: deque(maxlen=self.rolling_window_size)
-                for component in ("format", "syntax", "interface", "execution", "test_progress")
+                for component in ("format", "syntax", "interface", "execution", "test_progress", "pass")
             }
 
         def on_step_begin(self, args: Any, state: Any, control: Any, **_: Any) -> Any:

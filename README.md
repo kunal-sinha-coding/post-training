@@ -23,7 +23,7 @@ The debug configuration limits the dataset and training steps. `reuse_baseline: 
 
 ## Data and reward
 
-`data.py` loads MBPP, normalizes task descriptions and assertions, and creates a deterministic 80/20 train-test split. No validation set is used. `sandbox.py` executes each generated candidate in a timed isolated-mode subprocess. A candidate receives reward `1.0` only when all supplied assertions pass; syntax errors, failed assertions, empty responses, and timeouts receive `0.0`.
+`data.py` loads MBPP, normalizes task descriptions and assertions, and creates a deterministic 80/20 train-test split. No validation set is used. `sandbox.py` executes each generated candidate in a timed isolated-mode subprocess. Training starts with dense format, syntax, interface, execution, and partial-test rewards. From step 150 through step 200, the reward shifts linearly toward a 90 percent binary pass signal. Full passes remain worth `1.0` throughout training.
 
 W&B logging is enabled by default. TRL logs reward, reward variance, loss, gradient norm, entropy, completion lengths, clipping, token counts, learning rate, and step time. The project additionally logs baseline, checkpoint, and final pass@1, average reward, and execution status counts to W&B. Baseline evaluation runs before training, checkpoint evaluation runs on saves, and final evaluation runs after training.
 

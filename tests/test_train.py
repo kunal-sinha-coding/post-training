@@ -1,6 +1,15 @@
+"""Verify training callbacks and the dynamic reward schedule without running a model."""
+
 from types import SimpleNamespace
 
 import train
+
+
+def test_reward_pass_weight_transitions_smoothly():
+    """Use dense reward early and mostly binary pass reward after step 200."""
+    assert train.reward_pass_weight(150, 150, 200, 0.9) == 0.0
+    assert train.reward_pass_weight(175, 150, 200, 0.9) == 0.45
+    assert train.reward_pass_weight(200, 150, 200, 0.9) == 0.9
 
 
 class FakeModel:

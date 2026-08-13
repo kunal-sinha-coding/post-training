@@ -27,6 +27,9 @@ num_generations: 2
 max_prompt_length: 256
 max_completion_length: 256
 logging_steps: 1
+dynamic_reward_transition_start: 1
+dynamic_reward_transition_end: 2
+dynamic_reward_final_pass_weight: 0.9
 save_steps: 1
 eval_steps: 1
 evaluation_num_completions: 1

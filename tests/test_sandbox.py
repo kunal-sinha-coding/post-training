@@ -1,6 +1,8 @@
+"""Verify code extraction, sandbox execution, dense scoring, and scheduled pass blending."""
+
 import pytest
 
-from sandbox import execute_code, expected_interface, extract_code, reward_for_completion, score_completion, split_test_cases, summarize_reward_groups, validate_interface
+from sandbox import execute_code, expected_interface, extract_code, reward_for_completion, reward_function, score_completion, split_test_cases, summarize_reward_groups, validate_interface
 
 
 def test_extract_code_supports_fences():
@@ -38,6 +40,20 @@ def test_dense_reward_counts_partial_assertion_progress():
     assert detail["status"] == "partial"
     assert detail["interface_valid"] is True
     assert detail["reward_components"] == {"format": 0.05, "syntax": 0.10, "interface": 0.05, "execution": 0.05, "tests": 0.375}
+
+
+def test_pass_weight_suppresses_partial_reward_but_preserves_full_pass():
+    """Blend late rewards toward the binary pass objective."""
+    completions = [
+        "```python\ndef add(a, b):\n    return a + b\n```",
+        "```python\ndef add(a, b):\n    return a + b\n```",
+    ]
+    tests = ["assert add(1, 2) == 3\nassert add(1, 2) == 4", "assert add(1, 2) == 3"]
+    diagnostics = {}
+    rewards = reward_function(completions, tests, diagnostics=diagnostics, group_size=2, pass_weight=0.9)
+    assert rewards == pytest.approx([0.0625, 1.0])
+    assert diagnostics["reward/pass_weight"] == 0.9
+    assert diagnostics["reward/pass/mean"] == pytest.approx(0.45)
 
 
 def test_interface_validation_checks_name_and_arity():

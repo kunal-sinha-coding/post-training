@@ -1,4 +1,8 @@
-"""Small, timed subprocess sandbox for scoring generated Python code."""
+"""Extract generated Python, validate its interface, and execute each test in a timed subprocess.
+
+The scoring flow builds explicit dense components, blends them with the binary pass signal,
+and summarizes reward variation for local logs and W&B.
+"""
 
 from __future__ import annotations
 
@@ -203,7 +207,7 @@ def summarize_reward_groups(rewards: list[float], details: list[dict[str, object
         "reward/max": max(rewards),
     }
     # Emit mean, standard deviation, minimum, and maximum for every dense reward component.
-    for component in ("format", "syntax", "interface", "execution", "test_progress"):
+    for component in ("format", "syntax", "interface", "execution", "test_progress", "pass"):
         values = [float(detail.get("reward_components", {}).get("tests" if component == "test_progress" else component, 0.0)) for detail in details]
         mean = sum(values) / len(values)
         std = math.sqrt(sum((value - mean) ** 2 for value in values) / len(values))
@@ -214,8 +218,8 @@ def summarize_reward_groups(rewards: list[float], details: list[dict[str, object
     return diagnostics
 
 
-def reward_function(completions: list[object], test_code: list[str], sandbox_timeout_seconds: float = 3.0, diagnostics: dict[str, float] | None = None, group_size: int = 4, **_: object) -> list[float]:
-    """Score a GRPO batch with dense rewards and group diagnostics."""
+def reward_function(completions: list[object], test_code: list[str], sandbox_timeout_seconds: float = 3.0, diagnostics: dict[str, float] | None = None, group_size: int = 4, pass_weight: float = 0.0, **_: object) -> list[float]:
+    """Score a GRPO batch with scheduled dense and binary pass rewards."""
     # Record candidate outcomes so reward sparsity is visible during training.
     rewards: list[float] = []
     details: list[dict[str, object]] = []
@@ -226,9 +230,16 @@ def reward_function(completions: list[object], test_code: list[str], sandbox_tim
             text = str(completion.get("content", completion.get("text", "")))
         else:
             text = str(completion)
-        reward, detail = score_completion(text, tests, sandbox_timeout_seconds)
+        dense_reward, detail = score_completion(text, tests, sandbox_timeout_seconds)
+        # Scale dense components and add the scheduled binary pass component.
+        dense_weight = 1.0 - pass_weight
+        detail["reward_components"] = {name: float(value) * dense_weight for name, value in dict(detail["reward_components"]).items()}
+        detail["reward_components"]["pass"] = pass_weight if detail["status"] == "passed" else 0.0
+        reward = dense_reward * dense_weight + float(detail["status"] == "passed") * pass_weight
         rewards.append(reward)
         details.append(detail)
     if diagnostics is not None:
         diagnostics.update(summarize_reward_groups(rewards, details, group_size))
+        diagnostics["reward/pass_weight"] = pass_weight
+        diagnostics["reward/dense_weight"] = 1.0 - pass_weight
     return rewards
