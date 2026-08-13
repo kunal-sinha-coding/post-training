@@ -384,7 +384,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         # Require SFT to produce an epoch evaluation for the GRPO baseline.
         if baseline_metrics is None or baseline_details is None:
             raise RuntimeError("SFT completed without an end-of-epoch evaluation.")
-    else:
+    elif config.get("run_baseline_evaluation", True):
         # Evaluate the base model before direct GRPO training.
         cached_baseline = load_cached_evaluation(output_dir, "baseline") if config.get("reuse_baseline", True) else None
         # Compute the baseline when no complete cached evaluation exists.
@@ -434,7 +434,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         callbacks=callbacks,
     )
     # Log the direct GRPO baseline because SFT already logged its ending policy.
-    if not config.get("sft_enabled", False):
+    if not config.get("sft_enabled", False) and config.get("run_baseline_evaluation", True):
         log_evaluation(wandb, baseline_metrics, "baseline", 0)
     # Train the GRPO model and identify the selected checkpoint.
     trainer.train()

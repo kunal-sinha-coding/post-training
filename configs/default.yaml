@@ -6,9 +6,10 @@ seed: 42
 train_fraction: 0.8
 max_train_samples: null
 reuse_baseline: false
+run_baseline_evaluation: false
 run_intermediate_evals: true
 max_eval_samples: null
-sft_enabled: true
+sft_enabled: false
 sft_num_train_epochs: 1
 sft_max_steps: -1
 sft_per_device_train_batch_size: 1
@@ -18,7 +19,7 @@ sft_loss_rolling_window: 10
 log_path: logs/logs.txt
 output_dir: outputs/grpo-mbpp
 num_train_epochs: 100
-max_steps: -1
+max_steps: 370
 per_device_train_batch_size: 1
 gradient_accumulation_steps: 32
 learning_rate: 0.000001

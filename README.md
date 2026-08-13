@@ -19,7 +19,7 @@ accelerate launch --num_processes 1 train.py --config configs/debug.yaml
 accelerate launch --num_processes 1 train.py --config configs/default.yaml
 ```
 
-The debug configuration limits the dataset and training steps. `reuse_baseline: true` reuses both cached baseline JSON files when present; set it to `false` to recompute baseline evaluation. `run_intermediate_evals` defaults to `false`, so evaluation runs only at the end unless explicitly enabled. Each run writes its configuration, baseline metrics, checkpoint metrics, final metrics, per-example details, and model artifacts under its configured `output_dir`.
+The debug configuration limits the dataset and training steps. `run_baseline_evaluation: false` skips the baseline. When it is enabled, `reuse_baseline: true` reuses both cached baseline JSON files when present, while `false` recomputes the baseline. `run_intermediate_evals` controls checkpoint evaluation. Each run writes its configuration, available evaluation metrics, per-example details, and model artifacts under its configured `output_dir`.
 
 ## Data and reward
 
