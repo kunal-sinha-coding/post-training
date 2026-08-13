@@ -4,7 +4,7 @@
 
 - Favor simplicity over complexity. Do the minimal possible code changes required to achieve the objective.
 - Add a larger comment at the top of each code file that describes the complete code flow.
-- Add a one-line inline comment to every function and logical code block that describes what it does. Each comment must be one complete sentence and no more than one line.
+- Add a one-line inline comment to every function and logical code block that describes what it does. Each comment must be one complete sentence and no more than one line. Separate blocks with a newline.
 
 ## Writing style
 
