@@ -1,89 +1,270 @@
-# Meeting Notes
+# Experiment Notes
 
 ## Session
 
 - Date: August 13, 2026.
-- Topic: Improving MBPP performance for a 0.8 billion parameter model with SFT and GRPO.
+- Goal: Improve held-out MBPP pass@1 for Qwen3.5-0.8B using 299 training problems and 75 held-out problems.
 
-## Context
+## Starting Point
 
-The project uses Qwen3.5-0.8B and a deterministic 80/20 split of the 374-example MBPP training set. This produces 299 training problems and 75 held-out problems. The objective is to improve held-out pass@1 while using a small dataset as an inexpensive post-training testbed.
+The base model scored 22/75, or 29.3 percent pass@1. The project used MBPP as a small and inexpensive environment for iterating on post-training methods.
 
-## Key Findings
+## Cycle 1: Make GRPO produce a usable learning signal
 
-- The base model scored 22/75, or 29.3 percent pass@1, in the current evaluation setup.
-- One epoch of response-only SFT raised pass@1 to 27/75, or 36 percent. This was a 6.7 percentage point absolute gain and approximately a 23 percent relative gain.
-- Additional SFT epochs reduced training loss while held-out performance declined. This was treated as evidence of overfitting to the 299 training examples.
-- GRPO without SFT previously reached 30/75, or 40 percent pass@1.
-- One epoch of SFT followed by GRPO reached a best checkpoint score of 31/75, or 41.3 percent pass@1, at checkpoints 175, 350, and 425.
-- The 1.3 percentage point difference between 40 percent and 41.3 percent represents one held-out problem. The two methods should be treated as effectively tied without repeated seeds.
-- The SFT plus GRPO run was still active when these notes were written. Its latest recorded checkpoint was 775 at 29/75, or 38.7 percent, so 41.3 percent is a best-checkpoint result rather than a final result.
-- W&B showed cumulative GRPO training reward increasing while held-out pass@1 stagnated. `training/average_reward` rose from approximately 0.253 near step 21 to approximately 0.336 near step 645.
-- The largest cumulative reward increase came from `training/average_reward/test_progress`, which rose from approximately 0.090 to 0.139.
-- The divergence between reward and pass@1 is consistent with specialization to the 299 training prompts and supplied tests. Partial test progress can also increase without producing a completely correct program.
-- The cumulative reward average is slow to reveal recent deterioration because it includes all earlier batches.
-- GRPO trains with four sampled generations per prompt, while held-out pass@1 uses one greedy generation. Improvements to sampled candidates do not necessarily improve the greedy output.
-- Within-prompt reward variance remained healthy in W&B. In 30 sampled history points, `reward/mixed_group_fraction` was usually 0.875 or 1.0, while `reward/flat_group_fraction` was usually 0 or 0.125.
-- At sampled trainer step 720, `reward/mean_group_std` was approximately 0.190, `reward/mixed_group_fraction` was 1.0, and `reward/flat_group_fraction` was 0.
-- The healthy group variance suggests that four generations already provide comparative learning signal. Insufficient exploration is not the clearest current bottleneck.
-- The 75-example evaluation is coarse. Each solved problem changes pass@1 by approximately 1.33 percentage points.
+### Hypothesis
 
-## Metric Definitions
+A binary full-pass reward was too sparse for the weak base model because groups in which every candidate failed gave GRPO no relative preference signal.
 
-- `reward/mean_group_std` is the average reward standard deviation among the four generations for each prompt in a batch.
-- `reward/mixed_group_fraction` is the fraction of prompt groups whose generations received different rewards.
-- `reward/flat_group_fraction` is the fraction of prompt groups whose generations all received the same reward.
-- `reward/full_pass_fraction` is the fraction of generated programs that passed every supplied test.
-- `reward_std` is the reward standard deviation across all generated responses in the batch.
-- `frac_reward_zero_std` is TRL's fraction of prompt groups with zero reward standard deviation.
+### Experiment
 
-## Decisions
+The reward was decomposed into format, syntax, interface, execution, and partial test-progress components. Group-level reward variance and component metrics were added to W&B and local logs.
 
-- Use SFT as a short warm start rather than a long training stage when working with the current small dataset.
-- Treat one SFT epoch as the current useful setting because it captured a fast competence gain before clear overfitting appeared.
-- Prefer best-checkpoint selection and early stopping over running either SFT or GRPO for the full configured epoch budget.
-- Judge GRPO primarily by fixed held-out pass@1 rather than the raw or cumulative training reward curve.
-- Test reward alignment before increasing the generation count because current within-group variance is already healthy.
-- Do not claim that SFT has an inherently lower ceiling. The working hypothesis is that SFT learns demonstrated behavior efficiently, while outcome-based RL can reward alternative correct solutions once the policy is competent enough to sample them.
+### Metrics
 
-## Experiments and Results
+- The first dense-reward run produced nonzero reward variance and gradients on all five steps.
+- Four steps had mixed rewards in every group. The remaining step had mixed rewards in seven of eight groups.
+- Held-out pass@1 moved from 21/75 to 19/75 in that short run.
 
-| Experiment | Held-out result | Interpretation |
-| --- | ---: | --- |
-| Base model | 29.3 percent | This is the current reference point. |
-| One SFT epoch | 36.0 percent | SFT captured a large initial competence gain. |
-| Extended SFT | Declined after the initial gain | Falling evaluation performance with lower training loss indicated overfitting. |
-| GRPO without SFT | 40.0 percent best | RL recovered most of the available improvement without demonstrations. |
-| One SFT epoch plus GRPO | 41.3 percent best | The gain over no-SFT GRPO was one held-out problem and may be noise. |
+### What Went Well
 
-## Current Reward Hypothesis
+The dense reward eliminated the all-zero learning signal and made partial progress observable.
 
-The current dense reward is useful early because it gives credit for format, syntax, interface validity, execution, and partial test progress. Later in training, it may reward increasingly specialized or partially correct programs without improving complete correctness on unseen problems. A dynamic reward that gradually shifts weight from partial progress toward full passage is the preferred next experiment.
+### What Went Badly
 
-Increasing from four to eight generations remains a secondary experiment. It becomes more compelling if a full-pass-heavy reward causes `reward/mixed_group_fraction` to fall or `reward/flat_group_fraction` to rise substantially.
+Five optimizer steps were not enough to improve held-out correctness, and a usable gradient did not guarantee a directionally useful update.
 
-## Operational Notes
+### Learning
 
-- The most recent W&B run is `autumn-wave-23`, with run ID `qwv7wv0d`.
-- The W&B URL is https://wandb.ai/kunal-personal/grpo-mbpp/runs/qwv7wv0d.
-- An automatic RunPod stop was requested for five checkpoints without a new pass@1 maximum.
-- The stop supervisor was disarmed because the RunPod REST API returned HTTP 403 when verifying pod control authorization.
-- Training remained active after the supervisor was disarmed.
-- The tiny LLM blog post was updated with the SFT and GRPO findings in personal-website commit `8985514`.
+Reward variance is necessary for GRPO but is not sufficient for generalization. The direction of the shaped reward must also align with full correctness.
 
-## Open Questions
+### Next Hypothesis
 
-- Will a reward schedule that shifts toward full correctness improve held-out pass@1 beyond the current 41.3 percent best checkpoint?
-- When the reward becomes full-pass-heavy, will four generations continue to produce enough mixed-reward groups?
-- How much of the one-problem difference between no-SFT GRPO and SFT plus GRPO is attributable to seed and evaluation noise?
-- Can prompt and test presentation be varied without adding new underlying training problems to reduce memorization?
-- Should the 75-example held-out split be divided into validation and untouched test sets despite the resulting smaller sample sizes?
+Give dense-reward GRPO a longer training budget and retain the best intermediate checkpoint because performance may not improve monotonically.
 
-## Action Items
+## Cycle 2: Train dense-reward GRPO longer
 
-- [ ] Stop GRPO after five validation checkpoints without a new pass@1 maximum once a working RunPod control key or local stop mechanism is available.
-- [ ] Restore the best checkpoint rather than the final checkpoint after training stops.
-- [ ] Run GRPO from the base model with four generations and a reward schedule that moves from dense progress toward full correctness.
-- [ ] Monitor held-out pass@1, `reward/mixed_group_fraction`, `reward/flat_group_fraction`, `reward/mean_group_std`, and `reward/full_pass_fraction` during the dynamic-reward experiment.
-- [ ] Increase to eight generations only if the full-pass-heavy reward produces too many flat groups or if a controlled comparison justifies the added compute.
-- [ ] Compare methods under matched compute and repeat seeds before treating a one-problem evaluation difference as meaningful.
+### Hypothesis
+
+The dense reward would improve MBPP if the policy received enough updates, and checkpoint selection would preserve gains lost by later updates.
+
+### Experiment
+
+GRPO trained for ten epochs with four generations per prompt, an effective batch size of 32, and checkpoint evaluation every 25 optimizer steps.
+
+### Metrics
+
+- An earlier GRPO result scored 22/75, or 29.3 percent pass@1.
+- Checkpoint 150 scored 30/75, or 40 percent pass@1.
+- The final training checkpoint scored 26/75, or 34.7 percent pass@1.
+
+### What Went Well
+
+The longer budget produced an 11 percentage point absolute improvement over 29.3 percent, and best-checkpoint restoration preserved it.
+
+### What Went Badly
+
+Checkpoint performance was nonmonotonic. Using the final weights would have discarded much of the gain.
+
+### Learning
+
+Held-out evaluation and checkpoint selection are core parts of the training method rather than optional reporting.
+
+### Next Hypothesis
+
+Warm-start GRPO with supervised fine-tuning so the model begins RL with basic coding competence.
+
+## Cycle 3: Add response-only SFT before GRPO
+
+### Hypothesis
+
+SFT should quickly teach function signatures, valid Python, output format, and common solution patterns before GRPO explores execution outcomes.
+
+### Experiment
+
+An optional response-only SFT stage was added before GRPO. Prompt tokens were masked from the cross-entropy loss. W&B logged per-batch loss, cumulative average loss, and moving-average loss.
+
+### Metrics
+
+- A five-batch smoke run completed successfully.
+- Its batch losses were 1.374, 1.006, 1.036, 1.371, and 0.9086.
+- The final cumulative average loss was 1.139.
+
+### What Went Well
+
+The SFT implementation trained on verified MBPP reference solutions and passed the focused test suite.
+
+### What Went Badly
+
+The first SFT-only run failed before training because baseline evaluation expected `results_log_path`, which was missing from the debug configuration.
+
+### Learning
+
+An SFT-only execution path should skip unrelated baseline work, and stage-specific smoke tests need complete logging configuration.
+
+### Next Hypothesis
+
+Evaluate the model before SFT and after each full epoch to measure whether the warm start improves held-out pass@1.
+
+## Cycle 4: Evaluate one full SFT epoch
+
+### Hypothesis
+
+One supervised pass through the 299 training examples would produce a large early competence gain.
+
+### Experiment
+
+The base model was evaluated on all 75 held-out problems, trained for one SFT epoch with approximately ten optimizer batches, and evaluated again. The final SFT evaluation was designed to become the GRPO starting measurement without duplicate evaluation.
+
+### Metrics
+
+- Initial pass@1 was 22/75, or 29.3 percent.
+- Post-SFT pass@1 was 27/75, or 36 percent.
+- Format errors fell from four to one.
+- Final batch loss was 0.6242, and cumulative epoch loss was 0.8150.
+
+### What Went Well
+
+One epoch produced a 6.7 percentage point absolute gain, or approximately a 23 percent relative improvement.
+
+### What Went Badly
+
+The 75-example evaluation is coarse because one problem changes pass@1 by approximately 1.33 percentage points.
+
+### Learning
+
+SFT efficiently captured an easy initial gain from direct demonstrations.
+
+### Next Hypothesis
+
+Continue SFT until held-out performance saturates, then apply GRPO to the strongest supervised checkpoint.
+
+## Cycle 5: Extend SFT toward saturation
+
+### Hypothesis
+
+More supervised epochs might continue the rapid first-epoch improvement before reaching a practical ceiling.
+
+### Experiment
+
+SFT was configured for 100 epochs with a held-out evaluation after every epoch.
+
+### Metrics
+
+- The run was manually stopped during the epoch 24 evaluation.
+- Training loss continued to decrease.
+- Held-out pass@1 declined after the initial improvement.
+
+### What Went Well
+
+Per-epoch evaluation made the onset of overfitting visible.
+
+### What Went Badly
+
+The 299-example training set was small enough for supervised optimization to specialize quickly. Continuing toward 100 epochs consumed compute while evaluation performance deteriorated.
+
+### Learning
+
+One SFT epoch was useful, but extended SFT overfit this dataset. A lower SFT training loss was not evidence of better generalization.
+
+### Next Hypothesis
+
+Use exactly one SFT epoch as a warm start and let GRPO optimize execution outcomes afterward.
+
+## Cycle 6: Run one SFT epoch followed by GRPO
+
+### Hypothesis
+
+SFT would provide the easy competence gain, and GRPO would then improve beyond imitation by rewarding any correct program.
+
+### Experiment
+
+The model trained for one SFT epoch and then entered the existing dense-reward GRPO stage with four generations per prompt. The post-SFT evaluation was reused at the GRPO boundary.
+
+### Metrics
+
+- Post-SFT pass@1 was 27/75, or 36 percent.
+- GRPO reached 31/75, or 41.3 percent, at checkpoints 175, 350, and 425.
+- GRPO without SFT had previously reached 30/75, or 40 percent.
+- The active SFT plus GRPO run later fluctuated below its peak. Checkpoint 775 scored 29/75, or 38.7 percent.
+
+### What Went Well
+
+GRPO improved the SFT model from 36 percent to a 41.3 percent best checkpoint.
+
+### What Went Badly
+
+The improvement over no-SFT GRPO was only one held-out problem. Continued training did not preserve the peak.
+
+### Learning
+
+SFT changed how quickly the model reached useful performance but did not clearly raise the final ceiling. The 40 percent and 41.3 percent results should be treated as effectively tied without repeated seeds.
+
+### Next Hypothesis
+
+Understand why cumulative training reward continued increasing while held-out pass@1 stagnated.
+
+## Cycle 7: Diagnose reward and evaluation divergence
+
+### Hypothesis
+
+GRPO was increasingly optimizing partial progress on the 299 training problems rather than full correctness on unseen problems.
+
+### Experiment
+
+The latest W&B run, `autumn-wave-23` with run ID `qwv7wv0d`, was inspected for cumulative reward components, held-out evaluations, group variance, and full-pass behavior.
+
+### Metrics
+
+- `training/average_reward` rose from approximately 0.253 near step 21 to approximately 0.336 near step 645.
+- `training/average_reward/test_progress` rose from approximately 0.090 to 0.139 and contributed the largest increase.
+- Held-out pass@1 peaked at 41.3 percent and later remained mostly between 36 and 40 percent.
+- At sampled trainer step 720, `reward/mean_group_std` was approximately 0.190.
+- At that step, `reward/mixed_group_fraction` was 1.0 and `reward/flat_group_fraction` was 0.
+- Across 30 sampled W&B points, mixed-group fraction was usually 0.875 or 1.0, while flat-group fraction was usually 0 or 0.125.
+
+### What Went Well
+
+Four generations usually produced healthy within-prompt reward differences, so GRPO retained comparative signal.
+
+### What Went Badly
+
+The cumulative reward average hid recent deterioration, partial test progress could rise without full passage, and training repeatedly reused the same 299 prompts and tests. GRPO also trained on sampled candidates while evaluation used one greedy completion.
+
+### Learning
+
+Insufficient exploration was not the clearest bottleneck. The evidence pointed more strongly to training-set specialization and reward misalignment with held-out full correctness.
+
+### Next Hypothesis
+
+Keep four generations and test a dynamic reward that begins with dense partial credit but gradually shifts most weight toward full passage.
+
+## Cycle 8: Automate plateau stopping
+
+### Hypothesis
+
+Automatically stopping after five checkpoints without a new pass@1 maximum would prevent wasted compute and preserve the best checkpoint.
+
+### Experiment
+
+A plateau watcher and RunPod stop supervisor were prepared for the active training process. The supervisor verified the pod through the RunPod REST API before it could become armed.
+
+### Metrics
+
+- The active run exceeded five consecutive checkpoints without a new maximum.
+- RunPod pod verification returned HTTP 403 twice.
+
+### What Went Well
+
+The supervisor failed closed and did not interrupt training without verified pod-control authorization.
+
+### What Went Badly
+
+The injected `RUNPOD_API_KEY` existed but could not control the current pod. The automatic stop schedule had to be disarmed.
+
+### Learning
+
+Durable stopping automation depends on verifying external control permissions before relying on it. Local plateau detection and remote pod control should remain separate gates.
+
+### Next Hypothesis
+
+Fix RunPod authorization or use a reliable local process-stop mechanism, then run the dynamic-reward experiment with early stopping and best-checkpoint restoration.
