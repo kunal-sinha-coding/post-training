@@ -1,4 +1,4 @@
-"""Dataset loading and prompt preparation for MBPP GRPO training."""
+"""Load official MBPP splits, normalize prompts, and prepare GRPO and SFT datasets."""
 
 from __future__ import annotations
 
@@ -90,16 +90,20 @@ def split_dataset(dataset: Any, train_fraction: float = 0.8, seed: int = 42) -> 
 
 
 def prepare_datasets(config: dict[str, Any]) -> tuple[Any, Any]:
-    """Load MBPP, normalize it, split it, and apply optional debug limits."""
-    dataset = load_mbpp(config["dataset_name"], config.get("dataset_config"), config.get("dataset_split", "train"))
-    train_dataset, test_dataset = split_dataset(dataset, float(config.get("train_fraction", 0.8)), int(config.get("seed", 42)))
+    """Load official MBPP training and validation splits and apply optional debug limits."""
+    train_dataset = load_mbpp(config["dataset_name"], config.get("dataset_config"), config.get("train_split", "train"))
+    validation_dataset = load_mbpp(config["dataset_name"], config.get("dataset_config"), config.get("validation_split", "validation"))
     max_train = config.get("max_train_samples")
     max_eval = config.get("max_eval_samples")
+
+    # Limit the official training split for short debugging runs when requested.
     if max_train:
         train_dataset = train_dataset.select(range(min(int(max_train), len(train_dataset))))
+
+    # Limit the official validation split for short debugging runs when requested.
     if max_eval:
-        test_dataset = test_dataset.select(range(min(int(max_eval), len(test_dataset))))
-    return train_dataset, test_dataset
+        validation_dataset = validation_dataset.select(range(min(int(max_eval), len(validation_dataset))))
+    return train_dataset, validation_dataset
 
 
 def build_sft_dataset(dataset: Any, tokenizer: Any, config: dict[str, Any]) -> Any:

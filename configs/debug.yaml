@@ -1,9 +1,9 @@
 model_name_or_path: Qwen/Qwen3.5-0.8B
 dataset_name: google-research-datasets/mbpp
 dataset_config: null
-dataset_split: train
+train_split: train
+validation_split: validation
 seed: 42
-train_fraction: 0.8
 max_train_samples: 8
 reuse_baseline: true
 run_intermediate_evals: false

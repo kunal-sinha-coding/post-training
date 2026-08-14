@@ -1,4 +1,6 @@
-from data import build_prompt, build_sft_dataset, normalize_record, split_dataset
+"""Verify MBPP normalization, official split loading, prompting, and SFT tokenization."""
+
+from data import build_prompt, build_sft_dataset, normalize_record, prepare_datasets, split_dataset
 
 
 def test_normalize_record_builds_prompt_and_tests():
@@ -17,6 +19,31 @@ def test_split_dataset_is_deterministic():
     assert first_test[:] == second_test[:]
     assert len(first_train) == 8
     assert len(first_test) == 2
+
+
+def test_prepare_datasets_loads_official_train_and_validation_splits(monkeypatch):
+    """Dataset preparation should preserve the official MBPP split boundaries."""
+    calls = []
+
+    class Dataset(list):
+        """Provide the subset selection method used by dataset preparation."""
+
+        def select(self, indices):
+            """Return the selected records in their original order."""
+            return Dataset(self[index] for index in indices)
+
+    def fake_load_mbpp(dataset_name, dataset_config, split):
+        """Record each requested split and return its expected number of examples."""
+        calls.append((dataset_name, dataset_config, split))
+        size = 374 if split == "train" else 90
+        return Dataset({"id": index} for index in range(size))
+
+    monkeypatch.setattr("data.load_mbpp", fake_load_mbpp)
+    train, validation = prepare_datasets({"dataset_name": "mbpp", "train_split": "train", "validation_split": "validation"})
+
+    assert calls == [("mbpp", None, "train"), ("mbpp", None, "validation")]
+    assert len(train) == 374
+    assert len(validation) == 90
 
 
 def test_prompt_template_can_be_overridden():
