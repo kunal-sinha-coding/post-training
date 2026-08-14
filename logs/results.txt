@@ -4188,3 +4188,163 @@ wandb_project: grpo-mbpp
 wandb_run_name: null
 
 ------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-08-14 00:32:29 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: baseline
+Training context: baseline
+Epoch: baseline
+Timestamp: 2026-08-14 00:32:54 PDT
+Git commit: 87dab8e
+Change description: 87dab8e Use official MBPP validation split
+3b20a2a Document dynamic reward regression analysis
+df765c9 Update inline comment guidelines in AGENTS.md
+2f9ce7d Remove execution flow section from README
+af375e7 Configure 370-step reward analysis run
+c064cc4 Add dynamic pass reward schedule
+b2e0513 Add agentic coding session notes
+dfec620 Rewrite notes as experiment cycles
+115a078 Add post-training meeting notes
+0bda995 Stop saturated SFT and restore one epoch warm start
+Metrics:
+{
+  "average_reward": 0.5,
+  "examples": 4,
+  "pass_at_1": 0.5,
+  "status_counts": {
+    "failed": 1,
+    "format_error": 1,
+    "passed": 2
+  }
+}
+YAML path: configs/debug.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen3.5-0.8B
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+synthetic_tests_enabled: true
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+seed: 42
+max_train_samples: 8
+reuse_baseline: true
+run_intermediate_evals: false
+max_eval_samples: 4
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: 5
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 1
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 3
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/grpo-mbpp-debug
+num_train_epochs: 1
+max_steps: 1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 1
+learning_rate: 0.000001
+num_generations: 2
+max_prompt_length: 256
+max_completion_length: 256
+logging_steps: 1
+dynamic_reward_transition_start: 1
+dynamic_reward_transition_end: 2
+dynamic_reward_final_pass_weight: 0.9
+save_steps: 1
+eval_steps: 1
+evaluation_num_completions: 1
+sandbox_timeout_seconds: 2
+trust_remote_code: false
+bf16: false
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-08-14 00:41:03 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: final
+Training context: final
+Epoch: 0.125
+Timestamp: 2026-08-14 00:41:47 PDT
+Git commit: 87dab8e
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.25,
+  "examples": 4,
+  "pass_at_1": 0.25,
+  "status_counts": {
+    "format_error": 3,
+    "passed": 1
+  }
+}
+YAML path: configs/debug.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen3.5-0.8B
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+synthetic_tests_enabled: true
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+seed: 42
+max_train_samples: 8
+reuse_baseline: true
+run_intermediate_evals: false
+max_eval_samples: 4
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: 5
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 1
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 3
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/grpo-mbpp-debug
+num_train_epochs: 1
+max_steps: 1
+per_device_train_batch_size: 2
+gradient_accumulation_steps: 1
+learning_rate: 0.000001
+num_generations: 2
+max_prompt_length: 256
+max_completion_length: 256
+logging_steps: 1
+dynamic_reward_transition_start: 1
+dynamic_reward_transition_end: 2
+dynamic_reward_final_pass_weight: 0.9
+save_steps: 1
+eval_steps: 1
+evaluation_num_completions: 1
+sandbox_timeout_seconds: 2
+trust_remote_code: false
+bf16: false
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------

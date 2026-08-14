@@ -140,6 +140,10 @@ def _make_reward(config: dict[str, Any]):
         pass_weight = reward_pass_weight(step, transition_start, transition_end, final_pass_weight)
         append_training_step_samples(config.get("log_path", "logs/logs.txt"), completions)
         rewards = reward_function(completions, test_code, timeout, diagnostics=diagnostics, group_size=int(config.get("num_generations", 4)), pass_weight=pass_weight, **kwargs)
+        # Record the number of hidden assertions exercised by this reward batch.
+        synthetic_counts = kwargs.get("synthetic_test_count", [])
+        if isinstance(synthetic_counts, list) and synthetic_counts:
+            diagnostics["reward/synthetic_tests/mean"] = sum(float(count) for count in synthetic_counts) / len(synthetic_counts)
         config["_reward_diagnostics"] = diagnostics
         return rewards
 

@@ -3,6 +3,9 @@ dataset_name: google-research-datasets/mbpp
 dataset_config: null
 train_split: train
 validation_split: validation
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
 seed: 42
 max_train_samples: null
 reuse_baseline: false

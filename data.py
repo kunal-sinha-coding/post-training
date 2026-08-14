@@ -1,7 +1,9 @@
-"""Load official MBPP splits, normalize prompts, and prepare GRPO and SFT datasets."""
+"""Load MBPP, optionally add hidden synthetic tests, and prepare GRPO and SFT datasets."""
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
 from typing import Any
 
 
@@ -45,7 +47,47 @@ def normalize_record(record: dict[str, Any]) -> dict[str, Any]:
         "prompt": build_prompt(record),
         "test_code": format_tests(record),
         "reference_code": str(_first_value(record, "code", "canonical_solution", default="")),
+        "synthetic_test_count": 0,
     }
+
+
+def load_synthetic_tests(path: str | Path) -> dict[str, list[str]]:
+    """Load generated assertions from a JSONL artifact keyed by task identifier."""
+    tests_by_task: dict[str, list[str]] = {}
+
+    # Parse and validate every nonempty artifact record.
+    with Path(path).open(encoding="utf-8") as handle:
+        for line_number, line in enumerate(handle, start=1):
+            if not line.strip():
+                continue
+            record = json.loads(line)
+            task_id = str(record["task_id"])
+            generated_tests = record.get("generated_tests", [])
+            if task_id in tests_by_task or not isinstance(generated_tests, list) or not all(isinstance(test, str) for test in generated_tests):
+                raise ValueError(f"Invalid synthetic test record on line {line_number}.")
+            tests_by_task[task_id] = generated_tests
+    return tests_by_task
+
+
+def add_synthetic_tests(dataset: Any, tests_by_task: dict[str, list[str]], require_all: bool = True) -> Any:
+    """Append hidden generated assertions to training test code without changing prompts."""
+    def augment(record: dict[str, Any]) -> dict[str, Any]:
+        """Attach the generated assertions for one training task."""
+        generated_tests = tests_by_task.get(str(record["task_id"]))
+        if generated_tests is None:
+            if require_all:
+                raise ValueError(f"Synthetic tests are missing for task {record['task_id']}.")
+            generated_tests = []
+        original_test_code = str(record["test_code"])
+        return {
+            "test_code": "\n".join(part for part in [original_test_code, *generated_tests] if part),
+            "synthetic_test_count": len(generated_tests),
+        }
+
+    # Preserve the dataset representation used by the caller.
+    if hasattr(dataset, "map"):
+        return dataset.map(augment)
+    return [{**record, **augment(record)} for record in dataset]
 
 
 def _to_dataset(records: list[dict[str, Any]]) -> Any:
@@ -103,6 +145,17 @@ def prepare_datasets(config: dict[str, Any]) -> tuple[Any, Any]:
     # Limit the official validation split for short debugging runs when requested.
     if max_eval:
         validation_dataset = validation_dataset.select(range(min(int(max_eval), len(validation_dataset))))
+
+    # Add generated tests only to training rewards when explicitly enabled.
+    if config.get("synthetic_tests_enabled", False):
+        synthetic_path = config.get("synthetic_tests_path")
+        if not synthetic_path:
+            raise ValueError("synthetic_tests_path is required when synthetic tests are enabled.")
+        train_dataset = add_synthetic_tests(
+            train_dataset,
+            load_synthetic_tests(synthetic_path),
+            require_all=bool(config.get("synthetic_tests_require_all", True)),
+        )
     return train_dataset, validation_dataset
 
 

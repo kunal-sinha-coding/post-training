@@ -1,6 +1,8 @@
-"""Verify MBPP normalization, official split loading, prompting, and SFT tokenization."""
+"""Verify MBPP normalization, split loading, synthetic tests, prompting, and SFT tokenization."""
 
-from data import build_prompt, build_sft_dataset, normalize_record, prepare_datasets, split_dataset
+import json
+
+from data import add_synthetic_tests, load_synthetic_tests, build_prompt, build_sft_dataset, normalize_record, prepare_datasets, split_dataset
 
 
 def test_normalize_record_builds_prompt_and_tests():
@@ -48,6 +50,20 @@ def test_prepare_datasets_loads_official_train_and_validation_splits(monkeypatch
 
 def test_prompt_template_can_be_overridden():
     assert build_prompt({"prompt": "Do it", "test_list": []}, "TASK: {prompt}\nTESTS: {tests}") == "TASK: Do it\nTESTS: "
+
+
+def test_synthetic_tests_are_hidden_from_prompts(tmp_path):
+    """Generated assertions should extend rewards without leaking into prompts."""
+    artifact = tmp_path / "tests.jsonl"
+    artifact.write_text(json.dumps({"task_id": 1, "generated_tests": ["assert add(2, 3) == 5"]}) + "\n", encoding="utf-8")
+    dataset = [{"task_id": 1, "prompt": "Visible prompt", "test_code": "assert add(1, 2) == 3", "synthetic_test_count": 0}]
+
+    # Load and attach the generated assertions.
+    augmented = add_synthetic_tests(dataset, load_synthetic_tests(artifact))
+
+    assert augmented[0]["prompt"] == "Visible prompt"
+    assert augmented[0]["test_code"].splitlines() == ["assert add(1, 2) == 3", "assert add(2, 3) == 5"]
+    assert augmented[0]["synthetic_test_count"] == 1
 
 
 def test_build_sft_dataset_masks_prompt_tokens():
