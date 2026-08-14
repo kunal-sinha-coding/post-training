@@ -34,9 +34,6 @@ results_log_path: logs/results.txt
 best_checkpoint_metric: pass_at_1
 logging_steps: 1
 reward_rolling_window: 10
-dynamic_reward_transition_start: 150
-dynamic_reward_transition_end: 200
-dynamic_reward_final_pass_weight: 0.9
 save_steps: 25
 eval_steps: 100
 evaluation_num_completions: 1

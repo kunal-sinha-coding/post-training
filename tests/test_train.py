@@ -1,15 +1,26 @@
-"""Verify training callbacks and the dynamic reward schedule without running a model."""
+"""Verify training callbacks and fixed dense rewards without running a model."""
 
 from types import SimpleNamespace
 
 import train
 
 
-def test_reward_pass_weight_transitions_smoothly():
-    """Use dense reward early and mostly binary pass reward after step 200."""
-    assert train.reward_pass_weight(150, 150, 200, 0.9) == 0.0
-    assert train.reward_pass_weight(175, 150, 200, 0.9) == 0.45
-    assert train.reward_pass_weight(200, 150, 200, 0.9) == 0.9
+def test_reward_stays_dense(monkeypatch, tmp_path):
+    """Pass zero binary weight to the sandbox at every training step."""
+    captured = {}
+
+    # Capture the pass weight without executing candidate code.
+    def fake_reward_function(completions, test_code, timeout, **kwargs):
+        """Return a fixed reward after recording the configured pass weight."""
+        del completions, test_code, timeout
+        captured["pass_weight"] = kwargs["pass_weight"]
+        return [0.0]
+
+    monkeypatch.setattr(train, "reward_function", fake_reward_function)
+    reward = train._make_reward({"log_path": str(tmp_path / "logs.txt"), "num_generations": 1})
+    reward(["completion"], ["assert solve() == 1"])
+
+    assert captured["pass_weight"] == 0.0
 
 
 class FakeModel:
