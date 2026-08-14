@@ -6,6 +6,8 @@ validation_split: validation
 synthetic_tests_enabled: true
 synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
 synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
 seed: 42
 max_train_samples: null
 reuse_baseline: false

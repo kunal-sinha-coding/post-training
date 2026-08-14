@@ -20,6 +20,12 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
+# Support both module imports and direct script execution from the repository.
+try:
+    from synthetic_data.constraints import infer_constraints, validate_call
+except ModuleNotFoundError:
+    from constraints import infer_constraints, validate_call
+
 
 DEFAULT_OUTPUT = Path(__file__).with_name("mbpp_train_tests.jsonl")
 
@@ -38,15 +44,16 @@ def extract_literal_calls(test_code: str) -> list[ast.Call]:
         if not isinstance(call.func, ast.Name):
             continue
 
-        # Reject calls that cannot be reconstructed safely from literal values.
-        try:
-            for argument in call.args:
-                ast.literal_eval(argument)
-            for keyword in call.keywords:
-                if keyword.arg is None:
-                    raise ValueError("Expanded keyword arguments are unsupported.")
-                ast.literal_eval(keyword.value)
-        except (ValueError, TypeError):
+        # Accept literals and constructor calls whose leaves are literals.
+        def supported(node: ast.AST) -> bool:
+            """Accept literal syntax and named constructors without executable expressions."""
+            if isinstance(node, ast.Call):
+                return isinstance(node.func, ast.Name) and all(supported(item) for item in node.args) and all(item.arg is not None and supported(item.value) for item in node.keywords)
+            if isinstance(node, ast.Name):
+                return False
+            return all(supported(child) for child in ast.iter_child_nodes(node)) if not isinstance(node, (ast.Constant, ast.Load)) else True
+
+        if not all(supported(argument) for argument in call.args) or not all(keyword.arg is not None and supported(keyword.value) for keyword in call.keywords):
             continue
         calls.append(call)
     return calls
@@ -74,7 +81,9 @@ def mutation_options(value: Any, rng: random.Random) -> list[Any]:
     # Explore boundaries, nearby values, scale changes, and sign changes for integers.
     if isinstance(value, int):
         delta = rng.randint(1, max(2, abs(value) + 1))
-        return _unique_values([0, 1, -1, value + 1, value - 1, value + delta, value - delta, -value, value * 2])
+        nearby = [value + offset for offset in range(-24, 25) if offset]
+        scaled = [value * factor for factor in range(2, 7)]
+        return _unique_values([0, 1, -1, value + 1, value - 1, value + delta, value - delta, -value, value * 2, *nearby, *scaled])
 
     # Explore finite nearby and scaled values for floating point inputs.
     if isinstance(value, float) and math.isfinite(value):
@@ -84,7 +93,17 @@ def mutation_options(value: Any, rng: random.Random) -> list[Any]:
     # Explore length, order, casing, whitespace, and punctuation for strings.
     if isinstance(value, str):
         middle = value[len(value) // 2 :] if value else "x"
-        return _unique_values(["", value[:1], middle, value[::-1], value.lower(), value.upper(), value + value, f" {value} ", f"{value}!"])
+        options = ["", value[:1], middle, value[::-1], value.lower(), value.upper(), value + value, f" {value} ", f"{value}!"]
+
+        # Add stable rotations and character substitutions for wider same-type coverage.
+        for offset in range(1, max(2, len(value))):
+            options.append(value[offset:] + value[:offset])
+        alphabet = "aA0_x- !"
+        for index in range(max(1, len(value))):
+            for character in alphabet:
+                base = value or "x"
+                options.append(base[:index] + character + base[index + 1 :])
+        return _unique_values(options)
 
     # Preserve list representation while varying size, order, and one nested value.
     if isinstance(value, list):
@@ -126,44 +145,72 @@ def _literal_node(value: Any) -> ast.expr:
     return ast.parse(repr(value), mode="eval").body
 
 
-def generate_candidate_calls(calls: list[ast.Call], limit: int, seed: int) -> list[str]:
-    """Generate unique mutated calls in deterministic seeded order."""
+def _constant_paths(node: ast.AST, path: tuple[tuple[str, int | None], ...] = ()) -> list[tuple[tuple[str, int | None], ...]]:
+    """Return paths to mutable literal leaves while preserving container shapes."""
+    # Treat booleans, numbers, and strings as the only directly mutable leaves.
+    if isinstance(node, ast.Constant) and isinstance(node.value, (bool, int, float, str)):
+        return [path]
+    paths: list[tuple[tuple[str, int | None], ...]] = []
+    for field, value in ast.iter_fields(node):
+        if isinstance(value, list):
+            for index, child in enumerate(value):
+                if isinstance(child, ast.AST):
+                    paths.extend(_constant_paths(child, path + ((field, index),)))
+        elif isinstance(value, ast.AST):
+            paths.extend(_constant_paths(value, path + ((field, None),)))
+    return paths
+
+
+def _replace_path(node: ast.AST, path: tuple[tuple[str, int | None], ...], replacement: ast.expr) -> None:
+    """Replace one selected literal leaf in a copied call tree."""
+    # Walk to the parent node and update its field or list entry.
+    current = node
+    for field, index in path[:-1]:
+        current = getattr(current, field) if index is None else getattr(current, field)[index]
+    field, index = path[-1]
+    if index is None:
+        setattr(current, field, replacement)
+    else:
+        getattr(current, field)[index] = replacement
+
+
+def generate_candidate_calls(calls: list[ast.Call], limit: int, seed: int, constraints: list[dict[str, Any]] | None = None) -> list[str]:
+    """Generate unique shape-preserving calls that satisfy inferred constraints."""
     # Seed a local generator so task processing order cannot change the output.
+    import copy
+
     rng = random.Random(seed)
     candidates: list[str] = []
     seen = {ast.unparse(call) for call in calls}
+    active_constraints = constraints or []
 
-    # Mutate one positional argument at a time to stay near the demonstrated domain.
+    # Mutate literal leaves individually so lengths, matrix shapes, and arity remain fixed.
     for call in calls:
-        for index, argument in enumerate(call.args):
-            value = ast.literal_eval(argument)
-            options = mutation_options(value, rng)
+        for path in _constant_paths(call):
+            original = copy.deepcopy(call)
+            current: ast.AST = original
+            for field, index in path:
+                current = getattr(current, field) if index is None else getattr(current, field)[index]
+            options = mutation_options(current.value, rng) if isinstance(current, ast.Constant) else []
+            parent: ast.AST = call
+            for field, index in path[:-1]:
+                parent = getattr(parent, field) if index is None else getattr(parent, field)[index]
+            if isinstance(parent, ast.UnaryOp):
+                options = [abs(option) if type(option) in (int, float) else option for option in options]
             rng.shuffle(options)
-            for replacement in options:
-                mutated = ast.Call(func=call.func, args=list(call.args), keywords=list(call.keywords))
-                mutated.args[index] = _literal_node(replacement)
+            for option in options:
+                mutated = copy.deepcopy(call)
+                _replace_path(mutated, path, _literal_node(option))
+                if validate_call(active_constraints, mutated):
+                    continue
                 source = ast.unparse(ast.fix_missing_locations(mutated))
                 if source not in seen:
                     seen.add(source)
                     candidates.append(source)
 
-        # Mutate one keyword argument at a time with the same conservative policy.
-        for index, keyword in enumerate(call.keywords):
-            value = ast.literal_eval(keyword.value)
-            options = mutation_options(value, rng)
-            rng.shuffle(options)
-            for replacement in options:
-                keywords = [ast.keyword(arg=item.arg, value=item.value) for item in call.keywords]
-                keywords[index].value = _literal_node(replacement)
-                mutated = ast.Call(func=call.func, args=list(call.args), keywords=keywords)
-                source = ast.unparse(ast.fix_missing_locations(mutated))
-                if source not in seen:
-                    seen.add(source)
-                    candidates.append(source)
-
-    # Shuffle all mutations to avoid always favoring the first original assertion.
+    # Shuffle all valid mutations to balance coverage across official assertions.
     rng.shuffle(candidates)
-    return candidates[: max(limit * 5, limit)]
+    return candidates[: max(limit * 10, limit)]
 
 
 def _safe_environment() -> dict[str, str]:
@@ -173,53 +220,28 @@ def _safe_environment() -> dict[str, str]:
 
 
 def run_reference_oracle(reference_code: str, calls: list[str], timeout_seconds: float) -> list[dict[str, Any]]:
-    """Evaluate a batch of calls twice in one isolated reference subprocess."""
-    # Build a child program that reports stable representable values as JSON.
-    child = f'''import ast
-import json
+    """Evaluate each candidate twice in its own isolated reference subprocess."""
+    # Isolate candidates so a timeout or global mutation cannot poison later tests.
+    results: list[dict[str, Any]] = []
+    for source in calls:
+        child = f"""import ast\nimport json\nfrom collections.abc import Mapping\n\n{reference_code}\n\ntry:\n    first = eval({source!r})\n    second = eval({source!r})\n    rendered_value = dict(first) if isinstance(first, Mapping) else first\n    second_value = dict(second) if isinstance(second, Mapping) else second\n    rendered = repr(rendered_value)\n    ast.literal_eval(rendered)\n    ok = first is not None and rendered_value == second_value and repr(second_value) == rendered\n    result = {{"ok": ok, "output_repr": rendered}}\n    if not ok:\n        result["error"] = "NoneResult" if first is None else "UnstableResult"\n    print(json.dumps(result))\nexcept BaseException as error:\n    print(json.dumps({{"ok": False, "error": type(error).__name__}}))\n"""
 
-{reference_code}
+        # Run one candidate in a fresh temporary directory and minimal environment.
+        with tempfile.TemporaryDirectory(prefix="mbpp-test-oracle-") as directory:
+            script = Path(directory) / "oracle.py"
+            script.write_text(child, encoding="utf-8")
+            try:
+                completed = subprocess.run([sys.executable, "-I", str(script)], capture_output=True, text=True, timeout=timeout_seconds, cwd=directory, env=_safe_environment(), check=False)
+            except subprocess.TimeoutExpired:
+                results.append({"ok": False, "error": "TimeoutExpired"})
+                continue
 
-calls = json.loads({json.dumps(json.dumps(calls))})
-results = []
-for source in calls:
-    try:
-        first = eval(source)
-        second = eval(source)
-        rendered = repr(first)
-        ast.literal_eval(rendered)
-        results.append({{"ok": first == second and repr(second) == rendered, "output_repr": rendered}})
-    except BaseException as error:
-        results.append({{"ok": False, "error": type(error).__name__}})
-print(json.dumps(results))
-'''
-
-    # Execute the complete batch in one temporary isolated Python process.
-    with tempfile.TemporaryDirectory(prefix="mbpp-test-oracle-") as directory:
-        script = Path(directory) / "oracle.py"
-        script.write_text(child, encoding="utf-8")
+        # Decode only the final protocol line because reference functions may print output.
         try:
-            completed = subprocess.run(
-                [sys.executable, "-I", str(script)],
-                capture_output=True,
-                text=True,
-                timeout=timeout_seconds,
-                cwd=directory,
-                env=_safe_environment(),
-                check=False,
-            )
-        except subprocess.TimeoutExpired:
-            return [{"ok": False, "error": "TimeoutExpired"} for _ in calls]
-
-    # Reject the full batch when reference setup or protocol output fails.
-    if completed.returncode != 0:
-        return [{"ok": False, "error": "ReferenceError"} for _ in calls]
-    try:
-        results = json.loads(completed.stdout.strip())
-    except json.JSONDecodeError:
-        return [{"ok": False, "error": "ProtocolError"} for _ in calls]
-    if not isinstance(results, list) or len(results) != len(calls):
-        return [{"ok": False, "error": "ProtocolError"} for _ in calls]
+            result = json.loads(completed.stdout.strip().splitlines()[-1]) if completed.returncode == 0 else {"ok": False, "error": "ReferenceError"}
+        except (IndexError, json.JSONDecodeError):
+            result = {"ok": False, "error": "ProtocolError"}
+        results.append(result)
     return results
 
 
@@ -229,8 +251,25 @@ def augment_record(record: dict[str, Any], tests_per_task: int = 20, seed: int =
     task_id = record.get("task_id")
     task_seed = seed + sum(ord(character) for character in str(task_id))
     calls = extract_literal_calls(str(record.get("test_code", "")))
-    candidates = generate_candidate_calls(calls, tests_per_task, task_seed)
-    results = run_reference_oracle(str(record.get("reference_code", "")), candidates, timeout_seconds) if candidates else []
+    constraints = infer_constraints(calls, str(record.get("text", record.get("prompt", ""))))
+    original_module = ast.parse(str(record.get("test_code", "")))
+    originals_expect_none = any(isinstance(node, ast.Assert) and isinstance(node.test, ast.Compare) and isinstance(node.test.comparators[0], ast.Constant) and node.test.comparators[0].value is None for node in original_module.body)
+    for constraint in constraints:
+        if constraint.get("type") == "none_output_allowed":
+            constraint["allowed"] = originals_expect_none
+    candidates = generate_candidate_calls(calls, tests_per_task, task_seed, constraints)
+
+    # Reuse declared fixture subtrees for the sole nonliteral binary-tree task.
+    if not calls and "binary tree" in str(record.get("prompt", "")).lower():
+        original_module = ast.parse(str(record.get("test_code", "")))
+        original_calls = [node.test.left for node in original_module.body if isinstance(node, ast.Assert) and isinstance(node.test, ast.Compare) and isinstance(node.test.left, ast.Call)]
+        function_name = original_calls[0].func.id if original_calls and isinstance(original_calls[0].func, ast.Name) else ""
+        setup_module = ast.parse(str(record.get("test_setup_code", "")))
+        fixture_targets = [ast.unparse(node.targets[0]) for node in setup_module.body if isinstance(node, ast.Assign) and isinstance(node.targets[0], ast.Attribute)]
+        candidates = [f"{function_name}({target})" for target in dict.fromkeys(fixture_targets)][: max(tests_per_task * 10, tests_per_task)]
+        constraints = [{"type": "fixture_tree", "arg": 0}, {"type": "none_output_allowed", "allowed": False}]
+    reference_code = "\n".join(part for part in [str(record.get("reference_code", "")), str(record.get("test_setup_code", ""))] if part)
+    results = run_reference_oracle(reference_code, candidates, timeout_seconds) if candidates else []
 
     # Keep only stable oracle results and format them as ordinary assertions.
     generated_tests: list[str] = []
@@ -244,8 +283,13 @@ def augment_record(record: dict[str, Any], tests_per_task: int = 20, seed: int =
             reason = str(result.get("error", "UnstableResult"))
             rejection_counts[reason] = rejection_counts.get(reason, 0) + 1
 
-    # Preserve source fields and attach auditable generation details.
+    # Fail closed when the requested exact coverage cannot be generated safely.
+    if len(generated_tests) != tests_per_task:
+        raise ValueError(f"Task {task_id} generated {len(generated_tests)} of {tests_per_task} required tests.")
+
+    # Preserve source fields and attach auditable constraints and generation details.
     augmented = dict(record)
+    augmented["constraints"] = constraints
     augmented["generated_tests"] = generated_tests
     augmented["generation"] = {
         "seed": task_seed,
@@ -257,12 +301,21 @@ def augment_record(record: dict[str, Any], tests_per_task: int = 20, seed: int =
     return augmented
 
 
-def write_jsonl(records: Any, output_path: Path, tests_per_task: int, seed: int, timeout_seconds: float) -> None:
-    """Augment records and write one deterministic JSON object per line."""
-    # Create the parent directory before streaming records to the output file.
+def write_jsonl(records: Any, output_path: Path, tests_per_task: int, seed: int, timeout_seconds: float, resume: bool = False) -> None:
+    """Augment records while optionally preserving completed task records."""
+    # Load completed identifiers before appending to an interrupted artifact.
+    completed: set[str] = set()
+    if resume and output_path.exists():
+        with output_path.open(encoding="utf-8") as existing:
+            completed = {str(json.loads(line)["task_id"]) for line in existing if line.strip()}
+
+    # Create the parent directory before streaming remaining records.
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    with output_path.open("w", encoding="utf-8") as output:
+    mode = "a" if resume else "w"
+    with output_path.open(mode, encoding="utf-8") as output:
         for record in records:
+            if str(record.get("task_id")) in completed:
+                continue
             augmented = augment_record(dict(record), tests_per_task, seed, timeout_seconds)
             output.write(json.dumps(augmented, sort_keys=True) + "\n")
 
@@ -274,10 +327,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--dataset-name", default="google-research-datasets/mbpp")
     parser.add_argument("--dataset-config", default=None)
     parser.add_argument("--split", default="train")
-    parser.add_argument("--tests-per-task", type=int, default=20)
+    parser.add_argument("--tests-per-task", type=int, default=5)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--timeout-seconds", type=float, default=3.0)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--resume", action="store_true")
     return parser.parse_args(argv)
 
 
@@ -299,7 +353,7 @@ def main(argv: list[str] | None = None) -> int:
     from data import load_mbpp
 
     records = load_mbpp(args.dataset_name, args.dataset_config, args.split)
-    write_jsonl(records, args.output, args.tests_per_task, args.seed, args.timeout_seconds)
+    write_jsonl(records, args.output, args.tests_per_task, args.seed, args.timeout_seconds, args.resume)
     return 0
 
 

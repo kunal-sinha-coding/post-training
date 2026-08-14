@@ -4,7 +4,7 @@
 
 This directory supports programmatic test augmentation for the 374 tasks in the official MBPP training split.
 
-The first implementation does not generate new semantic tasks. It keeps each task description and reference implementation unchanged, then generates `M` additional test cases for the same function. The default is `M = 20`.
+The first implementation does not generate new semantic tasks. It keeps each task description and reference implementation unchanged, then generates `M` additional test cases for the same function. The default is `M = 5`.
 
 This improves input and edge case coverage. It does not increase the number of algorithms or problem concepts in the training set.
 
@@ -67,7 +67,7 @@ Generated cases can still miss important semantic partitions. Programmatic mutat
 The generator entry point will be `generate_tests.py`.
 
 ```bash
-python synthetic_data/generate_tests.py --tests-per-task 20 --seed 42
+python synthetic_data/generate_tests.py --tests-per-task 5 --seed 42
 ```
 
-The command writes `synthetic_data/mbpp_train_tests.jsonl`. The current artifact contains 6,762 generated assertions. A total of 260 tasks reached 20 assertions, while nine narrow tasks produced none.
+The command writes `synthetic_data/mbpp_train_tests.jsonl`. The current artifact contains 1,870 generated assertions. Every one of the 374 tasks has exactly five constraint-valid assertions.

@@ -8,6 +8,10 @@ from __future__ import annotations
 
 import json
 
+import ast
+import pytest
+
+from synthetic_data.constraints import infer_constraints, validate_call
 from synthetic_data.generate_tests import augment_record, extract_literal_calls, generate_candidate_calls, run_reference_oracle, write_jsonl
 
 
@@ -28,6 +32,23 @@ def test_extract_literal_calls_ignores_nonliteral_and_noncall_assertions() -> No
     tests = "assert total([1, 2]) == 3\nassert total(values) == 3\nassert ready"
     calls = extract_literal_calls(tests)
     assert [ast_source.func.id for ast_source in calls] == ["total"]
+
+
+def test_extract_literal_calls_accepts_named_constructors() -> None:
+    """Accept constructor values when every constructor argument is literal syntax."""
+    # Parse Pair objects without allowing arbitrary variable expressions.
+    calls = extract_literal_calls("assert chain([Pair(1, 2), Pair(3, 4)], 2) == 2")
+    assert len(calls) == 1
+
+
+def test_constraints_reject_broken_lengths_domains_and_shapes() -> None:
+    """Reject candidates that violate relationships demonstrated by official calls."""
+    # Infer linked size, positivity, nonempty, and square matrix constraints.
+    calls = extract_literal_calls("assert solve([[1, 2], [3, 4]], 2) == 1\nassert solve([[5]], 1) == 1")
+    constraints = infer_constraints(calls, "Solve a square matrix of positive values.")
+    broken = extract_literal_calls("assert solve([[1, 2], [3, 4]], 0) == 1")[0]
+    assert "positive:1" in validate_call(constraints, broken)
+    assert "length_equals:0:1" in validate_call(constraints, broken)
 
 
 def test_generate_candidate_calls_is_deterministic_and_unique() -> None:
@@ -51,6 +72,15 @@ def test_run_reference_oracle_accepts_values_and_rejects_errors() -> None:
     assert results[1]["error"] == "ZeroDivisionError"
 
 
+def test_run_reference_oracle_rejects_none_without_poisoning_later_calls() -> None:
+    """Reject accidental None while continuing with independently isolated candidates."""
+    # Place a None result before a valid result to verify per-candidate isolation.
+    reference = "def maybe(value):\n    return None if value == 0 else value"
+    results = run_reference_oracle(reference, ["maybe(0)", "maybe(2)"], timeout_seconds=2.0)
+    assert results[0]["error"] == "NoneResult"
+    assert results[1] == {"ok": True, "output_repr": "2"}
+
+
 def test_augment_record_adds_requested_reference_validated_tests() -> None:
     """Attach generated assertions and complete generation metadata."""
     # Generate a small number of tests from the local sample.
@@ -60,6 +90,14 @@ def test_augment_record_adds_requested_reference_validated_tests() -> None:
     assert all(str(test).startswith("assert total(") for test in generated)
     assert augmented["generation"]["accepted_test_count"] == 5
     assert augmented["generation"]["requested_test_count"] == 5
+
+
+def test_augment_record_fails_when_exact_coverage_is_impossible() -> None:
+    """Fail closed instead of writing an artifact with fewer tests than requested."""
+    # Use an immutable empty tuple whose call contains no mutable literal leaves.
+    record = {"task_id": 3, "text": "Return zero.", "test_code": "assert fixed(()) == 0", "reference_code": "def fixed(value):\n    return 0"}
+    with pytest.raises(ValueError, match="generated 0 of 1"):
+        augment_record(record, tests_per_task=1, seed=1, timeout_seconds=2.0)
 
 
 def test_write_jsonl_writes_one_augmented_record_per_line(tmp_path) -> None:

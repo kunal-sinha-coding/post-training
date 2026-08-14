@@ -59,7 +59,7 @@ def test_synthetic_tests_are_hidden_from_prompts(tmp_path):
     dataset = [{"task_id": 1, "prompt": "Visible prompt", "test_code": "assert add(1, 2) == 3", "synthetic_test_count": 0}]
 
     # Load and attach the generated assertions.
-    augmented = add_synthetic_tests(dataset, load_synthetic_tests(artifact))
+    augmented = add_synthetic_tests(dataset, load_synthetic_tests(artifact, validate=False))
 
     assert augmented[0]["prompt"] == "Visible prompt"
     assert augmented[0]["test_code"].splitlines() == ["assert add(1, 2) == 3", "assert add(2, 3) == 5"]

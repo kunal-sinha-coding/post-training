@@ -29,9 +29,10 @@ def format_tests(record: dict[str, Any]) -> str:
     """Combine MBPP imports and assertions into executable test text."""
     imports = _first_value(record, "test_imports", "imports", default=[])
     tests = _first_value(record, "test_list", "tests", default=[])
+    setup = str(_first_value(record, "test_setup_code", default=""))
     import_lines = imports if isinstance(imports, list) else [str(imports)]
     test_lines = tests if isinstance(tests, list) else [str(tests)]
-    return "\n".join(str(line) for line in [*import_lines, *test_lines] if line)
+    return "\n".join(str(line) for line in [setup, *import_lines, *test_lines] if line)
 
 
 def build_prompt(record: dict[str, Any], template: str = DEFAULT_PROMPT_TEMPLATE) -> str:
@@ -47,12 +48,25 @@ def normalize_record(record: dict[str, Any]) -> dict[str, Any]:
         "prompt": build_prompt(record),
         "test_code": format_tests(record),
         "reference_code": str(_first_value(record, "code", "canonical_solution", default="")),
+        "test_setup_code": str(_first_value(record, "test_setup_code", default="")),
         "synthetic_test_count": 0,
     }
 
 
-def load_synthetic_tests(path: str | Path) -> dict[str, list[str]]:
-    """Load generated assertions from a JSONL artifact keyed by task identifier."""
+def load_synthetic_tests(
+    path: str | Path,
+    tests_per_task: int = 20,
+    timeout_seconds: float = 5.0,
+    validate: bool = True,
+) -> dict[str, list[str]]:
+    """Validate and load generated assertions keyed by task identifier."""
+    # Fail closed before exposing any generated assertion to training.
+    if validate:
+        from synthetic_data.validate_tests import validate_artifact
+
+        summary = validate_artifact(Path(path), tests_per_task, timeout_seconds)
+        if not summary["valid"]:
+            raise ValueError(f"Synthetic test validation failed with {summary['error_count']} errors: {summary['error_counts']}.")
     tests_by_task: dict[str, list[str]] = {}
 
     # Parse and validate every nonempty artifact record.
@@ -153,7 +167,11 @@ def prepare_datasets(config: dict[str, Any]) -> tuple[Any, Any]:
             raise ValueError("synthetic_tests_path is required when synthetic tests are enabled.")
         train_dataset = add_synthetic_tests(
             train_dataset,
-            load_synthetic_tests(synthetic_path),
+            load_synthetic_tests(
+                synthetic_path,
+                tests_per_task=int(config.get("synthetic_tests_per_task", 20)),
+                timeout_seconds=float(config.get("synthetic_tests_validation_timeout_seconds", 5)),
+            ),
             require_all=bool(config.get("synthetic_tests_require_all", True)),
         )
     return train_dataset, validation_dataset
