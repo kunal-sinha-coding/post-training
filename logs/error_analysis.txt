@@ -856,3 +856,104 @@ The evaluator does not retain raw malformed completions or expected-versus-actua
 This run predates the ten-batch rolling-average implementation, so rolling curves are not available for this run. The next run must be used to evaluate them.
 
 Pass@1 uses one completion per task and remains stochastic despite the large improvement.
+
+================================================================================
+ERROR ANALYSIS: 2026-08-14T00:00:00Z
+================================================================================
+Command: Existing W&B run inspection only. No training command was executed.
+Batch mode: Read only analysis of run onx709xq through trainer step 261 and ten held out checkpoint evaluations of 75 examples each.
+
+## Run summary
+
+The dynamic reward run `quiet-shape-24` reached trainer step 261 before crashing. Its best held out pass@1 was 27/75, or 36%, at checkpoint 175. The comparable dense reward run reached 31/75, or 41.3%, at checkpoint 175. The transition suppressed dense reward without producing a sustained increase in full pass frequency. The most important next action is to stop tuning this blend schedule and test a mechanism that changes generalization, such as held out checkpoint selection or more diverse training tasks.
+
+## Iteration comparison
+
+The prior dense reward run `autumn-wave-23`, run ID `qwv7wv0d`, exceeded the dynamic run at all ten matched checkpoints from 25 through 250.
+
+The mean matched checkpoint pass@1 was 38.7% for the dense run and 33.3% for the dynamic run. The dynamic run regressed by 5.3 percentage points, or four tasks out of 75 on average.
+
+The dense run peaked at 41.3% by checkpoint 175. The dynamic run peaked at 36% at checkpoint 175. There was no held out improvement after the transition began.
+
+## Run context and data coverage
+
+W&B entity `kunal-personal`, project `grpo-mbpp`, run `onx709xq` was inspected through the connected W&B MCP. The run logged 261 training batches and ten checkpoint evaluations at steps 25 through 250. Each evaluation contained all 75 held out examples.
+
+The reward transition remained fully dense through trainer step 150. Pass weight then increased by 0.018 per step. It was 0.432 at step 175, 0.882 at step 200, and 0.9 from step 201 onward. This is a one step offset from the nominal 150 through 200 description.
+
+Per example completions and assertion details were not stored in W&B history. This analysis therefore covers every checkpoint aggregate but cannot assign all 45 to 48 failed examples at each checkpoint to semantic error patterns.
+
+## Error-pattern distribution
+
+The denominator is ten matched checkpoint evaluations. A checkpoint is assigned to the mutually exclusive primary pattern that best describes its comparison with the dense run.
+
+| Pattern | Primary count | Percentage | Definition |
+| --- | ---: | ---: | --- |
+| Held out regression versus dense reward | 10 | 100% | Dynamic pass@1 was below the dense run at the same checkpoint. |
+| Held out improvement versus dense reward | 0 | 0% | Dynamic pass@1 exceeded the dense run at the same checkpoint. |
+
+The dynamic minus dense pass@1 gaps at steps 25 through 250 were minus 4.0, minus 8.0, minus 4.0, minus 4.0, minus 5.3, minus 6.7, minus 5.3, minus 6.7, minus 2.7, and minus 9.3 percentage points.
+
+## Observed error patterns
+
+### Held out regression versus dense reward
+
+All ten matched checkpoints regressed. The dynamic run scored 25, 23, 26, 25, 26, 25, 27, 24, 26, and 23 passes at steps 25 through 250. The dense run scored 28, 29, 29, 28, 30, 30, 31, 29, 28, and 30 passes.
+
+The transition did not cause an immediate collapse. Pass@1 briefly rose from 25/75 at step 150 to 27/75 at step 175, then fell to 24/75 at step 200. It recovered to 26/75 at step 225 before falling to 23/75 at step 250. These changes are small and noisy, but none beat the dense control.
+
+## Success patterns and controls
+
+Training retained comparative signal. Sampled mixed group fraction was commonly 0.75 to 1.0, and mean group standard deviation remained positive. At step 200, mixed group fraction was 0.875 and mean group standard deviation was 0.066. At step 221, they were 1.0 and 0.216.
+
+The policy still generated full passes after the transition. Sampled batch full pass fraction ranged from 0 to 40.6%. The schedule therefore did not create total reward starvation or total policy collapse.
+
+The checkpoint 175 result of 36% shows that some useful behavior survived during the transition. It does not show an improvement because the dense control scored 41.3% at the same checkpoint.
+
+## Deep triage
+
+### Held out regression versus dense reward
+
+Observed evidence shows that the schedule mechanically reduced every dense component to 10% of its original scale while reserving 90% for the binary pass component. At step 150, test progress mean was 0.125. At step 196, after scaling, it was 0.0282. After the transition, sampled test progress means were commonly between 0.0047 and 0.0242.
+
+Observed evidence also shows that the binary signal remained sparse and volatile. At step 181, pass weight was 0.54 but the batch had no full passes, so pass reward mean was zero. At step 200, full pass fraction was 6.25% and total reward mean was 0.0844. The ten batch rolling reward fell from roughly 0.31 around the start of the transition to 0.22 at step 200 and 0.17 at step 261.
+
+The likely mechanism is reduced credit resolution. Most incorrect programs receive only 10% of the former distinctions among valid syntax, valid interfaces, execution, and partial tests. Full passes remain informative, but batches with few full passes provide a much coarser ordering among the remaining candidates. GRPO still sees variance, yet much of that variance is dominated by whether a candidate fully passed instead of how an incorrect candidate could improve.
+
+Training set specialization remains a second likely cause. The schedule changes the objective on the same 299 training prompts and tests. It does not add evidence about unseen tasks. The lack of improvement at every matched held out checkpoint supports this explanation.
+
+A plausible alternative is stochastic run variance from a single seed. However, the consistent direction across ten matched checkpoints and the 5.3 point mean gap make a schedule benefit unlikely in this run.
+
+## Shared causes and interactions
+
+The dynamic blend interacts with the existing generalization bottleneck. Dense reward previously improved training test progress without reliably improving held out pass@1. Replacing most dense signal with a binary pass signal removed local guidance but did not address repeated use of the same training problems.
+
+The cumulative average reward is especially misleading across the transition because reward semantics change over time. Its decline from the transition onward partly reflects the new scale, not only worse policy behavior. Held out pass@1 remains the valid cross checkpoint control, and it did not improve.
+
+## Underlying root-cause synthesis
+
+The smallest credible explanation has two mechanisms.
+
+First, the blend schedule reduces informative ranking among nonpassing candidates. This explains the falling rolling reward, the scaled down component curves, and batches such as step 181 with no binary reward. Positive group variance does not refute this mechanism because variance can remain while ranking becomes less useful.
+
+Second, reward reweighting does not solve training set specialization. This explains why the dynamic run can still produce full passes in training batches while all ten held out checkpoints remain below the dense control.
+
+The residual uncertainty is run to run stochasticity. A repeated seed comparison could quantify it, but the current result provides no reason to spend another full run on the same schedule.
+
+## Proposed solutions and confirmation tests
+
+1. Stop increasing binary pass weight on the current fixed training set. The smallest confirmation is to compare the existing best dense checkpoint against the dynamic checkpoint 175 with repeated held out decoding. The dynamic checkpoint should not be promoted unless its confidence interval exceeds the dense checkpoint.
+2. Select checkpoints directly by held out pass@1 and restore the best checkpoint. This mitigates late deterioration but does not fix generalization. Confirm that the delivered model matches the best observed held out result.
+3. Test a root cause intervention that changes task diversity or held out transfer. Add more training tasks or vary hidden tests while keeping the dense reward. Confirm improvement across repeated held out evaluations and at least two seeds.
+4. If binary optimization is retried, use it only after the policy has a much higher training full pass rate, or retain substantially more dense weight. Confirm that flat group fraction and the fraction of groups without a full pass do not rise while held out pass@1 improves.
+5. Log the fraction of groups containing at least one full pass. Existing full pass fraction is candidate level and does not directly show how many GRPO groups receive useful binary contrast. This is observability only and is not a complete fix.
+
+## Limitations
+
+Both compared runs used one seed, and held out pass@1 used one completion per task. Small checkpoint changes may be decoding noise.
+
+The dynamic run crashed at step 261 and did not reach its configured 370 steps. The schedule was already at its final 0.9 pass weight for 60 steps, and performance had fallen to 30.7% by checkpoint 250, so the available evidence still covers the intended transition.
+
+W&B contains aggregate evaluation status counts but not the raw per example completions for this run. Semantic error pattern counts and representative task IDs are unavailable remotely.
+
+The dense control included the same SFT warm start, but W&B configuration comparison does not expose the custom dynamic reward keys. The schedule was verified from logged `reward/pass_weight` and `reward/dense_weight` curves.
