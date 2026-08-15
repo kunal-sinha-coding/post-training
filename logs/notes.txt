@@ -683,3 +683,133 @@ The additional measurements distinguish reward misalignment, evaluation noise, a
 ### Context
 
 Entropy and diversity are measured on generated evaluation completions. Reference KL is recorded when the evaluated model exposes a reference policy; otherwise it is omitted because evaluating a separate reference model would change the experiment cost and setup.
+
+
+# Session: 2026-08-15
+
+- Topic: Diagnose reward plateaus, exploration collapse, and improve evaluation observability.
+
+## Starting Point
+
+W&B run `sparkling-sunset-30` showed training reward increasing while evaluation pass@1 and average reward improved only modestly. The active follow-up run was `glowing-serenity-31` with run ID `gj8wan0y`, full validation over 90 examples, and ten configured epochs.
+
+## Cycle 20: Audit the evaluation and training objective
+
+### Hypothesis
+
+The apparent gap could reflect a metric mismatch rather than model behavior.
+
+### Experiment
+
+Evaluation was changed to use the same dense scorer as training, while retaining binary pass@1 as a separate correctness metric. The reward coefficients were rounded to format 0.025, syntax 0.05, interface 0.025, partial-test progress 0.4, and full pass 0.5.
+
+### Metrics
+
+For `glowing-serenity-31`, baseline evaluation was average reward 0.2713889 and pass@1 0.1777778. Later checkpoint values were step 50 average reward 0.3023148 and pass@1 0.2111111, step 75 average reward 0.3119444 and pass@1 0.2222222, and step 100 average reward 0.2997222 and pass@1 0.2111111.
+
+### What Went Well
+
+The evaluation average reward now has the same semantics as the training reward. W&B receives both `evaluation/average_reward` and `evaluation/pass@1`.
+
+### What Went Badly
+
+The validation set contains 90 examples, so changes of four successful examples are noisy. The W&B automatic divergence diagnosis was also unreliable because it selected a profiling timing metric instead of a loss metric.
+
+### Learning
+
+Pass@1 remains the primary model-selection metric. Average reward is useful for diagnosis, but it cannot replace full correctness.
+
+### Next Hypothesis
+
+Separate reward misalignment, evaluation noise, and exploration collapse with direct diagnostics rather than interpreting reward curves alone.
+
+## Cycle 21: Evaluate exploration-collapse and reward-misalignment hypotheses
+
+### Hypothesis
+
+A falling policy entropy may indicate that the model is becoming confident in a narrow set of unsuccessful behaviors, but entropy decline alone does not establish causality.
+
+### Experiment
+
+The run was inspected for entropy, reward variance, group diversity, and pass@1. Standard possible interventions were identified as a small entropy bonus, KL constraint, lower learning rate, more generations per prompt, or higher sampling temperature. A 90% pass@1 reward was considered as a separate objective-alignment experiment.
+
+### Metrics
+
+Entropy fell from approximately 1.50 early in training to approximately 0.55 to 0.66 by trainer step 114. Training average reward was approximately 0.1931 cumulatively and 0.2141 in the rolling window at the observed point. Group diversity remained nonzero, and full-pass fraction varied across batches.
+
+### What Went Well
+
+The entropy decline is a concrete warning signal and motivated targeted observability. The prior binary full-pass reward experiment did not materially improve pass@1, so reward weighting alone is not established as the root cause.
+
+### What Went Badly
+
+There is not enough evidence to distinguish harmful exploration collapse from normal entropy reduction during learning. Evaluation noise and partial-credit reward optimization remain viable explanations.
+
+### Learning
+
+Exploration collapse is a leading hypothesis, not a conclusion. Reward misalignment would be supported if dense reward or partial-test progress rises while full-pass reward and pass@1 remain flat.
+
+### Next Hypothesis
+
+At each evaluation, log reward components, success counts, completion repetition, entropy, and reference-policy KL when available.
+
+## Cycle 22: Add evaluation diagnostics
+
+### Hypothesis
+
+Direct evaluation diagnostics will distinguish partial-credit optimization from reduced exploration and noisy pass-rate changes.
+
+### Experiment
+
+Commit `e43b8a0` added evaluation metrics for reward-component means, successful examples, unique completion rate, repeated completion fraction, token entropy, and optional reference-policy KL. These metrics use the existing W&B evaluation logging path. Commit `15a7da6` separately made pass@1 control checkpoint selection and added patience stopping after three non-improving checkpoint evaluations.
+
+### Metrics
+
+The full test suite passed with 44 tests after the diagnostics change.
+
+### What Went Well
+
+The diagnostics are persisted in evaluation metric artifacts and are automatically flattened into W&B keys such as `evaluation/reward_tests_mean`, `evaluation/entropy`, and `evaluation/unique_completion_rate`.
+
+### What Went Badly
+
+The currently running process was launched before the diagnostics code was committed, so it will not emit the new fields without a restart. Reference KL is omitted when the evaluated model does not expose a reference policy.
+
+### Learning
+
+Reward misalignment should be audited by comparing component trends, passed-versus-failed reward distributions, and within-prompt reward ranking. Evaluation noise should be audited with bootstrap intervals or repeated samples. Exploration collapse should require aligned declines in entropy, completion diversity, and group variation.
+
+### Next Hypothesis
+
+Run a fresh evaluation-enabled training process and first test whether dense reward increases are explained by partial-test progress rather than full passes. Only then choose between a 90% pass-weight reward and an exploration-preserving intervention.
+
+## Agentic Coding
+
+### Skills Created or Updated
+
+No skills were created or modified. The `take-meeting-notes` skill was invoked to record this session.
+
+### Workflows and Automation
+
+- WANDB MCP was used to inspect `sparkling-serenity-30` and `glowing-serenity-31` metrics.
+- The `runpod-auto-stop` workflow was started in dry-run monitoring mode for the ten-epoch run, with required artifacts and an exit sentinel.
+- The `iterative-error-analysis` workflow was requested for full validation examples and ten epochs.
+
+### Code and Infrastructure Changes
+
+- Commit `837a066` aligned evaluation reward with training reward.
+- Commit `09cddf6` prioritized full-pass reward and enabled fresh baseline evaluation.
+- Commit `15a7da6` selected checkpoints by pass@1 and added patience stopping.
+- Commit `e43b8a0` added evaluation diagnostics and W&B logging.
+
+### What Worked
+
+The existing evaluation callback and W&B logger provided a small integration surface for new metrics. The patience callback was covered by focused tests, and the complete repository suite remained green.
+
+### What Failed
+
+The patch helper was unavailable because its restricted sandbox could not create a namespace, so the verified diagnostics edit used an elevated fallback rewrite. The W&B automatic diagnosis selected the wrong metric.
+
+### Learning
+
+Evaluation observability must report both the target metric and the mechanisms that produce reward. Automated diagnoses require explicit metric selection and should not be trusted when profiling metrics are present.
