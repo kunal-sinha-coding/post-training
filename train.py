@@ -88,6 +88,10 @@ def log_evaluation(wandb: Any | None, metrics: dict[str, Any], evaluation_name: 
         elif key == "status_counts" and isinstance(value, dict):
             for status, count in value.items():
                 payload[f"evaluation/status_{status}"] = count
+
+    # Publish the requested pass@1 spelling while retaining the existing metric key.
+    if isinstance(metrics.get("pass_at_1"), (int, float)):
+        payload["evaluation/pass@1"] = metrics["pass_at_1"]
     wandb.log(payload)
 
 

@@ -1,16 +1,34 @@
 import os
 
-from evaluate import aggregate_results, append_evaluation_result, cleanup_run_logs, start_run_log
+import pytest
+
+from evaluate import aggregate_results, append_evaluation_result, cleanup_run_logs, evaluate_texts, start_run_log
 
 
 def test_aggregate_results_reports_pass_rate_and_statuses():
     metrics = aggregate_results([
-        {"passed": True, "reward": 1.0, "status": "passed"},
-        {"passed": False, "reward": 0.0, "status": "failed"},
+        {"passed": True, "reward": 0.9, "status": "passed"},
+        {"passed": False, "reward": 0.3, "status": "failed"},
     ])
     assert metrics["examples"] == 2
     assert metrics["pass_at_1"] == 0.5
+    assert metrics["average_reward"] == pytest.approx(0.6)
     assert metrics["status_counts"] == {"passed": 1, "failed": 1}
+
+
+def test_evaluate_texts_uses_dense_training_reward_and_separate_pass_rate(tmp_path):
+    """Use partial test progress for reward without counting it as a pass."""
+    # Evaluate one valid function that passes one of two assertions.
+    metrics, details = evaluate_texts(
+        ["```python\ndef increment(value):\n    return value + 1\n```"],
+        [{"task_id": 1, "prompt": "Increment a value.", "test_code": "assert increment(1) == 2\nassert increment(2) == 4"}],
+        log_path=tmp_path / "logs.txt",
+    )
+
+    # Keep binary correctness separate from the shared dense reward.
+    assert metrics["pass_at_1"] == 0.0
+    assert metrics["average_reward"] == pytest.approx(0.625)
+    assert details[0]["reward_components"]["tests"] == pytest.approx(0.375)
 
 
 def test_start_run_log_keeps_only_newest_configured_logs(tmp_path, monkeypatch):

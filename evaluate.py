@@ -9,7 +9,7 @@ from zoneinfo import ZoneInfo
 from datetime import datetime
 from pathlib import Path
 from typing import Any
-from sandbox import ExecutionResult, execute_code, extract_code
+from sandbox import extract_code, score_completion
 
 MAX_RUN_LOGS = 10
 
@@ -151,16 +151,19 @@ def aggregate_results(results: list[dict[str, Any]]) -> dict[str, Any]:
 
 def evaluate_texts(completions: list[str], records: list[dict[str, Any]], timeout_seconds: float = 3.0, log_path: str | Path = "logs/logs.txt", evaluation_name: str = "evaluation") -> tuple[dict[str, Any], list[dict[str, Any]]]:
     """Execute one generated completion per record and aggregate its results."""
+    # Score evaluation completions with the same dense reward used during training.
     details = []
     for completion, record in zip(completions, records):
-        # Execute and record only code extracted from the required output format.
+        # Preserve extracted code for logs while retaining malformed completions as failures.
         try:
             executed_completion = extract_code(completion)
-            result = execute_code(executed_completion, record["test_code"], timeout_seconds)
-        except ValueError as exc:
+        except ValueError:
             executed_completion = ""
-            result = ExecutionResult(False, "format_error", stderr=str(exc))
-        details.append({"task_id": record.get("task_id"), "completion": executed_completion, "reward": float(result.passed), **result.to_dict()})
+
+        # Reuse the training scorer so average reward has identical semantics.
+        reward, score_details = score_completion(completion, record["test_code"], timeout_seconds)
+        passed = score_details["status"] == "passed"
+        details.append({"task_id": record.get("task_id"), "completion": executed_completion, "reward": reward, "passed": passed, **score_details})
     append_evaluation_log(log_path, evaluation_name, records, details)
     return aggregate_results(details), details
 

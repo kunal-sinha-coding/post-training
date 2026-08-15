@@ -310,3 +310,319 @@ Fix RunPod authorization or use a reliable local process-stop mechanism, then ru
 ### Learning
 
 Agentic workflows are most reliable when each loop has a measurable stopping condition, each external action fails closed, and every conclusion points to a durable metric, artifact, or commit. Skills should capture reusable process, while session notes should preserve how that process actually behaved.
+
+## Session
+
+- Date: August 14, 2026.
+- Topic: Expand MBPP training coverage with hidden synthetic tests.
+
+## Starting Point
+
+The official MBPP training split contained 374 tasks. Reusing the visible assertions risked specializing the reward to narrow inputs, so the next experiment added programmatically generated tests without adding new task families.
+
+## Cycle 9: Generate hidden tests from existing tasks
+
+### Hypothesis
+
+Mutating existing test inputs and evaluating them with trusted reference solutions would broaden reward coverage without the cost or semantic drift of LLM-generated tasks.
+
+### Experiment
+
+A deterministic generator created up to 20 additional tests per training task. The training loader optionally appended these tests to execution-only test code while keeping them out of model prompts and leaving validation unchanged.
+
+### Metrics
+
+- The generator produced 6,762 hidden tests across 374 tasks.
+- A total of 260 tasks reached the requested 20 tests.
+- Nine tasks produced no safe variants.
+- All 30 repository tests passed.
+
+### What Went Well
+
+The generated tests expanded input coverage while preserving the existing task-family distribution and official validation split.
+
+### What Went Badly
+
+Some tasks did not support 20 distinct safe mutations, and nine tasks produced no accepted variants.
+
+### Learning
+
+Reference-backed mutation can cheaply widen tests, but safe programmatic diversity is limited by the structure and domains of the original assertions.
+
+### Next Hypothesis
+
+Confirm that GRPO loads and executes the hidden tests during an actual optimizer step.
+
+## Cycle 10: Validate synthetic tests in one GRPO step
+
+### Hypothesis
+
+An explicit training metric would demonstrate that hidden tests reached reward execution rather than only loading successfully.
+
+### Experiment
+
+A one-step debug run enabled synthetic tests. The first attempt used a per-device batch size of one with two generations. After user approval, the batch size was changed to two and the exact training command was retried.
+
+### Metrics
+
+- The first attempt stopped before training because the generation batch size was not divisible by `num_generations`.
+- The retry completed one GRPO step.
+- The successful run logged `reward/synthetic_tests/mean = 20`.
+
+### What Went Well
+
+The successful metric established that each sampled task used 20 hidden tests during reward execution.
+
+### What Went Badly
+
+The initial smoke configuration violated TRL's divisibility requirement.
+
+### Learning
+
+For grouped GRPO sampling, the generation batch size must remain compatible with the number of generations even in minimal smoke configurations.
+
+### Next Hypothesis
+
+Run a comparable error-analysis batch with synthetic tests enabled to determine which failure patterns change.
+
+## Cycle 11: Recover the strongest GRPO-only baseline
+
+### Hypothesis
+
+Identifying the exact 40 percent run would provide a reproducible baseline for evaluating broader hidden-test coverage.
+
+### Experiment
+
+Local artifacts and W&B metadata were matched to the strongest GRPO-only evaluation.
+
+### Metrics
+
+- W&B run `wvx9f3bt` reached 0.400 evaluation pass rate.
+- The run used commit `5f384a2`, 370 steps, learning rate `1e-6`, four generations, batch size one, gradient accumulation 32, and restored checkpoint 150.
+
+### What Went Well
+
+The baseline was tied to an exact run, checkpoint, commit, and optimization configuration.
+
+### What Went Badly
+
+The final checkpoint was weaker than checkpoint 150, so the result depended on best-checkpoint restoration.
+
+### Learning
+
+The 0.400 baseline is a checkpoint-selected result and should be compared using the same evaluation protocol.
+
+### Next Hypothesis
+
+Use the recovered YAML with synthetic tests enabled and classify every new evaluation failure against the established baseline.
+
+## Agentic Coding
+
+### Workflows and Automation
+
+- The `run-iteratively` workflow stopped on the invalid batch configuration, presented the exact fix, and retried only after approval.
+- The `take-meeting-notes` workflow appended the synthetic-test and baseline-recovery cycles to this file.
+- Parallel agents analyzed mutation design, task-family documentation, and the strongest GRPO-only configuration.
+
+### Code and Infrastructure Changes
+
+- Commit `6c42bd2` added synthetic MBPP test generation, optional hidden-test loading, reward diagnostics, documentation, tests, and run artifacts.
+- Commit `6c42bd2` was pushed to `origin/main` after explicit approval.
+
+### What Worked
+
+The smoke metric provided direct evidence that the optional data path reached reward execution.
+
+### What Failed
+
+The first smoke run failed because the batch size and number of generations were incompatible.
+
+### Learning
+
+Data augmentation should be validated at the reward boundary, and iterative execution should preserve failed configurations as evidence before applying an approved fix.
+
+## Session
+
+- Date: 2026-08-14
+- Topic: Constraint-safe synthetic tests and fixed-dense GRPO training.
+
+## Starting Point
+
+The first synthetic artifact executed but contained inputs outside many task contracts. The reward transition also remained enabled in a run intended to use fixed-dense GRPO.
+
+## Cycle 12: Audit unsafe synthetic tests
+
+### Hypothesis
+
+Reference execution alone would reject invalid synthetic inputs.
+
+### Experiment
+
+The artifact was audited for cross-argument and task-domain constraints that reference execution did not enforce.
+
+### Metrics
+
+- The initial artifact contained 6,762 assertions across 374 records.
+- Of 691 tests with a container-length parameter, 419 violated the required relationship.
+- Eleven tasks contained 60 assertions encoding accidental `None` results.
+
+### What Went Well
+
+The audit identified invalid-input mechanisms before the replacement run.
+
+### What Went Badly
+
+Oracle success admitted malformed matrices, invalid indices, unsorted inputs, invalid dimensions, and accidental reference behavior.
+
+### Learning
+
+Reference consistency does not prove that an input satisfies the task contract.
+
+### Next Hypothesis
+
+Constraint inference and preflight validation can make the artifact safe for training.
+
+## Cycle 13: Restore fixed-dense reward
+
+### Hypothesis
+
+Removing the transition entirely would prevent it from silently returning through configuration.
+
+### Experiment
+
+Commit `c53b195` removed transition fields and logic from training code and both YAML files. It added a fixed-dense regression test.
+
+### Metrics
+
+- Fixed reward reports `reward/pass_weight = 0` and `reward/dense_weight = 1`.
+- All 30 repository tests passed.
+
+### What Went Well
+
+The transition was removed at configuration and implementation levels.
+
+### What Went Badly
+
+Run `ik0yc3pv` reached step 217 with the unwanted transition and was invalid for the requested experiment.
+
+### Learning
+
+Critical experiment invariants should be enforced in code and tests.
+
+### Next Hypothesis
+
+The corrected reward can be paired with a validated synthetic artifact.
+
+## Cycle 14: Infer constraints and validate tests
+
+### Hypothesis
+
+Cross-argument, shape, ordering, index, positivity, and oracle constraints could reject malformed variants.
+
+### Experiment
+
+Commit `767b9ca` added constraint inference, constraint-aware generation, a standalone validator, and loader validation. The generator resumed and repaired only failing tasks instead of regenerating every task.
+
+### Metrics
+
+- Validation reported zero errors across 374 records and 1,870 assertions.
+- The target changed from `M = 20` to `M = 5` because task 692 has only six novel valid inputs.
+- Every record contains exactly five accepted assertions.
+
+### What Went Well
+
+The artifact passed structural, uniqueness, inferred-domain, cross-argument, deterministic-oracle, and coverage checks.
+
+### What Went Badly
+
+Twenty distinct valid variants were infeasible for at least one finite-domain task.
+
+### Learning
+
+The global `M` must respect the smallest novel input space. Resume and targeted repair avoid unnecessary regeneration.
+
+### Next Hypothesis
+
+Five validated hidden tests per task will broaden reward coverage without invalid-domain failures.
+
+## Cycle 15: Start twenty-epoch GRPO
+
+### Hypothesis
+
+Fixed-dense GRPO with validated hidden tests can cleanly test whether wider coverage improves generalization.
+
+### Experiment
+
+Commit `b66b28e` set `configs/default.yaml` to 20 epochs. The run uses 374 training records, all 90 validation examples, five hidden tests per task, and no reward transition.
+
+### Metrics
+
+- W&B run `tiyry19u` is active for 920 configured steps.
+- Step 1 confirmed `reward/pass_weight = 0`, `reward/dense_weight = 1`, and `reward/synthetic_tests/mean = 5`.
+- Step 1 reward mean was 0.1242.
+- No final evaluation result is available.
+
+### What Went Well
+
+The first step confirmed the validated artifact and fixed-dense reward at the reward boundary.
+
+### What Went Badly
+
+The experiment is active, so no final conclusion is justified.
+
+### Learning
+
+The run must remain labeled active until the full validation evaluation completes.
+
+### Next Hypothesis
+
+The final error taxonomy will show whether safe hidden tests improve generalization or only change reward density.
+
+## Agentic Coding
+
+### Skills Created or Updated
+
+No skills were created or modified.
+
+### Workflows and Automation
+
+- The `take-meeting-notes` skill recorded the audit, correction, validation, and active run.
+- Targeted repair regenerated only failing records.
+- Preflight validation now blocks invalid synthetic data from training.
+
+### Code and Infrastructure Changes
+
+- Commit `c53b195` enforced fixed dense reward.
+- Commit `767b9ca` added constraint-aware generation and validation.
+- Commit `b66b28e` configured the 20-epoch experiment.
+
+### What Worked
+
+Validation produced 1,870 assertions with zero reported errors. Targeted repair reduced unnecessary generation.
+
+### What Failed
+
+Reference-only validation and a universal target of 20 variants did not respect task contracts or finite domains.
+
+### Learning
+
+Synthetic generation needs explicit domain validation, exact coverage checks, and resumable repair before training.
+
+
+## Cycle 16: Align evaluation and training rewards
+
+### Commit Name
+
+Align evaluation and training rewards.
+
+### Description
+
+Evaluation now uses the same dense reward scorer as GRPO training. Binary pass rate remains separate, and W&B also receives the literal `evaluation/pass@1` metric. Focused tests cover partial reward without a full pass.
+
+### Why
+
+The previous evaluation average reward was binary and duplicated pass@1. Matching the training reward makes checkpoint comparisons meaningful while preserving the correctness metric.
+
+### Context
+
+The change follows the review of W&B run `sparkling-sunset-30`, where the metric mismatch made the apparent training and evaluation divergence difficult to interpret. The repository instructions now require this context for every commit.
