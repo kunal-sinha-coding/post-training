@@ -148,6 +148,7 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
             # Initialize checkpoint, cumulative, and rolling metric state.
             self.best_checkpoint_path: Path | None = None
             self.best_metric = float("-inf")
+            self.evaluations_without_improvement = 0
             self.reward_sum = 0.0
             self.reward_count = 0
             self.component_reward_sums: dict[str, float] = {}
@@ -210,17 +211,26 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
             save_evaluation(args.output_dir, f"checkpoint-{state.global_step}", metrics, details, config)
             log_evaluation(wandb, metrics, f"checkpoint-{state.global_step}", state.global_step)
             checkpoint_path = Path(args.output_dir) / f"checkpoint-{state.global_step}"
-            metric = float(metrics.get(config.get("best_checkpoint_metric", "pass_at_1"), float("-inf")))
+            metric_name = config.get("best_checkpoint_metric", "pass@1")
+            metric_key = "pass_at_1" if metric_name == "pass@1" else metric_name
+            metric = float(metrics.get(metric_key, float("-inf")))
             # Retain only the checkpoint with the best configured metric.
             if metric > self.best_metric:
                 previous_best = self.best_checkpoint_path
                 self.best_checkpoint_path = checkpoint_path
                 self.best_metric = metric
+                self.evaluations_without_improvement = 0
                 # Remove the previous best checkpoint after selecting a better one.
                 if previous_best is not None and previous_best.exists():
                     shutil.rmtree(previous_best)
-            elif checkpoint_path.exists():
-                shutil.rmtree(checkpoint_path)
+            else:
+                if checkpoint_path.exists():
+                    shutil.rmtree(checkpoint_path)
+                self.evaluations_without_improvement += 1
+                patience = max(0, int(config.get("checkpoint_eval_patience", 0)))
+                if patience and self.evaluations_without_improvement >= patience:
+                    control.should_training_stop = True
+                    print(f"Stopping after {self.evaluations_without_improvement} checkpoint evaluations without a higher evaluation/pass@1.", flush=True)
             return control
     return TrainingCallback()
 

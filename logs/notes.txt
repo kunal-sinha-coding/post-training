@@ -645,3 +645,22 @@ Full correctness is the primary target, while the remaining components only prov
 ### Context
 
 This is the approved experiment following the W&B analysis of sparkling-sunset-30. It uses the full validation set and will be monitored through iterative error analysis.
+
+
+## Cycle 18: Select and stop by evaluation pass rate
+
+### Commit Name
+
+Select checkpoints by evaluation pass and stop after patience exhaustion.
+
+### Description
+
+Checkpoint ranking now accepts the W&B-facing `pass` name and maps it to the stored `pass_at_1` metric. The default configuration enables a patience of three checkpoint evaluations without a strictly higher pass. Such a run requests trainer termination while retaining the best checkpoint. Focused tests cover the stopping behavior.
+
+### Why
+
+Held-out pass is the target metric, while cumulative training reward can plateau without generalization. Patience stopping prevents continued training after three non-improving evaluations.
+
+### Context
+
+This change implements the requested checkpoint selection and early stopping policy for the current full-validation training experiment. Generated logs and results remain uncommitted.

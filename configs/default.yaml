@@ -33,7 +33,8 @@ max_prompt_length: 512
 max_completion_length: 512
 evaluation_batch_size: 8
 results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 3
 logging_steps: 1
 reward_rolling_window: 10
 save_steps: 25
