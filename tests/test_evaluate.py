@@ -27,8 +27,8 @@ def test_evaluate_texts_uses_dense_training_reward_and_separate_pass_rate(tmp_pa
 
     # Keep binary correctness separate from the shared dense reward.
     assert metrics["pass_at_1"] == 0.0
-    assert metrics["average_reward"] == pytest.approx(0.625)
-    assert details[0]["reward_components"]["tests"] == pytest.approx(0.375)
+    assert metrics["average_reward"] == pytest.approx(0.3)
+    assert details[0]["reward_components"]["tests"] == pytest.approx(0.2)
 
 
 def test_start_run_log_keeps_only_newest_configured_logs(tmp_path, monkeypatch):

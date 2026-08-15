@@ -23,7 +23,7 @@ The debug configuration limits the dataset and training steps. `run_baseline_eva
 
 ## Data and reward
 
-`data.py` loads all 374 examples from the official MBPP training split and uses all 90 examples from the official validation split for evaluation. The official test split is not loaded. `sandbox.py` executes each generated candidate in a timed isolated-mode subprocess. Training uses the fixed dense reward mixture that produced the strongest GRPO-only result. It combines format, syntax, interface, execution, and partial-test progress, and full passes remain worth `1.0` throughout training.
+`data.py` loads all 374 examples from the official MBPP training split and uses all 90 examples from the official validation split for evaluation. The official test split is not loaded. `sandbox.py` executes each generated candidate in a timed isolated-mode subprocess. Training uses the fixed dense reward mixture that produced the strongest GRPO-only result. It combines format at 0.025, syntax at 0.05, interface at 0.025, partial-test progress at 0.4, and full passes at 0.5. Execution is used to measure test progress but is not a separate reward component.
 
 W&B logging is enabled by default. TRL logs reward, reward variance, loss, gradient norm, entropy, completion lengths, clipping, token counts, learning rate, and step time. The project additionally logs baseline, checkpoint, and final pass@1, average reward, and execution status counts to W&B. Baseline evaluation runs before training, checkpoint evaluation runs on saves, and final evaluation runs after training.
 

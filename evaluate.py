@@ -149,7 +149,7 @@ def aggregate_results(results: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def evaluate_texts(completions: list[str], records: list[dict[str, Any]], timeout_seconds: float = 3.0, log_path: str | Path = "logs/logs.txt", evaluation_name: str = "evaluation") -> tuple[dict[str, Any], list[dict[str, Any]]]:
+def evaluate_texts(completions: list[str], records: list[dict[str, Any]], timeout_seconds: float = 3.0, log_path: str | Path = "logs/logs.txt", evaluation_name: str = "evaluation", pass_weight: float = 0.5) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     """Execute one generated completion per record and aggregate its results."""
     # Score evaluation completions with the same dense reward used during training.
     details = []
@@ -161,7 +161,7 @@ def evaluate_texts(completions: list[str], records: list[dict[str, Any]], timeou
             executed_completion = ""
 
         # Reuse the training scorer so average reward has identical semantics.
-        reward, score_details = score_completion(completion, record["test_code"], timeout_seconds)
+        reward, score_details = score_completion(completion, record["test_code"], timeout_seconds, pass_weight)
         passed = score_details["status"] == "passed"
         details.append({"task_id": record.get("task_id"), "completion": executed_completion, "reward": reward, "passed": passed, **score_details})
     append_evaluation_log(log_path, evaluation_name, records, details)
@@ -300,6 +300,6 @@ def evaluate_model(model: Any, tokenizer: Any, dataset: Any, config: dict[str, A
                 output = model.generate(**inputs, max_new_tokens=int(config.get("max_completion_length", 512)), do_sample=False)
             prompt_width = inputs["input_ids"].shape[-1]
             completions.extend(tokenizer.decode(item[prompt_width:], skip_special_tokens=True) for item in output)
-        return evaluate_texts(completions, records, float(config.get("sandbox_timeout_seconds", 3)), config.get("log_path", "logs/logs.txt"), evaluation_name)
+        return evaluate_texts(completions, records, float(config.get("sandbox_timeout_seconds", 3)), config.get("log_path", "logs/logs.txt"), evaluation_name, float(config.get("pass_weight", 0.5)))
     finally:
         model.train(was_training)

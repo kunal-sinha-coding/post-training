@@ -122,7 +122,7 @@ def _make_reward(config: dict[str, Any]):
         # Share reward diagnostics with the training callback for W&B and local logs.
         diagnostics: dict[str, float] = {}
         # Keep the proven dense reward mixture fixed throughout training.
-        pass_weight = 0.0
+        pass_weight = float(config.get("pass_weight", 0.5))
         append_training_step_samples(config.get("log_path", "logs/logs.txt"), completions)
         rewards = reward_function(completions, test_code, timeout, diagnostics=diagnostics, group_size=int(config.get("num_generations", 4)), pass_weight=pass_weight, **kwargs)
         # Record the number of hidden assertions exercised by this reward batch.
@@ -156,7 +156,7 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
             self.rolling_reward_values: deque[float] = deque(maxlen=self.rolling_window_size)
             self.rolling_component_values: dict[str, deque[float]] = {
                 component: deque(maxlen=self.rolling_window_size)
-                for component in ("format", "syntax", "interface", "execution", "test_progress", "pass")
+                for component in ("format", "syntax", "interface", "test_progress", "pass")
             }
 
         def on_step_begin(self, args: Any, state: Any, control: Any, **_: Any) -> Any:
@@ -180,7 +180,7 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
                     logs["training/rolling_average_reward"] = sum(self.rolling_reward_values) / len(self.rolling_reward_values)
                 # Add dense reward and group statistics to the trainer's W&B record.
                 logs.update(config.pop("_reward_diagnostics", {}))
-                for component in ("format", "syntax", "interface", "execution", "test_progress"):
+                for component in ("format", "syntax", "interface", "test_progress"):
                     component_mean = logs.get(f"reward/{component}/mean")
                     # Update component statistics when the trainer emitted a numeric mean.
                     if isinstance(component_mean, (int, float)):

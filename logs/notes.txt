@@ -626,3 +626,22 @@ The previous evaluation average reward was binary and duplicated pass@1. Matchin
 ### Context
 
 The change follows the review of W&B run `sparkling-sunset-30`, where the metric mismatch made the apparent training and evaluation divergence difficult to interpret. The repository instructions now require this context for every commit.
+
+
+## Cycle 17: Prioritize full-pass reward
+
+### Commit Name
+
+Prioritize full-pass reward and baseline evaluation.
+
+### Description
+
+The reward now uses rounded coefficients of format 0.025, syntax 0.05, interface 0.025, partial-test progress 0.4, and full pass 0.5. The separate execution reward was removed. Default training now recomputes the baseline evaluation and runs for ten epochs.
+
+### Why
+
+Full correctness is the primary target, while the remaining components only provide within-batch diversity. Recomputing the baseline makes every run comparable.
+
+### Context
+
+This is the approved experiment following the W&B analysis of sparkling-sunset-30. It uses the full validation set and will be monitored through iterative error analysis.

@@ -21,6 +21,8 @@ OUTPUT_FORMAT_ERROR = "Did not follow proper output formatting"
 # These markers identify reasoning tags that should not reach the Python parser.
 THINK_TAGS = ["<think>", "</think>"]
 INTERFACE_IGNORED_NAMES = {"bool", "float", "int", "len", "list", "print", "set", "sorted", "str", "sum", "tuple"}
+DENSE_REWARD_WEIGHTS = {"format": 0.05, "syntax": 0.10, "interface": 0.05, "tests": 0.80}
+DEFAULT_PASS_WEIGHT = 0.5
 
 
 @dataclass
@@ -142,29 +144,30 @@ def validate_interface(code: str, tests: str) -> bool:
     return not function.args.vararg and not function.args.kwarg and positional_count == next(iter(expected_arities))
 
 
-def score_completion(completion: str, tests: str, timeout_seconds: float = 3.0) -> tuple[float, dict[str, object]]:
+def score_completion(completion: str, tests: str, timeout_seconds: float = 3.0, pass_weight: float = DEFAULT_PASS_WEIGHT) -> tuple[float, dict[str, object]]:
     """Return the dense reward and diagnostics for one completion."""
     # Keep every reward component explicit so training dashboards can show what produced the total.
-    components = {"format": 0.0, "syntax": 0.0, "interface": 0.0, "execution": 0.0, "tests": 0.0}
+    dense_weight = 1.0 - pass_weight
+    components = {"format": 0.0, "syntax": 0.0, "interface": 0.0, "tests": 0.0, "pass": 0.0}
     try:
         code = extract_code(completion)
     except ValueError:
         return 0.0, {"status": "format_error", "passed_tests": 0, "total_tests": 0, "interface_valid": False, "reward_components": components}
-    components["format"] = 0.05
+    components["format"] = DENSE_REWARD_WEIGHTS["format"] * dense_weight
     try:
         compile(code, "<candidate>", "exec")
     except SyntaxError:
-        return 0.05, {"status": "syntax_error", "passed_tests": 0, "total_tests": 0, "interface_valid": False, "reward_components": components}
-    components["syntax"] = 0.10
+        return sum(components.values()), {"status": "syntax_error", "passed_tests": 0, "total_tests": 0, "interface_valid": False, "reward_components": components}
+    components["syntax"] = DENSE_REWARD_WEIGHTS["syntax"] * dense_weight
     interface_valid = validate_interface(code, tests)
-    components["interface"] = 0.05 if interface_valid else 0.0
+    components["interface"] = DENSE_REWARD_WEIGHTS["interface"] * dense_weight if interface_valid else 0.0
     test_cases = split_test_cases(tests)
-    passed, total, executed = execute_test_cases(code, test_cases, timeout_seconds)
-    components["execution"] = 0.05 if executed else 0.0
+    passed, total, _ = execute_test_cases(code, test_cases, timeout_seconds)
     fraction = passed / total if total else 0.0
-    components["tests"] = 0.75 * fraction
-    reward = sum(components.values())
+    components["tests"] = DENSE_REWARD_WEIGHTS["tests"] * fraction * dense_weight
     status = "passed" if passed == total else "partial" if passed else "failed"
+    components["pass"] = pass_weight if status == "passed" else 0.0
+    reward = sum(components.values())
     return reward, {"status": status, "passed_tests": passed, "total_tests": total, "interface_valid": interface_valid, "reward_components": components}
 
 
@@ -207,7 +210,7 @@ def summarize_reward_groups(rewards: list[float], details: list[dict[str, object
         "reward/max": max(rewards),
     }
     # Emit mean, standard deviation, minimum, and maximum for every dense reward component.
-    for component in ("format", "syntax", "interface", "execution", "test_progress", "pass"):
+    for component in ("format", "syntax", "interface", "test_progress", "pass"):
         values = [float(detail.get("reward_components", {}).get("tests" if component == "test_progress" else component, 0.0)) for detail in details]
         mean = sum(values) / len(values)
         std = math.sqrt(sum((value - mean) ** 2 for value in values) / len(values))
@@ -218,7 +221,7 @@ def summarize_reward_groups(rewards: list[float], details: list[dict[str, object
     return diagnostics
 
 
-def reward_function(completions: list[object], test_code: list[str], sandbox_timeout_seconds: float = 3.0, diagnostics: dict[str, float] | None = None, group_size: int = 4, pass_weight: float = 0.0, **_: object) -> list[float]:
+def reward_function(completions: list[object], test_code: list[str], sandbox_timeout_seconds: float = 3.0, diagnostics: dict[str, float] | None = None, group_size: int = 4, pass_weight: float = DEFAULT_PASS_WEIGHT, **_: object) -> list[float]:
     """Score a GRPO batch with scheduled dense and binary pass rewards."""
     # Record candidate outcomes so reward sparsity is visible during training.
     rewards: list[float] = []
@@ -230,12 +233,7 @@ def reward_function(completions: list[object], test_code: list[str], sandbox_tim
             text = str(completion.get("content", completion.get("text", "")))
         else:
             text = str(completion)
-        dense_reward, detail = score_completion(text, tests, sandbox_timeout_seconds)
-        # Scale dense components and add the scheduled binary pass component.
-        dense_weight = 1.0 - pass_weight
-        detail["reward_components"] = {name: float(value) * dense_weight for name, value in dict(detail["reward_components"]).items()}
-        detail["reward_components"]["pass"] = pass_weight if detail["status"] == "passed" else 0.0
-        reward = dense_reward * dense_weight + float(detail["status"] == "passed") * pass_weight
+        reward, detail = score_completion(text, tests, sandbox_timeout_seconds, pass_weight)
         rewards.append(reward)
         details.append(detail)
     if diagnostics is not None:

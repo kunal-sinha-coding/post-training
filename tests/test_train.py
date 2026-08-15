@@ -20,7 +20,7 @@ def test_reward_stays_dense(monkeypatch, tmp_path):
     reward = train._make_reward({"log_path": str(tmp_path / "logs.txt"), "num_generations": 1})
     reward(["completion"], ["assert solve() == 1"])
 
-    assert captured["pass_weight"] == 0.0
+    assert captured["pass_weight"] == 0.5
 
 
 class FakeModel:

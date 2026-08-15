@@ -36,10 +36,10 @@ def test_dense_reward_counts_partial_assertion_progress():
         "Code: ```python\ndef add(a, b):\n    return a + b\n```",
         "assert add(1, 2) == 3\nassert add(1, 2) == 4",
     )
-    assert reward == pytest.approx(0.625)
+    assert reward == pytest.approx(0.3)
     assert detail["status"] == "partial"
     assert detail["interface_valid"] is True
-    assert detail["reward_components"] == {"format": 0.05, "syntax": 0.10, "interface": 0.05, "execution": 0.05, "tests": 0.375}
+    assert detail["reward_components"] == {"format": 0.025, "syntax": 0.05, "interface": 0.025, "tests": 0.2, "pass": 0.0}
 
 
 def test_pass_weight_suppresses_partial_reward_but_preserves_full_pass():
@@ -51,7 +51,7 @@ def test_pass_weight_suppresses_partial_reward_but_preserves_full_pass():
     tests = ["assert add(1, 2) == 3\nassert add(1, 2) == 4", "assert add(1, 2) == 3"]
     diagnostics = {}
     rewards = reward_function(completions, tests, diagnostics=diagnostics, group_size=2, pass_weight=0.9)
-    assert rewards == pytest.approx([0.0625, 1.0])
+    assert rewards == pytest.approx([0.06, 1.0])
     assert diagnostics["reward/pass_weight"] == 0.9
     assert diagnostics["reward/pass/mean"] == pytest.approx(0.45)
 
@@ -77,14 +77,14 @@ def test_reward_group_summary_reports_variation():
     diagnostics = summarize_reward_groups(
         [0.2, 0.2, 0.6, 0.2, 1.0, 1.0, 1.0, 1.0],
         [
-            {"status": "partial", "passed_tests": 0, "total_tests": 1, "reward_components": {"format": 0.05, "syntax": 0.10, "interface": 0.0, "execution": 0.05, "tests": 0.0}},
-            {"status": "partial", "passed_tests": 0, "total_tests": 1, "reward_components": {"format": 0.05, "syntax": 0.10, "interface": 0.0, "execution": 0.05, "tests": 0.0}},
-            {"status": "partial", "passed_tests": 1, "total_tests": 1, "reward_components": {"format": 0.05, "syntax": 0.10, "interface": 0.05, "execution": 0.05, "tests": 0.75}},
-            {"status": "partial", "passed_tests": 0, "total_tests": 1, "reward_components": {"format": 0.05, "syntax": 0.10, "interface": 0.0, "execution": 0.05, "tests": 0.0}},
-            {"status": "passed", "passed_tests": 1, "total_tests": 1, "reward_components": {"format": 0.05, "syntax": 0.10, "interface": 0.05, "execution": 0.05, "tests": 0.75}},
-            {"status": "passed", "passed_tests": 1, "total_tests": 1, "reward_components": {"format": 0.05, "syntax": 0.10, "interface": 0.05, "execution": 0.05, "tests": 0.75}},
-            {"status": "passed", "passed_tests": 1, "total_tests": 1, "reward_components": {"format": 0.05, "syntax": 0.10, "interface": 0.05, "execution": 0.05, "tests": 0.75}},
-            {"status": "passed", "passed_tests": 1, "total_tests": 1, "reward_components": {"format": 0.05, "syntax": 0.10, "interface": 0.05, "execution": 0.05, "tests": 0.75}},
+            {"status": "partial", "passed_tests": 0, "total_tests": 1, "reward_components": {"format": 0.025, "syntax": 0.05, "interface": 0.0, "tests": 0.0, "pass": 0.0}},
+            {"status": "partial", "passed_tests": 0, "total_tests": 1, "reward_components": {"format": 0.025, "syntax": 0.05, "interface": 0.0, "tests": 0.0, "pass": 0.0}},
+            {"status": "partial", "passed_tests": 1, "total_tests": 1, "reward_components": {"format": 0.025, "syntax": 0.05, "interface": 0.025, "tests": 0.4, "pass": 0.5}},
+            {"status": "partial", "passed_tests": 0, "total_tests": 1, "reward_components": {"format": 0.025, "syntax": 0.05, "interface": 0.0, "tests": 0.0, "pass": 0.0}},
+            {"status": "passed", "passed_tests": 1, "total_tests": 1, "reward_components": {"format": 0.025, "syntax": 0.05, "interface": 0.025, "tests": 0.4, "pass": 0.5}},
+            {"status": "passed", "passed_tests": 1, "total_tests": 1, "reward_components": {"format": 0.025, "syntax": 0.05, "interface": 0.025, "tests": 0.4, "pass": 0.5}},
+            {"status": "passed", "passed_tests": 1, "total_tests": 1, "reward_components": {"format": 0.025, "syntax": 0.05, "interface": 0.025, "tests": 0.4, "pass": 0.5}},
+            {"status": "passed", "passed_tests": 1, "total_tests": 1, "reward_components": {"format": 0.025, "syntax": 0.05, "interface": 0.025, "tests": 0.4, "pass": 0.5}},
         ],
     )
     assert diagnostics["reward/flat_group_fraction"] == 0.5
