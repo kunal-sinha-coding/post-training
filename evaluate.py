@@ -141,15 +141,23 @@ def aggregate_results(results: list[dict[str, Any]]) -> dict[str, Any]:
     """Aggregate execution outcomes into stable evaluation metrics."""
     total = len(results)
     counts = {status: sum(result["status"] == status for result in results) for status in {result["status"] for result in results}}
-    return {
+    metrics = {
         "examples": total,
         "pass_at_1": sum(bool(result["passed"]) for result in results) / total if total else 0.0,
         "average_reward": sum(float(result["reward"]) for result in results) / total if total else 0.0,
         "status_counts": counts,
     }
+    # Summarize reward components so evaluation reward gains can be audited for misalignment.
+    for component in ("format", "syntax", "interface", "tests", "pass"):
+        values = [float(result.get("reward_components", {}).get(component, 0.0)) for result in results]
+        metrics[f"reward_{component}_mean"] = sum(values) / total if total else 0.0
+    metrics["successful_examples"] = sum(bool(result["passed"]) for result in results)
+    metrics["unique_completion_rate"] = len({str(result.get("completion", "")).strip() for result in results}) / total if total else 0.0
+    metrics["repeated_completion_fraction"] = 1.0 - metrics["unique_completion_rate"]
+    return metrics
 
 
-def evaluate_texts(completions: list[str], records: list[dict[str, Any]], timeout_seconds: float = 3.0, log_path: str | Path = "logs/logs.txt", evaluation_name: str = "evaluation", pass_weight: float = 0.5) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+def evaluate_texts(completions: list[str], records: list[dict[str, Any]], timeout_seconds: float = 3.0, log_path: str | Path = "logs/logs.txt", evaluation_name: str = "evaluation", pass_weight: float = 0.5, diagnostics: dict[str, float] | None = None) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     """Execute one generated completion per record and aggregate its results."""
     # Score evaluation completions with the same dense reward used during training.
     details = []
@@ -165,7 +173,33 @@ def evaluate_texts(completions: list[str], records: list[dict[str, Any]], timeou
         passed = score_details["status"] == "passed"
         details.append({"task_id": record.get("task_id"), "completion": executed_completion, "reward": reward, "passed": passed, **score_details})
     append_evaluation_log(log_path, evaluation_name, records, details)
-    return aggregate_results(details), details
+    metrics = aggregate_results(details)
+    # Include model-distribution diagnostics collected during generation when available.
+    if diagnostics:
+        metrics.update(diagnostics)
+    return metrics, details
+
+
+def _generation_diagnostics(model: Any, output: Any, prompt_width: int, torch: Any) -> dict[str, float]:
+    """Measure token entropy and optional reference-policy KL on generated tokens."""
+    # Compare the policy distribution with an attached reference model when one exists.
+    generated_width = max(0, int(output.shape[-1]) - prompt_width)
+    if not generated_width:
+        return {}
+    attention_mask = torch.ones_like(output)
+    with torch.no_grad():
+        policy_logits = model(input_ids=output, attention_mask=attention_mask).logits[:, prompt_width - 1 : -1, :]
+        policy_log_probs = torch.log_softmax(policy_logits, dim=-1)
+        policy_probs = policy_log_probs.exp()
+        entropy = -(policy_probs * policy_log_probs).sum(dim=-1).mean().item()
+        diagnostics = {"entropy": float(entropy)}
+        reference_model = getattr(model, "ref_model", None) or getattr(model, "reference_model", None)
+        if reference_model is not None:
+            reference_logits = reference_model(input_ids=output, attention_mask=attention_mask).logits[:, prompt_width - 1 : -1, :]
+            reference_log_probs = torch.log_softmax(reference_logits, dim=-1)
+            kl = (policy_probs * (policy_log_probs - reference_log_probs)).sum(dim=-1).mean().item()
+            diagnostics["reference_kl"] = float(kl)
+    return diagnostics
 
 
 def _change_description(results_log_path: str | Path, config: dict[str, Any]) -> tuple[str, str]:
@@ -290,6 +324,8 @@ def evaluate_model(model: Any, tokenizer: Any, dataset: Any, config: dict[str, A
     model.eval()
     records = [dataset[index] for index in range(len(dataset))]
     completions: list[str] = []
+    entropy_values: list[float] = []
+    reference_kl_values: list[float] = []
     batch_size = max(1, int(config.get("evaluation_batch_size", 8)))
     try:
         for start in range(0, len(records), batch_size):
@@ -299,7 +335,17 @@ def evaluate_model(model: Any, tokenizer: Any, dataset: Any, config: dict[str, A
             with torch.no_grad():
                 output = model.generate(**inputs, max_new_tokens=int(config.get("max_completion_length", 512)), do_sample=False)
             prompt_width = inputs["input_ids"].shape[-1]
+            generation_metrics = _generation_diagnostics(model, output, prompt_width, torch)
+            if "entropy" in generation_metrics:
+                entropy_values.append(generation_metrics["entropy"])
+            if "reference_kl" in generation_metrics:
+                reference_kl_values.append(generation_metrics["reference_kl"])
             completions.extend(tokenizer.decode(item[prompt_width:], skip_special_tokens=True) for item in output)
-        return evaluate_texts(completions, records, float(config.get("sandbox_timeout_seconds", 3)), config.get("log_path", "logs/logs.txt"), evaluation_name, float(config.get("pass_weight", 0.5)))
+        diagnostics = {}
+        if entropy_values:
+            diagnostics["entropy"] = sum(entropy_values) / len(entropy_values)
+        if reference_kl_values:
+            diagnostics["reference_kl"] = sum(reference_kl_values) / len(reference_kl_values)
+        return evaluate_texts(completions, records, float(config.get("sandbox_timeout_seconds", 3)), config.get("log_path", "logs/logs.txt"), evaluation_name, float(config.get("pass_weight", 0.5)), diagnostics)
     finally:
         model.train(was_training)

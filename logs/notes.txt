@@ -664,3 +664,22 @@ Held-out pass is the target metric, while cumulative training reward can plateau
 ### Context
 
 This change implements the requested checkpoint selection and early stopping policy for the current full-validation training experiment. Generated logs and results remain uncommitted.
+
+
+## Cycle 19: Add evaluation diagnostics
+
+### Commit Name
+
+Log evaluation diagnostics for reward alignment and exploration.
+
+### Description
+
+Evaluation metrics now include reward-component means, successful-example counts, unique-completion rate, repeated-completion fraction, token entropy, and optional reference-policy KL. These metrics are passed through the existing W&B evaluation logger.
+
+### Why
+
+The additional measurements distinguish reward misalignment, evaluation noise, and exploration collapse instead of inferring causes from pass@1 alone.
+
+### Context
+
+Entropy and diversity are measured on generated evaluation completions. Reference KL is recorded when the evaluated model exposes a reference policy; otherwise it is omitted because evaluating a separate reference model would change the experiment cost and setup.
