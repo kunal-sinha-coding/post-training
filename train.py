@@ -68,6 +68,10 @@ def configure_wandb(config: dict[str, Any]) -> Any | None:
     # Start one shared run before baseline evaluation and both training stages.
     if wandb.run is None:
         wandb.init(project=str(config.get("wandb_project", "grpo-mbpp")), name=config.get("wandb_run_name"))
+    # Use trainer steps rather than W&B history row numbers on evaluation charts.
+    if hasattr(wandb, "define_metric"):
+        wandb.define_metric("evaluation/step")
+        wandb.define_metric("evaluation/*", step_metric="evaluation/step")
     return wandb
 
 

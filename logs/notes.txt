@@ -813,3 +813,34 @@ The patch helper was unavailable because its restricted sandbox could not create
 ### Learning
 
 Evaluation observability must report both the target metric and the mechanisms that produce reward. Automated diagnoses require explicit metric selection and should not be trusted when profiling metrics are present.
+
+
+## Cycle 23: Align W&B evaluation charts
+
+### Hypothesis
+
+The intermediate evaluation rows were logged, but charts were using W&B's internal history row index instead of trainer evaluation steps, making the series appear sparse or misleading.
+
+### Experiment
+
+W&B history for `glowing-serenity-31` was queried directly. The run contains 21 evaluation rows: baseline, checkpoint steps 25 through 450 at 25-step intervals, and final step 460 entries. `train.py` was updated to define `evaluation/step` as the custom step metric for all `evaluation/*` metrics.
+
+### Metrics
+
+The raw history contains pass@1 and average reward at steps 0, 25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300, 325, 350, 375, 400, 425, 450, and 460.
+
+### What Went Well
+
+The W&B MCP confirmed that intermediate values were not missing from the run. The full test suite passed with 44 tests after the chart-axis change.
+
+### What Went Badly
+
+The default W&B history axis is the global row index, which reached 46,482 because training logs were emitted far more frequently than evaluations. This can obscure evaluation points in the UI.
+
+### Learning
+
+Evaluation logging was functioning. The missing-looking values were a visualization-axis problem rather than an evaluation-callback problem. New runs will associate evaluation metrics with `evaluation/step`.
+
+### Next Hypothesis
+
+A fresh run or newly logged evaluation series should display every checkpoint evaluation at its trainer step.
