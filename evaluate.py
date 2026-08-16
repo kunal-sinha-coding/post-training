@@ -157,6 +157,35 @@ def aggregate_results(results: list[dict[str, Any]]) -> dict[str, Any]:
     return metrics
 
 
+def code_fence_stopping_criteria(tokenizer: Any, prompt_width: int) -> Any:
+    """Stop each generation after a closing code fence appears in generated tokens."""
+    import torch
+    from transformers import StoppingCriteria, StoppingCriteriaList
+
+    class CodeFenceCriteria(StoppingCriteria):
+        """Track per-sequence closing-fence matches without scanning prompt tokens."""
+
+        def __init__(self) -> None:
+            # Tokenize the stop sequence once and track which rows have finished.
+            encoded = tokenizer("```", add_special_tokens=False)
+            self.stop_ids = torch.tensor(encoded["input_ids"], dtype=torch.long)
+            self.finished: torch.Tensor | None = None
+
+        def __call__(self, input_ids: Any, scores: Any, **kwargs: Any) -> bool:
+            """Return true only after every generated row has emitted the closing fence."""
+            del scores, kwargs
+            stop_ids = self.stop_ids.to(input_ids.device)
+            if self.finished is None or self.finished.shape[0] != input_ids.shape[0]:
+                self.finished = torch.zeros(input_ids.shape[0], dtype=torch.bool, device=input_ids.device)
+            generated = input_ids[:, prompt_width:]
+            if generated.shape[1] >= stop_ids.shape[0]:
+                suffix = generated[:, -stop_ids.shape[0]:]
+                self.finished |= torch.all(suffix == stop_ids, dim=1)
+            return bool(torch.all(self.finished).item())
+
+    return StoppingCriteriaList([CodeFenceCriteria()])
+
+
 def evaluate_texts(completions: list[str], records: list[dict[str, Any]], timeout_seconds: float = 3.0, log_path: str | Path = "logs/logs.txt", evaluation_name: str = "evaluation", pass_weight: float = 0.5, diagnostics: dict[str, float] | None = None) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     """Execute one generated completion per record and aggregate its results."""
     # Score evaluation completions with the same dense reward used during training.
@@ -337,8 +366,7 @@ def evaluate_model(model: Any, tokenizer: Any, dataset: Any, config: dict[str, A
                     **inputs,
                     max_new_tokens=int(config.get("max_completion_length", 512)),
                     do_sample=False,
-                    stop_strings=["```"],
-                    tokenizer=tokenizer,
+                    stopping_criteria=code_fence_stopping_criteria(tokenizer, inputs["input_ids"].shape[-1]),
                 )
             prompt_width = inputs["input_ids"].shape[-1]
             generation_metrics = _generation_diagnostics(model, output, prompt_width, torch)

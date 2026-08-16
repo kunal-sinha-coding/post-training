@@ -875,3 +875,34 @@ A closing-fence stop is a more direct intervention than only increasing the maxi
 ### Next Hypothesis
 
 If clipping falls below roughly 10 percent and pass@1 improves, truncation was a primary bottleneck. If clipping remains high, the model is failing to follow the output format and may need SFT or a different stopping implementation.
+
+
+## Cycle 25: Repair prompt-sensitive stopping
+
+### Hypothesis
+
+The first stop-string implementation may stop on the prompt template rather than generated content because Transformers scans the full sequence.
+
+### Experiment
+
+The first post-fix run `skilled-cosmos-32` was launched with the closing-fence stop and 768-token cap. Its baseline evaluation and first 32 training completions were inspected, then the run was interrupted after the first batch. A token-level stopping criterion was implemented that checks only tokens after the prompt width and tracks completion rows independently.
+
+### Metrics
+
+The failed run produced 90 baseline format errors and 32 first-batch training format errors. The first training batch had zero reward, zero mixed groups, and a reported clipped ratio of 0.125, but all completions were empty after the prompt-sensitive stop fired.
+
+### What Went Well
+
+The failure was detected immediately from the first batch rather than consuming the full ten-epoch budget. The smoke test for the replacement criterion confirms that a fence in prompt tokens does not trigger it, while a fence in generated tokens does. The full repository suite passes with 44 tests.
+
+### What Went Badly
+
+The first implementation was not safe: built-in stop strings matched the example fence already present in every prompt and caused empty completions.
+
+### Learning
+
+Stop conditions must operate on generated-token suffixes, not the complete prompt-plus-completion sequence, when the prompt contains the same delimiter.
+
+### Next Hypothesis
+
+The replacement criterion will preserve generated code, reduce the 64.65 percent unterminated rate, and avoid the all-format-error failure.

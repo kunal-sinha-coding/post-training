@@ -12,13 +12,14 @@ import shutil
 from collections import deque
 from pathlib import Path
 from pprint import pformat
+import copy
 from typing import Any
 
 import yaml
 from dotenv import load_dotenv
 
 from data import build_sft_dataset, prepare_datasets
-from evaluate import append_training_step_header, append_training_step_metrics, append_training_step_samples, append_evaluation_log, evaluate_model, save_evaluation, start_run_log
+from evaluate import append_training_step_header, append_training_step_metrics, append_training_step_samples, append_evaluation_log, code_fence_stopping_criteria, evaluate_model, save_evaluation, start_run_log
 from sandbox import reward_function
 
 
@@ -345,8 +346,17 @@ def _enable_generation_stop(model: Any, tokenizer: Any) -> None:
     original_generate = model.generate
 
     def generate_with_tokenizer(*args: Any, **kwargs: Any) -> Any:
-        """Forward generation while supplying the tokenizer for stop-string matching."""
-        kwargs.setdefault("tokenizer", tokenizer)
+        """Forward generation with a stop criterion that ignores prompt fence tokens."""
+        input_ids = kwargs.get("input_ids")
+        if input_ids is None and args:
+            input_ids = args[0]
+        if input_ids is not None:
+            generation_config = kwargs.get("generation_config")
+            if generation_config is not None and getattr(generation_config, "stop_strings", None):
+                generation_config = copy.deepcopy(generation_config)
+                generation_config.stop_strings = None
+                kwargs["generation_config"] = generation_config
+            kwargs["stopping_criteria"] = code_fence_stopping_criteria(tokenizer, input_ids.shape[-1])
         return original_generate(*args, **kwargs)
 
     model.generate = generate_with_tokenizer
