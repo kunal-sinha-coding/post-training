@@ -333,7 +333,13 @@ def evaluate_model(model: Any, tokenizer: Any, dataset: Any, config: dict[str, A
             inputs = _prepare_generation_batch(tokenizer, [record["prompt"] for record in batch_records], int(config.get("max_prompt_length", 512)), torch)
             inputs = {key: value.to(model.device) for key, value in inputs.items()}
             with torch.no_grad():
-                output = model.generate(**inputs, max_new_tokens=int(config.get("max_completion_length", 512)), do_sample=False)
+                output = model.generate(
+                    **inputs,
+                    max_new_tokens=int(config.get("max_completion_length", 512)),
+                    do_sample=False,
+                    stop_strings=["```"],
+                    tokenizer=tokenizer,
+                )
             prompt_width = inputs["input_ids"].shape[-1]
             generation_metrics = _generation_diagnostics(model, output, prompt_width, torch)
             if "entropy" in generation_metrics:

@@ -844,3 +844,34 @@ Evaluation logging was functioning. The missing-looking values were a visualizat
 ### Next Hypothesis
 
 A fresh run or newly logged evaluation series should display every checkpoint evaluation at its trainer step.
+
+
+## Cycle 24: Stop generation at the code fence
+
+### Hypothesis
+
+Most sampled completions are being cut off because the model does not emit EOS before the 512-token limit. Stopping at the required closing code fence should reduce unterminated outputs and improve reward stability.
+
+### Experiment
+
+The approved change adds a Transformers stop string for the closing ````` sequence to GRPO training generation and deterministic evaluation generation. The hard completion cap increases from 512 to 768 as a safety margin. The full-validation, ten-epoch configuration remains otherwise unchanged.
+
+### Metrics
+
+The prior run had 460 training batches and 14,720 sampled completions. 9,516 were unterminated according to `completions/clipped_ratio`, for an overall rate of 64.65 percent. Every batch reached the 512-token maximum.
+
+### What Went Well
+
+The stop rule is applied to both training and evaluation paths. The existing test suite passes with 44 tests.
+
+### What Went Badly
+
+The current run was already finished, so the cutoff fix requires a fresh run. The installed TRL generation path requires a tokenizer argument for stop strings, so a small model-generation wrapper supplies it during GRPO generation.
+
+### Learning
+
+A closing-fence stop is a more direct intervention than only increasing the maximum length. The new run must verify that the clipped ratio falls sharply before attributing any pass@1 change to reward or exploration changes.
+
+### Next Hypothesis
+
+If clipping falls below roughly 10 percent and pass@1 improves, truncation was a primary bottleneck. If clipping remains high, the model is failing to follow the output format and may need SFT or a different stopping implementation.

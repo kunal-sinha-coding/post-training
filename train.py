@@ -339,6 +339,19 @@ def run_sft(model: Any, tokenizer: Any, train_dataset: Any, test_dataset: Any, c
     return trainer, sft_callback
 
 
+def _enable_generation_stop(model: Any, tokenizer: Any) -> None:
+    """Pass the tokenizer required by Transformers stop-string criteria during training generation."""
+    # Inject the tokenizer into GRPO's model.generate calls without changing the trainer dependency.
+    original_generate = model.generate
+
+    def generate_with_tokenizer(*args: Any, **kwargs: Any) -> Any:
+        """Forward generation while supplying the tokenizer for stop-string matching."""
+        kwargs.setdefault("tokenizer", tokenizer)
+        return original_generate(*args, **kwargs)
+
+    model.generate = generate_with_tokenizer
+
+
 def run_training(config: dict[str, Any], stage: str = "all") -> None:
     """Run baseline evaluation, GRPO training, intermediate evaluations, and final evaluation."""
     # Import training dependencies only when the experiment launches.
@@ -371,6 +384,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
     model = AutoModelForCausalLM.from_pretrained(config["model_name_or_path"], trust_remote_code=bool(config.get("trust_remote_code", False)))
+    _enable_generation_stop(model, tokenizer)
     model.to(device)
     print(f"Model device: {model.device}", flush=True)
     # Run the SFT baseline, training stage, and final epoch evaluation when enabled.
@@ -423,6 +437,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         run_name=config.get("wandb_run_name"),
         use_cpu=not torch.cuda.is_available(),
         seed=int(config.get("seed", 42)),
+        generation_kwargs=dict(config.get("generation_kwargs", {"stop_strings": ["```"]})),
     )
     # Build the GRPO callback and trainer.
     training_callback = _make_callback(model, tokenizer, test_dataset, config, wandb)
