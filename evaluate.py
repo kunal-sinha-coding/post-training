@@ -117,12 +117,12 @@ def append_training_step_metrics(log_path: str | Path, metrics: dict[str, Any]) 
 
 
 
-def append_evaluation_log(log_path: str | Path, evaluation_name: str, records: list[dict[str, Any]], details: list[dict[str, Any]]) -> None:
+def append_evaluation_log(log_path: str | Path, evaluation_name: str, records: list[dict[str, Any]], details: list[dict[str, Any]], raw_completions: list[str] | None = None) -> None:
     """Append prompt, completion, execution result, and reward for every example."""
     path = Path(log_path)
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as handle:
-        for record, detail in zip(records, details):
+        for index, (record, detail) in enumerate(zip(records, details)):
             execution = {
                 "status": detail.get("status"),
                 "passed": detail.get("passed"),
@@ -134,7 +134,8 @@ def append_evaluation_log(log_path: str | Path, evaluation_name: str, records: l
                 f"Evaluation: {evaluation_name}\n"
                 f"Task ID: {record.get('task_id')}\n\n"
                 f"Prompt:\n{record.get('prompt', '')}\n\n"
-                f"Code output:\n{detail.get('completion', '')}\n\n"
+                    f"Raw completion from LLM:\n{(raw_completions[index] if raw_completions and index < len(raw_completions) else detail.get('raw_completion', ''))}\n\n"
+                    f"Sandbox input after fence extraction/truncation:\n{detail.get('completion', '')}\n\n"
                 f"Code execution result:\n{json.dumps(execution, indent=2)}\n\n"
                 f"Award:\n{detail.get('reward', 0.0)}\n\n\n"
             )
@@ -232,8 +233,8 @@ def evaluate_texts(completions: list[str], records: list[dict[str, Any]], timeou
         # Reuse the training scorer so average reward has identical semantics.
         reward, score_details = score_completion(completion, record["test_code"], timeout_seconds, pass_weight)
         passed = score_details["status"] == "passed"
-        details.append({"task_id": record.get("task_id"), "completion": executed_completion, "reward": reward, "passed": passed, **score_details})
-    append_evaluation_log(log_path, evaluation_name, records, details)
+        details.append({"task_id": record.get("task_id"), "raw_completion": completion, "completion": executed_completion, "reward": reward, "passed": passed, **score_details})
+    append_evaluation_log(log_path, evaluation_name, records, details, completions)
     metrics = aggregate_results(details)
     # Include model-distribution diagnostics collected during generation when available.
     if diagnostics:

@@ -947,6 +947,16 @@ Prompts now state the required function name. Evaluation generation forces `Code
 
 The 90-example baseline achieved pass@1 0.2889, average reward 0.3689, 26 passed, 11 partial, 43 failed, and 10 format errors. Focused evaluation and sandbox tests passed 18/18. This is an improvement over the previous task-independent forced-prefix baseline of 18 passed and 11 format errors.
 
+## Commit: Preserve raw evaluation completions
+
+### Change and Reason
+
+Evaluation artifacts and human-readable logs now store the raw model completion separately from the extracted sandbox input. Previously malformed evaluation completions appeared as empty strings because only successful fence extraction was persisted, preventing direct diagnosis.
+
+### Validation and Context
+
+The latest baseline's eight parseable interface failures all had the correct task-specific function name but the wrong positional arity. The one retry was invoked for this class of error, but the retried generation still produced an incorrect count. Focused evaluation and sandbox tests passed 18/18.
+
 ## Experiment: Eliminate syntax and interface errors before RL quality optimization
 
 ### Objective
