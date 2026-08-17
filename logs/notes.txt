@@ -997,6 +997,16 @@ Reran the 90-example baseline with task-specific function-name forcing, model-ge
 
 All ten format errors had the correct opening fence but no closing fence because generation hit the 768-token cap. There were zero syntax errors. The eight parseable interface failures all had the correct function name but the wrong positional arity, so the remaining interface problem is argument-count generation rather than name generation. Raw completions and extracted sandbox inputs are now preserved for future audits.
 
+## Experiment: Consolidated requirements prompt with GRPO rerun
+
+### Change and Reason
+
+Consolidated the function-name, exact-arity, formatting, single-function, and general-solution constraints into one `Requirements` section. Kept option 4 generation with model-chosen argument names and set `max_retries: 1`. Baseline evaluation remains enabled.
+
+### Validation and Context
+
+The fresh baseline achieved pass@1 0.2333, average reward 0.3221, 21 passed, 11 partial, 48 failed, 9 format errors, and 1 syntax error. Full GRPO then started as W&B run `smooth-river-34` (`i6vtvs7z`) at training step 0 of 460.
+
 ## Experiment: Eliminate syntax and interface errors before RL quality optimization
 
 ### Objective

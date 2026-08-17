@@ -37,8 +37,8 @@ evaluation_batch_size: 8
 results_log_path: logs/results.txt
 best_checkpoint_metric: pass@1
 checkpoint_eval_patience: 3
-max_retries: 0
-include_generic_arguments: true
+max_retries: 1
+include_generic_arguments: false
 logging_steps: 1
 reward_rolling_window: 10
 save_steps: 25

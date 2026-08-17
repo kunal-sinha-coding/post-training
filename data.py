@@ -11,9 +11,7 @@ from typing import Any
 DEFAULT_PROMPT_TEMPLATE = (
     "You are an expert Python programmer. Implement the function described below.\n\n"
     "Task:\n{prompt}\n\nTests:\n{tests}\n\n"
-    "The required function name is `{function_name}`.\n"
-    "Your entire response must begin with the label Code: followed by one fenced Python code block containing the complete implementation.\n"
-    "Output only that Python code block. Do not include a placeholder implementation, reasoning, explanations, <think> blocks, or text outside the code block.\n"
+    "Requirements:\n"
 )
 
 
@@ -53,9 +51,11 @@ def build_prompt(record: dict[str, Any], template: str = DEFAULT_PROMPT_TEMPLATE
     if len(arities) == 1:
         count = next(iter(arities))
         formatted += (
-            f"\nDefine exactly one function named `{function_name}` with exactly {count} positional parameter"
+            f"\n- Define exactly one function named `{function_name}` with exactly {count} positional parameter"
             f"{'s' if count != 1 else ''}. Choose meaningful parameter names.\n"
-            "Implement the general solution, not a lookup table for the examples. Do not hardcode the listed test inputs or outputs, define multiple versions of the function, or include test code.\n"
+            "- Return only the complete implementation, beginning with `Code:` and one fenced Python code block.\n"
+            "- Do not include reasoning, explanations, `<think>` blocks, test code, placeholder implementations, or text outside the code block.\n"
+            "- Implement a general solution. Do not hardcode the listed test inputs or outputs, use a lookup table, or define multiple versions of the function.\n"
         )
     if include_generic_arguments and len(arities) == 1:
         count = next(iter(arities))
