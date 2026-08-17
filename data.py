@@ -36,25 +36,32 @@ def format_tests(record: dict[str, Any]) -> str:
     return "\n".join(str(line) for line in [setup, *import_lines, *test_lines] if line)
 
 
-def build_prompt(record: dict[str, Any], template: str = DEFAULT_PROMPT_TEMPLATE) -> str:
+def build_prompt(record: dict[str, Any], template: str = DEFAULT_PROMPT_TEMPLATE, include_generic_arguments: bool = False) -> str:
     """Build the text prompt consumed by the GRPO trainer and evaluator."""
     prompt = str(_first_value(record, "text", "prompt", "description", "task", default=""))
     tests = format_tests(record)
     function_name = "the function named in the tests"
+    arities: set[int] = set()
     try:
         calls = [node for node in ast.walk(ast.parse(tests)) if isinstance(node, ast.Call) and isinstance(node.func, ast.Name)]
         if calls:
             function_name = calls[0].func.id
+            arities = {len(call.args) for call in calls if call.func.id == function_name}
     except SyntaxError:
         pass
-    return template.format(prompt=prompt, tests=tests, function_name=function_name)
+    formatted = template.format(prompt=prompt, tests=tests, function_name=function_name)
+    if include_generic_arguments and len(arities) == 1:
+        count = next(iter(arities))
+        arguments = ", ".join(f"arg{i}" for i in range(1, count + 1))
+        formatted += f"\nUse this function header: `def {function_name}({arguments}):`.\n"
+    return formatted
 
 
-def normalize_record(record: dict[str, Any]) -> dict[str, Any]:
+def normalize_record(record: dict[str, Any], include_generic_arguments: bool = False) -> dict[str, Any]:
     """Convert one raw MBPP row into the stable training schema."""
     return {
         "task_id": _first_value(record, "task_id", "id", default=None),
-        "prompt": build_prompt(record),
+        "prompt": build_prompt(record, include_generic_arguments=include_generic_arguments),
         "test_code": format_tests(record),
         "reference_code": str(_first_value(record, "code", "canonical_solution", default="")),
         "test_setup_code": str(_first_value(record, "test_setup_code", default="")),
@@ -126,6 +133,7 @@ def load_mbpp(
     dataset_name: str = "google-research-datasets/mbpp",
     dataset_config: str | None = None,
     split: str = "train",
+    include_generic_arguments: bool = False,
 ) -> Any:
     """Load the requested MBPP split from the Hugging Face Hub."""
     try:
@@ -134,7 +142,7 @@ def load_mbpp(
         raise RuntimeError("Install the 'datasets' package to load MBPP.") from exc
     loaded = load_dataset(dataset_name, dataset_config, split=split) if dataset_config else load_dataset(dataset_name, split=split)
     # Rebuild normalized prompts so prompt-template edits cannot be hidden by a stale datasets cache.
-    return loaded.map(normalize_record, load_from_cache_file=False)
+    return loaded.map(lambda record: normalize_record(record, include_generic_arguments), load_from_cache_file=False)
 
 
 def split_dataset(dataset: Any, train_fraction: float = 0.8, seed: int = 42) -> tuple[Any, Any]:
@@ -157,8 +165,9 @@ def split_dataset(dataset: Any, train_fraction: float = 0.8, seed: int = 42) -> 
 
 def prepare_datasets(config: dict[str, Any]) -> tuple[Any, Any]:
     """Load official MBPP training and validation splits and apply optional debug limits."""
-    train_dataset = load_mbpp(config["dataset_name"], config.get("dataset_config"), config.get("train_split", "train"))
-    validation_dataset = load_mbpp(config["dataset_name"], config.get("dataset_config"), config.get("validation_split", "validation"))
+    include_generic_arguments = bool(config.get("include_generic_arguments", False))
+    train_dataset = load_mbpp(config["dataset_name"], config.get("dataset_config"), config.get("train_split", "train"), include_generic_arguments)
+    validation_dataset = load_mbpp(config["dataset_name"], config.get("dataset_config"), config.get("validation_split", "validation"), include_generic_arguments)
     max_train = config.get("max_train_samples")
     max_eval = config.get("max_eval_samples")
 

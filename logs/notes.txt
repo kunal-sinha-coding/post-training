@@ -957,6 +957,16 @@ Evaluation artifacts and human-readable logs now store the raw model completion 
 
 The latest baseline's eight parseable interface failures all had the correct task-specific function name but the wrong positional arity. The one retry was invoked for this class of error, but the retried generation still produced an incorrect count. Focused evaluation and sandbox tests passed 18/18.
 
+## Commit: Configure generic argument hints and retry count
+
+### Change and Reason
+
+Made the retry count configurable through `max_retries` and removed the hardcoded retry constant. Added `include_generic_arguments` to control whether prompts include headers such as `def target(arg1, arg2):`. The default experiment now uses zero retries and generic argument hints.
+
+### Validation and Context
+
+The 90-example baseline with zero retries and generic argument hints achieved pass@1 0.2111, average reward 0.2849, 19 passed, 8 partial, 42 failed, 11 format errors, and 10 syntax errors. This was below the previous one-retry, no-generic-header baseline of 26 passed, so generic hints did not improve this deterministic baseline. Focused evaluation and sandbox tests passed 18/18.
+
 ## Experiment: Eliminate syntax and interface errors before RL quality optimization
 
 ### Objective

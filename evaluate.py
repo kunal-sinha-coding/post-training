@@ -13,7 +13,6 @@ from typing import Any
 from sandbox import expected_interface, extract_code, score_completion
 
 MAX_RUN_LOGS = 10
-NUM_RETRIES = 1
 
 
 def _append_run_header(path: Path, timestamp: str) -> None:
@@ -414,7 +413,8 @@ def evaluate_model(model: Any, tokenizer: Any, dataset: Any, config: dict[str, A
         for record in records:
             retry_prompt = str(record["prompt"])
             completion = ""
-            for attempt in range(NUM_RETRIES + 1):
+            max_retries = max(0, int(config.get("max_retries", 0)))
+            for attempt in range(max_retries + 1):
                 expected_name, _ = expected_interface(record["test_code"])
                 prefix_text = f"Code:\n```python\ndef {expected_name}(" if expected_name else "Code:\n```python\n"
                 inputs = _prepare_generation_inputs(tokenizer, retry_prompt, int(config.get("max_prompt_length", 512)), torch)
@@ -435,7 +435,7 @@ def evaluate_model(model: Any, tokenizer: Any, dataset: Any, config: dict[str, A
                     reference_kl_values.append(generation_metrics["reference_kl"])
                 completion = tokenizer.decode(output[0, prompt_width:], skip_special_tokens=True)
                 retry_info = _wrong_arity(completion, record["test_code"])
-                if retry_info is None or attempt >= NUM_RETRIES:
+                if retry_info is None or attempt >= max_retries:
                     break
                 name, actual, expected = retry_info
                 retry_prompt += (
