@@ -19,7 +19,7 @@ import yaml
 from dotenv import load_dotenv
 
 from data import build_sft_dataset, prepare_datasets
-from evaluate import append_training_step_header, append_training_step_metrics, append_training_step_samples, append_evaluation_log, code_fence_stopping_criteria, evaluate_model, save_evaluation, start_run_log
+from evaluate import append_training_step_header, append_training_step_metrics, append_training_step_samples, append_evaluation_log, code_fence_stopping_criteria, evaluate_model, forced_code_prefix_length, forced_code_prefix_processor, save_evaluation, start_run_log
 from sandbox import reward_function
 
 
@@ -356,7 +356,8 @@ def _enable_generation_stop(model: Any, tokenizer: Any) -> None:
                 generation_config = copy.deepcopy(generation_config)
                 generation_config.stop_strings = None
                 kwargs["generation_config"] = generation_config
-            kwargs["stopping_criteria"] = code_fence_stopping_criteria(tokenizer, input_ids.shape[-1])
+            kwargs["logits_processor"] = [forced_code_prefix_processor(tokenizer, input_ids.shape[-1])]
+            kwargs["stopping_criteria"] = code_fence_stopping_criteria(tokenizer, input_ids.shape[-1] + forced_code_prefix_length(tokenizer))
         return original_generate(*args, **kwargs)
 
     model.generate = generate_with_tokenizer

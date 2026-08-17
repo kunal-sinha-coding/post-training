@@ -187,6 +187,35 @@ def code_fence_stopping_criteria(tokenizer: Any, prompt_width: int) -> Any:
     return StoppingCriteriaList([CodeFenceCriteria()])
 
 
+def forced_code_prefix_processor(tokenizer: Any, prompt_width: int) -> Any:
+    """Force every completion to begin with the required Code label and Python fence."""
+    import torch
+    from transformers import LogitsProcessor
+
+    class ForcedCodePrefix(LogitsProcessor):
+        """Constrain only the initial generated tokens to the canonical response prefix."""
+
+        def __init__(self) -> None:
+            # Tokenize the protocol prefix without adding special tokens.
+            self.prefix_ids = tokenizer("Code:\n```python\n", add_special_tokens=False)["input_ids"]
+
+        def __call__(self, input_ids: Any, scores: Any) -> Any:
+            """Allow only the next prefix token until the required prefix is complete."""
+            generated_steps = input_ids.shape[1] - prompt_width
+            if generated_steps >= len(self.prefix_ids):
+                return scores
+            constrained = torch.full_like(scores, torch.finfo(scores.dtype).min)
+            constrained[:, self.prefix_ids[generated_steps]] = 0
+            return constrained
+
+    return ForcedCodePrefix()
+
+
+def forced_code_prefix_length(tokenizer: Any) -> int:
+    """Return the number of generated tokens reserved for the forced response prefix."""
+    return len(tokenizer("Code:\n```python\n", add_special_tokens=False)["input_ids"])
+
+
 def evaluate_texts(completions: list[str], records: list[dict[str, Any]], timeout_seconds: float = 3.0, log_path: str | Path = "logs/logs.txt", evaluation_name: str = "evaluation", pass_weight: float = 0.5, diagnostics: dict[str, float] | None = None) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     """Execute one generated completion per record and aggregate its results."""
     # Score evaluation completions with the same dense reward used during training.
@@ -367,7 +396,8 @@ def evaluate_model(model: Any, tokenizer: Any, dataset: Any, config: dict[str, A
                     **inputs,
                     max_new_tokens=int(config.get("max_completion_length", 512)),
                     do_sample=False,
-                    stopping_criteria=code_fence_stopping_criteria(tokenizer, inputs["input_ids"].shape[-1]),
+                    logits_processor=[forced_code_prefix_processor(tokenizer, inputs["input_ids"].shape[-1])],
+                    stopping_criteria=code_fence_stopping_criteria(tokenizer, inputs["input_ids"].shape[-1] + forced_code_prefix_length(tokenizer)),
                 )
             prompt_width = inputs["input_ids"].shape[-1]
             generation_metrics = _generation_diagnostics(model, output, prompt_width, torch)
