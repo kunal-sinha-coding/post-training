@@ -907,6 +907,16 @@ Stop conditions must operate on generated-token suffixes, not the complete promp
 
 The replacement criterion will preserve generated code, reduce the 64.65 percent unterminated rate, and avoid the all-format-error failure.
 
+## Commit: Log raw and sandbox-ready completions
+
+### Change and Reason
+
+Updated training sample logging in `evaluate.py` to record the raw completion returned by the language model and the extracted code passed to the sandbox after fence extraction and truncation. This makes formatting and stopping failures directly auditable.
+
+### Validation and Context
+
+Reran one GRPO training step with 32 sampled completions. The log contains 32 raw-completion entries and 32 sandbox-input entries, with 11 format errors and zero exact placeholder outputs. The first raw completion included a closing fence followed by extra generated text, while the sandbox input stopped at the first fenced block as intended.
+
 ## Commit: Remove placeholder example from prompt
 
 ### Change and Reason

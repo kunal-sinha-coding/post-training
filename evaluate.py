@@ -80,8 +80,8 @@ def append_training_step_header(log_path: str | Path, step: int, total_steps: in
 
 
 def append_training_step_samples(log_path: str | Path, completions: list[object]) -> None:
-    """Append the post-processed samples generated during one training step."""
-    # Record exactly what the reward function sends to the execution sandbox.
+    """Append raw model samples and their extracted sandbox inputs for one training step."""
+    # Record both the unmodified model text and the code sent to scoring after fence extraction.
     path = Path(log_path)
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as handle:
@@ -98,7 +98,8 @@ def append_training_step_samples(log_path: str | Path, completions: list[object]
             except ValueError as exc:
                 executed_code = ""
                 format_error = str(exc)
-            handle.write(f"Generated code:\n{executed_code}\n")
+            handle.write(f"Raw completion from LLM:\n{text}\n\n")
+            handle.write(f"Sandbox input after fence extraction/truncation:\n{executed_code}\n")
             if format_error:
                 handle.write(f"Format error: {format_error}\n")
             handle.write("\n")
