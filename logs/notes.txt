@@ -906,3 +906,13 @@ Stop conditions must operate on generated-token suffixes, not the complete promp
 ### Next Hypothesis
 
 The replacement criterion will preserve generated code, reduce the 64.65 percent unterminated rate, and avoid the all-format-error failure.
+
+## Commit: Remove placeholder example from prompt
+
+### Change and Reason
+
+Replaced the concrete `def example(): pass` code-fence example in `data.py` with textual instructions requiring one fenced Python implementation and explicitly prohibiting placeholder implementations. Dataset normalization now bypasses the Hugging Face datasets cache so prompt-template edits are applied immediately.
+
+### Validation and Context
+
+Ran a one-step GRPO smoke test with 32 training records and four generations per record. The run emitted 32 sampled completions, including 11 format errors and one real-function `pass`, but zero exact `def example(): pass` placeholders. The prior completed run contained the exact placeholder in 234 of 14,720 training samples, or 1.59 percent. The latest corrected run before this prompt change contained 163 of 800, or 20.4 percent, so the behavior emerged in sampled training outputs immediately at the first logged batch rather than only after many epochs.

@@ -10,9 +10,8 @@ from typing import Any
 DEFAULT_PROMPT_TEMPLATE = (
     "You are an expert Python programmer. Implement the function described below.\n\n"
     "Task:\n{prompt}\n\nTests:\n{tests}\n\n"
-    "Your entire response must follow this exact format:\n\n"
-    "Code: \n```python\ndef example():\n    pass\n```\n\n"
-    "Output only one Python code block. Do not include reasoning, explanations, <think> blocks, or text outside the code block.\n"
+    "Your entire response must begin with the label Code: followed by one fenced Python code block containing the complete implementation.\n"
+    "Output only that Python code block. Do not include a placeholder implementation, reasoning, explanations, <think> blocks, or text outside the code block.\n"
 )
 
 
@@ -124,7 +123,8 @@ def load_mbpp(
     except ImportError as exc:
         raise RuntimeError("Install the 'datasets' package to load MBPP.") from exc
     loaded = load_dataset(dataset_name, dataset_config, split=split) if dataset_config else load_dataset(dataset_name, split=split)
-    return loaded.map(normalize_record)
+    # Rebuild normalized prompts so prompt-template edits cannot be hidden by a stale datasets cache.
+    return loaded.map(normalize_record, load_from_cache_file=False)
 
 
 def split_dataset(dataset: Any, train_fraction: float = 0.8, seed: int = 42) -> tuple[Any, Any]:
