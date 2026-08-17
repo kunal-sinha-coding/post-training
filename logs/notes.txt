@@ -936,3 +936,17 @@ Added a token-level logits processor that forces each completion to begin with `
 ### Validation and Context
 
 The first implementation incorrectly treated the forced opening fence as the closing fence and produced 90 format errors. The stopping offset was corrected to begin after the forced prefix. The final 90-example baseline achieved pass@1 0.20, average reward 0.2956, 18 passed, 13 partial, 48 failed, and 11 format errors. Focused evaluation and sandbox tests passed 18/18.
+
+## Experiment: Eliminate syntax and interface errors before RL quality optimization
+
+### Objective
+
+Iterate on the prompt and generation setup until syntax errors and invalid interfaces are eliminated or near zero. These failures are likely caused by suboptimal prompting, task alignment, and response-format behavior. A sufficiently capable small base model should solve the basic MBPP tasks once the protocol is reliable. Reinforcement learning should then focus on improving coding quality rather than teaching the model to emit parseable code.
+
+### Baseline Interface Audit
+
+The forced-prefix baseline had 23 completions without a valid interface. Eleven were format errors and twelve were parseable but exposed the wrong function or arity. Examples included implementations of `min_coins` instead of the requested task, `topbottom_surfacearea` and `surface_area_cylinder` for unrelated surface-area tasks, a `bases_num_coresspondingnum` placeholder, `union_elements(*tuples)` with the wrong calling convention, and `is_empty(my_dict)` for another task. This pattern indicates task or interface alignment failures, not primarily Python syntax difficulty.
+
+### Reward-Hacking Interpretation
+
+The `def example(): pass` behavior was not caused by the prompt alone or by reward alone. The prompt supplied a concrete placeholder that the model could copy, creating an exploitable low-effort completion. The dense reward then amplified that behavior because a copied placeholder earned format and syntax credit while avoiding difficult tests. Evidence for this interaction is that the placeholder existed at low frequency before the stopping changes, rose sharply in training samples, and disappeared from the one-batch smoke test after removing the example. The correct interpretation is prompt-induced exploitability amplified by reward optimization, rather than an intrinsic model preference independent of the prompt.
