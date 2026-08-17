@@ -218,11 +218,13 @@ def forced_code_prefix_length(tokenizer: Any, prefix_text: str = "Code:\n```pyth
     return len(tokenizer(prefix_text, add_special_tokens=False)["input_ids"])
 
 
-def _interface_generation_prefix(tokenizer: Any, tests: str) -> str:
+def _interface_generation_prefix(tokenizer: Any, tests: str, include_generic_arguments: bool = False) -> str:
     """Build the complete prefilled function header inferred from the tests."""
     name, arities = expected_interface(tests)
-    if name is None or len(arities) != 1:
+    if name is None:
         return "Code:\n```python\n"
+    if not include_generic_arguments or len(arities) != 1:
+        return f"Code:\n```python\ndef {name}("
     count = next(iter(arities))
     arguments = ", ".join(f"arg{i}" for i in range(1, count + 1))
     return f"Code:\n```python\ndef {name}({arguments}):\n"
@@ -426,7 +428,7 @@ def evaluate_model(model: Any, tokenizer: Any, dataset: Any, config: dict[str, A
             max_retries = max(0, int(config.get("max_retries", 0)))
             for attempt in range(max_retries + 1):
                 expected_name, _ = expected_interface(record["test_code"])
-                prefix_text = _interface_generation_prefix(tokenizer, record["test_code"])
+                prefix_text = _interface_generation_prefix(tokenizer, record["test_code"], bool(config.get("include_generic_arguments", False)))
                 inputs = _prepare_generation_inputs(tokenizer, retry_prompt, int(config.get("max_prompt_length", 512)), torch)
                 inputs = {key: value.to(model.device) for key, value in inputs.items()}
                 prompt_width = inputs["input_ids"].shape[-1]

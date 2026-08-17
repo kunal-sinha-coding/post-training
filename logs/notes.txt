@@ -977,6 +977,16 @@ Changed generic arguments from a prose hint into a prewritten signature. The pro
 
 The 90-example baseline produced zero syntax errors, confirming that numeric test values were no longer emitted as parameters. It achieved pass@1 0.20, average reward 0.2763, 18 passed, 11 partial, 39 failed, and 22 format errors. The increased format-error rate shows that prefilled headers currently interact poorly with the closing-fence protocol and require a follow-up formatting fix.
 
+## Experiment: Reaudit option-4 baseline failures
+
+### Results
+
+Reran the 90-example baseline with task-specific function-name forcing, model-generated argument names, and one configurable arity retry. The result reproduced pass@1 0.2889, average reward 0.3689, 26 passed, 11 partial, 43 failed, and 10 format errors.
+
+### Failure Audit
+
+All ten format errors had the correct opening fence but no closing fence because generation hit the 768-token cap. There were zero syntax errors. The eight parseable interface failures all had the correct function name but the wrong positional arity, so the remaining interface problem is argument-count generation rather than name generation. Raw completions and extracted sandbox inputs are now preserved for future audits.
+
 ## Experiment: Eliminate syntax and interface errors before RL quality optimization
 
 ### Objective
