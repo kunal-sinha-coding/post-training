@@ -937,6 +937,16 @@ Added a token-level logits processor that forces each completion to begin with `
 
 The first implementation incorrectly treated the forced opening fence as the closing fence and produced 90 format errors. The stopping offset was corrected to begin after the forced prefix. The final 90-example baseline achieved pass@1 0.20, average reward 0.2956, 18 passed, 13 partial, 48 failed, and 11 format errors. Focused evaluation and sandbox tests passed 18/18.
 
+## Commit: Add task-specific function prefixes and arity retry
+
+### Change and Reason
+
+Prompts now state the required function name. Evaluation generation forces `Code:`, the Python fence, and the task-specific function-name prefix while leaving argument names to the model. When the generated function has the correct name but the wrong positional-argument count, evaluation appends the previous completion and the exact correction message, then retries once using `NUM_RETRIES = 1`. The retry structure preserves accumulated context for future additional retries.
+
+### Validation and Context
+
+The 90-example baseline achieved pass@1 0.2889, average reward 0.3689, 26 passed, 11 partial, 43 failed, and 10 format errors. Focused evaluation and sandbox tests passed 18/18. This is an improvement over the previous task-independent forced-prefix baseline of 18 passed and 11 format errors.
+
 ## Experiment: Eliminate syntax and interface errors before RL quality optimization
 
 ### Objective

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import ast
 from pathlib import Path
 from typing import Any
 
@@ -10,6 +11,7 @@ from typing import Any
 DEFAULT_PROMPT_TEMPLATE = (
     "You are an expert Python programmer. Implement the function described below.\n\n"
     "Task:\n{prompt}\n\nTests:\n{tests}\n\n"
+    "The required function name is `{function_name}`.\n"
     "Your entire response must begin with the label Code: followed by one fenced Python code block containing the complete implementation.\n"
     "Output only that Python code block. Do not include a placeholder implementation, reasoning, explanations, <think> blocks, or text outside the code block.\n"
 )
@@ -37,7 +39,15 @@ def format_tests(record: dict[str, Any]) -> str:
 def build_prompt(record: dict[str, Any], template: str = DEFAULT_PROMPT_TEMPLATE) -> str:
     """Build the text prompt consumed by the GRPO trainer and evaluator."""
     prompt = str(_first_value(record, "text", "prompt", "description", "task", default=""))
-    return template.format(prompt=prompt, tests=format_tests(record))
+    tests = format_tests(record)
+    function_name = "the function named in the tests"
+    try:
+        calls = [node for node in ast.walk(ast.parse(tests)) if isinstance(node, ast.Call) and isinstance(node.func, ast.Name)]
+        if calls:
+            function_name = calls[0].func.id
+    except SyntaxError:
+        pass
+    return template.format(prompt=prompt, tests=tests, function_name=function_name)
 
 
 def normalize_record(record: dict[str, Any]) -> dict[str, Any]:

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import ast
 import json
 import re
 import subprocess
@@ -9,9 +10,10 @@ from zoneinfo import ZoneInfo
 from datetime import datetime
 from pathlib import Path
 from typing import Any
-from sandbox import extract_code, score_completion
+from sandbox import expected_interface, extract_code, score_completion
 
 MAX_RUN_LOGS = 10
+NUM_RETRIES = 1
 
 
 def _append_run_header(path: Path, timestamp: str) -> None:
@@ -187,7 +189,7 @@ def code_fence_stopping_criteria(tokenizer: Any, prompt_width: int) -> Any:
     return StoppingCriteriaList([CodeFenceCriteria()])
 
 
-def forced_code_prefix_processor(tokenizer: Any, prompt_width: int) -> Any:
+def forced_code_prefix_processor(tokenizer: Any, prompt_width: int, prefix_text: str = "Code:\n```python\n") -> Any:
     """Force every completion to begin with the required Code label and Python fence."""
     import torch
     from transformers import LogitsProcessor
@@ -197,7 +199,7 @@ def forced_code_prefix_processor(tokenizer: Any, prompt_width: int) -> Any:
 
         def __init__(self) -> None:
             # Tokenize the protocol prefix without adding special tokens.
-            self.prefix_ids = tokenizer("Code:\n```python\n", add_special_tokens=False)["input_ids"]
+            self.prefix_ids = tokenizer(prefix_text, add_special_tokens=False)["input_ids"]
 
         def __call__(self, input_ids: Any, scores: Any) -> Any:
             """Allow only the next prefix token until the required prefix is complete."""
@@ -211,9 +213,9 @@ def forced_code_prefix_processor(tokenizer: Any, prompt_width: int) -> Any:
     return ForcedCodePrefix()
 
 
-def forced_code_prefix_length(tokenizer: Any) -> int:
+def forced_code_prefix_length(tokenizer: Any, prefix_text: str = "Code:\n```python\n") -> int:
     """Return the number of generated tokens reserved for the forced response prefix."""
-    return len(tokenizer("Code:\n```python\n", add_special_tokens=False)["input_ids"])
+    return len(tokenizer(prefix_text, add_special_tokens=False)["input_ids"])
 
 
 def evaluate_texts(completions: list[str], records: list[dict[str, Any]], timeout_seconds: float = 3.0, log_path: str | Path = "logs/logs.txt", evaluation_name: str = "evaluation", pass_weight: float = 0.5, diagnostics: dict[str, float] | None = None) -> tuple[dict[str, Any], list[dict[str, Any]]]:
@@ -374,6 +376,27 @@ def _prepare_generation_batch(tokenizer: Any, prompts: list[str], max_length: in
     return {"input_ids": encoded, "attention_mask": torch.ones_like(encoded)}
 
 
+def _wrong_arity(completion: str, tests: str) -> tuple[str, int, int] | None:
+    """Return the expected name and arities when a generated function has the wrong argument count."""
+    try:
+        expected_name, expected_arities = expected_interface(tests)
+        if expected_name is None or len(expected_arities) != 1:
+            return None
+        code = extract_code(completion)
+        tree = ast.parse(code)
+    except (ValueError, SyntaxError):
+        return None
+    definitions = [node for node in tree.body if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name == expected_name]
+    if len(definitions) != 1:
+        return None
+    definition = definitions[0]
+    actual = len(definition.args.posonlyargs) + len(definition.args.args)
+    expected = next(iter(expected_arities))
+    if actual == expected:
+        return None
+    return expected_name, actual, expected
+
+
 def evaluate_model(model: Any, tokenizer: Any, dataset: Any, config: dict[str, Any], evaluation_name: str = "evaluation") -> tuple[dict[str, Any], list[dict[str, Any]]]:
     """Generate completions from a model and evaluate them in the sandbox."""
     import torch
@@ -387,25 +410,39 @@ def evaluate_model(model: Any, tokenizer: Any, dataset: Any, config: dict[str, A
     reference_kl_values: list[float] = []
     batch_size = max(1, int(config.get("evaluation_batch_size", 8)))
     try:
-        for start in range(0, len(records), batch_size):
-            batch_records = records[start : start + batch_size]
-            inputs = _prepare_generation_batch(tokenizer, [record["prompt"] for record in batch_records], int(config.get("max_prompt_length", 512)), torch)
-            inputs = {key: value.to(model.device) for key, value in inputs.items()}
-            with torch.no_grad():
-                output = model.generate(
-                    **inputs,
-                    max_new_tokens=int(config.get("max_completion_length", 512)),
-                    do_sample=False,
-                    logits_processor=[forced_code_prefix_processor(tokenizer, inputs["input_ids"].shape[-1])],
-                    stopping_criteria=code_fence_stopping_criteria(tokenizer, inputs["input_ids"].shape[-1] + forced_code_prefix_length(tokenizer)),
+        for record in records:
+            retry_prompt = str(record["prompt"])
+            completion = ""
+            for attempt in range(NUM_RETRIES + 1):
+                expected_name, _ = expected_interface(record["test_code"])
+                prefix_text = f"Code:\n```python\ndef {expected_name}(" if expected_name else "Code:\n```python\n"
+                inputs = _prepare_generation_inputs(tokenizer, retry_prompt, int(config.get("max_prompt_length", 512)), torch)
+                inputs = {key: value.to(model.device) for key, value in inputs.items()}
+                prompt_width = inputs["input_ids"].shape[-1]
+                with torch.no_grad():
+                    output = model.generate(
+                        **inputs,
+                        max_new_tokens=int(config.get("max_completion_length", 512)),
+                        do_sample=False,
+                        logits_processor=[forced_code_prefix_processor(tokenizer, prompt_width, prefix_text)],
+                        stopping_criteria=code_fence_stopping_criteria(tokenizer, prompt_width + forced_code_prefix_length(tokenizer, prefix_text)),
+                    )
+                generation_metrics = _generation_diagnostics(model, output, prompt_width, torch)
+                if "entropy" in generation_metrics:
+                    entropy_values.append(generation_metrics["entropy"])
+                if "reference_kl" in generation_metrics:
+                    reference_kl_values.append(generation_metrics["reference_kl"])
+                completion = tokenizer.decode(output[0, prompt_width:], skip_special_tokens=True)
+                retry_info = _wrong_arity(completion, record["test_code"])
+                if retry_info is None or attempt >= NUM_RETRIES:
+                    break
+                name, actual, expected = retry_info
+                retry_prompt += (
+                    f"\n\nPrevious generation:\n{completion}\n\n"
+                    f"This previous generation was incorrect because it had {actual} arguments instead of {expected}. Try again.\n\n"
+                    f"Code:\n```python\ndef {name}("
                 )
-            prompt_width = inputs["input_ids"].shape[-1]
-            generation_metrics = _generation_diagnostics(model, output, prompt_width, torch)
-            if "entropy" in generation_metrics:
-                entropy_values.append(generation_metrics["entropy"])
-            if "reference_kl" in generation_metrics:
-                reference_kl_values.append(generation_metrics["reference_kl"])
-            completions.extend(tokenizer.decode(item[prompt_width:], skip_special_tokens=True) for item in output)
+            completions.append(completion)
         diagnostics = {}
         if entropy_values:
             diagnostics["entropy"] = sum(entropy_values) / len(entropy_values)
