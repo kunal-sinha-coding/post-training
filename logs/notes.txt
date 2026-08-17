@@ -977,6 +977,16 @@ Changed generic arguments from a prose hint into a prewritten signature. The pro
 
 The 90-example baseline produced zero syntax errors, confirming that numeric test values were no longer emitted as parameters. It achieved pass@1 0.20, average reward 0.2763, 18 passed, 11 partial, 39 failed, and 22 format errors. The increased format-error rate shows that prefilled headers currently interact poorly with the closing-fence protocol and require a follow-up formatting fix.
 
+## Experiment: Discourage lookup-table solutions explicitly
+
+### Results
+
+Reran option 4 with instructions to define exactly one function with the test-derived arity, choose meaningful parameter names, implement the general solution, and avoid hardcoding examples or defining multiple versions. The baseline achieved pass@1 0.2333, average reward 0.3231, 21 passed, 13 partial, 46 failed, 9 format errors, and 1 syntax error.
+
+### Failure Audit
+
+The nine format errors again had a correct opening fence but no closing fence because long repetitive generations hit the 768-token cap. The single syntax error used a malformed list comprehension inside `tuple[...]` instead of a list or tuple constructor. Ten parseable interface failures all had the correct function name but wrong arity. The anti-lookup instruction reduced format errors slightly but did not prevent verbose repetitive solutions or reliably enforce argument counts.
+
 ## Experiment: Reaudit option-4 baseline failures
 
 ### Results

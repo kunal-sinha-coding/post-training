@@ -50,6 +50,13 @@ def build_prompt(record: dict[str, Any], template: str = DEFAULT_PROMPT_TEMPLATE
     except SyntaxError:
         pass
     formatted = template.format(prompt=prompt, tests=tests, function_name=function_name)
+    if len(arities) == 1:
+        count = next(iter(arities))
+        formatted += (
+            f"\nDefine exactly one function named `{function_name}` with exactly {count} positional parameter"
+            f"{'s' if count != 1 else ''}. Choose meaningful parameter names.\n"
+            "Implement the general solution, not a lookup table for the examples. Do not hardcode the listed test inputs or outputs, define multiple versions of the function, or include test code.\n"
+        )
     if include_generic_arguments and len(arities) == 1:
         count = next(iter(arities))
         arguments = ", ".join(f"arg{i}" for i in range(1, count + 1))
