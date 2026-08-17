@@ -53,7 +53,7 @@ def build_prompt(record: dict[str, Any], template: str = DEFAULT_PROMPT_TEMPLATE
     if include_generic_arguments and len(arities) == 1:
         count = next(iter(arities))
         arguments = ", ".join(f"arg{i}" for i in range(1, count + 1))
-        formatted += f"\nUse this function header: `def {function_name}({arguments}):`.\n"
+        formatted += f"\nThe implementation already begins with this exact header:\n```python\ndef {function_name}({arguments}):\n```\nGenerate only the indented function body after this header.\n"
     return formatted
 
 

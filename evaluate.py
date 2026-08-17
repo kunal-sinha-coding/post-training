@@ -218,6 +218,16 @@ def forced_code_prefix_length(tokenizer: Any, prefix_text: str = "Code:\n```pyth
     return len(tokenizer(prefix_text, add_special_tokens=False)["input_ids"])
 
 
+def _interface_generation_prefix(tokenizer: Any, tests: str) -> str:
+    """Build the complete prefilled function header inferred from the tests."""
+    name, arities = expected_interface(tests)
+    if name is None or len(arities) != 1:
+        return "Code:\n```python\n"
+    count = next(iter(arities))
+    arguments = ", ".join(f"arg{i}" for i in range(1, count + 1))
+    return f"Code:\n```python\ndef {name}({arguments}):\n"
+
+
 def evaluate_texts(completions: list[str], records: list[dict[str, Any]], timeout_seconds: float = 3.0, log_path: str | Path = "logs/logs.txt", evaluation_name: str = "evaluation", pass_weight: float = 0.5, diagnostics: dict[str, float] | None = None) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     """Execute one generated completion per record and aggregate its results."""
     # Score evaluation completions with the same dense reward used during training.
@@ -416,7 +426,7 @@ def evaluate_model(model: Any, tokenizer: Any, dataset: Any, config: dict[str, A
             max_retries = max(0, int(config.get("max_retries", 0)))
             for attempt in range(max_retries + 1):
                 expected_name, _ = expected_interface(record["test_code"])
-                prefix_text = f"Code:\n```python\ndef {expected_name}(" if expected_name else "Code:\n```python\n"
+                prefix_text = _interface_generation_prefix(tokenizer, record["test_code"])
                 inputs = _prepare_generation_inputs(tokenizer, retry_prompt, int(config.get("max_prompt_length", 512)), torch)
                 inputs = {key: value.to(model.device) for key, value in inputs.items()}
                 prompt_width = inputs["input_ids"].shape[-1]
