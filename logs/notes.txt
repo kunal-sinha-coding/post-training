@@ -1021,6 +1021,10 @@ The forced-prefix baseline had 23 completions without a valid interface. Eleven 
 
 ## Commit: Record full baseline interface audit
 
+## Commit: Extend completion budget and recover incomplete fences
+
+Doubled the default completion limit from 768 to 1536 tokens and changed code extraction to score the body through end-of-output when an opening Python fence has no closing fence. Added a regression test for the fallback. Focused sandbox and evaluation tests passed 19/19.
+
 Recorded the evaluation-only 90-example baseline rerun, its complete interface and protocol error inventory, comparison with the previous baseline, root-cause analysis, and proposed confirmation tests. This preserves the evidence that parseable interface failures fell from 12 to 5 while format and syntax failures increased.
 
 ## Experiment: Rerun current full baseline and audit interface errors

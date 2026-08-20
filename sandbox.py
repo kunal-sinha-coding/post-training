@@ -42,12 +42,15 @@ class ExecutionResult:
 
 def extract_code(text: str) -> str:
     """Extract code from a labeled or continuation-starting Markdown fence."""
-    # Accept the legacy Code label or a fenced block that starts the continuation.
-    match = re.search(r"(?:Code:\s*)?```(?:python|py)?\s*(.*?)```", text, flags=re.IGNORECASE | re.DOTALL)
-    if match is None:
+    # Find the opening Python fence while preserving the existing Code-label requirement.
+    opening = re.search(r"(?:Code:\s*)?```(?:python|py)?\s*", text, flags=re.IGNORECASE)
+    if opening is None:
         raise ValueError(OUTPUT_FORMAT_ERROR)
+    # Use the closing fence when present and otherwise retain the incomplete generated body.
+    remainder = text[opening.end():]
+    closing = remainder.find("```")
+    cleaned = remainder if closing < 0 else remainder[:closing]
     # Remove the legacy reasoning markers if they occur inside the extracted block.
-    cleaned = match.group(1)
     for tag in THINK_TAGS:
         cleaned = cleaned.replace(tag, "")
     return cleaned.strip()

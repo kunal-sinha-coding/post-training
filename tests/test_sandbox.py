@@ -10,6 +10,11 @@ def test_extract_code_supports_fences():
     assert extract_code("```python\nprint(1)\n```") == "print(1)"
 
 
+def test_extract_code_accepts_missing_closing_fence():
+    # Preserve an incomplete generated body when the opening Python fence is present.
+    assert extract_code("Code: ```python\ndef add(a, b):\n    return a + b") == "def add(a, b):\n    return a + b"
+
+
 def test_extract_code_removes_thinking_blocks():
     assert extract_code("<think>Reason about it.</think>\nCode: ```python\ndef add(a, b):\n    return a + b\n```") == "def add(a, b):\n    return a + b"
 
