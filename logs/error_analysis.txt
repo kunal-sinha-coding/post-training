@@ -956,4 +956,123 @@ The dynamic run crashed at step 261 and did not reach its configured 370 steps. 
 
 W&B contains aggregate evaluation status counts but not the raw per example completions for this run. Semantic error pattern counts and representative task IDs are unavailable remotely.
 
+------------------------------------------------------------------------
+ERROR ANALYSIS
+Timestamp: 2026-08-20 UTC
+------------------------------------------------------------------------
+
+Command: Evaluation-only invocation of evaluate_model with configs/default.yaml.
+Batch mode: Full 90-example validation baseline.
+
+## Run summary
+
+The run achieved pass@1 0.2556 and average reward 0.3371. It produced 23 passed, 13 partial, 38 failed, 12 format errors, and 4 syntax errors. The previous comparable baseline had 26 passed, 11 partial, 43 failed, and 10 format errors with no syntax errors. Parseable interface failures improved from 12 to 5, but pass@1 regressed by 0.0333.
+
+## Error-pattern distribution
+
+| Pattern | Count | Percent of 90 | Percent of 67 failures |
+| --- | ---: | ---: | ---: |
+| Interface-valid semantic or test failure | 46 | 51.1% | 68.7% |
+| Format or truncation failure | 12 | 13.3% | 17.9% |
+| Wrong arity | 5 | 5.6% | 7.5% |
+| Syntax error | 4 | 4.4% | 6.0% |
+
+The format-error tasks were 515, 518, 520, 524, 529, 531, 539, 541, 550, 571, 584, and 586. Their raw completions were retained, but no usable extracted code remained, generally because long outputs reached the 768-token limit before the closing fence.
+
+The syntax-error tasks were 513, 533, 568, and 583. Observed examples included malformed list-comprehension syntax, tuple-subscription syntax used as a constructor, and literal parameters such as empty_list(5) and catalan_number(10).
+
+The wrong-arity tasks were 519, 521, 547, 578, and 580. They had the correct task-specific names but emitted 2 instead of 1, 2 instead of 3, 2 instead of 1, 2 instead of 3, and 2 instead of 1 positional parameters respectively. No parseable wrong-name failures occurred.
+
+The interface-valid non-passing tasks were 511, 512, 516, 522, 525, 526, 527, 530, 535, 536, 537, 538, 543, 544, 545, 546, 548, 549, 551, 552, 553, 556, 557, 558, 559, 561, 563, 565, 567, 570, 572, 573, 574, 575, 579, 581, 585, 589, 590, 591, 592, 594, 595, 596, 597, and 599. These were parseable with the expected name and arity but failed one or more tests. They contain 33 failed and 13 partial results.
+
+## Triage and root causes
+
+The format failures are most consistent with verbose or repetitive generations reaching the completion cap. A stopping-criteria interaction remains possible. Syntax failures are extracted-output parsing failures and support a body-only complete-signature protocol or parse-aware retry. Arity failures are a generation-control problem because every one retained the correct name and the existing retry did not reliably fix the count. The 46 semantic or partial failures are a separate base-model algorithmic-quality problem.
+
+Structural control explains 12 format errors and contributes to 4 syntax errors. Weak positional-arity control explains 5 interface failures. Base-model algorithmic weakness explains 46 interface-valid non-passing examples. The first two causes explain 21 of 67 non-passing examples.
+
+## Proposed solutions and confirmation tests
+
+Require compact implementations and preserve raw completions, then confirm fewer than 12 format errors. Prefill or constrain the complete signature, then confirm zero wrong arity and zero literal-parameter syntax errors. Retry extracted code that fails parsing and confirm syntax errors fall from 4 to zero without a format regression. Only after this protocol work should semantic RL changes be evaluated with held-out pass@1.
+
+## Limitations
+
+The run used one seed and one deterministic completion per task. W&B metrics were unavailable. Semantic failures were classified from local status and extracted code rather than structured per-assertion records.
+
+
+------------------------------------------------------------------------
+ERROR ANALYSIS
+Timestamp: 2026-08-20 UTC
+------------------------------------------------------------------------
+
+Command: Evaluation-only invocation of evaluate_model with configs/default.yaml.
+Batch mode: Full 90-example validation baseline.
+
+## 0. Run summary
+
+The run achieved pass@1 0.2556 and average reward 0.3371. Results were 23 passed, 13 partial, 38 failed, 12 format errors, and 4 syntax errors. The previous comparable baseline had 26 passed, 11 partial, 43 failed, and 10 format errors with zero syntax errors. Parseable interface failures improved from 12 to 5, but overall pass@1 regressed by 0.0333.
+
+## 1. Iteration comparison
+
+The improvement was limited to interface alignment. All five parseable interface failures retained the correct task name. Format errors increased by 2 and syntax errors increased from 0 to 4. Semantic quality did not improve enough to offset those regressions.
+
+## 2. Run context and data coverage
+
+The run used Qwen/Qwen3.5-0.8B, seed 42, the default validation split, current task-specific name forcing, model-selected argument names, max_retries 1, deterministic decoding, and max_completion_length 768. All 90 records were present in logs/logs.txt. W&B was unavailable.
+
+## 3. Error-pattern distribution
+
+| Pattern | Count | Percent of 90 | Percent of 67 failures |
+| --- | ---: | ---: | ---: |
+| Interface-valid semantic or test failure | 46 | 51.1% | 68.7% |
+| Format or truncation failure | 12 | 13.3% | 17.9% |
+| Wrong arity | 5 | 5.6% | 7.5% |
+| Syntax error | 4 | 4.4% | 6.0% |
+
+The 46 semantic failures contain 33 failed and 13 partial examples. The 23 full passes are the control.
+
+## 4. Observed error patterns
+
+Format or truncation failures occurred on tasks 515, 518, 520, 524, 529, 531, 539, 541, 550, 571, 584, and 586. Raw completions were retained, but no usable extracted code remained. They generally began long implementations and reached the generation limit before a closing fence.
+
+Syntax errors occurred on tasks 513, 533, 568, and 583. Evidence includes an invalid list-comprehension layout, tuple-subscription syntax used as a constructor, and literal parameters such as empty_list(5) and catalan_number(10).
+
+Wrong-arity failures occurred on task 519, volume_tetrahedron with 2 instead of 1 parameter; 521, check_isosceles with 2 instead of 3; 547, Total_Hamming_Distance with 2 instead of 1; 578, interleave_lists with 2 instead of 3; and 580, extract_even with 2 instead of 1. No parseable wrong-name failures occurred.
+
+The interface-valid non-passing tasks were 511, 512, 516, 522, 525, 526, 527, 530, 535, 536, 537, 538, 543, 544, 545, 546, 548, 549, 551, 552, 553, 556, 557, 558, 559, 561, 563, 565, 567, 570, 572, 573, 574, 575, 579, 581, 585, 589, 590, 591, 592, 594, 595, 596, 597, and 599. These were parseable with the expected name and arity but failed one or more tests.
+
+## 5. Success patterns and controls
+
+Twenty-three tasks passed all tests and thirteen passed partially. These successes show that fence extraction, forced names, sandbox execution, and ordinary signatures work in the same run. The residual arity issue is not universal parser failure.
+
+## 6. Deep triage
+
+Format failures are most consistent with verbose or repetitive generations reaching the 768-token cap before a closing fence. A stopping-criteria interaction remains possible. Test compactness or a larger budget on the same 90 tasks.
+
+Syntax failures are extracted-output parsing failures rather than truncation. The evidence supports copying concrete test values and malformed body syntax. Use complete-signature body-only generation or a parse-aware retry, then require zero syntax errors.
+
+Wrong arity is a generation-control problem because every failure had the correct name and the existing retry did not reliably fix the count. Prefill or constrain the expected signature, then require zero wrong-arity examples.
+
+Semantic failures dominate after protocol success. They reflect incorrect algorithms, misunderstood tasks, and bounded lookup-table behavior. Interface fixes cannot address these 46 examples.
+
+## 7. Shared causes and interactions
+
+The prompt and generation protocol jointly influence format, syntax, and arity. Task-specific name forcing is effective, but unrestricted generation still permits verbose bodies and signature errors. The 69 parseable interface-valid completions and only 23 full passes show that semantic quality is a separate problem.
+
+## 8. Underlying root-cause synthesis
+
+Insufficient structural control explains 12 format errors and contributes to 4 syntax errors. Weak positional-arity control explains 5 interface failures. Base-model algorithmic weakness explains 46 interface-valid non-passing examples. The first two causes explain 21 of 67 non-passing examples.
+
+## 9. Proposed solutions and confirmation tests
+
+1. Require compact implementations and preserve raw completions. Confirm fewer than 12 format errors.
+2. Prefill or constrain the complete signature. Confirm zero wrong arity and zero literal-parameter syntax errors.
+3. Retry extracted code that fails parsing, preserving the original artifact. Confirm syntax errors fall from 4 to zero without a format regression.
+4. After protocol stabilization, optimize semantic quality and measure held-out pass@1 separately from interface rewards.
+
+## 10. Limitations
+
+The run used one seed and one deterministic completion per task. W&B metrics were unavailable. Semantic failures were classified from local status and extracted code rather than structured per-assertion records.
+
+
 The dense control included the same SFT warm start, but W&B configuration comparison does not expose the custom dynamic reward keys. The schedule was verified from logged `reward/pass_weight` and `reward/dense_weight` curves.
