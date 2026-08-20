@@ -1029,6 +1029,10 @@ The forced-prefix baseline had 23 completions without a valid interface. Eleven 
 
 ### Reward-hacking motivation
 
+## Commit: Restart training with test-pass fraction reward
+
+Changed score_completion and reward_function so the only nonzero reward is passed_tests divided by total_tests. Disabled baseline evaluation in configs/default.yaml and updated focused tests for the new reward semantics.
+
 The motivation for removing format, syntax, interface, and binary-pass bonuses is concern about the earlier reward-hacking pattern. The model may learn useless solutions that are merely syntactically valid when syntax and format rewards provide reliable credit while test progress stagnates or declines. The observed increase in syntax reward alongside flat or falling other reward components supports testing a reward based only on the fraction of test cases passed.
 
 Restored max_completion_length from 3072 to 768 at the user’s direction. Restored evaluation_batch_size to 8 at the user’s direction while keeping per_device_train_batch_size at 1.

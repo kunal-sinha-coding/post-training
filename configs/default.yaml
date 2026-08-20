@@ -11,7 +11,7 @@ synthetic_tests_validation_timeout_seconds: 5
 seed: 42
 max_train_samples: null
 reuse_baseline: false
-run_baseline_evaluation: true
+run_baseline_evaluation: false
 run_intermediate_evals: true
 max_eval_samples: null
 sft_enabled: false

@@ -41,10 +41,10 @@ def test_dense_reward_counts_partial_assertion_progress():
         "Code: ```python\ndef add(a, b):\n    return a + b\n```",
         "assert add(1, 2) == 3\nassert add(1, 2) == 4",
     )
-    assert reward == pytest.approx(0.3)
+    assert reward == pytest.approx(0.5)
     assert detail["status"] == "partial"
     assert detail["interface_valid"] is True
-    assert detail["reward_components"] == {"format": 0.025, "syntax": 0.05, "interface": 0.025, "tests": 0.2, "pass": 0.0}
+    assert detail["reward_components"] == {"format": 0.0, "syntax": 0.0, "interface": 0.0, "tests": 0.5, "pass": 0.0}
 
 
 def test_pass_weight_suppresses_partial_reward_but_preserves_full_pass():
@@ -56,9 +56,9 @@ def test_pass_weight_suppresses_partial_reward_but_preserves_full_pass():
     tests = ["assert add(1, 2) == 3\nassert add(1, 2) == 4", "assert add(1, 2) == 3"]
     diagnostics = {}
     rewards = reward_function(completions, tests, diagnostics=diagnostics, group_size=2, pass_weight=0.9)
-    assert rewards == pytest.approx([0.06, 1.0])
-    assert diagnostics["reward/pass_weight"] == 0.9
-    assert diagnostics["reward/pass/mean"] == pytest.approx(0.45)
+    assert rewards == pytest.approx([0.5, 1.0])
+    assert diagnostics["reward/pass_weight"] == 0.0
+    assert diagnostics["reward/pass/mean"] == pytest.approx(0.0)
 
 
 def test_interface_validation_checks_name_and_arity():

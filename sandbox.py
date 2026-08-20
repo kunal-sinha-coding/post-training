@@ -148,28 +148,23 @@ def validate_interface(code: str, tests: str) -> bool:
 
 
 def score_completion(completion: str, tests: str, timeout_seconds: float = 3.0, pass_weight: float = DEFAULT_PASS_WEIGHT) -> tuple[float, dict[str, object]]:
-    """Return the dense reward and diagnostics for one completion."""
-    # Keep every reward component explicit so training dashboards can show what produced the total.
-    dense_weight = 1.0 - pass_weight
+    """Return test-pass fraction reward and diagnostics for one completion."""
+    # Keep diagnostic components explicit while assigning reward only to passed-test progress.
     components = {"format": 0.0, "syntax": 0.0, "interface": 0.0, "tests": 0.0, "pass": 0.0}
     try:
         code = extract_code(completion)
     except ValueError:
         return 0.0, {"status": "format_error", "passed_tests": 0, "total_tests": 0, "interface_valid": False, "reward_components": components}
-    components["format"] = DENSE_REWARD_WEIGHTS["format"] * dense_weight
     try:
         compile(code, "<candidate>", "exec")
     except SyntaxError:
         return sum(components.values()), {"status": "syntax_error", "passed_tests": 0, "total_tests": 0, "interface_valid": False, "reward_components": components}
-    components["syntax"] = DENSE_REWARD_WEIGHTS["syntax"] * dense_weight
     interface_valid = validate_interface(code, tests)
-    components["interface"] = DENSE_REWARD_WEIGHTS["interface"] * dense_weight if interface_valid else 0.0
     test_cases = split_test_cases(tests)
     passed, total, _ = execute_test_cases(code, test_cases, timeout_seconds)
     fraction = passed / total if total else 0.0
-    components["tests"] = DENSE_REWARD_WEIGHTS["tests"] * fraction * dense_weight
+    components["tests"] = fraction
     status = "passed" if passed == total else "partial" if passed else "failed"
-    components["pass"] = pass_weight if status == "passed" else 0.0
     reward = sum(components.values())
     return reward, {"status": status, "passed_tests": passed, "total_tests": total, "interface_valid": interface_valid, "reward_components": components}
 
@@ -225,8 +220,8 @@ def summarize_reward_groups(rewards: list[float], details: list[dict[str, object
 
 
 def reward_function(completions: list[object], test_code: list[str], sandbox_timeout_seconds: float = 3.0, diagnostics: dict[str, float] | None = None, group_size: int = 4, pass_weight: float = DEFAULT_PASS_WEIGHT, **_: object) -> list[float]:
-    """Score a GRPO batch with scheduled dense and binary pass rewards."""
-    # Record candidate outcomes so reward sparsity is visible during training.
+    """Score a GRPO batch with only the fraction of passed tests as reward."""
+    # Record candidate outcomes so test-pass reward variation remains visible during training.
     rewards: list[float] = []
     details: list[dict[str, object]] = []
     for completion, tests in zip(completions, test_code):
@@ -241,6 +236,6 @@ def reward_function(completions: list[object], test_code: list[str], sandbox_tim
         details.append(detail)
     if diagnostics is not None:
         diagnostics.update(summarize_reward_groups(rewards, details, group_size))
-        diagnostics["reward/pass_weight"] = pass_weight
-        diagnostics["reward/dense_weight"] = 1.0 - pass_weight
+        diagnostics["reward/pass_weight"] = 0.0
+        diagnostics["reward/dense_weight"] = 1.0
     return rewards
