@@ -1025,6 +1025,10 @@ The forced-prefix baseline had 23 completions without a valid interface. Eleven 
 
 ## Commit: Double completion budget for training
 
+## Commit: Restore 768-token training limit
+
+Restored max_completion_length from 3072 to 768 at the user’s direction. Restored evaluation_batch_size to 8 at the user’s direction while keeping per_device_train_batch_size at 1.
+
 Doubled the default completion limit from 1536 to 3072 tokens before launching the requested full 10-epoch training run. The incomplete-fence fallback remains enabled so generated bodies can still be scored when the closing fence is absent.
 
 Doubled the default completion limit from 768 to 1536 tokens and changed code extraction to score the body through end-of-output when an opening Python fence has no closing fence. Added a regression test for the fallback. Focused sandbox and evaluation tests passed 19/19.

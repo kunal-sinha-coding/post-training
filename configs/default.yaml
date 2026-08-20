@@ -30,10 +30,10 @@ gradient_accumulation_steps: 32
 learning_rate: 0.000001
 num_generations: 4
 max_prompt_length: 512
-max_completion_length: 3072
+max_completion_length: 768
 generation_kwargs:
   stop_strings: ["```"]
-evaluation_batch_size: 1
+evaluation_batch_size: 8
 results_log_path: logs/results.txt
 best_checkpoint_metric: pass@1
 checkpoint_eval_patience: 3
