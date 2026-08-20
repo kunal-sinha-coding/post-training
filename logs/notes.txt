@@ -1023,7 +1023,13 @@ The forced-prefix baseline had 23 completions without a valid interface. Eleven 
 
 ## Commit: Extend completion budget and recover incomplete fences
 
+## Commit: Double completion budget for training
+
+Doubled the default completion limit from 1536 to 3072 tokens before launching the requested full 10-epoch training run. The incomplete-fence fallback remains enabled so generated bodies can still be scored when the closing fence is absent.
+
 Doubled the default completion limit from 768 to 1536 tokens and changed code extraction to score the body through end-of-output when an opening Python fence has no closing fence. Added a regression test for the fallback. Focused sandbox and evaluation tests passed 19/19.
+
+The training per-device batch size was already 1, so evaluation_batch_size was reduced from 8 to 1 to reduce evaluation memory pressure without changing the effective training batch.
 
 Recorded the evaluation-only 90-example baseline rerun, its complete interface and protocol error inventory, comparison with the previous baseline, root-cause analysis, and proposed confirmation tests. This preserves the evidence that parseable interface failures fell from 12 to 5 while format and syntax failures increased.
 
