@@ -224,3 +224,22 @@ Focused validation: `pytest -q tests/test_evaluate.py tests/test_sandbox.py` pas
 Verdict and change disposition: unchanged on the primary metric, 40% to 40%. Revert the top-p code change before the next iteration because it did not improve pass rate and adds configuration complexity without a demonstrated general benefit. The reasoning is the unchanged pass count, regardless of the changed task identity.
 
 Next iteration: test a general prompt or training-data intervention targeting algorithmic correctness, while retaining sampled temperature 0.7 with seed 42 as the current decoding baseline.
+
+## Iteration 11: Direct algorithm prompt constraint
+
+Command:
+python - <<'PY' ... evaluate_model(..., evaluation_name='hill-fix-direct-algorithm') ... PY
+
+Effective configuration: same model and fixed tasks 511 through 520, max_eval_samples 10, max_prompt_length 512, max_completion_length 768, max_retries 0, sandbox timeout 3 seconds, sampling enabled at temperature 0.7 with seed 42. The only intervention was an added general prompt requirement to avoid unrequested special cases and implement the direct algorithm.
+
+Log range: logs/logs.txt records labeled hill-fix-direct-algorithm begin at source line 978794 and contain ten task records through task 520 before the next run boundary.
+
+Results: 3 passed and 7 failed out of 10, for a pass rate of 30%, regressing from the kept 40% configuration. The distribution was 6 incorrect algorithm or logic failures, 1 partial test-progress failure, and 3 passed examples. Tasks 512, 514, and 517 passed. Task 511 was partial. Tasks 513, 515, 516, 518, 519, and 520 were incorrect algorithm or logic failures.
+
+Root-cause update: The general anti-special-case wording did not improve the fixed-batch pass rate and lost the sampled completion that previously passed task 518. No sandbox or infrastructure failure was observed. Average reward was 0.3333 and remains secondary.
+
+Focused validation: The prompt-focused data tests passed 5 of 5 selected tests, excluding the unrelated existing mock-signature failure.
+
+Verdict and change disposition: regressed on the primary metric, 40% to 30%. Revert the direct-algorithm prompt constraint before the next iteration because it loses one pass. The reasoning is the direct fixed-batch pass-rate regression.
+
+Next iteration: test generic argument prefill with the kept sampled temperature 0.7 and seed 42, accepting only a pass-rate improvement.
