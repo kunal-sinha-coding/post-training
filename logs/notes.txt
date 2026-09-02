@@ -1147,3 +1147,5 @@ Sampled sixteen completions per task in one batched generation call for each of 
 Added configs/hill-multi-grpo.yaml to run GRPO with sixteen generations per prompt and full training metric logging.
 
 The initial sixteen-generation GRPO launch generated the first group but failed during policy log-probability backpropagation with CUDA out-of-memory on the 15.6 GiB GPU. This was an infrastructure constraint rather than a model result, so the training group was reduced to eight generations while retaining multi-generation exploration.
+
+The eight-generation run completed but was neutral at 4/10 versus its 4/10 baseline. A live W&B bridge attempted during the run failed due to an initialization race, so native W&B reporting is enabled for the next four-generation fallback instead.
