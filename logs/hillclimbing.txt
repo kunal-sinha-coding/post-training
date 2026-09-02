@@ -49,3 +49,7 @@ Focused validation: `pytest -q` produced 44 passed and 1 failed. The unrelated f
 Verdict: unchanged on the primary metric, 20% to 20%. Reward improved as a byproduct, but that does not qualify as hill-climbing progress.
 
 Next iteration: test a generation-recovery change that retries malformed or non-passing completions with concise task-specific feedback, while retaining the same ten tasks and selecting only by pass rate. If the retry increases pass rate, keep it. Otherwise abandon it and investigate prompt or model behavior separately.
+
+## Interrupted attempt after Iteration 1
+
+The retry evaluation command was started with the same ten tasks and 768-token configuration but was interrupted before producing a complete ten-record evaluation. Its partial log tail shows an incomplete task 520 record and a new run header. It is excluded from all metrics and is not treated as a model result.

@@ -1054,3 +1054,11 @@ The `def example(): pass` behavior was not caused by the prompt alone or by rewa
 ## Commit: Record 10-example pass-rate hill climbing session
 
 Recorded the controlled 10-task baseline and the 1536-token completion-budget experiment in logs/hillclimbing.txt. The baseline and post-fix evaluation both passed 2 of 10 tasks, so the completion-budget change was rejected as a pass-rate improvement even though average reward increased. Also recorded the unrelated existing test mock signature failure.
+
+## Commit: Clarify default and explicit branch workflow
+
+Updated AGENTS.md so commits and pushes default to main, while an explicitly specified branch is used when provided. Synchronized the instruction across the three local repositories as requested.
+
+## Commit: Retry non-passing evaluation completions
+
+Changed evaluate_model so its existing retry budget applies to any non-passing completion, including syntax, truncation, and assertion failures, while retaining the specialized wrong-arity feedback. Focused evaluation tests passed 19 of 19. The follow-up model run was interrupted before a complete ten-task result and is excluded from the hill-climbing metrics.
