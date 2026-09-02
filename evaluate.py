@@ -465,3 +465,57 @@ def evaluate_model(model: Any, tokenizer: Any, dataset: Any, config: dict[str, A
         return evaluate_texts(completions, records, float(config.get("sandbox_timeout_seconds", 3)), config.get("log_path", "logs/logs.txt"), evaluation_name, float(config.get("pass_weight", 0.5)), diagnostics)
     finally:
         model.train(was_training)
+
+
+def evaluate_pass_at_n(model: Any, tokenizer: Any, dataset: Any, config: dict[str, Any], evaluation_name: str = "evaluation") -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    """Generate a batched candidate pool per task and report cumulative pass-at-N metrics."""
+    import torch
+
+    # Keep evaluation deterministic while allowing independent sampled candidates.
+    was_training = bool(model.training)
+    model.eval()
+    records = [dataset[index] for index in range(len(dataset))]
+    candidate_count = max(1, int(config.get("evaluation_num_completions", 16)))
+    pass_counts = {n: 0 for n in (1, 2, 4, 8, 16) if n <= candidate_count}
+    details: list[dict[str, Any]] = []
+    rewards: list[float] = []
+    try:
+        # Generate all candidates for each task in one batched model call.
+        for record in records:
+            prompts = [str(record["prompt"])] * candidate_count
+            inputs = _prepare_generation_batch(tokenizer, prompts, int(config.get("max_prompt_length", 512)), torch)
+            inputs = {key: value.to(model.device) for key, value in inputs.items()}
+            prompt_width = inputs["input_ids"].shape[-1]
+            prefix_text = _interface_generation_prefix(tokenizer, record["test_code"], bool(config.get("include_generic_arguments", False)))
+            with torch.no_grad():
+                output = model.generate(
+                    **inputs,
+                    max_new_tokens=int(config.get("max_completion_length", 512)),
+                    do_sample=bool(config.get("do_sample", False)),
+                    **({"temperature": float(config["temperature"])} if config.get("do_sample", False) and config.get("temperature") is not None else {}),
+                    logits_processor=[forced_code_prefix_processor(tokenizer, prompt_width, prefix_text)],
+                    stopping_criteria=code_fence_stopping_criteria(tokenizer, prompt_width + forced_code_prefix_length(tokenizer, prefix_text)),
+                )
+            statuses: list[str] = []
+            # Score every candidate independently and retain task-level audit records.
+            for sample_index in range(candidate_count):
+                completion = tokenizer.decode(output[sample_index, prompt_width:], skip_special_tokens=True)
+                reward, score_details = score_completion(completion, record["test_code"], float(config.get("sandbox_timeout_seconds", 3)), float(config.get("pass_weight", 0.5)))
+                rewards.append(reward)
+                statuses.append(str(score_details["status"]))
+                details.append({"task_id": record.get("task_id"), "sample_index": sample_index + 1, "raw_completion": completion, "completion": completion, "reward": reward, **score_details})
+            # Count a task once when any of the first N candidates passes.
+            for n in pass_counts:
+                if "passed" in statuses[:n]:
+                    pass_counts[n] += 1
+        total = len(records)
+        metrics = {
+            "examples": total,
+            "candidate_count": candidate_count,
+            **{f"pass_at_{n}": count / total if total else 0.0 for n, count in pass_counts.items()},
+            "average_reward": sum(rewards) / len(rewards) if rewards else 0.0,
+            "successful_examples": pass_counts.get(1, 0),
+        }
+        return metrics, details
+    finally:
+        model.train(was_training)

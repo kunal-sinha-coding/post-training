@@ -9,8 +9,10 @@ seed: 42
 max_train_samples: 374
 reuse_baseline: false
 run_baseline_evaluation: true
-run_intermediate_evals: false
+run_intermediate_evals: true
 max_eval_samples: 10
+evaluation_num_completions: 16
+evaluation_batch_size: 16
 sft_enabled: false
 log_path: logs/logs.txt
 results_log_path: logs/results.txt
@@ -30,8 +32,7 @@ generation_kwargs:
   seed: 42
   stop_strings: ["```"]
 logging_steps: 1
-save_steps: 10
-evaluation_num_completions: 1
+save_steps: 2
 pass_weight: 0.5
 sandbox_timeout_seconds: 3
 trust_remote_code: false
@@ -40,3 +41,5 @@ fp16: false
 report_to: wandb
 wandb_project: grpo-mbpp
 wandb_run_name: hill-multi-grpo-16-microbatch
+do_sample: true
+temperature: 0.7

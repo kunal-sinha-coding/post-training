@@ -19,8 +19,16 @@ import yaml
 from dotenv import load_dotenv
 
 from data import build_sft_dataset, prepare_datasets
-from evaluate import append_training_step_header, append_training_step_metrics, append_training_step_samples, append_evaluation_log, code_fence_stopping_criteria, evaluate_model, forced_code_prefix_length, forced_code_prefix_processor, save_evaluation, start_run_log
+from evaluate import append_training_step_header, append_training_step_metrics, append_training_step_samples, append_evaluation_log, code_fence_stopping_criteria, evaluate_model, evaluate_pass_at_n, forced_code_prefix_length, forced_code_prefix_processor, save_evaluation, start_run_log
 from sandbox import reward_function
+
+
+def _evaluate_for_config(model: Any, tokenizer: Any, dataset: Any, config: dict[str, Any], evaluation_name: str) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    """Select single-completion or batched pass-at-N evaluation from configuration."""
+    # Use the batched candidate pool whenever pass-at-N tracking is requested.
+    if int(config.get("evaluation_num_completions", 1)) > 1:
+        return evaluate_pass_at_n(model, tokenizer, dataset, config, evaluation_name)
+    return evaluate_model(model, tokenizer, dataset, config, evaluation_name)
 
 
 def load_config(path: str | Path) -> dict[str, Any]:
@@ -210,7 +218,7 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
             if not config.get("run_intermediate_evals", False):
                 return control
             # Evaluate and save the current checkpoint artifacts.
-            metrics, details = evaluate_model(model, tokenizer, test_dataset, config, f"checkpoint-{state.global_step}")
+            metrics, details = _evaluate_for_config(model, tokenizer, test_dataset, config, f"checkpoint-{state.global_step}")
             config["training_context"] = "checkpoint"
             config["_evaluation_epoch"] = state.epoch
             save_evaluation(args.output_dir, f"checkpoint-{state.global_step}", metrics, details, config)
@@ -287,7 +295,7 @@ def _make_sft_callback(model: Any, tokenizer: Any, test_dataset: Any, config: di
             # Evaluate and save the model at the completed epoch boundary.
             epoch = max(1, int(round(float(state.epoch or 0))))
             name = f"sft-epoch-{epoch}"
-            metrics, details = evaluate_model(model, tokenizer, test_dataset, config, name)
+            metrics, details = _evaluate_for_config(model, tokenizer, test_dataset, config, name)
             config["training_context"] = "sft"
             config["_evaluation_epoch"] = epoch
             save_evaluation(args.output_dir, name, metrics, details, config)
@@ -401,7 +409,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
     # Run the SFT baseline, training stage, and final epoch evaluation when enabled.
     if config.get("sft_enabled", False):
         # Evaluate the base model once before supervised updates begin.
-        baseline_metrics, baseline_details = evaluate_model(model, tokenizer, test_dataset, config, "sft-baseline")
+        baseline_metrics, baseline_details = _evaluate_for_config(model, tokenizer, test_dataset, config, "sft-baseline")
         config["training_context"] = "sft-baseline"
         config["_evaluation_epoch"] = 0
         save_evaluation(output_dir / "sft", "sft-baseline", baseline_metrics, baseline_details, config)
@@ -418,7 +426,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         # Compute the baseline when no complete cached evaluation exists.
         if cached_baseline is None:
             print("Computing baseline evaluation.", flush=True)
-            baseline_metrics, baseline_details = evaluate_model(model, tokenizer, test_dataset, config, "baseline")
+            baseline_metrics, baseline_details = _evaluate_for_config(model, tokenizer, test_dataset, config, "baseline")
             config["training_context"] = "baseline"
             config["_evaluation_epoch"] = "baseline"
             save_evaluation(output_dir, "baseline", baseline_metrics, baseline_details, config)
@@ -481,7 +489,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         trainer.model = model
     # Save and evaluate the final selected model.
     trainer.save_model(str(output_dir / "final"))
-    final_metrics, final_details = evaluate_model(model, tokenizer, test_dataset, config, "final")
+    final_metrics, final_details = _evaluate_for_config(model, tokenizer, test_dataset, config, "final")
     config["training_context"] = "best-checkpoint-final" if best_checkpoint_path is not None else "final"
     config["_evaluation_epoch"] = trainer.state.epoch
     save_evaluation(output_dir, "final", final_metrics, final_details, config)
