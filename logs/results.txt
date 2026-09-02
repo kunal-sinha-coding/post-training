@@ -5213,3 +5213,78 @@ YAML path: unknown
 YAML contents:
 
 ------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-01 23:39:41 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: sft-baseline
+Training context: sft-baseline
+Epoch: 0
+Timestamp: 2026-09-01 23:40:51 PDT
+Git commit: fb00e39
+Change description: fb00e39 Reject aggressive narrow SFT warm-start
+Metrics:
+{
+  "average_reward": 0.4666666666666667,
+  "entropy": 0.4227294921875,
+  "examples": 10,
+  "pass_at_1": 0.4,
+  "repeated_completion_fraction": 0.0,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.0,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.4666666666666667,
+  "status_counts": {
+    "failed": 3,
+    "partial": 1,
+    "passed": 4,
+    "syntax_error": 2
+  },
+  "successful_examples": 4,
+  "unique_completion_rate": 1.0
+}
+YAML path: unknown
+YAML contents:
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: sft-epoch-1
+Training context: sft
+Epoch: 1
+Timestamp: 2026-09-01 23:41:57 PDT
+Git commit: fb00e39
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.4333333333333333,
+  "entropy": 0.432470703125,
+  "examples": 10,
+  "pass_at_1": 0.4,
+  "repeated_completion_fraction": 0.0,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.0,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.4333333333333333,
+  "status_counts": {
+    "failed": 3,
+    "partial": 1,
+    "passed": 4,
+    "syntax_error": 2
+  },
+  "successful_examples": 4,
+  "unique_completion_rate": 1.0
+}
+YAML path: unknown
+YAML contents:
+
+------------------------------------------------------------------------

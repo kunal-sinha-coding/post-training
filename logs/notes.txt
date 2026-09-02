@@ -1122,3 +1122,7 @@ Tested max_prompt_length 1024 against the kept sampled 512-token configuration. 
 ## Commit: Reject aggressive narrow SFT warm-start
 
 Ran 10 supervised updates on 128 MBPP examples at learning rate 1e-5. The resulting checkpoint passed 1 of 10 fixed validation tasks versus 4 of 10 for the kept checkpoint, so this warm-start configuration was rejected while broader lower-rate SFT remains a candidate.
+
+## Commit: Reject broad low-rate SFT warm-start
+
+Ran 10 supervised updates over all 374 MBPP examples at learning rate 1e-6 with complete loss, learning-rate, gradient, runtime, and throughput logging. The checkpoint passed 3 of 10 versus 4 of 10 for the kept model, so it was rejected while the training-schedule hypothesis remains open.

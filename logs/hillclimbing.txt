@@ -344,3 +344,26 @@ Focused validation: The SFT run completed 10 training steps and produced a final
 Verdict and change disposition: regressed on the primary metric, 40% to 10%. Revert the warm-start checkpoint and retain the trained sampled checkpoint because the SFT configuration loses three passes. The reasoning is the direct pass-rate regression, with the likely optimization cause guiding refinement rather than abandonment.
 
 Next iteration: test SFT on all 374 training examples for 10 steps at learning rate 1e-6, then evaluate with the kept sampled decoding configuration.
+
+## Iteration 17: Broad low-rate SFT warm-start
+
+Command:
+python - <<'PY' ... run_training(config, stage='sft') ... PY, followed by evaluation of outputs/hill-sft-broad/sft/final.
+
+Effective configuration: base Qwen/Qwen3.5-0.8B, all 374 MBPP training examples, one SFT epoch capped at 10 steps, batch size 1, gradient accumulation 1, learning rate 1e-6, then the fixed validation tasks 511 through 520 with sampling at temperature 0.7 and seed 42. GRPO was not run.
+
+Log range: logs/logs.txt contains the SFT training metrics and records labeled hill-fix-sft-broad beginning at source line 987256, with ten evaluation task records through task 520 before the next run boundary.
+
+Training metrics: The run logged per-step loss, cumulative and rolling loss, gradient norm, learning rate, epoch, train runtime, sample throughput, and step throughput. Loss values ranged from 1.076 to 2.169, gradient norms ranged from 79 to 282, learning rate decayed from 1e-6 to 1e-7, and final train loss was 1.731.
+
+Results: 3 passed and 7 failed out of 10, for a pass rate of 30%, below the kept 40% trained-checkpoint result. The distribution was 5 incorrect algorithm or logic failures, 2 partial test-progress failures, and 3 passed examples. Tasks 514, 517, and 518 passed. Tasks 511 and 515 were partial. Tasks 512, 513, 516, 519, and 520 were incorrect algorithm or logic failures.
+
+Root-cause update: Broadening the SFT data and lowering the learning rate improved over the aggressive 1e-5 run’s 10% but still failed to match the kept checkpoint. The short ten-step schedule and response-only SFT objective remain confounded, so this does not reject longer or differently balanced supervision. No sandbox or infrastructure failure was observed. Average reward was 0.4000 and remains secondary.
+
+Meta-review: The complete history supports sampled decoding as the only confirmed pass-rate gain. Both SFT trials regressed, but the second reduced the regression, suggesting optimization scale rather than supervision as the immediate issue. Further SFT should not be attempted by changing one small hyperparameter at a time without a training-duration or checkpoint-selection rationale.
+
+Focused validation: The SFT training run completed 10 steps and logged the requested training diagnostics. The fixed-batch evaluation completed ten records.
+
+Verdict and change disposition: regressed on the primary metric, 40% to 30%. Revert the broad SFT checkpoint and retain the trained sampled checkpoint because it loses one pass. The reasoning is the direct pass-rate regression, while the logged optimization metrics support treating training schedule as the next distinct hypothesis.
+
+Next iteration: test a general training-schedule intervention only if its additional compute and checkpoint evaluation are justified; otherwise continue meta-analysis rather than making another narrow hyperparameter tweak.
