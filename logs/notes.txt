@@ -1090,3 +1090,7 @@ Tested sampled decoding at temperature 0.5 on the fixed ten-task batch. Pass rat
 ## Commit: Reject seed 123 sampling
 
 Tested temperature 0.7 with seed 123 on the fixed ten-task batch. Pass rate regressed from 4 of 10 to 2 of 10, so seed 123 was rejected and seed 42 remains the kept setting.
+
+## Commit: Reject seed 7 sampling
+
+Tested temperature 0.7 with seed 7 on the fixed ten-task batch. Pass rate reached 3 of 10, below the kept 4 of 10 from seed 42, so seed 7 was rejected.
