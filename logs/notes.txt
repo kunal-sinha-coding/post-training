@@ -1082,3 +1082,7 @@ Added configurable deterministic sampling to evaluation and tested temperature 0
 ## Commit: Reject high-temperature decoding
 
 Tested sampled decoding at temperature 1.0 on the fixed ten-task batch. Pass rate regressed from 4 of 10 to 2 of 10, so temperature 1.0 was rejected and temperature 0.7 remains the kept setting.
+
+## Commit: Reject low-temperature decoding
+
+Tested sampled decoding at temperature 0.5 on the fixed ten-task batch. Pass rate regressed from 4 of 10 to 2 of 10, so temperature 0.5 was rejected and temperature 0.7 remains the kept setting.

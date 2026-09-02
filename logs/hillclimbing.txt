@@ -148,3 +148,22 @@ Focused validation: No source code changed for this configuration-only iteration
 Verdict and change disposition: regressed on the primary metric, 40% to 20%. Revert temperature 1.0 to the kept 0.7 setting before the next iteration because it loses two passes. The reasoning is the direct pass-rate regression on identical tasks.
 
 Next iteration: test sampled temperature 0.5 from the kept 0.7 baseline and retain it only if it reaches at least 40% pass rate.
+
+## Iteration 7: Sampled decoding at temperature 0.5
+
+Command:
+python - <<'PY' ... evaluate_model(..., evaluation_name='hill-fix-sampling-05') ... PY
+
+Effective configuration: same model and fixed tasks 511 through 520, max_eval_samples 10, max_prompt_length 512, max_completion_length 768, max_retries 0, sandbox timeout 3 seconds, sampling enabled, temperature 0.5, and seed 42.
+
+Log range: logs/logs.txt records labeled hill-fix-sampling-05 begin at source line 974529 and contain ten task records through task 520 before the next run boundary.
+
+Results: 2 passed and 8 failed out of 10, for a pass rate of 20%, regressing from the kept 40% result at temperature 0.7. The distribution was 6 incorrect algorithm or logic failures, 1 partial test-progress failure, 1 syntax or truncation failure, and 2 passed examples. Tasks 514 and 517 passed. Task 515 was partial, task 518 was syntax or truncation, and tasks 511, 512, 513, 516, 519, and 520 were incorrect algorithm or logic failures.
+
+Root-cause update: Lower temperature reduced useful completion diversity and lost the two additional passes found at 0.7. No sandbox or infrastructure failure was observed. Average reward was 0.2333 and remains secondary.
+
+Focused validation: No source code changed for this configuration-only iteration.
+
+Verdict and change disposition: regressed on the primary metric, 40% to 20%. Revert temperature 0.5 to the kept 0.7 setting before the next iteration because it loses two passes. The reasoning is the direct pass-rate regression on identical tasks.
+
+Next iteration: test a different seed at the kept temperature 0.7, retaining the same task order and accepting only a pass-rate improvement.
