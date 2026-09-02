@@ -53,3 +53,22 @@ Next iteration: test a generation-recovery change that retries malformed or non-
 ## Interrupted attempt after Iteration 1
 
 The retry evaluation command was started with the same ten tasks and 768-token configuration but was interrupted before producing a complete ten-record evaluation. Its partial log tail shows an incomplete task 520 record and a new run header. It is excluded from all metrics and is not treated as a model result.
+
+## Iteration 2: Retry all non-passing completions
+
+Command:
+python - <<'PY' ... evaluate_model(..., evaluation_name='hill-fix-retry-nonpassing') ... PY
+
+Effective configuration: model outputs/grpo-mbpp/final, dataset google-research-datasets/mbpp, validation split, max_eval_samples 10, validation indices 0 through 9, max_prompt_length 512, max_completion_length 768, max_retries 1, sandbox timeout 3 seconds, and greedy generation. The code under test was evaluate.py on branch hill-climbing-20260902-054800 at commit 26cc2a1 before this result commit.
+
+Log range: logs/logs.txt records labeled hill-fix-retry-nonpassing begin at source line 969137 and end after the task 520 record at the next run boundary. Ten records were produced.
+
+Results: 2 passed and 8 failed out of 10, for a pass rate of 20%, unchanged from the controlled baseline. Average reward was 0.2667, also unchanged. The mutually exclusive bucket distribution was 4 syntax or truncated completion failures, 3 incorrect algorithm or logic failures, 1 partial test-progress failure, and 2 passed examples. Tasks 511, 512, 513, 514, 515, 516, 517, 518, 519, and 520 were all present. The task-level source records preserve each raw completion, extracted code, execution status, exception text, and award.
+
+Root-cause update: Retrying all non-passing outputs did not increase the number of passing tasks. The retry feedback was therefore insufficient to overcome the model’s deterministic malformed and incorrect generations. The result does not support keeping this change for pass-rate improvement. Reward and bucket changes are not decision criteria.
+
+Focused validation: `pytest -q tests/test_evaluate.py tests/test_sandbox.py` passed 19 of 19 tests before this run.
+
+Verdict: unchanged on the primary metric, 20% to 20%. Abandon this retry strategy as the next optimization direction unless a later prompt change creates evidence that retries can recover the outputs.
+
+Next iteration: add a concise anti-verbosity generation constraint to the normalized task prompt, targeting the observed overlong lookup tables and explanatory output. Retain the same ten task IDs and select solely by pass rate.

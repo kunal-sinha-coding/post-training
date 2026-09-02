@@ -1062,3 +1062,7 @@ Updated AGENTS.md so commits and pushes default to main, while an explicitly spe
 ## Commit: Retry non-passing evaluation completions
 
 Changed evaluate_model so its existing retry budget applies to any non-passing completion, including syntax, truncation, and assertion failures, while retaining the specialized wrong-arity feedback. Focused evaluation tests passed 19 of 19. The follow-up model run was interrupted before a complete ten-task result and is excluded from the hill-climbing metrics.
+
+## Commit: Evaluate non-passing retry on dedicated branch
+
+Reran the retry change on branch hill-climbing-20260902-054800 using the fixed ten-task batch. Pass rate remained 2 of 10, so the retry strategy was rejected as an improvement. The complete result and raw task records are documented in logs/hillclimbing.txt and logs/logs.txt.
