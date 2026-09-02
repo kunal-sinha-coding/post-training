@@ -91,3 +91,22 @@ Focused validation: `pytest -q tests/test_data.py -k 'not prepare_datasets_loads
 Verdict and change disposition: unchanged on pass rate, 20% to 20%. Revert the concise prompt constraint before the next iteration because it failed the primary objective and the lower syntax count did not translate into a pass. Also keep the prior retry behavior reverted because its dedicated result was unchanged at 2 of 10. The reasoning is that preserving changes without a pass-rate gain would optimize secondary diagnostics instead of the stated objective.
 
 Next iteration: choose a model-behavior intervention supported by the five logic failures, such as a concise task-solving prompt variant, and compare only the resulting pass rate on the same ten tasks.
+
+## Iteration 4: Silent planning prompt
+
+Command:
+python - <<'PY' ... evaluate_model(..., evaluation_name='hill-fix-silent-planning') ... PY
+
+Effective configuration: the fixed validation batch was tasks 511 through 520, using outputs/grpo-mbpp/final, max_eval_samples 10, max_prompt_length 512, max_completion_length 768, max_retries 0, sandbox timeout 3 seconds, and greedy generation. The only experimental change was one prompt requirement asking the model to think silently before writing concise code.
+
+Log range: logs/logs.txt records labeled hill-fix-silent-planning begin at source line 971505 and contain ten task records through task 520 before the next run boundary.
+
+Results: 2 passed and 8 failed out of 10, for a pass rate of 20%, unchanged from baseline. The distribution was 5 incorrect algorithm or logic failures, 2 partial test-progress failures, 1 syntax or truncation failure, and 2 passed examples. Tasks 511 and 515 were partial, task 518 was syntax or truncation, tasks 512, 513, 516, 519, and 520 were incorrect algorithm or logic, and tasks 514 and 517 passed. Average reward was 0.3000 and remains secondary.
+
+Root-cause update: Silent-planning language did not produce a new passing task. The unchanged result indicates that this prompt wording is insufficient to correct the model’s task-specific algorithm errors. No sandbox or infrastructure failure was observed.
+
+Focused validation: The prompt-focused data tests passed 5 of 5 selected tests, excluding the unrelated existing mock-signature failure.
+
+Verdict and change disposition: unchanged on the primary metric, 20% to 20%. Revert the silent-planning prompt constraint before the next iteration because retaining it would preserve a pass-rate-neutral change. The reasoning is based on pass rate only; the small reward variation does not justify keeping the change.
+
+Next iteration: test a different model-behavior or decoding intervention, retaining the same ten tasks and recording an explicit keep-or-revert decision.

@@ -1070,3 +1070,7 @@ Reran the retry change on branch hill-climbing-20260902-054800 using the fixed t
 ## Commit: Revert unsuccessful pass-rate experiments
 
 The concise prompt constraint produced 2 of 10 passes, unchanged from baseline, and was reverted. The non-passing retry change also remained at 2 of 10 and was reverted. Both changes were rejected because secondary reward or bucket improvements did not meet the primary pass-rate objective.
+
+## Commit: Revert silent-planning prompt experiment
+
+The silent-planning prompt constraint produced 2 of 10 passes, unchanged from baseline, and was reverted. The pass-rate result did not support retaining the prompt change.
