@@ -447,23 +447,14 @@ def evaluate_model(model: Any, tokenizer: Any, dataset: Any, config: dict[str, A
                     reference_kl_values.append(generation_metrics["reference_kl"])
                 completion = tokenizer.decode(output[0, prompt_width:], skip_special_tokens=True)
                 retry_info = _wrong_arity(completion, record["test_code"])
-                # Retry any non-passing completion so malformed and incorrect outputs get one recovery attempt.
-                _, completion_details = score_completion(completion, record["test_code"], float(config.get("sandbox_timeout_seconds", 3)), float(config.get("pass_weight", 0.5)))
-                if (retry_info is None and completion_details["status"] == "passed") or attempt >= max_retries:
+                if retry_info is None or attempt >= max_retries:
                     break
-                if retry_info is not None:
-                    name, actual, expected = retry_info
-                    retry_prompt += (
-                        f"\n\nPrevious generation:\n{completion}\n\n"
-                        f"This previous generation was incorrect because it had {actual} arguments instead of {expected}. Try again.\n\n"
-                        f"Code:\n```python\ndef {name}("
-                    )
-                else:
-                    retry_prompt += (
-                        f"\n\nPrevious generation:\n{completion}\n\n"
-                        "This previous generation did not pass the tests. Return a concise corrected implementation and follow the required format.\n\n"
-                        "Code:\n```python\n"
-                    )
+                name, actual, expected = retry_info
+                retry_prompt += (
+                    f"\n\nPrevious generation:\n{completion}\n\n"
+                    f"This previous generation was incorrect because it had {actual} arguments instead of {expected}. Try again.\n\n"
+                    f"Code:\n```python\ndef {name}("
+                )
             completions.append(completion)
         diagnostics = {}
         if entropy_values:

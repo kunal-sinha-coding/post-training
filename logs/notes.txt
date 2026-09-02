@@ -1066,3 +1066,7 @@ Changed evaluate_model so its existing retry budget applies to any non-passing c
 ## Commit: Evaluate non-passing retry on dedicated branch
 
 Reran the retry change on branch hill-climbing-20260902-054800 using the fixed ten-task batch. Pass rate remained 2 of 10, so the retry strategy was rejected as an improvement. The complete result and raw task records are documented in logs/hillclimbing.txt and logs/logs.txt.
+
+## Commit: Revert unsuccessful pass-rate experiments
+
+The concise prompt constraint produced 2 of 10 passes, unchanged from baseline, and was reverted. The non-passing retry change also remained at 2 of 10 and was reverted. Both changes were rejected because secondary reward or bucket improvements did not meet the primary pass-rate objective.

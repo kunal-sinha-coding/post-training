@@ -72,3 +72,22 @@ Focused validation: `pytest -q tests/test_evaluate.py tests/test_sandbox.py` pas
 Verdict: unchanged on the primary metric, 20% to 20%. Abandon this retry strategy as the next optimization direction unless a later prompt change creates evidence that retries can recover the outputs.
 
 Next iteration: add a concise anti-verbosity generation constraint to the normalized task prompt, targeting the observed overlong lookup tables and explanatory output. Retain the same ten task IDs and select solely by pass rate.
+
+## Iteration 3: Concise prompt constraint
+
+Command:
+python - <<'PY' ... evaluate_model(..., evaluation_name='hill-fix-concise-prompt') ... PY
+
+Effective configuration: identical fixed batch of task IDs 511 through 520, model outputs/grpo-mbpp/final, validation split, max_eval_samples 10, max_prompt_length 512, max_completion_length 768, max_retries 0, sandbox timeout 3 seconds, and greedy generation. The only experimental change was the added concise-output requirement in data.py.
+
+Log range: logs/logs.txt records labeled hill-fix-concise-prompt begin at source line 970367 and end after the task 520 record before the next run boundary. The command emitted ten records and the printed metrics were captured immediately after completion.
+
+Results: 2 passed and 8 failed out of 10, for a pass rate of 20%, unchanged from the 2 of 10 baseline. The distribution was 5 incorrect algorithm or logic failures, 2 partial test-progress failures, 1 syntax or truncation failure, and 2 passed examples. Tasks 511 and 515 were partial, task 518 was syntax or truncation, tasks 512, 513, 516, 519, and 520 were incorrect algorithm or logic, and tasks 514 and 517 passed. Average reward rose to 0.3333 but remains secondary.
+
+Root-cause update: The added instruction reduced some malformed output in this run, but it did not produce a new passing task. The remaining failures are primarily model algorithm errors rather than a shared prompt-length issue. No sandbox or infrastructure failure was observed.
+
+Focused validation: `pytest -q tests/test_data.py -k 'not prepare_datasets_loads_official_train_and_validation_splits'` passed 5 of 5 selected tests. The deselected existing mock-signature test remains unrelated.
+
+Verdict and change disposition: unchanged on pass rate, 20% to 20%. Revert the concise prompt constraint before the next iteration because it failed the primary objective and the lower syntax count did not translate into a pass. Also keep the prior retry behavior reverted because its dedicated result was unchanged at 2 of 10. The reasoning is that preserving changes without a pass-rate gain would optimize secondary diagnostics instead of the stated objective.
+
+Next iteration: choose a model-behavior intervention supported by the five logic failures, such as a concise task-solving prompt variant, and compare only the resulting pass rate on the same ten tasks.
