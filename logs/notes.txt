@@ -1134,3 +1134,6 @@ Ran a complete one-epoch SFT pass over all 374 examples at learning rate 1e-6 wi
 ## Commit: Reject full-epoch SFT refinement
 
 Completed the planned full-epoch low-rate SFT refinement and evaluated its final checkpoint. Training loss reached 1.009 with complete metric logging, but pass rate was 2 of 10 versus 4 of 10 for the kept checkpoint, so the refinement was rejected.
+## 2026-09-02: Test execution-aware GRPO supervision
+
+Added a dedicated configuration that enables the existing generated-test artifact for GRPO reward evaluation, starts from the kept trained checkpoint, and preserves the fixed ten-example validation batch. This tests whether broader executable feedback improves pass rate without changing the evaluation data.
