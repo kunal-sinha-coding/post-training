@@ -1130,3 +1130,7 @@ Ran 10 supervised updates over all 374 MBPP examples at learning rate 1e-6 with 
 ## Commit: Reject full-epoch SFT warm-start
 
 Ran a complete one-epoch SFT pass over all 374 examples at learning rate 1e-6 with comprehensive training diagnostics. Training loss reached 1.009, but validation pass rate fell to 2 of 10, so the checkpoint was rejected and response-only SFT is not retained.
+
+## Commit: Reject full-epoch SFT refinement
+
+Completed the planned full-epoch low-rate SFT refinement and evaluated its final checkpoint. Training loss reached 1.009 with complete metric logging, but pass rate was 2 of 10 versus 4 of 10 for the kept checkpoint, so the refinement was rejected.
