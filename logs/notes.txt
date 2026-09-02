@@ -1118,3 +1118,7 @@ Evaluated the original base checkpoint with the kept sampled decoding configurat
 ## Commit: Reject neutral prompt context budget
 
 Tested max_prompt_length 1024 against the kept sampled 512-token configuration. It reproduced 4 of 10 passes and the same task outcomes, so the larger context limit was rejected.
+
+## Commit: Reject aggressive narrow SFT warm-start
+
+Ran 10 supervised updates on 128 MBPP examples at learning rate 1e-5. The resulting checkpoint passed 1 of 10 fixed validation tasks versus 4 of 10 for the kept checkpoint, so this warm-start configuration was rejected while broader lower-rate SFT remains a candidate.

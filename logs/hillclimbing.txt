@@ -323,3 +323,24 @@ Focused validation: No source code changed for this configuration-only iteration
 Verdict and change disposition: unchanged on the primary metric, 40% to 40%. Revert the 1024-token context limit to the kept 512-token setting because it produces identical outcomes with extra context budget and runtime. The reasoning is the exact pass-rate and task-outcome match.
 
 Next iteration: test a substantive, generalizable training or supervision change that targets algorithmic correctness, such as a short supervised warm-start or corrected reward signal, and compare against the kept sampled checkpoint.
+
+## Iteration 16: Supervised warm-start control
+
+Command:
+python - <<'PY' ... run_training(config, stage='sft') ... PY, followed by evaluation of outputs/hill-sft-control/sft/final.
+
+Effective configuration: base Qwen/Qwen3.5-0.8B, 128 MBPP training examples, one SFT epoch capped at 10 steps, batch size 1, gradient accumulation 1, learning rate 1e-5, then the fixed validation tasks 511 through 520 with sampling at temperature 0.7 and seed 42. GRPO was not run.
+
+Log range: logs/logs.txt records labeled hill-fix-sft-warmstart begin at source line 984673 and contain ten evaluation task records through task 520 before the next run boundary. Training diagnostics are also preserved before those records.
+
+Results: 1 passed and 9 failed out of 10, for a pass rate of 10%, regressing from the kept 40% trained-checkpoint result. The distribution was 7 incorrect algorithm or logic failures, 1 partial test-progress failure, 1 syntax or truncation failure, and 1 passed example. Task 514 passed. Task 515 was partial. Task 519 was syntax or truncation. Tasks 511, 512, 513, 516, 517, 518, and 520 were incorrect algorithm or logic failures.
+
+Root-cause update: The warm-start as configured caused substantial loss of validation correctness. The likely causes are the small 128-example subset, ten consecutive updates, and relatively high 1e-5 learning rate, but the run does not isolate those factors. No sandbox or infrastructure failure was observed. Average reward was 0.1667 and remains secondary.
+
+Meta-review: The only clear gain remains moderate sampling on the trained checkpoint. Prompt, decoding, checkpoint, and short SFT interventions have not improved pass rate except the original sampling change. This SFT result does not reject supervised learning generally, but it rejects this aggressive narrow warm-start configuration. A lower learning rate and broader training subset are the supported refinement.
+
+Focused validation: The SFT run completed 10 training steps and produced a final checkpoint. The fixed-batch evaluation completed 10 records.
+
+Verdict and change disposition: regressed on the primary metric, 40% to 10%. Revert the warm-start checkpoint and retain the trained sampled checkpoint because the SFT configuration loses three passes. The reasoning is the direct pass-rate regression, with the likely optimization cause guiding refinement rather than abandonment.
+
+Next iteration: test SFT on all 374 training examples for 10 steps at learning rate 1e-6, then evaluate with the kept sampled decoding configuration.

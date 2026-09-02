@@ -5123,3 +5123,93 @@ wandb_project: grpo-mbpp
 wandb_run_name: null
 
 ------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-01 23:34:27 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: sft-baseline
+Training context: sft-baseline
+Epoch: 0
+Timestamp: 2026-09-01 23:35:37 PDT
+Git commit: f877b82
+Change description: f877b82 Reject neutral prompt context budget
+e3001e4 Reject base checkpoint control
+381b096 Reject neutral sampled completion budget
+f11aa16 Reject generic argument prefill
+6ef451e Revert direct algorithm prompt
+17857e7 Revert pass-rate-neutral top-p decoding
+206387d Reject alternate seed sampling
+16b22b8 Reject alternate sampling seed
+568d290 Reject low-temperature decoding
+4a8f6b5 Reject high-temperature decoding
+8569451 Keep sampling pass-rate improvement
+c4449cb Revert silent planning prompt experiment
+0a0db0a Revert pass-rate neutral experiments
+cea0f3d Test retry recovery on fixed batch
+26cc2a1 Allow explicit branches in repository workflow
+8fb1838 Record fixed-batch pass-rate hill climbing
+Metrics:
+{
+  "average_reward": 0.4666666666666667,
+  "entropy": 0.4227294921875,
+  "examples": 10,
+  "pass_at_1": 0.4,
+  "repeated_completion_fraction": 0.0,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.0,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.4666666666666667,
+  "status_counts": {
+    "failed": 3,
+    "partial": 1,
+    "passed": 4,
+    "syntax_error": 2
+  },
+  "successful_examples": 4,
+  "unique_completion_rate": 1.0
+}
+YAML path: unknown
+YAML contents:
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: sft-epoch-1
+Training context: sft
+Epoch: 1
+Timestamp: 2026-09-01 23:37:05 PDT
+Git commit: f877b82
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.33333333333333337,
+  "entropy": 0.399658203125,
+  "examples": 10,
+  "pass_at_1": 0.3,
+  "repeated_completion_fraction": 0.0,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.0,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.33333333333333337,
+  "status_counts": {
+    "failed": 3,
+    "partial": 1,
+    "passed": 3,
+    "syntax_error": 3
+  },
+  "successful_examples": 3,
+  "unique_completion_rate": 1.0
+}
+YAML path: unknown
+YAML contents:
+
+------------------------------------------------------------------------
