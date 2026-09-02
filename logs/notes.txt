@@ -1145,3 +1145,5 @@ The first launch failed during TRL configuration because a generation batch of 1
 Sampled sixteen completions per task in one batched generation call for each of the ten fixed validation tasks. Cumulative pass-any rates were 30% at one completion, 40% at two, 50% at four, 50% at eight, and 80% at sixteen. This supports testing multi-generation GRPO because the base model contains substantially more capability than pass@1 exposes.
 
 Added configs/hill-multi-grpo.yaml to run GRPO with sixteen generations per prompt and full training metric logging.
+
+The initial sixteen-generation GRPO launch generated the first group but failed during policy log-probability backpropagation with CUDA out-of-memory on the 15.6 GiB GPU. This was an infrastructure constraint rather than a model result, so the training group was reduced to eight generations while retaining multi-generation exploration.

@@ -5612,3 +5612,86 @@ fp16: false
 report_to: none
 
 ------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-02 00:42:09 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: baseline
+Training context: baseline
+Epoch: baseline
+Timestamp: 2026-09-02 00:43:14 PDT
+Git commit: 97bfbe8
+Change description: 97bfbe8 Add multi-generation GRPO diagnostic
+968f041 Record mild repetition penalty result
+01c5c0e Record repetition penalty regression
+a76a09b Record generated test GRPO result
+Metrics:
+{
+  "average_reward": 0.4666666666666667,
+  "entropy": 0.4227294921875,
+  "examples": 10,
+  "pass_at_1": 0.4,
+  "repeated_completion_fraction": 0.0,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.0,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.4666666666666667,
+  "status_counts": {
+    "failed": 3,
+    "partial": 1,
+    "passed": 4,
+    "syntax_error": 2
+  },
+  "successful_examples": 4,
+  "unique_completion_rate": 1.0
+}
+YAML path: configs/hill-multi-grpo.yaml
+YAML contents:
+# This configuration runs GRPO with sixteen sampled candidates per prompt and evaluates the fixed ten-task batch.
+model_name_or_path: Qwen/Qwen3.5-0.8B
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 374
+reuse_baseline: false
+run_baseline_evaluation: true
+run_intermediate_evals: false
+max_eval_samples: 10
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/hill-multi-grpo
+num_train_epochs: 1
+max_steps: 10
+per_device_train_batch_size: 16
+gradient_accumulation_steps: 1
+learning_rate: 0.000001
+num_generations: 16
+max_prompt_length: 512
+max_completion_length: 768
+generation_kwargs:
+  do_sample: true
+  temperature: 0.7
+  seed: 42
+  stop_strings: ["```"]
+logging_steps: 1
+save_steps: 10
+evaluation_num_completions: 1
+pass_weight: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: false
+fp16: false
+report_to: none
+
+------------------------------------------------------------------------

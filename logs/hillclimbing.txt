@@ -476,3 +476,9 @@ The hill-climbing loop was paused for a capability diagnostic. The original Qwen
 Results: pass@1 was 30%, pass@2 was 40%, pass@4 was 50%, pass@8 was 50%, and pass@16 was 80%. This is substantial improvement with more samples and shows that the base model can produce correct solutions that pass@1 misses. The result supports multi-generation exploration during RL and does not justify an immediate full-epoch SFT detour.
 
 Next action: run GRPO from the base checkpoint with sixteen generations per prompt and compare its fixed-batch pass rate against the existing 40% retained result.
+
+## Diagnostic follow-up: Multi-generation GRPO memory limit
+
+The sixteen-generation GRPO run generated its first group and logged nonzero reward variation, but failed during the first optimization step with CUDA out-of-memory while computing policy log probabilities. The 15.6 GiB GPU had only 238 MiB free for a required 248 MiB allocation. This was an infrastructure failure and produced no model evaluation result.
+
+The inference-only pass-at-16 diagnostic remains valid because it fits without retaining training activations. The training configuration was reduced to eight generations and a batch size of eight for the next run, preserving the multi-generation hypothesis within the available memory.
