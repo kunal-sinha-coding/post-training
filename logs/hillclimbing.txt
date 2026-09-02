@@ -281,3 +281,24 @@ Focused validation: No source code changed for this configuration-only iteration
 Verdict and change disposition: unchanged on the primary metric, 40% to 40%. Revert the 1536-token cap to the kept 768-token configuration because it adds runtime without improving pass rate. The reasoning is the identical pass count and task outcomes.
 
 Next iteration: stop this hill-climbing session unless a new upstream, generalizable training or prompt hypothesis is identified. The tested decoding changes have either regressed, remained neutral, or introduced a single best setting already kept.
+
+## Iteration 14: Base-checkpoint control under kept sampling
+
+Command:
+python - <<'PY' ... evaluate_model(..., evaluation_name='hill-control-base-sampling') ... PY
+
+Effective configuration: the same fixed tasks 511 through 520, validation split, max_eval_samples 10, max_prompt_length 512, max_completion_length 768, max_retries 0, sandbox timeout 3 seconds, sampling enabled at temperature 0.7, and seed 42. The only change was evaluating the original Qwen/Qwen3.5-0.8B checkpoint instead of outputs/grpo-mbpp/final.
+
+Log range: logs/logs.txt records labeled hill-control-base-sampling begin at source line 981329 and contain ten task records through task 520 before the next run boundary.
+
+Results: 2 passed and 8 failed out of 10, for a pass rate of 20%, below the kept trained-checkpoint result of 4/10. The distribution was 5 incorrect algorithm or logic failures, 2 syntax or truncated completion failures, 1 partial test-progress failure, and 2 passed examples. Tasks 511 was partial. Tasks 512 and 514 passed. Tasks 513, 516, and 520 were incorrect algorithm or logic failures. Tasks 515 was partial. Tasks 517 was incorrect algorithm or logic, and tasks 518 and 519 were syntax or truncation failures.
+
+Root-cause update: The trained checkpoint combined with moderate sampling performs better than the base checkpoint on this task set. This supports retaining the trained model, but the two-example gap is not by itself proof of broad generalization from the tiny batch. No sandbox or infrastructure failure was observed. Average reward was 0.3000 and remains secondary.
+
+Meta-review: Across the full history, prompt wording and interface-prefix interventions did not increase pass rate, while sampling produced the only clear improvement. The remaining errors are concentrated in task-level algorithm generation. The base control rules out replacing the trained model with the base model as a general fix, but does not identify a new code-level cause. A defensible next hypothesis should target training or algorithmic supervision rather than another batch-specific decoding knob.
+
+Focused validation: The evaluation completed ten task records. No source code changed for this control.
+
+Verdict and change disposition: regressed on the primary metric, 40% to 20%. Revert the base-checkpoint control to the kept trained checkpoint because it loses two passes. The reasoning is the direct pass-rate comparison, with the generalization limitation recorded above.
+
+Next iteration: investigate a general training-data or reward-alignment intervention that teaches algorithmic correctness, using the kept trained checkpoint and sampling configuration as the comparison baseline.

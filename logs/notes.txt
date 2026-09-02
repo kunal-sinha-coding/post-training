@@ -1110,3 +1110,7 @@ Tested generic argument prefill with sampled temperature 0.7 and seed 42. Pass r
 ## Commit: Revert neutral sampled completion budget
 
 Tested a 1536-token sampled completion cap with temperature 0.7 and seed 42. It reproduced the kept 4 of 10 pass rate and task outcomes exactly, so the cap was rejected and 768 tokens remains the kept setting.
+
+## Commit: Reject base-checkpoint control
+
+Evaluated the original base checkpoint with the kept sampled decoding configuration. It passed 2 of 10 versus 4 of 10 for the trained checkpoint, so the base model was rejected as a replacement. The result and meta-review are recorded in logs/hillclimbing.txt.
