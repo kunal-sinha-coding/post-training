@@ -205,3 +205,22 @@ Focused validation: No source code changed for this configuration-only iteration
 Verdict and change disposition: regressed relative to the kept configuration, 40% to 30%. Revert seed 7 to the kept seed 42 before the next iteration because it loses one pass. The reasoning is the direct pass-rate comparison on identical tasks.
 
 Next iteration: test top-p 0.9 with the kept temperature 0.7 and seed 42, accepting it only if pass rate exceeds 40%.
+
+## Iteration 10: Sampled decoding with top-p 0.9
+
+Command:
+python - <<'PY' ... evaluate_model(..., evaluation_name='hill-fix-top-p-09') ... PY
+
+Effective configuration: same model and fixed tasks 511 through 520, max_eval_samples 10, max_prompt_length 512, max_completion_length 768, max_retries 0, sandbox timeout 3 seconds, sampling enabled, temperature 0.7, seed 42, and top-p 0.9.
+
+Log range: the complete top-p run records labeled hill-fix-top-p-09 begin at source line 978006 and contain ten task records through task 520. An earlier interrupted attempt with the same label was incomplete and is excluded.
+
+Results: 4 passed and 6 failed out of 10, for a pass rate of 40%, unchanged from the kept temperature-0.7 configuration. The distribution was 4 passed, 4 incorrect algorithm or logic failures, and 2 syntax or truncated completion failures. Tasks 514, 516, 517, and 518 passed. Tasks 511, 512, 513, and 515 were incorrect algorithm or logic failures. Tasks 519 and 520 were syntax or truncated completion failures.
+
+Root-cause update: Top-p 0.9 changed which sampled implementation passed but did not increase the number of passes. This provides no evidence of a pass-rate improvement from nucleus filtering on this batch. No sandbox or infrastructure failure was observed. Average reward was 0.4000 and remains secondary.
+
+Focused validation: `pytest -q tests/test_evaluate.py tests/test_sandbox.py` passed 19 of 19 tests before the evaluation.
+
+Verdict and change disposition: unchanged on the primary metric, 40% to 40%. Revert the top-p code change before the next iteration because it did not improve pass rate and adds configuration complexity without a demonstrated general benefit. The reasoning is the unchanged pass count, regardless of the changed task identity.
+
+Next iteration: test a general prompt or training-data intervention targeting algorithmic correctness, while retaining sampled temperature 0.7 with seed 42 as the current decoding baseline.

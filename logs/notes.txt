@@ -1094,3 +1094,7 @@ Tested temperature 0.7 with seed 123 on the fixed ten-task batch. Pass rate regr
 ## Commit: Reject seed 7 sampling
 
 Tested temperature 0.7 with seed 7 on the fixed ten-task batch. Pass rate reached 3 of 10, below the kept 4 of 10 from seed 42, so seed 7 was rejected.
+
+## Commit: Revert pass-rate-neutral top-p decoding
+
+Tested top-p 0.9 with temperature 0.7 and seed 42. Pass rate remained 4 of 10, so the top-p implementation was reverted and temperature 0.7 sampling remains the kept decoding baseline.
