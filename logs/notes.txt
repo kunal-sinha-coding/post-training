@@ -1151,3 +1151,5 @@ The initial sixteen-generation GRPO launch generated the first group but failed 
 The eight-generation run completed but was neutral at 4/10 versus its 4/10 baseline. A live W&B bridge attempted during the run failed due to an initialization race, so native W&B reporting is enabled for the next four-generation fallback instead.
 
 The four-generation fallback was stopped before producing a result after clarifying that a non-improving pass rate was not the intended failure condition. The corrected design retains eight generations, runs two sequential full epochs for sixteen generations per training example, removes the ten-step cap, and uses native W&B reporting.
+
+The eight-generation two-epoch run was superseded before evaluation when the sampling requirement was clarified to sixteen generations in one group. Added explicit generation_batch_size support to train.py and configured sixteen generations, per-device micro-batch 1, gradient accumulation 8, and generation batch size 16. This preserves an effective prompt batch of 8 while reducing simultaneous prompt micro-batch memory.

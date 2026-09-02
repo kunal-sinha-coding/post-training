@@ -437,6 +437,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         max_steps=int(config.get("max_steps", -1)),
         per_device_train_batch_size=int(config["per_device_train_batch_size"]),
         gradient_accumulation_steps=int(config["gradient_accumulation_steps"]),
+        generation_batch_size=int(config.get("generation_batch_size", int(config["per_device_train_batch_size"]) * int(config["gradient_accumulation_steps"]))),
         num_generations=int(config["num_generations"]),
         max_completion_length=int(config["max_completion_length"]),
         logging_steps=int(config["logging_steps"]),
