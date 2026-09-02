@@ -1,0 +1,51 @@
+------------------------------------------------------------------------
+HILL CLIMBING SESSION STARTING
+Timestamp: 2026-09-02 00:00:00 UTC
+------------------------------------------------------------------------
+
+## Iteration 0: Controlled baseline
+
+Command:
+python - <<'PY' ... evaluate_model(..., evaluation_name='hill-baseline-10') ... PY
+
+Effective configuration: model outputs/grpo-mbpp/final, dataset google-research-datasets/mbpp, validation split, max_eval_samples 10, seed 42, max_prompt_length 512, max_completion_length 768, max_retries 1, sandbox timeout 3 seconds, greedy generation, and task-specific interface prefixing. The command selected validation indices 0 through 9.
+
+Branch and commit: main at 707fcc1. The repository requires experiments to remain on main. Existing dirty paths before this session were logs/logs.txt and logs/results.txt. Model context was the trained Qwen/Qwen3.5-0.8B final checkpoint.
+
+Log range: logs/logs.txt byte range was appended after the pre-run file state at 2026-09-01 22:35:48 PDT. The ten task records are the records labeled hill-baseline-10 beginning at source line 965935 and ending at the task 520 record before the next RUN STARTING header.
+
+Results: 2 passed and 8 failed out of 10, for a pass rate of 20%. Average reward was 0.2667 and is secondary.
+
+Primary error buckets, mutually exclusive by first observable failure:
+
+1. Syntax or truncated completion: 4 of 10, 40%, tasks 513, 515, 518, and 519. Tasks 515, 518, and 519 ended before a complete implementation, while task 513 emitted an invalid list-comprehension form.
+2. Incorrect algorithm or logic: 3 of 10, 30%, tasks 512, 516, and 520. The completions were extractable and executed but failed assertions or did not provide a correct implementation.
+3. Partial test progress: 1 of 10, 10%, task 511. The completion executed and passed only part of the tests.
+4. Passed: 2 of 10, 20%, tasks 514 and 517. These successes show that the model can follow the interface and solve simple tuple summation and maximum selection tasks.
+
+Observed evidence is preserved in the task-level source records. Task 513 contains `return [str_to_add, element for element in tuple]`, which is syntactically invalid. Task 515 contains a long repeated conditional body that ends mid-output. Task 518 contains a long lookup-style body that ends mid-output. Task 519 contains an overlong tetrahedron explanation that ends mid-output. Tasks 512, 516, and 520 contain complete or executable bodies with incorrect behavior. No infrastructure or sandbox dependency failure was observed.
+
+Root-cause analysis: The prompt and extraction path produced the required opening format for these records, so a shared output-format defect is not supported. The dominant shared cause is model generation behavior producing unnecessarily long bodies, with the 768-token cap converting some into truncation. Independent residual causes are weak algorithmic reasoning and incorrect implementations for tasks 512, 516, and 520. Parser and sandbox failures do not explain the observed distribution. Reward is not treated as the optimization target because the baseline reward can credit partial progress without increasing pass rate.
+
+Proposed fix: Increase only max_completion_length to 1536 to test whether truncation is suppressing pass rate. No repository code was changed for this evaluation-only intervention.
+
+## Iteration 1: Completion budget test
+
+Command:
+python - <<'PY' ... evaluate_model(..., evaluation_name='hill-fix-completion-1536') ... PY
+
+Effective configuration: identical to Iteration 0 except max_completion_length was 1536. The same validation indices and ordering were used: 511, 512, 513, 514, 515, 516, 517, 518, 519, and 520.
+
+Branch and commit: main at 707fcc1. Model context was unchanged.
+
+Log range: logs/logs.txt source records labeled hill-fix-completion-1536 begin at line 967232 and end at the task 520 record before the next run boundary. The run completed with ten records.
+
+Results: 2 passed and 8 failed out of 10, for a pass rate of 20%, unchanged from Iteration 0. Average reward increased from 0.2667 to 0.4000, but this is secondary. The new bucket distribution was 3 partial, 3 syntax or truncated completion, and 2 incorrect algorithm or logic failures, plus 2 passed. Tasks 511, 515, and 518 were partial. Tasks 513, 519, and 520 were syntax or truncated. Tasks 512 and 516 were incorrect algorithm or logic. Tasks 514 and 517 passed.
+
+Root-cause update: The longer budget reduced zero-reward truncation and increased partial test progress, but did not create any additional fully passing task. This rejects completion length as a sufficient pass-rate fix. The remaining failures still show weak algorithm selection and malformed generation, with no infrastructure evidence.
+
+Focused validation: `pytest -q` produced 44 passed and 1 failed. The unrelated failure is `tests/test_data.py::test_prepare_datasets_loads_official_train_and_validation_splits`, whose mock accepts the old three-argument `load_mbpp` signature while current code passes four arguments. No test was changed because it is outside this experiment’s scope.
+
+Verdict: unchanged on the primary metric, 20% to 20%. Reward improved as a byproduct, but that does not qualify as hill-climbing progress.
+
+Next iteration: test a generation-recovery change that retries malformed or non-passing completions with concise task-specific feedback, while retaining the same ten tasks and selecting only by pass rate. If the retry increases pass rate, keep it. Otherwise abandon it and investigate prompt or model behavior separately.
