@@ -243,3 +243,22 @@ Focused validation: The prompt-focused data tests passed 5 of 5 selected tests, 
 Verdict and change disposition: regressed on the primary metric, 40% to 30%. Revert the direct-algorithm prompt constraint before the next iteration because it loses one pass. The reasoning is the direct fixed-batch pass-rate regression.
 
 Next iteration: test generic argument prefill with the kept sampled temperature 0.7 and seed 42, accepting only a pass-rate improvement.
+
+## Iteration 12: Generic argument prefill
+
+Command:
+python - <<'PY' ... evaluate_model(..., evaluation_name='hill-fix-generic-args') ... PY
+
+Effective configuration: same model and fixed tasks 511 through 520, max_eval_samples 10, max_prompt_length 512, max_completion_length 768, max_retries 0, sandbox timeout 3 seconds, sampling enabled at temperature 0.7 with seed 42, and include_generic_arguments true. The intervention prefilled generic argument names in the forced function header for single-arity tasks.
+
+Log range: logs/logs.txt records labeled hill-fix-generic-args begin at source line 979565 and contain ten task records through task 520 before the next run boundary.
+
+Results: 2 passed and 8 failed out of 10, for a pass rate of 20%, regressing from the kept 40% result. The distribution was 5 incorrect algorithm or logic failures, 2 partial test-progress failures, 1 syntax or truncation failure, and 2 passed examples. Tasks 514 and 517 passed. Tasks 515 and 518 were partial, task 520 was syntax or truncation, and tasks 511, 512, 513, and 516, and 519 were incorrect algorithm or logic failures.
+
+Root-cause update: Generic argument prefill changed the response prefix but did not improve correctness and lost two passing tasks. No sandbox or infrastructure failure was observed. Average reward was 0.3333 and remains secondary.
+
+Focused validation: No source code changed for this configuration-only iteration.
+
+Verdict and change disposition: regressed on the primary metric, 40% to 20%. Revert generic argument prefill to the kept false setting because it loses two passes. The reasoning is the direct pass-rate regression on identical tasks.
+
+Next iteration: test a sampled completion budget of 1536 tokens with temperature 0.7 and seed 42, retaining it only if it improves the kept 40% pass rate.

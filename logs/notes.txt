@@ -1102,3 +1102,7 @@ Tested top-p 0.9 with temperature 0.7 and seed 42. Pass rate remained 4 of 10, s
 ## Commit: Revert direct-algorithm prompt experiment
 
 The direct-algorithm prompt constraint produced 3 of 10 passes, below the kept 4 of 10 result, so it was reverted. The fixed-batch pass-rate regression did not support retaining it.
+
+## Commit: Reject generic argument prefill
+
+Tested generic argument prefill with sampled temperature 0.7 and seed 42. Pass rate fell from 4 of 10 to 2 of 10, so the configuration was rejected.
