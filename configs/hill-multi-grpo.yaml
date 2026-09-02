@@ -1,4 +1,4 @@
-# This configuration runs a memory-bounded four-generation GRPO round and evaluates the fixed ten-task batch.
+# This configuration runs two sequential eight-generation GRPO epochs and evaluates the fixed ten-task batch.
 model_name_or_path: Qwen/Qwen3.5-0.8B
 dataset_name: google-research-datasets/mbpp
 dataset_config: null
@@ -14,13 +14,13 @@ max_eval_samples: 10
 sft_enabled: false
 log_path: logs/logs.txt
 results_log_path: logs/results.txt
-output_dir: outputs/hill-multi-grpo-4
-num_train_epochs: 1
-max_steps: 10
-per_device_train_batch_size: 4
+output_dir: outputs/hill-multi-grpo-8x2
+num_train_epochs: 2
+max_steps: -1
+per_device_train_batch_size: 8
 gradient_accumulation_steps: 1
 learning_rate: 0.000001
-num_generations: 4
+num_generations: 8
 max_prompt_length: 512
 max_completion_length: 768
 generation_kwargs:
@@ -38,4 +38,4 @@ bf16: false
 fp16: false
 report_to: wandb
 wandb_project: grpo-mbpp
-wandb_run_name: hill-multi-grpo-4
+wandb_run_name: hill-multi-grpo-8x2

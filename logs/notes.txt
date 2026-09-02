@@ -1149,3 +1149,5 @@ Added configs/hill-multi-grpo.yaml to run GRPO with sixteen generations per prom
 The initial sixteen-generation GRPO launch generated the first group but failed during policy log-probability backpropagation with CUDA out-of-memory on the 15.6 GiB GPU. This was an infrastructure constraint rather than a model result, so the training group was reduced to eight generations while retaining multi-generation exploration.
 
 The eight-generation run completed but was neutral at 4/10 versus its 4/10 baseline. A live W&B bridge attempted during the run failed due to an initialization race, so native W&B reporting is enabled for the next four-generation fallback instead.
+
+The four-generation fallback was stopped before producing a result after clarifying that a non-improving pass rate was not the intended failure condition. The corrected design retains eight generations, runs two sequential full epochs for sixteen generations per training example, removes the ten-step cap, and uses native W&B reporting.

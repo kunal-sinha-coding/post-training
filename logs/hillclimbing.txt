@@ -503,3 +503,7 @@ Focused validation: The run used all 374 training examples, completed ten optimi
 Verdict and change disposition: reverted as neutral, 40% to 40%. The reasoning is that neither pass rate nor task-level outcomes improved, so the trained checkpoint is not retained.
 
 Next iteration: run four-generation GRPO with native W&B logging and sequential rounds as needed to preserve broader sampling exposure.
+
+## Diagnostic design correction: Eight generations twice sequentially
+
+The four-generation fallback was stopped before evaluation because the intended fallback condition was CUDA out-of-memory, not a neutral pass-rate result from the eight-generation run. The corrected configuration uses eight generations per GRPO group for two sequential full epochs. With all 374 training examples and no max-step cap, each example is encountered twice and receives sixteen total sampled generations across the two epochs. Native W&B reporting is enabled, and the 10-example fixed batch remains evaluation-only.
