@@ -1078,3 +1078,7 @@ The silent-planning prompt constraint produced 2 of 10 passes, unchanged from ba
 ## Commit: Keep sampling pass-rate improvement
 
 Added configurable deterministic sampling to evaluation and tested temperature 0.7 with seed 42 on the fixed ten-task batch. Pass rate improved from 2 of 10 to 4 of 10, so the decoding change is kept for the next iteration.
+
+## Commit: Reject high-temperature decoding
+
+Tested sampled decoding at temperature 1.0 on the fixed ten-task batch. Pass rate regressed from 4 of 10 to 2 of 10, so temperature 1.0 was rejected and temperature 0.7 remains the kept setting.

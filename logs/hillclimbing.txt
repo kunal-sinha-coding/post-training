@@ -129,3 +129,22 @@ Focused validation: `pytest -q tests/test_evaluate.py tests/test_sandbox.py` pas
 Verdict and change disposition: improved on the primary metric, 20% to 40%. Keep the sampling change because it added two passing tasks on the fixed denominator. The reasoning is the pass-rate gain, not the accompanying reward increase.
 
 Next iteration: continue from the kept sampling configuration and test one additional decoding setting, retaining seed 42 and the same task order. Revert any setting that does not improve the 40% pass rate.
+
+## Iteration 6: Sampled decoding at temperature 1.0
+
+Command:
+python - <<'PY' ... evaluate_model(..., evaluation_name='hill-fix-sampling-10') ... PY
+
+Effective configuration: same model, validation split, task IDs 511 through 520, max_eval_samples 10, max_prompt_length 512, max_completion_length 768, max_retries 0, sandbox timeout 3 seconds, greedy generation disabled, sampling enabled, temperature 1.0, and seed 42.
+
+Log range: logs/logs.txt records labeled hill-fix-sampling-10 begin at source line 973710 and contain ten task records through task 520 before the next run boundary.
+
+Results: 2 passed and 8 failed out of 10, for a pass rate of 20%, regressing from the kept 40% result at temperature 0.7. The distribution was 6 incorrect algorithm or logic failures, 2 partial test-progress failures, and 2 passed examples. Tasks 514 and 517 passed. Tasks 515 and 518 were partial. Tasks 511, 512, 513, 516, 519, and 520 were incorrect algorithm or logic failures. No syntax, sandbox, or infrastructure failure was observed.
+
+Root-cause update: Higher sampling temperature introduced more variation but lost the two additional passing tasks found at 0.7. This rejects temperature 1.0 as a useful setting for the fixed batch. Average reward was 0.3000 and remains secondary.
+
+Focused validation: No source code changed for this configuration-only iteration. The configurable sampling path was already covered by the prior 19 of 19 evaluation and sandbox tests.
+
+Verdict and change disposition: regressed on the primary metric, 40% to 20%. Revert temperature 1.0 to the kept 0.7 setting before the next iteration because it loses two passes. The reasoning is the direct pass-rate regression on identical tasks.
+
+Next iteration: test sampled temperature 0.5 from the kept 0.7 baseline and retain it only if it reaches at least 40% pass rate.
