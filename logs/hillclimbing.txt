@@ -468,3 +468,11 @@ Focused validation: All ten fixed-batch records completed, with uniqueness, repe
 Verdict and change disposition: reverted as a regression, 40% to 20%. The reasoning is the direct pass-rate loss and unchanged failure pattern, so the retained sampled checkpoint and its original decoding settings remain active.
 
 Next iteration: test the effect of removing the explicit code-fence stop string while keeping the retained sampling temperature and seed fixed.
+
+## Diagnostic: Base-model pass-at-N capability
+
+The hill-climbing loop was paused for a capability diagnostic. The original Qwen/Qwen3.5-0.8B base checkpoint was evaluated on the fixed ten tasks with sixteen independent samples per task generated in one batched call per task. A task counted as passed when any of its first N samples passed sandbox execution.
+
+Results: pass@1 was 30%, pass@2 was 40%, pass@4 was 50%, pass@8 was 50%, and pass@16 was 80%. This is substantial improvement with more samples and shows that the base model can produce correct solutions that pass@1 misses. The result supports multi-generation exploration during RL and does not justify an immediate full-epoch SFT detour.
+
+Next action: run GRPO from the base checkpoint with sixteen generations per prompt and compare its fixed-batch pass rate against the existing 40% retained result.

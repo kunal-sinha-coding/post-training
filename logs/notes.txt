@@ -1139,3 +1139,9 @@ Completed the planned full-epoch low-rate SFT refinement and evaluated its final
 Added a dedicated configuration that enables the existing generated-test artifact for GRPO reward evaluation, starts from the kept trained checkpoint, and preserves the fixed ten-example validation batch. This tests whether broader executable feedback improves pass rate without changing the evaluation data.
 
 The first launch failed during TRL configuration because a generation batch of 1 was not divisible by 4 generations. This was corrected to a training batch size of 4 before rerunning, and the failure was not treated as a model result.
+
+## 2026-09-02: Measure base-model pass-at-N capability
+
+Sampled sixteen completions per task in one batched generation call for each of the ten fixed validation tasks. Cumulative pass-any rates were 30% at one completion, 40% at two, 50% at four, 50% at eight, and 80% at sixteen. This supports testing multi-generation GRPO because the base model contains substantially more capability than pass@1 exposes.
+
+Added configs/hill-multi-grpo.yaml to run GRPO with sixteen generations per prompt and full training metric logging.

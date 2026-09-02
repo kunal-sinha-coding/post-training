@@ -1,0 +1,39 @@
+# This configuration runs GRPO with sixteen sampled candidates per prompt and evaluates the fixed ten-task batch.
+model_name_or_path: Qwen/Qwen3.5-0.8B
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 374
+reuse_baseline: false
+run_baseline_evaluation: true
+run_intermediate_evals: false
+max_eval_samples: 10
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/hill-multi-grpo
+num_train_epochs: 1
+max_steps: 10
+per_device_train_batch_size: 16
+gradient_accumulation_steps: 1
+learning_rate: 0.000001
+num_generations: 16
+max_prompt_length: 512
+max_completion_length: 768
+generation_kwargs:
+  do_sample: true
+  temperature: 0.7
+  seed: 42
+  stop_strings: ["```"]
+logging_steps: 1
+save_steps: 10
+evaluation_num_completions: 1
+pass_weight: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: false
+fp16: false
+report_to: none
