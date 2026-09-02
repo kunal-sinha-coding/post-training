@@ -434,3 +434,20 @@ Focused validation: The artifact contained 374 task records and 1,870 generated 
 Verdict and change disposition: reverted as neutral, 40% to 40%. The trained checkpoint was not kept because it had identical pass rate and task outcomes while lowering average evaluation reward. The reasoning is that pass rate is primary, and no correctness benefit justified retaining the added training change.
 
 Next iteration: test repetition-control decoding on the retained sampled checkpoint, keeping temperature 0.7 and seed 42 constant.
+
+## Iteration 21: Repetition penalty 1.1
+
+Command:
+python evaluation harness using outputs/grpo-mbpp/final with generation_kwargs do_sample=true, temperature=0.7, seed=42, repetition_penalty=1.1, and the fixed ten-example batch.
+
+Results: 2 passed and 8 failed out of 10, for a pass rate of 20%, regressing from the retained 40% result. The distribution was 3 failed, 4 syntax errors, and 1 partial result. Tasks 514 and 517 passed. Task 511 was partial. Tasks 512, 516, 519, and 520 failed. Tasks 513, 515, and 518 were syntax errors.
+
+Root-cause update: The stronger repetition penalty did not resolve the completion failures and increased syntax errors from the retained run’s two to four. No infrastructure failure occurred.
+
+Meta-review: Repetition and truncation are visible failure patterns, but this penalty strength damages code syntax. The change is not supported by pass rate despite being a general decoding mechanism.
+
+Focused validation: The fixed evaluation completed all ten records and logged completion uniqueness, repeated-completion fraction, entropy, reward components, and status counts.
+
+Verdict and change disposition: reverted, 40% to 20%. The retained sampled checkpoint remains active because it preserves two additional passes. The reasoning is the direct primary-metric regression and the increase in syntax failures.
+
+Next iteration: test a milder repetition penalty of 1.05 with all other retained decoding settings unchanged.
