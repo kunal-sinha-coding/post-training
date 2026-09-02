@@ -451,3 +451,20 @@ Focused validation: The fixed evaluation completed all ten records and logged co
 Verdict and change disposition: reverted, 40% to 20%. The retained sampled checkpoint remains active because it preserves two additional passes. The reasoning is the direct primary-metric regression and the increase in syntax failures.
 
 Next iteration: test a milder repetition penalty of 1.05 with all other retained decoding settings unchanged.
+
+## Iteration 22: Repetition penalty 1.05
+
+Command:
+python evaluation harness using outputs/grpo-mbpp/final with generation_kwargs do_sample=true, temperature=0.7, seed=42, repetition_penalty=1.05, and the fixed ten-example batch.
+
+Results: 2 passed and 8 failed out of 10, for a pass rate of 20%, below the retained 40% result. The task statuses were identical to iteration 21, including four syntax errors and two passes. Average reward was 0.2667.
+
+Root-cause update: Reducing the penalty did not recover correctness and produced the same outputs and metrics as the 1.1 run, suggesting this generation setting is ineffective or dominated by the active stopping and sampling path. No infrastructure failure occurred.
+
+Meta-review: The decoding-control hypothesis is not supported at either tested penalty strength. The retained moderate-sampling configuration remains the only pass-rate improvement. Future changes should target output-format handling or generation constraints that demonstrably affect completions.
+
+Focused validation: All ten fixed-batch records completed, with uniqueness, repeated-completion, entropy, reward, and status metrics logged.
+
+Verdict and change disposition: reverted as a regression, 40% to 20%. The reasoning is the direct pass-rate loss and unchanged failure pattern, so the retained sampled checkpoint and its original decoding settings remain active.
+
+Next iteration: test the effect of removing the explicit code-fence stop string while keeping the retained sampling temperature and seed fixed.
