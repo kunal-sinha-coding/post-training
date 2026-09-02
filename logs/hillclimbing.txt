@@ -413,3 +413,24 @@ Focused validation: The run completed all 374 supervised steps and logged loss, 
 Verdict and change disposition: regressed on the primary metric, 40% to 20%. Revert the full-epoch SFT checkpoint and retain the trained sampled checkpoint because it loses two passes. The reasoning is the direct pass-rate regression despite comprehensive training completion and lower loss.
 
 Next iteration: investigate an execution-aware reward or verifier-guided training change, with full diagnostics and pass rate compared against the kept checkpoint.
+
+## Iteration 20: Generated-test GRPO supervision
+
+Command:
+accelerate launch --num_processes 1 train.py --config configs/hill-synthetic-grpo.yaml
+
+Effective configuration: the kept trained checkpoint at outputs/grpo-mbpp/final, all 374 MBPP training examples augmented with five validated generated assertions each, ten GRPO steps, batch size 4, four generations, learning rate 1e-6, and sampling at temperature 0.7 with seed 42. Evaluation used the fixed tasks 511 through 520.
+
+Training metrics: the run completed all ten steps in 121.9 seconds. Training loss was 0.0246, final learning rate was 1e-7, final rolling reward was 0.0875, completion lengths ranged from 43 to 768 tokens, and several steps had zero-reward or clipped groups. The generated-test artifact contributed five synthetic tests per task. No infrastructure failure occurred after correcting the initial invalid batch-size configuration.
+
+Results: 4 passed and 6 failed out of 10 both before and after training. The baseline and final task statuses were identical: tasks 514, 516, 517, and 518 passed; task 515 was partial; tasks 511 and 520 were syntax errors; and tasks 512, 513, and 519 failed. Average reward changed from 0.4667 to 0.4333.
+
+Root-cause update: Adding generated assertions produced executable feedback, but the ten-step run had sparse reward variation and did not change fixed-batch correctness. The intervention therefore provides no evidence of a pass-rate gain at this scale. The clipping and repeated-output patterns in the training samples remain a separate, supported decoding hypothesis.
+
+Meta-review: Pass rate remains the primary objective and the kept result remains 4/10. The intervention classes tested so far show that response-only SFT and short reward-alignment runs do not reliably improve executable correctness, while moderate sampling does. Training metrics confirm that lower training loss or nonzero reward is not sufficient evidence of improvement.
+
+Focused validation: The artifact contained 374 task records and 1,870 generated assertions. The corrected run completed ten GRPO steps and the fixed-batch evaluation completed ten records.
+
+Verdict and change disposition: reverted as neutral, 40% to 40%. The trained checkpoint was not kept because it had identical pass rate and task outcomes while lowering average evaluation reward. The reasoning is that pass rate is primary, and no correctness benefit justified retaining the added training change.
+
+Next iteration: test repetition-control decoding on the retained sampled checkpoint, keeping temperature 0.7 and seed 42 constant.
