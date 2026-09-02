@@ -262,3 +262,22 @@ Focused validation: No source code changed for this configuration-only iteration
 Verdict and change disposition: regressed on the primary metric, 40% to 20%. Revert generic argument prefill to the kept false setting because it loses two passes. The reasoning is the direct pass-rate regression on identical tasks.
 
 Next iteration: test a sampled completion budget of 1536 tokens with temperature 0.7 and seed 42, retaining it only if it improves the kept 40% pass rate.
+
+## Iteration 13: Sampled completion budget of 1536
+
+Command:
+python - <<'PY' ... evaluate_model(..., evaluation_name='hill-fix-sampled-1536') ... PY
+
+Effective configuration: same model and fixed tasks 511 through 520, max_eval_samples 10, max_prompt_length 512, max_completion_length 1536, max_retries 0, sandbox timeout 3 seconds, sampling enabled at temperature 0.7 with seed 42, and generic argument prefill disabled.
+
+Log range: logs/logs.txt records labeled hill-fix-sampled-1536 begin at source line 980522 and contain ten task records through task 520 before the next run boundary.
+
+Results: 4 passed and 6 failed out of 10, for a pass rate of 40%, unchanged from the kept 768-token sampled configuration. The distribution was 4 passed, 4 incorrect algorithm or logic failures, and 2 partial test-progress failures. Tasks 513, 514, 517, and 518 passed. Tasks 511 and 515 were partial. Tasks 512, 516, 519, and 520 were incorrect algorithm or logic failures.
+
+Root-cause update: The longer cap did not alter any task outcome, so the remaining failures are not caused by the 768-token limit under sampled decoding. No sandbox or infrastructure failure was observed. Average reward was 0.4667 and remains secondary.
+
+Focused validation: No source code changed for this configuration-only iteration.
+
+Verdict and change disposition: unchanged on the primary metric, 40% to 40%. Revert the 1536-token cap to the kept 768-token configuration because it adds runtime without improving pass rate. The reasoning is the identical pass count and task outcomes.
+
+Next iteration: stop this hill-climbing session unless a new upstream, generalizable training or prompt hypothesis is identified. The tested decoding changes have either regressed, remained neutral, or introduced a single best setting already kept.

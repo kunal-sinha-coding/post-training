@@ -1106,3 +1106,7 @@ The direct-algorithm prompt constraint produced 3 of 10 passes, below the kept 4
 ## Commit: Reject generic argument prefill
 
 Tested generic argument prefill with sampled temperature 0.7 and seed 42. Pass rate fell from 4 of 10 to 2 of 10, so the configuration was rejected.
+
+## Commit: Revert neutral sampled completion budget
+
+Tested a 1536-token sampled completion cap with temperature 0.7 and seed 42. It reproduced the kept 4 of 10 pass rate and task outcomes exactly, so the cap was rejected and 768 tokens remains the kept setting.
