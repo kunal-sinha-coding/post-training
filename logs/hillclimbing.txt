@@ -302,3 +302,24 @@ Focused validation: The evaluation completed ten task records. No source code ch
 Verdict and change disposition: regressed on the primary metric, 40% to 20%. Revert the base-checkpoint control to the kept trained checkpoint because it loses two passes. The reasoning is the direct pass-rate comparison, with the generalization limitation recorded above.
 
 Next iteration: investigate a general training-data or reward-alignment intervention that teaches algorithmic correctness, using the kept trained checkpoint and sampling configuration as the comparison baseline.
+
+## Iteration 15: Prompt context limit of 1024
+
+Command:
+python - <<'PY' ... evaluate_model(..., evaluation_name='hill-fix-prompt-1024') ... PY
+
+Effective configuration: same trained checkpoint and fixed tasks 511 through 520, max_eval_samples 10, max_prompt_length 1024, max_completion_length 768, max_retries 0, sandbox timeout 3 seconds, sampling enabled at temperature 0.7 with seed 42, and generic argument prefill disabled.
+
+Log range: logs/logs.txt records labeled hill-fix-prompt-1024 begin at source line 982049 and contain ten task records through task 520 before the next run boundary.
+
+Results: 4 passed and 6 failed out of 10, for a pass rate of 40%, exactly matching the kept 512-token configuration and task outcomes. The distribution was 4 passed, 4 incorrect algorithm or logic failures, and 2 partial test-progress failures. Tasks 513, 514, 517, and 518 passed. Tasks 511 and 515 were partial. Tasks 512, 516, 519, and 520 were incorrect algorithm or logic failures.
+
+Root-cause update: The task prompts were not losing useful context at 512 tokens for this batch. Increasing the context limit had no observable effect, so context truncation is not supported as the shared cause. No sandbox or infrastructure failure was observed. Average reward was 0.4667 and remains secondary.
+
+Meta-review: The complete history now shows that moderate sampling is the only intervention with a clear pass-rate gain. Prompt constraints, argument prefill, retry behavior, completion limits, top-p filtering, and alternative checkpoints did not improve the primary metric. The remaining errors are stable algorithm-generation failures on tasks 512, 516, 519, and 520, with occasional partial failures on 511 and 515. Future work should change supervision or training behavior rather than continue decoding-only tuning.
+
+Focused validation: No source code changed for this configuration-only iteration.
+
+Verdict and change disposition: unchanged on the primary metric, 40% to 40%. Revert the 1024-token context limit to the kept 512-token setting because it produces identical outcomes with extra context budget and runtime. The reasoning is the exact pass-rate and task-outcome match.
+
+Next iteration: test a substantive, generalizable training or supervision change that targets algorithmic correctness, such as a short supervised warm-start or corrected reward signal, and compare against the kept sampled checkpoint.
