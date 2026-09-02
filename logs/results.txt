@@ -6189,3 +6189,711 @@ wandb_project: grpo-mbpp
 wandb_run_name: hill-multi-grpo-16-microbatch
 
 ------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-02 01:05:34 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: baseline
+Training context: baseline
+Epoch: baseline
+Timestamp: 2026-09-02 01:08:42 PDT
+Git commit: e3694d0
+Change description: e3694d0 Record pass at N instrumentation
+ef27dcd Track pass at N during training
+Metrics:
+{
+  "average_reward": 0.32083333333333336,
+  "candidate_count": 16,
+  "examples": 10,
+  "pass_at_1": 0.4,
+  "pass_at_16": 0.7,
+  "pass_at_2": 0.5,
+  "pass_at_4": 0.6,
+  "pass_at_8": 0.7,
+  "successful_examples": 4
+}
+YAML path: configs/hill-multi-grpo.yaml
+YAML contents:
+# This configuration runs sixteen-generation GRPO with a memory-bounded prompt micro-batch and evaluates the fixed ten-task batch.
+model_name_or_path: Qwen/Qwen3.5-0.8B
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 374
+reuse_baseline: false
+run_baseline_evaluation: true
+run_intermediate_evals: true
+max_eval_samples: 10
+evaluation_num_completions: 16
+evaluation_batch_size: 16
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/hill-multi-grpo-16-microbatch
+num_train_epochs: 2
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 8
+generation_batch_size: 16
+learning_rate: 0.000001
+num_generations: 16
+max_prompt_length: 512
+max_completion_length: 768
+generation_kwargs:
+  do_sample: true
+  temperature: 0.7
+  seed: 42
+  stop_strings: ["```"]
+logging_steps: 1
+save_steps: 2
+pass_weight: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: false
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: hill-multi-grpo-16-microbatch
+do_sample: true
+temperature: 0.7
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: checkpoint-2
+Training context: checkpoint
+Epoch: 0.00267379679144385
+Timestamp: 2026-09-02 01:12:33 PDT
+Git commit: e3694d0
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.3458333333333333,
+  "candidate_count": 16,
+  "examples": 10,
+  "pass_at_1": 0.3,
+  "pass_at_16": 0.6,
+  "pass_at_2": 0.3,
+  "pass_at_4": 0.5,
+  "pass_at_8": 0.6,
+  "successful_examples": 3
+}
+YAML path: configs/hill-multi-grpo.yaml
+YAML contents:
+# This configuration runs sixteen-generation GRPO with a memory-bounded prompt micro-batch and evaluates the fixed ten-task batch.
+model_name_or_path: Qwen/Qwen3.5-0.8B
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 374
+reuse_baseline: false
+run_baseline_evaluation: true
+run_intermediate_evals: true
+max_eval_samples: 10
+evaluation_num_completions: 16
+evaluation_batch_size: 16
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/hill-multi-grpo-16-microbatch
+num_train_epochs: 2
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 8
+generation_batch_size: 16
+learning_rate: 0.000001
+num_generations: 16
+max_prompt_length: 512
+max_completion_length: 768
+generation_kwargs:
+  do_sample: true
+  temperature: 0.7
+  seed: 42
+  stop_strings: ["```"]
+logging_steps: 1
+save_steps: 2
+pass_weight: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: false
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: hill-multi-grpo-16-microbatch
+do_sample: true
+temperature: 0.7
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: checkpoint-4
+Training context: checkpoint
+Epoch: 0.0053475935828877
+Timestamp: 2026-09-02 01:16:33 PDT
+Git commit: e3694d0
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.33958333333333335,
+  "candidate_count": 16,
+  "examples": 10,
+  "pass_at_1": 0.4,
+  "pass_at_16": 0.6,
+  "pass_at_2": 0.4,
+  "pass_at_4": 0.5,
+  "pass_at_8": 0.5,
+  "successful_examples": 4
+}
+YAML path: configs/hill-multi-grpo.yaml
+YAML contents:
+# This configuration runs sixteen-generation GRPO with a memory-bounded prompt micro-batch and evaluates the fixed ten-task batch.
+model_name_or_path: Qwen/Qwen3.5-0.8B
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 374
+reuse_baseline: false
+run_baseline_evaluation: true
+run_intermediate_evals: true
+max_eval_samples: 10
+evaluation_num_completions: 16
+evaluation_batch_size: 16
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/hill-multi-grpo-16-microbatch
+num_train_epochs: 2
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 8
+generation_batch_size: 16
+learning_rate: 0.000001
+num_generations: 16
+max_prompt_length: 512
+max_completion_length: 768
+generation_kwargs:
+  do_sample: true
+  temperature: 0.7
+  seed: 42
+  stop_strings: ["```"]
+logging_steps: 1
+save_steps: 2
+pass_weight: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: false
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: hill-multi-grpo-16-microbatch
+do_sample: true
+temperature: 0.7
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: checkpoint-6
+Training context: checkpoint
+Epoch: 0.008021390374331552
+Timestamp: 2026-09-02 01:19:26 PDT
+Git commit: e3694d0
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.4041666666666667,
+  "candidate_count": 16,
+  "examples": 10,
+  "pass_at_1": 0.3,
+  "pass_at_16": 0.8,
+  "pass_at_2": 0.3,
+  "pass_at_4": 0.5,
+  "pass_at_8": 0.7,
+  "successful_examples": 3
+}
+YAML path: configs/hill-multi-grpo.yaml
+YAML contents:
+# This configuration runs sixteen-generation GRPO with a memory-bounded prompt micro-batch and evaluates the fixed ten-task batch.
+model_name_or_path: Qwen/Qwen3.5-0.8B
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 374
+reuse_baseline: false
+run_baseline_evaluation: true
+run_intermediate_evals: true
+max_eval_samples: 10
+evaluation_num_completions: 16
+evaluation_batch_size: 16
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/hill-multi-grpo-16-microbatch
+num_train_epochs: 2
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 8
+generation_batch_size: 16
+learning_rate: 0.000001
+num_generations: 16
+max_prompt_length: 512
+max_completion_length: 768
+generation_kwargs:
+  do_sample: true
+  temperature: 0.7
+  seed: 42
+  stop_strings: ["```"]
+logging_steps: 1
+save_steps: 2
+pass_weight: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: false
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: hill-multi-grpo-16-microbatch
+do_sample: true
+temperature: 0.7
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: checkpoint-8
+Training context: checkpoint
+Epoch: 0.0106951871657754
+Timestamp: 2026-09-02 01:23:29 PDT
+Git commit: e3694d0
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.3458333333333333,
+  "candidate_count": 16,
+  "examples": 10,
+  "pass_at_1": 0.4,
+  "pass_at_16": 0.8,
+  "pass_at_2": 0.4,
+  "pass_at_4": 0.7,
+  "pass_at_8": 0.7,
+  "successful_examples": 4
+}
+YAML path: configs/hill-multi-grpo.yaml
+YAML contents:
+# This configuration runs sixteen-generation GRPO with a memory-bounded prompt micro-batch and evaluates the fixed ten-task batch.
+model_name_or_path: Qwen/Qwen3.5-0.8B
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 374
+reuse_baseline: false
+run_baseline_evaluation: true
+run_intermediate_evals: true
+max_eval_samples: 10
+evaluation_num_completions: 16
+evaluation_batch_size: 16
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/hill-multi-grpo-16-microbatch
+num_train_epochs: 2
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 8
+generation_batch_size: 16
+learning_rate: 0.000001
+num_generations: 16
+max_prompt_length: 512
+max_completion_length: 768
+generation_kwargs:
+  do_sample: true
+  temperature: 0.7
+  seed: 42
+  stop_strings: ["```"]
+logging_steps: 1
+save_steps: 2
+pass_weight: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: false
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: hill-multi-grpo-16-microbatch
+do_sample: true
+temperature: 0.7
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: checkpoint-10
+Training context: checkpoint
+Epoch: 0.013368983957219251
+Timestamp: 2026-09-02 01:27:05 PDT
+Git commit: e3694d0
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.39583333333333337,
+  "candidate_count": 16,
+  "examples": 10,
+  "pass_at_1": 0.2,
+  "pass_at_16": 0.8,
+  "pass_at_2": 0.2,
+  "pass_at_4": 0.5,
+  "pass_at_8": 0.6,
+  "successful_examples": 2
+}
+YAML path: configs/hill-multi-grpo.yaml
+YAML contents:
+# This configuration runs sixteen-generation GRPO with a memory-bounded prompt micro-batch and evaluates the fixed ten-task batch.
+model_name_or_path: Qwen/Qwen3.5-0.8B
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 374
+reuse_baseline: false
+run_baseline_evaluation: true
+run_intermediate_evals: true
+max_eval_samples: 10
+evaluation_num_completions: 16
+evaluation_batch_size: 16
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/hill-multi-grpo-16-microbatch
+num_train_epochs: 2
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 8
+generation_batch_size: 16
+learning_rate: 0.000001
+num_generations: 16
+max_prompt_length: 512
+max_completion_length: 768
+generation_kwargs:
+  do_sample: true
+  temperature: 0.7
+  seed: 42
+  stop_strings: ["```"]
+logging_steps: 1
+save_steps: 2
+pass_weight: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: false
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: hill-multi-grpo-16-microbatch
+do_sample: true
+temperature: 0.7
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: checkpoint-12
+Training context: checkpoint
+Epoch: 0.016042780748663103
+Timestamp: 2026-09-02 01:30:59 PDT
+Git commit: e3694d0
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.36458333333333337,
+  "candidate_count": 16,
+  "examples": 10,
+  "pass_at_1": 0.2,
+  "pass_at_16": 0.7,
+  "pass_at_2": 0.3,
+  "pass_at_4": 0.4,
+  "pass_at_8": 0.6,
+  "successful_examples": 2
+}
+YAML path: configs/hill-multi-grpo.yaml
+YAML contents:
+# This configuration runs sixteen-generation GRPO with a memory-bounded prompt micro-batch and evaluates the fixed ten-task batch.
+model_name_or_path: Qwen/Qwen3.5-0.8B
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 374
+reuse_baseline: false
+run_baseline_evaluation: true
+run_intermediate_evals: true
+max_eval_samples: 10
+evaluation_num_completions: 16
+evaluation_batch_size: 16
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/hill-multi-grpo-16-microbatch
+num_train_epochs: 2
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 8
+generation_batch_size: 16
+learning_rate: 0.000001
+num_generations: 16
+max_prompt_length: 512
+max_completion_length: 768
+generation_kwargs:
+  do_sample: true
+  temperature: 0.7
+  seed: 42
+  stop_strings: ["```"]
+logging_steps: 1
+save_steps: 2
+pass_weight: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: false
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: hill-multi-grpo-16-microbatch
+do_sample: true
+temperature: 0.7
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: checkpoint-14
+Training context: checkpoint
+Epoch: 0.01871657754010695
+Timestamp: 2026-09-02 01:34:15 PDT
+Git commit: e3694d0
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.32916666666666666,
+  "candidate_count": 16,
+  "examples": 10,
+  "pass_at_1": 0.2,
+  "pass_at_16": 0.7,
+  "pass_at_2": 0.4,
+  "pass_at_4": 0.5,
+  "pass_at_8": 0.5,
+  "successful_examples": 2
+}
+YAML path: configs/hill-multi-grpo.yaml
+YAML contents:
+# This configuration runs sixteen-generation GRPO with a memory-bounded prompt micro-batch and evaluates the fixed ten-task batch.
+model_name_or_path: Qwen/Qwen3.5-0.8B
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 374
+reuse_baseline: false
+run_baseline_evaluation: true
+run_intermediate_evals: true
+max_eval_samples: 10
+evaluation_num_completions: 16
+evaluation_batch_size: 16
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/hill-multi-grpo-16-microbatch
+num_train_epochs: 2
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 8
+generation_batch_size: 16
+learning_rate: 0.000001
+num_generations: 16
+max_prompt_length: 512
+max_completion_length: 768
+generation_kwargs:
+  do_sample: true
+  temperature: 0.7
+  seed: 42
+  stop_strings: ["```"]
+logging_steps: 1
+save_steps: 2
+pass_weight: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: false
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: hill-multi-grpo-16-microbatch
+do_sample: true
+temperature: 0.7
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: checkpoint-16
+Training context: checkpoint
+Epoch: 0.0213903743315508
+Timestamp: 2026-09-02 01:38:11 PDT
+Git commit: e3694d0
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.35,
+  "candidate_count": 16,
+  "examples": 10,
+  "pass_at_1": 0.4,
+  "pass_at_16": 0.9,
+  "pass_at_2": 0.5,
+  "pass_at_4": 0.6,
+  "pass_at_8": 0.8,
+  "successful_examples": 4
+}
+YAML path: configs/hill-multi-grpo.yaml
+YAML contents:
+# This configuration runs sixteen-generation GRPO with a memory-bounded prompt micro-batch and evaluates the fixed ten-task batch.
+model_name_or_path: Qwen/Qwen3.5-0.8B
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 374
+reuse_baseline: false
+run_baseline_evaluation: true
+run_intermediate_evals: true
+max_eval_samples: 10
+evaluation_num_completions: 16
+evaluation_batch_size: 16
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/hill-multi-grpo-16-microbatch
+num_train_epochs: 2
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 8
+generation_batch_size: 16
+learning_rate: 0.000001
+num_generations: 16
+max_prompt_length: 512
+max_completion_length: 768
+generation_kwargs:
+  do_sample: true
+  temperature: 0.7
+  seed: 42
+  stop_strings: ["```"]
+logging_steps: 1
+save_steps: 2
+pass_weight: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: false
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: hill-multi-grpo-16-microbatch
+do_sample: true
+temperature: 0.7
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: checkpoint-18
+Training context: checkpoint
+Epoch: 0.02406417112299465
+Timestamp: 2026-09-02 01:40:55 PDT
+Git commit: e3694d0
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.4,
+  "candidate_count": 16,
+  "examples": 10,
+  "pass_at_1": 0.3,
+  "pass_at_16": 0.8,
+  "pass_at_2": 0.3,
+  "pass_at_4": 0.3,
+  "pass_at_8": 0.6,
+  "successful_examples": 3
+}
+YAML path: configs/hill-multi-grpo.yaml
+YAML contents:
+# This configuration runs sixteen-generation GRPO with a memory-bounded prompt micro-batch and evaluates the fixed ten-task batch.
+model_name_or_path: Qwen/Qwen3.5-0.8B
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 374
+reuse_baseline: false
+run_baseline_evaluation: true
+run_intermediate_evals: true
+max_eval_samples: 10
+evaluation_num_completions: 16
+evaluation_batch_size: 16
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/hill-multi-grpo-16-microbatch
+num_train_epochs: 2
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 8
+generation_batch_size: 16
+learning_rate: 0.000001
+num_generations: 16
+max_prompt_length: 512
+max_completion_length: 768
+generation_kwargs:
+  do_sample: true
+  temperature: 0.7
+  seed: 42
+  stop_strings: ["```"]
+logging_steps: 1
+save_steps: 2
+pass_weight: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: false
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: hill-multi-grpo-16-microbatch
+do_sample: true
+temperature: 0.7
+
+------------------------------------------------------------------------
