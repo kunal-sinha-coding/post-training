@@ -1137,3 +1137,5 @@ Completed the planned full-epoch low-rate SFT refinement and evaluated its final
 ## 2026-09-02: Test execution-aware GRPO supervision
 
 Added a dedicated configuration that enables the existing generated-test artifact for GRPO reward evaluation, starts from the kept trained checkpoint, and preserves the fixed ten-example validation batch. This tests whether broader executable feedback improves pass rate without changing the evaluation data.
+
+The first launch failed during TRL configuration because a generation batch of 1 was not divisible by 4 generations. This was corrected to a training batch size of 4 before rerunning, and the failure was not treated as a model result.
