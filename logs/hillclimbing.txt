@@ -482,3 +482,24 @@ Next action: run GRPO from the base checkpoint with sixteen generations per prom
 The sixteen-generation GRPO run generated its first group and logged nonzero reward variation, but failed during the first optimization step with CUDA out-of-memory while computing policy log probabilities. The 15.6 GiB GPU had only 238 MiB free for a required 248 MiB allocation. This was an infrastructure failure and produced no model evaluation result.
 
 The inference-only pass-at-16 diagnostic remains valid because it fits without retaining training activations. The training configuration was reduced to eight generations and a batch size of eight for the next run, preserving the multi-generation hypothesis within the available memory.
+
+## Iteration 23: Eight-generation GRPO
+
+Command:
+accelerate launch --num_processes 1 train.py --config configs/hill-multi-grpo.yaml
+
+Effective configuration: base Qwen/Qwen3.5-0.8B, all 374 training examples, ten GRPO steps, eight generations per prompt, batch size eight, learning rate 1e-6, temperature 0.7, seed 42, and fixed validation tasks 511 through 520. The first 16-generation configuration was reduced to eight because policy log-probability backpropagation exceeded GPU memory.
+
+Training metrics: all ten steps completed in about 100 seconds. Final training loss was 0.0060, final learning rate was 1e-7, average reward ended at 0.0917, completion lengths ranged from 12 to 768 tokens, and zero-reward groups remained common. Reward mean and variance, rolling reward, completion lengths, clipping, entropy, gradient norm, learning rate, and throughput were logged locally. The attempted live W&B bridge failed during initialization and is not counted as successful W&B logging.
+
+Results: 4 passed and 6 failed out of 10 both before and after training. The baseline and final outcomes were identical, with average reward 0.4667 in both evaluations.
+
+Root-cause update: Eight-way exploration produced within-group reward variation but did not convert the base model’s available multi-sample capability into a pass-rate gain after ten updates. No infrastructure failure occurred in this run.
+
+Meta-review: The inference diagnostic shows pass@16 of 80%, but short GRPO optimization did not improve pass@1. This indicates that candidate discovery and candidate selection or learning are still mismatched. The next fallback reduces group size to four to fit memory comfortably and uses native W&B reporting.
+
+Focused validation: The run used all 374 training examples, completed ten optimizer steps, and evaluated all ten fixed validation tasks.
+
+Verdict and change disposition: reverted as neutral, 40% to 40%. The reasoning is that neither pass rate nor task-level outcomes improved, so the trained checkpoint is not retained.
+
+Next iteration: run four-generation GRPO with native W&B logging and sequential rounds as needed to preserve broader sampling exposure.
