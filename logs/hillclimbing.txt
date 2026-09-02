@@ -110,3 +110,22 @@ Focused validation: The prompt-focused data tests passed 5 of 5 selected tests, 
 Verdict and change disposition: unchanged on the primary metric, 20% to 20%. Revert the silent-planning prompt constraint before the next iteration because retaining it would preserve a pass-rate-neutral change. The reasoning is based on pass rate only; the small reward variation does not justify keeping the change.
 
 Next iteration: test a different model-behavior or decoding intervention, retaining the same ten tasks and recording an explicit keep-or-revert decision.
+
+## Iteration 5: Deterministic sampling at temperature 0.7
+
+Command:
+python - <<'PY' ... evaluate_model(..., evaluation_name='hill-fix-sampling-07') ... PY
+
+Effective configuration: the same validation tasks 511 through 520, model outputs/grpo-mbpp/final, max_eval_samples 10, max_prompt_length 512, max_completion_length 768, max_retries 0, sandbox timeout 3 seconds, and seed 42. The single intervention was `do_sample: true` with `temperature: 0.7`; greedy decoding was otherwise unchanged.
+
+Log range: logs/logs.txt records labeled hill-fix-sampling-07 begin at source line 972903 and contain ten task records through task 520 before the next run boundary. The command emitted ten records and the metrics were captured immediately after completion.
+
+Results: 4 passed and 6 failed out of 10, for a pass rate of 40%, improving from the prior 20%. The distribution was 4 passed, 4 incorrect algorithm or logic failures, and 2 partial test-progress failures. Tasks 513, 514, 517, and 518 passed. Tasks 511 and 515 were partial. Tasks 512, 516, 519, and 520 were incorrect algorithm or logic failures. No syntax, sandbox, or infrastructure failure was observed.
+
+Root-cause update: Sampling exposed alternative completions that solved tasks 513 and 518 while retaining the two prior successes. This directly supports decoding diversity as a pass-rate intervention. Residual failures remain concentrated in task-specific algorithm errors, especially tasks 512, 516, 519, and 520. Average reward increased to 0.4667 but remains secondary.
+
+Focused validation: `pytest -q tests/test_evaluate.py tests/test_sandbox.py` passed 19 of 19 tests.
+
+Verdict and change disposition: improved on the primary metric, 20% to 40%. Keep the sampling change because it added two passing tasks on the fixed denominator. The reasoning is the pass-rate gain, not the accompanying reward increase.
+
+Next iteration: continue from the kept sampling configuration and test one additional decoding setting, retaining seed 42 and the same task order. Revert any setting that does not improve the 40% pass rate.

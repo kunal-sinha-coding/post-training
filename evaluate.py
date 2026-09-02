@@ -436,7 +436,8 @@ def evaluate_model(model: Any, tokenizer: Any, dataset: Any, config: dict[str, A
                     output = model.generate(
                         **inputs,
                         max_new_tokens=int(config.get("max_completion_length", 512)),
-                        do_sample=False,
+                        do_sample=bool(config.get("do_sample", False)),
+                        **({"temperature": float(config["temperature"])} if config.get("do_sample", False) and config.get("temperature") is not None else {}),
                         logits_processor=[forced_code_prefix_processor(tokenizer, prompt_width, prefix_text)],
                         stopping_criteria=code_fence_stopping_criteria(tokenizer, prompt_width + forced_code_prefix_length(tokenizer, prefix_text)),
                     )
