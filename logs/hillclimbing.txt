@@ -367,3 +367,26 @@ Focused validation: The SFT training run completed 10 steps and logged the reque
 Verdict and change disposition: regressed on the primary metric, 40% to 30%. Revert the broad SFT checkpoint and retain the trained sampled checkpoint because it loses one pass. The reasoning is the direct pass-rate regression, while the logged optimization metrics support treating training schedule as the next distinct hypothesis.
 
 Next iteration: test a general training-schedule intervention only if its additional compute and checkpoint evaluation are justified; otherwise continue meta-analysis rather than making another narrow hyperparameter tweak.
+
+## Iteration 18: Full-epoch low-rate SFT
+
+Command:
+python - <<'PY' ... run_training(config, stage='sft') ... PY, followed by evaluation of outputs/hill-sft-full/sft/final.
+
+Effective configuration: base Qwen/Qwen3.5-0.8B, all 374 MBPP training examples, one complete SFT epoch, batch size 1, gradient accumulation 1, learning rate 1e-6, then fixed validation tasks 511 through 520 with sampling at temperature 0.7 and seed 42. GRPO was not run.
+
+Log range: logs/logs.txt contains the full SFT metrics and records labeled hill-fix-sft-full beginning at source line 989949, with ten evaluation task records through task 520 before the next run boundary.
+
+Training metrics: All 374 steps logged loss, cumulative and rolling loss, gradient norm, learning rate, epoch, runtime, and throughput. The final training loss was 1.009 after 285.1 seconds, with learning rate decayed to 2.674e-09 at epoch 1.0. The run completed without infrastructure errors.
+
+Results: 2 passed and 8 failed out of 10, for a pass rate of 20%, below the kept 40% trained-checkpoint result. The distribution was 8 incorrect algorithm or logic failures and 2 passed examples. Tasks 517 and 518 passed. Tasks 511, 512, 513, 514, 515, 516, 519, and 520 were incorrect algorithm or logic failures.
+
+Root-cause update: Full-epoch response-only SFT lowered training loss but degraded executable validation performance. This demonstrates objective misalignment between imitation loss and pass rate in this pipeline. No sandbox or infrastructure failure was observed. Average reward was 0.2000 and remains secondary.
+
+Meta-review: Two SFT schedules and two SFT data or rate variants all failed to exceed the kept sampled checkpoint, while lower loss did not predict higher pass rate. The next training hypothesis should change the supervision objective toward execution correctness, such as reward-weighted or verifier-guided updates, rather than more response-only SFT schedules. This is a general mechanism supported by the repeated SFT mismatch.
+
+Focused validation: The full SFT run completed 374 steps and emitted the requested loss, reward-context, completion, learning-rate, gradient, epoch, runtime, and throughput diagnostics. The fixed-batch evaluation completed ten records.
+
+Verdict and change disposition: regressed on the primary metric, 40% to 20%. Revert the full-epoch SFT checkpoint and retain the trained sampled checkpoint because it loses two passes. The reasoning is the direct pass-rate regression despite lower training loss.
+
+Next iteration: investigate an execution-aware training or reward-alignment change, with pass rate primary and full training diagnostics inspected before selection.
