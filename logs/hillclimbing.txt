@@ -507,3 +507,7 @@ Next iteration: run four-generation GRPO with native W&B logging and sequential 
 ## Diagnostic design correction: Eight generations twice sequentially
 
 The four-generation fallback was stopped before evaluation because the intended fallback condition was CUDA out-of-memory, not a neutral pass-rate result from the eight-generation run. The corrected configuration uses eight generations per GRPO group for two sequential full epochs. With all 374 training examples and no max-step cap, each example is encountered twice and receives sixteen total sampled generations across the two epochs. Native W&B reporting is enabled, and the 10-example fixed batch remains evaluation-only.
+
+## Diagnostic design correction: Sixteen generations with lower actual batch size
+
+The eight-generation two-epoch run was stopped before evaluation after clarifying that the desired effective generation count is sixteen in one GRPO group. The training configuration now uses sixteen generations with per-device micro-batch size 1, gradient accumulation 8, and explicit generation batch size 16. This preserves an effective prompt batch of 8 while reducing simultaneous prompt micro-batch memory. The run uses the full 374-example training set for two epochs, with native W&B logging and the fixed ten-example evaluation batch.
