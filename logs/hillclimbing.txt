@@ -167,3 +167,22 @@ Focused validation: No source code changed for this configuration-only iteration
 Verdict and change disposition: regressed on the primary metric, 40% to 20%. Revert temperature 0.5 to the kept 0.7 setting before the next iteration because it loses two passes. The reasoning is the direct pass-rate regression on identical tasks.
 
 Next iteration: test a different seed at the kept temperature 0.7, retaining the same task order and accepting only a pass-rate improvement.
+
+## Iteration 8: Sampled decoding with seed 123
+
+Command:
+python - <<'PY' ... evaluate_model(..., evaluation_name='hill-fix-sampling-seed123') ... PY
+
+Effective configuration: same model and tasks 511 through 520, max_eval_samples 10, max_prompt_length 512, max_completion_length 768, max_retries 0, sandbox timeout 3 seconds, sampling enabled, temperature 0.7, and seed 123.
+
+Log range: logs/logs.txt records labeled hill-fix-sampling-seed123 begin at source line 975503 and contain ten task records through task 520 before the next run boundary.
+
+Results: 2 passed and 8 failed out of 10, for a pass rate of 20%, regressing from the kept 40% result at seed 42. The distribution was 6 incorrect algorithm or logic failures, 2 partial test-progress failures, and 2 passed examples. Tasks 514 and 517 passed. Tasks 515 and 518 were partial. Tasks 511, 512, 513, 516, 519, and 520 were incorrect algorithm or logic failures.
+
+Root-cause update: Seed 123 sampled a different set of completions but did not reproduce the two additional passes found by seed 42. No syntax, sandbox, or infrastructure failure was observed. Average reward was 0.3000 and remains secondary.
+
+Focused validation: No source code changed for this configuration-only iteration.
+
+Verdict and change disposition: regressed on the primary metric, 40% to 20%. Revert seed 123 to the kept seed 42 before the next iteration because it loses two passes. The reasoning is the direct pass-rate regression on identical tasks.
+
+Next iteration: test sampled decoding at temperature 0.7 with seed 7, retaining the same ten tasks and the best-known 40% result as the acceptance threshold.
