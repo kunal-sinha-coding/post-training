@@ -511,3 +511,7 @@ The four-generation fallback was stopped before evaluation because the intended 
 ## Diagnostic design correction: Sixteen generations with lower actual batch size
 
 The eight-generation two-epoch run was stopped before evaluation after clarifying that the desired effective generation count is sixteen in one GRPO group. The training configuration now uses sixteen generations with per-device micro-batch size 1, gradient accumulation 8, and explicit generation batch size 16. This preserves an effective prompt batch of 8 while reducing simultaneous prompt micro-batch memory. The run uses the full 374-example training set for two epochs, with native W&B logging and the fixed ten-example evaluation batch.
+
+## Evaluation protocol correction: Full validation at quarter epochs
+
+The ten-example evaluation was too small for reliable checkpoint comparisons, and evaluation every two optimizer steps was too frequent and noisy. The prior training run was stopped before completion. The configuration now evaluates all 90 validation examples with 16 candidates per task at quarter-epoch checkpoints. For the current 1,496-step schedule, evaluations occur at steps 374, 748, 1,122, and 1,496, with pass@1, pass@2, pass@4, pass@8, and pass@16 logged to W&B and checkpoint artifacts. The run uses all 374 training examples for two epochs.
