@@ -1062,3 +1062,393 @@ Updated AGENTS.md so commits and pushes default to main, while an explicitly spe
 ## Commit: Retry non-passing evaluation completions
 
 Changed evaluate_model so its existing retry budget applies to any non-passing completion, including syntax, truncation, and assertion failures, while retaining the specialized wrong-arity feedback. Focused evaluation tests passed 19 of 19. The follow-up model run was interrupted before a complete ten-task result and is excluded from the hill-climbing metrics.
+
+## Commit: Evaluate non-passing retry on dedicated branch
+
+Reran the retry change on branch hill-climbing-20260902-054800 using the fixed ten-task batch. Pass rate remained 2 of 10, so the retry strategy was rejected as an improvement. The complete result and raw task records are documented in logs/hillclimbing.txt and logs/logs.txt.
+
+## Commit: Revert unsuccessful pass-rate experiments
+
+The concise prompt constraint produced 2 of 10 passes, unchanged from baseline, and was reverted. The non-passing retry change also remained at 2 of 10 and was reverted. Both changes were rejected because secondary reward or bucket improvements did not meet the primary pass-rate objective.
+
+## Commit: Revert silent-planning prompt experiment
+
+The silent-planning prompt constraint produced 2 of 10 passes, unchanged from baseline, and was reverted. The pass-rate result did not support retaining the prompt change.
+
+## Commit: Keep sampling pass-rate improvement
+
+Added configurable deterministic sampling to evaluation and tested temperature 0.7 with seed 42 on the fixed ten-task batch. Pass rate improved from 2 of 10 to 4 of 10, so the decoding change is kept for the next iteration.
+
+## Commit: Reject high-temperature decoding
+
+Tested sampled decoding at temperature 1.0 on the fixed ten-task batch. Pass rate regressed from 4 of 10 to 2 of 10, so temperature 1.0 was rejected and temperature 0.7 remains the kept setting.
+
+## Commit: Reject low-temperature decoding
+
+Tested sampled decoding at temperature 0.5 on the fixed ten-task batch. Pass rate regressed from 4 of 10 to 2 of 10, so temperature 0.5 was rejected and temperature 0.7 remains the kept setting.
+
+## Commit: Reject seed 123 sampling
+
+Tested temperature 0.7 with seed 123 on the fixed ten-task batch. Pass rate regressed from 4 of 10 to 2 of 10, so seed 123 was rejected and seed 42 remains the kept setting.
+
+## Commit: Reject seed 7 sampling
+
+Tested temperature 0.7 with seed 7 on the fixed ten-task batch. Pass rate reached 3 of 10, below the kept 4 of 10 from seed 42, so seed 7 was rejected.
+
+## Commit: Revert pass-rate-neutral top-p decoding
+
+Tested top-p 0.9 with temperature 0.7 and seed 42. Pass rate remained 4 of 10, so the top-p implementation was reverted and temperature 0.7 sampling remains the kept decoding baseline.
+
+## Commit: Revert direct-algorithm prompt experiment
+
+The direct-algorithm prompt constraint produced 3 of 10 passes, below the kept 4 of 10 result, so it was reverted. The fixed-batch pass-rate regression did not support retaining it.
+
+## Commit: Reject generic argument prefill
+
+Tested generic argument prefill with sampled temperature 0.7 and seed 42. Pass rate fell from 4 of 10 to 2 of 10, so the configuration was rejected.
+
+## Commit: Revert neutral sampled completion budget
+
+Tested a 1536-token sampled completion cap with temperature 0.7 and seed 42. It reproduced the kept 4 of 10 pass rate and task outcomes exactly, so the cap was rejected and 768 tokens remains the kept setting.
+
+## Commit: Reject base-checkpoint control
+
+Evaluated the original base checkpoint with the kept sampled decoding configuration. It passed 2 of 10 versus 4 of 10 for the trained checkpoint, so the base model was rejected as a replacement. The result and meta-review are recorded in logs/hillclimbing.txt.
+
+## Commit: Reject neutral prompt context budget
+
+Tested max_prompt_length 1024 against the kept sampled 512-token configuration. It reproduced 4 of 10 passes and the same task outcomes, so the larger context limit was rejected.
+
+## Commit: Reject aggressive narrow SFT warm-start
+
+Ran 10 supervised updates on 128 MBPP examples at learning rate 1e-5. The resulting checkpoint passed 1 of 10 fixed validation tasks versus 4 of 10 for the kept checkpoint, so this warm-start configuration was rejected while broader lower-rate SFT remains a candidate.
+
+## Commit: Reject broad low-rate SFT warm-start
+
+Ran 10 supervised updates over all 374 MBPP examples at learning rate 1e-6 with complete loss, learning-rate, gradient, runtime, and throughput logging. The checkpoint passed 3 of 10 versus 4 of 10 for the kept model, so it was rejected while the training-schedule hypothesis remains open.
+
+## Commit: Reject full-epoch SFT warm-start
+
+Ran a complete one-epoch SFT pass over all 374 examples at learning rate 1e-6 with comprehensive training diagnostics. Training loss reached 1.009, but validation pass rate fell to 2 of 10, so the checkpoint was rejected and response-only SFT is not retained.
+
+## Commit: Reject full-epoch SFT refinement
+
+Completed the planned full-epoch low-rate SFT refinement and evaluated its final checkpoint. Training loss reached 1.009 with complete metric logging, but pass rate was 2 of 10 versus 4 of 10 for the kept checkpoint, so the refinement was rejected.
+## 2026-09-02: Test execution-aware GRPO supervision
+
+Added a dedicated configuration that enables the existing generated-test artifact for GRPO reward evaluation, starts from the kept trained checkpoint, and preserves the fixed ten-example validation batch. This tests whether broader executable feedback improves pass rate without changing the evaluation data.
+
+The first launch failed during TRL configuration because a generation batch of 1 was not divisible by 4 generations. This was corrected to a training batch size of 4 before rerunning, and the failure was not treated as a model result.
+
+## 2026-09-02: Measure base-model pass-at-N capability
+
+Sampled sixteen completions per task in one batched generation call for each of the ten fixed validation tasks. Cumulative pass-any rates were 30% at one completion, 40% at two, 50% at four, 50% at eight, and 80% at sixteen. This supports testing multi-generation GRPO because the base model contains substantially more capability than pass@1 exposes.
+
+Added configs/hill-multi-grpo.yaml to run GRPO with sixteen generations per prompt and full training metric logging.
+
+The initial sixteen-generation GRPO launch generated the first group but failed during policy log-probability backpropagation with CUDA out-of-memory on the 15.6 GiB GPU. This was an infrastructure constraint rather than a model result, so the training group was reduced to eight generations while retaining multi-generation exploration.
+
+The eight-generation run completed but was neutral at 4/10 versus its 4/10 baseline. A live W&B bridge attempted during the run failed due to an initialization race, so native W&B reporting is enabled for the next four-generation fallback instead.
+
+The four-generation fallback was stopped before producing a result after clarifying that a non-improving pass rate was not the intended failure condition. The corrected design retains eight generations, runs two sequential full epochs for sixteen generations per training example, removes the ten-step cap, and uses native W&B reporting.
+
+The eight-generation two-epoch run was superseded before evaluation when the sampling requirement was clarified to sixteen generations in one group. Added explicit generation_batch_size support to train.py and configured sixteen generations, per-device micro-batch 1, gradient accumulation 8, and generation batch size 16. This preserves an effective prompt batch of 8 while reducing simultaneous prompt micro-batch memory.
+
+Changed evaluation from the fixed ten-example batch to all 90 validation examples and reduced checkpoint frequency from every two steps to quarter-epoch boundaries at steps 374, 748, 1122, and 1496. The prior run was stopped before completion because its evaluation protocol was too noisy and too small.
+
+## 2026-09-05: Run baseline 16-generation evaluation on training examples
+
+Added a baseline-only evaluation mode with an explicit training split selector. Changed pass-at-N generation to use configurable microbatches and to log every raw completion, sandbox input, execution result, and award. Ran the baseline model on 10 training examples with 16 generations per example and generation batch size 2. The run completed without OOM and logged exactly 160 candidate records. Saved metrics were pass-at-1 30% and pass-at-16 40%.
+
+## 2026-09-05: Analyze baseline 16-generation training evaluation
+
+Classified all 160 saved generations by compilation, interface validity, partial test progress, and full correctness. The report was appended to logs/error_analysis.txt. The run produced 136 compiling candidates, 36 fully correct candidates, 24 syntax errors, 25 interface contract failures, 50 zero-test semantic failures, and 25 partial semantic failures. W&B was unavailable because reporting was disabled.
+
+## 2026-09-05: Verify extracted logging on one training example
+
+Updated pass-at-N evaluation details so raw completions and extracted code are recorded separately. Reran task 601 only with 16 baseline generations and generation microbatch size 2. The run completed without OOM, logged 16 raw completions and 16 extracted completions, and achieved pass-at-16 of 0%.
+
+## 2026-09-05: Prefer nonempty Python fences and remove reasoning markers
+
+Updated extraction to choose the first nonempty Python fence, ignore standalone assistant markers, and remove tagged or unclosed thinking content. Focused tests passed. Reran task 601 with 16 baseline generations and microbatch size 2. Empty extracted bodies fell from 4 to 3, but pass-at-16 remained 0% because the recovered candidate still had the wrong interface.
+
+## 2026-09-05: Stabilize evaluation response protocol
+
+Disabled the tokenizer chat template thinking mode, preserved caller-supplied generation processors and stopping criteria, and enabled exact function-header prefill by default. The controlled task 601 rerun with 16 generations and microbatch size 2 produced 16 nonempty extracted outputs with no thinking or assistant markers. Pass-at-16 remained 0% because the model generated placeholders or incomplete implementations, so response formatting improved without semantic improvement.
+
+## 2026-09-05: Run one validation example with sixteen generations
+
+Evaluated the first validation record, task 511, with 16 baseline generations and generation microbatch size 2 using thinking disabled and exact function-header prefill. The run completed without OOM and logged 16 raw and 16 extracted completions. No extracted completion was empty. Pass-at-16 was 0%, with 6 syntax errors, 5 failed results, and 5 partial results.
+
+## 2026-09-05: Increase validation completion budget
+
+Reran validation task 511 with 16 baseline generations, generation microbatch size 2, and max_completion_length 768. The run logged 16 raw and 16 extracted completions. Outcomes were 1 syntax error, 6 partial results, 8 full failures, and 1 full pass. The only syntax error was the invalid expression 'x divides arg1'; none of the syntax errors were caused by truncation. Pass-at-16 reached 100%.
+
+## 2026-09-05: Log per-test predicted and expected values
+
+Added assertion-level diagnostics to sandbox scoring and evaluation logs. Each executable test now records pass status, predicted value, expected value, and errors. Reran validation task 511 with 16 generations at 768 tokens and microbatch size 2. Outcomes remained 1 syntax error, 6 partial, 8 failed, and 1 passed. Generation 13 was fully correct, with predictions 7, 15, and 2 matching the expected values.
+
+
+## Proposed clean self-training iteration
+
+I would stop trying miscellaneous hyperparameter tweaks for the moment and run one clean iteration:
+
+Generate 16 on the entire MBPP training set, execute, retain one or several passing solutions, SFT the 0.8B model on those solutions, and reevaluate pass@1 and pass@16.
+
+If pass@1 jumps while pass@16 stays roughly around 80%, the best-of-16 performance has been compressed into the policy. That is the desired direction.
+
+Then repeat the generation and training loop. Eventually the model will exhaust the problems it can self-solve. At that point, use a stronger model to provide solutions for the remaining 0/16 bucket.
+
+The 20% pass@1 and 80% pass@16 gap is much more encouraging than a 20% and 25% gap. The latter would suggest the 0.8B model is near its capability ceiling. The former says there is substantial recoverable performance already present in the distribution.
+
+## 2026-09-05: Rank validation generations by baseline likelihood
+
+Scored the 16 saved task 511 validation completions with the same Qwen/Qwen3.5-0.8B baseline model and ranked them by total generated-token log-likelihood. Logged each rank with generation number, total and mean log-likelihood, token count, status, and test-pass percentage. The fully correct generation 13 ranked 13th, while generation 14 ranked first with 33.3% test coverage, showing that raw likelihood is not a reliable correctness reranker in this sample.
+
+## 2026-09-05: Normalize generation likelihood by token count
+
+Reran likelihood scoring on the same 16 task 511 validation generations using mean token log-likelihood. The fully correct generation 13 ranked first at -0.2734, followed by generation 5 at -0.2891. The normalized ranking was appended to logs/logs.txt and aligns better with test correctness than total log-likelihood.
+
+## 2026-09-05: Add reusable likelihood-ranking evaluator
+
+Promoted the mean-token-log-likelihood scorer from a temporary experiment script into `rank_generations.py`. The script loads saved generation details, rescored all candidates with the same model, preserves original generation order, computes original and reranked pass@1, pass@2, pass@4, pass@8, and pass@16, writes complete per-example rankings to JSON, prints aggregate statistics, and appends the summary to `logs/logs.txt`. Re-running the 20-example validation artifact reproduced original-order rates of 5%, 10%, 15%, 15%, and 30%, and reranked rates of 10%, 15%, 15%, 25%, and 30%. Focused tests passed 21/21.
+
+## 2026-09-05: Record reusable scorer verification log update
+
+Committed the results log generated by the 20-example validation rerun so the run boundary and evaluation record remain synchronized with the saved artifact and reusable scorer verification.
+
+## 2026-09-05: Reduce syntax failures with body-start and protocol guards
+
+Changed evaluation decoding to prefill the indented function body, block immediate closing fences and protocol or reasoning markers until a meaningful body line appears, and select the first syntactically valid nonempty Python fence when multiple fences are present. Reran validation task 513 with 16 generations, generation microbatch size 2, and a 768-token completion budget. Syntax errors fell from 10/16 before the change to 3/16 after the change. The remaining three errors were truncated long implementations, while four candidates became partial and nine remained full failures. Pass@16 remained 0/16, so formatting recovery improved but did not solve task correctness.
+
+## 2026-09-06: Evaluate first five validation examples after syntax fixes
+
+Reran the first five validation examples with 16 sampled generations each, generation microbatch size 2, the current protocol and extraction fixes, and a 768-token completion budget. The run generated and logged 80 candidates. Original-order pass@1, pass@2, pass@4, pass@8, and pass@16 were all 0%. Mean-token-log-likelihood reranking produced the same all-zero curve because none of the five examples had a fully passing candidate. Candidate statuses were 53 full failures, 14 partial results, and 13 syntax errors.
+
+## 2026-09-06: Rerun first five validation examples with full syntax fixes
+
+Implemented the remaining generation and extraction changes: a 1,536-token completion budget for the run, whitespace-prefixed protocol marker blocking, stronger prompt bans for repeated hardcoded cases and pseudocode placeholders, independent multi-fence isolation, and valid-only mean-likelihood reranking. Reran the first five validation examples with 16 generations each and generation microbatch size 2. The run logged all 80 candidates. Outcomes were 6 syntax errors, 6 partial results, and 68 full failures. Seventy-three candidates had valid syntax and interface. Original-order pass@1, pass@2, pass@4, pass@8, and pass@16 were all 0%, and valid-only mean-likelihood reranking produced the same all-zero curve because no candidate fully passed any of the five tasks.
+
+## 2026-09-06: Rerun first validation example with a 512-token prompt
+
+Reran validation task 511 with `max_prompt_length` increased from 256 to 512, `max_completion_length` held at 1,536, 16 generations, and generation microbatch size 2. Outcomes were 2 syntax errors, 3 partial results, 11 full failures, and no fully passing solutions. The two syntax errors were truncated hardcoded implementations with an unclosed list and an incomplete `if` condition. No output was classified as an obvious placeholder-only implementation such as `pass`, constant zero, `None`, or an empty list.
+
+## 2026-09-06: Evaluate Qwen2.5-Coder-0.5B-Instruct on first validation example
+
+Switched the baseline model to `Qwen/Qwen2.5-Coder-0.5B-Instruct` and reran validation task 511 with 16 sampled generations, generation microbatch size 2, max prompt length 512, and max completion length 1,536. The model produced 1 full pass, 7 partial results, and 8 full failures with no syntax errors. Original-order pass@1, pass@2, and pass@4 were 0%; pass@8 and pass@16 were 100%. Generation 6 was the first fully passing candidate.
+
+## 2026-09-06: Rank coder-model generations by mean likelihood
+
+Scored the 16 Qwen2.5-Coder-0.5B-Instruct generations for validation task 511 with the same model and ranked them by mean token log likelihood. The fully correct generation 6 ranked 13th. Original-order pass@8 and pass@16 were 100%, while mean-likelihood reranking produced pass@1, pass@2, pass@4, and pass@8 of 0% and pass@16 of 100%. The ranking list with test-pass percentages was appended to `logs/logs.txt` and saved in `/tmp/post-training-eval-validation-1-coder05-ranking.json`.
+
+## 2026-09-06: Evaluate 20 validation examples with Qwen2.5-Coder-0.5B-Instruct
+
+Generated 16 candidates for each of the first 20 validation examples using Qwen2.5-Coder-0.5B-Instruct, prompt limit 512, completion limit 1,536, and generation microbatch size 2. Original-order pass@1, pass@2, pass@4, pass@8, and pass@16 were 20%, 20%, 20%, 30%, and 35%. Rescored the same 320 candidates with the coder model and applied mean-token-log-likelihood ranking after filtering invalid syntax or interface candidates. Reranked pass rates were 10%, 15%, 25%, 25%, and 35%. The complete ranking artifact was saved to `/tmp/post-training-eval-validation-20-coder05-ranking.json` and the summary was logged.
+
+## 2026-09-06: Align SFT prompt serialization with evaluation
+
+Changed `build_sft_dataset` so SFT uses the tokenizer chat template with the same user message, `add_generation_prompt=True`, and `enable_thinking=False` as evaluation. The assistant response remains the reference `Code:` Python fence, and prompt tokens remain excluded from the loss. This fixes the raw-prompt versus chat-formatted evaluation mismatch identified after the first SFT run. Focused validation passed with 21 tests.
+
+## 2026-09-06: Aligned SFT checkpoint 20-example 16-generation evaluation
+
+The aligned one-epoch SFT run completed on 374 training examples with final train loss 0.6034 and checkpoint `/tmp/sft-coder05-full-output/sft/final`. W&B run: https://wandb.ai/kunal-personal/grpo-mbpp/runs/ct96rhob. The fresh SFT baseline before updates was 35.6% pass@1 on the 90-example validation set. Quarter evaluations were 32.2% at step 94 and 32.2% at step 187; the remaining quarter metrics were logged by the run.
+
+Evaluated the final SFT checkpoint and pretrained Qwen2.5-Coder-0.5B-Instruct on the first 20 validation examples with 16 generations, max prompt length 512, and max completion length 1536. The SFT checkpoint original-order pass@1/2/4/8/16 rates were 15/15/30/45/45%. Mean-token-log-likelihood reranking produced 15/20/25/35/45%. The pretrained baseline original-order rates were 20/20/20/30/35%, and reranking produced 15/20/25/25/35%. Oracle coverage was 45% for SFT and 35% for baseline, meaning all Oracle pass@k values equal the corresponding pass@16 coverage.
+
+A full prompt audit with the evaluation chat template found 2 of 374 training prompts over 512 tokens, with lengths 570 and 540, and 1 of 90 validation prompts over 512, with length 896. Task IDs were 694, 722, and 539. The current comparison therefore still truncates one validation prompt and two training prompts; 1024 tokens covers the observed maximum.
+
+## 2026-09-06: Configure lower-rate ten-epoch SFT with epoch pass-at-N evaluations
+
+Changed the SFT callback to remove quarter-step evaluations and evaluate only at the end of each epoch. The existing pass-at-N evaluator will generate 16 candidates on the first 10 validation examples and log pass@1, pass@2, pass@4, pass@8, and pass@16 to W&B. The planned rerun uses the pretrained Qwen2.5-Coder-0.5B-Instruct model, 10 epochs, learning rate 5e-6, and max prompt length 1024 to avoid the prompt truncation found in the earlier run. A baseline evaluation runs before training.
+
+## 2026-09-06: Stop 10-epoch 16-generation SFT run
+
+Stopped the active lower-rate SFT run at the user's request before the first epoch completed. It had reached approximately step 2059 of 3740, about 55% of epoch 1, and therefore produced no usable epoch-end evaluation result. The replacement run will use 20 epochs, learning rate 5e-6, one generation per task, the full 90-example validation set, and evaluation only at epoch boundaries.
+
+## 2026-09-06: Add GRPO checkpoint likelihood reranking
+
+Stopped the active 20-epoch SFT run before completion. Added GRPO checkpoint evaluation of mean-token-log-likelihood reranking using the exact evaluation chat-formatted prompt. Each checkpoint now records original pass@1/2/4/8/16 and reranked pass@1/2/4/8/16 metrics, which are flattened into W&B evaluation logs. Focused validation passed with 21 tests.
+
+## 2026-09-06: Execution-first reranking on baseline candidates
+
+Used the pretrained Qwen2.5-Coder-0.5B-Instruct baseline artifact from the active GRPO run, with 16 candidates for each of the first 10 validation examples. Ranked only syntax/interface-valid candidates by test-pass fraction, using mean token log likelihood as the tie-breaker. Original pass@1/2/4/8/16 was 30/30/40/40/50%. Mean-likelihood ranking was 40/40/40/40/50%. Execution-first ranking was 50/50/50/50/50%. The top candidate test-pass fractions by example were 100%, 100%, 0%, 100%, 66.7%, 0%, 100%, 100%, 0%, and 0%. The complete ranking is `/tmp/grpo-coder05-baseline-execution-first-ranking.json`, and the result was appended to `logs/logs.txt`.
+
+## 2026-09-06: Add larger candidate-pool pass-at-N cutoffs
+
+Extended batched evaluation to report pass@10, pass@20, pass@30, pass@40, and pass@50 in addition to the existing cutoffs. The planned experiment samples 50 candidates from the pretrained Qwen2.5-Coder-0.5B-Instruct baseline on the first 10 validation examples, using small generation batches, while the GRPO run continues.
+
+## 2026-09-06: Fix pass-at-N cutoff indentation
+
+Corrected the indentation error caught immediately after adding the pass@10 through pass@50 metrics. The evaluator now compiles and the focused tests pass.
+
+## 2026-09-06: Stop GRPO and prepare ten-generation 20-example baseline evaluation
+
+Stopped the active GRPO experiment at approximately optimizer step 111 of 1496 because the user requested a replacement analysis. Added cumulative progress output to batched evaluation after every configured five examples. The replacement experiment will sample 10 candidates per task from the pretrained Qwen2.5-Coder-0.5B-Instruct baseline on the first 20 validation examples, then apply syntax/interface filtering, test-pass-fraction ranking, and mean-likelihood tie-breaking.
+
+## 2026-09-06: Support pass@10 in ranking output
+
+Extended the reusable ranking helper's standard cutoffs to include pass@10 so the ten-generation experiment reports pass@1/2/4/8/10 consistently with the evaluator.
+
+## 2026-09-06: Fix five-example evaluation progress counter
+
+The first 10-generation, 20-example baseline evaluation completed successfully but emitted no five-example updates because the progress counter used a per-example status list that reset each loop. Changed it to count accumulated detail records. The run will be repeated so the requested progress updates are visible during execution.
+
+## 2026-09-06: Ten-generation baseline selection on 20 validation examples
+
+Stopped the active GRPO experiment at approximately step 111 of 1496. Reran the pretrained Qwen2.5-Coder-0.5B-Instruct baseline on the first 20 validation examples with 10 generations per task and progress reports at examples 5, 10, 15, and 20. Original pass@1/2/4/8/10 was 10/10/20/30/35%. After filtering invalid syntax/interface candidates, mean-likelihood reranking gave 15/20/30/35/35%. Execution-first ranking by test-pass fraction with likelihood tie-breaking gave 35/35/35/35/35%. The selected candidate outcomes were 7 full successes, 8 partial failures, and 5 total failures. There were 191 valid candidates and 9 filtered candidates out of 200. Full details are `/tmp/baseline-coder05-10-eval20-execution-first-ranking.json`.
+
+## 2026-09-06: Ten-generation full validation evaluation
+
+Evaluated the pretrained Qwen2.5-Coder-0.5B-Instruct baseline on all 90 validation examples with 10 sampled generations per example, generation batches of 2, max prompt length 512, and max completion length 768. Cumulative pass@1/2/4/8/10 updates were emitted every five examples. Final rates were 31.1/38.9/42.2/51.1/52.2%. W&B run: https://wandb.ai/kunal-personal/grpo-mbpp/runs/86s80y0i. Full artifacts are in `/tmp/baseline-coder05-10-eval90-output`.
+
+## 2026-09-06: Execution-first selection on all 90 validation examples
+
+Applied syntax/interface filtering, test-pass-fraction ranking, and mean-likelihood tie-breaking to the 900 saved baseline candidates from the full 90-example, 10-generation evaluation. The selected candidate fully passed on 47 of 90 examples, giving 52.2% selected-candidate accuracy. The complete artifact is `/tmp/baseline-coder05-10-eval90-execution-first-ranking.json`.
+
+## Correction: 52.2% execution-first result is not hidden-test accuracy
+
+The 52.2% selected-candidate result from the 90-example run was computed by selecting candidates using the prompt-visible tests and scoring them on those same tests. It is therefore test-aware visible-test selection performance, not hidden-test generalization accuracy. The current evaluator uses `record["test_code"]`, built from the prompt's `test_list`; hidden synthetic tests are included only when `synthetic_tests_enabled: true`, and MBPP `challenge_test_list` is not currently wired into evaluation. Do not use 52.2% as a hidden-test result.
+
+Commit: Add structured LLM synthetic-test generation
+Description: Added synthetic_data/generate_llm_tests.py, a durable workflow that prompts the model for JSON input/output cases without exposing visible assertions, parses only safe Python expressions, converts them to equality assertions, validates them against the trusted reference oracle, deduplicates cases, runs the existing strict artifact validator, saves raw responses and generated tests, logs parse/reference/validation metrics, and returns a failing status for invalid artifacts. Normalized MBPP records now retain the task description separately from the evaluation prompt so synthetic-test generation can use the task statement without passing visible tests to the selection stage.
+Context: The execution-based candidate selection experiment must select with independently generated tests. This change makes synthetic-test format and validity auditable before any code generation or candidate selection. Parser and compile smoke tests passed. The full suite currently has 45 passing tests and two unrelated pre-existing mock failures.
+
+Follow-up: Fixed direct execution imports in generate_llm_tests.py by adding the repository root to sys.path before importing project modules. The first smoke run reached the script and failed only because this path setup was missing.
+
+Follow-up: Made structured-case parsing independent per JSON object so malformed or wrong-arity cases are counted and skipped while valid cases from the same model response are retained. Simplified the schema example so it no longer teaches a misleading two-input shape to one-argument functions.
+
+Follow-up: Broadened structured JSON value handling to accept native JSON scalars and common unquoted string values emitted by the model, while retaining AST validation and constructor restrictions. Removed duplicate none-output constraints before strict artifact validation.
+
+Experiment: Structured LLM synthetic-test-only validation on validation examples 511-515.
+Result: JSON parsing and AST conversion worked, but the Qwen2.5-Coder-0.5B-Instruct model produced too few reference-valid cases for a strict five-tests-per-task artifact. The five-example run parsed an average of 4.0 cases, retained an average of 0.8 unique reference-valid assertions, and produced zero fully valid artifact records. A ten-attempt run on task 511 retained one reference-valid assertion out of 33 unique parsed cases. Artifacts are saved in synthetic_data/data/llm_validation5.jsonl and synthetic_data/data/llm_validation1.jsonl for inspection.
+
+Follow-up: GPT-5 nano rejected the non-default temperature parameter, so the OpenAI generator now relies on the model default as required by that model endpoint. No artifact was written by the failed request.
+
+Experiment: GPT-5 nano structured synthetic-test generation on the first five validation examples, with three retained parsed tests per example and visible prompt tests supplied as guidance.
+Result: All 15 generated cases parsed successfully. Thirteen of 15 were reference-valid, for 86.67 percent. Three of five artifact records passed the strict validator because two records contained reference-invalid cases retained for audit as requested. Elapsed time was 79.78 seconds. Total usage was 1,252 input tokens and 16,626 output tokens. Estimated cost using GPT-5 nano list prices of $0.05 per million input tokens and $0.40 per million output tokens was $0.006713. The reference implementation was used only for labels and quality metrics, never to filter or rewrite generated tests.
+
+Follow-up: Added synthetic-test selection controls to rank_generations.py. With --synthetic-tests-enabled and --synthetic-tests-path, each saved candidate is executed against the generated assertions, filtered by synthetic interface validity, and ranked by synthetic test-pass fraction with mean likelihood as the tie-breaker. Original prompt-test outcomes remain separately reported. Fixed the selector’s pass-field routing after the initial edit.
+
+Follow-up: Replaced sequential GPT synthetic-test generation with a bounded ThreadPoolExecutor. The default concurrency is 8 and completion order is restored to dataset order before writing JSONL. Per-example request exceptions are captured in the artifact, so partial runs retain successful results. The interrupted sequential process was stopped before restarting.
+
+Experiment: GPT-5 nano synthetic-test generation on all 90 validation examples with three retained tests per example and concurrency 8.
+Result: Completed 90 of 90 examples in 154.51 seconds. Parsed 254 cases, retaining all parseable cases. Of those, 210 were reference-valid, or 82.68 percent. There were 20,631 input tokens and 262,988 output tokens. Estimated cost was $0.106227 using GPT-5 nano pricing. The reference implementation only supplied validity labels. It did not filter or modify saved synthetic tests.
+
+Follow-up: Made saved-generation selection join dataset records by task_id instead of assuming saved artifact order matches the current dataset order. This prevents synthetic-test selection from silently using the wrong task tests and raises an explicit error for inconsistent or unknown task IDs.
+
+Follow-up: Added optional --config YAML loading to rank_generations.py. The config fields model_name_or_path, synthetic_tests_enabled, synthetic_tests_path, synthetic_tests_per_task, and synthetic_tests_timeout now control execution filtering and synthetic ranking directly.
+
+Follow-up: Added synthetic execution filtering directly to evaluate_pass_at_n. When synthetic_tests_enabled is true, every generated candidate is scored against the configured synthetic test artifact, valid candidates are ranked by synthetic test-pass fraction, and original prompt-test pass-at-N is reported for the synthetic-ranked prefixes. Progress output now includes synthetic_selection_pass_at_N every configured interval.
+
+Follow-up: Separated synthetic-test use for training augmentation from synthetic-test use for evaluation selection. prepare_datasets now honors synthetic_tests_for_training, allowing validation-only synthetic artifacts with reference-invalid labels to drive evaluator selection without being incorrectly loaded into the training split.
+
+Follow-up: Changed synthetic filtering to continue when an artifact record has no usable synthetic tests. Such tasks are labeled synthetic_status=missing and contribute no synthetic-selected pass, while ordinary generation evaluation continues for the complete dataset.
+
+Commit: Hide visible tests from model-facing prompts
+Description: Added a separate evaluation_prompt field generated without MBPP assertions, switched evaluation, SFT tokenization, and likelihood scoring to use that field, and removed visible tests from the GPT synthetic-test prompt. Original test_code remains available only for post-generation scoring, while synthetic tests remain the selection probes.
+Context: MBPP validation and training rows do not provide separate official hidden tests, so the prompt assertions must be treated as hidden from the model for a clean evaluation. The interrupted 20-generation run was stopped before rerun.
+
+Follow-up: Set the durable synthetic-test generator default to five tests per example. Its prompt continues to expose only the task description, function name, and arity, without original assertions.
+
+Experiment: Regenerated synthetic tests for all 90 validation examples with GPT-5 nano, five requested tests per example, concurrency 8, and a model-facing prompt containing only task description, function name, and arity.
+Result: Completed 90 of 90 examples in 181.47 seconds. Retained 440 parseable tests. Of those, 242 were reference-valid, or 56.59 percent. Usage was 13,213 input tokens and 291,302 output tokens. Estimated cost was $0.117181 using GPT-5 nano list pricing. No original test assertions were supplied to the synthetic-test generator.
+
+Follow-up: Clarified the synthetic-test prompt with an explicit generic function signature using arg1, arg2, and so on, plus an unrelated JSON formatting example. The prompt still excludes all task-specific test cases and reference code.
+
+Follow-up: Updated model-facing code evaluation prompts to include the generated synthetic assertions when synthetic_tests_enabled is true. Original MBPP assertions remain excluded from prompts and are reserved for final scoring. Synthetic assertions continue to drive execution filtering.
+
+Experiment: Regenerated five synthetic tests for the first 20 validation examples with the clarified interface prompt, no original assertions, and concurrency 8.
+Result: Completed all 20 examples in 41.90 seconds. Retained 99 parseable tests, of which 52 were reference-valid, or 52.53 percent. Usage was 3,887 input tokens and 54,776 output tokens. Estimated cost was $0.022105. The artifact is synthetic_data/data/llm_gpt5nano_validation20_signature.jsonl.
+
+Experiment: Compared GPT-5.4 mini and GPT-5.4 for five test cases per example on the first 20 validation examples. Both used the test-free synthetic prompt, interface name and arity, and concurrency 8.
+Result: GPT-5.4 mini parsed 99 cases, with 49.49 percent reference-valid, 4.48 seconds elapsed, and estimated cost $0.001212. GPT-5.4 parsed 100 cases, with 57.00 percent reference-valid, 5.43 seconds elapsed, and estimated cost $0.001113. GPT-5.4 had the highest validity rate in this comparison.
+
+Follow-up: Revised the synthetic-test prompt to request ordinary valid inputs and concrete correctly typed literal outputs, and to prohibit unsupported edge cases such as empty, undersized, zero, negative, or malformed inputs unless explicitly supported.
+
+Experiment: Reran GPT-5.4 on 20 validation examples with five tests per example using the constrained prompt requesting ordinary valid inputs and correctly typed literal outputs.
+Result: All 100 cases parsed. Fifty-two were reference-valid, or 52.00 percent. Runtime was 6.51 seconds. Usage was 4,527 input tokens and 2,798 output tokens. Estimated cost was $0.001346. This was slightly below the prior 57.00 percent result, so prompt edge-case restrictions alone did not improve semantic validity.
+
+Follow-up: Restored original MBPP test examples in the synthetic-test-generation prompt and evaluation model prompt. Synthetic assertions remain separate selection probes and are not inserted into the model prompt.
+
+Experiment: Reran GPT-5.4 on 20 validation examples with five synthetic tests per example, restoring original MBPP examples in the synthetic-generation prompt while retaining the interface guidance.
+Result: All 100 cases parsed and 88 were reference-valid, or 88.00 percent. Runtime was 5.89 seconds. Usage was 6,198 input tokens and 2,820 output tokens. Estimated cost was $0.001438. This improved substantially over the test-free prompt result of 52.00 percent, confirming that the original examples provide important behavioral context.
+
+Follow-up: Changed the LLM synthetic-test response schema to compact JSON, {"t":[[["input"],"output"]]}, while preserving per-case input arity and strict expression parsing.
+
+Experiment: Reran GPT-5.4 on 20 validation examples with five synthetic tests per example using compact JSON format {"t":[[["input"],"output"]]}.
+Result: 95 cases parsed, 78 reference-valid, or 82.11 percent. Runtime was 8.44 seconds. Usage was 6,058 input tokens and 2,413 output tokens. Estimated cost was $0.001268. Compared with the prior verbose format, output tokens decreased from 2,820 to 2,413 and cost decreased from $0.001438 to $0.001268. Reference validity was lower because the model emitted five fewer parseable cases and 17 invalid oracle cases.
+
+Follow-up: Added a local Hugging Face generation backend to the synthetic-test script so the same compact prompt and parser can compare Qwen3.5-0.8B against OpenAI models. Local generation reports tokenizer counts and zero API cost.
+
+Follow-up: Retained compact synthetic-test output but changed each case to explicit short fields, {"i":[inputs],"o":output}, after Qwen3.5-0.8B misread the nested array representation and produced zero parseable cases.
+
+
+Experiment: Regenerated five compact synthetic tests for the first 20 validation examples with the local Qwen/Qwen3.5-0.8B model, using the explicit short-field schema {"t":[{"i":[inputs],"o":output}]} and the same prompt containing the task description, interface, and existing task examples.
+Result: Completed all 20 examples in 76.22 seconds. The generator retained 36 parseable cases, with 12 reference-valid cases, or 53.33 percent of parsed cases. The mean parsed-case count was 1.8 and mean unique-case count was 1.55. The JSON or parse error rate was 65 percent, and no records passed the strict artifact validator because many records did not contain the requested five cases. Local generation used 6,630 input tokens and 3,370 output tokens and incurred no API cost. The artifact is synthetic_data/data/llm_qwen35_08b_validation20_compact_fields.jsonl.
+
+
+Follow-up: Restored the standard verbose synthetic-test JSON schema {"tests":[{"inputs":[...],"output":...}]} for the local Qwen comparison and reran five requested tests on the first 20 validation examples.
+Result: Completed all 20 examples in 71.23 seconds. Only 11 cases parsed, with 5 reference-valid cases, or 45.45 percent of parsed cases. The JSON or parse error rate was 85 percent, and one record passed the strict artifact validator. Local generation used 6,650 input tokens and 3,113 output tokens and incurred no API cost. The artifact is synthetic_data/data/llm_qwen35_08b_validation20_verbose.jsonl.
+
+
+Follow-up: Investigated the Qwen3.5-0.8B verbose synthetic-test shortfall. Raw responses showed scalar inputs for one-argument tasks, bare test arrays without the tests wrapper, comma-separated multi-argument inputs, truncated or malformed JSON, and occasional invalid Python literals. The parser now conservatively normalizes unambiguous scalar one-argument inputs, tuple-shaped comma-separated inputs, and bare test arrays. It retains every unique parseable case instead of truncating each example to five, since five is the target rather than a minimum requirement.
+Experiment: Reran five-test synthetic generation for the first 20 validation examples with the repaired verbose parser and Qwen3.5-0.8B.
+Result: Completed all 20 examples in 78.01 seconds. The per-example available-test distribution was 0 cases for 11 examples, 1 case for 2, 3 cases for 3, 4 cases for 1, and 5 cases for 3. There were 30 total available parseable cases, of which 10 were reference-valid, or 33.33 percent. The mean available-case count was 1.5 and the JSON or parse-error rate was 60 percent. Local generation used 6,650 input tokens and 3,420 output tokens and incurred no API cost. The artifact is synthetic_data/data/llm_qwen35_08b_validation20_verbose_repaired.jsonl.
+
+
+Experiment: Requested 20 verbose synthetic tests per example from Qwen3.5-0.8B on the first 20 validation examples, using max_new_tokens=1536.
+Result: Completed all 20 examples in 319.33 seconds. The available unique-test distribution was 0 cases for 16 examples, 1 case for 1, 3 cases for 1, and 13 cases for 2 examples. There were 30 total available unique parseable tests, of which 1 was reference-valid, or 3.33 percent. The mean parsed-case count was 2.0 before deduplication and the mean unique-case count was 1.5. Local generation used 6,670 input tokens and 14,490 output tokens and incurred no API cost. The artifact is synthetic_data/data/llm_qwen35_08b_validation20_verbose_20tests.jsonl.
+
+
+Experiment: Requested one verbose synthetic test per example from Qwen3.5-0.8B on the first 20 validation examples, using max_new_tokens=512 and retaining every unique parseable case.
+Result: Completed all 20 examples in 80.50 seconds. The available unique-test distribution was 0 cases for 12 examples, 1 case for 4, 2 cases for 1, 3 cases for 1, 5 cases for 1, and 6 cases for 1. There were 20 total available unique parseable tests, of which 3 were reference-valid, or 15.00 percent. The mean parsed-case count was 1.05 and mean unique-case count was 1.0. The JSON or parse-error rate was 65 percent. Local generation used 6,650 input tokens and 3,015 output tokens and incurred no API cost. The artifact is synthetic_data/data/llm_qwen35_08b_validation20_verbose_1test.jsonl.
+
+
+Correction: The prior one-test experiment accidentally retained every parseable case emitted by the model. Restored the requested-count cap so generated_tests contains at most tests_per_task cases per example.
+Experiment: Reran one verbose synthetic test per example for the first 20 validation examples with Qwen3.5-0.8B, max_new_tokens=512.
+Result: Completed all 20 examples in 66.34 seconds. The available-test distribution was 0 for 14 examples and 1 for 6 examples. There were 6 total available tests, of which 3 were reference-valid, or 50.00 percent. Local generation used 6,650 input tokens and 2,905 output tokens and incurred no API cost. The corrected artifact is synthetic_data/data/llm_qwen35_08b_validation20_verbose_1test_capped.jsonl.
+
+
+Experiment: Raised the synthetic-test completion limit to 1,536 tokens, tightened the one-test prompt, accepted valid bare JSON arrays, and retried each of the first 20 validation examples up to three times with Qwen3.5-0.8B. The per-example cap remained one retained test.
+Result: Completed all 20 examples in 66.00 seconds. The available-test distribution was 0 for 5 examples and 1 for 15 examples, reaching the target of five or fewer malformed or unavailable examples. There were 15 total available tests, of which 6 were reference-valid, or 40.00 percent. Local generation used 20,490 input tokens and 2,728 output tokens and incurred no API cost. The artifact is synthetic_data/data/llm_qwen35_08b_validation20_verbose_1test_3attempts.jsonl.
+
+
+Follow-up: Retried the two remaining zero-availability tasks, 523 and 526, with twenty attempts each and merged the replacements into a complete 20-example artifact.
+Result: All 20 examples now have exactly one available parseable test. The two targeted tests were not reference-valid, so the combined artifact contains 20 available tests and 6 reference-valid tests, or 30.00 percent. The original ten-attempt run took 545.35 seconds and the targeted retries took 106.51 seconds, for 651.86 seconds combined. The complete artifact is synthetic_data/data/llm_qwen35_08b_validation20_verbose_1test_complete.jsonl.
+
+
+Experiment: Generated up to five verbose synthetic tests for all 90 validation examples with Qwen3.5-0.8B, up to three attempts per example, a one-example-at-a-time GPU worker, and a 1,536-token completion limit. Generation stopped early per example once five unique parseable tests were available.
+Result: Completed all 90 examples in 1,215.50 seconds. The available-test distribution was 0 for 21 examples (23.33%), 1 for 12 (13.33%), 2 for 12 (13.33%), 3 for 11 (12.22%), 4 for 8 (8.89%), and 5 for 26 (28.89%). There were 231 total retained parseable tests, of which 78 were reference-valid, or 33.77 percent. Local generation used 85,856 input tokens and 52,509 output tokens and incurred no API cost. The artifact is synthetic_data/data/llm_qwen35_08b_validation90_verbose_5tests_3attempts.jsonl.
+
+
+Experiment setup: Prepared an evaluation-only run for all 90 validation examples with 20 sampled candidates per example, synthetic tests enabled from synthetic_data/data/llm_qwen35_08b_validation90_verbose_5tests_3attempts.jsonl, generation batch size 8, 768-token completions, and a 0.5-second sandbox timeout. The evaluator now includes synthetic tests in the model prompt, ranks candidates by synthetic test-pass fraction, and uses mean token log likelihood only when an example has no synthetic tests. The run is active and its final metrics will be recorded after completion.
+
+
+Experiment: Evaluated all 90 validation examples with 20 sampled Qwen3.5-0.8B candidates per example. Synthetic tests from synthetic_data/data/llm_qwen35_08b_validation90_verbose_5tests_3attempts.jsonl were included in the model prompt and used for execution-based selection. Candidates were ranked by synthetic test-pass fraction, with mean token log likelihood used only for tasks without generated synthetic tests.
+Result: The completed run used generation batch size 8, max prompt length 512, max completion length 768, and a 0.5-second sandbox timeout. Original-order pass@1/2/4/8/10/16/20 were all 18.89% (17 of 90 examples). Synthetic-selection pass@1/2/4/8/10/16/20 were also all 18.89%. Average reward was 0.2452. The completed artifact is outputs/eval-synthetic-validation90-20-768-0.5s-batch8/baseline-details.json and metrics are in outputs/eval-synthetic-validation90-20-768-0.5s-batch8/baseline-metrics.json.
+
+
+Experiment: Evaluated all 90 validation examples with Qwen2.5-Coder-0.5B-Instruct, 20 sampled generations per example, do_sample=true, temperature=0.7, generation batch size 8, max completion length 768, and 0.5-second sandbox timeout. Synthetic tests were generated previously by Qwen3.5-0.8B and included in the evaluation prompt. Synthetic execution filtering ranked candidates by synthetic test-pass fraction, with mean likelihood fallback for tasks without synthetic tests.
+Result: Original pass@1/2/4/8/10/16/20 were 26.67/33.33/46.67/54.44/55.56/60.00/60.00%. Synthetic-selection pass@1/2/4/8/10/16/20 were 30.00/38.89/50.00/51.11/54.44/58.89/60.00%. The 1,800 candidate details are in outputs/eval-coder05-synthetic-validation90-20-768-0.5s-batch8/baseline-details.json and metrics are in outputs/eval-coder05-synthetic-validation90-20-768-0.5s-batch8/baseline-metrics.json.
+
+## 2026-09-06 Official Qwen prompt comparison
+
+Compared the evaluator with Qwen3-Coder's official EvalPlus prompt and generation setup. The official code wraps a function-context prompt in the ChatML system message, uses a concrete Python function stub, prefills ```python, samples with top_p 0.95, and allows 2048 new tokens. Our first attempted official mode still supplied the repository's prose prompt without a function stub and unnecessarily computed likelihoods during standard pass@K evaluation. The corrected evaluator now reconstructs a function stub from the public task interface and description, uses the test-free prompt, skips unused likelihood scoring, and supports top_p.
+
+The corrected 10-example Qwen2.5-Coder-0.5B-Instruct diagnostic with 20 samples, temperature 0.7, top_p 0.95, 1024 prompt tokens, and 2048 completion tokens reached pass@1 30%, pass@2 30%, pass@4 50%, pass@8 60%, pass@10 60%, pass@16 60%, and pass@20 70%. Its 200 candidates had 61 full passes, 11 partial failures, and 128 full behavioral failures, with all interfaces valid. A full 90-example rerun was stopped at 15 examples after pass@1 remained 20% and pass@20 was 53.33%. Exclusion filtering was not run because the requested baseline pass@1 threshold above 50% was not reached.
+
+The remaining major comparability difference is the benchmark. Qwen's official script evaluates EvalPlus MBPP+ task prompts, while this repository evaluates a 90-row Hugging Face MBPP validation subset with its own sandbox and visible hidden-test execution. The official Qwen repository does not establish a greater-than-50% pass@1 result for this 0.5B model under this repository's protocol.
+
+## 2026-09-06 Exa API-key authentication
+
+Stopped the GRPO run at the user's request. Its step-10 checkpoint had original pass@1 32.22% and synthetic-selection pass@1 36.67%, below the cached baseline selection pass@1 40%. The next launch was corrected to use a TRL-valid generation batch size of 16, but training was later stopped before the step-20 checkpoint completed.
+
+Configured Exa MCP to use the hosted endpoint with an environment-backed x-api-key header. Added EXA_API_KEY prompting and persistence to start.sh alongside the existing service-key prompts. The key remains only in the ignored local .env and is excluded from notes, logs, and Git.
+
+## 2026-09-06 Qwen2.5-Coder zero-shot rerun
+
+Investigated the Qwen3-Coder issue about underperforming OpenCompass results, Qwen's Qwen2.5-Coder technical report, the Qwen model card, the Qwen EvalPlus evaluation repository, and the EvalPlus paper. The issue concerns Qwen2.5-Coder-3B and does not directly validate a 0.5B diagnosis. Qwen's report lists Qwen2.5-Coder-0.5B-Instruct at 61.6% HumanEval, 57.3% HumanEval+, 52.4% MBPP, and 43.7% MBPP+.
+
+Reran the repository's 90-example MBPP validation evaluation with exactly one sampled completion per task, temperature 0.2, top_p 0.95, no visible tests, a 512-token completion cap, and generation in batches of eight. The result was 27/90 passed, or 30.00% pass@1, with 9 partial and 54 failed examples. The saved artifact is outputs/eval-qwen25coder-zero-shot-90-1-temp02/baseline-metrics.json.
+
+Interpretation: adopting EvalPlus is plausible as a source of benchmark comparability problems, but it would not by itself explain a low score because EvalPlus adds stricter tests and usually lowers scores. The larger mismatches are that this repository uses the 90-row validation split rather than Qwen's reported benchmark split, uses a custom scorer and sandbox, and uses a repository-specific prompt and code-prefix protocol. The rerun confirms that removing visible tests and using one sample at 0.2 does not recover the reported low-50s result.

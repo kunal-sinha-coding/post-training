@@ -1,110 +1,154 @@
-------------------------------------------------------------------------
-RUN STARTING
-Timestamp: 2026-08-08 15:45:28 PDT
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
 EVALUATION RESULTS
-Evaluation: baseline
-Training context: baseline
-Epoch: baseline
-Timestamp: 2026-08-08 15:46:23 PDT
-Git commit: da028a0
-Change description: No previous evaluation result was available for comparison.
+Evaluation: checkpoint-110
+Training context: checkpoint
+Epoch: 0.14705882352941177
+Timestamp: 2026-09-05 21:56:25 PDT
+Git commit: 6c1085b
+Change description: No committed code changes since the previous evaluation.
 Metrics:
 {
-  "average_reward": 0.3333333333333333,
-  "examples": 75,
-  "pass_at_1": 0.3333333333333333,
-  "status_counts": {
-    "failed": 46,
-    "format_error": 4,
-    "passed": 25
-  }
+  "average_reward": 0.35625,
+  "candidate_count": 16,
+  "examples": 10,
+  "pass_at_1": 0.3,
+  "pass_at_16": 0.5,
+  "pass_at_2": 0.3,
+  "pass_at_4": 0.4,
+  "pass_at_8": 0.4,
+  "reranked_pass_at_1": 0.2,
+  "reranked_pass_at_16": 0.5,
+  "reranked_pass_at_2": 0.4,
+  "reranked_pass_at_4": 0.4,
+  "reranked_pass_at_8": 0.5,
+  "successful_examples": 3
 }
-YAML path: configs/default.yaml
+YAML path: /tmp/grpo-coder05-16-eval10.yaml
 YAML contents:
-
-------------------------------------------------------------------------
-
-
-
-------------------------------------------------------------------------
-RUN STARTING
-Timestamp: 2026-08-08 15:56:49 PDT
-------------------------------------------------------------------------
-
-
-
-------------------------------------------------------------------------
-RUN STARTING
-Timestamp: 2026-08-08 15:59:32 PDT
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: baseline
-Training context: baseline
-Epoch: baseline
-Timestamp: 2026-08-08 16:00:28 PDT
-Git commit: 9700bd6
-Change description: 9700bd6 Keep and evaluate the best checkpoint
-63dbdba Include YAML in evaluation result records
-Metrics:
-{
-  "average_reward": 0.3333333333333333,
-  "examples": 75,
-  "pass_at_1": 0.3333333333333333,
-  "status_counts": {
-    "failed": 46,
-    "format_error": 4,
-    "passed": 25
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
+# This configuration runs sixteen-generation GRPO with a memory-bounded prompt micro-batch and evaluates the fixed ten-task batch.
+model_name_or_path: Qwen/Qwen2.5-Coder-0.5B-Instruct
 dataset_name: google-research-datasets/mbpp
 dataset_config: null
-dataset_split: train
+train_split: train
+validation_split: validation
+synthetic_tests_enabled: false
 seed: 42
-train_fraction: 0.8
-max_train_samples: null
+max_train_samples: 374
 reuse_baseline: false
+run_baseline_evaluation: true
 run_intermediate_evals: true
-max_eval_samples: null
+max_eval_samples: 10
+evaluation_num_completions: 16
+evaluation_batch_size: 16
+sft_enabled: false
 log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 1
+results_log_path: logs/results.txt
+output_dir: /tmp/grpo-coder05-16-eval10-output
+num_train_epochs: 2
 max_steps: -1
 per_device_train_batch_size: 1
 gradient_accumulation_steps: 8
+generation_batch_size: 16
 learning_rate: 0.000001
-num_generations: 4
+num_generations: 16
 max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
+max_completion_length: 768
+generation_kwargs:
+  do_sample: true
+  temperature: 0.7
+  seed: 42
+  stop_strings: ["```"]
 logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
+save_steps: 5
+pass_weight: 0.5
 sandbox_timeout_seconds: 3
 trust_remote_code: false
 bf16: false
 fp16: false
 report_to: wandb
 wandb_project: grpo-mbpp
-wandb_run_name: null
+wandb_run_name: grpo-coder05-16-eval10-step5-20260906
+do_sample: true
+temperature: 0.7
+
+include_generic_arguments: true
 
 ------------------------------------------------------------------------
 
-
-
 ------------------------------------------------------------------------
-RUN STARTING
-Timestamp: 2026-08-08 16:10:32 PDT
+EVALUATION RESULTS
+Evaluation: checkpoint-115
+Training context: checkpoint
+Epoch: 0.1537433155080214
+Timestamp: 2026-09-05 21:58:27 PDT
+Git commit: 6c1085b
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.35416666666666663,
+  "candidate_count": 16,
+  "examples": 10,
+  "pass_at_1": 0.2,
+  "pass_at_16": 0.7,
+  "pass_at_2": 0.3,
+  "pass_at_4": 0.4,
+  "pass_at_8": 0.5,
+  "reranked_pass_at_1": 0.4,
+  "reranked_pass_at_16": 0.7,
+  "reranked_pass_at_2": 0.4,
+  "reranked_pass_at_4": 0.5,
+  "reranked_pass_at_8": 0.7,
+  "successful_examples": 2
+}
+YAML path: /tmp/grpo-coder05-16-eval10.yaml
+YAML contents:
+# This configuration runs sixteen-generation GRPO with a memory-bounded prompt micro-batch and evaluates the fixed ten-task batch.
+model_name_or_path: Qwen/Qwen2.5-Coder-0.5B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 374
+reuse_baseline: false
+run_baseline_evaluation: true
+run_intermediate_evals: true
+max_eval_samples: 10
+evaluation_num_completions: 16
+evaluation_batch_size: 16
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: /tmp/grpo-coder05-16-eval10-output
+num_train_epochs: 2
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 8
+generation_batch_size: 16
+learning_rate: 0.000001
+num_generations: 16
+max_prompt_length: 512
+max_completion_length: 768
+generation_kwargs:
+  do_sample: true
+  temperature: 0.7
+  seed: 42
+  stop_strings: ["```"]
+logging_steps: 1
+save_steps: 5
+pass_weight: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: false
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: grpo-coder05-16-eval10-step5-20260906
+do_sample: true
+temperature: 0.7
+
+include_generic_arguments: true
+
 ------------------------------------------------------------------------
 
 ------------------------------------------------------------------------
@@ -112,1611 +156,152 @@ EVALUATION RESULTS
 Evaluation: baseline
 Training context: baseline
 Epoch: baseline
-Timestamp: 2026-08-08 16:13:14 PDT
-Git commit: f60f4f4
-Change description: f60f4f4 Increase effective batch size and track average reward
+Timestamp: 2026-09-05 21:59:08 PDT
+Git commit: 6c1085b
+Change description: No committed code changes since the previous evaluation.
 Metrics:
 {
-  "average_reward": 0.3333333333333333,
-  "examples": 75,
-  "pass_at_1": 0.3333333333333333,
-  "status_counts": {
-    "failed": 46,
-    "format_error": 4,
-    "passed": 25
-  }
+  "average_reward": 0.3466666666666667,
+  "candidate_count": 50,
+  "examples": 10,
+  "pass_at_1": 0.4,
+  "pass_at_10": 0.8,
+  "pass_at_16": 0.8,
+  "pass_at_2": 0.4,
+  "pass_at_20": 0.8,
+  "pass_at_30": 0.8,
+  "pass_at_4": 0.5,
+  "pass_at_40": 0.9,
+  "pass_at_50": 0.9,
+  "pass_at_8": 0.7,
+  "successful_examples": 4
 }
-YAML path: configs/default.yaml
+YAML path: /tmp/grpo-coder05-baseline-50-eval10.yaml
 YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
+# This configuration runs sixteen-generation GRPO with a memory-bounded prompt micro-batch and evaluates the fixed ten-task batch.
+model_name_or_path: Qwen/Qwen2.5-Coder-0.5B-Instruct
 dataset_name: google-research-datasets/mbpp
 dataset_config: null
-dataset_split: train
+train_split: train
+validation_split: validation
+synthetic_tests_enabled: false
 seed: 42
-train_fraction: 0.8
-max_train_samples: null
+max_train_samples: 374
 reuse_baseline: false
+run_baseline_evaluation: true
 run_intermediate_evals: true
-max_eval_samples: null
+max_eval_samples: 10
+evaluation_num_completions: 50
+evaluation_batch_size: 2
+sft_enabled: false
 log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 1
+results_log_path: logs/results.txt
+output_dir: /tmp/grpo-coder05-baseline-50-eval10-output
+num_train_epochs: 2
 max_steps: -1
 per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
+gradient_accumulation_steps: 8
+generation_batch_size: 2
 learning_rate: 0.000001
-num_generations: 4
+num_generations: 16
 max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
+max_completion_length: 768
+generation_kwargs:
+  do_sample: true
+  temperature: 0.7
+  seed: 42
+  stop_strings: ["```"]
 logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
+save_steps: 5
+pass_weight: 0.5
 sandbox_timeout_seconds: 3
 trust_remote_code: false
 bf16: false
 fp16: false
 report_to: wandb
 wandb_project: grpo-mbpp
-wandb_run_name: null
+wandb_run_name: baseline-coder05-50-eval10-20260906
+do_sample: true
+temperature: 0.7
 
-------------------------------------------------------------------------
-
-
-
-------------------------------------------------------------------------
-RUN STARTING
-Timestamp: 2026-08-08 16:15:00 PDT
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: baseline
-Training context: baseline
-Epoch: baseline
-Timestamp: 2026-08-08 16:15:56 PDT
-Git commit: a979cc6
-Change description: a979cc6 Use trainer step for average reward logging
-Metrics:
-{
-  "average_reward": 0.3333333333333333,
-  "examples": 75,
-  "pass_at_1": 0.3333333333333333,
-  "status_counts": {
-    "failed": 46,
-    "format_error": 4,
-    "passed": 25
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 1
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
+include_generic_arguments: true
 
 ------------------------------------------------------------------------
 
 ------------------------------------------------------------------------
 EVALUATION RESULTS
-Evaluation: checkpoint-25
+Evaluation: checkpoint-120
 Training context: checkpoint
-Epoch: 0.6756756756756757
-Timestamp: 2026-08-08 16:33:02 PDT
-Git commit: a979cc6
+Epoch: 0.16042780748663102
+Timestamp: 2026-09-05 21:59:51 PDT
+Git commit: 6c1085b
 Change description: No committed code changes since the previous evaluation.
 Metrics:
 {
-  "average_reward": 0.0,
-  "examples": 75,
-  "pass_at_1": 0.0,
-  "status_counts": {
-    "format_error": 75
-  }
+  "average_reward": 0.32916666666666666,
+  "candidate_count": 16,
+  "examples": 10,
+  "pass_at_1": 0.2,
+  "pass_at_16": 0.8,
+  "pass_at_2": 0.3,
+  "pass_at_4": 0.4,
+  "pass_at_8": 0.5,
+  "reranked_pass_at_1": 0.3,
+  "reranked_pass_at_16": 0.8,
+  "reranked_pass_at_2": 0.5,
+  "reranked_pass_at_4": 0.5,
+  "reranked_pass_at_8": 0.6,
+  "successful_examples": 2
 }
-YAML path: configs/default.yaml
+YAML path: /tmp/grpo-coder05-16-eval10.yaml
 YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
+# This configuration runs sixteen-generation GRPO with a memory-bounded prompt micro-batch and evaluates the fixed ten-task batch.
+model_name_or_path: Qwen/Qwen2.5-Coder-0.5B-Instruct
 dataset_name: google-research-datasets/mbpp
 dataset_config: null
-dataset_split: train
+train_split: train
+validation_split: validation
+synthetic_tests_enabled: false
 seed: 42
-train_fraction: 0.8
-max_train_samples: null
+max_train_samples: 374
 reuse_baseline: false
+run_baseline_evaluation: true
 run_intermediate_evals: true
-max_eval_samples: null
+max_eval_samples: 10
+evaluation_num_completions: 16
+evaluation_batch_size: 16
+sft_enabled: false
 log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 1
+results_log_path: logs/results.txt
+output_dir: /tmp/grpo-coder05-16-eval10-output
+num_train_epochs: 2
 max_steps: -1
 per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
+gradient_accumulation_steps: 8
+generation_batch_size: 16
 learning_rate: 0.000001
-num_generations: 4
+num_generations: 16
 max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
+max_completion_length: 768
+generation_kwargs:
+  do_sample: true
+  temperature: 0.7
+  seed: 42
+  stop_strings: ["```"]
 logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
+save_steps: 5
+pass_weight: 0.5
 sandbox_timeout_seconds: 3
 trust_remote_code: false
 bf16: false
 fp16: false
 report_to: wandb
 wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: checkpoint-37
-Training context: checkpoint
-Epoch: 1.0
-Timestamp: 2026-08-08 16:43:49 PDT
-Git commit: a979cc6
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.0,
-  "examples": 75,
-  "pass_at_1": 0.0,
-  "status_counts": {
-    "format_error": 75
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 1
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: final
-Training context: best-checkpoint-final
-Epoch: 1.0
-Timestamp: 2026-08-08 16:44:44 PDT
-Git commit: a979cc6
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.37333333333333335,
-  "examples": 75,
-  "pass_at_1": 0.37333333333333335,
-  "status_counts": {
-    "failed": 43,
-    "format_error": 4,
-    "passed": 28
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 1
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-
-
-------------------------------------------------------------------------
-RUN STARTING
-Timestamp: 2026-08-09 11:01:28 PDT
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: baseline
-Training context: baseline
-Epoch: baseline
-Timestamp: 2026-08-09 11:02:20 PDT
-Git commit: c75f6f9
-Change description: c75f6f9 Clean up experiment logs and retain recent analyses
-ebe814f Fix Codex PATH in startup script
-15c37bd Track experiment logs and cumulative rewards
-67aeb0b Record effective batch error analysis
-Metrics:
-{
-  "average_reward": 0.28,
-  "examples": 75,
-  "pass_at_1": 0.28,
-  "status_counts": {
-    "failed": 51,
-    "format_error": 3,
-    "passed": 21
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 1
-max_steps: 5
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: checkpoint-5
-Training context: checkpoint
-Epoch: 0.13513513513513514
-Timestamp: 2026-08-09 11:08:02 PDT
-Git commit: c75f6f9
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.0,
-  "examples": 75,
-  "pass_at_1": 0.0,
-  "status_counts": {
-    "format_error": 75
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 1
-max_steps: 5
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: final
-Training context: best-checkpoint-final
-Epoch: 0.13513513513513514
-Timestamp: 2026-08-09 11:08:46 PDT
-Git commit: c75f6f9
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.28,
-  "examples": 75,
-  "pass_at_1": 0.28,
-  "status_counts": {
-    "failed": 53,
-    "format_error": 1,
-    "passed": 21
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 1
-max_steps: 5
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-
-
-------------------------------------------------------------------------
-RUN STARTING
-Timestamp: 2026-08-09 11:18:04 PDT
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: baseline
-Training context: baseline
-Epoch: baseline
-Timestamp: 2026-08-09 11:18:50 PDT
-Git commit: c75f6f9
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.28,
-  "examples": 75,
-  "pass_at_1": 0.28,
-  "status_counts": {
-    "failed": 51,
-    "format_error": 3,
-    "passed": 21
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 1
-max_steps: 5
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: checkpoint-5
-Training context: checkpoint
-Epoch: 0.13513513513513514
-Timestamp: 2026-08-09 11:21:28 PDT
-Git commit: c75f6f9
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.26666666666666666,
-  "examples": 75,
-  "pass_at_1": 0.26666666666666666,
-  "status_counts": {
-    "failed": 51,
-    "format_error": 4,
-    "passed": 20
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 1
-max_steps: 5
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: final
-Training context: best-checkpoint-final
-Epoch: 0.13513513513513514
-Timestamp: 2026-08-09 11:22:05 PDT
-Git commit: c75f6f9
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.26666666666666666,
-  "examples": 75,
-  "pass_at_1": 0.26666666666666666,
-  "status_counts": {
-    "failed": 51,
-    "format_error": 4,
-    "passed": 20
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 1
-max_steps: 5
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-
-
-------------------------------------------------------------------------
-RUN STARTING
-Timestamp: 2026-08-09 11:41:42 PDT
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: baseline
-Training context: baseline
-Epoch: baseline
-Timestamp: 2026-08-09 11:42:29 PDT
-Git commit: 6ec22be
-Change description: 6ec22be Align checkpoint and final evaluation modes
-Metrics:
-{
-  "average_reward": 0.28,
-  "examples": 75,
-  "pass_at_1": 0.28,
-  "status_counts": {
-    "failed": 51,
-    "format_error": 3,
-    "passed": 21
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 1
-max_steps: 5
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: checkpoint-5
-Training context: checkpoint
-Epoch: 0.13513513513513514
-Timestamp: 2026-08-09 11:45:06 PDT
-Git commit: 6ec22be
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.25333333333333335,
-  "examples": 75,
-  "pass_at_1": 0.25333333333333335,
-  "status_counts": {
-    "failed": 52,
-    "format_error": 4,
-    "passed": 19
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 1
-max_steps: 5
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: final
-Training context: best-checkpoint-final
-Epoch: 0.13513513513513514
-Timestamp: 2026-08-09 11:45:41 PDT
-Git commit: 6ec22be
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.25333333333333335,
-  "examples": 75,
-  "pass_at_1": 0.25333333333333335,
-  "status_counts": {
-    "failed": 52,
-    "format_error": 4,
-    "passed": 19
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 1
-max_steps: 5
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-
-
-------------------------------------------------------------------------
-RUN STARTING
-Timestamp: 2026-08-09 12:07:26 PDT
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: baseline
-Training context: baseline
-Epoch: baseline
-Timestamp: 2026-08-09 12:08:13 PDT
-Git commit: 2dded23
-Change description: 2dded23 Add dense rewards and group diagnostics
-Metrics:
-{
-  "average_reward": 0.28,
-  "examples": 75,
-  "pass_at_1": 0.28,
-  "status_counts": {
-    "failed": 51,
-    "format_error": 3,
-    "passed": 21
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 1
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: checkpoint-25
-Training context: checkpoint
-Epoch: 0.6756756756756757
-Timestamp: 2026-08-09 12:19:04 PDT
-Git commit: 2dded23
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.29333333333333333,
-  "examples": 75,
-  "pass_at_1": 0.29333333333333333,
-  "status_counts": {
-    "failed": 48,
-    "format_error": 5,
-    "passed": 22
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 1
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: checkpoint-37
-Training context: checkpoint
-Epoch: 1.0
-Timestamp: 2026-08-09 12:24:29 PDT
-Git commit: 2dded23
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.25333333333333335,
-  "examples": 75,
-  "pass_at_1": 0.25333333333333335,
-  "status_counts": {
-    "failed": 52,
-    "format_error": 4,
-    "passed": 19
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 1
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: final
-Training context: best-checkpoint-final
-Epoch: 1.0
-Timestamp: 2026-08-09 12:25:18 PDT
-Git commit: 2dded23
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.29333333333333333,
-  "examples": 75,
-  "pass_at_1": 0.29333333333333333,
-  "status_counts": {
-    "failed": 48,
-    "format_error": 5,
-    "passed": 22
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 1
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-
-
-------------------------------------------------------------------------
-RUN STARTING
-Timestamp: 2026-08-09 12:37:01 PDT
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: baseline
-Training context: baseline
-Epoch: baseline
-Timestamp: 2026-08-09 12:37:49 PDT
-Git commit: 2dded23
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.28,
-  "examples": 75,
-  "pass_at_1": 0.28,
-  "status_counts": {
-    "failed": 51,
-    "format_error": 3,
-    "passed": 21
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 1
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: checkpoint-25
-Training context: checkpoint
-Epoch: 0.6756756756756757
-Timestamp: 2026-08-09 12:49:39 PDT
-Git commit: 2dded23
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.28,
-  "examples": 75,
-  "pass_at_1": 0.28,
-  "status_counts": {
-    "failed": 51,
-    "format_error": 3,
-    "passed": 21
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 1
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: checkpoint-37
-Training context: checkpoint
-Epoch: 1.0
-Timestamp: 2026-08-09 12:55:16 PDT
-Git commit: 2dded23
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.29333333333333333,
-  "examples": 75,
-  "pass_at_1": 0.29333333333333333,
-  "status_counts": {
-    "failed": 51,
-    "format_error": 2,
-    "passed": 22
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 1
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: final
-Training context: best-checkpoint-final
-Epoch: 1.0
-Timestamp: 2026-08-09 12:55:54 PDT
-Git commit: 2dded23
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.29333333333333333,
-  "examples": 75,
-  "pass_at_1": 0.29333333333333333,
-  "status_counts": {
-    "failed": 51,
-    "format_error": 2,
-    "passed": 22
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 1
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-
-
-------------------------------------------------------------------------
-RUN STARTING
-Timestamp: 2026-08-09 13:15:20 PDT
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: baseline
-Training context: baseline
-Epoch: baseline
-Timestamp: 2026-08-09 13:16:07 PDT
-Git commit: b4241f2
-Change description: b4241f2 Add per-component reward averages
-04b2538 Log dense reward components to W&B
-Metrics:
-{
-  "average_reward": 0.28,
-  "examples": 75,
-  "pass_at_1": 0.28,
-  "status_counts": {
-    "failed": 51,
-    "format_error": 3,
-    "passed": 21
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 10
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: checkpoint-25
-Training context: checkpoint
-Epoch: 0.6756756756756757
-Timestamp: 2026-08-09 13:27:00 PDT
-Git commit: b4241f2
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.32,
-  "examples": 75,
-  "pass_at_1": 0.32,
-  "status_counts": {
-    "failed": 47,
-    "format_error": 4,
-    "passed": 24
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 10
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: checkpoint-50
-Training context: checkpoint
-Epoch: 1.3513513513513513
-Timestamp: 2026-08-09 13:38:19 PDT
-Git commit: 3b3769d
-Change description: 3b3769d Run error analysis for ten epochs
-Metrics:
-{
-  "average_reward": 0.3333333333333333,
-  "examples": 75,
-  "pass_at_1": 0.3333333333333333,
-  "status_counts": {
-    "failed": 48,
-    "format_error": 2,
-    "passed": 25
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 10
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: checkpoint-75
-Training context: checkpoint
-Epoch: 2.027027027027027
-Timestamp: 2026-08-09 13:49:43 PDT
-Git commit: 3b3769d
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.32,
-  "examples": 75,
-  "pass_at_1": 0.32,
-  "status_counts": {
-    "failed": 47,
-    "format_error": 4,
-    "passed": 24
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 10
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: checkpoint-100
-Training context: checkpoint
-Epoch: 2.7027027027027026
-Timestamp: 2026-08-09 14:00:45 PDT
-Git commit: 3b3769d
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.32,
-  "examples": 75,
-  "pass_at_1": 0.32,
-  "status_counts": {
-    "failed": 48,
-    "format_error": 3,
-    "passed": 24
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 10
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
+wandb_run_name: grpo-coder05-16-eval10-step5-20260906
+do_sample: true
+temperature: 0.7
+
+include_generic_arguments: true
 
 ------------------------------------------------------------------------
 
@@ -1724,2764 +309,534 @@ wandb_run_name: null
 EVALUATION RESULTS
 Evaluation: checkpoint-125
 Training context: checkpoint
-Epoch: 3.3783783783783785
-Timestamp: 2026-08-09 14:12:15 PDT
-Git commit: 5f384a2
-Change description: 5f384a2 Add configurable rolling reward averages
-Metrics:
-{
-  "average_reward": 0.32,
-  "examples": 75,
-  "pass_at_1": 0.32,
-  "status_counts": {
-    "failed": 47,
-    "format_error": 4,
-    "passed": 24
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 10
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: checkpoint-150
-Training context: checkpoint
-Epoch: 4.054054054054054
-Timestamp: 2026-08-09 14:24:03 PDT
-Git commit: 5f384a2
+Epoch: 0.16711229946524064
+Timestamp: 2026-09-05 22:01:41 PDT
+Git commit: 6c1085b
 Change description: No committed code changes since the previous evaluation.
 Metrics:
 {
-  "average_reward": 0.4,
-  "examples": 75,
-  "pass_at_1": 0.4,
-  "status_counts": {
-    "failed": 43,
-    "format_error": 2,
-    "passed": 30
-  }
+  "average_reward": 0.35,
+  "candidate_count": 16,
+  "examples": 10,
+  "pass_at_1": 0.3,
+  "pass_at_16": 0.6,
+  "pass_at_2": 0.3,
+  "pass_at_4": 0.4,
+  "pass_at_8": 0.4,
+  "reranked_pass_at_1": 0.4,
+  "reranked_pass_at_16": 0.6,
+  "reranked_pass_at_2": 0.5,
+  "reranked_pass_at_4": 0.6,
+  "reranked_pass_at_8": 0.6,
+  "successful_examples": 3
 }
-YAML path: configs/default.yaml
+YAML path: /tmp/grpo-coder05-16-eval10.yaml
 YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 10
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: checkpoint-175
-Training context: checkpoint
-Epoch: 4.72972972972973
-Timestamp: 2026-08-09 14:35:27 PDT
-Git commit: 5f384a2
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.3466666666666667,
-  "examples": 75,
-  "pass_at_1": 0.3466666666666667,
-  "status_counts": {
-    "failed": 43,
-    "format_error": 6,
-    "passed": 26
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 10
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: checkpoint-200
-Training context: checkpoint
-Epoch: 5.405405405405405
-Timestamp: 2026-08-09 14:46:40 PDT
-Git commit: 5f384a2
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.36,
-  "examples": 75,
-  "pass_at_1": 0.36,
-  "status_counts": {
-    "failed": 46,
-    "format_error": 2,
-    "passed": 27
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 10
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: checkpoint-225
-Training context: checkpoint
-Epoch: 6.081081081081081
-Timestamp: 2026-08-09 14:58:09 PDT
-Git commit: 5f384a2
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.3466666666666667,
-  "examples": 75,
-  "pass_at_1": 0.3466666666666667,
-  "status_counts": {
-    "failed": 47,
-    "format_error": 2,
-    "passed": 26
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 10
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: checkpoint-250
-Training context: checkpoint
-Epoch: 6.756756756756757
-Timestamp: 2026-08-09 15:09:21 PDT
-Git commit: 5f384a2
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.37333333333333335,
-  "examples": 75,
-  "pass_at_1": 0.37333333333333335,
-  "status_counts": {
-    "failed": 45,
-    "format_error": 2,
-    "passed": 28
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 10
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: checkpoint-275
-Training context: checkpoint
-Epoch: 7.4324324324324325
-Timestamp: 2026-08-09 15:20:44 PDT
-Git commit: 5f384a2
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.32,
-  "examples": 75,
-  "pass_at_1": 0.32,
-  "status_counts": {
-    "failed": 48,
-    "format_error": 3,
-    "passed": 24
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 10
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: checkpoint-300
-Training context: checkpoint
-Epoch: 8.108108108108109
-Timestamp: 2026-08-09 15:32:01 PDT
-Git commit: 5f384a2
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.36,
-  "examples": 75,
-  "pass_at_1": 0.36,
-  "status_counts": {
-    "failed": 44,
-    "format_error": 4,
-    "passed": 27
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 10
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: checkpoint-325
-Training context: checkpoint
-Epoch: 8.783783783783784
-Timestamp: 2026-08-09 15:42:57 PDT
-Git commit: 5f384a2
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.37333333333333335,
-  "examples": 75,
-  "pass_at_1": 0.37333333333333335,
-  "status_counts": {
-    "failed": 44,
-    "format_error": 3,
-    "passed": 28
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 10
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: checkpoint-350
-Training context: checkpoint
-Epoch: 9.45945945945946
-Timestamp: 2026-08-09 15:54:34 PDT
-Git commit: 5f384a2
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.32,
-  "examples": 75,
-  "pass_at_1": 0.32,
-  "status_counts": {
-    "failed": 47,
-    "format_error": 4,
-    "passed": 24
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 10
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: checkpoint-370
-Training context: checkpoint
-Epoch: 10.0
-Timestamp: 2026-08-09 16:03:56 PDT
-Git commit: 5f384a2
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.3466666666666667,
-  "examples": 75,
-  "pass_at_1": 0.3466666666666667,
-  "status_counts": {
-    "failed": 47,
-    "format_error": 2,
-    "passed": 26
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 10
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: final
-Training context: best-checkpoint-final
-Epoch: 10.0
-Timestamp: 2026-08-09 16:04:37 PDT
-Git commit: 5f384a2
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.4,
-  "examples": 75,
-  "pass_at_1": 0.4,
-  "status_counts": {
-    "failed": 43,
-    "format_error": 2,
-    "passed": 30
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 10
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-
-
-------------------------------------------------------------------------
-RUN STARTING
-Timestamp: 2026-08-12 08:03:10 PDT
-------------------------------------------------------------------------
-
-
-
-------------------------------------------------------------------------
-RUN STARTING
-Timestamp: 2026-08-12 08:06:10 PDT
-------------------------------------------------------------------------
-
-
-
-------------------------------------------------------------------------
-RUN STARTING
-Timestamp: 2026-08-12 08:40:14 PDT
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: sft-baseline
-Training context: sft-baseline
-Epoch: 0
-Timestamp: 2026-08-12 08:42:30 PDT
-Git commit: 1d29cd5
-Change description: 1d29cd5 Evaluate SFT at each epoch
-e438152 Record successful five batch SFT run
-75eb586 Record failed SFT run result
-51e5604 Skip baseline for SFT only runs
-ea5020d Add supervised warm start before GRPO
-2511bf0 Clarify skill file commit requirements
-f5818d5 Clarify elevated patch workflow and set 100 epochs
-16e7abb Log every evaluation in W&B
-bed02b4 Require pushing command-created files
-1994b6a Record latest run artifacts
-f3fc9f9 Record latest evaluation results
-afc68d3 Document GitHub DNS push retries
-Metrics:
-{
-  "average_reward": 0.29333333333333333,
-  "examples": 75,
-  "pass_at_1": 0.29333333333333333,
-  "status_counts": {
-    "failed": 49,
-    "format_error": 4,
-    "passed": 22
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: true
-sft_num_train_epochs: 1
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 100
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: sft-epoch-1
-Training context: sft
-Epoch: 1
-Timestamp: 2026-08-12 08:47:16 PDT
-Git commit: 1d29cd5
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.36,
-  "examples": 75,
-  "pass_at_1": 0.36,
-  "status_counts": {
-    "failed": 47,
-    "format_error": 1,
-    "passed": 27
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: true
-sft_num_train_epochs: 1
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 100
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-
-
-------------------------------------------------------------------------
-RUN STARTING
-Timestamp: 2026-08-12 09:02:15 PDT
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: sft-baseline
-Training context: sft-baseline
-Epoch: 0
-Timestamp: 2026-08-12 09:04:31 PDT
-Git commit: 2ab7715
-Change description: 2ab7715 Train SFT for one hundred epochs
-88068f2 Enforce code comment documentation
-4e31d8a Record full epoch SFT evaluation
-Metrics:
-{
-  "average_reward": 0.29333333333333333,
-  "examples": 75,
-  "pass_at_1": 0.29333333333333333,
-  "status_counts": {
-    "failed": 49,
-    "format_error": 4,
-    "passed": 22
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: true
-sft_num_train_epochs: 100
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 100
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: sft-epoch-1
-Training context: sft
-Epoch: 1
-Timestamp: 2026-08-12 09:09:32 PDT
-Git commit: 2ab7715
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.36,
-  "examples": 75,
-  "pass_at_1": 0.36,
-  "status_counts": {
-    "failed": 45,
-    "format_error": 3,
-    "passed": 27
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: true
-sft_num_train_epochs: 100
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 100
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: sft-epoch-2
-Training context: sft
-Epoch: 2
-Timestamp: 2026-08-12 09:14:00 PDT
-Git commit: 2ab7715
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.29333333333333333,
-  "examples": 75,
-  "pass_at_1": 0.29333333333333333,
-  "status_counts": {
-    "failed": 52,
-    "passed": 22,
-    "timeout": 1
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: true
-sft_num_train_epochs: 100
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 100
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: sft-epoch-3
-Training context: sft
-Epoch: 3
-Timestamp: 2026-08-12 09:18:42 PDT
-Git commit: 2ab7715
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.3466666666666667,
-  "examples": 75,
-  "pass_at_1": 0.3466666666666667,
-  "status_counts": {
-    "failed": 48,
-    "format_error": 1,
-    "passed": 26
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: true
-sft_num_train_epochs: 100
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 100
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: sft-epoch-4
-Training context: sft
-Epoch: 4
-Timestamp: 2026-08-12 09:23:15 PDT
-Git commit: 2ab7715
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.26666666666666666,
-  "examples": 75,
-  "pass_at_1": 0.26666666666666666,
-  "status_counts": {
-    "failed": 55,
-    "passed": 20
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: true
-sft_num_train_epochs: 100
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 100
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: sft-epoch-5
-Training context: sft
-Epoch: 5
-Timestamp: 2026-08-12 09:27:58 PDT
-Git commit: 2ab7715
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.26666666666666666,
-  "examples": 75,
-  "pass_at_1": 0.26666666666666666,
-  "status_counts": {
-    "failed": 53,
-    "passed": 20,
-    "syntax_error": 2
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: true
-sft_num_train_epochs: 100
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 100
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: sft-epoch-6
-Training context: sft
-Epoch: 6
-Timestamp: 2026-08-12 09:32:24 PDT
-Git commit: 2ab7715
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.26666666666666666,
-  "examples": 75,
-  "pass_at_1": 0.26666666666666666,
-  "status_counts": {
-    "failed": 51,
-    "passed": 20,
-    "syntax_error": 3,
-    "timeout": 1
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: true
-sft_num_train_epochs: 100
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 100
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: sft-epoch-7
-Training context: sft
-Epoch: 7
-Timestamp: 2026-08-12 09:37:02 PDT
-Git commit: 2ab7715
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.26666666666666666,
-  "examples": 75,
-  "pass_at_1": 0.26666666666666666,
-  "status_counts": {
-    "failed": 49,
-    "format_error": 1,
-    "passed": 20,
-    "syntax_error": 5
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: true
-sft_num_train_epochs: 100
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 100
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: sft-epoch-8
-Training context: sft
-Epoch: 8
-Timestamp: 2026-08-12 09:41:09 PDT
-Git commit: 2ab7715
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.28,
-  "examples": 75,
-  "pass_at_1": 0.28,
-  "status_counts": {
-    "failed": 53,
-    "passed": 21,
-    "syntax_error": 1
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: true
-sft_num_train_epochs: 100
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 100
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: sft-epoch-9
-Training context: sft
-Epoch: 9
-Timestamp: 2026-08-12 09:45:40 PDT
-Git commit: 2ab7715
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.24,
-  "examples": 75,
-  "pass_at_1": 0.24,
-  "status_counts": {
-    "failed": 50,
-    "passed": 18,
-    "syntax_error": 4,
-    "timeout": 3
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: true
-sft_num_train_epochs: 100
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 100
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: sft-epoch-10
-Training context: sft
-Epoch: 10
-Timestamp: 2026-08-12 09:50:06 PDT
-Git commit: 2ab7715
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.26666666666666666,
-  "examples": 75,
-  "pass_at_1": 0.26666666666666666,
-  "status_counts": {
-    "failed": 50,
-    "passed": 20,
-    "syntax_error": 3,
-    "timeout": 2
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: true
-sft_num_train_epochs: 100
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 100
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: sft-epoch-11
-Training context: sft
-Epoch: 11
-Timestamp: 2026-08-12 09:54:34 PDT
-Git commit: 2ab7715
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.22666666666666666,
-  "examples": 75,
-  "pass_at_1": 0.22666666666666666,
-  "status_counts": {
-    "failed": 55,
-    "passed": 17,
-    "syntax_error": 2,
-    "timeout": 1
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: true
-sft_num_train_epochs: 100
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 100
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: sft-epoch-12
-Training context: sft
-Epoch: 12
-Timestamp: 2026-08-12 09:59:05 PDT
-Git commit: 2ab7715
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.22666666666666666,
-  "examples": 75,
-  "pass_at_1": 0.22666666666666666,
-  "status_counts": {
-    "failed": 53,
-    "format_error": 1,
-    "passed": 17,
-    "syntax_error": 3,
-    "timeout": 1
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: true
-sft_num_train_epochs: 100
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 100
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: sft-epoch-13
-Training context: sft
-Epoch: 13
-Timestamp: 2026-08-12 10:03:32 PDT
-Git commit: 2ab7715
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.28,
-  "examples": 75,
-  "pass_at_1": 0.28,
-  "status_counts": {
-    "failed": 47,
-    "format_error": 1,
-    "passed": 21,
-    "syntax_error": 4,
-    "timeout": 2
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: true
-sft_num_train_epochs: 100
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 100
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: sft-epoch-14
-Training context: sft
-Epoch: 14
-Timestamp: 2026-08-12 10:07:56 PDT
-Git commit: 2ab7715
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.22666666666666666,
-  "examples": 75,
-  "pass_at_1": 0.22666666666666666,
-  "status_counts": {
-    "failed": 54,
-    "format_error": 1,
-    "passed": 17,
-    "syntax_error": 2,
-    "timeout": 1
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: true
-sft_num_train_epochs: 100
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 100
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: sft-epoch-15
-Training context: sft
-Epoch: 15
-Timestamp: 2026-08-12 10:12:20 PDT
-Git commit: 2ab7715
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.26666666666666666,
-  "examples": 75,
-  "pass_at_1": 0.26666666666666666,
-  "status_counts": {
-    "failed": 47,
-    "passed": 20,
-    "syntax_error": 5,
-    "timeout": 3
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: true
-sft_num_train_epochs: 100
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 100
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: sft-epoch-16
-Training context: sft
-Epoch: 16
-Timestamp: 2026-08-12 10:16:29 PDT
-Git commit: 2ab7715
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.24,
-  "examples": 75,
-  "pass_at_1": 0.24,
-  "status_counts": {
-    "failed": 52,
-    "passed": 18,
-    "syntax_error": 4,
-    "timeout": 1
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: true
-sft_num_train_epochs: 100
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 100
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: sft-epoch-17
-Training context: sft
-Epoch: 17
-Timestamp: 2026-08-12 10:20:39 PDT
-Git commit: 2ab7715
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.24,
-  "examples": 75,
-  "pass_at_1": 0.24,
-  "status_counts": {
-    "failed": 55,
-    "passed": 18,
-    "syntax_error": 2
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: true
-sft_num_train_epochs: 100
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 100
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: sft-epoch-18
-Training context: sft
-Epoch: 18
-Timestamp: 2026-08-12 10:25:05 PDT
-Git commit: 2ab7715
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.21333333333333335,
-  "examples": 75,
-  "pass_at_1": 0.21333333333333335,
-  "status_counts": {
-    "failed": 53,
-    "passed": 16,
-    "syntax_error": 5,
-    "timeout": 1
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: true
-sft_num_train_epochs: 100
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 100
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: sft-epoch-19
-Training context: sft
-Epoch: 19
-Timestamp: 2026-08-12 10:29:29 PDT
-Git commit: 2ab7715
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.22666666666666666,
-  "examples": 75,
-  "pass_at_1": 0.22666666666666666,
-  "status_counts": {
-    "failed": 52,
-    "passed": 17,
-    "syntax_error": 4,
-    "timeout": 2
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: true
-sft_num_train_epochs: 100
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 100
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: sft-epoch-20
-Training context: sft
-Epoch: 20
-Timestamp: 2026-08-12 10:33:39 PDT
-Git commit: 2ab7715
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.22666666666666666,
-  "examples": 75,
-  "pass_at_1": 0.22666666666666666,
-  "status_counts": {
-    "failed": 55,
-    "passed": 17,
-    "syntax_error": 3
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: true
-sft_num_train_epochs: 100
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 100
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: sft-epoch-21
-Training context: sft
-Epoch: 21
-Timestamp: 2026-08-12 10:37:53 PDT
-Git commit: 2ab7715
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.21333333333333335,
-  "examples": 75,
-  "pass_at_1": 0.21333333333333335,
-  "status_counts": {
-    "failed": 51,
-    "passed": 16,
-    "syntax_error": 8
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: true
-sft_num_train_epochs: 100
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 100
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: sft-epoch-22
-Training context: sft
-Epoch: 22
-Timestamp: 2026-08-12 10:42:00 PDT
-Git commit: 2ab7715
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.18666666666666668,
-  "examples": 75,
-  "pass_at_1": 0.18666666666666668,
-  "status_counts": {
-    "failed": 56,
-    "passed": 14,
-    "syntax_error": 4,
-    "timeout": 1
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: true
-sft_num_train_epochs: 100
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 100
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: sft-epoch-23
-Training context: sft
-Epoch: 23
-Timestamp: 2026-08-12 10:46:18 PDT
-Git commit: 2ab7715
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.22666666666666666,
-  "examples": 75,
-  "pass_at_1": 0.22666666666666666,
-  "status_counts": {
-    "failed": 45,
-    "passed": 17,
-    "syntax_error": 11,
-    "timeout": 2
-  }
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-dataset_split: train
-seed: 42
-train_fraction: 0.8
-max_train_samples: null
-reuse_baseline: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: true
-sft_num_train_epochs: 100
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 100
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 512
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass_at_1
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-
-
-------------------------------------------------------------------------
-RUN STARTING
-Timestamp: 2026-08-14 00:32:29 PDT
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: baseline
-Training context: baseline
-Epoch: baseline
-Timestamp: 2026-08-14 00:32:54 PDT
-Git commit: 87dab8e
-Change description: 87dab8e Use official MBPP validation split
-3b20a2a Document dynamic reward regression analysis
-df765c9 Update inline comment guidelines in AGENTS.md
-2f9ce7d Remove execution flow section from README
-af375e7 Configure 370-step reward analysis run
-c064cc4 Add dynamic pass reward schedule
-b2e0513 Add agentic coding session notes
-dfec620 Rewrite notes as experiment cycles
-115a078 Add post-training meeting notes
-0bda995 Stop saturated SFT and restore one epoch warm start
-Metrics:
-{
-  "average_reward": 0.5,
-  "examples": 4,
-  "pass_at_1": 0.5,
-  "status_counts": {
-    "failed": 1,
-    "format_error": 1,
-    "passed": 2
-  }
-}
-YAML path: configs/debug.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-train_split: train
-validation_split: validation
-synthetic_tests_enabled: true
-synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
-synthetic_tests_require_all: true
-seed: 42
-max_train_samples: 8
-reuse_baseline: true
-run_intermediate_evals: false
-max_eval_samples: 4
-sft_enabled: false
-sft_num_train_epochs: 1
-sft_max_steps: 5
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 1
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 3
-log_path: logs/logs.txt
-results_log_path: logs/results.txt
-output_dir: outputs/grpo-mbpp-debug
-num_train_epochs: 1
-max_steps: 1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 1
-learning_rate: 0.000001
-num_generations: 2
-max_prompt_length: 256
-max_completion_length: 256
-logging_steps: 1
-dynamic_reward_transition_start: 1
-dynamic_reward_transition_end: 2
-dynamic_reward_final_pass_weight: 0.9
-save_steps: 1
-eval_steps: 1
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 2
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-
-
-------------------------------------------------------------------------
-RUN STARTING
-Timestamp: 2026-08-14 00:41:03 PDT
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: final
-Training context: final
-Epoch: 0.125
-Timestamp: 2026-08-14 00:41:47 PDT
-Git commit: 87dab8e
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.25,
-  "examples": 4,
-  "pass_at_1": 0.25,
-  "status_counts": {
-    "format_error": 3,
-    "passed": 1
-  }
-}
-YAML path: configs/debug.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-train_split: train
-validation_split: validation
-synthetic_tests_enabled: true
-synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
-synthetic_tests_require_all: true
-seed: 42
-max_train_samples: 8
-reuse_baseline: true
-run_intermediate_evals: false
-max_eval_samples: 4
-sft_enabled: false
-sft_num_train_epochs: 1
-sft_max_steps: 5
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 1
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 3
-log_path: logs/logs.txt
-results_log_path: logs/results.txt
-output_dir: outputs/grpo-mbpp-debug
-num_train_epochs: 1
-max_steps: 1
-per_device_train_batch_size: 2
-gradient_accumulation_steps: 1
-learning_rate: 0.000001
-num_generations: 2
-max_prompt_length: 256
-max_completion_length: 256
-logging_steps: 1
-dynamic_reward_transition_start: 1
-dynamic_reward_transition_end: 2
-dynamic_reward_final_pass_weight: 0.9
-save_steps: 1
-eval_steps: 1
-evaluation_num_completions: 1
-sandbox_timeout_seconds: 2
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-
-
-------------------------------------------------------------------------
-RUN STARTING
-Timestamp: 2026-08-19 23:43:07 PDT
-------------------------------------------------------------------------
-
-
-
-------------------------------------------------------------------------
-RUN STARTING
-Timestamp: 2026-08-20 01:03:23 PDT
-------------------------------------------------------------------------
-
-
-
-------------------------------------------------------------------------
-RUN STARTING
-Timestamp: 2026-08-20 01:19:49 PDT
-------------------------------------------------------------------------
-
-
-
-------------------------------------------------------------------------
-RUN STARTING
-Timestamp: 2026-08-20 01:23:40 PDT
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: baseline
-Training context: baseline
-Epoch: baseline
-Timestamp: 2026-08-20 01:30:55 PDT
-Git commit: 6e62484
-Change description: 6e62484 Restore baseline completion settings
-e2853e6 Increase completion budget for training
-9946fea Extend baseline completions and recover fences
-d02f94f Audit current baseline interface errors
-a7096c1 Use consolidated requirements prompt
-9b9d3a1 Discourage lookup table solutions in prompts
-9b06d77 Reaudit option four baseline failures
-7e173a0 Prefill complete generic function signatures
-c3ef2af Configure generic argument hints and retries
-5698a48 Preserve raw evaluation completions
-3bceb84 Retry generations with task-specific function prefixes
-c7d2e54 Document interface cleanup and reward hacking hypothesis
-b09ddb7 Force code fence prefix during generation
-6d7a298 Log raw and sandbox-ready completions
-7168d9c Remove placeholder example from prompt
-0ff23a2 Fix generated-only code fence stopping
-a4ce15f Stop code generation at closing fence
-32660e4 Align W&B evaluation chart steps
-95596da Record reward plateau investigation
-e43b8a0 Log evaluation diagnostics for reward alignment
-15a7da6 Select checkpoints by pass@1 with patience stopping
-09cddf6 Prioritize full-pass reward and baseline evaluation
-837a066 Align evaluation and training rewards
-bb7d6df Disable synthetic tests for GRPO run
-b66b28e Run validated GRPO for twenty epochs
-767b9ca Validate constraint-aware synthetic MBPP tests
-c53b195 Restore fixed dense GRPO reward
-3ec0890 Enable synthetic tests for full GRPO run
-6c42bd2 Add synthetic MBPP test augmentation
-Metrics:
-{
-  "average_reward": 0.3262962962962963,
-  "entropy": 0.466365892059949,
-  "examples": 90,
-  "pass_at_1": 0.23333333333333334,
-  "repeated_completion_fraction": 0.0,
-  "reward_format_mean": 0.025,
-  "reward_interface_mean": 0.020555555555555556,
-  "reward_pass_mean": 0.11666666666666667,
-  "reward_syntax_mean": 0.045555555555555564,
-  "reward_tests_mean": 0.11851851851851854,
-  "status_counts": {
-    "failed": 50,
-    "partial": 11,
-    "passed": 21,
-    "syntax_error": 8
-  },
-  "successful_examples": 21,
-  "unique_completion_rate": 1.0
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
+# This configuration runs sixteen-generation GRPO with a memory-bounded prompt micro-batch and evaluates the fixed ten-task batch.
+model_name_or_path: Qwen/Qwen2.5-Coder-0.5B-Instruct
 dataset_name: google-research-datasets/mbpp
 dataset_config: null
 train_split: train
 validation_split: validation
 synthetic_tests_enabled: false
-synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
-synthetic_tests_require_all: true
-synthetic_tests_per_task: 5
-synthetic_tests_validation_timeout_seconds: 5
 seed: 42
-max_train_samples: null
+max_train_samples: 374
+reuse_baseline: false
+run_baseline_evaluation: true
+run_intermediate_evals: true
+max_eval_samples: 10
+evaluation_num_completions: 16
+evaluation_batch_size: 16
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: /tmp/grpo-coder05-16-eval10-output
+num_train_epochs: 2
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 8
+generation_batch_size: 16
+learning_rate: 0.000001
+num_generations: 16
+max_prompt_length: 512
+max_completion_length: 768
+generation_kwargs:
+  do_sample: true
+  temperature: 0.7
+  seed: 42
+  stop_strings: ["```"]
+logging_steps: 1
+save_steps: 5
+pass_weight: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: false
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: grpo-coder05-16-eval10-step5-20260906
+do_sample: true
+temperature: 0.7
+
+include_generic_arguments: true
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: checkpoint-130
+Training context: checkpoint
+Epoch: 0.17379679144385027
+Timestamp: 2026-09-05 22:03:07 PDT
+Git commit: 6c1085b
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.35416666666666663,
+  "candidate_count": 16,
+  "examples": 10,
+  "pass_at_1": 0.3,
+  "pass_at_16": 0.5,
+  "pass_at_2": 0.3,
+  "pass_at_4": 0.4,
+  "pass_at_8": 0.4,
+  "reranked_pass_at_1": 0.3,
+  "reranked_pass_at_16": 0.5,
+  "reranked_pass_at_2": 0.4,
+  "reranked_pass_at_4": 0.4,
+  "reranked_pass_at_8": 0.4,
+  "successful_examples": 3
+}
+YAML path: /tmp/grpo-coder05-16-eval10.yaml
+YAML contents:
+# This configuration runs sixteen-generation GRPO with a memory-bounded prompt micro-batch and evaluates the fixed ten-task batch.
+model_name_or_path: Qwen/Qwen2.5-Coder-0.5B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 374
+reuse_baseline: false
+run_baseline_evaluation: true
+run_intermediate_evals: true
+max_eval_samples: 10
+evaluation_num_completions: 16
+evaluation_batch_size: 16
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: /tmp/grpo-coder05-16-eval10-output
+num_train_epochs: 2
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 8
+generation_batch_size: 16
+learning_rate: 0.000001
+num_generations: 16
+max_prompt_length: 512
+max_completion_length: 768
+generation_kwargs:
+  do_sample: true
+  temperature: 0.7
+  seed: 42
+  stop_strings: ["```"]
+logging_steps: 1
+save_steps: 5
+pass_weight: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: false
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: grpo-coder05-16-eval10-step5-20260906
+do_sample: true
+temperature: 0.7
+
+include_generic_arguments: true
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: checkpoint-135
+Training context: checkpoint
+Epoch: 0.1804812834224599
+Timestamp: 2026-09-05 22:05:13 PDT
+Git commit: 6c1085b
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.32083333333333336,
+  "candidate_count": 16,
+  "examples": 10,
+  "pass_at_1": 0.2,
+  "pass_at_16": 0.7,
+  "pass_at_2": 0.3,
+  "pass_at_4": 0.3,
+  "pass_at_8": 0.4,
+  "reranked_pass_at_1": 0.3,
+  "reranked_pass_at_16": 0.7,
+  "reranked_pass_at_2": 0.5,
+  "reranked_pass_at_4": 0.5,
+  "reranked_pass_at_8": 0.5,
+  "successful_examples": 2
+}
+YAML path: /tmp/grpo-coder05-16-eval10.yaml
+YAML contents:
+# This configuration runs sixteen-generation GRPO with a memory-bounded prompt micro-batch and evaluates the fixed ten-task batch.
+model_name_or_path: Qwen/Qwen2.5-Coder-0.5B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 374
+reuse_baseline: false
+run_baseline_evaluation: true
+run_intermediate_evals: true
+max_eval_samples: 10
+evaluation_num_completions: 16
+evaluation_batch_size: 16
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: /tmp/grpo-coder05-16-eval10-output
+num_train_epochs: 2
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 8
+generation_batch_size: 16
+learning_rate: 0.000001
+num_generations: 16
+max_prompt_length: 512
+max_completion_length: 768
+generation_kwargs:
+  do_sample: true
+  temperature: 0.7
+  seed: 42
+  stop_strings: ["```"]
+logging_steps: 1
+save_steps: 5
+pass_weight: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: false
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: grpo-coder05-16-eval10-step5-20260906
+do_sample: true
+temperature: 0.7
+
+include_generic_arguments: true
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: checkpoint-140
+Training context: checkpoint
+Epoch: 0.18716577540106952
+Timestamp: 2026-09-05 22:06:51 PDT
+Git commit: 6c1085b
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.3125,
+  "candidate_count": 16,
+  "examples": 10,
+  "pass_at_1": 0.3,
+  "pass_at_16": 0.6,
+  "pass_at_2": 0.4,
+  "pass_at_4": 0.4,
+  "pass_at_8": 0.5,
+  "reranked_pass_at_1": 0.2,
+  "reranked_pass_at_16": 0.6,
+  "reranked_pass_at_2": 0.4,
+  "reranked_pass_at_4": 0.5,
+  "reranked_pass_at_8": 0.6,
+  "successful_examples": 3
+}
+YAML path: /tmp/grpo-coder05-16-eval10.yaml
+YAML contents:
+# This configuration runs sixteen-generation GRPO with a memory-bounded prompt micro-batch and evaluates the fixed ten-task batch.
+model_name_or_path: Qwen/Qwen2.5-Coder-0.5B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 374
+reuse_baseline: false
+run_baseline_evaluation: true
+run_intermediate_evals: true
+max_eval_samples: 10
+evaluation_num_completions: 16
+evaluation_batch_size: 16
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: /tmp/grpo-coder05-16-eval10-output
+num_train_epochs: 2
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 8
+generation_batch_size: 16
+learning_rate: 0.000001
+num_generations: 16
+max_prompt_length: 512
+max_completion_length: 768
+generation_kwargs:
+  do_sample: true
+  temperature: 0.7
+  seed: 42
+  stop_strings: ["```"]
+logging_steps: 1
+save_steps: 5
+pass_weight: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: false
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: grpo-coder05-16-eval10-step5-20260906
+do_sample: true
+temperature: 0.7
+
+include_generic_arguments: true
+
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-05 22:08:59 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: baseline
+Training context: baseline
+Epoch: baseline
+Timestamp: 2026-09-05 22:12:53 PDT
+Git commit: 753a926
+Change description: 753a926 Support pass ten ranking cutoff
+9f1b2b9 Add progress to baseline evaluation
+Metrics:
+{
+  "average_reward": 0.2316666666666667,
+  "candidate_count": 10,
+  "examples": 20,
+  "pass_at_1": 0.1,
+  "pass_at_10": 0.35,
+  "pass_at_2": 0.1,
+  "pass_at_4": 0.2,
+  "pass_at_8": 0.3,
+  "successful_examples": 2
+}
+YAML path: /tmp/baseline-coder05-10-eval20.yaml
+YAML contents:
+# This configuration runs sixteen-generation GRPO with a memory-bounded prompt micro-batch and evaluates the fixed ten-task batch.
+model_name_or_path: Qwen/Qwen2.5-Coder-0.5B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 374
+reuse_baseline: false
+run_baseline_evaluation: true
+run_intermediate_evals: true
+max_eval_samples: 20
+evaluation_num_completions: 10
+evaluation_batch_size: 2
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: /tmp/baseline-coder05-10-eval20-output
+num_train_epochs: 2
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 8
+generation_batch_size: 2
+learning_rate: 0.000001
+num_generations: 16
+max_prompt_length: 512
+max_completion_length: 768
+generation_kwargs:
+  do_sample: true
+  temperature: 0.7
+  seed: 42
+  stop_strings: ["```"]
+logging_steps: 1
+save_steps: 5
+pass_weight: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: false
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: baseline-coder05-10-eval20-20260906
+do_sample: true
+temperature: 0.7
+
+include_generic_arguments: true
+
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-05 22:13:50 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: baseline
+Training context: baseline
+Epoch: baseline
+Timestamp: 2026-09-05 22:17:45 PDT
+Git commit: 53e9a26
+Change description: 53e9a26 Fix evaluation progress updates
+Metrics:
+{
+  "average_reward": 0.2316666666666667,
+  "candidate_count": 10,
+  "examples": 20,
+  "pass_at_1": 0.1,
+  "pass_at_10": 0.35,
+  "pass_at_2": 0.1,
+  "pass_at_4": 0.2,
+  "pass_at_8": 0.3,
+  "successful_examples": 2
+}
+YAML path: /tmp/baseline-coder05-10-eval20-progress.yaml
+YAML contents:
+# This configuration runs sixteen-generation GRPO with a memory-bounded prompt micro-batch and evaluates the fixed ten-task batch.
+model_name_or_path: Qwen/Qwen2.5-Coder-0.5B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 374
+reuse_baseline: false
+run_baseline_evaluation: true
+run_intermediate_evals: true
+max_eval_samples: 20
+evaluation_num_completions: 10
+evaluation_batch_size: 2
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: /tmp/baseline-coder05-10-eval20-progress-output
+num_train_epochs: 2
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 8
+generation_batch_size: 2
+learning_rate: 0.000001
+num_generations: 16
+max_prompt_length: 512
+max_completion_length: 768
+generation_kwargs:
+  do_sample: true
+  temperature: 0.7
+  seed: 42
+  stop_strings: ["```"]
+logging_steps: 1
+save_steps: 5
+pass_weight: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: false
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: baseline-coder05-10-eval20-progress-20260906
+do_sample: true
+temperature: 0.7
+
+include_generic_arguments: true
+evaluation_progress_interval: 5
+
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-05 22:29:09 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: baseline
+Training context: baseline
+Epoch: baseline
+Timestamp: 2026-09-05 22:43:52 PDT
+Git commit: 74f6483
+Change description: 74f6483 Record ten-generation baseline selection
+Metrics:
+{
+  "average_reward": 0.3622222222222222,
+  "candidate_count": 10,
+  "examples": 90,
+  "pass_at_1": 0.3111111111111111,
+  "pass_at_10": 0.5222222222222223,
+  "pass_at_2": 0.3888888888888889,
+  "pass_at_4": 0.4222222222222222,
+  "pass_at_8": 0.5111111111111111,
+  "successful_examples": 28
+}
+YAML path: /tmp/baseline-coder05-10-eval90.yaml
+YAML contents:
+# This configuration runs sixteen-generation GRPO with a memory-bounded prompt micro-batch and evaluates the fixed ten-task batch.
+model_name_or_path: Qwen/Qwen2.5-Coder-0.5B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 374
 reuse_baseline: false
 run_baseline_evaluation: true
 run_intermediate_evals: true
 max_eval_samples: null
+evaluation_num_completions: 10
+evaluation_batch_size: 2
 sft_enabled: false
-sft_num_train_epochs: 1
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
 log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 10
+results_log_path: logs/results.txt
+output_dir: /tmp/baseline-coder05-10-eval90-output
+num_train_epochs: 2
 max_steps: -1
 per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
+gradient_accumulation_steps: 8
+generation_batch_size: 2
 learning_rate: 0.000001
-num_generations: 4
+num_generations: 16
 max_prompt_length: 512
 max_completion_length: 768
 generation_kwargs:
+  do_sample: true
+  temperature: 0.7
+  seed: 42
   stop_strings: ["```"]
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass@1
-checkpoint_eval_patience: 3
-max_retries: 1
-include_generic_arguments: false
 logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
+save_steps: 5
 pass_weight: 0.5
 sandbox_timeout_seconds: 3
 trust_remote_code: false
@@ -4489,7 +844,12 @@ bf16: false
 fp16: false
 report_to: wandb
 wandb_project: grpo-mbpp
-wandb_run_name: null
+wandb_run_name: baseline-coder05-10-eval90-20260906
+do_sample: true
+temperature: 0.7
+
+include_generic_arguments: true
+evaluation_progress_interval: 5
 
 ------------------------------------------------------------------------
 
@@ -4497,629 +857,958 @@ wandb_run_name: null
 
 ------------------------------------------------------------------------
 RUN STARTING
-Timestamp: 2026-08-20 01:53:46 PDT
+Timestamp: 2026-09-06 04:23:54 PDT
 ------------------------------------------------------------------------
 
 
 
 ------------------------------------------------------------------------
 RUN STARTING
-Timestamp: 2026-08-20 02:15:55 PDT
+Timestamp: 2026-09-06 04:24:41 PDT
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-06 04:39:51 PDT
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-06 04:59:54 PDT
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-06 05:07:00 PDT
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-06 05:12:10 PDT
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-06 05:20:35 PDT
 ------------------------------------------------------------------------
 
 ------------------------------------------------------------------------
 EVALUATION RESULTS
-Evaluation: checkpoint-25
-Training context: checkpoint
-Epoch: 0.5434782608695652
-Timestamp: 2026-08-20 03:01:42 PDT
-Git commit: 707fcc1
-Change description: 707fcc1 Train with test pass fraction reward
-dcafb77 Document reward hacking motivation
+Evaluation: baseline
+Training context: baseline
+Epoch: baseline
+Timestamp: 2026-09-06 05:58:11 PDT
+Git commit: 4014b27
+Change description: 4014b27 Configure synthetic selection evaluation
+6ea3198 Generate synthetic tests for validation set
+31a18ad Complete synthetic test availability
+221039a Improve synthetic test availability
+523c53d Cap synthetic tests per example
+a5a8071 Retry one synthetic test per task
+df2e03c Generate twenty synthetic tests per task
+cf3de06 Retain available synthetic tests
+eabd015 Restore verbose synthetic test format
+c657b8f Compare Qwen synthetic test generation
+ceba899 Disambiguate compact test schema
+ecfe5b9 Support local Qwen synthetic generation
+079d95d Record compact GPT-5.4 test run
+4bce07e Use compact synthetic test format
+35f37d9 Record GPT-5.4 visible-example run
+b0de2e3 Restore visible examples in prompts
+3b87f3e Record constrained GPT-5.4 test run
+fec62cc Constrain synthetic test inputs
+5c76c25 Compare GPT-5.4 synthetic test generation
+d71eff9 Record clarified twenty-example synthetic run
+54fff43 Use synthetic tests in evaluation prompts
+683584c Clarify synthetic test interface prompt
+49f2626 Record test-free five-case regeneration
+14b0357 Set five synthetic tests per example
+565f05d Hide visible tests from model prompts
+9e83988 Continue when synthetic tests are missing
+517ea51 Separate synthetic training and evaluation flags
+8a7f069 Add synthetic filtering to batched evaluation
+6f4759f Load synthetic selection settings from config
+9f49a24 Align synthetic selection by task ID
+185c2cd Record concurrent GPT-5 nano validation run
+45348e8 Parallelize synthetic test generation
+cc8c221 Use synthetic tests for execution selection
+a3bc196 Record GPT-5 nano synthetic test run
+dbde593 Use GPT-5 nano structured test generation
+e64e982 Record structured synthetic test validation artifacts
+81a88d0 Accept JSON scalar synthetic test values
+3fcb69f Improve structured synthetic test parsing
+5808783 Fix synthetic test generator imports
+cf183a5 Add structured LLM synthetic test generation
+fdc7f8b Correct visible test accuracy note
+c8189c9 Record full validation execution selection
+f1cbfc3 Record full ten-generation validation
 Metrics:
 {
-  "average_reward": 0.25555555555555554,
-  "entropy": 0.435733717315051,
+  "average_reward": 0.24518518518518517,
+  "candidate_count": 20,
   "examples": 90,
-  "pass_at_1": 0.2,
+  "pass_at_1": 0.18888888888888888,
+  "pass_at_10": 0.18888888888888888,
+  "pass_at_16": 0.18888888888888888,
+  "pass_at_2": 0.18888888888888888,
+  "pass_at_20": 0.18888888888888888,
+  "pass_at_4": 0.18888888888888888,
+  "pass_at_8": 0.18888888888888888,
+  "successful_examples": 17,
+  "synthetic_selection_pass_at_1": 0.18888888888888888,
+  "synthetic_selection_pass_at_10": 0.18888888888888888,
+  "synthetic_selection_pass_at_16": 0.18888888888888888,
+  "synthetic_selection_pass_at_2": 0.18888888888888888,
+  "synthetic_selection_pass_at_20": 0.18888888888888888,
+  "synthetic_selection_pass_at_4": 0.18888888888888888,
+  "synthetic_selection_pass_at_8": 0.18888888888888888
+}
+YAML path: configs/eval-synthetic-validation90-20.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen3.5-0.8B
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+evaluation_split: validation
+synthetic_tests_enabled: true
+synthetic_tests_path: synthetic_data/data/llm_qwen35_08b_validation90_verbose_5tests_3attempts.jsonl
+synthetic_tests_require_all: false
+synthetic_tests_for_training: false
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+max_train_samples: 1
+max_eval_samples: 90
+run_baseline_evaluation: true
+reuse_baseline: false
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/eval-synthetic-validation90-20-768-0.5s-batch8
+evaluation_num_completions: 20
+generation_batch_size: 8
+evaluation_batch_size: 8
+max_prompt_length: 512
+max_completion_length: 768
+max_retries: 0
+include_generic_arguments: true
+pass_weight: 0.5
+sandbox_timeout_seconds: 0.5
+trust_remote_code: true
+bf16: false
+fp16: false
+report_to: none
+
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-06 12:41:10 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: baseline
+Training context: baseline
+Epoch: baseline
+Timestamp: 2026-09-06 12:56:51 PDT
+Git commit: 2f18625
+Change description: 2f18625 Evaluate synthetic selection on validation set
+Metrics:
+{
+  "average_reward": 0.3244444444444444,
+  "candidate_count": 20,
+  "examples": 90,
+  "pass_at_1": 0.26666666666666666,
+  "pass_at_10": 0.5555555555555556,
+  "pass_at_16": 0.6,
+  "pass_at_2": 0.3333333333333333,
+  "pass_at_20": 0.6,
+  "pass_at_4": 0.4666666666666667,
+  "pass_at_8": 0.5444444444444444,
+  "successful_examples": 24,
+  "synthetic_selection_pass_at_1": 0.3,
+  "synthetic_selection_pass_at_10": 0.5444444444444444,
+  "synthetic_selection_pass_at_16": 0.5888888888888889,
+  "synthetic_selection_pass_at_2": 0.3888888888888889,
+  "synthetic_selection_pass_at_20": 0.6,
+  "synthetic_selection_pass_at_4": 0.5,
+  "synthetic_selection_pass_at_8": 0.5111111111111111
+}
+YAML path: configs/eval-synthetic-validation90-20.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-0.5B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+evaluation_split: validation
+synthetic_tests_enabled: true
+synthetic_tests_path: synthetic_data/data/llm_qwen35_08b_validation90_verbose_5tests_3attempts.jsonl
+synthetic_tests_require_all: false
+synthetic_tests_for_training: false
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+max_train_samples: 1
+max_eval_samples: 90
+run_baseline_evaluation: true
+reuse_baseline: false
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/eval-coder05-synthetic-validation90-20-768-0.5s-batch8
+evaluation_num_completions: 20
+generation_batch_size: 8
+evaluation_batch_size: 8
+max_prompt_length: 512
+max_completion_length: 768
+max_retries: 0
+include_generic_arguments: true
+pass_weight: 0.5
+sandbox_timeout_seconds: 0.5
+trust_remote_code: true
+bf16: false
+fp16: false
+report_to: none
+
+do_sample: true
+temperature: 0.7
+
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-06 13:05:54 PDT
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-06 13:12:02 PDT
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-06 13:39:29 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: baseline
+Training context: baseline
+Epoch: baseline
+Timestamp: 2026-09-06 13:42:20 PDT
+Git commit: cd600e2
+Change description: cd600e2 Evaluate coder model with synthetic selection
+Metrics:
+{
+  "average_reward": 0.33166666666666667,
+  "candidate_count": 20,
+  "examples": 10,
+  "pass_at_1": 0.3,
+  "pass_at_10": 0.6,
+  "pass_at_16": 0.6,
+  "pass_at_2": 0.3,
+  "pass_at_20": 0.7,
+  "pass_at_4": 0.5,
+  "pass_at_8": 0.6,
+  "successful_examples": 3
+}
+YAML path: configs/eval-qwen25coder-official-90-20.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-0.5B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+evaluation_split: validation
+max_train_samples: 1
+max_eval_samples: 10
+run_baseline_evaluation: true
+reuse_baseline: false
+sft_enabled: false
+synthetic_tests_enabled: false
+output_dir: outputs/eval-qwen25coder-official-interface-10
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+evaluation_num_completions: 20
+generation_batch_size: 8
+evaluation_batch_size: 8
+max_prompt_length: 1024
+max_completion_length: 2048
+max_retries: 0
+include_generic_arguments: false
+official_qwen_prompt: true
+do_sample: true
+temperature: 0.7
+top_p: 0.95
+rerank_by_likelihood: false
+pass_weight: 0.5
+sandbox_timeout_seconds: 0.5
+trust_remote_code: true
+report_to: none
+
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-06 13:43:03 PDT
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-06 13:50:54 PDT
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-06 13:51:30 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: baseline
+Training context: baseline
+Epoch: baseline
+Timestamp: 2026-09-06 13:53:41 PDT
+Git commit: 0fb3086
+Change description: 0fb3086 Align evaluation with official Qwen prompt
+Metrics:
+{
+  "average_reward": 0.35333333333333333,
+  "candidate_count": 20,
+  "examples": 10,
+  "pass_at_1": 0.6,
+  "pass_at_10": 0.6,
+  "pass_at_16": 0.6,
+  "pass_at_2": 0.6,
+  "pass_at_20": 0.6,
+  "pass_at_4": 0.6,
+  "pass_at_8": 0.6,
+  "successful_examples": 6
+}
+YAML path: configs/eval-qwen25coder-official-90-20.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-0.5B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+evaluation_split: validation
+max_train_samples: 1
+max_eval_samples: 10
+run_baseline_evaluation: true
+reuse_baseline: false
+sft_enabled: false
+synthetic_tests_enabled: false
+output_dir: outputs/eval-qwen25coder-visible-tests-10
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+evaluation_num_completions: 20
+generation_batch_size: 8
+evaluation_batch_size: 8
+max_prompt_length: 1024
+max_completion_length: 2048
+max_retries: 0
+include_generic_arguments: false
+official_qwen_prompt: true
+do_sample: true
+temperature: 0.2
+top_p: 0.95
+official_include_tests: true
+rerank_by_likelihood: false
+pass_weight: 0.5
+sandbox_timeout_seconds: 0.5
+trust_remote_code: true
+report_to: none
+
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-06 13:54:03 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: baseline
+Training context: baseline
+Epoch: baseline
+Timestamp: 2026-09-06 14:13:09 PDT
+Git commit: 0fb3086
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.3601851851851852,
+  "candidate_count": 20,
+  "examples": 90,
+  "pass_at_1": 0.32222222222222224,
+  "pass_at_10": 0.4888888888888889,
+  "pass_at_16": 0.5111111111111111,
+  "pass_at_2": 0.3888888888888889,
+  "pass_at_20": 0.5111111111111111,
+  "pass_at_4": 0.43333333333333335,
+  "pass_at_8": 0.4888888888888889,
+  "successful_examples": 29
+}
+YAML path: configs/eval-qwen25coder-official-90-20.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-0.5B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+evaluation_split: validation
+max_train_samples: 1
+max_eval_samples: 90
+run_baseline_evaluation: true
+reuse_baseline: false
+sft_enabled: false
+synthetic_tests_enabled: false
+output_dir: outputs/eval-qwen25coder-visible-tests-90
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+evaluation_num_completions: 20
+generation_batch_size: 8
+evaluation_batch_size: 8
+max_prompt_length: 1024
+max_completion_length: 2048
+max_retries: 0
+include_generic_arguments: false
+official_qwen_prompt: true
+do_sample: true
+temperature: 0.2
+top_p: 0.95
+official_include_tests: true
+rerank_by_likelihood: false
+pass_weight: 0.5
+sandbox_timeout_seconds: 0.5
+trust_remote_code: true
+report_to: none
+
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-06 14:13:58 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: baseline
+Training context: baseline
+Epoch: baseline
+Timestamp: 2026-09-06 14:16:10 PDT
+Git commit: 0fb3086
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.35333333333333333,
+  "candidate_count": 20,
+  "examples": 10,
+  "pass_at_1": 0.6,
+  "pass_at_10": 0.6,
+  "pass_at_16": 0.6,
+  "pass_at_2": 0.6,
+  "pass_at_20": 0.6,
+  "pass_at_4": 0.6,
+  "pass_at_8": 0.6,
+  "successful_examples": 6
+}
+YAML path: configs/eval-qwen25coder-official-90-20.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-0.5B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+evaluation_split: validation
+max_train_samples: 1
+max_eval_samples: 10
+run_baseline_evaluation: true
+reuse_baseline: false
+sft_enabled: false
+synthetic_tests_enabled: false
+output_dir: outputs/eval-qwen25coder-visible-tests-timeout5-10
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+evaluation_num_completions: 20
+generation_batch_size: 8
+evaluation_batch_size: 8
+max_prompt_length: 1024
+max_completion_length: 2048
+max_retries: 0
+include_generic_arguments: false
+official_qwen_prompt: true
+do_sample: true
+temperature: 0.2
+top_p: 0.95
+official_include_tests: true
+rerank_by_likelihood: false
+pass_weight: 0.5
+sandbox_timeout_seconds: 5
+trust_remote_code: true
+report_to: none
+
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-06 14:17:03 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: baseline
+Training context: baseline
+Epoch: baseline
+Timestamp: 2026-09-06 14:18:45 PDT
+Git commit: 0fb3086
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.42666666666666664,
+  "candidate_count": 20,
+  "examples": 10,
+  "pass_at_1": 0.4,
+  "pass_at_10": 0.4,
+  "pass_at_16": 0.4,
+  "pass_at_2": 0.4,
+  "pass_at_20": 0.4,
+  "pass_at_4": 0.4,
+  "pass_at_8": 0.4,
+  "successful_examples": 4
+}
+YAML path: configs/eval-qwen25coder-official-90-20.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-0.5B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+evaluation_split: validation
+max_train_samples: 1
+max_eval_samples: 10
+run_baseline_evaluation: true
+reuse_baseline: false
+sft_enabled: false
+synthetic_tests_enabled: false
+output_dir: outputs/eval-qwen25coder-visible-tests-greedy-10
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+evaluation_num_completions: 20
+generation_batch_size: 8
+evaluation_batch_size: 8
+max_prompt_length: 1024
+max_completion_length: 2048
+max_retries: 0
+include_generic_arguments: false
+official_qwen_prompt: true
+do_sample: false
+temperature: 0
+top_p: 0.95
+official_include_tests: true
+rerank_by_likelihood: false
+pass_weight: 0.5
+sandbox_timeout_seconds: 5
+trust_remote_code: true
+report_to: none
+
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-06 14:19:34 PDT
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-06 14:20:33 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: baseline
+Training context: baseline
+Epoch: baseline
+Timestamp: 2026-09-06 14:35:13 PDT
+Git commit: 0fb3086
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.38851851851851854,
+  "candidate_count": 10,
+  "examples": 90,
+  "pass_at_1": 0.34444444444444444,
+  "pass_at_10": 0.5,
+  "pass_at_2": 0.3888888888888889,
+  "pass_at_4": 0.4111111111111111,
+  "pass_at_8": 0.4888888888888889,
+  "successful_examples": 31,
+  "synthetic_selection_pass_at_1": 0.3888888888888889,
+  "synthetic_selection_pass_at_10": 0.5,
+  "synthetic_selection_pass_at_2": 0.4111111111111111,
+  "synthetic_selection_pass_at_4": 0.43333333333333335,
+  "synthetic_selection_pass_at_8": 0.4888888888888889
+}
+YAML path: configs/eval-qwen25coder-official-90-20.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-0.5B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+evaluation_split: validation
+max_train_samples: 1
+max_eval_samples: 90
+run_baseline_evaluation: true
+reuse_baseline: false
+sft_enabled: false
+synthetic_tests_enabled: true
+synthetic_tests_path: synthetic_data/data/llm_qwen35_08b_validation90_verbose_5tests_3attempts.jsonl
+synthetic_tests_per_task: 5
+synthetic_tests_for_training: false
+output_dir: outputs/eval-qwen25coder-visible-tests-synthetic-selection-90-10
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+evaluation_num_completions: 10
+generation_batch_size: 8
+evaluation_batch_size: 8
+max_prompt_length: 1024
+max_completion_length: 2048
+max_retries: 0
+include_generic_arguments: false
+official_qwen_prompt: true
+do_sample: true
+temperature: 0.2
+top_p: 0.95
+official_include_tests: true
+rerank_by_likelihood: false
+pass_weight: 0.5
+sandbox_timeout_seconds: 5
+trust_remote_code: true
+report_to: none
+
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-06 14:36:31 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: baseline
+Training context: baseline
+Epoch: baseline
+Timestamp: 2026-09-06 15:04:32 PDT
+Git commit: 0fb3086
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.36875,
+  "candidate_count": 16,
+  "examples": 90,
+  "pass_at_1": 0.3,
+  "pass_at_10": 0.4777777777777778,
+  "pass_at_16": 0.5222222222222223,
+  "pass_at_2": 0.36666666666666664,
+  "pass_at_4": 0.43333333333333335,
+  "pass_at_8": 0.4666666666666667,
+  "successful_examples": 27,
+  "synthetic_selection_pass_at_1": 0.4,
+  "synthetic_selection_pass_at_10": 0.5111111111111111,
+  "synthetic_selection_pass_at_16": 0.5222222222222223,
+  "synthetic_selection_pass_at_2": 0.43333333333333335,
+  "synthetic_selection_pass_at_4": 0.4666666666666667,
+  "synthetic_selection_pass_at_8": 0.5
+}
+YAML path: configs/grpo-qwen25coder-visible-synthetic.yaml
+YAML contents:
+# This configuration runs Qwen2.5-Coder GRPO with frequent pass-at-K evaluation and synthetic-test selection.
+model_name_or_path: Qwen/Qwen2.5-Coder-0.5B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+evaluation_split: validation
+synthetic_tests_enabled: true
+synthetic_tests_path: synthetic_data/data/llm_qwen35_08b_validation90_verbose_5tests_3attempts.jsonl
+synthetic_tests_require_all: false
+synthetic_tests_per_task: 5
+synthetic_tests_for_training: false
+seed: 42
+max_train_samples: 374
+max_eval_samples: 90
+reuse_baseline: false
+run_baseline_evaluation: true
+run_intermediate_evals: true
+evaluation_num_completions: 16
+evaluation_batch_size: 4
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/grpo-qwen25coder-visible-synthetic
+num_train_epochs: 2
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 8
+generation_batch_size: 4
+learning_rate: 0.000001
+num_generations: 16
+max_prompt_length: 1024
+max_completion_length: 1536
+generation_kwargs:
+  do_sample: true
+  temperature: 0.2
+  top_p: 0.95
+  seed: 42
+  stop_strings: ["```"]
+logging_steps: 1
+save_steps: 10
+checkpoint_eval_patience: 3
+best_checkpoint_metric: pass@1
+pass_weight: 0.5
+sandbox_timeout_seconds: 5
+trust_remote_code: true
+bf16: false
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: grpo-qwen25coder-visible-synthetic
+include_generic_arguments: false
+official_qwen_prompt: true
+official_include_tests: true
+do_sample: true
+temperature: 0.2
+top_p: 0.95
+rerank_by_likelihood: false
+evaluation_progress_interval: 5
+
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-06 15:05:00 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: checkpoint-10
+Training context: checkpoint
+Epoch: 0.013368983957219251
+Timestamp: 2026-09-06 15:19:52 PDT
+Git commit: 0fb3086
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.3671296296296296,
+  "candidate_count": 16,
+  "examples": 90,
+  "pass_at_1": 0.32222222222222224,
+  "pass_at_10": 0.45555555555555555,
+  "pass_at_16": 0.5,
+  "pass_at_2": 0.4111111111111111,
+  "pass_at_4": 0.43333333333333335,
+  "pass_at_8": 0.45555555555555555,
+  "reranked_pass_at_1": 0.3111111111111111,
+  "reranked_pass_at_16": 0.5,
+  "reranked_pass_at_2": 0.35555555555555557,
+  "reranked_pass_at_4": 0.4,
+  "reranked_pass_at_8": 0.43333333333333335,
+  "successful_examples": 29,
+  "synthetic_selection_pass_at_1": 0.36666666666666664,
+  "synthetic_selection_pass_at_10": 0.4666666666666667,
+  "synthetic_selection_pass_at_16": 0.5,
+  "synthetic_selection_pass_at_2": 0.4222222222222222,
+  "synthetic_selection_pass_at_4": 0.4666666666666667,
+  "synthetic_selection_pass_at_8": 0.4666666666666667
+}
+YAML path: configs/grpo-qwen25coder-visible-synthetic.yaml
+YAML contents:
+# This configuration runs Qwen2.5-Coder GRPO with frequent pass-at-K evaluation and synthetic-test selection.
+model_name_or_path: Qwen/Qwen2.5-Coder-0.5B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+evaluation_split: validation
+synthetic_tests_enabled: true
+synthetic_tests_path: synthetic_data/data/llm_qwen35_08b_validation90_verbose_5tests_3attempts.jsonl
+synthetic_tests_require_all: false
+synthetic_tests_per_task: 5
+synthetic_tests_for_training: false
+seed: 42
+max_train_samples: 374
+max_eval_samples: 90
+reuse_baseline: true
+run_baseline_evaluation: true
+run_intermediate_evals: true
+evaluation_num_completions: 16
+evaluation_batch_size: 4
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/grpo-qwen25coder-visible-synthetic
+num_train_epochs: 2
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 8
+generation_batch_size: 16
+learning_rate: 0.000001
+num_generations: 16
+max_prompt_length: 1024
+max_completion_length: 1536
+generation_kwargs:
+  do_sample: true
+  temperature: 0.2
+  top_p: 0.95
+  seed: 42
+  stop_strings: ["```"]
+logging_steps: 1
+save_steps: 10
+checkpoint_eval_patience: 3
+best_checkpoint_metric: pass@1
+pass_weight: 0.5
+sandbox_timeout_seconds: 5
+trust_remote_code: true
+bf16: false
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: grpo-qwen25coder-visible-synthetic
+include_generic_arguments: false
+official_qwen_prompt: true
+official_include_tests: true
+do_sample: true
+temperature: 0.2
+top_p: 0.95
+rerank_by_likelihood: false
+evaluation_progress_interval: 5
+
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-06 15:44:29 PDT
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-06 15:48:31 PDT
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-06 15:51:44 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: baseline
+Training context: baseline
+Epoch: baseline
+Timestamp: 2026-09-06 15:53:10 PDT
+Git commit: fe195b1
+Change description: fe195b1 Configure Exa API key authentication
+Metrics:
+{
+  "average_reward": 0.34444444444444444,
+  "examples": 90,
+  "pass_at_1": 0.3,
   "repeated_completion_fraction": 0.0,
   "reward_format_mean": 0.0,
   "reward_interface_mean": 0.0,
   "reward_pass_mean": 0.0,
   "reward_syntax_mean": 0.0,
-  "reward_tests_mean": 0.25555555555555554,
+  "reward_tests_mean": 0.34444444444444444,
   "status_counts": {
     "failed": 54,
-    "partial": 11,
-    "passed": 18,
-    "syntax_error": 7
+    "partial": 9,
+    "passed": 27
   },
-  "successful_examples": 18,
+  "successful_examples": 27,
   "unique_completion_rate": 1.0
 }
-YAML path: configs/default.yaml
+YAML path: configs/eval-qwen25coder-official-90-20.yaml
 YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
+model_name_or_path: Qwen/Qwen2.5-Coder-0.5B-Instruct
 dataset_name: google-research-datasets/mbpp
 dataset_config: null
 train_split: train
 validation_split: validation
-synthetic_tests_enabled: false
-synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
-synthetic_tests_require_all: true
-synthetic_tests_per_task: 5
-synthetic_tests_validation_timeout_seconds: 5
-seed: 42
-max_train_samples: null
+evaluation_split: validation
+max_train_samples: 1
+max_eval_samples: 90
+run_baseline_evaluation: true
 reuse_baseline: false
-run_baseline_evaluation: false
-run_intermediate_evals: true
-max_eval_samples: null
 sft_enabled: false
-sft_num_train_epochs: 1
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 10
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 768
-generation_kwargs:
-  stop_strings: ["```"]
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass@1
-checkpoint_eval_patience: 3
-max_retries: 1
-include_generic_arguments: false
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-pass_weight: 0.5
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: checkpoint-50
-Training context: checkpoint
-Epoch: 1.0869565217391304
-Timestamp: 2026-08-20 03:46:08 PDT
-Git commit: 707fcc1
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.2851851851851852,
-  "entropy": 0.46999810666454084,
-  "examples": 90,
-  "pass_at_1": 0.2222222222222222,
-  "repeated_completion_fraction": 0.0,
-  "reward_format_mean": 0.0,
-  "reward_interface_mean": 0.0,
-  "reward_pass_mean": 0.0,
-  "reward_syntax_mean": 0.0,
-  "reward_tests_mean": 0.2851851851851852,
-  "status_counts": {
-    "failed": 52,
-    "partial": 11,
-    "passed": 20,
-    "syntax_error": 7
-  },
-  "successful_examples": 20,
-  "unique_completion_rate": 1.0
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-train_split: train
-validation_split: validation
-synthetic_tests_enabled: false
-synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
-synthetic_tests_require_all: true
+synthetic_tests_enabled: true
+synthetic_tests_path: synthetic_data/data/llm_qwen35_08b_validation90_verbose_5tests_3attempts.jsonl
 synthetic_tests_per_task: 5
-synthetic_tests_validation_timeout_seconds: 5
-seed: 42
-max_train_samples: null
-reuse_baseline: false
-run_baseline_evaluation: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: false
-sft_num_train_epochs: 1
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
+synthetic_tests_for_training: false
+output_dir: outputs/eval-qwen25coder-visible-tests-synthetic-selection-90-10
 log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 10
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 768
-generation_kwargs:
-  stop_strings: ["```"]
-evaluation_batch_size: 8
 results_log_path: logs/results.txt
-best_checkpoint_metric: pass@1
-checkpoint_eval_patience: 3
-max_retries: 1
-include_generic_arguments: false
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-pass_weight: 0.5
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: checkpoint-75
-Training context: checkpoint
-Epoch: 1.6304347826086958
-Timestamp: 2026-08-20 04:33:30 PDT
-Git commit: 707fcc1
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.3074074074074074,
-  "entropy": 0.4439672353316326,
-  "examples": 90,
-  "pass_at_1": 0.23333333333333334,
-  "repeated_completion_fraction": 0.0,
-  "reward_format_mean": 0.0,
-  "reward_interface_mean": 0.0,
-  "reward_pass_mean": 0.0,
-  "reward_syntax_mean": 0.0,
-  "reward_tests_mean": 0.3074074074074074,
-  "status_counts": {
-    "failed": 49,
-    "partial": 13,
-    "passed": 21,
-    "syntax_error": 7
-  },
-  "successful_examples": 21,
-  "unique_completion_rate": 1.0
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-train_split: train
-validation_split: validation
-synthetic_tests_enabled: false
-synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
-synthetic_tests_require_all: true
-synthetic_tests_per_task: 5
-synthetic_tests_validation_timeout_seconds: 5
-seed: 42
-max_train_samples: null
-reuse_baseline: false
-run_baseline_evaluation: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: false
-sft_num_train_epochs: 1
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 10
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 768
-generation_kwargs:
-  stop_strings: ["```"]
+evaluation_num_completions: 10
+generation_batch_size: 8
 evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass@1
-checkpoint_eval_patience: 3
-max_retries: 1
+max_prompt_length: 1024
+max_completion_length: 2048
+max_retries: 0
 include_generic_arguments: false
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
+official_qwen_prompt: true
+do_sample: true
+temperature: 0.2
+top_p: 0.95
+official_include_tests: true
+rerank_by_likelihood: false
 pass_weight: 0.5
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: checkpoint-100
-Training context: checkpoint
-Epoch: 2.1739130434782608
-Timestamp: 2026-08-20 05:20:58 PDT
-Git commit: 707fcc1
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.26666666666666666,
-  "entropy": 0.43729073660714285,
-  "examples": 90,
-  "pass_at_1": 0.2111111111111111,
-  "repeated_completion_fraction": 0.0,
-  "reward_format_mean": 0.0,
-  "reward_interface_mean": 0.0,
-  "reward_pass_mean": 0.0,
-  "reward_syntax_mean": 0.0,
-  "reward_tests_mean": 0.26666666666666666,
-  "status_counts": {
-    "failed": 54,
-    "partial": 11,
-    "passed": 19,
-    "syntax_error": 6
-  },
-  "successful_examples": 19,
-  "unique_completion_rate": 1.0
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-train_split: train
-validation_split: validation
-synthetic_tests_enabled: false
-synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
-synthetic_tests_require_all: true
-synthetic_tests_per_task: 5
-synthetic_tests_validation_timeout_seconds: 5
-seed: 42
-max_train_samples: null
-reuse_baseline: false
-run_baseline_evaluation: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: false
-sft_num_train_epochs: 1
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 10
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 768
-generation_kwargs:
-  stop_strings: ["```"]
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass@1
-checkpoint_eval_patience: 3
-max_retries: 1
-include_generic_arguments: false
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-pass_weight: 0.5
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: checkpoint-125
-Training context: checkpoint
-Epoch: 2.717391304347826
-Timestamp: 2026-08-20 06:08:08 PDT
-Git commit: 707fcc1
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.28888888888888886,
-  "entropy": 0.4536680883290816,
-  "examples": 90,
-  "pass_at_1": 0.23333333333333334,
-  "repeated_completion_fraction": 0.0,
-  "reward_format_mean": 0.0,
-  "reward_interface_mean": 0.0,
-  "reward_pass_mean": 0.0,
-  "reward_syntax_mean": 0.0,
-  "reward_tests_mean": 0.28888888888888886,
-  "status_counts": {
-    "failed": 51,
-    "partial": 11,
-    "passed": 21,
-    "syntax_error": 7
-  },
-  "successful_examples": 21,
-  "unique_completion_rate": 1.0
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-train_split: train
-validation_split: validation
-synthetic_tests_enabled: false
-synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
-synthetic_tests_require_all: true
-synthetic_tests_per_task: 5
-synthetic_tests_validation_timeout_seconds: 5
-seed: 42
-max_train_samples: null
-reuse_baseline: false
-run_baseline_evaluation: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: false
-sft_num_train_epochs: 1
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 10
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 768
-generation_kwargs:
-  stop_strings: ["```"]
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass@1
-checkpoint_eval_patience: 3
-max_retries: 1
-include_generic_arguments: false
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-pass_weight: 0.5
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: checkpoint-150
-Training context: checkpoint
-Epoch: 3.260869565217391
-Timestamp: 2026-08-20 06:54:51 PDT
-Git commit: 707fcc1
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.2740740740740741,
-  "entropy": 0.4362842793367347,
-  "examples": 90,
-  "pass_at_1": 0.2111111111111111,
-  "repeated_completion_fraction": 0.0,
-  "reward_format_mean": 0.0,
-  "reward_interface_mean": 0.0,
-  "reward_pass_mean": 0.0,
-  "reward_syntax_mean": 0.0,
-  "reward_tests_mean": 0.2740740740740741,
-  "status_counts": {
-    "failed": 51,
-    "partial": 11,
-    "passed": 19,
-    "syntax_error": 9
-  },
-  "successful_examples": 19,
-  "unique_completion_rate": 1.0
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-train_split: train
-validation_split: validation
-synthetic_tests_enabled: false
-synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
-synthetic_tests_require_all: true
-synthetic_tests_per_task: 5
-synthetic_tests_validation_timeout_seconds: 5
-seed: 42
-max_train_samples: null
-reuse_baseline: false
-run_baseline_evaluation: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: false
-sft_num_train_epochs: 1
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 10
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 768
-generation_kwargs:
-  stop_strings: ["```"]
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass@1
-checkpoint_eval_patience: 3
-max_retries: 1
-include_generic_arguments: false
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-pass_weight: 0.5
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-EVALUATION RESULTS
-Evaluation: final
-Training context: best-checkpoint-final
-Epoch: 3.260869565217391
-Timestamp: 2026-08-20 07:02:57 PDT
-Git commit: 707fcc1
-Change description: No committed code changes since the previous evaluation.
-Metrics:
-{
-  "average_reward": 0.3148148148148148,
-  "entropy": 0.4934601479388298,
-  "examples": 90,
-  "pass_at_1": 0.24444444444444444,
-  "repeated_completion_fraction": 0.0,
-  "reward_format_mean": 0.0,
-  "reward_interface_mean": 0.0,
-  "reward_pass_mean": 0.0,
-  "reward_syntax_mean": 0.0,
-  "reward_tests_mean": 0.3148148148148148,
-  "status_counts": {
-    "failed": 44,
-    "partial": 14,
-    "passed": 22,
-    "syntax_error": 10
-  },
-  "successful_examples": 22,
-  "unique_completion_rate": 1.0
-}
-YAML path: configs/default.yaml
-YAML contents:
-model_name_or_path: Qwen/Qwen3.5-0.8B
-dataset_name: google-research-datasets/mbpp
-dataset_config: null
-train_split: train
-validation_split: validation
-synthetic_tests_enabled: false
-synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
-synthetic_tests_require_all: true
-synthetic_tests_per_task: 5
-synthetic_tests_validation_timeout_seconds: 5
-seed: 42
-max_train_samples: null
-reuse_baseline: false
-run_baseline_evaluation: false
-run_intermediate_evals: true
-max_eval_samples: null
-sft_enabled: false
-sft_num_train_epochs: 1
-sft_max_steps: -1
-sft_per_device_train_batch_size: 1
-sft_gradient_accumulation_steps: 32
-sft_learning_rate: 0.00001
-sft_loss_rolling_window: 10
-log_path: logs/logs.txt
-output_dir: outputs/grpo-mbpp
-num_train_epochs: 10
-max_steps: -1
-per_device_train_batch_size: 1
-gradient_accumulation_steps: 32
-learning_rate: 0.000001
-num_generations: 4
-max_prompt_length: 512
-max_completion_length: 768
-generation_kwargs:
-  stop_strings: ["```"]
-evaluation_batch_size: 8
-results_log_path: logs/results.txt
-best_checkpoint_metric: pass@1
-checkpoint_eval_patience: 3
-max_retries: 1
-include_generic_arguments: false
-logging_steps: 1
-reward_rolling_window: 10
-save_steps: 25
-eval_steps: 100
-evaluation_num_completions: 1
-pass_weight: 0.5
-sandbox_timeout_seconds: 3
-trust_remote_code: false
-bf16: false
-fp16: false
-report_to: wandb
-wandb_project: grpo-mbpp
-wandb_run_name: null
+sandbox_timeout_seconds: 5
+trust_remote_code: true
+report_to: none
 
 ------------------------------------------------------------------------
