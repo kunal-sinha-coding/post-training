@@ -1452,3 +1452,7 @@ Investigated the Qwen3-Coder issue about underperforming OpenCompass results, Qw
 Reran the repository's 90-example MBPP validation evaluation with exactly one sampled completion per task, temperature 0.2, top_p 0.95, no visible tests, a 512-token completion cap, and generation in batches of eight. The result was 27/90 passed, or 30.00% pass@1, with 9 partial and 54 failed examples. The saved artifact is outputs/eval-qwen25coder-zero-shot-90-1-temp02/baseline-metrics.json.
 
 Interpretation: adopting EvalPlus is plausible as a source of benchmark comparability problems, but it would not by itself explain a low score because EvalPlus adds stricter tests and usually lowers scores. The larger mismatches are that this repository uses the 90-row validation split rather than Qwen's reported benchmark split, uses a custom scorer and sandbox, and uses a repository-specific prompt and code-prefix protocol. The rerun confirms that removing visible tests and using one sample at 0.2 does not recover the reported low-50s result.
+
+## 2026-09-06: Restore mandatory immediate synchronization rule
+
+Updated AGENTS.md to state explicitly that after EVERY change the change must be committed and pushed immediately on the configured branch. Synchronized the same wording to /workspace/personal-website and /workspace/skills after identifying that the existing rule was present but was not operationally followed during the Qwen evaluator commit. This commit also records the prior notes-patch failure and the need to verify both commit and remote state after every change.
