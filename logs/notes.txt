@@ -1456,3 +1456,9 @@ Interpretation: adopting EvalPlus is plausible as a source of benchmark comparab
 ## 2026-09-06: Restore mandatory immediate synchronization rule
 
 Updated AGENTS.md to state explicitly that after EVERY change the change must be committed and pushed immediately on the configured branch. Synchronized the same wording to /workspace/personal-website and /workspace/skills after identifying that the existing rule was present but was not operationally followed during the Qwen evaluator commit. This commit also records the prior notes-patch failure and the need to verify both commit and remote state after every change.
+
+## 2026-09-06: Five-task Qwen EvalPlus pass-at-K diagnostic
+
+Completed the requested five-task diagnostic using the copied Qwen EvalPlus generator on the first five actual sparse MBPP+ IDs, Mbpp/2, Mbpp/3, Mbpp/4, Mbpp/6, and Mbpp/7. Each task received ten samples with batch size 10, temperature 0.2, top_p 0.95, Qwen2.5-Coder-0.5B-Instruct, the official ChatML prompt, Qwen stop strings, max_model_len 1536, and max_new_tokens 2048. The generator produced 50 completions.
+
+The official EvalPlus execution checks produced base correct counts of 0, 10, 6, 0, and 6 and MBPP+ correct counts of 0, 10, 6, 0, and 0 in task order. Standard estimated base pass@K averaged across tasks was pass@1 44.0%, pass@2 54.7%, pass@4 59.8%, pass@8 60.0%, and pass@10 60.0%. Standard estimated MBPP+ pass@K was pass@1 32.0%, pass@2 37.3%, pass@4 39.9%, pass@8 40.0%, and pass@10 40.0%. Per-task details are saved in outputs/qwen-evalplus-5x10-temp02/per_task_pass_at_k.json. The stock EvalPlus CLI rejected the partial directory because it requires all 399 tasks, so the official EvalPlus check_correctness and estimate_pass_at_k functions were invoked directly for these five tasks.
