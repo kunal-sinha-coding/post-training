@@ -1554,3 +1554,8 @@ Completed the requested maximum of five verifier improvement cycles using the co
 ## 2026-09-07: Verifier cycle metric clarification
 
 The five-cycle summary reports metrics at each cycle's best eval-F1 checkpoint unless otherwise stated. Cycle 2's maximum thresholded eval accuracy was 71.2% at its third checkpoint, while its best-F1 checkpoint was 70.1% accuracy. Cycle 3's maximum eval accuracy was 69.9%, while its best-F1 checkpoint was 63.2% accuracy. Cycle 5's maximum eval accuracy was 69.9%.
+
+
+## 2026-09-07: Generated-only verifier training and threshold sweep
+
+Changed train_verifier.py to exclude reference implementations from verifier training and validation while reusing the existing sandbox-labeled generated candidates. Added accuracy, precision, recall, and F1 metrics at thresholds 0.1 through 1.0 for every quarter-epoch evaluation and eval-only run. Removed automatic early stopping so training runs for the configured epoch budget without stopping on metric plateaus. This isolates the generated-candidate class prior and makes threshold calibration observable.

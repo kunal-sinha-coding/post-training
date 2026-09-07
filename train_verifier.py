@@ -170,11 +170,10 @@ def collate_examples(batch: list[VerifierExample], tokenizer: Any, max_length: i
     return encoded
 
 
-def binary_metrics(logits: Tensor, labels: Tensor) -> dict[str, float]:
-    """Compute loss-independent binary metrics for a verifier batch or epoch."""
-    # Convert logits to probabilities and threshold them at one half.
-    probabilities = torch.sigmoid(logits)
-    predictions = probabilities >= 0.5
+def threshold_metrics(probabilities: Tensor, labels: Tensor, threshold: float) -> dict[str, float]:
+    """Compute binary metrics at one probability threshold."""
+    # Convert probabilities into yes or no predictions at the requested threshold.
+    predictions = probabilities >= threshold
     accuracy = (predictions == labels.bool()).float().mean().item()
     true_positive = ((predictions == 1) & (labels == 1)).sum().item()
     false_positive = ((predictions == 1) & (labels == 0)).sum().item()
@@ -182,6 +181,13 @@ def binary_metrics(logits: Tensor, labels: Tensor) -> dict[str, float]:
     precision = true_positive / (true_positive + false_positive) if true_positive + false_positive else 0.0
     recall = true_positive / (true_positive + false_negative) if true_positive + false_negative else 0.0
     f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
+    return {"accuracy": accuracy, "precision": precision, "recall": recall, "f1": f1}
+
+
+def binary_metrics(logits: Tensor, labels: Tensor) -> dict[str, float]:
+    """Compute AUC and threshold-swept binary metrics for a verifier split."""
+    # Convert logits to probabilities once so every threshold uses identical scores.
+    probabilities = torch.sigmoid(logits)
     positives = labels == 1
     negatives = labels == 0
     auc = 0.5
@@ -190,7 +196,19 @@ def binary_metrics(logits: Tensor, labels: Tensor) -> dict[str, float]:
         pairwise = (probabilities[positives].unsqueeze(1) > probabilities[negatives].unsqueeze(0)).float()
         ties = (probabilities[positives].unsqueeze(1) == probabilities[negatives].unsqueeze(0)).float()
         auc = (pairwise.sum() + 0.5 * ties.sum()).div(positives.sum() * negatives.sum()).item()
-    return {"accuracy": accuracy, "precision": precision, "recall": recall, "f1": f1, "auc": auc, "positive_rate": labels.mean().item()}
+    metrics = {"auc": auc, "positive_rate": labels.mean().item()}
+    for threshold_index in range(1, 11):
+        # Log all requested tenths so threshold selection is visible in every evaluation.
+        threshold = threshold_index / 10
+        for name, value in threshold_metrics(probabilities, labels, threshold).items():
+            metrics[f"threshold_{threshold:.1f}/{name}"] = value
+    return metrics
+
+
+def generated_only(examples: list[VerifierExample]) -> list[VerifierExample]:
+    """Remove reference implementations from verifier training and evaluation."""
+    # Keep only candidates whose labels came from sandbox execution.
+    return [example for example in examples if example.source == "generated"]
 
 
 def prediction_rows(model: nn.Module, examples: list[VerifierExample], loader: DataLoader, device: torch.device) -> list[dict[str, Any]]:
@@ -278,6 +296,9 @@ def train_verifier(config: dict[str, Any]) -> dict[str, float]:
     output_dir.mkdir(parents=True, exist_ok=True)
     # Reuse durable labels whenever available so training retries are cheap and reproducible.
     train_examples, validation_examples = prepare_verifier_data(config, force=bool(config.get("regenerate_data", False)))
+    train_examples = generated_only(train_examples)
+    validation_examples = generated_only(validation_examples)
+    print(f"Using generated-only verifier data: {len(train_examples)} train and {len(validation_examples)} validation examples.", flush=True)
 
     # Load CodeBERT as an encoder with a single scalar classification head.
     from transformers import AutoModelForSequenceClassification, AutoTokenizer
@@ -307,9 +328,6 @@ def train_verifier(config: dict[str, Any]) -> dict[str, float]:
 
     wandb.init(project=config["wandb_project"], name=config.get("wandb_run_name"), config=config)
     final_metrics: dict[str, float] = {}
-    best_state: dict[str, Tensor] | None = None
-    best_eval_f1 = float("-inf")
-    no_improvement = 0
     quarter_steps = max(1, (len(train_loader) + 3) // 4)
     for epoch in range(1, int(config["epochs"]) + 1):
         # Optimize BCE over every labeled training candidate for one epoch.
@@ -326,7 +344,7 @@ def train_verifier(config: dict[str, Any]) -> dict[str, float]:
             is_quarter = batch_index % quarter_steps == 0 or batch_index == len(train_loader)
             if not is_quarter:
                 continue
-            # Evaluate both splits at each quarter of the current epoch and use 0.5 as the yes threshold.
+            # Evaluate both splits at each quarter of the current epoch across every configured threshold.
             train_metrics = evaluate_verifier(model, train_loader, criterion, device)
             validation_metrics = evaluate_verifier(model, validation_loader, criterion, device)
             global_step = (epoch - 1) * len(train_loader) + batch_index
@@ -337,31 +355,11 @@ def train_verifier(config: dict[str, Any]) -> dict[str, float]:
             final_metrics["epoch_fraction"] = batch_index / len(train_loader)
             final_metrics["global_step"] = float(global_step)
             final_metrics["train/optimization_loss"] = sum(epoch_losses) / len(epoch_losses)
-            final_metrics["verifier/yes_threshold"] = 0.5
-            eval_f1 = validation_metrics["f1"]
-            if eval_f1 > best_eval_f1:
-                # Keep the strongest classifier state for final checkpoint saving.
-                best_eval_f1 = eval_f1
-                best_state = {key: value.detach().cpu().clone() for key, value in model.state_dict().items()}
-                no_improvement = 0
-            else:
-                no_improvement += 1
-            final_metrics["early_stopping/no_improvement"] = float(no_improvement)
             wandb.log(final_metrics, step=global_step)
             print(json.dumps(final_metrics, sort_keys=True), flush=True)
-            if no_improvement >= int(config["eval_patience"]):
-                # Stop after the configured number of consecutive non-improving evaluations.
-                print(f"Stopping after {no_improvement} non-improving evaluations.", flush=True)
-                break
             model.train()
-        if no_improvement >= int(config["eval_patience"]):
-            # Exit the outer epoch loop after quarter-epoch early stopping triggers.
-            break
 
-    # Restore the best evaluation-F1 state before saving the classifier.
-    if best_state is not None:
-        model.load_state_dict({key: value.to(device) for key, value in best_state.items()})
-    # Save the trained classifier and the final metric summary for downstream ranking experiments.
+    # Save the final continuously trained classifier and metric summary for downstream experiments.
     model.save_pretrained(output_dir / "model")
     tokenizer.save_pretrained(output_dir / "model")
     save_prediction_rows(prediction_rows(model, validation_examples, validation_loader, device), output_dir / "validation_predictions.jsonl")
@@ -376,7 +374,7 @@ def evaluate_saved_verifier(config: dict[str, Any]) -> dict[str, float]:
     from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
     checkpoint = Path(config["checkpoint_dir"])
-    examples = load_examples(Path(config["evaluation_data"]))
+    examples = generated_only(load_examples(Path(config["evaluation_data"])))
     tokenizer = AutoTokenizer.from_pretrained(checkpoint)
     model = AutoModelForSequenceClassification.from_pretrained(checkpoint)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -389,7 +387,6 @@ def evaluate_saved_verifier(config: dict[str, Any]) -> dict[str, float]:
 
     wandb.init(project=config["wandb_project"], name=config.get("wandb_run_name"), config=config)
     logged = {f"evaluation/{key}": value for key, value in metrics.items()}
-    logged["evaluation/yes_threshold"] = 0.5
     wandb.log(logged, step=0)
     print(json.dumps(logged, sort_keys=True), flush=True)
     wandb.finish()
@@ -417,7 +414,6 @@ def parse_args() -> dict[str, Any]:
     parser.add_argument("--batch-size", type=int, default=16)
     parser.add_argument("--max-length", type=int, default=512)
     parser.add_argument("--epochs", type=int, default=10)
-    parser.add_argument("--eval-patience", type=int, default=3)
     parser.add_argument("--learning-rate", type=float, default=5e-6)
     parser.add_argument("--weight-decay", type=float, default=0.01)
     parser.add_argument("--positive-class-weight", type=float, default=1.5)
