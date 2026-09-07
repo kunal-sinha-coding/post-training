@@ -1519,3 +1519,8 @@ Kept the original verifier dataset size of one reference plus four generated can
 ## 2026-09-07: Durable verifier labels and monitored training
 
 Changed verifier preparation to save train.jsonl immediately after its labels are complete and validation.jsonl immediately after its labels are complete. Added cache reuse and a prepare-data mode so reruns train from committed labels without regenerating candidates. Added positive-class precision, recall, and F1 to every train and eval checkpoint, retained eval loss and accuracy logging, changed the default to ten epochs, and added early stopping after three consecutive non-improving eval-F1 checkpoints. The planned run will use four generated candidates plus one reference per task and will be retried at most five times if the monitored evaluation fails to improve.
+
+
+## 2026-09-07: Durable verifier label dataset
+
+Prepared and sandbox-labeled the full task-disjoint MBPP verifier dataset using four generated candidates plus one reference per task. The train split contains 299 tasks and 1,495 labeled examples. The validation split contains 75 tasks and 375 labeled examples. All 1,496 generated candidates were labeled with 16 parallel workers, and each split was saved immediately after labeling.
