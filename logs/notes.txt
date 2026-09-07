@@ -1504,3 +1504,8 @@ The 7B-only 1024-token retry still failed during vLLM profiling because the stan
 ## 2026-09-07: CodeBERT verifier training module
 
 Added train_verifier.py as a dedicated task-conditioned correctness-verifier pipeline. It loads MBPP, splits tasks before candidate generation, labels reference implementations as correct, generates configurable Qwen candidates, labels candidates by full sandbox test success, trains microsoft/codebert-base with BCEWithLogitsLoss, logs train and validation loss, accuracy, positive rate, and ROC AUC to W&B each epoch, and saves JSONL data plus the verifier checkpoint and metrics. The focused verifier smoke check passed. Existing tests passed except test_prepare_datasets_loads_official_train_and_validation_splits, which fails because the existing test double accepts the old three-argument load_mbpp signature while data.py currently passes the include_generic_arguments argument.
+
+
+## 2026-09-07: Verifier quarter-epoch evaluation
+
+Extended train_verifier.py with evaluation of the saved sandbox-labeled validation candidates. The verifier now uses a 0.5 probability threshold, logs train and eval loss, accuracy, positive rate, and AUC at four evenly spaced checkpoints per epoch, saves per-example probabilities and yes or no predictions, and supports --eval-only to reload the checkpoint and validation JSONL without regenerating labels.

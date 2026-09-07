@@ -2,8 +2,9 @@
 
 The flow loads official MBPP records, splits tasks before generating candidates, labels
 reference implementations as correct, labels generated candidates from the sandbox,
-trains a CodeBERT encoder with a binary classification head, logs epoch metrics to
-Weights & Biases, and saves the verifier plus its reproducible JSONL dataset.
+trains a CodeBERT encoder with a binary classification head, logs quarter-epoch metrics to
+Weights & Biases, and saves the verifier plus its reproducible JSONL dataset. The same
+file can reload the saved labeled evaluation data and report thresholded predictions.
 """
 
 from __future__ import annotations
@@ -171,6 +172,37 @@ def binary_metrics(logits: Tensor, labels: Tensor) -> dict[str, float]:
     return {"accuracy": accuracy, "auc": auc, "positive_rate": labels.mean().item()}
 
 
+def prediction_rows(model: nn.Module, examples: list[VerifierExample], loader: DataLoader, device: torch.device) -> list[dict[str, Any]]:
+    """Return one probability and thresholded prediction for every labeled example."""
+    # Preserve loader order so predictions can be joined directly to saved examples.
+    model.eval()
+    probabilities: list[float] = []
+    with torch.inference_mode():
+        for batch in loader:
+            batch = {key: value.to(device) if isinstance(value, Tensor) else value for key, value in batch.items()}
+            output = model(**{key: value for key, value in batch.items() if key != "labels"})
+            probabilities.extend(torch.sigmoid(output.logits.squeeze(-1)).cpu().tolist())
+    return [
+        {**asdict(example), "probability": probability, "prediction": int(probability >= 0.5)}
+        for example, probability in zip(examples, probabilities)
+    ]
+
+
+def save_prediction_rows(rows: list[dict[str, Any]], path: Path) -> None:
+    """Save verifier probabilities and yes or no decisions as JSONL."""
+    # Persist every evaluation prediction so ranking and threshold decisions are auditable.
+    with path.open("w", encoding="utf-8") as handle:
+        for row in rows:
+            handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+
+
+def load_examples(path: Path) -> list[VerifierExample]:
+    """Load the labeled JSONL dataset produced during verifier training."""
+    # Reconstruct the same examples without regenerating candidates or rerunning the sandbox.
+    with path.open(encoding="utf-8") as handle:
+        return [VerifierExample(**json.loads(line)) for line in handle if line.strip()]
+
+
 def evaluate_verifier(model: nn.Module, loader: DataLoader, criterion: nn.Module, device: torch.device) -> dict[str, float]:
     """Evaluate verifier loss and classification metrics without updating weights."""
     # Accumulate predictions and labels across the complete evaluation split.
@@ -224,11 +256,12 @@ def train_verifier(config: dict[str, Any]) -> dict[str, float]:
 
     wandb.init(project=config["wandb_project"], name=config.get("wandb_run_name"), config=config)
     final_metrics: dict[str, float] = {}
+    quarter_steps = max(1, (len(train_loader) + 3) // 4)
     for epoch in range(1, int(config["epochs"]) + 1):
         # Optimize BCE over every labeled training candidate for one epoch.
         model.train()
         epoch_losses: list[float] = []
-        for batch in train_loader:
+        for batch_index, batch in enumerate(train_loader, start=1):
             batch = {key: value.to(device) if isinstance(value, Tensor) else value for key, value in batch.items()}
             optimizer.zero_grad(set_to_none=True)
             output = model(**{key: value for key, value in batch.items() if key != "labels"})
@@ -236,30 +269,58 @@ def train_verifier(config: dict[str, Any]) -> dict[str, float]:
             loss.backward()
             optimizer.step()
             epoch_losses.append(loss.item())
-        train_logits = []
-        train_labels = []
-        model.eval()
-        with torch.inference_mode():
-            for batch in train_loader:
-                batch = {key: value.to(device) if isinstance(value, Tensor) else value for key, value in batch.items()}
-                output = model(**{key: value for key, value in batch.items() if key != "labels"})
-                train_logits.append(output.logits.squeeze(-1).cpu())
-                train_labels.append(batch["labels"].cpu())
-        train_metrics = binary_metrics(torch.cat(train_logits), torch.cat(train_labels))
-        validation_metrics = evaluate_verifier(model, validation_loader, criterion, device)
-        final_metrics = {f"train/{key}": value for key, value in train_metrics.items()}
-        final_metrics.update({f"validation/{key}": value for key, value in validation_metrics.items()})
-        final_metrics["epoch"] = float(epoch)
-        final_metrics["train/optimization_loss"] = sum(epoch_losses) / len(epoch_losses)
-        wandb.log(final_metrics, step=epoch)
-        print(json.dumps(final_metrics, sort_keys=True), flush=True)
+            is_quarter = batch_index % quarter_steps == 0 or batch_index == len(train_loader)
+            if not is_quarter:
+                continue
+            # Evaluate both splits at each quarter of the current epoch and use 0.5 as the yes threshold.
+            train_metrics = evaluate_verifier(model, train_loader, criterion, device)
+            validation_metrics = evaluate_verifier(model, validation_loader, criterion, device)
+            global_step = (epoch - 1) * len(train_loader) + batch_index
+            final_metrics = {f"train/{key}": value for key, value in train_metrics.items()}
+            final_metrics.update({f"validation/{key}": value for key, value in validation_metrics.items()})
+            final_metrics.update({f"eval/{key}": value for key, value in validation_metrics.items()})
+            final_metrics["epoch"] = float(epoch)
+            final_metrics["epoch_fraction"] = batch_index / len(train_loader)
+            final_metrics["global_step"] = float(global_step)
+            final_metrics["train/optimization_loss"] = sum(epoch_losses) / len(epoch_losses)
+            final_metrics["verifier/yes_threshold"] = 0.5
+            wandb.log(final_metrics, step=global_step)
+            print(json.dumps(final_metrics, sort_keys=True), flush=True)
+            model.train()
 
     # Save the trained classifier and the final metric summary for downstream ranking experiments.
     model.save_pretrained(output_dir / "model")
     tokenizer.save_pretrained(output_dir / "model")
+    save_prediction_rows(prediction_rows(model, validation_examples, validation_loader, device), output_dir / "validation_predictions.jsonl")
     (output_dir / "metrics.json").write_text(json.dumps(final_metrics, indent=2) + "\n", encoding="utf-8")
     wandb.finish()
     return final_metrics
+
+
+def evaluate_saved_verifier(config: dict[str, Any]) -> dict[str, float]:
+    """Evaluate a saved CodeBERT verifier on previously sandbox-labeled examples."""
+    # Load the exact labeled evaluation artifact produced alongside the checkpoint.
+    from transformers import AutoModelForSequenceClassification, AutoTokenizer
+
+    checkpoint = Path(config["checkpoint_dir"])
+    examples = load_examples(Path(config["evaluation_data"]))
+    tokenizer = AutoTokenizer.from_pretrained(checkpoint)
+    model = AutoModelForSequenceClassification.from_pretrained(checkpoint)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model.to(device)
+    loader = DataLoader(VerifierDataset(examples), batch_size=int(config["batch_size"]), shuffle=False, collate_fn=lambda batch: collate_examples(batch, tokenizer, int(config["max_length"])))
+    metrics = evaluate_verifier(model, loader, nn.BCEWithLogitsLoss(), device)
+    rows = prediction_rows(model, examples, loader, device)
+    save_prediction_rows(rows, Path(config["output_dir"]) / "evaluation_predictions.jsonl")
+    import wandb
+
+    wandb.init(project=config["wandb_project"], name=config.get("wandb_run_name"), config=config)
+    logged = {f"evaluation/{key}": value for key, value in metrics.items()}
+    logged["evaluation/yes_threshold"] = 0.5
+    wandb.log(logged, step=0)
+    print(json.dumps(logged, sort_keys=True), flush=True)
+    wandb.finish()
+    return metrics
 
 
 def parse_args() -> dict[str, Any]:
@@ -287,9 +348,19 @@ def parse_args() -> dict[str, Any]:
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--wandb-project", default="mbpp-verifier")
     parser.add_argument("--wandb-run-name", default=None)
+    parser.add_argument("--eval-only", action="store_true", help="Evaluate a saved verifier without regenerating labels.")
+    parser.add_argument("--checkpoint-dir", default=None, help="Saved verifier directory for --eval-only.")
+    parser.add_argument("--evaluation-data", default=None, help="Labeled JSONL data for --eval-only.")
     return vars(parser.parse_args())
 
 
 # Launch the verifier data construction and training flow when invoked as a script.
 if __name__ == "__main__":
-    train_verifier(parse_args())
+    # Select training or saved-checkpoint evaluation from the command line.
+    arguments = parse_args()
+    if arguments["eval_only"]:
+        arguments["checkpoint_dir"] = arguments["checkpoint_dir"] or str(Path(arguments["output_dir"]) / "model")
+        arguments["evaluation_data"] = arguments["evaluation_data"] or str(Path(arguments["output_dir"]) / "validation.jsonl")
+        evaluate_saved_verifier(arguments)
+    else:
+        train_verifier(arguments)
