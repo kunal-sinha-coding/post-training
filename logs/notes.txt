@@ -1469,3 +1469,8 @@ The official EvalPlus execution checks produced base correct counts of 0, 10, 6,
 Completed the full 399-task MBPP+ generation with Qwen2.5-Coder-0.5B-Instruct using the copied Qwen EvalPlus generator, batch size 20, temperature 0.2, top_p 0.95, and 20 samples per task. The official EvalPlus scorer required a rerun with eight worker processes after the default worker pool crashed at 5,457 of 7,980 checks. The successful score was MBPP base pass@1 51.8% and pass@10 66.9%, and MBPP+ pass@1 42.6% and pass@10 54.7%. All pass-at-K values from 1 through 20 were computed from the saved EvalPlus results in outputs/qwen-evalplus-full-20-temp02/pass_at_k.json.
 
 Updated evaluate.py to generate the configured number of sampled completions per validation task and compute standard unbiased grouped pass-at-K metrics. Updated configs/default.yaml so GRPO checkpoint evaluations run every 10 optimizer steps, sample 20 completions per task at temperature 0.2 with top_p 0.95, and stop after two consecutive checkpoint evaluations without a higher pass@1.
+
+
+## 2026-09-07: GRPO checkpoint progress snapshot
+
+GRPO run 5cv3iyih is active with Qwen3.5-0.8B, 374 MBPP training examples, 460 configured optimizer steps, and checkpoint evaluations every 10 steps. The new evaluator samples 20 completions per validation task at temperature 0.2 and top_p 0.95 and logs pass@1 through pass@20. Checkpoint 10 completed with 1,800 validation completions, repository-protocol pass@1 20.83%, pass@10 43.13%, and pass@20 50.00%. Status counts were 375 passed, 204 partial, 74 syntax errors, and 1,147 failed. Training has progressed into step 20 and its checkpoint evaluation is still pending.

@@ -1812,3 +1812,129 @@ trust_remote_code: true
 report_to: none
 
 ------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-06 17:03:58 PDT
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-06 17:04:52 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: checkpoint-10
+Training context: checkpoint
+Epoch: 0.21739130434782608
+Timestamp: 2026-09-06 21:02:42 PDT
+Git commit: 07e040d
+Change description: 07e040d Log pass-at-K for GRPO evaluations
+977b2c7 Record five-task EvalPlus pass-at-K diagnostic
+ea7fd6a Require immediate commit and push after every change
+2300790 Vendor Qwen EvalPlus evaluator and prune logs
+Metrics:
+{
+  "average_reward": 0.26740740740740737,
+  "entropy": 0.39384544984138037,
+  "examples": 1800,
+  "pass_at_1": 0.20833333333333334,
+  "pass_at_10": 0.4313300906180163,
+  "pass_at_11": 0.44031832976105423,
+  "pass_at_12": 0.4485550351494624,
+  "pass_at_13": 0.45620069372778355,
+  "pass_at_14": 0.4633711730306157,
+  "pass_at_15": 0.4701510721247563,
+  "pass_at_16": 0.47660360050452927,
+  "pass_at_17": 0.4827777777777778,
+  "pass_at_18": 0.4887134502923977,
+  "pass_at_19": 0.49444444444444446,
+  "pass_at_2": 0.2709356725146199,
+  "pass_at_20": 0.5,
+  "pass_at_3": 0.31082846003898634,
+  "pass_at_4": 0.3403348239880748,
+  "pass_at_5": 0.36333347666551996,
+  "pass_at_6": 0.3818441119137713,
+  "pass_at_7": 0.39714783281733745,
+  "pass_at_8": 0.41011801751739835,
+  "pass_at_9": 0.4213670582943029,
+  "repeated_completion_fraction": 0.38111111111111107,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.0,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.26740740740740737,
+  "status_counts": {
+    "failed": 1147,
+    "partial": 204,
+    "passed": 375,
+    "syntax_error": 74
+  },
+  "successful_examples": 375,
+  "unique_completion_rate": 0.6188888888888889
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen3.5-0.8B
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+train_split: train
+validation_split: validation
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: true
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000001
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 768
+generation_kwargs:
+  stop_strings: ["```"]
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+pass_weight: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: false
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
