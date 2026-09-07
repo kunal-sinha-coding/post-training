@@ -70,7 +70,7 @@ class VLlmDecoder(DecoderBase):
             "dtype": self.dtype,
             "trust_remote_code": self.trust_remote_code,
             "enforce_eager": True,
-            "gpu_memory_utilization": 0.98
+            "gpu_memory_utilization": 0.90
         }
         print(kwargs)
         self.llm = LLM(model=name, max_model_len=1536, **kwargs)

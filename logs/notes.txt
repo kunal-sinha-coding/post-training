@@ -1484,3 +1484,8 @@ Completed the full 399-task Qwen EvalPlus evaluation with Qwen2.5-Coder-1.5B-Ins
 ## 2026-09-07: Qwen2.5-Coder-3B full MBPP+ evaluation
 
 Completed the full 399-task Qwen EvalPlus evaluation with Qwen2.5-Coder-3B-Instruct, one GPU, batch size 4, temperature 0.2, top_p 0.95, and 10 sampled completions per task. Official EvalPlus scoring reported base pass@1 72.1% and pass@10 81.2%, and MBPP+ pass@1 62.5% and pass@10 71.4%. Pass-at-K values for every K from 1 through 10 were computed and saved in the ignored output artifact.
+
+
+## 2026-09-07: 7B vLLM memory adjustment
+
+The Qwen2.5-Coder-7B-Instruct EvalPlus launch with batch size 1 failed during vLLM engine initialization because the 16 GiB GPU could not satisfy the evaluator's 0.98 GPU memory reservation. Reduced only vLLM's gpu_memory_utilization setting from 0.98 to 0.90 so the 7B run can initialize while keeping the model, prompt, sampling, sequence length, and scoring protocol unchanged.
