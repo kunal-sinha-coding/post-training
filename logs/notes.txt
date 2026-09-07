@@ -1599,3 +1599,8 @@ Updated synthetic_data/label_tasks.py to start GPU generation at 16 tasks per ca
 ## 2026-09-07: Fix decoder-only padding for batched labeling
 
 The first adaptive batched Qwen labeling attempt emitted a right-padding warning for the decoder-only model. Stopped that attempt before trusting its output, set tokenizer.padding_side to left, and will resume from the existing completed-task checkpoint.
+
+
+## 2026-09-07: Keep synthetic candidates training-only
+
+Corrected synthetic_data/label_tasks.py so all 1,000 synthetic tasks are labeled into the training artifact only. The synthetic validation output is no longer populated; verifier evaluation will use the existing MBPP validation candidates. Stopped the incorrect split run after 125 tasks and preserved its 1,250 saved training candidates for resumption.

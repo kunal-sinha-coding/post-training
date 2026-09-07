@@ -39,9 +39,7 @@ def generate_candidates(config: dict[str, Any]) -> dict[str, int]:
     """Generate and label ten candidates per synthetic task with batched GPU inference."""
     # Load the complete accepted task artifact without regenerating GPT tasks.
     tasks = [json.loads(line) for line in Path(config["tasks"]).read_text(encoding="utf-8").splitlines() if line.strip()]
-    split_index = int(len(tasks) * float(config["train_fraction"]))
-    train_tasks = tasks[:split_index]
-    validation_tasks = tasks[split_index:]
+    train_tasks = tasks
     output_dir = Path(config["output_dir"])
     train_path = output_dir / "train.jsonl"
     validation_path = output_dir / "validation.jsonl"
@@ -51,7 +49,7 @@ def generate_candidates(config: dict[str, Any]) -> dict[str, int]:
         validation_path.unlink(missing_ok=True)
     completed_ids: set[str] = set()
     totals = {"tasks": 0, "candidates": 0, "positive": 0, "negative": 0, "sandbox_errors": 0}
-    for path in (train_path, validation_path):
+    for path in (train_path,):
         if not path.exists():
             continue
         # Recover completed task IDs and label totals so interrupted runs resume accurately.
@@ -79,7 +77,7 @@ def generate_candidates(config: dict[str, Any]) -> dict[str, int]:
     task_batch_size = max(1, int(config["generation_task_batch_size"]))
     with ThreadPoolExecutor(max_workers=max(1, int(config["label_workers"]))) as executor:
         # Process pending tasks in GPU batches while preserving deterministic train and validation assignment.
-        pending = [task for task in [*train_tasks, *validation_tasks] if str(task["task_id"]) not in completed_ids]
+        pending = [task for task in train_tasks if str(task["task_id"]) not in completed_ids]
         batch_start = 0
         while batch_start < len(pending):
             task_batch = pending[batch_start:batch_start + task_batch_size]
@@ -106,8 +104,7 @@ def generate_candidates(config: dict[str, Any]) -> dict[str, int]:
                 codes = decoded[first:first + int(config["candidates_per_task"])]
                 items = [(str(task_record["task_id"]), str(task_record["task"]), code, str(task_record["test_code"]), index + 1) for index, code in enumerate(codes)]
                 records = list(executor.map(label_candidate, items))
-                output_path = train_path if task_record in train_tasks else validation_path
-                write_records(output_path, records)
+                write_records(train_path, records)
                 completed_ids.add(str(task_record["task_id"]))
                 totals["tasks"] += 1
                 totals["candidates"] += len(records)
@@ -137,7 +134,6 @@ def parse_args() -> dict[str, Any]:
     parser.add_argument("--top-p", type=float, default=0.95)
     parser.add_argument("--max-new-tokens", type=int, default=512)
     parser.add_argument("--max-prompt-tokens", type=int, default=512)
-    parser.add_argument("--train-fraction", type=float, default=0.8)
     parser.add_argument("--progress-every", type=int, default=10)
     parser.add_argument("--generation-task-batch-size", type=int, default=16)
     parser.add_argument("--overwrite", action="store_true")
