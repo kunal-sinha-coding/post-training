@@ -1564,3 +1564,8 @@ Changed train_verifier.py to exclude reference implementations from verifier tra
 ## 2026-09-07: Add synthetic task generator with cost accounting
 
 Added synthetic_data/generate_tasks.py, which requests structured Python benchmark tasks from GPT-5.4 Mini, validates reference implementations and assertions in the local sandbox, rejects duplicates or invalid tasks, persists accepted JSONL records incrementally, and records input tokens, output tokens, retries, and estimated cumulative API cost after every request. Added the OpenAI SDK dependency. The initial run will use a five-task preview before the requested 1,000-task generation.
+
+
+## 2026-09-07: Load dotenv credentials for synthetic generation
+
+Updated synthetic_data/generate_tasks.py to load the repository .env file before checking OPENAI_API_KEY. The first preview invocation made no API requests because the key was present only in .env and not exported in the process environment.

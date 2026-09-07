@@ -15,6 +15,8 @@ import time
 from pathlib import Path
 from typing import Any
 
+from dotenv import load_dotenv
+
 from sandbox import execute_code
 
 MODEL_INPUT_PRICE = 0.75 / 1_000_000
@@ -80,6 +82,8 @@ def request_task(client: Any, model: str) -> tuple[dict[str, Any], dict[str, int
 
 def generate_tasks(config: dict[str, Any]) -> dict[str, Any]:
     """Generate, validate, persist, and cost-account synthetic tasks."""
+    # Load the repository dotenv file before checking the API credential.
+    load_dotenv()
     # Fail early when the API credential is unavailable.
     if not os.environ.get("OPENAI_API_KEY"):
         raise RuntimeError("OPENAI_API_KEY is required for synthetic task generation.")
