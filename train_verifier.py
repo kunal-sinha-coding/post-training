@@ -286,6 +286,12 @@ def train_verifier(config: dict[str, Any]) -> dict[str, float]:
     model = AutoModelForSequenceClassification.from_pretrained(config["verifier_model"], num_labels=1, problem_type="single_label_classification")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
+    # Initialize the classification bias at the observed positive prior for better 0.5 threshold calibration.
+    positive_prior = sum(example.label for example in train_examples) / len(train_examples)
+    prior_bias = torch.logit(torch.tensor(positive_prior, device=device))
+    if hasattr(model, "classifier") and hasattr(model.classifier, "out_proj"):
+        with torch.no_grad():
+            model.classifier.out_proj.bias.copy_(prior_bias.expand_as(model.classifier.out_proj.bias))
     train_loader = DataLoader(VerifierDataset(train_examples), batch_size=int(config["batch_size"]), shuffle=True, collate_fn=lambda batch: collate_examples(batch, tokenizer, int(config["max_length"])))
     validation_loader = DataLoader(VerifierDataset(validation_examples), batch_size=int(config["batch_size"]), shuffle=False, collate_fn=lambda batch: collate_examples(batch, tokenizer, int(config["max_length"])))
     # Weight positive examples so missed correct programs are penalized at the fixed 0.5 threshold.
@@ -408,7 +414,7 @@ def parse_args() -> dict[str, Any]:
     parser.add_argument("--max-length", type=int, default=512)
     parser.add_argument("--epochs", type=int, default=10)
     parser.add_argument("--eval-patience", type=int, default=3)
-    parser.add_argument("--learning-rate", type=float, default=2e-5)
+    parser.add_argument("--learning-rate", type=float, default=5e-6)
     parser.add_argument("--weight-decay", type=float, default=0.01)
     parser.add_argument("--positive-class-weight", type=float, default=1.5)
     parser.add_argument("--seed", type=int, default=42)

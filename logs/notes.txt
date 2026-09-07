@@ -1529,3 +1529,8 @@ Prepared and sandbox-labeled the full task-disjoint MBPP verifier dataset using 
 ## 2026-09-07: Verifier cycle 1 diagnosis and cycle 2 fix
 
 The first verifier run stopped after three non-improving eval-F1 checkpoints. The saved best checkpoint had validation accuracy 69.3%, precision 77.3%, recall 56.8%, F1 65.5%, and AUC 77.3%. Label balance was nearly even at 192 positive and 183 negative validation examples, so imbalance was not the cause. Later checkpoints improved loss and AUC but became overly conservative at the fixed 0.5 threshold, ending with precision 100% and recall 39.6%. Added configurable positive-class BCE weighting with a default of 1.5 to penalize false negatives and improve fixed-threshold recall. The next run reuses the committed labels.
+
+
+## 2026-09-07: Verifier cycle 2 diagnosis and cycle 3 fix
+
+Cycle 2 used positive-class weight 1.5 and improved the best fixed-threshold validation result to accuracy 70.1%, precision 71.5%, recall 69.3%, F1 70.4%, and AUC 77.7%. It nevertheless stopped after later F1 declines while AUC rose to 80.3%, confirming continued probability sharpening and threshold-calibration drift. Added initialization of the classifier output bias to the training positive prior and lowered the learning rate from 2e-5 to 5e-6. The committed labels and positive-class weight remain unchanged.
