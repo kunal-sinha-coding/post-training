@@ -7,3 +7,4 @@ transformers>=4.50
 trl>=0.15
 wandb>=0.19
 pytest>=8.0
+openai>=1.0

@@ -16,6 +16,7 @@ dependencies = [
   "transformers>=4.50",
   "trl>=0.15",
   "wandb>=0.19",
+  "openai>=1.0",
 ]
 
 [project.optional-dependencies]

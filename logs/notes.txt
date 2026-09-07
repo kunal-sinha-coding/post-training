@@ -1559,3 +1559,8 @@ The five-cycle summary reports metrics at each cycle's best eval-F1 checkpoint u
 ## 2026-09-07: Generated-only verifier training and threshold sweep
 
 Changed train_verifier.py to exclude reference implementations from verifier training and validation while reusing the existing sandbox-labeled generated candidates. Added accuracy, precision, recall, and F1 metrics at thresholds 0.1 through 1.0 for every quarter-epoch evaluation and eval-only run. Removed automatic early stopping so training runs for the configured epoch budget without stopping on metric plateaus. This isolates the generated-candidate class prior and makes threshold calibration observable.
+
+
+## 2026-09-07: Add synthetic task generator with cost accounting
+
+Added synthetic_data/generate_tasks.py, which requests structured Python benchmark tasks from GPT-5.4 Mini, validates reference implementations and assertions in the local sandbox, rejects duplicates or invalid tasks, persists accepted JSONL records incrementally, and records input tokens, output tokens, retries, and estimated cumulative API cost after every request. Added the OpenAI SDK dependency. The initial run will use a five-task preview before the requested 1,000-task generation.
