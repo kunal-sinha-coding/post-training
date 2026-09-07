@@ -176,6 +176,12 @@ def binary_metrics(logits: Tensor, labels: Tensor) -> dict[str, float]:
     probabilities = torch.sigmoid(logits)
     predictions = probabilities >= 0.5
     accuracy = (predictions == labels.bool()).float().mean().item()
+    true_positive = ((predictions == 1) & (labels == 1)).sum().item()
+    false_positive = ((predictions == 1) & (labels == 0)).sum().item()
+    false_negative = ((predictions == 0) & (labels == 1)).sum().item()
+    precision = true_positive / (true_positive + false_positive) if true_positive + false_positive else 0.0
+    recall = true_positive / (true_positive + false_negative) if true_positive + false_negative else 0.0
+    f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
     positives = labels == 1
     negatives = labels == 0
     auc = 0.5
@@ -184,7 +190,7 @@ def binary_metrics(logits: Tensor, labels: Tensor) -> dict[str, float]:
         pairwise = (probabilities[positives].unsqueeze(1) > probabilities[negatives].unsqueeze(0)).float()
         ties = (probabilities[positives].unsqueeze(1) == probabilities[negatives].unsqueeze(0)).float()
         auc = (pairwise.sum() + 0.5 * ties.sum()).div(positives.sum() * negatives.sum()).item()
-    return {"accuracy": accuracy, "auc": auc, "positive_rate": labels.mean().item()}
+    return {"accuracy": accuracy, "precision": precision, "recall": recall, "f1": f1, "auc": auc, "positive_rate": labels.mean().item()}
 
 
 def prediction_rows(model: nn.Module, examples: list[VerifierExample], loader: DataLoader, device: torch.device) -> list[dict[str, Any]]:
@@ -239,20 +245,39 @@ def evaluate_verifier(model: nn.Module, loader: DataLoader, criterion: nn.Module
     return metrics
 
 
-def train_verifier(config: dict[str, Any]) -> dict[str, float]:
-    """Build data, train CodeBERT, log W&B metrics, and save the final verifier."""
-    # Initialize deterministic behavior before loading any model or data.
-    seed_everything(int(config["seed"]))
+def prepare_verifier_data(config: dict[str, Any], force: bool = False) -> tuple[list[VerifierExample], list[VerifierExample]]:
+    """Generate, sandbox-label, and immediately save task-disjoint train and evaluation data."""
+    # Load and split MBPP before generation so no task appears in both labeled datasets.
     output_dir = Path(config["output_dir"])
     output_dir.mkdir(parents=True, exist_ok=True)
     dataset = load_mbpp(config["dataset_name"], config.get("dataset_config"), config["split"])
     if config.get("max_examples"):
         dataset = dataset.select(range(min(int(config["max_examples"]), len(dataset))))
     train_records, validation_records = split_dataset(dataset, float(config["train_fraction"]), int(config["seed"]))
-    train_examples = generate_candidates(list(train_records), config["generator_model"], int(config["candidates_per_task"]), float(config["temperature"]), float(config["top_p"]), int(config["max_new_tokens"]), int(config["generation_batch_size"]), int(config["label_workers"]))
-    validation_examples = generate_candidates(list(validation_records), config["generator_model"], int(config["candidates_per_task"]), float(config["temperature"]), float(config["top_p"]), int(config["max_new_tokens"]), int(config["generation_batch_size"]), int(config["label_workers"]))
-    save_examples(train_examples, output_dir / "train.jsonl")
-    save_examples(validation_examples, output_dir / "validation.jsonl")
+    prepared: list[list[VerifierExample]] = []
+    for name, records in (("train", list(train_records)), ("validation", list(validation_records))):
+        path = output_dir / f"{name}.jsonl"
+        if path.exists() and not force:
+            # Reuse the completed labels so later training retries never regenerate candidates.
+            examples = load_examples(path)
+            print(f"Reusing {len(examples)} labeled {name} examples from {path}.", flush=True)
+        else:
+            # Finish and persist one split before beginning the next split.
+            examples = generate_candidates(records, config["generator_model"], int(config["candidates_per_task"]), float(config["temperature"]), float(config["top_p"]), int(config["max_new_tokens"]), int(config["generation_batch_size"]), int(config["label_workers"]))
+            save_examples(examples, path)
+            print(f"Saved {len(examples)} labeled {name} examples to {path}.", flush=True)
+        prepared.append(examples)
+    return prepared[0], prepared[1]
+
+
+def train_verifier(config: dict[str, Any]) -> dict[str, float]:
+    """Build data, train CodeBERT, log W&B metrics, and save the final verifier."""
+    # Initialize deterministic behavior before loading any model or data.
+    seed_everything(int(config["seed"]))
+    output_dir = Path(config["output_dir"])
+    output_dir.mkdir(parents=True, exist_ok=True)
+    # Reuse durable labels whenever available so training retries are cheap and reproducible.
+    train_examples, validation_examples = prepare_verifier_data(config, force=bool(config.get("regenerate_data", False)))
 
     # Load CodeBERT as an encoder with a single scalar classification head.
     from transformers import AutoModelForSequenceClassification, AutoTokenizer
@@ -271,6 +296,9 @@ def train_verifier(config: dict[str, Any]) -> dict[str, float]:
 
     wandb.init(project=config["wandb_project"], name=config.get("wandb_run_name"), config=config)
     final_metrics: dict[str, float] = {}
+    best_state: dict[str, Tensor] | None = None
+    best_eval_f1 = float("-inf")
+    no_improvement = 0
     quarter_steps = max(1, (len(train_loader) + 3) // 4)
     for epoch in range(1, int(config["epochs"]) + 1):
         # Optimize BCE over every labeled training candidate for one epoch.
@@ -299,10 +327,29 @@ def train_verifier(config: dict[str, Any]) -> dict[str, float]:
             final_metrics["global_step"] = float(global_step)
             final_metrics["train/optimization_loss"] = sum(epoch_losses) / len(epoch_losses)
             final_metrics["verifier/yes_threshold"] = 0.5
+            eval_f1 = validation_metrics["f1"]
+            if eval_f1 > best_eval_f1:
+                # Keep the strongest classifier state for final checkpoint saving.
+                best_eval_f1 = eval_f1
+                best_state = {key: value.detach().cpu().clone() for key, value in model.state_dict().items()}
+                no_improvement = 0
+            else:
+                no_improvement += 1
+            final_metrics["early_stopping/no_improvement"] = float(no_improvement)
             wandb.log(final_metrics, step=global_step)
             print(json.dumps(final_metrics, sort_keys=True), flush=True)
+            if no_improvement >= int(config["eval_patience"]):
+                # Stop after the configured number of consecutive non-improving evaluations.
+                print(f"Stopping after {no_improvement} non-improving evaluations.", flush=True)
+                break
             model.train()
+        if no_improvement >= int(config["eval_patience"]):
+            # Exit the outer epoch loop after quarter-epoch early stopping triggers.
+            break
 
+    # Restore the best evaluation-F1 state before saving the classifier.
+    if best_state is not None:
+        model.load_state_dict({key: value.to(device) for key, value in best_state.items()})
     # Save the trained classifier and the final metric summary for downstream ranking experiments.
     model.save_pretrained(output_dir / "model")
     tokenizer.save_pretrained(output_dir / "model")
@@ -358,7 +405,8 @@ def parse_args() -> dict[str, Any]:
     parser.add_argument("--max-examples", type=int, default=None)
     parser.add_argument("--batch-size", type=int, default=16)
     parser.add_argument("--max-length", type=int, default=512)
-    parser.add_argument("--epochs", type=int, default=3)
+    parser.add_argument("--epochs", type=int, default=10)
+    parser.add_argument("--eval-patience", type=int, default=3)
     parser.add_argument("--learning-rate", type=float, default=2e-5)
     parser.add_argument("--weight-decay", type=float, default=0.01)
     parser.add_argument("--seed", type=int, default=42)
@@ -367,6 +415,8 @@ def parse_args() -> dict[str, Any]:
     parser.add_argument("--eval-only", action="store_true", help="Evaluate a saved verifier without regenerating labels.")
     parser.add_argument("--checkpoint-dir", default=None, help="Saved verifier directory for --eval-only.")
     parser.add_argument("--evaluation-data", default=None, help="Labeled JSONL data for --eval-only.")
+    parser.add_argument("--prepare-data", action="store_true", help="Generate and save labels, then exit before model training.")
+    parser.add_argument("--regenerate-data", action="store_true", help="Regenerate labeled data instead of reusing saved JSONL.")
     return vars(parser.parse_args())
 
 
@@ -374,7 +424,9 @@ def parse_args() -> dict[str, Any]:
 if __name__ == "__main__":
     # Select training or saved-checkpoint evaluation from the command line.
     arguments = parse_args()
-    if arguments["eval_only"]:
+    if arguments["prepare_data"]:
+        prepare_verifier_data(arguments, force=arguments["regenerate_data"])
+    elif arguments["eval_only"]:
         arguments["checkpoint_dir"] = arguments["checkpoint_dir"] or str(Path(arguments["output_dir"]) / "model")
         arguments["evaluation_data"] = arguments["evaluation_data"] or str(Path(arguments["output_dir"]) / "validation.jsonl")
         evaluate_saved_verifier(arguments)

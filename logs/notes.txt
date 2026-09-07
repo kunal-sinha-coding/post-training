@@ -1514,3 +1514,8 @@ Extended train_verifier.py with evaluation of the saved sandbox-labeled validati
 ## 2026-09-07: Parallel verifier candidate labeling
 
 Kept the original verifier dataset size of one reference plus four generated candidates per MBPP task. Stopped the initial serial run after it spent over twenty minutes in sandbox labeling. Updated train_verifier.py to queue all generated candidates and label them with a bounded ThreadPoolExecutor, defaulting to 16 workers, while emitting task-generation and labeling progress. The generator remains on GPU, while sandbox subprocess execution is intentionally CPU-bound.
+
+
+## 2026-09-07: Durable verifier labels and monitored training
+
+Changed verifier preparation to save train.jsonl immediately after its labels are complete and validation.jsonl immediately after its labels are complete. Added cache reuse and a prepare-data mode so reruns train from committed labels without regenerating candidates. Added positive-class precision, recall, and F1 to every train and eval checkpoint, retained eval loss and accuracy logging, changed the default to ten epochs, and added early stopping after three consecutive non-improving eval-F1 checkpoints. The planned run will use four generated candidates plus one reference per task and will be retried at most five times if the monitored evaluation fails to improve.
