@@ -72,6 +72,8 @@ def generate_candidates(config: dict[str, Any]) -> dict[str, int]:
     tokenizer = AutoTokenizer.from_pretrained(config["model"])
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
+    # Left-pad decoder-only prompts so batched generation uses each prompt's final token correctly.
+    tokenizer.padding_side = "left"
     model = AutoModelForCausalLM.from_pretrained(config["model"]).to(device)
     model.eval()
     task_batch_size = max(1, int(config["generation_task_batch_size"]))

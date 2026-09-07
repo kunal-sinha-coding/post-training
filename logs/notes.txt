@@ -1594,3 +1594,8 @@ Added synthetic_data/label_tasks.py to generate ten Qwen 0.5B candidates per syn
 ## 2026-09-07: Use adaptive high-batch Qwen labeling
 
 Updated synthetic_data/label_tasks.py to start GPU generation at 16 tasks per call, producing ten candidates per task, and halve the task batch automatically on CUDA out-of-memory failures. The same task batch is retried after cache cleanup, while completed task IDs remain resumable and duplicate-free.
+
+
+## 2026-09-07: Fix decoder-only padding for batched labeling
+
+The first adaptive batched Qwen labeling attempt emitted a right-padding warning for the decoder-only model. Stopped that attempt before trusting its output, set tokenizer.padding_side to left, and will resume from the existing completed-task checkpoint.
