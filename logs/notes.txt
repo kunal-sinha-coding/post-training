@@ -1539,3 +1539,8 @@ Cycle 2 used positive-class weight 1.5 and improved the best fixed-threshold val
 ## 2026-09-07: Verifier cycle 3 diagnosis and cycle 4 fix
 
 Cycle 3 used prior-positive-bias initialization and learning rate 5e-6. Its best eval checkpoint reached accuracy 63.2%, precision 59.7%, recall 86.5%, F1 70.6%, and AUC 77.3%, but subsequent checkpoints overfit the fixed 0.5 threshold and triggered the three-evaluation stop. Cycle 4 freezes the CodeBERT encoder by default and trains only the classification head, testing whether full-encoder updates are unstable on the small 1,870-example verifier dataset.
+
+
+## 2026-09-07: Verifier cycle 4 diagnosis and cycle 5 configuration
+
+Cycle 4 froze CodeBERT and trained only the classification head. AUC rose from 44.6% to 69.8%, but every checkpoint predicted all validation examples positive at threshold 0.5, leaving accuracy at 51.2% and F1 at 67.7%. This is underfitting rather than a useful calibration fix. The final allowed cycle restores full encoder fine-tuning, retains prior-bias initialization and learning rate 5e-6, and uses positive-class weight 1.25 instead of 1.5.
