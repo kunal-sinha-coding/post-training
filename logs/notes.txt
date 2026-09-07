@@ -1569,3 +1569,8 @@ Added synthetic_data/generate_tasks.py, which requests structured Python benchma
 ## 2026-09-07: Load dotenv credentials for synthetic generation
 
 Updated synthetic_data/generate_tasks.py to load the repository .env file before checking OPENAI_API_KEY. The first preview invocation made no API requests because the key was present only in .env and not exported in the process environment.
+
+
+## 2026-09-07: Add readable synthetic task preview
+
+Added synthetic_data/preview_tasks.md containing the five accepted GPT-5.4 Mini task descriptions, reference solutions, and sandbox tests in a readable Markdown format. This makes the preview reviewable without relying on terminal output.
