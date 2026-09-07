@@ -1574,3 +1574,8 @@ Updated synthetic_data/generate_tasks.py to load the repository .env file before
 ## 2026-09-07: Add readable synthetic task preview
 
 Added synthetic_data/preview_tasks.md containing the five accepted GPT-5.4 Mini task descriptions, reference solutions, and sandbox tests in a readable Markdown format. This makes the preview reviewable without relying on terminal output.
+
+
+## 2026-09-07: Parallelize resumable synthetic task generation
+
+Replaced serial GPT-5.4 Mini generation with a bounded ThreadPoolExecutor, defaulting to 16 concurrent requests. The generator resumes from the existing tasks.jsonl and cost.json artifacts, avoids duplicate task identities, persists cost after every completed request, and emits compact ten-task milestone summaries. The active serial run was stopped at 298 accepted tasks before this change, with its artifacts preserved.

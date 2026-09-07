@@ -12,6 +12,7 @@ import hashlib
 import json
 import os
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any
 
@@ -80,8 +81,19 @@ def request_task(client: Any, model: str) -> tuple[dict[str, Any], dict[str, int
     return json.loads(response.output_text), tokens
 
 
+def generate_one_task(client: Any, model: str) -> tuple[dict[str, Any] | None, dict[str, int], str]:
+    """Request and validate one task in a worker thread."""
+    # Keep API calls and sandbox validation independent so they can run concurrently.
+    try:
+        task, tokens = request_task(client, model)
+        valid, reason = validate_task(task)
+        return (task if valid else None), tokens, reason
+    except Exception as exc:
+        return None, {"input_tokens": 0, "output_tokens": 0}, f"request_error:{type(exc).__name__}"
+
+
 def generate_tasks(config: dict[str, Any]) -> dict[str, Any]:
-    """Generate, validate, persist, and cost-account synthetic tasks."""
+    """Generate, validate, persist, and cost-account synthetic tasks concurrently."""
     # Load the repository dotenv file before checking the API credential.
     load_dotenv()
     # Fail early when the API credential is unavailable.
@@ -98,37 +110,39 @@ def generate_tasks(config: dict[str, Any]) -> dict[str, Any]:
     existing_keys = load_existing_keys(output_path)
     client = OpenAI()
     target = int(config["preview_count"] or config["num_tasks"])
+    workers = max(1, int(config["workers"]))
+    last_reported = (int(stats["accepted"]) // 10) * 10
 
-    # Generate until the preview or full target count of accepted tasks is reached.
-    while stats["accepted"] < target:
-        stats["requests"] += 1
-        try:
-            task, tokens = request_task(client, config["model"])
-            stats["input_tokens"] += tokens["input_tokens"]
-            stats["output_tokens"] += tokens["output_tokens"]
-            stats["estimated_cost_usd"] = stats["input_tokens"] * MODEL_INPUT_PRICE + stats["output_tokens"] * MODEL_OUTPUT_PRICE
-            valid, reason = validate_task(task)
-            key = task_key(task) if valid else ""
-            if not valid or key in existing_keys:
-                stats["rejected"] += 1
-                if key in existing_keys:
-                    reason = "duplicate"
-                print(f"Rejected task {stats['requests']}: {reason}.", flush=True)
-            else:
-                task["task_id"] = f"synthetic-{stats['accepted'] + 1:05d}"
-                with output_path.open("a", encoding="utf-8") as handle:
-                    handle.write(json.dumps(task, ensure_ascii=False) + "\n")
-                existing_keys.add(key)
-                stats["accepted"] += 1
-                print(json.dumps({"accepted": stats["accepted"], "task": task, "estimated_cost_usd": stats["estimated_cost_usd"]}, ensure_ascii=False), flush=True)
-        except Exception as exc:
-            stats["rejected"] += 1
-            stats["retries"] += 1
-            print(f"Request failed and will retry: {type(exc).__name__}: {exc}", flush=True)
-            time.sleep(float(config["retry_seconds"]))
-        finally:
-            # Persist usage even when validation or parsing rejects the response.
-            update_cost(cost_path, stats)
+    # Submit bounded request waves so the run resumes safely without overshooting the target.
+    with ThreadPoolExecutor(max_workers=workers) as executor:
+        while stats["accepted"] < target:
+            remaining = target - int(stats["accepted"])
+            futures = [executor.submit(generate_one_task, client, config["model"]) for _ in range(min(workers, remaining))]
+            for future in as_completed(futures):
+                task, tokens, reason = future.result()
+                stats["requests"] += 1
+                stats["input_tokens"] += tokens["input_tokens"]
+                stats["output_tokens"] += tokens["output_tokens"]
+                stats["estimated_cost_usd"] = stats["input_tokens"] * MODEL_INPUT_PRICE + stats["output_tokens"] * MODEL_OUTPUT_PRICE
+                if task is None or task_key(task) in existing_keys:
+                    stats["rejected"] += 1
+                    if reason.startswith("request_error"):
+                        stats["retries"] += 1
+                    print(f"Rejected request {stats['requests']}: {reason}.", flush=True)
+                else:
+                    task["task_id"] = f"synthetic-{stats['accepted'] + 1:05d}"
+                    with output_path.open("a", encoding="utf-8") as handle:
+                        handle.write(json.dumps(task, ensure_ascii=False) + "\n")
+                    existing_keys.add(task_key(task))
+                    stats["accepted"] += 1
+                milestone = (int(stats["accepted"]) // 10) * 10
+                if milestone > last_reported and milestone > 0:
+                    print(json.dumps({"accepted": stats["accepted"], "rejected": stats["rejected"], "requests": stats["requests"], "estimated_cost_usd": stats["estimated_cost_usd"]}), flush=True)
+                    last_reported = milestone
+                # Persist usage after each completed request, including concurrent failures.
+                update_cost(cost_path, stats)
+                if stats["accepted"] >= target:
+                    break
     print(json.dumps(stats, indent=2), flush=True)
     return stats
 
@@ -143,6 +157,7 @@ def parse_args() -> dict[str, Any]:
     parser.add_argument("--output", default="outputs/synthetic-tasks/tasks.jsonl")
     parser.add_argument("--cost-log", default="outputs/synthetic-tasks/cost.json")
     parser.add_argument("--retry-seconds", type=float, default=2.0)
+    parser.add_argument("--workers", type=int, default=16)
     return vars(parser.parse_args())
 
 
