@@ -1524,3 +1524,8 @@ Changed verifier preparation to save train.jsonl immediately after its labels ar
 ## 2026-09-07: Durable verifier label dataset
 
 Prepared and sandbox-labeled the full task-disjoint MBPP verifier dataset using four generated candidates plus one reference per task. The train split contains 299 tasks and 1,495 labeled examples. The validation split contains 75 tasks and 375 labeled examples. All 1,496 generated candidates were labeled with 16 parallel workers, and each split was saved immediately after labeling.
+
+
+## 2026-09-07: Verifier cycle 1 diagnosis and cycle 2 fix
+
+The first verifier run stopped after three non-improving eval-F1 checkpoints. The saved best checkpoint had validation accuracy 69.3%, precision 77.3%, recall 56.8%, F1 65.5%, and AUC 77.3%. Label balance was nearly even at 192 positive and 183 negative validation examples, so imbalance was not the cause. Later checkpoints improved loss and AUC but became overly conservative at the fixed 0.5 threshold, ending with precision 100% and recall 39.6%. Added configurable positive-class BCE weighting with a default of 1.5 to penalize false negatives and improve fixed-threshold recall. The next run reuses the committed labels.

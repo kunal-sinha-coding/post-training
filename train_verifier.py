@@ -288,7 +288,8 @@ def train_verifier(config: dict[str, Any]) -> dict[str, float]:
     model.to(device)
     train_loader = DataLoader(VerifierDataset(train_examples), batch_size=int(config["batch_size"]), shuffle=True, collate_fn=lambda batch: collate_examples(batch, tokenizer, int(config["max_length"])))
     validation_loader = DataLoader(VerifierDataset(validation_examples), batch_size=int(config["batch_size"]), shuffle=False, collate_fn=lambda batch: collate_examples(batch, tokenizer, int(config["max_length"])))
-    criterion = nn.BCEWithLogitsLoss()
+    # Weight positive examples so missed correct programs are penalized at the fixed 0.5 threshold.
+    criterion = nn.BCEWithLogitsLoss(pos_weight=torch.tensor(float(config["positive_class_weight"]), device=device))
     optimizer = torch.optim.AdamW(model.parameters(), lr=float(config["learning_rate"]), weight_decay=float(config["weight_decay"]))
 
     # Start the W&B run before training so dataset and optimizer settings are attached to the experiment.
@@ -409,6 +410,7 @@ def parse_args() -> dict[str, Any]:
     parser.add_argument("--eval-patience", type=int, default=3)
     parser.add_argument("--learning-rate", type=float, default=2e-5)
     parser.add_argument("--weight-decay", type=float, default=0.01)
+    parser.add_argument("--positive-class-weight", type=float, default=1.5)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--wandb-project", default="mbpp-verifier")
     parser.add_argument("--wandb-run-name", default=None)
