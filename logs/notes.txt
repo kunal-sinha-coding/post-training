@@ -1589,3 +1589,8 @@ Added a 60-second OpenAI client timeout and disabled SDK-level retries so stalle
 ## 2026-09-07: Add synthetic candidate labeling runner
 
 Added synthetic_data/label_tasks.py to generate ten Qwen 0.5B candidates per synthetic task at temperature 0.2, label every candidate through the sandbox with binary correctness, save train and validation JSONL records at task-level checkpoints, and print progress every ten tasks. The runner uses parallel sandbox workers and does not regenerate the GPT task artifact.
+
+
+## 2026-09-07: Use adaptive high-batch Qwen labeling
+
+Updated synthetic_data/label_tasks.py to start GPU generation at 16 tasks per call, producing ten candidates per task, and halve the task batch automatically on CUDA out-of-memory failures. The same task batch is retried after cache cleanup, while completed task IDs remain resumable and duplicate-free.

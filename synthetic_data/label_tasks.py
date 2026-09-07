@@ -36,7 +36,7 @@ def write_records(path: Path, records: list[dict[str, Any]]) -> None:
 
 
 def generate_candidates(config: dict[str, Any]) -> dict[str, int]:
-    """Generate and label ten candidates per synthetic task with task-level checkpoints."""
+    """Generate and label ten candidates per synthetic task with batched GPU inference."""
     # Load the complete accepted task artifact without regenerating GPT tasks.
     tasks = [json.loads(line) for line in Path(config["tasks"]).read_text(encoding="utf-8").splitlines() if line.strip()]
     split_index = int(len(tasks) * float(config["train_fraction"]))
@@ -49,6 +49,22 @@ def generate_candidates(config: dict[str, Any]) -> dict[str, int]:
         # Remove only the two explicit candidate artifacts before a deliberate fresh labeling run.
         train_path.unlink(missing_ok=True)
         validation_path.unlink(missing_ok=True)
+    completed_ids: set[str] = set()
+    totals = {"tasks": 0, "candidates": 0, "positive": 0, "negative": 0, "sandbox_errors": 0}
+    for path in (train_path, validation_path):
+        if not path.exists():
+            continue
+        # Recover completed task IDs and label totals so interrupted runs resume accurately.
+        with path.open(encoding="utf-8") as handle:
+            for line in handle:
+                if line.strip():
+                    record = json.loads(line)
+                    completed_ids.add(str(record["task_id"]))
+                    totals["candidates"] += 1
+                    totals["positive"] += int(record["label"] == 1)
+                    totals["negative"] += int(record["label"] == 0)
+                    totals["sandbox_errors"] += int(record["status"] not in {"passed", "failed"})
+    totals["tasks"] = len(completed_ids)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
@@ -58,27 +74,48 @@ def generate_candidates(config: dict[str, Any]) -> dict[str, int]:
         tokenizer.pad_token = tokenizer.eos_token
     model = AutoModelForCausalLM.from_pretrained(config["model"]).to(device)
     model.eval()
-    totals = {"tasks": 0, "candidates": 0, "positive": 0, "negative": 0, "sandbox_errors": 0}
+    task_batch_size = max(1, int(config["generation_task_batch_size"]))
     with ThreadPoolExecutor(max_workers=max(1, int(config["label_workers"]))) as executor:
-        # Process train and validation tasks in one deterministic order while preserving task boundaries.
-        for task_index, task_record in enumerate([*train_tasks, *validation_tasks]):
-            prompt = f"Task:\n{task_record['task']}\n\nWrite only the Python implementation.\n"
-            encoded = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=int(config["max_prompt_tokens"])).to(device)
-            with torch.inference_mode():
-                outputs = model.generate(**encoded, do_sample=True, temperature=float(config["temperature"]), top_p=float(config["top_p"]), num_return_sequences=int(config["candidates_per_task"]), max_new_tokens=int(config["max_new_tokens"]), pad_token_id=tokenizer.pad_token_id)
-            codes = tokenizer.batch_decode(outputs[:, encoded["input_ids"].shape[1]:], skip_special_tokens=True)
-            items = [(str(task_record["task_id"]), str(task_record["task"]), code, str(task_record["test_code"]), index + 1) for index, code in enumerate(codes)]
-            records = list(executor.map(label_candidate, items))
-            output_path = train_path if task_index < split_index else validation_path
-            write_records(output_path, records)
-            totals["tasks"] += 1
-            totals["candidates"] += len(records)
-            totals["positive"] += sum(int(record["label"] == 1) for record in records)
-            totals["negative"] += sum(int(record["label"] == 0) for record in records)
-            totals["sandbox_errors"] += sum(int(record["status"] != "passed" and record["status"] != "failed") for record in records)
-            if totals["tasks"] % int(config["progress_every"]) == 0 or totals["tasks"] == len(tasks):
-                # Report task, label, and sandbox totals at the requested cadence.
-                print(json.dumps(totals, sort_keys=True), flush=True)
+        # Process pending tasks in GPU batches while preserving deterministic train and validation assignment.
+        pending = [task for task in [*train_tasks, *validation_tasks] if str(task["task_id"]) not in completed_ids]
+        batch_start = 0
+        while batch_start < len(pending):
+            task_batch = pending[batch_start:batch_start + task_batch_size]
+            prompts = [f"Task:\n{task['task']}\n\nWrite only the Python implementation.\n" for task in task_batch]
+            try:
+                # Attempt the largest currently available generation batch.
+                encoded = tokenizer(prompts, return_tensors="pt", padding=True, truncation=True, max_length=int(config["max_prompt_tokens"])).to(device)
+                with torch.inference_mode():
+                    outputs = model.generate(**encoded, do_sample=True, temperature=float(config["temperature"]), top_p=float(config["top_p"]), num_return_sequences=int(config["candidates_per_task"]), max_new_tokens=int(config["max_new_tokens"]), pad_token_id=tokenizer.pad_token_id)
+            except RuntimeError as exc:
+                # Halve the task batch after CUDA memory failures and retry the same tasks.
+                if task_batch_size == 1 or "out of memory" not in str(exc).lower():
+                    raise
+                task_batch_size = max(1, task_batch_size // 2)
+                print(f"Reducing generation task batch size to {task_batch_size} after memory failure.", flush=True)
+                if torch.cuda.is_available():
+                    torch.cuda.empty_cache()
+                continue
+            input_width = encoded["input_ids"].shape[1]
+            decoded = tokenizer.batch_decode(outputs[:, input_width:], skip_special_tokens=True)
+            # Group the model's task-major return order back into ten candidates per task.
+            for task_offset, task_record in enumerate(task_batch):
+                first = task_offset * int(config["candidates_per_task"])
+                codes = decoded[first:first + int(config["candidates_per_task"])]
+                items = [(str(task_record["task_id"]), str(task_record["task"]), code, str(task_record["test_code"]), index + 1) for index, code in enumerate(codes)]
+                records = list(executor.map(label_candidate, items))
+                output_path = train_path if task_record in train_tasks else validation_path
+                write_records(output_path, records)
+                completed_ids.add(str(task_record["task_id"]))
+                totals["tasks"] += 1
+                totals["candidates"] += len(records)
+                totals["positive"] += sum(int(record["label"] == 1) for record in records)
+                totals["negative"] += sum(int(record["label"] == 0) for record in records)
+                totals["sandbox_errors"] += sum(int(record["status"] not in {"passed", "failed"}) for record in records)
+                if totals["tasks"] % int(config["progress_every"]) == 0 or totals["tasks"] == len(tasks):
+                    # Report task, candidate, label, and sandbox totals at the requested cadence.
+                    print(json.dumps(totals, sort_keys=True), flush=True)
+            batch_start += len(task_batch)
     del model
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
@@ -100,6 +137,7 @@ def parse_args() -> dict[str, Any]:
     parser.add_argument("--max-prompt-tokens", type=int, default=512)
     parser.add_argument("--train-fraction", type=float, default=0.8)
     parser.add_argument("--progress-every", type=int, default=10)
+    parser.add_argument("--generation-task-batch-size", type=int, default=16)
     parser.add_argument("--overwrite", action="store_true")
     return vars(parser.parse_args())
 
