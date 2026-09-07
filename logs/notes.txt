@@ -1479,3 +1479,8 @@ GRPO run 5cv3iyih is active with Qwen3.5-0.8B, 374 MBPP training examples, 460 c
 ## 2026-09-07: Qwen2.5-Coder-1.5B full MBPP+ evaluation
 
 Completed the full 399-task Qwen EvalPlus evaluation with Qwen2.5-Coder-1.5B-Instruct, one GPU, batch size 8, temperature 0.2, top_p 0.95, and 10 sampled completions per task. Official EvalPlus scoring reported base pass@1 68.7% and pass@10 78.2%, and MBPP+ pass@1 59.3% and pass@10 67.4%. Pass-at-K values for every K from 1 through 10 were computed and saved in the ignored output artifact. The model cache and generated outputs are scheduled for deletion before starting the 3B run to conserve disk space.
+
+
+## 2026-09-07: Qwen2.5-Coder-3B full MBPP+ evaluation
+
+Completed the full 399-task Qwen EvalPlus evaluation with Qwen2.5-Coder-3B-Instruct, one GPU, batch size 4, temperature 0.2, top_p 0.95, and 10 sampled completions per task. Official EvalPlus scoring reported base pass@1 72.1% and pass@10 81.2%, and MBPP+ pass@1 62.5% and pass@10 71.4%. Pass-at-K values for every K from 1 through 10 were computed and saved in the ignored output artifact.
