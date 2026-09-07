@@ -167,7 +167,20 @@ def collate_examples(batch: list[VerifierExample], tokenizer: Any, max_length: i
     # Encode task and candidate together with CodeBERT's standard special tokens.
     encoded = tokenizer([candidate_text(item.task, item.code) for item in batch], padding=True, truncation=True, max_length=max_length, return_tensors="pt")
     encoded["labels"] = torch.tensor([item.label for item in batch], dtype=torch.float32)
+    encoded["task_ids"] = [item.task_id for item in batch]
     return encoded
+
+
+def auc_metric(probabilities: Tensor, labels: Tensor) -> float:
+    """Estimate pairwise ROC AUC for one collection of labeled candidates."""
+    # Compare every positive score with every negative score and award half credit for ties.
+    positives = labels == 1
+    negatives = labels == 0
+    if not positives.any() or not negatives.any():
+        return 0.5
+    pairwise = (probabilities[positives].unsqueeze(1) > probabilities[negatives].unsqueeze(0)).float()
+    ties = (probabilities[positives].unsqueeze(1) == probabilities[negatives].unsqueeze(0)).float()
+    return (pairwise.sum() + 0.5 * ties.sum()).div(positives.sum() * negatives.sum()).item()
 
 
 def threshold_metrics(probabilities: Tensor, labels: Tensor, threshold: float) -> dict[str, float]:
@@ -184,24 +197,31 @@ def threshold_metrics(probabilities: Tensor, labels: Tensor, threshold: float) -
     return {"accuracy": accuracy, "precision": precision, "recall": recall, "f1": f1}
 
 
-def binary_metrics(logits: Tensor, labels: Tensor) -> dict[str, float]:
-    """Compute AUC and threshold-swept binary metrics for a verifier split."""
-    # Convert logits to probabilities once so every threshold uses identical scores.
+def binary_metrics(logits: Tensor, labels: Tensor, task_ids: list[str] | None = None) -> dict[str, float]:
+    """Compute global metrics and macro averages over task-local metrics."""
+    # Convert logits to probabilities once so global and local metrics use identical scores.
     probabilities = torch.sigmoid(logits)
-    positives = labels == 1
-    negatives = labels == 0
-    auc = 0.5
-    if positives.any() and negatives.any():
-        # Estimate ROC AUC as the probability that a random positive outranks a random negative.
-        pairwise = (probabilities[positives].unsqueeze(1) > probabilities[negatives].unsqueeze(0)).float()
-        ties = (probabilities[positives].unsqueeze(1) == probabilities[negatives].unsqueeze(0)).float()
-        auc = (pairwise.sum() + 0.5 * ties.sum()).div(positives.sum() * negatives.sum()).item()
-    metrics = {"auc": auc, "positive_rate": labels.mean().item()}
+    metrics = {"auc": auc_metric(probabilities, labels), "positive_rate": labels.mean().item()}
+    task_groups: dict[str, list[int]] = {}
+    if task_ids is not None:
+        # Group candidate positions by task so every task receives equal macro weight.
+        for index, task_id in enumerate(task_ids):
+            task_groups.setdefault(task_id, []).append(index)
     for threshold_index in range(1, 11):
-        # Log all requested tenths so threshold selection is visible in every evaluation.
+        # Log global metrics at every requested tenth so candidate-level behavior remains visible.
         threshold = threshold_index / 10
-        for name, value in threshold_metrics(probabilities, labels, threshold).items():
+        global_values = threshold_metrics(probabilities, labels, threshold)
+        for name, value in global_values.items():
             metrics[f"threshold_{threshold:.1f}/{name}"] = value
+        if task_groups:
+            # Average each metric across tasks after computing it independently within each task.
+            local_values = [threshold_metrics(probabilities[indexes], labels[indexes], threshold) for indexes in task_groups.values()]
+            for name in global_values:
+                metrics[f"local_threshold_{threshold:.1f}/{name}"] = sum(values[name] for values in local_values) / len(local_values)
+    if task_groups:
+        # Average task-local AUC values to expose within-task ranking quality.
+        metrics["local_auc"] = sum(auc_metric(probabilities[indexes], labels[indexes]) for indexes in task_groups.values()) / len(task_groups)
+        metrics["local_positive_rate"] = sum(labels[indexes].mean().item() for indexes in task_groups.values()) / len(task_groups)
     return metrics
 
 
@@ -219,7 +239,7 @@ def prediction_rows(model: nn.Module, examples: list[VerifierExample], loader: D
     with torch.inference_mode():
         for batch in loader:
             batch = {key: value.to(device) if isinstance(value, Tensor) else value for key, value in batch.items()}
-            output = model(**{key: value for key, value in batch.items() if key != "labels"})
+            output = model(**{key: value for key, value in batch.items() if key not in {"labels", "task_ids"}})
             probabilities.extend(torch.sigmoid(output.logits.squeeze(-1)).cpu().tolist())
     return [
         {**asdict(example), "probability": probability, "prediction": int(probability >= 0.5)}
@@ -249,16 +269,18 @@ def evaluate_verifier(model: nn.Module, loader: DataLoader, criterion: nn.Module
     losses: list[float] = []
     logits: list[Tensor] = []
     labels: list[Tensor] = []
+    task_ids: list[str] = []
     with torch.inference_mode():
         for batch in loader:
             batch = {key: value.to(device) if isinstance(value, Tensor) else value for key, value in batch.items()}
-            output = model(**{key: value for key, value in batch.items() if key != "labels"})
+            output = model(**{key: value for key, value in batch.items() if key not in {"labels", "task_ids"}})
             losses.append(criterion(output.logits.squeeze(-1), batch["labels"]).item())
             logits.append(output.logits.squeeze(-1).cpu())
             labels.append(batch["labels"].cpu())
+            task_ids.extend(batch["task_ids"])
     all_logits = torch.cat(logits)
     all_labels = torch.cat(labels)
-    metrics = binary_metrics(all_logits, all_labels)
+    metrics = binary_metrics(all_logits, all_labels, task_ids)
     metrics["loss"] = sum(losses) / len(losses)
     return metrics
 
@@ -336,7 +358,7 @@ def train_verifier(config: dict[str, Any]) -> dict[str, float]:
         for batch_index, batch in enumerate(train_loader, start=1):
             batch = {key: value.to(device) if isinstance(value, Tensor) else value for key, value in batch.items()}
             optimizer.zero_grad(set_to_none=True)
-            output = model(**{key: value for key, value in batch.items() if key != "labels"})
+            output = model(**{key: value for key, value in batch.items() if key not in {"labels", "task_ids"}})
             loss = criterion(output.logits.squeeze(-1), batch["labels"])
             loss.backward()
             optimizer.step()
