@@ -1509,3 +1509,8 @@ Added train_verifier.py as a dedicated task-conditioned correctness-verifier pip
 ## 2026-09-07: Verifier quarter-epoch evaluation
 
 Extended train_verifier.py with evaluation of the saved sandbox-labeled validation candidates. The verifier now uses a 0.5 probability threshold, logs train and eval loss, accuracy, positive rate, and AUC at four evenly spaced checkpoints per epoch, saves per-example probabilities and yes or no predictions, and supports --eval-only to reload the checkpoint and validation JSONL without regenerating labels.
+
+
+## 2026-09-07: Parallel verifier candidate labeling
+
+Kept the original verifier dataset size of one reference plus four generated candidates per MBPP task. Stopped the initial serial run after it spent over twenty minutes in sandbox labeling. Updated train_verifier.py to queue all generated candidates and label them with a bounded ThreadPoolExecutor, defaulting to 16 workers, while emitting task-generation and labeling progress. The generator remains on GPU, while sandbox subprocess execution is intentionally CPU-bound.

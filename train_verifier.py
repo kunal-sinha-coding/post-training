@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import json
 import random
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
@@ -76,6 +77,14 @@ def record_task(record: dict[str, Any]) -> str:
     return prompt.strip()
 
 
+def label_generated_candidate(item: tuple[str, str, str, str]) -> VerifierExample:
+    """Sandbox one generated candidate and return its binary verifier label."""
+    # Run one isolated candidate evaluation so thread workers can execute independently.
+    task_id, task, code, tests = item
+    _, detail = score_completion(code, tests)
+    return VerifierExample(task_id, task, code.strip(), float(detail["status"] == "passed"), "generated")
+
+
 def generate_candidates(
     records: list[dict[str, Any]],
     generator_name: str,
@@ -84,6 +93,7 @@ def generate_candidates(
     top_p: float,
     max_new_tokens: int,
     batch_size: int,
+    label_workers: int,
 ) -> list[VerifierExample]:
     """Create positive references and sandbox-labeled model candidates for each task."""
     # Import Transformers lazily so dataset-only utilities remain lightweight.
@@ -98,9 +108,10 @@ def generate_candidates(
     model.to(device)
     model.eval()
     examples: list[VerifierExample] = []
+    pending_labels: list[tuple[str, str, str, str]] = []
 
-    # Generate and score candidates task by task so labels never cross task boundaries.
-    for record in records:
+    # Generate candidates task by task while keeping labels pending for parallel sandbox execution.
+    for record_index, record in enumerate(records, start=1):
         task_id = str(record["task_id"])
         task = record_task(record)
         reference = str(record["reference_code"]).strip()
@@ -125,11 +136,15 @@ def generate_candidates(
                 )
             generated.extend(tokenizer.batch_decode(outputs[:, encoded["input_ids"].shape[1] :], skip_special_tokens=True))
             remaining -= current_batch
+        pending_labels.extend((task_id, task, code, str(record["test_code"])) for code in generated)
+        if record_index % 25 == 0 or record_index == len(records):
+            print(f"Generated candidates for {record_index}/{len(records)} tasks.", flush=True)
 
-        # Assign a binary label only when the candidate passes every provided MBPP assertion.
-        for code in generated:
-            _, detail = score_completion(code, str(record["test_code"]))
-            examples.append(VerifierExample(task_id, task, code.strip(), float(detail["status"] == "passed"), "generated"))
+    # Label all generated candidates concurrently because sandbox work is subprocess and I/O bound.
+    with ThreadPoolExecutor(max_workers=max(1, label_workers)) as executor:
+        labeled = list(executor.map(label_generated_candidate, pending_labels))
+    examples.extend(labeled)
+    print(f"Labeled {len(labeled)} generated candidates with {max(1, label_workers)} workers.", flush=True)
 
     # Release the generator before loading CodeBERT to avoid unnecessary GPU residency.
     del model
@@ -234,8 +249,8 @@ def train_verifier(config: dict[str, Any]) -> dict[str, float]:
     if config.get("max_examples"):
         dataset = dataset.select(range(min(int(config["max_examples"]), len(dataset))))
     train_records, validation_records = split_dataset(dataset, float(config["train_fraction"]), int(config["seed"]))
-    train_examples = generate_candidates(list(train_records), config["generator_model"], int(config["candidates_per_task"]), float(config["temperature"]), float(config["top_p"]), int(config["max_new_tokens"]), int(config["generation_batch_size"]))
-    validation_examples = generate_candidates(list(validation_records), config["generator_model"], int(config["candidates_per_task"]), float(config["temperature"]), float(config["top_p"]), int(config["max_new_tokens"]), int(config["generation_batch_size"]))
+    train_examples = generate_candidates(list(train_records), config["generator_model"], int(config["candidates_per_task"]), float(config["temperature"]), float(config["top_p"]), int(config["max_new_tokens"]), int(config["generation_batch_size"]), int(config["label_workers"]))
+    validation_examples = generate_candidates(list(validation_records), config["generator_model"], int(config["candidates_per_task"]), float(config["temperature"]), float(config["top_p"]), int(config["max_new_tokens"]), int(config["generation_batch_size"]), int(config["label_workers"]))
     save_examples(train_examples, output_dir / "train.jsonl")
     save_examples(validation_examples, output_dir / "validation.jsonl")
 
@@ -335,6 +350,7 @@ def parse_args() -> dict[str, Any]:
     parser.add_argument("--output-dir", default="outputs/verifier-codebert")
     parser.add_argument("--candidates-per-task", type=int, default=4)
     parser.add_argument("--generation-batch-size", type=int, default=4)
+    parser.add_argument("--label-workers", type=int, default=16)
     parser.add_argument("--temperature", type=float, default=0.2)
     parser.add_argument("--top-p", type=float, default=0.95)
     parser.add_argument("--max-new-tokens", type=int, default=512)
