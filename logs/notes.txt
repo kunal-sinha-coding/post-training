@@ -1584,3 +1584,8 @@ Replaced serial GPT-5.4 Mini generation with a bounded ThreadPoolExecutor, defau
 ## 2026-09-07: Bound concurrent synthetic generation requests
 
 Added a 60-second OpenAI client timeout and disabled SDK-level retries so stalled concurrent request waves terminate and are counted by the generator. The concurrent run stalled at 591 accepted tasks with no ledger movement, so it was stopped and will resume from the durable checkpoint after this fix.
+
+
+## 2026-09-07: Add synthetic candidate labeling runner
+
+Added synthetic_data/label_tasks.py to generate ten Qwen 0.5B candidates per synthetic task at temperature 0.2, label every candidate through the sandbox with binary correctness, save train and validation JSONL records at task-level checkpoints, and print progress every ten tasks. The runner uses parallel sandbox workers and does not regenerate the GPT task artifact.
