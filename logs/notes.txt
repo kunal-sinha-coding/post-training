@@ -1609,3 +1609,8 @@ Corrected synthetic_data/label_tasks.py so all 1,000 synthetic tasks are labeled
 ## 2026-09-07: Log global and task-macro verifier metrics
 
 Updated train_verifier.py to preserve global candidate-level accuracy, precision, recall, F1, AUC, and positive rate while also computing macro task-level metrics. Each threshold from 0.1 through 1.0 now reports local metrics formed by averaging per-task metrics, plus local AUC and local positive rate, for both training and validation evaluations. Task IDs are carried through the data loader without being passed to CodeBERT.
+
+
+## 2026-09-07: Fix synthetic candidate label extraction
+
+Diagnosed the near-zero synthetic positive rate. The labeler passed raw Qwen completions to score_completion, whose MBPP-specific parser requires a code fence, while the synthetic prompt requested plain Python. The saved 2,210 candidates contained 344 format errors, 519 syntax errors, 1,282 failed, 55 partial, and only 10 passed. Updated the labeler to extract fenced code when present, accept plain code otherwise, and execute the extracted program directly against all generated tests. The contaminated candidate artifact will be regenerated from task 1.

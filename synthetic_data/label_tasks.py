@@ -15,15 +15,25 @@ from typing import Any
 
 import torch
 
-from sandbox import score_completion
+from sandbox import execute_code, extract_code
+
+
+def candidate_code(completion: str) -> str:
+    """Extract fenced code or preserve a plain Python completion."""
+    # Accept both the fenced format used by MBPP and the plain-code format requested here.
+    try:
+        return extract_code(completion)
+    except ValueError:
+        return completion.strip()
 
 
 def label_candidate(item: tuple[str, str, str, str, int]) -> dict[str, Any]:
-    """Sandbox one generated candidate and return its durable label record."""
-    # Convert a complete sandbox result into the binary correctness label used by the verifier.
-    task_id, task, code, tests, candidate_index = item
-    _, detail = score_completion(code, tests)
-    return {"task_id": task_id, "task": task, "code": code.strip(), "label": float(detail["status"] == "passed"), "source": "generated", "candidate_index": candidate_index, "status": detail["status"]}
+    """Sandbox one generated candidate and return its binary verifier label."""
+    # Convert a complete extracted program result into the requested binary correctness label.
+    task_id, task, completion, tests, candidate_index = item
+    code = candidate_code(completion)
+    detail = execute_code(code, tests)
+    return {"task_id": task_id, "task": task, "code": code, "label": float(detail.status == "passed"), "source": "generated", "candidate_index": candidate_index, "status": detail.status}
 
 
 def write_records(path: Path, records: list[dict[str, Any]]) -> None:
