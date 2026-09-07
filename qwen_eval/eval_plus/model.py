@@ -73,7 +73,9 @@ class VLlmDecoder(DecoderBase):
             "gpu_memory_utilization": 0.90
         }
         print(kwargs)
-        self.llm = LLM(model=name, max_model_len=1536, **kwargs)
+        # Reduce only the 7B context reservation so the standard weights fit on a 16 GiB GPU.
+        max_model_len = 1024 if "7B" in name else 1536
+        self.llm = LLM(model=name, max_model_len=max_model_len, **kwargs)
 
     def codegen(self, prompt: str, do_sample: bool = True, num_samples: int = 200) -> List[str]:
         if do_sample:

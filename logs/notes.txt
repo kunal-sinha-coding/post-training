@@ -1489,3 +1489,8 @@ Completed the full 399-task Qwen EvalPlus evaluation with Qwen2.5-Coder-3B-Instr
 ## 2026-09-07: 7B vLLM memory adjustment
 
 The Qwen2.5-Coder-7B-Instruct EvalPlus launch with batch size 1 failed during vLLM engine initialization because the 16 GiB GPU could not satisfy the evaluator's 0.98 GPU memory reservation. Reduced only vLLM's gpu_memory_utilization setting from 0.98 to 0.90 so the 7B run can initialize while keeping the model, prompt, sampling, sequence length, and scoring protocol unchanged.
+
+
+## 2026-09-07: 7B context-length compatibility adjustment
+
+The clean 7B retry still failed during vLLM profiling because the 14.2488 GiB bfloat16 weights left too little memory for the 1536-token dummy profile on the 16 GiB GPU. Added a 7B-only max_model_len of 1024 while retaining the official model, prompt, stop strings, sampling temperature, top-p, and ten samples per task. This is a hardware compatibility adjustment and is recorded as a protocol limitation for the 7B comparison.
