@@ -1549,3 +1549,8 @@ Cycle 4 froze CodeBERT and trained only the classification head. AUC rose from 4
 ## 2026-09-07: Verifier five-cycle improvement loop completed
 
 Completed the requested maximum of five verifier improvement cycles using the committed labels and ten-epoch maximum with quarter-epoch evaluation and three-checkpoint eval-F1 patience. Cycle 1 baseline full fine-tuning reached best eval accuracy 69.3%, precision 77.3%, recall 56.8%, F1 65.5%, and AUC 77.3%. Cycle 2 with positive BCE weight 1.5 reached best eval accuracy 70.1%, precision 71.5%, recall 69.3%, F1 70.4%, and AUC 77.7%. Cycle 3 with prior-positive bias initialization and learning rate 5e-6 reached best eval accuracy 63.2%, precision 59.7%, recall 86.5%, F1 70.6%, and AUC 77.3%. Cycle 4 froze the encoder and underfit, remaining at 51.2% accuracy and 67.7% F1 while AUC rose from 44.6% to 69.8%. Cycle 5 restored full fine-tuning with positive weight 1.25 and reached 69.1% accuracy, 83.9% precision, 49.0% recall, 61.8% F1, and 77.8% AUC before stopping. The main diagnosis is probability calibration drift at the required 0.5 threshold: loss and AUC often improve while recall and F1 worsen. W&B runs were created for all cycles, including cycle 5 at https://wandb.ai/kunal-personal/mbpp-verifier/runs/h2dqiusd. No sixth cycle was started because the configured maximum was reached.
+
+
+## 2026-09-07: Verifier cycle metric clarification
+
+The five-cycle summary reports metrics at each cycle's best eval-F1 checkpoint unless otherwise stated. Cycle 2's maximum thresholded eval accuracy was 71.2% at its third checkpoint, while its best-F1 checkpoint was 70.1% accuracy. Cycle 3's maximum eval accuracy was 69.9%, while its best-F1 checkpoint was 63.2% accuracy. Cycle 5's maximum eval accuracy was 69.9%.
