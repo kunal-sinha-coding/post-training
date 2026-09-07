@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import ast
 import json
+import math
 import re
 import subprocess
 from zoneinfo import ZoneInfo
@@ -157,6 +158,22 @@ def aggregate_results(results: list[dict[str, Any]]) -> dict[str, Any]:
     metrics["successful_examples"] = sum(bool(result["passed"]) for result in results)
     metrics["unique_completion_rate"] = len({str(result.get("completion", "")).strip() for result in results}) / total if total else 0.0
     metrics["repeated_completion_fraction"] = 1.0 - metrics["unique_completion_rate"]
+    # Compute standard unbiased pass-at-K estimates independently for every task.
+    task_results: dict[str, list[dict[str, Any]]] = {}
+    for result in results:
+        task_results.setdefault(str(result.get("task_id")), []).append(result)
+    for k in range(1, max((len(task) for task in task_results.values()), default=0) + 1):
+        estimates = []
+        for task in task_results.values():
+            total_task = len(task)
+            correct_task = sum(bool(result["passed"]) for result in task)
+            if total_task < k:
+                continue
+            failure_count = total_task - correct_task
+            miss_probability = math.comb(failure_count, k) / math.comb(total_task, k) if failure_count >= k else 0.0
+            estimates.append(1.0 - miss_probability)
+        if estimates:
+            metrics[f"pass_at_{k}"] = sum(estimates) / len(estimates)
     return metrics
 
 
@@ -410,61 +427,66 @@ def _wrong_arity(completion: str, tests: str) -> tuple[str, int, int] | None:
 
 
 def evaluate_model(model: Any, tokenizer: Any, dataset: Any, config: dict[str, Any], evaluation_name: str = "evaluation") -> tuple[dict[str, Any], list[dict[str, Any]]]:
-    """Generate completions from a model and evaluate them in the sandbox."""
+    """Generate sampled completions from a model and evaluate them in the sandbox."""
     import torch
 
     # Disable dropout during every evaluation and restore the caller's mode afterward.
     was_training = bool(model.training)
     model.eval()
-    records = [dataset[index] for index in range(len(dataset))]
+    base_records = [dataset[index] for index in range(len(dataset))]
+    completions_per_task = max(1, int(config.get("evaluation_num_completions", 1)))
+    records = [record for record in base_records for _ in range(completions_per_task)]
     completions: list[str] = []
     entropy_values: list[float] = []
     reference_kl_values: list[float] = []
-    batch_size = max(1, int(config.get("evaluation_batch_size", 8)))
     try:
-        for record in records:
-            retry_prompt = str(record["prompt"])
-            completion = ""
-            max_retries = max(0, int(config.get("max_retries", 0)))
-            for attempt in range(max_retries + 1):
-                expected_name, _ = expected_interface(record["test_code"])
-                prefix_text = _interface_generation_prefix(tokenizer, record["test_code"], bool(config.get("include_generic_arguments", False)))
-                inputs = _prepare_generation_inputs(tokenizer, retry_prompt, int(config.get("max_prompt_length", 512)), torch)
-                inputs = {key: value.to(model.device) for key, value in inputs.items()}
-                prompt_width = inputs["input_ids"].shape[-1]
-                with torch.no_grad():
-                    output = model.generate(
-                        **inputs,
-                        max_new_tokens=int(config.get("max_completion_length", 512)),
-                        do_sample=False,
-                        logits_processor=[forced_code_prefix_processor(tokenizer, prompt_width, prefix_text)],
-                        stopping_criteria=code_fence_stopping_criteria(tokenizer, prompt_width + forced_code_prefix_length(tokenizer, prefix_text)),
-                    )
-                generation_metrics = _generation_diagnostics(model, output, prompt_width, torch)
-                if "entropy" in generation_metrics:
-                    entropy_values.append(generation_metrics["entropy"])
-                if "reference_kl" in generation_metrics:
-                    reference_kl_values.append(generation_metrics["reference_kl"])
-                completion = tokenizer.decode(output[0, prompt_width:], skip_special_tokens=True)
-                retry_info = _wrong_arity(completion, record["test_code"])
-                # Retry any non-passing completion so malformed and incorrect outputs get one recovery attempt.
-                _, completion_details = score_completion(completion, record["test_code"], float(config.get("sandbox_timeout_seconds", 3)), float(config.get("pass_weight", 0.5)))
-                if (retry_info is None and completion_details["status"] == "passed") or attempt >= max_retries:
-                    break
-                if retry_info is not None:
-                    name, actual, expected = retry_info
-                    retry_prompt += (
-                        f"\n\nPrevious generation:\n{completion}\n\n"
-                        f"This previous generation was incorrect because it had {actual} arguments instead of {expected}. Try again.\n\n"
-                        f"Code:\n```python\ndef {name}("
-                    )
-                else:
-                    retry_prompt += (
-                        f"\n\nPrevious generation:\n{completion}\n\n"
-                        "This previous generation did not pass the tests. Return a concise corrected implementation and follow the required format.\n\n"
-                        "Code:\n```python\n"
-                    )
-            completions.append(completion)
+        for record in base_records:
+            # Generate the configured number of independent samples for each task.
+            for _ in range(completions_per_task):
+                retry_prompt = str(record["prompt"])
+                completion = ""
+                max_retries = max(0, int(config.get("max_retries", 0)))
+                for attempt in range(max_retries + 1):
+                    expected_name, _ = expected_interface(record["test_code"])
+                    prefix_text = _interface_generation_prefix(tokenizer, record["test_code"], bool(config.get("include_generic_arguments", False)))
+                    inputs = _prepare_generation_inputs(tokenizer, retry_prompt, int(config.get("max_prompt_length", 512)), torch)
+                    inputs = {key: value.to(model.device) for key, value in inputs.items()}
+                    prompt_width = inputs["input_ids"].shape[-1]
+                    with torch.no_grad():
+                        output = model.generate(
+                            **inputs,
+                            max_new_tokens=int(config.get("max_completion_length", 512)),
+                            do_sample=completions_per_task > 1,
+                            temperature=float(config.get("evaluation_temperature", 0.2)),
+                            top_p=float(config.get("evaluation_top_p", 0.95)),
+                            logits_processor=[forced_code_prefix_processor(tokenizer, prompt_width, prefix_text)],
+                            stopping_criteria=code_fence_stopping_criteria(tokenizer, prompt_width + forced_code_prefix_length(tokenizer, prefix_text)),
+                        )
+                    generation_metrics = _generation_diagnostics(model, output, prompt_width, torch)
+                    if "entropy" in generation_metrics:
+                        entropy_values.append(generation_metrics["entropy"])
+                    if "reference_kl" in generation_metrics:
+                        reference_kl_values.append(generation_metrics["reference_kl"])
+                    completion = tokenizer.decode(output[0, prompt_width:], skip_special_tokens=True)
+                    retry_info = _wrong_arity(completion, record["test_code"])
+                    # Retry malformed or failing completions when configured to do so.
+                    _, completion_details = score_completion(completion, record["test_code"], float(config.get("sandbox_timeout_seconds", 3)), float(config.get("pass_weight", 0.5)))
+                    if (retry_info is None and completion_details["status"] == "passed") or attempt >= max_retries:
+                        break
+                    if retry_info is not None:
+                        name, actual, expected = retry_info
+                        retry_prompt += (
+                            f"\n\nPrevious generation:\n{completion}\n\n"
+                            f"This previous generation was incorrect because it had {actual} arguments instead of {expected}. Try again.\n\n"
+                            f"Code:\n```python\ndef {name}("
+                        )
+                    else:
+                        retry_prompt += (
+                            f"\n\nPrevious generation:\n{completion}\n\n"
+                            "This previous generation did not pass the tests. Return a concise corrected implementation and follow the required format.\n\n"
+                            "Code:\n```python\n"
+                        )
+                completions.append(completion)
         diagnostics = {}
         if entropy_values:
             diagnostics["entropy"] = sum(entropy_values) / len(entropy_values)
@@ -473,3 +495,4 @@ def evaluate_model(model: Any, tokenizer: Any, dataset: Any, config: dict[str, A
         return evaluate_texts(completions, records, float(config.get("sandbox_timeout_seconds", 3)), config.get("log_path", "logs/logs.txt"), evaluation_name, float(config.get("pass_weight", 0.5)), diagnostics)
     finally:
         model.train(was_training)
+
