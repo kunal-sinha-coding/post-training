@@ -108,7 +108,7 @@ def generate_tasks(config: dict[str, Any]) -> dict[str, Any]:
     if cost_path.exists():
         stats.update(json.loads(cost_path.read_text(encoding="utf-8")))
     existing_keys = load_existing_keys(output_path)
-    client = OpenAI()
+    client = OpenAI(timeout=60.0, max_retries=0)
     target = int(config["preview_count"] or config["num_tasks"])
     workers = max(1, int(config["workers"]))
     last_reported = (int(stats["accepted"]) // 10) * 10

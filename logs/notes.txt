@@ -1579,3 +1579,8 @@ Added synthetic_data/preview_tasks.md containing the five accepted GPT-5.4 Mini 
 ## 2026-09-07: Parallelize resumable synthetic task generation
 
 Replaced serial GPT-5.4 Mini generation with a bounded ThreadPoolExecutor, defaulting to 16 concurrent requests. The generator resumes from the existing tasks.jsonl and cost.json artifacts, avoids duplicate task identities, persists cost after every completed request, and emits compact ten-task milestone summaries. The active serial run was stopped at 298 accepted tasks before this change, with its artifacts preserved.
+
+
+## 2026-09-07: Bound concurrent synthetic generation requests
+
+Added a 60-second OpenAI client timeout and disabled SDK-level retries so stalled concurrent request waves terminate and are counted by the generator. The concurrent run stalled at 591 accepted tasks with no ledger movement, so it was stopped and will resume from the durable checkpoint after this fix.
