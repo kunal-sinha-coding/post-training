@@ -49,6 +49,8 @@ def generate_candidates(config: dict[str, Any]) -> dict[str, int]:
     """Generate and label ten candidates per synthetic task with batched GPU inference."""
     # Load the complete accepted task artifact without regenerating GPT tasks.
     tasks = [json.loads(line) for line in Path(config["tasks"]).read_text(encoding="utf-8").splitlines() if line.strip()]
+    if config["max_tasks"] is not None:
+        tasks = tasks[:int(config["max_tasks"])]
     train_tasks = tasks
     output_dir = Path(config["output_dir"])
     train_path = output_dir / "train.jsonl"
@@ -147,6 +149,7 @@ def parse_args() -> dict[str, Any]:
     parser.add_argument("--progress-every", type=int, default=10)
     parser.add_argument("--generation-task-batch-size", type=int, default=16)
     parser.add_argument("--overwrite", action="store_true")
+    parser.add_argument("--max-tasks", type=int, default=None)
     return vars(parser.parse_args())
 
 
