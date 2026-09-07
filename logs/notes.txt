@@ -1499,3 +1499,8 @@ The clean 7B retry still failed during vLLM profiling because the 14.2488 GiB bf
 ## 2026-09-07: 7B CPU offload compatibility adjustment
 
 The 7B-only 1024-token retry still failed during vLLM profiling because the standard bfloat16 weights consume 14.2488 GiB and leave insufficient workspace on the 16 GiB GPU. Added 2 GiB of vLLM CPU weight offload for the 7B variant. This preserves the standard checkpoint and sampling behavior, but the 7B result will carry a hardware-offload caveat.
+
+
+## 2026-09-07: CodeBERT verifier training module
+
+Added train_verifier.py as a dedicated task-conditioned correctness-verifier pipeline. It loads MBPP, splits tasks before candidate generation, labels reference implementations as correct, generates configurable Qwen candidates, labels candidates by full sandbox test success, trains microsoft/codebert-base with BCEWithLogitsLoss, logs train and validation loss, accuracy, positive rate, and ROC AUC to W&B each epoch, and saves JSONL data plus the verifier checkpoint and metrics. The focused verifier smoke check passed. Existing tests passed except test_prepare_datasets_loads_official_train_and_validation_splits, which fails because the existing test double accepts the old three-argument load_mbpp signature while data.py currently passes the include_generic_arguments argument.
