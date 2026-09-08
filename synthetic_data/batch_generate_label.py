@@ -60,7 +60,7 @@ def format_sweep(task_labels: dict[str, list[int]]) -> str:
     return " ".join(f"P@{k}={value:.1%}" for k, value in pass_sweep(task_labels).items())
 
 
-def generate_batch_tasks(client: Any, exemplars: list[dict[str, str]], model: str, batch_number: int, output_path: Path, stats: dict[str, Any], lock: threading.Lock) -> list[dict[str, Any]]:
+def generate_batch_tasks(client: Any, exemplars: list[dict[str, str]], model: str, batch_number: int, output_path: Path, stats: dict[str, Any], lock: threading.Lock, max_cost_usd: float) -> list[dict[str, Any]]:
     """Generate and persist three validated synthetic tasks per exemplar concurrently."""
     # Submit one worker per exemplar so independent GPT requests run concurrently.
     generated: list[dict[str, Any]] = []
@@ -69,7 +69,12 @@ def generate_batch_tasks(client: Any, exemplars: list[dict[str, str]], model: st
         # Retry rejected generations until this exemplar contributes exactly three accepted tasks.
         exemplar_text = f"Task description:\n{exemplar['task']}\n\nReference implementation:\n{exemplar['code']}"
         accepted: list[dict[str, Any]] = []
-        while len(accepted) < 3:
+        attempts = 0
+        while len(accepted) < 3 and attempts < 12:
+            with lock:
+                if stats["estimated_cost_usd"] >= max_cost_usd:
+                    raise RuntimeError(f"GPT cost cap of ${max_cost_usd:.2f} reached.")
+            attempts += 1
             task, tokens, reason = generate_one_task(client, model, exemplar_text)
             with lock:
                 stats["requests"] += 1
@@ -81,6 +86,8 @@ def generate_batch_tasks(client: Any, exemplars: list[dict[str, str]], model: st
                 continue
             task["exemplar_task_id"] = exemplar["task_id"]
             accepted.append(task)
+        if len(accepted) < 3:
+            raise RuntimeError(f"Could not validate three tasks from exemplar {exemplar["task_id"]} after {attempts} requests.")
         return accepted
     with ThreadPoolExecutor(max_workers=16) as executor:
         futures = [executor.submit(worker, exemplar) for exemplar in exemplars]
@@ -175,7 +182,7 @@ def run(config: dict[str, Any]) -> None:
             start = (batch_number - 1) * batch_size
             batch_exemplars = exemplars[start:min(start + batch_size, len(exemplars))]
             tasks_path = output_dir / f"batch-{batch_number:02d}-tasks.jsonl"
-            tasks = generate_batch_tasks(client, batch_exemplars, config["generator_model"], batch_number, tasks_path, stats, lock)
+            tasks = generate_batch_tasks(client, batch_exemplars, config["generator_model"], batch_number, tasks_path, stats, lock, float(config["max_cost_usd"]))
             label_batch_tasks(tasks, config["candidate_model"], output_dir, batch_number, task_labels, stats, lock)
             print(f"[batch {batch_number}/{batch_count} complete] exemplars={len(batch_exemplars)} generated_tasks={len(tasks)} labeled_tasks={stats['labeled_tasks']} cost_usd={stats['estimated_cost_usd']:.4f} {format_sweep(task_labels)}", flush=True)
     finally:
@@ -194,6 +201,7 @@ def parse_args() -> dict[str, Any]:
     parser.add_argument("--batches", type=int, default=5)
     parser.add_argument("--generator-model", default="gpt-5.4-mini")
     parser.add_argument("--candidate-model", default="Qwen/Qwen2.5-Coder-0.5B-Instruct")
+    parser.add_argument("--max-cost-usd", type=float, default=25.0)
     return vars(parser.parse_args())
 
 

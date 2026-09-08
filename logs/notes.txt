@@ -1694,3 +1694,8 @@ Iteration 3 used hard drift and contract validation and produced three simple co
 ## 2026-09-08: Add five-batch synthetic generation and labeling pipeline
 
 Added synthetic_data/batch_generate_label.py. It processes all 1,263 clean verifier exemplars in five deterministic batches, generates three validated GPT-5.4 Mini tasks per exemplar, immediately samples ten Qwen 0.5B candidates per newly generated task with the copied EvalPlus ChatML/vLLM wrapper, labels candidates in the sandbox, saves each batch, and reports cumulative Pass@K and estimated GPT cost every five minutes and after each batch.
+
+
+## 2026-09-08: Bound full synthetic pipeline spend
+
+Added a $25 maximum GPT generation budget and a maximum of 12 requests per exemplar to batch_generate_label.py. This prevents validation retries from becoming unbounded while preserving five-batch streaming generation, Qwen sampling, labeling, and Pass@K reporting.
