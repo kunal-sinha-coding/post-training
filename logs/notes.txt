@@ -1699,3 +1699,8 @@ Added synthetic_data/batch_generate_label.py. It processes all 1,263 clean verif
 ## 2026-09-08: Bound full synthetic pipeline spend
 
 Added a $25 maximum GPT generation budget and a maximum of 12 requests per exemplar to batch_generate_label.py. This prevents validation retries from becoming unbounded while preserving five-batch streaming generation, Qwen sampling, labeling, and Pass@K reporting.
+
+
+## 2026-09-08: Remove legacy generated synthetic examples
+
+Removed the old production synthetic corpus, synthetic verifier candidates, prior synthetic previews, batched synthetic outputs, and the contaminated combined verifier training file. Preserved all source code, official EvalPlus artifacts, and reconstructed outputs/clean-verifier/original-exemplars.jsonl containing only the 263 original MBPP training tasks disjoint from EvalPlus for the replacement run.
