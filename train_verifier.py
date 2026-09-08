@@ -316,11 +316,17 @@ def train_verifier(config: dict[str, Any]) -> dict[str, float]:
     seed_everything(int(config["seed"]))
     output_dir = Path(config["output_dir"])
     output_dir.mkdir(parents=True, exist_ok=True)
-    # Reuse durable labels whenever available so training retries are cheap and reproducible.
-    train_examples, validation_examples = prepare_verifier_data(config, force=bool(config.get("regenerate_data", False)))
-    train_examples = generated_only(train_examples)
-    validation_examples = generated_only(validation_examples)
-    print(f"Using generated-only verifier data: {len(train_examples)} train and {len(validation_examples)} validation examples.", flush=True)
+    # Load explicit combined artifacts when provided so synthetic and original data use the same trainer.
+    if config.get("train_data") and config.get("validation_data"):
+        train_examples = load_examples(Path(config["train_data"]))
+        validation_examples = load_examples(Path(config["validation_data"]))
+    else:
+        # Reuse durable labels whenever available so training retries are cheap and reproducible.
+        train_examples, validation_examples = prepare_verifier_data(config, force=bool(config.get("regenerate_data", False)))
+    if not bool(config.get("include_reference_examples", False)):
+        train_examples = generated_only(train_examples)
+        validation_examples = generated_only(validation_examples)
+    print(f"Using verifier data: {len(train_examples)} train and {len(validation_examples)} validation examples.", flush=True)
 
     # Load CodeBERT as an encoder with a single scalar classification head.
     from transformers import AutoModelForSequenceClassification, AutoTokenizer
@@ -446,6 +452,9 @@ def parse_args() -> dict[str, Any]:
     parser.add_argument("--eval-only", action="store_true", help="Evaluate a saved verifier without regenerating labels.")
     parser.add_argument("--checkpoint-dir", default=None, help="Saved verifier directory for --eval-only.")
     parser.add_argument("--evaluation-data", default=None, help="Labeled JSONL data for --eval-only.")
+    parser.add_argument("--train-data", default=None, help="Explicit labeled JSONL training data.")
+    parser.add_argument("--validation-data", default=None, help="Explicit labeled JSONL validation data.")
+    parser.add_argument("--include-reference-examples", action="store_true", help="Keep reference-positive rows in explicit train and validation data.")
     parser.add_argument("--prepare-data", action="store_true", help="Generate and save labels, then exit before model training.")
     parser.add_argument("--regenerate-data", action="store_true", help="Regenerate labeled data instead of reusing saved JSONL.")
     return vars(parser.parse_args())

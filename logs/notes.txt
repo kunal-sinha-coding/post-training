@@ -1619,3 +1619,8 @@ Diagnosed the near-zero synthetic positive rate. The labeler passed raw Qwen com
 ## 2026-09-07: Add bounded synthetic labeling diagnostic
 
 Stopped the 0.5B synthetic labeling run after its first 16 tasks produced zero passing candidates. Added --max-tasks to label_tasks.py so model comparisons can run on a clean bounded task subset before committing to a full labeling run. The next diagnostic uses Qwen 3B on 15 tasks.
+
+
+## 2026-09-08: One candidate plus reference verifier design
+
+Changed the synthetic labeling runner to generate one Qwen candidate per task and save one reference-positive row alongside it. Added explicit train-data and validation-data inputs plus reference-row retention to train_verifier.py. The combined artifact will contain one reference and one generated row per original MBPP task and synthetic task for training, with the existing original MBPP validation split reduced to one reference and one generated row per task.

@@ -116,11 +116,12 @@ def generate_candidates(config: dict[str, Any]) -> dict[str, int]:
                 codes = decoded[first:first + int(config["candidates_per_task"])]
                 items = [(str(task_record["task_id"]), str(task_record["task"]), code, str(task_record["test_code"]), index + 1) for index, code in enumerate(codes)]
                 records = list(executor.map(label_candidate, items))
-                write_records(train_path, records)
+                reference = {"task_id": str(task_record["task_id"]), "task": str(task_record["task"]), "code": str(task_record["reference_code"]).strip(), "label": 1.0, "source": "reference", "candidate_index": 0, "status": "reference"}
+                write_records(train_path, [reference, *records])
                 completed_ids.add(str(task_record["task_id"]))
                 totals["tasks"] += 1
-                totals["candidates"] += len(records)
-                totals["positive"] += sum(int(record["label"] == 1) for record in records)
+                totals["candidates"] += len(records) + 1
+                totals["positive"] += 1 + sum(int(record["label"] == 1) for record in records)
                 totals["negative"] += sum(int(record["label"] == 0) for record in records)
                 totals["sandbox_errors"] += sum(int(record["status"] not in {"passed", "failed"}) for record in records)
                 if totals["tasks"] % int(config["progress_every"]) == 0 or totals["tasks"] == len(tasks):
@@ -140,7 +141,7 @@ def parse_args() -> dict[str, Any]:
     parser.add_argument("--tasks", default="outputs/synthetic-tasks/tasks.jsonl")
     parser.add_argument("--model", default="Qwen/Qwen2.5-Coder-0.5B-Instruct")
     parser.add_argument("--output-dir", default="outputs/synthetic-verifier")
-    parser.add_argument("--candidates-per-task", type=int, default=10)
+    parser.add_argument("--candidates-per-task", type=int, default=1)
     parser.add_argument("--label-workers", type=int, default=16)
     parser.add_argument("--temperature", type=float, default=0.2)
     parser.add_argument("--top-p", type=float, default=0.95)
