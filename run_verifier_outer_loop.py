@@ -19,7 +19,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 LOG_DIR = ROOT / "outputs" / "verifier-outer-loop"
-MAX_CYCLES = 10
+MAX_CYCLES = 20
 
 
 def command_for_cycle(cycle: int, output_dir: Path, run_name: str) -> list[str]:

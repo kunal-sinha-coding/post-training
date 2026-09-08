@@ -1733,3 +1733,7 @@ Corrected the outer-loop lifecycle update to use W&B’s valid failed state for 
 ## September 8, 2026: Fine-tune only upper CodeBERT layers
 
 Added a top-layer fine-tuning mode that freezes embeddings and lower CodeBERT layers while training the top two Transformer layers and classifier. The autonomous loop now uses this mode for its next cycle after full-encoder overfitting.
+
+## September 8, 2026: Extend verifier outer loop
+
+Raised the autonomous diagnosis and rerun cap from ten to twenty outer cycles at the user’s request.
