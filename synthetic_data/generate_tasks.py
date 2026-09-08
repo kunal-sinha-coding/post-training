@@ -8,6 +8,7 @@ and updates a durable token and cost ledger after every API response.
 from __future__ import annotations
 
 import argparse
+import ast
 import hashlib
 import json
 import os
@@ -39,6 +40,23 @@ def validate_task(task: dict[str, Any]) -> tuple[bool, str]:
     required = {"task", "function_name", "reference_code", "test_code"}
     if set(task) != required or any(not isinstance(task[key], str) or not task[key].strip() for key in required):
         return False, "schema"
+    # Reject generated tasks that reuse the exemplar or drift into the exemplar complexity family.
+    forbidden_terms = ("interval", "pair", "chain", "subsequence", "dynamic programming", "greedy")
+    if task["function_name"] == "max_chain_length" or any(term in task["task"].lower() for term in forbidden_terms):
+        return False, "exemplar_drift"
+    # Require a single plain function so candidate evaluation has no hidden helper contract.
+    try:
+        reference_tree = ast.parse(task["reference_code"])
+        test_tree = ast.parse(task["test_code"])
+    except SyntaxError:
+        return False, "syntax_error"
+    definitions = [node for node in reference_tree.body if isinstance(node, ast.FunctionDef)]
+    if len(definitions) != 1 or any(isinstance(node, (ast.ClassDef, ast.Import, ast.ImportFrom)) for node in reference_tree.body):
+        return False, "unsupported_reference_shape"
+    if definitions[0].name != task["function_name"] or definitions[0].returns or any(arg.annotation for arg in (*definitions[0].args.posonlyargs, *definitions[0].args.args, *definitions[0].args.kwonlyargs)):
+        return False, "annotated_or_mismatched_function"
+    if any(not isinstance(node, ast.Assert) for node in test_tree.body):
+        return False, "unsupported_test_shape"
     # Reject malformed or non-Python reference and test programs.
     result = execute_code(task["reference_code"], task["test_code"], timeout_seconds=5.0)
     if not result.passed:

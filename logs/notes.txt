@@ -1679,3 +1679,8 @@ Generated three new synthetic tasks from original MBPP task 601 as the shared GP
 ## 2026-09-08: Simplify exemplar-conditioned task prompt
 
 The first three-task preview produced zero Qwen 0.5B passes. Failure analysis found that the GPT prompt allowed helper classes, missing imports, and interval-chain complexity inherited from exemplar 601. The next iteration constrains each task to one plain function with no imports, classes, annotations, helper functions, recursion, dynamic programming, interval scheduling, or custom objects, and requests a substantially simpler list, string, dictionary, or scalar transformation.
+
+
+## 2026-09-08: Reject exemplar drift in synthetic tasks
+
+Iteration 2 used the simpler prompt and improved the three-task preview from 0% to 33.3% Pass@10, but all tasks reused max_chain_length and one retained interval-chain semantics. Added AST and semantic validation to reject exemplar-name reuse, interval/pair/chain/subsequence/dynamic-programming/greedy drift, helper classes, imports, annotations, and non-assert test setup before acceptance.
