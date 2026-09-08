@@ -2,8 +2,8 @@
 
 The flow loads official MBPP records, splits tasks before generating candidates, labels
 reference implementations as correct, labels generated candidates from the sandbox,
-trains a CodeBERT encoder with a binary classification head, logs quarter-epoch metrics to
-Weights & Biases, and saves the verifier plus its reproducible JSONL dataset. The same
+trains a CodeBERT encoder with a binary classification head, streams batch metrics and
+logs quarter-epoch evaluation metrics to Weights & Biases, and saves the verifier plus its reproducible JSONL dataset. The same
 file can reload the saved labeled evaluation data and report thresholded predictions.
 """
 
@@ -401,13 +401,20 @@ def train_verifier(config: dict[str, Any]) -> dict[str, float]:
             loss.backward()
             optimizer.step()
             epoch_losses.append(loss.item())
+            # Stream each optimizer update immediately so W&B shows training progress continuously.
+            global_step = (epoch - 1) * len(train_loader) + batch_index
+            wandb.log({
+                "train/batch_loss": float(loss.item()),
+                "epoch": float(epoch),
+                "epoch_fraction": batch_index / len(train_loader),
+                "global_step": float(global_step),
+            })
             is_quarter = batch_index % quarter_steps == 0 or batch_index == len(train_loader)
             if not is_quarter:
                 continue
             # Evaluate both splits at each quarter of the current epoch across every configured threshold.
             train_metrics = evaluate_verifier(model, train_loader, criterion, device)
             validation_metrics = evaluate_verifier(model, validation_loader, criterion, device)
-            global_step = (epoch - 1) * len(train_loader) + batch_index
             final_metrics = {f"train/{key}": value for key, value in train_metrics.items()}
             final_metrics.update({f"validation/{key}": value for key, value in validation_metrics.items()})
             final_metrics.update({f"eval/{key}": value for key, value in validation_metrics.items()})
@@ -419,7 +426,8 @@ def train_verifier(config: dict[str, Any]) -> dict[str, float]:
             final_metrics["epoch_fraction"] = batch_index / len(train_loader)
             final_metrics["global_step"] = float(global_step)
             final_metrics["train/optimization_loss"] = sum(epoch_losses) / len(epoch_losses)
-            wandb.log(final_metrics, step=global_step)
+            # Commit the complete evaluation snapshot as a separate event after its computation finishes.
+            wandb.log(final_metrics)
             print(json.dumps(final_metrics, sort_keys=True), flush=True)
             model.train()
 
