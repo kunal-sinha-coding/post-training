@@ -13,7 +13,7 @@ import argparse
 import json
 import random
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, fields
 from pathlib import Path
 from typing import Any
 
@@ -258,8 +258,10 @@ def save_prediction_rows(rows: list[dict[str, Any]], path: Path) -> None:
 def load_examples(path: Path) -> list[VerifierExample]:
     """Load the labeled JSONL dataset produced during verifier training."""
     # Reconstruct the same examples without regenerating candidates or rerunning the sandbox.
+    allowed = {field.name for field in fields(VerifierExample)}
     with path.open(encoding="utf-8") as handle:
-        return [VerifierExample(**json.loads(line)) for line in handle if line.strip()]
+        # Ignore audit metadata so saved candidate records remain compatible with the trainer schema.
+        return [VerifierExample(**{key: value for key, value in json.loads(line).items() if key in allowed}) for line in handle if line.strip()]
 
 
 def evaluate_verifier(model: nn.Module, loader: DataLoader, criterion: nn.Module, device: torch.device) -> dict[str, float]:

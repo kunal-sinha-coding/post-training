@@ -1629,3 +1629,8 @@ Changed the synthetic labeling runner to generate one Qwen candidate per task an
 ## 2026-09-08: Complete one-candidate synthetic labeling
 
 Completed one Qwen 0.5B candidate per each of the 1,000 synthetic tasks and saved one reference-positive plus one generated row per task. The generated candidates contain 7 sandbox passes and 993 failures, for a 0.7% candidate pass rate. Built combined verifier artifacts with 2,598 training rows from 299 original MBPP tasks plus 1,000 synthetic tasks, and 150 original MBPP validation rows with one reference and one generation per task.
+
+
+## 2026-09-08: Accept candidate audit metadata in verifier loader
+
+The first combined verifier launch failed before model loading because candidate JSONL rows include candidate_index and status audit fields not present in VerifierExample. Updated load_examples to retain the core schema while ignoring extra metadata, and verified that all 2,598 combined training rows load successfully.
