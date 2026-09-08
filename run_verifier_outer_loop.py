@@ -145,7 +145,12 @@ def main() -> None:
     # Keep a durable outer-loop summary so progress survives terminal disconnects.
     LOG_DIR.mkdir(parents=True, exist_ok=True)
     summary_path = LOG_DIR / "summary.jsonl"
-    for cycle in range(1, MAX_CYCLES + 1):
+    completed_cycles = []
+    if summary_path.exists():
+        # Resume after the last fully recorded cycle instead of duplicating completed work.
+        completed_cycles = [json.loads(line) for line in summary_path.open(encoding="utf-8") if line.strip()]
+    start_cycle = max((int(record["cycle"]) for record in completed_cycles), default=0) + 1
+    for cycle in range(start_cycle, MAX_CYCLES + 1):
         diagnosis, metrics, return_code = run_cycle(cycle)
         final_auc = metrics[-1].get("eval/auc", 0.0) if metrics else 0.0
         record = {"cycle": cycle, "final_eval_auc": final_auc, "diagnosis": diagnosis, "return_code": return_code}

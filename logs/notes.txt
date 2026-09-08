@@ -1721,3 +1721,7 @@ Added an outer-loop driver that fine-tunes the full CodeBERT encoder, monitors e
 ## September 8, 2026: Finalize W&B runs between outer cycles
 
 Updated the autonomous verifier loop to explicitly mark each W&B run finished or crashed after its subprocess exits, including plateau-triggered termination, before the next cycle begins.
+
+## September 8, 2026: Resume outer loop after interruption
+
+Updated the autonomous loop to resume after the last recorded cycle, preventing completed fine-tuning cycles from being rerun when the driver is restarted to apply W&B lifecycle fixes.
