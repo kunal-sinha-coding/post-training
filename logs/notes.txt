@@ -1684,3 +1684,8 @@ The first three-task preview produced zero Qwen 0.5B passes. Failure analysis fo
 ## 2026-09-08: Reject exemplar drift in synthetic tasks
 
 Iteration 2 used the simpler prompt and improved the three-task preview from 0% to 33.3% Pass@10, but all tasks reused max_chain_length and one retained interval-chain semantics. Added AST and semantic validation to reject exemplar-name reuse, interval/pair/chain/subsequence/dynamic-programming/greedy drift, helper classes, imports, annotations, and non-assert test setup before acceptance.
+
+
+## 2026-09-08: Reach target synthetic-task difficulty
+
+Iteration 3 used hard drift and contract validation and produced three simple counting tasks. Qwen 0.5B passed 19 of 30 candidates, with task-level counts 9, 0, and 10, giving Pass@1 66.7% and Pass@10 66.7%. Iteration 4 used the same pipeline and produced three more accepted tasks. Qwen passed 0, 1, and 7 candidates, giving Pass@1 33.3% and Pass@10 66.7%. Across the six clean accepted tasks from iterations 3 and 4, aggregate Pass@1 is 50.0% and aggregate Pass@10 is 66.7%, meeting the requested target. Candidate files and labels are saved under outputs/synthetic-exemplar-task601-clean-3 and outputs/synthetic-exemplar-task601-clean-4.
