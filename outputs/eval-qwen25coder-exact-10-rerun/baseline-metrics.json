@@ -1,0 +1,29 @@
+{
+  "examples": 900,
+  "pass_at_1": 0.33111111111111113,
+  "average_reward": 0.3814814814814815,
+  "status_counts": {
+    "syntax_error": 9,
+    "partial": 106,
+    "failed": 487,
+    "passed": 298
+  },
+  "reward_format_mean": 0.0,
+  "reward_syntax_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_tests_mean": 0.3814814814814815,
+  "reward_pass_mean": 0.0,
+  "successful_examples": 298,
+  "unique_completion_rate": 0.8088888888888889,
+  "repeated_completion_fraction": 0.19111111111111112,
+  "pass_at_2": 0.3795061728395062,
+  "pass_at_3": 0.40175925925925926,
+  "pass_at_4": 0.41629629629629633,
+  "pass_at_5": 0.42830687830687836,
+  "pass_at_6": 0.43925925925925924,
+  "pass_at_7": 0.44962962962962966,
+  "pass_at_8": 0.4595061728395062,
+  "pass_at_9": 0.4688888888888889,
+  "pass_at_10": 0.4777777777777778,
+  "entropy": 0.45036484127036397
+}

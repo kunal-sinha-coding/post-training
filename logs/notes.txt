@@ -1649,3 +1649,8 @@ Generated and sandbox-labeled ten Qwen 0.5B candidates for every one of the 90 o
 ## 2026-09-08: Reuse exact saved MBPP evaluation candidates
 
 Replaced the incorrectly prompted ranking artifact with the first ten candidates per task from the saved exact evaluator run at outputs/eval-qwen25coder-visible-tests-90/baseline-details.json. The replacement contains 900 generated candidates and 90 reference audit rows, preserving the original sandbox labels. Its baseline Pass@1 is 32.22% and Pass@10 is 48.89%, matching the established evaluation results.
+
+
+## 2026-09-08: Complete fresh exact ten-sample validation
+
+Reran the exact established evaluator over all 90 original MBPP validation tasks with ten samples per task and saved outputs/eval-qwen25coder-exact-10-rerun/baseline-details.json plus baseline-metrics.json. The fresh run produced Pass@1 33.11%, Pass@2 37.95%, Pass@4 41.63%, Pass@8 45.95%, and Pass@10 47.78%, with 298 of 900 samples passing. Rebuilt the ranking artifact from these fresh saved candidates and labels for verifier training.
