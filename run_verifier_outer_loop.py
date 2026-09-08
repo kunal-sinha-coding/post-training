@@ -86,7 +86,7 @@ def finish_wandb_run(run_id: str | None, return_code: int) -> None:
     import wandb
 
     try:
-        wandb.Api().run(f"kunal-personal/mbpp-verifier/{run_id}").update_state("finished" if return_code == 0 else "crashed")
+        wandb.Api().run(f"kunal-personal/mbpp-verifier/{run_id}").update_state("finished" if return_code == 0 else "failed")
     except Exception as error:
         print(f"Could not finalize W&B run {run_id}: {error}", flush=True)
 

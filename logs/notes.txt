@@ -1725,3 +1725,7 @@ Updated the autonomous verifier loop to explicitly mark each W&B run finished or
 ## September 8, 2026: Resume outer loop after interruption
 
 Updated the autonomous loop to resume after the last recorded cycle, preventing completed fine-tuning cycles from being rerun when the driver is restarted to apply W&B lifecycle fixes.
+
+## September 8, 2026: Handle forced W&B termination state
+
+Corrected the outer-loop lifecycle update to use W&B’s valid failed state for plateau-triggered subprocess termination.
