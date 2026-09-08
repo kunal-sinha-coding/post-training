@@ -1654,3 +1654,8 @@ Replaced the incorrectly prompted ranking artifact with the first ten candidates
 ## 2026-09-08: Complete fresh exact ten-sample validation
 
 Reran the exact established evaluator over all 90 original MBPP validation tasks with ten samples per task and saved outputs/eval-qwen25coder-exact-10-rerun/baseline-details.json plus baseline-metrics.json. The fresh run produced Pass@1 33.11%, Pass@2 37.95%, Pass@4 41.63%, Pass@8 45.95%, and Pass@10 47.78%, with 298 of 900 samples passing. Rebuilt the ranking artifact from these fresh saved candidates and labels for verifier training.
+
+
+## 2026-09-08: Remove obsolete 90-task evaluation artifacts
+
+Removed the obsolete repository-specific 90-task evaluation directories, ranking artifacts, and their preparation helper after standardizing future evaluation on the official 399-task EvalPlus benchmark. Kept the official qwen_eval/eval_plus implementation and dataset. Normalized task-ID analysis found 263 clean tasks in the full Hugging Face MBPP train split, while the current verifier artifact has 209 clean original tasks plus 1,000 disjoint synthetic tasks after excluding all EvalPlus IDs.
