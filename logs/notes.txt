@@ -1729,3 +1729,7 @@ Updated the autonomous loop to resume after the last recorded cycle, preventing 
 ## September 8, 2026: Handle forced W&B termination state
 
 Corrected the outer-loop lifecycle update to use W&B’s valid failed state for plateau-triggered subprocess termination.
+
+## September 8, 2026: Fine-tune only upper CodeBERT layers
+
+Added a top-layer fine-tuning mode that freezes embeddings and lower CodeBERT layers while training the top two Transformer layers and classifier. The autonomous loop now uses this mode for its next cycle after full-encoder overfitting.

@@ -418,7 +418,18 @@ def train_verifier(config: dict[str, Any]) -> dict[str, float]:
     model = AutoModelForSequenceClassification.from_pretrained(config["verifier_model"], num_labels=1, problem_type="single_label_classification")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
-    if not bool(config.get("unfreeze_encoder", False)):
+    if bool(config.get("unfreeze_encoder", False)):
+        # Keep every CodeBERT parameter trainable for full encoder fine-tuning.
+        pass
+    elif int(config.get("top_encoder_layers", 0)) > 0:
+        # Freeze the encoder first so only the requested upper layers can adapt.
+        for parameter in model.base_model.parameters():
+            parameter.requires_grad = False
+        encoder_layers = model.base_model.encoder.layer
+        for layer in encoder_layers[-int(config["top_encoder_layers"]):]:
+            for parameter in layer.parameters():
+                parameter.requires_grad = True
+    else:
         # Freeze CodeBERT so the small labeled set trains only a stable classification head.
         for parameter in model.base_model.parameters():
             parameter.requires_grad = False
@@ -548,6 +559,7 @@ def parse_args() -> dict[str, Any]:
     parser.add_argument("--weight-decay", type=float, default=0.01)
     parser.add_argument("--positive-class-weight", type=float, default=1.5)
     parser.add_argument("--unfreeze-encoder", action="store_true", help="Fine-tune CodeBERT instead of using a frozen linear probe.")
+    parser.add_argument("--top-encoder-layers", type=int, default=0, help="Fine-tune only this many upper CodeBERT layers along with the classifier.")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--wandb-project", default="mbpp-verifier")
     parser.add_argument("--wandb-run-name", default=None)
