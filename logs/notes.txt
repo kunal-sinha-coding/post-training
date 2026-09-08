@@ -1624,3 +1624,8 @@ Stopped the 0.5B synthetic labeling run after its first 16 tasks produced zero p
 ## 2026-09-08: One candidate plus reference verifier design
 
 Changed the synthetic labeling runner to generate one Qwen candidate per task and save one reference-positive row alongside it. Added explicit train-data and validation-data inputs plus reference-row retention to train_verifier.py. The combined artifact will contain one reference and one generated row per original MBPP task and synthetic task for training, with the existing original MBPP validation split reduced to one reference and one generated row per task.
+
+
+## 2026-09-08: Complete one-candidate synthetic labeling
+
+Completed one Qwen 0.5B candidate per each of the 1,000 synthetic tasks and saved one reference-positive plus one generated row per task. The generated candidates contain 7 sandbox passes and 993 failures, for a 0.7% candidate pass rate. Built combined verifier artifacts with 2,598 training rows from 299 original MBPP tasks plus 1,000 synthetic tasks, and 150 original MBPP validation rows with one reference and one generation per task.

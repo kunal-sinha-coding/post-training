@@ -1,0 +1,10 @@
+{
+  "model": "gpt-5.4-mini",
+  "accepted": 1000,
+  "rejected": 512,
+  "requests": 1512,
+  "retries": 2,
+  "input_tokens": 203850,
+  "output_tokens": 1484336,
+  "estimated_cost_usd": 6.8323995
+}
