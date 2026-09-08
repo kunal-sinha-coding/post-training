@@ -33,7 +33,7 @@ def load_exemplars(path: Path) -> list[dict[str, str]]:
             if not line.strip():
                 continue
             row = json.loads(line)
-            if row.get("source") == "reference":
+            if row.get("source", "reference") == "reference":
                 exemplars[str(row["task_id"])] = {"task_id": str(row["task_id"]), "task": str(row["task"]), "code": str(row["code"])}
     return list(exemplars.values())
 

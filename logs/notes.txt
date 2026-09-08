@@ -1704,3 +1704,8 @@ Added a $25 maximum GPT generation budget and a maximum of 12 requests per exemp
 ## 2026-09-08: Remove legacy generated synthetic examples
 
 Removed the old production synthetic corpus, synthetic verifier candidates, prior synthetic previews, batched synthetic outputs, and the contaminated combined verifier training file. Preserved all source code, official EvalPlus artifacts, and reconstructed outputs/clean-verifier/original-exemplars.jsonl containing only the 263 original MBPP training tasks disjoint from EvalPlus for the replacement run.
+
+
+## 2026-09-08: Fix original exemplar schema handling
+
+The first launch of the replacement pipeline processed zero exemplars because the reconstructed original-only exemplar artifact does not include a source field. Stopped before any GPT generation and updated batch_generate_label.py to treat missing source as reference while still excluding explicit generated rows.
