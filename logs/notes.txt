@@ -1674,3 +1674,8 @@ Updated synthetic_data/generate_tasks.py so every GPT-5.4 Mini request includes 
 ## 2026-09-08: Exemplar-conditioned three-task preview
 
 Generated three new synthetic tasks from original MBPP task 601 as the shared GPT-5.4 Mini exemplar. GPT generation required seven requests, with four rejected validations, and cost an estimated $0.028464. Sampled ten Qwen 0.5B candidates per task using the copied EvalPlus ChatML/vLLM wrapper at temperature 0.2 and top-p 0.95. The first labeling pass exposed missing helper setup in the custom harness. After rerunning with reference non-function helpers and candidate interface validation, all 30 candidates failed, producing Pass@1 through Pass@10 of 0.0. Saved tasks, candidates, and labels under outputs/synthetic-exemplar-task601-3. The result indicates these generated tasks are currently too difficult or contract-misaligned for Qwen and should not be added to verifier training without review.
+
+
+## 2026-09-08: Simplify exemplar-conditioned task prompt
+
+The first three-task preview produced zero Qwen 0.5B passes. Failure analysis found that the GPT prompt allowed helper classes, missing imports, and interval-chain complexity inherited from exemplar 601. The next iteration constrains each task to one plain function with no imports, classes, annotations, helper functions, recursion, dynamic programming, interval scheduling, or custom objects, and requests a substantially simpler list, string, dictionary, or scalar transformation.

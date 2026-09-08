@@ -23,7 +23,7 @@ from sandbox import execute_code
 
 MODEL_INPUT_PRICE = 0.75 / 1_000_000
 MODEL_OUTPUT_PRICE = 4.50 / 1_000_000
-SYSTEM_PROMPT = """You create self-contained Python programming benchmark tasks. Return exactly one JSON object with keys task, function_name, reference_code, and test_code. The task must specify a single callable function and its behavior precisely. reference_code must define that function without Markdown fences. test_code must contain executable Python assertions that import or call the function defined by reference_code. Include at least five meaningful assertions covering normal, boundary, and invalid or empty inputs when applicable. Do not use external packages, filesystem access, network access, randomness, or time. Make the task distinct from common MBPP and HumanEval tasks. Use the supplied original MBPP task only as a style and difficulty exemplar, while changing the problem and function."""
+SYSTEM_PROMPT = """You create self-contained Python programming benchmark tasks. Return exactly one JSON object with keys task, function_name, reference_code, and test_code. The task must specify a single callable function and its behavior precisely. reference_code must define that function without Markdown fences. test_code must contain executable Python assertions that import or call the function defined by reference_code. Include at least five meaningful assertions covering normal, boundary, and invalid or empty inputs when applicable. Do not use external packages, filesystem access, network access, randomness, or time. Make the task distinct from common MBPP and HumanEval tasks. Use the supplied original MBPP task only as a style exemplar, while making the new task substantially simpler than the exemplar. The reference_code must contain exactly one plain function and no imports, classes, helper functions, type annotations, recursion, dynamic programming, interval scheduling, or custom objects. The tests must call only that function with literal Python values."""
 
 
 def task_key(task: dict[str, Any]) -> str:
@@ -74,7 +74,7 @@ def request_task(client: Any, model: str, exemplar: str) -> tuple[dict[str, Any]
     # Use structured JSON output so malformed outer responses are minimized.
     response = client.responses.create(
         model=model,
-        input=[{"role": "system", "content": SYSTEM_PROMPT}, {"role": "user", "content": f"Generate one new Python benchmark task using this original MBPP task as the style and difficulty exemplar. Do not copy it.\n\nOriginal exemplar:\n{exemplar}"}],
+        input=[{"role": "system", "content": SYSTEM_PROMPT}, {"role": "user", "content": f"Generate one new, substantially simpler Python benchmark task using this original MBPP task only as a style exemplar. Do not copy its interval-chain algorithm. Prefer a basic list, string, dictionary, or scalar transformation that a 0.5B coder can solve reliably.\n\nOriginal exemplar:\n{exemplar}"}],
         text={"format": {"type": "json_object"}},
     )
     usage = response.usage
