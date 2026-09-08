@@ -247,6 +247,30 @@ def prediction_rows(model: nn.Module, examples: list[VerifierExample], loader: D
     ]
 
 
+def ranking_pass_metrics(rows: list[dict[str, Any]]) -> dict[str, float]:
+    """Compute ordinary and verifier-ranked Pass@K over candidate groups."""
+    # Group validation candidates by task while preserving generation order for ordinary Pass@K.
+    groups: dict[str, list[dict[str, Any]]] = {}
+    for row in rows:
+        groups.setdefault(str(row["task_id"]), []).append(row)
+    metrics: dict[str, float] = {}
+    for k in range(1, 11):
+        # Measure whether any correct candidate occurs within the first K generated samples.
+        ordinary = [any(float(row["label"]) == 1.0 for row in candidates[:k]) for candidates in groups.values()]
+        # Measure whether any correct candidate occurs within the top K verifier-ranked samples.
+        ranked = [any(float(row["label"]) == 1.0 for row in sorted(candidates, key=lambda row: float(row["probability"]), reverse=True)[:k]) for candidates in groups.values()]
+        metrics[f"pass_at_{k}"] = sum(ordinary) / len(ordinary) if ordinary else 0.0
+        metrics[f"verifier_ranked_pass_at_{k}"] = sum(ranked) / len(ranked) if ranked else 0.0
+    return metrics
+
+
+def evaluate_ranking(model: nn.Module, examples: list[VerifierExample], tokenizer: Any, device: torch.device, max_length: int) -> dict[str, float]:
+    """Evaluate verifier ordering against ten labeled candidates per validation task."""
+    # Score the fixed candidate artifact so every checkpoint uses identical generations and labels.
+    loader = DataLoader(VerifierDataset(examples), batch_size=16, shuffle=False, collate_fn=lambda batch: collate_examples(batch, tokenizer, max_length))
+    return ranking_pass_metrics(prediction_rows(model, examples, loader, device))
+
+
 def save_prediction_rows(rows: list[dict[str, Any]], path: Path) -> None:
     """Save verifier probabilities and yes or no decisions as JSONL."""
     # Persist every evaluation prediction so ranking and threshold decisions are auditable.
@@ -328,7 +352,10 @@ def train_verifier(config: dict[str, Any]) -> dict[str, float]:
     if not bool(config.get("include_reference_examples", False)):
         train_examples = generated_only(train_examples)
         validation_examples = generated_only(validation_examples)
+    ranking_examples = generated_only(load_examples(Path(config["ranking_eval_data"]))) if config.get("ranking_eval_data") else []
     print(f"Using verifier data: {len(train_examples)} train and {len(validation_examples)} validation examples.", flush=True)
+    if ranking_examples:
+        print(f"Using {len(ranking_examples)} fixed ranking-evaluation candidates.", flush=True)
 
     # Load CodeBERT as an encoder with a single scalar classification head.
     from transformers import AutoModelForSequenceClassification, AutoTokenizer
@@ -381,6 +408,8 @@ def train_verifier(config: dict[str, Any]) -> dict[str, float]:
             final_metrics = {f"train/{key}": value for key, value in train_metrics.items()}
             final_metrics.update({f"validation/{key}": value for key, value in validation_metrics.items()})
             final_metrics.update({f"eval/{key}": value for key, value in validation_metrics.items()})
+            if ranking_examples:
+                final_metrics.update({f"eval/{key}": value for key, value in evaluate_ranking(model, ranking_examples, tokenizer, device, int(config["max_length"])).items()})
             final_metrics["epoch"] = float(epoch)
             final_metrics["epoch_fraction"] = batch_index / len(train_loader)
             final_metrics["global_step"] = float(global_step)
@@ -456,6 +485,7 @@ def parse_args() -> dict[str, Any]:
     parser.add_argument("--evaluation-data", default=None, help="Labeled JSONL data for --eval-only.")
     parser.add_argument("--train-data", default=None, help="Explicit labeled JSONL training data.")
     parser.add_argument("--validation-data", default=None, help="Explicit labeled JSONL validation data.")
+    parser.add_argument("--ranking-eval-data", default=None, help="Fixed ten-candidate-per-task JSONL data for Pass@K ranking evaluation.")
     parser.add_argument("--include-reference-examples", action="store_true", help="Keep reference-positive rows in explicit train and validation data.")
     parser.add_argument("--prepare-data", action="store_true", help="Generate and save labels, then exit before model training.")
     parser.add_argument("--regenerate-data", action="store_true", help="Regenerate labeled data instead of reusing saved JSONL.")

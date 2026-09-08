@@ -1634,3 +1634,8 @@ Completed one Qwen 0.5B candidate per each of the 1,000 synthetic tasks and save
 ## 2026-09-08: Accept candidate audit metadata in verifier loader
 
 The first combined verifier launch failed before model loading because candidate JSONL rows include candidate_index and status audit fields not present in VerifierExample. Updated load_examples to retain the core schema while ignoring extra metadata, and verified that all 2,598 combined training rows load successfully.
+
+
+## 2026-09-08: Add verifier-ranked Pass@K evaluation
+
+Stopped the prior combined verifier run before adding a fixed ranking evaluation. Added a preparation script for the complete original MBPP validation split and added ordinary Pass@1 through Pass@10 plus verifier-probability-ranked Pass@1 through Pass@10 to every W&B evaluation checkpoint. Synthetic tasks remain training-only, and fixed generated candidates make comparisons across checkpoints reproducible.
