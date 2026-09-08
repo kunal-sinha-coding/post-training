@@ -1689,3 +1689,8 @@ Iteration 2 used the simpler prompt and improved the three-task preview from 0% 
 ## 2026-09-08: Reach target synthetic-task difficulty
 
 Iteration 3 used hard drift and contract validation and produced three simple counting tasks. Qwen 0.5B passed 19 of 30 candidates, with task-level counts 9, 0, and 10, giving Pass@1 66.7% and Pass@10 66.7%. Iteration 4 used the same pipeline and produced three more accepted tasks. Qwen passed 0, 1, and 7 candidates, giving Pass@1 33.3% and Pass@10 66.7%. Across the six clean accepted tasks from iterations 3 and 4, aggregate Pass@1 is 50.0% and aggregate Pass@10 is 66.7%, meeting the requested target. Candidate files and labels are saved under outputs/synthetic-exemplar-task601-clean-3 and outputs/synthetic-exemplar-task601-clean-4.
+
+
+## 2026-09-08: Add five-batch synthetic generation and labeling pipeline
+
+Added synthetic_data/batch_generate_label.py. It processes all 1,263 clean verifier exemplars in five deterministic batches, generates three validated GPT-5.4 Mini tasks per exemplar, immediately samples ten Qwen 0.5B candidates per newly generated task with the copied EvalPlus ChatML/vLLM wrapper, labels candidates in the sandbox, saves each batch, and reports cumulative Pass@K and estimated GPT cost every five minutes and after each batch.
