@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 import time
 from pathlib import Path
@@ -77,6 +78,19 @@ def diagnose(metrics: list[dict[str, float]]) -> str:
     return "The run plateaued without reaching the target, so the next scheduled optimization setting will test a different adaptation strength."
 
 
+def finish_wandb_run(run_id: str | None, return_code: int) -> None:
+    """Mark a terminated W&B run finished before the next cycle starts."""
+    # Use the public API because SIGTERM can bypass the trainer's normal wandb.finish call.
+    if not run_id:
+        return
+    import wandb
+
+    try:
+        wandb.Api().run(f"kunal-personal/mbpp-verifier/{run_id}").update_state("finished" if return_code == 0 else "crashed")
+    except Exception as error:
+        print(f"Could not finalize W&B run {run_id}: {error}", flush=True)
+
+
 def run_cycle(cycle: int) -> tuple[str, list[dict[str, float]], int]:
     """Run one trainer process and stop it after two consecutive AUC plateaus."""
     # Create an isolated log and output directory so every outer cycle is auditable.
@@ -85,6 +99,7 @@ def run_cycle(cycle: int) -> tuple[str, list[dict[str, float]], int]:
     log_path = output_dir / "training.log"
     command = command_for_cycle(cycle, output_dir, f"verifier-outer-cycle-{cycle:02d}")
     metrics: list[dict[str, float]] = []
+    run_id: str | None = None
     best_auc = float("-inf")
     stale_evaluations = 0
     with log_path.open("w", encoding="utf-8") as log:
@@ -96,6 +111,9 @@ def run_cycle(cycle: int) -> tuple[str, list[dict[str, float]], int]:
             print(f"[cycle {cycle:02d}] {line}", end="", flush=True)
             log.write(line)
             log.flush()
+            run_match = re.search(r"/runs/([A-Za-z0-9]+)", line)
+            if run_match:
+                run_id = run_match.group(1)
             try:
                 snapshot = json.loads(line)
             except json.JSONDecodeError:
@@ -117,6 +135,7 @@ def run_cycle(cycle: int) -> tuple[str, list[dict[str, float]], int]:
                 break
         process.wait(timeout=120)
         return_code = process.returncode
+    finish_wandb_run(run_id, return_code)
     (output_dir / "diagnosis.json").write_text(json.dumps({"cycle": cycle, "metrics": metrics, "diagnosis": diagnose(metrics), "return_code": return_code}, indent=2) + "\n", encoding="utf-8")
     return diagnose(metrics), metrics, return_code
 

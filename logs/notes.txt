@@ -1717,3 +1717,7 @@ The first launch of the replacement pipeline processed zero exemplars because th
 ## September 8, 2026: Autonomous verifier fine-tuning loop
 
 Added an outer-loop driver that fine-tunes the full CodeBERT encoder, monitors evaluation AUC, stops after two stale evaluations, records a diagnosis, changes one optimization setting, and reruns automatically for at most ten outer cycles.
+
+## September 8, 2026: Finalize W&B runs between outer cycles
+
+Updated the autonomous verifier loop to explicitly mark each W&B run finished or crashed after its subprocess exits, including plateau-triggered termination, before the next cycle begins.
