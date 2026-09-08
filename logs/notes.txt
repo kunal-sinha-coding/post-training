@@ -1644,3 +1644,8 @@ Stopped the prior combined verifier run before adding a fixed ranking evaluation
 ## 2026-09-08: Complete fixed ranking candidates
 
 Generated and sandbox-labeled ten Qwen 0.5B candidates for every one of the 90 original MBPP validation tasks. Saved 900 generated rows plus 90 reference audit rows, with 10 generated candidates passing all tests and 890 failing. These fixed candidates will be reused at every verifier checkpoint, so only verifier scoring and reranking are repeated during training.
+
+
+## 2026-09-08: Reuse exact saved MBPP evaluation candidates
+
+Replaced the incorrectly prompted ranking artifact with the first ten candidates per task from the saved exact evaluator run at outputs/eval-qwen25coder-visible-tests-90/baseline-details.json. The replacement contains 900 generated candidates and 90 reference audit rows, preserving the original sandbox labels. Its baseline Pass@1 is 32.22% and Pass@10 is 48.89%, matching the established evaluation results.
