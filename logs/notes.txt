@@ -1,5 +1,9 @@
 # Experiment Notes
 
+## September 8, 2026: Balance verifier training classes
+
+The verifier trainer now reports task and class distributions, logs those distributions to W&B at step zero, and optionally downsamples only the overrepresented training class to an exact 50/50 split. The rerun uses 7,890 saved generated candidates from 789 synthetic tasks, while validation remains the unchanged official EvalPlus generated-candidate artifact with 3,990 candidates from 399 tasks.
+
 ## Session
 
 - Date: August 13, 2026.

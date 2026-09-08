@@ -231,6 +231,50 @@ def generated_only(examples: list[VerifierExample]) -> list[VerifierExample]:
     return [example for example in examples if example.source == "generated"]
 
 
+def summarize_examples(examples: list[VerifierExample]) -> dict[str, float]:
+    """Summarize candidate counts, labels, tasks, and per-task sample counts."""
+    # Count labels and task membership before any balancing operation.
+    task_counts: dict[str, int] = {}
+    positive_count = 0
+    for example in examples:
+        task_counts[example.task_id] = task_counts.get(example.task_id, 0) + 1
+        positive_count += int(example.label == 1.0)
+    counts = list(task_counts.values())
+    return {
+        "examples": float(len(examples)),
+        "tasks": float(len(task_counts)),
+        "positive": float(positive_count),
+        "negative": float(len(examples) - positive_count),
+        "positive_rate": positive_count / len(examples) if examples else 0.0,
+        "samples_per_task_min": float(min(counts)) if counts else 0.0,
+        "samples_per_task_max": float(max(counts)) if counts else 0.0,
+        "samples_per_task_mean": sum(counts) / len(counts) if counts else 0.0,
+    }
+
+
+def downsample_to_balance(examples: list[VerifierExample], seed: int) -> tuple[list[VerifierExample], dict[str, float]]:
+    """Downsample the larger training class to create an exactly balanced dataset."""
+    # Partition rows by their sandbox correctness label.
+    positives = [example for example in examples if example.label == 1.0]
+    negatives = [example for example in examples if example.label == 0.0]
+    if not positives or not negatives:
+        raise ValueError("Class balancing requires both positive and negative training examples.")
+
+    # Shuffle reproducibly and retain the same number of rows from each class.
+    rng = random.Random(seed)
+    rng.shuffle(positives)
+    rng.shuffle(negatives)
+    retained = min(len(positives), len(negatives))
+    balanced = positives[:retained] + negatives[:retained]
+    rng.shuffle(balanced)
+    return balanced, {
+        "positive_before": float(len(positives)),
+        "negative_before": float(len(negatives)),
+        "positive_after": float(retained),
+        "negative_after": float(retained),
+    }
+
+
 def prediction_rows(model: nn.Module, examples: list[VerifierExample], loader: DataLoader, device: torch.device) -> list[dict[str, Any]]:
     """Return one probability and thresholded prediction for every labeled example."""
     # Preserve loader order so predictions can be joined directly to saved examples.
@@ -352,6 +396,13 @@ def train_verifier(config: dict[str, Any]) -> dict[str, float]:
     if not bool(config.get("include_reference_examples", False)):
         train_examples = generated_only(train_examples)
         validation_examples = generated_only(validation_examples)
+    train_summary_before = summarize_examples(train_examples)
+    validation_summary = summarize_examples(validation_examples)
+    balance_summary: dict[str, float] = {}
+    if bool(config.get("balance_train_classes", False)):
+        train_examples, balance_summary = downsample_to_balance(train_examples, int(config["seed"]))
+    train_summary_after = summarize_examples(train_examples)
+    print(json.dumps({"train_before_balance": train_summary_before, "train_after_balance": train_summary_after, "class_balance": balance_summary, "validation_unchanged": validation_summary}, sort_keys=True), flush=True)
     ranking_examples = generated_only(load_examples(Path(config["ranking_eval_data"]))) if config.get("ranking_eval_data") else []
     ranking_plus_examples = generated_only(load_examples(Path(config["ranking_eval_plus_data"]))) if config.get("ranking_eval_plus_data") else []
     print(f"Using verifier data: {len(train_examples)} train and {len(validation_examples)} validation examples.", flush=True)
@@ -387,6 +438,13 @@ def train_verifier(config: dict[str, Any]) -> dict[str, float]:
     import wandb
 
     wandb.init(project=config["wandb_project"], name=config.get("wandb_run_name"), config=config)
+    # Log dataset composition immediately so the run records its data before optimization starts.
+    wandb.log({
+        **{f"data/train_before/{key}": value for key, value in train_summary_before.items()},
+        **{f"data/train_after/{key}": value for key, value in train_summary_after.items()},
+        **{f"data/validation/{key}": value for key, value in validation_summary.items()},
+        **{f"data/balance/{key}": value for key, value in balance_summary.items()},
+    }, step=0)
     final_metrics: dict[str, float] = {}
     quarter_steps = max(1, (len(train_loader) + 3) // 4)
     for epoch in range(1, int(config["epochs"]) + 1):
@@ -501,6 +559,7 @@ def parse_args() -> dict[str, Any]:
     parser.add_argument("--ranking-eval-data", default=None, help="Fixed ten-candidate-per-task JSONL data for Pass@K ranking evaluation.")
     parser.add_argument("--ranking-eval-plus-data", default=None, help="Fixed ten-candidate-per-task JSONL data labeled with MBPP+ correctness.")
     parser.add_argument("--include-reference-examples", action="store_true", help="Keep reference-positive rows in explicit train and validation data.")
+    parser.add_argument("--balance-train-classes", action="store_true", help="Downsample the larger training class to an even positive and negative split.")
     parser.add_argument("--prepare-data", action="store_true", help="Generate and save labels, then exit before model training.")
     parser.add_argument("--regenerate-data", action="store_true", help="Regenerate labeled data instead of reusing saved JSONL.")
     return vars(parser.parse_args())
