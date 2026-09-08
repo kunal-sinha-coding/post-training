@@ -1639,3 +1639,8 @@ The first combined verifier launch failed before model loading because candidate
 ## 2026-09-08: Add verifier-ranked Pass@K evaluation
 
 Stopped the prior combined verifier run before adding a fixed ranking evaluation. Added a preparation script for the complete original MBPP validation split and added ordinary Pass@1 through Pass@10 plus verifier-probability-ranked Pass@1 through Pass@10 to every W&B evaluation checkpoint. Synthetic tasks remain training-only, and fixed generated candidates make comparisons across checkpoints reproducible.
+
+
+## 2026-09-08: Complete fixed ranking candidates
+
+Generated and sandbox-labeled ten Qwen 0.5B candidates for every one of the 90 original MBPP validation tasks. Saved 900 generated rows plus 90 reference audit rows, with 10 generated candidates passing all tests and 890 failing. These fixed candidates will be reused at every verifier checkpoint, so only verifier scoring and reranking are repeated during training.
