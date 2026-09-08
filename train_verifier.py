@@ -353,9 +353,12 @@ def train_verifier(config: dict[str, Any]) -> dict[str, float]:
         train_examples = generated_only(train_examples)
         validation_examples = generated_only(validation_examples)
     ranking_examples = generated_only(load_examples(Path(config["ranking_eval_data"]))) if config.get("ranking_eval_data") else []
+    ranking_plus_examples = generated_only(load_examples(Path(config["ranking_eval_plus_data"]))) if config.get("ranking_eval_plus_data") else []
     print(f"Using verifier data: {len(train_examples)} train and {len(validation_examples)} validation examples.", flush=True)
     if ranking_examples:
         print(f"Using {len(ranking_examples)} fixed ranking-evaluation candidates.", flush=True)
+    if ranking_plus_examples:
+        print(f"Using {len(ranking_plus_examples)} fixed MBPP+ ranking-evaluation candidates.", flush=True)
 
     # Load CodeBERT as an encoder with a single scalar classification head.
     from transformers import AutoModelForSequenceClassification, AutoTokenizer
@@ -410,6 +413,8 @@ def train_verifier(config: dict[str, Any]) -> dict[str, float]:
             final_metrics.update({f"eval/{key}": value for key, value in validation_metrics.items()})
             if ranking_examples:
                 final_metrics.update({f"eval/{key}": value for key, value in evaluate_ranking(model, ranking_examples, tokenizer, device, int(config["max_length"])).items()})
+            if ranking_plus_examples:
+                final_metrics.update({f"eval/mbpp_plus_{key}": value for key, value in evaluate_ranking(model, ranking_plus_examples, tokenizer, device, int(config["max_length"])).items()})
             final_metrics["epoch"] = float(epoch)
             final_metrics["epoch_fraction"] = batch_index / len(train_loader)
             final_metrics["global_step"] = float(global_step)
@@ -486,6 +491,7 @@ def parse_args() -> dict[str, Any]:
     parser.add_argument("--train-data", default=None, help="Explicit labeled JSONL training data.")
     parser.add_argument("--validation-data", default=None, help="Explicit labeled JSONL validation data.")
     parser.add_argument("--ranking-eval-data", default=None, help="Fixed ten-candidate-per-task JSONL data for Pass@K ranking evaluation.")
+    parser.add_argument("--ranking-eval-plus-data", default=None, help="Fixed ten-candidate-per-task JSONL data labeled with MBPP+ correctness.")
     parser.add_argument("--include-reference-examples", action="store_true", help="Keep reference-positive rows in explicit train and validation data.")
     parser.add_argument("--prepare-data", action="store_true", help="Generate and save labels, then exit before model training.")
     parser.add_argument("--regenerate-data", action="store_true", help="Regenerate labeled data instead of reusing saved JSONL.")

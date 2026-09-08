@@ -1,0 +1,7 @@
+def find_dissimilar(tuple1, tuple2):
+    # Convert tuples to sets to remove duplicates and find differences
+    set1 = set(tuple1)
+    set2 = set(tuple2)
+    dissimilar_elements = set1.symmetric_difference(set2)
+    # Convert the set back to a tuple
+    return tuple(dissimilar_elements)

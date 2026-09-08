@@ -1,0 +1,9 @@
+def concatenate_tuple(input_tuple):
+    # Initialize an empty string to store the concatenated result
+    result = ""
+    # Iterate over each element in the input tuple
+    for element in input_tuple:
+        # Concatenate the current element to the result string
+        result += element
+    # Return the concatenated string
+    return result

@@ -1,0 +1,11 @@
+def dog_age(dog_years):
+    """
+    Calculate the dog's age in dog's years.
+    
+    Parameters:
+    dog_years (int): The number of dog years.
+    
+    Returns:
+    int: The dog's age in dog's years.
+    """
+    return dog_years * 7

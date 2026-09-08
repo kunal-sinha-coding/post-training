@@ -1,0 +1,16 @@
+import math
+
+def multiply_num(numbers):
+    """
+    Multiply all the numbers in the list and divide with the length of the list.
+    
+    Parameters:
+    numbers (list): A list of numbers.
+    
+    Returns:
+    float: The result of multiplying all numbers in the list and dividing by the length of the list.
+    """
+    total = 1
+    for num in numbers:
+        total *= num
+    return total / len(numbers)

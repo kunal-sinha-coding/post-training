@@ -1,0 +1,17 @@
+def amicable_numbers_sum(n):
+    # Initialize a set to store amicable numbers
+    amicable_set = set()
+    
+    # Iterate through numbers from 1 to n
+    for i in range(1, n + 1):
+        # Calculate the sum of proper divisors of i
+        sum_divisors = sum(divisor for divisor in range(1, i) if i % divisor == 0)
+        
+        # Check if the sum of proper divisors equals i
+        if sum_divisors == i:
+            amicable_set.add(i)
+    
+    # Calculate the sum of all amicable numbers
+    total_sum = sum(amicable_set)
+    
+    return total_sum

@@ -1,0 +1,17 @@
+def big_diff(arr):
+    # Initialize the maximum and minimum values with the first element of the array
+    max_val = arr[0]
+    min_val = arr[0]
+    
+    # Iterate through the array to find the maximum and minimum values
+    for num in arr:
+        if num > max_val:
+            max_val = num
+        if num < min_val:
+            min_val = num
+    
+    # Calculate the difference between the maximum and minimum values
+    diff = max_val - min_val
+    
+    # Return the difference
+    return diff

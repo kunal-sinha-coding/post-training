@@ -1,0 +1,15 @@
+def change_date_format(date_str):
+    """
+    Convert a date of yyyy-mm-dd format to dd-mm-yyyy format.
+    
+    Args:
+    date_str (str): The date in yyyy-mm-dd format.
+    
+    Returns:
+    str: The date in dd-mm-yyyy format.
+    """
+    # Split the date string into year, month, and day
+    year, month, day = map(int, date_str.split('-'))
+    # Format the date to dd-mm-yyyy
+    formatted_date = f"{day}-{month}-{year}"
+    return formatted_date

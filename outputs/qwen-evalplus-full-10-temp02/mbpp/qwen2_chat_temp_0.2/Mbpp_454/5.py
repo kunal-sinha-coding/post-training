@@ -1,0 +1,12 @@
+def text_match_wordz(text):
+    """
+    This function checks if the given text contains the word 'z'.
+    
+    Args:
+    text (str): The text to be checked.
+    
+    Returns:
+    bool: True if the text contains 'z', False otherwise.
+    """
+    # Check if the text contains the word 'z'
+    return 'z' in text

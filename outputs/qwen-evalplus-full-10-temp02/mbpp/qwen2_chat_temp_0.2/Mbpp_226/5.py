@@ -1,0 +1,11 @@
+def odd_values_string(s):
+    # Initialize an empty string to store the result
+    result = ''
+    # Iterate over the string using a for loop
+    for i in range(len(s)):
+        # Check if the index is even (0-based index)
+        if i % 2 == 0:
+            # Append the character at the even index to the result string
+            result += s[i]
+    # Return the result string
+    return result

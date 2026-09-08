@@ -1,0 +1,19 @@
+def is_Monotonic(arr):
+    # Check if the array is empty or has only one element
+    if len(arr) <= 1:
+        return True
+    
+    # Initialize flags to track the increasing and decreasing nature
+    increasing = decreasing = True
+    
+    # Iterate through the array starting from the second element
+    for i in range(1, len(arr)):
+        # If the current element is greater than the previous one, set decreasing to False
+        if arr[i] > arr[i - 1]:
+            decreasing = False
+        # If the current element is less than the previous one, set increasing to False
+        elif arr[i] < arr[i - 1]:
+            increasing = False
+    
+    # If both flags are True, the array is monotonic
+    return increasing or decreasing

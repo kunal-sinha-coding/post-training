@@ -1,0 +1,10 @@
+def get_ludic(n):
+    # Initialize an empty list to store lucid numbers
+    lucid_numbers = []
+    # Iterate through numbers from 1 to n
+    for i in range(1, n + 1):
+        # Check if the number is a lucid number
+        if is_lucid(i):
+            # Append the number to the lucid_numbers list
+            lucid_numbers.append(i)
+    return lucid_numbers

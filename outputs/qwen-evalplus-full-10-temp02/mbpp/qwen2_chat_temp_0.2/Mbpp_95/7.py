@@ -1,0 +1,15 @@
+def Find_Min_Length(lists):
+    # Initialize the minimum length to a large number
+    min_length = float('inf')
+    
+    # Iterate through each sublist in the list
+    for sublist in lists:
+        # Calculate the length of the current sublist
+        length = len(sublist)
+        
+        # Update the minimum length if the current sublist is smaller
+        if length < min_length:
+            min_length = length
+    
+    # Return the minimum length found
+    return min_length

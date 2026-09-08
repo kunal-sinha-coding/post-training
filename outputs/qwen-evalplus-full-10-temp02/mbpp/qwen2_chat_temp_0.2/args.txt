@@ -1,0 +1,1 @@
+Namespace(model_type='qwen2', model_path='Qwen/Qwen2.5-Coder-0.5B-Instruct', model_size='chat', bs=20, temperature=0.2, dataset='mbpp', root='outputs/qwen-evalplus-full-10-temp02', n_samples=10, resume=True, output=None, tensor_parallel_size=1, contract_type='none', greedy=False, id_range=None)

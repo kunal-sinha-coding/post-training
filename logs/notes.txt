@@ -1659,3 +1659,8 @@ Reran the exact established evaluator over all 90 original MBPP validation tasks
 ## 2026-09-08: Remove obsolete 90-task evaluation artifacts
 
 Removed the obsolete repository-specific 90-task evaluation directories, ranking artifacts, and their preparation helper after standardizing future evaluation on the official 399-task EvalPlus benchmark. Kept the official qwen_eval/eval_plus implementation and dataset. Normalized task-ID analysis found 263 clean tasks in the full Hugging Face MBPP train split, while the current verifier artifact has 209 clean original tasks plus 1,000 disjoint synthetic tasks after excluding all EvalPlus IDs.
+
+
+## 2026-09-08: Standardize verifier data and EvalPlus metrics
+
+Completed the official EvalPlus 399-task MBPP generation with ten Qwen2.5-Coder-0.5B samples per task using the copied Qwen generator. Official scoring reported base Pass@1 51.43% and Pass@10 66.42%, plus MBPP+ Pass@1 42.56% and Pass@10 55.89%. Saved all K=1 through K=10 metrics and separate base and MBPP+ verifier label artifacts. Built a clean verifier training artifact with 1,263 tasks and 2,526 rows, consisting of 263 original MBPP tasks outside all EvalPlus IDs plus 1,000 synthetic tasks. Updated verifier training to log ordinary and verifier-ranked Pass@K separately for base and MBPP+ at every checkpoint.
