@@ -18,11 +18,12 @@ from typing import Any
 
 from dotenv import load_dotenv
 
+from data import load_mbpp
 from sandbox import execute_code
 
 MODEL_INPUT_PRICE = 0.75 / 1_000_000
 MODEL_OUTPUT_PRICE = 4.50 / 1_000_000
-SYSTEM_PROMPT = """You create self-contained Python programming benchmark tasks. Return exactly one JSON object with keys task, function_name, reference_code, and test_code. The task must specify a single callable function and its behavior precisely. reference_code must define that function without Markdown fences. test_code must contain executable Python assertions that import or call the function defined by reference_code. Include at least five meaningful assertions covering normal, boundary, and invalid or empty inputs when applicable. Do not use external packages, filesystem access, network access, randomness, or time. Make the task distinct from common MBPP and HumanEval tasks."""
+SYSTEM_PROMPT = """You create self-contained Python programming benchmark tasks. Return exactly one JSON object with keys task, function_name, reference_code, and test_code. The task must specify a single callable function and its behavior precisely. reference_code must define that function without Markdown fences. test_code must contain executable Python assertions that import or call the function defined by reference_code. Include at least five meaningful assertions covering normal, boundary, and invalid or empty inputs when applicable. Do not use external packages, filesystem access, network access, randomness, or time. Make the task distinct from common MBPP and HumanEval tasks. Use the supplied original MBPP task only as a style and difficulty exemplar, while changing the problem and function."""
 
 
 def task_key(task: dict[str, Any]) -> str:
@@ -68,12 +69,12 @@ def update_cost(path: Path, stats: dict[str, Any]) -> None:
     path.write_text(json.dumps(stats, indent=2) + "\n", encoding="utf-8")
 
 
-def request_task(client: Any, model: str) -> tuple[dict[str, Any], dict[str, int]]:
+def request_task(client: Any, model: str, exemplar: str) -> tuple[dict[str, Any], dict[str, int]]:
     """Request one structured programming task and return its usage counters."""
     # Use structured JSON output so malformed outer responses are minimized.
     response = client.responses.create(
         model=model,
-        input=[{"role": "system", "content": SYSTEM_PROMPT}, {"role": "user", "content": "Generate one new Python benchmark task."}],
+        input=[{"role": "system", "content": SYSTEM_PROMPT}, {"role": "user", "content": f"Generate one new Python benchmark task using this original MBPP task as the style and difficulty exemplar. Do not copy it.\n\nOriginal exemplar:\n{exemplar}"}],
         text={"format": {"type": "json_object"}},
     )
     usage = response.usage
@@ -81,11 +82,11 @@ def request_task(client: Any, model: str) -> tuple[dict[str, Any], dict[str, int
     return json.loads(response.output_text), tokens
 
 
-def generate_one_task(client: Any, model: str) -> tuple[dict[str, Any] | None, dict[str, int], str]:
+def generate_one_task(client: Any, model: str, exemplar: str) -> tuple[dict[str, Any] | None, dict[str, int], str]:
     """Request and validate one task in a worker thread."""
     # Keep API calls and sandbox validation independent so they can run concurrently.
     try:
-        task, tokens = request_task(client, model)
+        task, tokens = request_task(client, model, exemplar)
         valid, reason = validate_task(task)
         return (task if valid else None), tokens, reason
     except Exception as exc:
@@ -109,6 +110,11 @@ def generate_tasks(config: dict[str, Any]) -> dict[str, Any]:
         stats.update(json.loads(cost_path.read_text(encoding="utf-8")))
     existing_keys = load_existing_keys(output_path)
     client = OpenAI(timeout=60.0, max_retries=0)
+    # Load one original MBPP record once and reuse it as the semantic style exemplar.
+    original_tasks = load_mbpp(split="train")
+    exemplar_record = next((record for record in original_tasks if str(record["task_id"]) == str(config["exemplar_task_id"])), original_tasks[0])
+    exemplar = str(exemplar_record["prompt"])
+    print(f"Using original MBPP exemplar task {exemplar_record['task_id']}", flush=True)
     target = int(config["preview_count"] or config["num_tasks"])
     workers = max(1, int(config["workers"]))
     last_reported = (int(stats["accepted"]) // 10) * 10
@@ -117,7 +123,7 @@ def generate_tasks(config: dict[str, Any]) -> dict[str, Any]:
     with ThreadPoolExecutor(max_workers=workers) as executor:
         while stats["accepted"] < target:
             remaining = target - int(stats["accepted"])
-            futures = [executor.submit(generate_one_task, client, config["model"]) for _ in range(min(workers, remaining))]
+            futures = [executor.submit(generate_one_task, client, config["model"], exemplar) for _ in range(min(workers, remaining))]
             for future in as_completed(futures):
                 task, tokens, reason = future.result()
                 stats["requests"] += 1
@@ -158,6 +164,7 @@ def parse_args() -> dict[str, Any]:
     parser.add_argument("--cost-log", default="outputs/synthetic-tasks/cost.json")
     parser.add_argument("--retry-seconds", type=float, default=2.0)
     parser.add_argument("--workers", type=int, default=16)
+    parser.add_argument("--exemplar-task-id", default="601")
     return vars(parser.parse_args())
 
 
