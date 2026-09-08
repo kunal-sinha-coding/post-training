@@ -1713,3 +1713,7 @@ Removed the old production synthetic corpus, synthetic verifier candidates, prio
 ## 2026-09-08: Fix original exemplar schema handling
 
 The first launch of the replacement pipeline processed zero exemplars because the reconstructed original-only exemplar artifact does not include a source field. Stopped before any GPT generation and updated batch_generate_label.py to treat missing source as reference while still excluding explicit generated rows.
+
+## September 8, 2026: Autonomous verifier fine-tuning loop
+
+Added an outer-loop driver that fine-tunes the full CodeBERT encoder, monitors evaluation AUC, stops after two stale evaluations, records a diagnosis, changes one optimization setting, and reruns automatically for at most ten outer cycles.
