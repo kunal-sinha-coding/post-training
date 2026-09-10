@@ -2055,6 +2055,27 @@ The following table uses the same cohorts and output-based selections. MBPP repo
 | MBPP+ | Highest average output agreement | 54.18% | 61.43% | 45.06% |
 
 
+CORRECTNESS COHORT COUNTS
+For the combined MBPP+ correctness definition, the 399 tasks break down as follows. The number is the count of correct generations among ten.
+
+| Correct generations among ten | Number of tasks |
+|---:|---:|
+| 0 | 176 |
+| 1 | 20 |
+| 2 | 7 |
+| 3 | 11 |
+| 4 | 10 |
+| 5 | 11 |
+| 6 | 6 |
+| 7 | 8 |
+| 8 | 17 |
+| 9 | 22 |
+| 10 | 111 |
+| **Total** | **399** |
+
+Thus, 112 tasks are mixed, 176 non-mixed tasks have zero correct generations, and 111 non-mixed tasks have all ten correct generations. The corresponding standard MBPP counts are 125 mixed, 134 all incorrect, and 140 all correct.
+
+
 EXPERIMENT: output-clusters-v2
 Timestamp: 2026-09-10T08:09:10.178598+00:00
 Commit: 3baf4a8fad853e5fe5fc8a51813c51b38d2d6eeb

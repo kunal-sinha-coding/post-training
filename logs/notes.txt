@@ -1777,6 +1777,8 @@ Captured output behavior for all 399 EvalPlus MBPP tasks and all 3,990 saved can
 
 Added the corresponding standard MBPP correctness comparison on the same cohorts. Largest-cluster selection reaches 63.08%, 68.30%, and 54.34% on the 79-task, 112-task, and 399-task cohorts, compared with random-generation baselines of 61.01%, 60.89%, and 51.43%.
 
+Added the complete distribution of correct generations per task. Under combined MBPP+ correctness, 112 tasks are mixed, 176 have zero correct generations, and 111 have all ten correct generations.
+
 ## 2026-09-10: Capture outputs for mixed-task cluster analysis
 
 Commit: Add reproducible output clustering diagnostic.
