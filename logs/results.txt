@@ -2042,6 +2042,17 @@ The following table reports single-candidate accuracy using combined MBPP+ corre
 These are expected accuracies for selecting one candidate. They are not Pass@1 through Pass@10. The all-task values were recomputed from outputs/qwen-evalplus-full-10-temp02/output-clusters-v3/analysis.json after capturing all 399 tasks and 3,990 candidates.
 
 
+ITERATIVE VERIFIER SEARCH FINAL RESULT
+Search: 100 predeclared output-only verifier iterations on 112 mixed combined-MBPP+ tasks.
+Stopping condition: Reached iteration 100. The >95% accuracy condition was not reached.
+Baseline random selection: 52.50%.
+Best strategy: Per-input modal-output agreement, selecting candidate(s) matching the modal observed value on the most inputs.
+Best accuracy: 65.18%, an absolute improvement of 12.68 percentage points over random selection and 1.04 percentage points over exact largest-output-cluster selection at 64.14%.
+Selection used no correctness labels. Correctness was joined afterward for measurement only. The best rule had ties on 108 of 112 tasks, so its score is the expected accuracy over tied candidates.
+Artifact: outputs/qwen-evalplus-full-10-temp02/output-clusters-v3/iterative_verifier_results.json
+Search history: logs/hillclimbing.txt
+
+
 MBPP AND MBPP+ COMPARISON
 The following table uses the same cohorts and output-based selections. MBPP reports standard-test correctness. MBPP+ reports combined standard-plus-extended correctness.
 
@@ -2348,3 +2359,2879 @@ Input types are restored with the vendored upstream EvalPlus deserializer. Typed
 Artifact files include exact candidate code and raw inputs in jobs.jsonl, per-test status/value/hash in observations/, selection membership and joined labels in analysis.json, and file hashes in manifest.json.
 
 The earlier saved execution reranking table is invalid because it joined generation files and correctness records by different orders. Its single random tie draw was also process-dependent, and it omitted EvalPlus input-type restoration. This report executes evaluation-record code directly and verifies its SHA256 before joining labels.
+
+
+EXPERIMENT: iterative-output-verifier-search
+{
+  "iterations": [
+    {
+      "iteration": 1,
+      "rule": [
+        "first"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5357142857142857,
+      "accuracy_percent": 53.57142857142857,
+      "tie_tasks": 0,
+      "verdict": "improved",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 2,
+      "rule": [
+        "largest",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5744047619047619,
+      "accuracy_percent": 57.44047619047619,
+      "tie_tasks": 112,
+      "verdict": "improved",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 3,
+      "rule": [
+        "agree",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5562996031746031,
+      "accuracy_percent": 55.629960317460316,
+      "tie_tasks": 110,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 4,
+      "rule": [
+        "mode",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5892857142857143,
+      "accuracy_percent": 58.92857142857143,
+      "tie_tasks": 109,
+      "verdict": "improved",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 5,
+      "rule": [
+        "largest",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 6,
+      "rule": [
+        "agree",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 7,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 8,
+      "rule": [
+        "robust",
+        "base",
+        "value",
+        0.5
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 9,
+      "rule": [
+        "robust",
+        "base",
+        "value",
+        0.6
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 10,
+      "rule": [
+        "robust",
+        "base",
+        "value",
+        0.7
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 11,
+      "rule": [
+        "robust",
+        "base",
+        "value",
+        0.8
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 12,
+      "rule": [
+        "robust",
+        "base",
+        "value",
+        0.9
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 13,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 14,
+      "rule": [
+        "agree",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 15,
+      "rule": [
+        "mode",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 16,
+      "rule": [
+        "robust",
+        "base",
+        "type",
+        0.5
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 17,
+      "rule": [
+        "robust",
+        "base",
+        "type",
+        0.6
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 18,
+      "rule": [
+        "robust",
+        "base",
+        "type",
+        0.7
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 19,
+      "rule": [
+        "robust",
+        "base",
+        "type",
+        0.8
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 20,
+      "rule": [
+        "robust",
+        "base",
+        "type",
+        0.9
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 21,
+      "rule": [
+        "largest",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 22,
+      "rule": [
+        "agree",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 23,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 24,
+      "rule": [
+        "robust",
+        "plus",
+        "value",
+        0.5
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 25,
+      "rule": [
+        "robust",
+        "plus",
+        "value",
+        0.6
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 26,
+      "rule": [
+        "robust",
+        "plus",
+        "value",
+        0.7
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 27,
+      "rule": [
+        "robust",
+        "plus",
+        "value",
+        0.8
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 28,
+      "rule": [
+        "robust",
+        "plus",
+        "value",
+        0.9
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 29,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 30,
+      "rule": [
+        "agree",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 31,
+      "rule": [
+        "mode",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 32,
+      "rule": [
+        "robust",
+        "plus",
+        "type",
+        0.5
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 33,
+      "rule": [
+        "robust",
+        "plus",
+        "type",
+        0.6
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 34,
+      "rule": [
+        "robust",
+        "plus",
+        "type",
+        0.7
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 35,
+      "rule": [
+        "robust",
+        "plus",
+        "type",
+        0.8
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 36,
+      "rule": [
+        "robust",
+        "plus",
+        "type",
+        0.9
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 37,
+      "rule": [
+        "largest",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5744047619047619,
+      "accuracy_percent": 57.44047619047619,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 38,
+      "rule": [
+        "agree",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5562996031746031,
+      "accuracy_percent": 55.629960317460316,
+      "tie_tasks": 110,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 39,
+      "rule": [
+        "mode",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5892857142857143,
+      "accuracy_percent": 58.92857142857143,
+      "tie_tasks": 109,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 40,
+      "rule": [
+        "robust",
+        "all",
+        "value",
+        0.5
+      ],
+      "tasks": 112,
+      "accuracy": 0.560763888888889,
+      "accuracy_percent": 56.07638888888889,
+      "tie_tasks": 110,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 41,
+      "rule": [
+        "robust",
+        "all",
+        "value",
+        0.6
+      ],
+      "tasks": 112,
+      "accuracy": 0.5629960317460317,
+      "accuracy_percent": 56.29960317460318,
+      "tie_tasks": 108,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 42,
+      "rule": [
+        "robust",
+        "all",
+        "value",
+        0.7
+      ],
+      "tasks": 112,
+      "accuracy": 0.5540674603174603,
+      "accuracy_percent": 55.40674603174603,
+      "tie_tasks": 111,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 43,
+      "rule": [
+        "robust",
+        "all",
+        "value",
+        0.8
+      ],
+      "tasks": 112,
+      "accuracy": 0.5540674603174603,
+      "accuracy_percent": 55.40674603174603,
+      "tie_tasks": 111,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 44,
+      "rule": [
+        "robust",
+        "all",
+        "value",
+        0.9
+      ],
+      "tasks": 112,
+      "accuracy": 0.5629960317460317,
+      "accuracy_percent": 56.29960317460318,
+      "tie_tasks": 111,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 45,
+      "rule": [
+        "largest",
+        "all",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5524305555555555,
+      "accuracy_percent": 55.24305555555556,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 46,
+      "rule": [
+        "agree",
+        "all",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5484623015873016,
+      "accuracy_percent": 54.84623015873016,
+      "tie_tasks": 111,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 47,
+      "rule": [
+        "mode",
+        "all",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5524305555555555,
+      "accuracy_percent": 55.24305555555556,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 48,
+      "rule": [
+        "robust",
+        "all",
+        "type",
+        0.5
+      ],
+      "tasks": 112,
+      "accuracy": 0.5435019841269841,
+      "accuracy_percent": 54.35019841269841,
+      "tie_tasks": 111,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 49,
+      "rule": [
+        "robust",
+        "all",
+        "type",
+        0.6
+      ],
+      "tasks": 112,
+      "accuracy": 0.5484623015873016,
+      "accuracy_percent": 54.84623015873016,
+      "tie_tasks": 111,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 50,
+      "rule": [
+        "robust",
+        "all",
+        "type",
+        0.7
+      ],
+      "tasks": 112,
+      "accuracy": 0.5484623015873016,
+      "accuracy_percent": 54.84623015873016,
+      "tie_tasks": 111,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 51,
+      "rule": [
+        "robust",
+        "all",
+        "type",
+        0.8
+      ],
+      "tasks": 112,
+      "accuracy": 0.5484623015873016,
+      "accuracy_percent": 54.84623015873016,
+      "tie_tasks": 111,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 52,
+      "rule": [
+        "robust",
+        "all",
+        "type",
+        0.9
+      ],
+      "tasks": 112,
+      "accuracy": 0.5484623015873016,
+      "accuracy_percent": 54.84623015873016,
+      "tie_tasks": 111,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 53,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 54,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 55,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 56,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 57,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 58,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 59,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 60,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 61,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 62,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 63,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 64,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 65,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 66,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 67,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 68,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 69,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 70,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 71,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 72,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 73,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 74,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 75,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 76,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 77,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 78,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 79,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 80,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 81,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 82,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 83,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 84,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 85,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 86,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 87,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 88,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 89,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 90,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 91,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 92,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 93,
+      "rule": [
+        "mode",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5892857142857143,
+      "accuracy_percent": 58.92857142857143,
+      "tie_tasks": 109,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 94,
+      "rule": [
+        "largest",
+        "all",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5524305555555555,
+      "accuracy_percent": 55.24305555555556,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 95,
+      "rule": [
+        "mode",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5892857142857143,
+      "accuracy_percent": 58.92857142857143,
+      "tie_tasks": 109,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 96,
+      "rule": [
+        "largest",
+        "all",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5524305555555555,
+      "accuracy_percent": 55.24305555555556,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 97,
+      "rule": [
+        "mode",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5892857142857143,
+      "accuracy_percent": 58.92857142857143,
+      "tie_tasks": 109,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 98,
+      "rule": [
+        "largest",
+        "all",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5524305555555555,
+      "accuracy_percent": 55.24305555555556,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 99,
+      "rule": [
+        "mode",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5892857142857143,
+      "accuracy_percent": 58.92857142857143,
+      "tie_tasks": 109,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 100,
+      "rule": [
+        "largest",
+        "all",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5524305555555555,
+      "accuracy_percent": 55.24305555555556,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    }
+  ],
+  "stopping_condition": "accuracy > 0.95 or 100 iterations",
+  "artifact": "outputs/qwen-evalplus-full-10-temp02/output-clusters-v3/iterative_verifier_results.json",
+  "script_sha256": "1d4bbb6aa00cb9b26d0c49a9b8cf70afb2bfa53f57edb669b48fe50409da1f12"
+}
+
+
+EXPERIMENT: iterative-output-verifier-search
+{
+  "iterations": [
+    {
+      "iteration": 1,
+      "rule": [
+        "first"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5357142857142857,
+      "accuracy_percent": 53.57142857142857,
+      "tie_tasks": 0,
+      "verdict": "improved",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 2,
+      "rule": [
+        "largest",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6413690476190476,
+      "accuracy_percent": 64.13690476190476,
+      "tie_tasks": 111,
+      "verdict": "improved",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 3,
+      "rule": [
+        "agree",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6143353174603174,
+      "accuracy_percent": 61.43353174603175,
+      "tie_tasks": 109,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 4,
+      "rule": [
+        "mode",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6517857142857143,
+      "accuracy_percent": 65.17857142857143,
+      "tie_tasks": 108,
+      "verdict": "improved",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 5,
+      "rule": [
+        "largest",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 6,
+      "rule": [
+        "agree",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 7,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 8,
+      "rule": [
+        "robust",
+        "base",
+        "value",
+        0.5
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 9,
+      "rule": [
+        "robust",
+        "base",
+        "value",
+        0.6
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 10,
+      "rule": [
+        "robust",
+        "base",
+        "value",
+        0.7
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 11,
+      "rule": [
+        "robust",
+        "base",
+        "value",
+        0.8
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 12,
+      "rule": [
+        "robust",
+        "base",
+        "value",
+        0.9
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 13,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 14,
+      "rule": [
+        "agree",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 15,
+      "rule": [
+        "mode",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 16,
+      "rule": [
+        "robust",
+        "base",
+        "type",
+        0.5
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 17,
+      "rule": [
+        "robust",
+        "base",
+        "type",
+        0.6
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 18,
+      "rule": [
+        "robust",
+        "base",
+        "type",
+        0.7
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 19,
+      "rule": [
+        "robust",
+        "base",
+        "type",
+        0.8
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 20,
+      "rule": [
+        "robust",
+        "base",
+        "type",
+        0.9
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 21,
+      "rule": [
+        "largest",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 22,
+      "rule": [
+        "agree",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 23,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 24,
+      "rule": [
+        "robust",
+        "plus",
+        "value",
+        0.5
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 25,
+      "rule": [
+        "robust",
+        "plus",
+        "value",
+        0.6
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 26,
+      "rule": [
+        "robust",
+        "plus",
+        "value",
+        0.7
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 27,
+      "rule": [
+        "robust",
+        "plus",
+        "value",
+        0.8
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 28,
+      "rule": [
+        "robust",
+        "plus",
+        "value",
+        0.9
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 29,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 30,
+      "rule": [
+        "agree",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 31,
+      "rule": [
+        "mode",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 32,
+      "rule": [
+        "robust",
+        "plus",
+        "type",
+        0.5
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 33,
+      "rule": [
+        "robust",
+        "plus",
+        "type",
+        0.6
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 34,
+      "rule": [
+        "robust",
+        "plus",
+        "type",
+        0.7
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 35,
+      "rule": [
+        "robust",
+        "plus",
+        "type",
+        0.8
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 36,
+      "rule": [
+        "robust",
+        "plus",
+        "type",
+        0.9
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 37,
+      "rule": [
+        "largest",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6413690476190476,
+      "accuracy_percent": 64.13690476190476,
+      "tie_tasks": 111,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 38,
+      "rule": [
+        "agree",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6143353174603174,
+      "accuracy_percent": 61.43353174603175,
+      "tie_tasks": 109,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 39,
+      "rule": [
+        "mode",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6517857142857143,
+      "accuracy_percent": 65.17857142857143,
+      "tie_tasks": 108,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 40,
+      "rule": [
+        "robust",
+        "all",
+        "value",
+        0.5
+      ],
+      "tasks": 112,
+      "accuracy": 0.6187996031746031,
+      "accuracy_percent": 61.879960317460316,
+      "tie_tasks": 109,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 41,
+      "rule": [
+        "robust",
+        "all",
+        "value",
+        0.6
+      ],
+      "tasks": 112,
+      "accuracy": 0.621031746031746,
+      "accuracy_percent": 62.10317460317461,
+      "tie_tasks": 107,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 42,
+      "rule": [
+        "robust",
+        "all",
+        "value",
+        0.7
+      ],
+      "tasks": 112,
+      "accuracy": 0.6121031746031746,
+      "accuracy_percent": 61.21031746031746,
+      "tie_tasks": 109,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 43,
+      "rule": [
+        "robust",
+        "all",
+        "value",
+        0.8
+      ],
+      "tasks": 112,
+      "accuracy": 0.6121031746031746,
+      "accuracy_percent": 61.21031746031746,
+      "tie_tasks": 109,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 44,
+      "rule": [
+        "robust",
+        "all",
+        "value",
+        0.9
+      ],
+      "tasks": 112,
+      "accuracy": 0.621031746031746,
+      "accuracy_percent": 62.10317460317461,
+      "tie_tasks": 109,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 45,
+      "rule": [
+        "largest",
+        "all",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6156746031746032,
+      "accuracy_percent": 61.56746031746032,
+      "tie_tasks": 111,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 46,
+      "rule": [
+        "agree",
+        "all",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6176587301587302,
+      "accuracy_percent": 61.76587301587302,
+      "tie_tasks": 110,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 47,
+      "rule": [
+        "mode",
+        "all",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6171626984126984,
+      "accuracy_percent": 61.71626984126984,
+      "tie_tasks": 110,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 48,
+      "rule": [
+        "robust",
+        "all",
+        "type",
+        0.5
+      ],
+      "tasks": 112,
+      "accuracy": 0.6126984126984126,
+      "accuracy_percent": 61.269841269841265,
+      "tie_tasks": 110,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 49,
+      "rule": [
+        "robust",
+        "all",
+        "type",
+        0.6
+      ],
+      "tasks": 112,
+      "accuracy": 0.6176587301587302,
+      "accuracy_percent": 61.76587301587302,
+      "tie_tasks": 110,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 50,
+      "rule": [
+        "robust",
+        "all",
+        "type",
+        0.7
+      ],
+      "tasks": 112,
+      "accuracy": 0.6176587301587302,
+      "accuracy_percent": 61.76587301587302,
+      "tie_tasks": 110,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 51,
+      "rule": [
+        "robust",
+        "all",
+        "type",
+        0.8
+      ],
+      "tasks": 112,
+      "accuracy": 0.6176587301587302,
+      "accuracy_percent": 61.76587301587302,
+      "tie_tasks": 110,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 52,
+      "rule": [
+        "robust",
+        "all",
+        "type",
+        0.9
+      ],
+      "tasks": 112,
+      "accuracy": 0.6176587301587302,
+      "accuracy_percent": 61.76587301587302,
+      "tie_tasks": 110,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 53,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 54,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 55,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 56,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 57,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 58,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 59,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 60,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 61,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 62,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 63,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 64,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 65,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 66,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 67,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 68,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 69,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 70,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 71,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 72,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 73,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 74,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 75,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 76,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 77,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 78,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 79,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 80,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 81,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 82,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 83,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 84,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 85,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 86,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 87,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 88,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 89,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 90,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 91,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 92,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 93,
+      "rule": [
+        "mode",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6517857142857143,
+      "accuracy_percent": 65.17857142857143,
+      "tie_tasks": 108,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 94,
+      "rule": [
+        "largest",
+        "all",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6156746031746032,
+      "accuracy_percent": 61.56746031746032,
+      "tie_tasks": 111,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 95,
+      "rule": [
+        "mode",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6517857142857143,
+      "accuracy_percent": 65.17857142857143,
+      "tie_tasks": 108,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 96,
+      "rule": [
+        "largest",
+        "all",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6156746031746032,
+      "accuracy_percent": 61.56746031746032,
+      "tie_tasks": 111,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 97,
+      "rule": [
+        "mode",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6517857142857143,
+      "accuracy_percent": 65.17857142857143,
+      "tie_tasks": 108,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 98,
+      "rule": [
+        "largest",
+        "all",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6156746031746032,
+      "accuracy_percent": 61.56746031746032,
+      "tie_tasks": 111,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 99,
+      "rule": [
+        "mode",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6517857142857143,
+      "accuracy_percent": 65.17857142857143,
+      "tie_tasks": 108,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 100,
+      "rule": [
+        "largest",
+        "all",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6156746031746032,
+      "accuracy_percent": 61.56746031746032,
+      "tie_tasks": 111,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    }
+  ],
+  "stopping_condition": "accuracy > 0.95 or 100 iterations",
+  "artifact": "outputs/qwen-evalplus-full-10-temp02/output-clusters-v3/iterative_verifier_results.json",
+  "script_sha256": "9f71b46a5a1ac83a8557e34a67cbf6a66772a9b2af113db9c0ffa2fbd09dbcfe"
+}

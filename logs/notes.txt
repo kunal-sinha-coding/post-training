@@ -1781,6 +1781,10 @@ Added the complete distribution of correct generations per task. Under combined 
 
 Added the non-mixed all-correct comparison. All ten candidates are correct on each such task, so baseline, largest-cluster, and output-agreement selection are all 100% with zero performance boost. The counts are 140 standard MBPP tasks and 111 combined MBPP+ tasks.
 
+## 2026-09-10: Complete iterative output verifier search
+
+Completed the requested autonomous search on 112 mixed combined-MBPP+ tasks. The corrected loop ran 100 predeclared output-only verifier strategies and stopped at the iteration limit because none exceeded 95% accuracy. The best rule was per-input modal-output agreement at 65.18%, compared with random selection at 52.50% and exact largest-output-cluster selection at 64.14%. The result and every iteration record are saved in outputs/qwen-evalplus-full-10-temp02/output-clusters-v3/iterative_verifier_results.json and logs/hillclimbing.txt. The initial search pass was invalidated and documented because it included exception tokens in clusters; the final pass uses only complete returning serializable candidates.
+
 ## 2026-09-10: Capture outputs for mixed-task cluster analysis
 
 Commit: Add reproducible output clustering diagnostic.
