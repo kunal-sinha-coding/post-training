@@ -21,6 +21,10 @@ accelerate launch --num_processes 1 train.py --config configs/default.yaml
 
 The debug configuration limits the dataset and training steps. `run_baseline_evaluation: false` skips the baseline. When it is enabled, `reuse_baseline: true` reuses both cached baseline JSON files when present, while `false` recomputes the baseline. `run_intermediate_evals` controls checkpoint evaluation. Each run writes its configuration, available evaluation metrics, per-example details, and model artifacts under its configured `output_dir`.
 
+## Experiment evaluation protocol
+
+Candidate selection must not use the ground-truth answer for the task being evaluated. During selection, use only answer-independent evidence such as whether the candidate executes, its observable outputs, resource behavior, and agreement with other candidates. Ground truth may be used afterward only to measure the selected method's benchmark score, and that measurement must be kept separate from candidate selection. If an experiment request is ambiguous about this boundary, clarify it before proceeding.
+
 ## Data and reward
 
 `data.py` loads all 374 examples from the official MBPP training split and uses all 90 examples from the official validation split for evaluation. The official test split is not loaded. `sandbox.py` executes each generated candidate in a timed isolated-mode subprocess. Training uses the fixed dense reward mixture that produced the strongest GRPO-only result. It combines format at 0.025, syntax at 0.05, interface at 0.025, partial-test progress at 0.4, and full passes at 0.5. Execution is used to measure test progress but is not a separate reward component.

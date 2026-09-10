@@ -1737,3 +1737,7 @@ Added a top-layer fine-tuning mode that freezes embeddings and lower CodeBERT la
 ## September 8, 2026: Extend verifier outer loop
 
 Raised the autonomous diagnosis and rerun cap from ten to twenty outer cycles at the user’s request.
+
+## 2026-09-10: Record ground-truth isolation rule
+
+Added an experiment protocol section to README.md stating that candidate selection must use only answer-independent evidence. Ground truth can be read only afterward for a separate benchmark measurement, never to select or filter candidates from the same evaluation task.
