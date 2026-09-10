@@ -2042,6 +2042,19 @@ The following table reports single-candidate accuracy using combined MBPP+ corre
 These are expected accuracies for selecting one candidate. They are not Pass@1 through Pass@10. The all-task values were recomputed from outputs/qwen-evalplus-full-10-temp02/output-clusters-v3/analysis.json after capturing all 399 tasks and 3,990 candidates.
 
 
+MBPP AND MBPP+ COMPARISON
+The following table uses the same cohorts and output-based selections. MBPP reports standard-test correctness. MBPP+ reports combined standard-plus-extended correctness.
+
+| Benchmark | Approach | 79 mixed tasks, all ten return | 112 mixed tasks | All 399 tasks |
+|---|---|---:|---:|---:|
+| MBPP | Baseline, random generation | 61.01% | 60.89% | 51.43% |
+| MBPP | Largest output cluster | 63.08% | **68.30%** | **54.34%** |
+| MBPP | Highest average output agreement | 62.34% | 68.08% | 53.95% |
+| MBPP+ | Baseline, random generation | 53.16% | 52.50% | 42.56% |
+| MBPP+ | Largest output cluster | **57.59%** | **64.14%** | **45.82%** |
+| MBPP+ | Highest average output agreement | 54.18% | 61.43% | 45.06% |
+
+
 EXPERIMENT: output-clusters-v2
 Timestamp: 2026-09-10T08:09:10.178598+00:00
 Commit: 3baf4a8fad853e5fe5fc8a51813c51b38d2d6eeb

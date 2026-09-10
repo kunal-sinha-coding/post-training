@@ -1775,6 +1775,8 @@ Appended the corrected MBPP+ table to logs/results.txt after the offline definit
 
 Captured output behavior for all 399 EvalPlus MBPP tasks and all 3,990 saved candidates, reusing compatible mixed-task traces. Added the requested single-selection comparison for the 79-task clean mixed subset, all 112 mixed tasks, and the complete 399-task benchmark. Combined MBPP+ correctness is measured only after output clusters and agreement rankings are fixed. The largest output cluster reaches 57.59% on the clean subset, 64.14% on all mixed tasks, and 45.82% on all tasks, compared with random-generation baselines of 53.16%, 52.50%, and 42.56%.
 
+Added the corresponding standard MBPP correctness comparison on the same cohorts. Largest-cluster selection reaches 63.08%, 68.30%, and 54.34% on the 79-task, 112-task, and 399-task cohorts, compared with random-generation baselines of 61.01%, 60.89%, and 51.43%.
+
 ## 2026-09-10: Capture outputs for mixed-task cluster analysis
 
 Commit: Add reproducible output clustering diagnostic.
