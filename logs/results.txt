@@ -1938,3 +1938,44 @@ wandb_project: grpo-mbpp
 wandb_run_name: null
 
 ------------------------------------------------------------------------
+
+
+EXPERIMENT RESULTS
+Experiment: saved-candidate-reranking-audit-2026-09-10
+Timestamp: 2026-09-10T00:00:00Z
+Purpose: Assess whether the requested filtering and reranking curves can be reproduced without new sandbox execution or ground-truth-based candidate selection.
+Candidate artifact: outputs/qwen-evalplus-full-10-temp02/mbpp/qwen2_chat_temp_0.2/eval_results.json
+Candidate count: 399 tasks x 10 generations = 3990 candidates
+Selection rule: Candidate selection must use answer-independent execution evidence or saved model scores. Ground-truth correctness labels are reserved for post-selection measurement.
+Execution policy: No sandbox execution was run for this experiment.
+
+Baseline metrics from saved official EvalPlus pass_at_k.json:
+{
+  "pass_at_1": 0.5142857143,
+  "pass_at_2": 0.5736563631,
+  "pass_at_3": 0.6028822055,
+  "pass_at_4": 0.6211958468,
+  "pass_at_5": 0.6338564666,
+  "pass_at_6": 0.6431435732,
+  "pass_at_7": 0.6502506266,
+  "pass_at_8": 0.6558618769,
+  "pass_at_9": 0.6604010025,
+  "pass_at_10": 0.6641604010
+}
+
+Requested rerankers:
+- MBPP execution filter: unavailable. The saved artifact has base correctness labels and failing inputs, but no per-test runtime outcome distinguishing exceptions from wrong outputs.
+- MBPP+ execution filter: unavailable for the same reason.
+- MBPP+ filter with MBPP fallback: unavailable because the required execution-only survivor sets are absent.
+- MBPP+ filter with first-generation fallback: unavailable because the required execution-only survivor sets are absent.
+- MBPP filter with first-generation fallback: unavailable because the required execution-only survivor sets are absent.
+- Maximum execution-coverage selection: unavailable because per-candidate executed-test counts are absent.
+- Mean sequence log-likelihood selection: unavailable because no saved scores for these 3990 candidates were found.
+
+Reproducibility metadata:
+- Dataset: EvalPlus MBPP, 399 tasks.
+- Generations: 10 per task, temperature 0.2 artifact.
+- Saved outcome schema: task_id, solution, base_status, plus_status, base_fail_tests, plus_fail_tests.
+- Available baseline source: outputs/qwen-evalplus-full-10-temp02/pass_at_k.json.
+- Repository commit at audit: 08d1113.
+- Limitation: Reproducing the requested answer-independent rerankers requires a persisted per-test runtime-status artifact and a persisted per-candidate mean-log-likelihood artifact, or a new scoring run.

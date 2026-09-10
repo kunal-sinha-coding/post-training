@@ -1745,3 +1745,8 @@ Added an experiment protocol section to README.md stating that candidate selecti
 ## 2026-09-10: Require reproducible experiment result records
 
 Updated AGENTS.md and synchronized the same rule to the other two local repositories. Metric-bearing experiments must save the experiment purpose, complete setup, artifact identifiers, selection procedure, metrics, environment details, code and commit identifiers, and reproduction limitations in the repository results file. Ground truth remains prohibited during candidate selection and may be used only for a separate post-selection benchmark measurement.
+
+
+## 2026-09-10: Saved-candidate reranking audit
+
+Audited the 399-task, 10-generation EvalPlus artifact before running the requested parallel rerankers. No sandbox execution was run. The saved eval_results.json contains correctness-oriented base_status and plus_status fields plus failing inputs, but no per-test distinction between runtime exceptions and wrong outputs. No persisted mean sequence log-likelihood scores for the 3,990 candidates were found. Recorded the reproducible baseline Pass@1 through Pass@10 and the exact missing artifacts for each requested answer-independent reranker in logs/results.txt.
