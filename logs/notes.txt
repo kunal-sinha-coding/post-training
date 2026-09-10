@@ -1760,3 +1760,7 @@ The first execution scan attempt failed before candidate execution because embed
 The first completed scan was invalid because the temporary harness omitted its json import, causing all 3,990 subprocesses to fail before test calls. The artifact was rejected and the harness was corrected before rerunning.
 
 The per-input timeout made large MBPP+ suites take minutes for pathological candidates. The runner now applies the configured three-second sandbox bound to each candidate subprocess, while retaining per-input outcomes for candidates that finish within the bound.
+
+## 2026-09-10: Full saved-candidate execution scan and reranking
+
+Executed all 3,990 saved candidates against 417,626 stored MBPP standard and MBPP+ input calls with 16 parallel isolated Python subprocess workers and a three-second candidate timeout. Persisted detailed runtime outcomes and reranking metrics under outputs/qwen-evalplus-full-10-temp02/execution_results.jsonl and execution_reranking_summary.json. The tracked results log records process status counts, input and artifact hashes, selection rules, and empirical Pass@1 through Pass@10 curves for the baseline, MBPP filter, MBPP+ filter, fallback variants, and maximum execution coverage. Mean sequence log likelihood was omitted as requested.
