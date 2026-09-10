@@ -58,6 +58,9 @@ def child():
     with open(os.devnull, 'w') as sink:
         for suite in ('base_input', 'plus_input'):
             for index, args in enumerate(job[suite]):
+                # Skip observations already persisted by an earlier bounded child.
+                if [suite, index] in job.get('skip', []):
+                    continue
                 row = {'suite': suite, 'index': index}
                 signal.setitimer(signal.ITIMER_REAL, 1.0)
                 try:
@@ -82,10 +85,14 @@ def child():
 # Capture a single candidate in a temporary directory with a sanitized environment.
 def capture(job):
     destination = OUT / 'observations' / (job['task_id'].replace('/', '_') + '_' + str(job['candidate_index']) + '.json')
+    previous = []
     if destination.exists():
         saved = json.loads(destination.read_text())
         assert saved['code_sha256'] == job['code_sha256']
-        return saved
+        if len(saved['tests']) == saved['expected_tests']:
+            return saved
+        previous = saved['tests']
+    job = {**job, 'skip': [[x['suite'], x['index']] for x in previous]}
     with tempfile.TemporaryDirectory(prefix='output-cluster-') as directory:
         with open(Path(directory) / 'stream.jsonl', 'w+') as stream:
             process = subprocess.Popen([sys.executable, '-I', str(Path(__file__).resolve()), '--child'], stdin=subprocess.PIPE, stdout=stream, stderr=subprocess.DEVNULL, cwd=directory, env={'PATH': os.environ.get('PATH', ''), 'PYTHONHASHSEED': '0', 'OPENBLAS_NUM_THREADS': '1'})
@@ -104,8 +111,10 @@ def capture(job):
                 except json.JSONDecodeError:
                     pass
     record = {k: job[k] for k in ('task_id', 'candidate_index', 'code_sha256')}
-    record.update(tests=observations, process_timeout=timed_out, returncode=process.returncode, expected_tests=len(job['base_input']) + len(job['plus_input']))
+    record.update(tests=previous + observations, process_timeout=timed_out, returncode=process.returncode, expected_tests=len(job['base_input']) + len(job['plus_input']))
     destination.write_text(json.dumps(record) + '\n')
+    if len(record['tests']) < record['expected_tests'] and observations:
+        return capture(job)
     return record
 
 # Construct heuristic pools from observed outputs without benchmark labels.

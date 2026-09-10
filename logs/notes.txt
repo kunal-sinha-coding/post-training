@@ -1778,3 +1778,6 @@ Added a resumable output capture and clustering experiment for tasks with mixed 
 
 Commit: Resume output capture after bounded child timeouts.
 Capture now resumes only unrecorded inputs after a child reaches its wall-clock cap. Every persisted per-input outcome is reused, and continuation children maintain the same one-second per-input deadline and fresh namespace. This prevents partial traces from being confused with complete behavior.
+
+Commit: Implement continuation of incomplete output traces.
+Applied the continuation code described in the preceding note after correcting the patch formatting. Completed observations are skipped rather than rerun.
