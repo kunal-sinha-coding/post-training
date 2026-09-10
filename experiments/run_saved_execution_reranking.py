@@ -72,13 +72,17 @@ _main()
     script = code + "\n" + "ENTRY = " + repr(entry) + "\n" + "INPUTS = " + repr(inputs) + "\nCALL_TIMEOUT = " + repr(timeout) + "\n" + harness
     started = time.monotonic()
     try:
-        completed = subprocess.run(
-            [sys.executable, "-I", "-c", script],
-            capture_output=True,
-            text=True,
-            timeout=max(10.0, timeout * max(1, len(cases) + len(plus_cases)) + 2.0),
-            env={"PATH": os.environ.get("PATH", ""), "PYTHONIOENCODING": "utf-8"},
-        )
+        with tempfile.TemporaryDirectory(prefix="saved-execution-") as directory:
+            script_path = Path(directory) / "candidate.py"
+            script_path.write_text(script, encoding="utf-8")
+            completed = subprocess.run(
+                [sys.executable, "-I", str(script_path)],
+                capture_output=True,
+                text=True,
+                timeout=max(10.0, timeout * max(1, len(cases) + len(plus_cases)) + 2.0),
+                cwd=directory,
+                env={"PATH": os.environ.get("PATH", ""), "PYTHONIOENCODING": "utf-8"},
+            )
         lines = completed.stdout.strip().splitlines()
         details = json.loads(lines[-1]) if lines else []
         return {**payload, "process_status": "completed" if completed.returncode == 0 else "process_error",
