@@ -2029,6 +2029,19 @@ The MBPP+ pool requires all standard and extended inputs to return. The followin
 Corrected summary artifact: outputs/qwen-evalplus-full-10-temp02/execution_reranking_summary.json
 
 
+CLUSTERING TABLE CLARIFICATION
+Experiment: output-clusters-v3 all-task comparison
+The following table reports single-candidate accuracy using combined MBPP+ correctness. The 79-task column is the mixed-correctness subset where all ten candidates returned on every input. The 112-task column is every mixed-correctness task. The 399-task column is the complete benchmark, including tasks where all candidates have the same correctness outcome. Clusters and agreement scores were computed before correctness labels were joined.
+
+| Approach | 79 mixed tasks, all ten return | 112 mixed tasks | All 399 tasks |
+|---|---:|---:|---:|
+| Baseline, random generation | 53.16% | 52.50% | 42.56% |
+| Largest output cluster | 57.59% | 64.14% | 45.82% |
+| Highest average output agreement | 54.18% | 61.43% | 45.06% |
+
+These are expected accuracies for selecting one candidate. They are not Pass@1 through Pass@10. The all-task values were recomputed from outputs/qwen-evalplus-full-10-temp02/output-clusters-v3/analysis.json after capturing all 399 tasks and 3,990 candidates.
+
+
 EXPERIMENT: output-clusters-v2
 Timestamp: 2026-09-10T08:09:10.178598+00:00
 Commit: 3baf4a8fad853e5fe5fc8a51813c51b38d2d6eeb
