@@ -2076,6 +2076,15 @@ For the combined MBPP+ correctness definition, the 399 tasks break down as follo
 Thus, 112 tasks are mixed, 176 non-mixed tasks have zero correct generations, and 111 non-mixed tasks have all ten correct generations. The corresponding standard MBPP counts are 125 mixed, 134 all incorrect, and 140 all correct.
 
 
+NON-MIXED ALL-CORRECT PERFORMANCE
+On these tasks, every one of the ten candidates is correct, so selection cannot improve over the baseline.
+
+| Benchmark | Tasks | Baseline accuracy | Largest cluster accuracy | Agreement accuracy | Largest cluster boost | Agreement boost |
+|---|---:|---:|---:|---:|---:|---:|
+| MBPP | 140 | 100.00% | 100.00% | 100.00% | +0.00 pp | +0.00 pp |
+| MBPP+ | 111 | 100.00% | 100.00% | 100.00% | +0.00 pp | +0.00 pp |
+
+
 EXPERIMENT: output-clusters-v2
 Timestamp: 2026-09-10T08:09:10.178598+00:00
 Commit: 3baf4a8fad853e5fe5fc8a51813c51b38d2d6eeb
