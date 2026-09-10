@@ -1979,3 +1979,35 @@ Reproducibility metadata:
 - Available baseline source: outputs/qwen-evalplus-full-10-temp02/pass_at_k.json.
 - Repository commit at audit: 08d1113.
 - Limitation: Reproducing the requested answer-independent rerankers requires a persisted per-test runtime-status artifact and a persisted per-candidate mean-log-likelihood artifact, or a new scoring run.
+
+
+EXPERIMENT RESULTS
+Experiment: saved-execution-reranking-2026-09-10
+Purpose: Evaluate answer-independent filtering and reranking strategies using one persisted sandbox scan of the existing ten generations per EvalPlus MBPP task.
+Repository commit: 94729de
+Candidate source: outputs/qwen-evalplus-full-10-temp02/mbpp/qwen2_chat_temp_0.2
+Task input source: qwen_eval/eval_plus/MbppPlus-v0.1.0.jsonl
+Correctness measurement source: outputs/qwen-evalplus-full-10-temp02/mbpp/qwen2_chat_temp_0.2/eval_results.json
+Candidates: 3990 across 399 tasks.
+Input calls: 417626. Returned calls: 378412.
+Process statuses: {"completed": 3847, "process_error": 49, "process_timeout": 94}
+Execution protocol: Each candidate ran in an isolated Python -I subprocess with a three-second wall-clock timeout. Each stored base_input and plus_input case was called with its arguments. A call counted as executed only when the function returned. Return values were ignored. Exceptions, timeouts, syntax failures, and missing entry points were retained as non-executed outcomes.
+Selection protocol: MBPP filter keeps candidates with all standard inputs returning. MBPP+ filter keeps candidates with all extended inputs returning. plus_then_mbpp falls back to the MBPP pool when the MBPP+ pool is empty. plus_then_first and mbpp_then_first fall back to generation zero when their pool is empty. max_execution ranks by fraction of all stored inputs returning. Random tie breaks use seed 42 combined with task ID. Saved correctness labels are used only after ordering to compute empirical prefix Pass@K.
+Mean sequence log likelihood: omitted as requested.
+Artifact: outputs/qwen-evalplus-full-10-temp02/execution_results.jsonl
+Artifact SHA256: d80a86a3659d05ed96c562cff6602b1a2dab32ed955357dcc92734ca108794fc
+Input SHA256: a855b9de667baea8e2f8aa61f898767a7336872208a85222b35622545e819fe9
+Correctness SHA256: ec28bcb932c5f1668c0f7d54f103037e170e17068f4c7589a8427ce8c8412aeb
+
+Pass@K table, percentages of tasks with a correct candidate in the first K positions:
+| Strategy | P@1 | P@2 | P@3 | P@4 | P@5 | P@6 | P@7 | P@8 | P@9 | P@10 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Baseline | 51.38% | 56.89% | 61.15% | 61.65% | 62.66% | 63.41% | 64.66% | 65.41% | 65.66% | 66.42% |
+| MBPP execution filter | 49.62% | 54.89% | 58.90% | 60.40% | 62.16% | 63.91% | 64.66% | 65.41% | 65.41% | 65.91% |
+| MBPP+ execution filter | 49.87% | 54.14% | 58.15% | 59.90% | 61.65% | 63.41% | 64.16% | 65.16% | 65.16% | 65.66% |
+| MBPP+ then MBPP fallback | 50.13% | 54.39% | 58.40% | 59.90% | 61.65% | 63.41% | 64.16% | 65.16% | 65.16% | 65.66% |
+| MBPP+ then generation 0 fallback | 50.38% | 53.88% | 57.89% | 59.40% | 61.15% | 62.16% | 62.91% | 63.91% | 63.91% | 64.41% |
+| MBPP then generation 0 fallback | 49.62% | 54.64% | 58.65% | 60.15% | 61.90% | 62.91% | 63.66% | 64.41% | 64.41% | 64.91% |
+| Maximum execution coverage | 50.13% | 54.39% | 58.65% | 60.15% | 61.90% | 63.41% | 64.16% | 65.16% | 65.16% | 65.66% |
+
+Limitations: Process-level timeouts and process errors have no per-input result because the subprocess ended before the harness emitted its case records. These candidates remain non-executed for filtering. Pass@K is empirical prefix coverage, not the unbiased random-subset estimator in the official pass_at_k.json.
