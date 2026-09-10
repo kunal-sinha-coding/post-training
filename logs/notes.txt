@@ -1805,3 +1805,5 @@ Saved an analysis of all 142 tasks containing mixed base or combined correctness
 Added the all-task mode for output clustering. The same answer-independent typed output clusters and consensus heuristic now run across all 399 EvalPlus MBPP tasks, while the mixed-task subsets remain separately reported. Existing compatible v2 observations will be reused by exact code and input identity. The all-task column measures one selected candidate per task.
 
 The initial 100-rule verifier search was invalidated because exception tokens were included in clusters while the validated cluster analysis excluded incomplete runtime vectors. Corrected the search to use complete returning serializable candidates, documented the invalid run in logs/hillclimbing.txt, and restarted.
+
+The corrected search had one indexing issue in the robust-neighborhood branch when invalid candidates were filtered. Fixed the bound to use the active runtime-valid pool before rerunning.

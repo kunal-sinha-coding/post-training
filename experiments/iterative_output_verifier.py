@@ -104,7 +104,7 @@ def winners(task: dict, rule: tuple) -> list[int]:
         radius = rule[3]
         scores = agreement_scores(active_vectors)
         neighborhood = [sum(score >= radius for score in [sum(a == b for a, b in zip(v, other)) / max(1, len(v)) for other in active_vectors if other is not v]) for v in active_vectors]
-        best = max((neighborhood[i], scores[i]) for i in range(len(vs)))
+        best = max((neighborhood[i], scores[i]) for i in range(len(active)))
         return [active[pos] for pos in range(len(active)) if (neighborhood[pos], scores[pos]) == best]
     if kind == "weighted_mode":
         weights = rule[3]
