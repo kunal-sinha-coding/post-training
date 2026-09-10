@@ -1750,3 +1750,7 @@ Updated AGENTS.md and synchronized the same rule to the other two local reposito
 ## 2026-09-10: Saved-candidate reranking audit
 
 Audited the 399-task, 10-generation EvalPlus artifact before running the requested parallel rerankers. No sandbox execution was run. The saved eval_results.json contains correctness-oriented base_status and plus_status fields plus failing inputs, but no per-test distinction between runtime exceptions and wrong outputs. No persisted mean sequence log-likelihood scores for the 3,990 candidates were found. Recorded the reproducible baseline Pass@1 through Pass@10 and the exact missing artifacts for each requested answer-independent reranker in logs/results.txt.
+
+## 2026-09-10: Add persisted execution reranking runner
+
+Added experiments/run_saved_execution_reranking.py to execute each saved candidate against every stored MBPP base and MBPP+ input in bounded parallel subprocesses, persist runtime outcomes, and compute answer-independent ordering curves. The script uses correctness labels only for post-selection metrics and omits mean log likelihood.
