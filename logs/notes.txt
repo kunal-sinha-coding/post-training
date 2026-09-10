@@ -1775,3 +1775,6 @@ Appended the corrected MBPP+ table to logs/results.txt after the offline definit
 
 Commit: Add reproducible output clustering diagnostic.
 Added a resumable output capture and clustering experiment for tasks with mixed saved correctness. Candidate code is taken directly from its evaluation record and linked by SHA256. The previous execution filter table mismatched file order and label order, so its numerical conclusions are unreliable. New clusters and consensus scores use only typed returned values. Labels are joined afterward for diagnostic measurement. Persist inputs, code, per-test outputs, metadata, and task-level clusters. Runtime failures are excluded from complete-output clusters. The raw stored JSON input protocol is retained and explicitly documented as a limitation relative to any evaluator-specific deserialization.
+
+Commit: Resume output capture after bounded child timeouts.
+Capture now resumes only unrecorded inputs after a child reaches its wall-clock cap. Every persisted per-input outcome is reused, and continuation children maintain the same one-second per-input deadline and fresh namespace. This prevents partial traces from being confused with complete behavior.
