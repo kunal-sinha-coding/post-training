@@ -118,7 +118,7 @@ def _summarize(rows: list[dict], evaluations: dict) -> dict:
                 "base_executed": sum(x["executed"] for x in base), "base_total": len(base),
                 "plus_executed": sum(x["executed"] for x in plus), "plus_total": len(plus),
                 "all_base_executed": bool(base) and all(x["executed"] for x in base),
-                "all_plus_executed": bool(plus) and all(x["executed"] for x in plus),
+                "all_plus_executed": bool(base or plus) and all(x["executed"] for x in base + plus),
                 "execution_fraction": sum(x["executed"] for x in tests) / len(tests) if tests else 0.0,
                 "correct": evaluations[row["task_id"]][row["candidate_index"]]["base_status"] == "pass",
                 "plus_correct": evaluations[row["task_id"]][row["candidate_index"]]["plus_status"] == "pass"}

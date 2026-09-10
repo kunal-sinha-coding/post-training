@@ -1766,3 +1766,5 @@ The per-input timeout made large MBPP+ suites take minutes for pathological cand
 Executed all 3,990 saved candidates against 417,626 stored MBPP standard and MBPP+ input calls with 16 parallel isolated Python subprocess workers and a three-second candidate timeout. Persisted detailed runtime outcomes and reranking metrics under outputs/qwen-evalplus-full-10-temp02/execution_results.jsonl and execution_reranking_summary.json. The tracked results log records process status counts, input and artifact hashes, selection rules, and empirical Pass@1 through Pass@10 curves for the baseline, MBPP filter, MBPP+ filter, fallback variants, and maximum execution coverage. Mean sequence log likelihood was omitted as requested.
 
 The results record was appended after fixing a quoting error in the metadata writer. The execution artifact and summary were unchanged and had already passed validation.
+
+Corrected the offline reranking definition so MBPP+ requires all standard and extended inputs to return. Recomputed the summary solely from the persisted execution artifact without rerunning candidates.
