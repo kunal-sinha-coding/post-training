@@ -2027,3 +2027,268 @@ The MBPP+ pool requires all standard and extended inputs to return. The followin
 | Maximum execution coverage | 51.13% | 57.64% | 60.65% | 62.91% | 64.16% | 64.91% | 65.16% | 65.16% | 65.66% | 65.66% |
 
 Corrected summary artifact: outputs/qwen-evalplus-full-10-temp02/execution_reranking_summary.json
+
+
+EXPERIMENT: output-clusters-v2
+Timestamp: 2026-09-10T08:09:10.178598+00:00
+Commit: 3baf4a8fad853e5fe5fc8a51813c51b38d2d6eeb
+Reproduction: python experiments/output_clusters.py
+Artifacts: outputs/qwen-evalplus-full-10-temp02/output-clusters-v2
+
+# Output clustering diagnostic
+
+Clusters are formed from exact typed returned values across all standard and extended inputs. No expected answers are provided to candidates or used in cluster construction. Saved base and combined correctness labels are joined afterward.
+
+These are diagnostic mixed-task subsets, not full-benchmark results. Labels identify which tasks to inspect and score the already-fixed selection heuristics.
+
+## Summary
+
+{
+  "mixed_tasks": 112,
+  "tasks_with_clusters": 112,
+  "all_ten_return": 79,
+  "unique_largest_pure_correct": 65,
+  "unique_largest_pure_incorrect": 31,
+  "tied_largest": 16,
+  "mixed_label_clusters": 0,
+  "candidate_count": 1420,
+  "input_observations": 152390,
+  "observation_statuses": {
+    "returned": 138475,
+    "TypeError": 5543,
+    "ValueError": 180,
+    "SyntaxError": 214,
+    "ZeroDivisionError": 186,
+    "IndexError": 1991,
+    "MemoryError": 26,
+    "TimeoutError": 1420,
+    "AttributeError": 2534,
+    "NameError": 1246,
+    "RecursionError": 530,
+    "KeyError": 45
+  },
+  "unobserved_inputs": 0,
+  "tasks_with_at_least_two_correct_returning_candidates": 92,
+  "all_correct_returning_candidates_in_one_cluster": 92,
+  "incorrect_returning_candidates_share_cluster_tasks": 64,
+  "all_ten_return_largest_correct": 40,
+  "all_ten_return_largest_wrong": 27,
+  "all_ten_return_largest_tied": 12
+}
+
+| Subset | Tasks | Uniform candidate | Uniform executable candidate | Largest output cluster | Output agreement |
+|---|---:|---:|---:|---:|---:|
+| base_mixed | 125 | 52.16% | 57.16% | 61.44% | 60.20% |
+| base_mixed_all_ten_return | 84 | 53.81% | 53.81% | 59.68% | 57.44% |
+| combined_mixed | 112 | 52.50% | 60.79% | 64.14% | 61.43% |
+| combined_mixed_all_ten_return | 79 | 53.16% | 53.16% | 57.59% | 54.18% |
+
+Largest-cluster ties are averaged uniformly over clusters, then members. Output-agreement ties are averaged uniformly over candidates. With no fully observed, serializable, returning candidates, the fallback is uniform over all ten. No random seed or one-off tie draw affects these numbers.
+
+## Examples where all ten candidates return
+
+### Mbpp/96
+
+Write a python function to find the number of divisors of a given integer.
+
+Cluster members use zero-based evaluation-record indices: [[0, 2, 4, 5, 6, 8], [1, 3, 7, 9]].
+Correct candidate counts in those clusters: [6, 0].
+
+Example input (base_input, index 0): `[15]`.
+Returned values in cluster order: `["[\"int\",4]", "[\"int\",3]"]`.
+
+### Mbpp/479
+
+Write a python function to find the first digit of a given number.
+
+Cluster members use zero-based evaluation-record indices: [[4, 5, 7, 8], [0, 9], [1, 2], [3, 6]].
+Correct candidate counts in those clusters: [4, 0, 0, 0].
+
+Example input (base_input, index 0): `[123]`.
+Returned values in cluster order: `["[\"int\",1]", "[\"int\",3]", "[\"int\",12]", "[\"str\",\"1\"]"]`.
+
+### Mbpp/775
+
+Write a python function to check whether every odd index contains odd numbers of a given list.
+
+Cluster members use zero-based evaluation-record indices: [[1, 2, 3, 4, 7, 8, 9], [0, 5, 6]].
+Correct candidate counts in those clusters: [0, 3].
+
+Example input (base_input, index 0): `[[2, 1, 4, 3, 6, 7, 6, 3]]`.
+Returned values in cluster order: `["[\"bool\",false]", "[\"bool\",true]"]`.
+
+## Every mixed task
+
+C denotes a candidate passing both saved base and extra correctness checks. W denotes the other candidates. Cluster sizes include only candidates returning a serializable value for every input. Candidate indices and complete test traces are in analysis.json and observations/.
+
+| Task | Base correct | Combined correct | Fully returning | Output clusters (C,W) | Expected correctness from largest cluster |
+|---|---:|---:|---:|---|---:|
+| Mbpp/4 | 6 | 6 | 6 | (6C,0W) | 100.00% |
+| Mbpp/7 | 6 | 0 | 10 | (0C,6W), (0C,4W) | 0.00% |
+| Mbpp/9 | 1 | 1 | 10 | (0C,3W), (0C,2W), (0C,2W), (0C,1W), (0C,1W), (1C,0W) | 0.00% |
+| Mbpp/19 | 3 | 3 | 10 | (0C,7W), (3C,0W) | 0.00% |
+| Mbpp/56 | 2 | 2 | 10 | (0C,8W), (2C,0W) | 0.00% |
+| Mbpp/57 | 1 | 1 | 10 | (0C,8W), (1C,0W), (0C,1W) | 0.00% |
+| Mbpp/58 | 9 | 9 | 10 | (9C,0W), (0C,1W) | 100.00% |
+| Mbpp/61 | 7 | 7 | 10 | (7C,0W), (0C,1W), (0C,1W), (0C,1W) | 100.00% |
+| Mbpp/69 | 4 | 3 | 9 | (0C,5W), (3C,0W), (0C,1W) | 0.00% |
+| Mbpp/70 | 1 | 1 | 1 | (1C,0W) | 100.00% |
+| Mbpp/80 | 1 | 1 | 9 | (0C,3W), (0C,3W), (0C,1W), (0C,1W), (1C,0W) | 0.00% |
+| Mbpp/87 | 7 | 7 | 7 | (7C,0W) | 100.00% |
+| Mbpp/91 | 6 | 6 | 10 | (6C,0W), (0C,4W) | 100.00% |
+| Mbpp/92 | 5 | 0 | 10 | (0C,5W), (0C,1W), (0C,1W), (0C,1W), (0C,1W), (0C,1W) | 0.00% |
+| Mbpp/93 | 9 | 0 | 10 | (0C,9W), (0C,1W) | 0.00% |
+| Mbpp/96 | 6 | 6 | 10 | (6C,0W), (0C,4W) | 100.00% |
+| Mbpp/98 | 9 | 9 | 10 | (9C,0W), (0C,1W) | 100.00% |
+| Mbpp/101 | 3 | 3 | 10 | (0C,7W), (3C,0W) | 0.00% |
+| Mbpp/102 | 8 | 0 | 10 | (0C,8W), (0C,2W) | 0.00% |
+| Mbpp/108 | 2 | 2 | 10 | (0C,4W), (2C,0W), (0C,1W), (0C,1W), (0C,1W), (0C,1W) | 0.00% |
+| Mbpp/115 | 6 | 0 | 10 | (0C,6W), (0C,4W) | 0.00% |
+| Mbpp/116 | 1 | 1 | 10 | (0C,9W), (1C,0W) | 0.00% |
+| Mbpp/117 | 4 | 0 | 0 |  | 0.00% |
+| Mbpp/129 | 5 | 5 | 8 | (5C,0W), (0C,3W) | 100.00% |
+| Mbpp/130 | 5 | 5 | 10 | (5C,0W), (0C,5W) | 50.00% |
+| Mbpp/132 | 9 | 9 | 10 | (9C,0W), (0C,1W) | 100.00% |
+| Mbpp/135 | 8 | 8 | 10 | (8C,0W), (0C,2W) | 100.00% |
+| Mbpp/137 | 6 | 0 | 0 |  | 0.00% |
+| Mbpp/142 | 4 | 0 | 2 | (0C,2W) | 0.00% |
+| Mbpp/143 | 10 | 5 | 10 | (0C,5W), (5C,0W) | 50.00% |
+| Mbpp/145 | 2 | 0 | 9 | (0C,5W), (0C,2W), (0C,2W) | 0.00% |
+| Mbpp/162 | 4 | 4 | 10 | (4C,0W), (0C,4W), (0C,1W), (0C,1W) | 50.00% |
+| Mbpp/165 | 2 | 1 | 9 | (0C,4W), (0C,2W), (0C,2W), (1C,0W) | 0.00% |
+| Mbpp/166 | 8 | 8 | 10 | (8C,0W), (0C,2W) | 100.00% |
+| Mbpp/167 | 8 | 8 | 8 | (8C,0W) | 100.00% |
+| Mbpp/170 | 10 | 9 | 10 | (9C,0W), (0C,1W) | 100.00% |
+| Mbpp/172 | 1 | 1 | 10 | (0C,9W), (1C,0W) | 0.00% |
+| Mbpp/223 | 10 | 2 | 2 | (2C,0W) | 100.00% |
+| Mbpp/226 | 3 | 3 | 10 | (0C,7W), (3C,0W) | 0.00% |
+| Mbpp/227 | 10 | 9 | 10 | (9C,0W), (0C,1W) | 100.00% |
+| Mbpp/229 | 7 | 0 | 10 | (0C,6W), (0C,2W), (0C,1W), (0C,1W) | 0.00% |
+| Mbpp/251 | 8 | 8 | 10 | (8C,0W), (0C,1W), (0C,1W) | 100.00% |
+| Mbpp/252 | 2 | 0 | 0 |  | 0.00% |
+| Mbpp/256 | 9 | 9 | 9 | (9C,0W) | 100.00% |
+| Mbpp/261 | 8 | 8 | 10 | (8C,0W), (0C,2W) | 100.00% |
+| Mbpp/267 | 3 | 0 | 0 |  | 0.00% |
+| Mbpp/272 | 10 | 8 | 8 | (8C,0W) | 100.00% |
+| Mbpp/273 | 2 | 2 | 10 | (0C,8W), (2C,0W) | 0.00% |
+| Mbpp/280 | 10 | 3 | 10 | (0C,6W), (3C,0W), (0C,1W) | 0.00% |
+| Mbpp/285 | 9 | 9 | 10 | (9C,0W), (0C,1W) | 100.00% |
+| Mbpp/290 | 10 | 5 | 10 | (5C,0W), (0C,5W) | 50.00% |
+| Mbpp/292 | 10 | 6 | 10 | (6C,0W), (0C,4W) | 100.00% |
+| Mbpp/293 | 1 | 1 | 10 | (0C,5W), (0C,3W), (0C,1W), (1C,0W) | 0.00% |
+| Mbpp/295 | 9 | 9 | 10 | (9C,0W), (0C,1W) | 100.00% |
+| Mbpp/312 | 1 | 1 | 10 | (0C,9W), (1C,0W) | 0.00% |
+| Mbpp/388 | 3 | 0 | 0 |  | 0.00% |
+| Mbpp/389 | 7 | 7 | 10 | (7C,0W), (0C,2W), (0C,1W) | 100.00% |
+| Mbpp/390 | 8 | 8 | 9 | (8C,0W), (0C,1W) | 100.00% |
+| Mbpp/392 | 2 | 0 | 2 | (0C,1W), (0C,1W) | 0.00% |
+| Mbpp/395 | 9 | 9 | 10 | (9C,0W), (0C,1W) | 100.00% |
+| Mbpp/409 | 8 | 8 | 10 | (8C,0W), (0C,1W), (0C,1W) | 100.00% |
+| Mbpp/412 | 7 | 7 | 10 | (7C,0W), (0C,3W) | 100.00% |
+| Mbpp/413 | 9 | 9 | 9 | (9C,0W) | 100.00% |
+| Mbpp/418 | 9 | 5 | 10 | (5C,0W), (0C,4W), (0C,1W) | 100.00% |
+| Mbpp/419 | 9 | 9 | 10 | (9C,0W), (0C,1W) | 100.00% |
+| Mbpp/422 | 7 | 7 | 10 | (7C,0W), (0C,2W), (0C,1W) | 100.00% |
+| Mbpp/428 | 9 | 9 | 10 | (9C,0W), (0C,1W) | 100.00% |
+| Mbpp/432 | 1 | 1 | 10 | (0C,7W), (1C,0W), (0C,1W), (0C,1W) | 0.00% |
+| Mbpp/438 | 2 | 0 | 10 | (0C,8W), (0C,2W) | 0.00% |
+| Mbpp/439 | 2 | 2 | 10 | (0C,8W), (2C,0W) | 0.00% |
+| Mbpp/446 | 1 | 1 | 10 | (0C,7W), (0C,2W), (1C,0W) | 0.00% |
+| Mbpp/450 | 8 | 8 | 8 | (8C,0W) | 100.00% |
+| Mbpp/454 | 10 | 8 | 10 | (8C,0W), (0C,2W) | 100.00% |
+| Mbpp/455 | 4 | 4 | 10 | (0C,6W), (4C,0W) | 0.00% |
+| Mbpp/457 | 9 | 9 | 10 | (9C,0W), (0C,1W) | 100.00% |
+| Mbpp/459 | 10 | 7 | 10 | (7C,0W), (0C,3W) | 100.00% |
+| Mbpp/465 | 10 | 8 | 10 | (8C,0W), (0C,2W) | 100.00% |
+| Mbpp/472 | 5 | 4 | 10 | (4C,0W), (0C,3W), (0C,2W), (0C,1W) | 100.00% |
+| Mbpp/475 | 5 | 5 | 10 | (0C,5W), (5C,0W) | 50.00% |
+| Mbpp/478 | 4 | 4 | 10 | (0C,6W), (4C,0W) | 0.00% |
+| Mbpp/479 | 4 | 4 | 10 | (4C,0W), (0C,2W), (0C,2W), (0C,2W) | 100.00% |
+| Mbpp/555 | 4 | 4 | 10 | (0C,6W), (4C,0W) | 0.00% |
+| Mbpp/556 | 7 | 7 | 7 | (7C,0W) | 100.00% |
+| Mbpp/558 | 9 | 0 | 10 | (0C,9W), (0C,1W) | 0.00% |
+| Mbpp/560 | 4 | 4 | 8 | (0C,4W), (4C,0W) | 50.00% |
+| Mbpp/562 | 9 | 9 | 10 | (9C,0W), (0C,1W) | 100.00% |
+| Mbpp/563 | 3 | 3 | 6 | (3C,0W), (0C,3W) | 50.00% |
+| Mbpp/576 | 6 | 0 | 8 | (0C,4W), (0C,2W), (0C,1W), (0C,1W) | 0.00% |
+| Mbpp/577 | 8 | 0 | 0 |  | 0.00% |
+| Mbpp/579 | 3 | 0 | 10 | (0C,1W), (0C,1W), (0C,1W), (0C,1W), (0C,1W), (0C,1W), (0C,1W), (0C,1W), (0C,1W), (0C,1W) | 0.00% |
+| Mbpp/589 | 9 | 0 | 0 |  | 0.00% |
+| Mbpp/593 | 7 | 0 | 10 | (0C,7W), (0C,1W), (0C,1W), (0C,1W) | 0.00% |
+| Mbpp/594 | 2 | 0 | 10 | (0C,5W), (0C,2W), (0C,2W), (0C,1W) | 0.00% |
+| Mbpp/597 | 3 | 1 | 3 | (0C,1W), (1C,0W), (0C,1W) | 33.33% |
+| Mbpp/598 | 10 | 1 | 10 | (0C,9W), (1C,0W) | 0.00% |
+| Mbpp/605 | 10 | 9 | 10 | (9C,0W), (0C,1W) | 100.00% |
+| Mbpp/607 | 10 | 4 | 6 | (4C,0W), (0C,2W) | 100.00% |
+| Mbpp/610 | 5 | 0 | 7 | (0C,5W), (0C,2W) | 0.00% |
+| Mbpp/611 | 3 | 3 | 4 | (3C,0W), (0C,1W) | 100.00% |
+| Mbpp/616 | 9 | 9 | 10 | (9C,0W), (0C,1W) | 100.00% |
+| Mbpp/619 | 1 | 1 | 9 | (0C,3W), (0C,2W), (0C,1W), (0C,1W), (0C,1W), (1C,0W) | 0.00% |
+| Mbpp/624 | 9 | 9 | 10 | (9C,0W), (0C,1W) | 100.00% |
+| Mbpp/637 | 1 | 1 | 10 | (0C,3W), (0C,2W), (0C,2W), (0C,2W), (1C,0W) | 0.00% |
+| Mbpp/639 | 2 | 0 | 10 | (0C,3W), (0C,2W), (0C,2W), (0C,1W), (0C,1W), (0C,1W) | 0.00% |
+| Mbpp/644 | 1 | 1 | 10 | (0C,6W), (0C,3W), (1C,0W) | 0.00% |
+| Mbpp/720 | 3 | 3 | 8 | (0C,5W), (3C,0W) | 0.00% |
+| Mbpp/723 | 9 | 9 | 10 | (9C,0W), (0C,1W) | 100.00% |
+| Mbpp/726 | 2 | 2 | 2 | (2C,0W) | 100.00% |
+| Mbpp/728 | 10 | 9 | 9 | (9C,0W) | 100.00% |
+| Mbpp/732 | 9 | 8 | 10 | (8C,0W), (0C,1W), (0C,1W) | 100.00% |
+| Mbpp/733 | 5 | 5 | 10 | (5C,0W), (0C,5W) | 50.00% |
+| Mbpp/734 | 7 | 7 | 7 | (7C,0W) | 100.00% |
+| Mbpp/736 | 3 | 1 | 10 | (0C,2W), (0C,2W), (0C,2W), (0C,1W), (1C,0W), (0C,1W), (0C,1W) | 0.00% |
+| Mbpp/739 | 1 | 0 | 5 | (0C,3W), (0C,1W), (0C,1W) | 0.00% |
+| Mbpp/740 | 9 | 9 | 10 | (9C,0W), (0C,1W) | 100.00% |
+| Mbpp/741 | 9 | 8 | 9 | (8C,0W), (0C,1W) | 100.00% |
+| Mbpp/743 | 10 | 8 | 8 | (8C,0W) | 100.00% |
+| Mbpp/744 | 6 | 6 | 10 | (6C,0W), (0C,3W), (0C,1W) | 100.00% |
+| Mbpp/746 | 5 | 1 | 10 | (0C,5W), (0C,4W), (1C,0W) | 0.00% |
+| Mbpp/749 | 1 | 1 | 10 | (0C,9W), (1C,0W) | 0.00% |
+| Mbpp/750 | 3 | 3 | 3 | (3C,0W) | 100.00% |
+| Mbpp/751 | 3 | 0 | 10 | (0C,3W), (0C,1W), (0C,1W), (0C,1W), (0C,1W), (0C,1W), (0C,1W), (0C,1W) | 0.00% |
+| Mbpp/752 | 5 | 0 | 6 | (0C,2W), (0C,2W), (0C,1W), (0C,1W) | 0.00% |
+| Mbpp/753 | 5 | 5 | 10 | (5C,0W), (0C,5W) | 50.00% |
+| Mbpp/757 | 4 | 3 | 10 | (0C,5W), (3C,0W), (0C,1W), (0C,1W) | 0.00% |
+| Mbpp/758 | 6 | 6 | 6 | (6C,0W) | 100.00% |
+| Mbpp/762 | 6 | 4 | 10 | (0C,4W), (4C,0W), (0C,1W), (0C,1W) | 50.00% |
+| Mbpp/770 | 9 | 9 | 10 | (9C,0W), (0C,1W) | 100.00% |
+| Mbpp/772 | 8 | 8 | 10 | (8C,0W), (0C,1W), (0C,1W) | 100.00% |
+| Mbpp/775 | 3 | 3 | 10 | (0C,7W), (3C,0W) | 0.00% |
+| Mbpp/787 | 9 | 9 | 10 | (9C,0W), (0C,1W) | 100.00% |
+| Mbpp/788 | 5 | 5 | 5 | (5C,0W) | 100.00% |
+| Mbpp/790 | 7 | 0 | 10 | (0C,4W), (0C,2W), (0C,2W), (0C,1W), (0C,1W) | 0.00% |
+| Mbpp/791 | 4 | 4 | 10 | (4C,0W), (0C,4W), (0C,2W) | 50.00% |
+| Mbpp/793 | 5 | 5 | 10 | (5C,0W), (0C,5W) | 50.00% |
+| Mbpp/794 | 8 | 1 | 10 | (0C,7W), (0C,1W), (1C,0W), (0C,1W) | 0.00% |
+| Mbpp/803 | 10 | 2 | 2 | (2C,0W) | 100.00% |
+| Mbpp/804 | 5 | 5 | 10 | (5C,0W), (0C,5W) | 50.00% |
+| Mbpp/805 | 8 | 8 | 9 | (8C,0W), (0C,1W) | 100.00% |
+| Mbpp/806 | 2 | 0 | 10 | (0C,2W), (0C,1W), (0C,1W), (0C,1W), (0C,1W), (0C,1W), (0C,1W), (0C,1W), (0C,1W) | 0.00% |
+| Mbpp/808 | 8 | 8 | 8 | (8C,0W) | 100.00% |
+| Mbpp/809 | 2 | 0 | 10 | (0C,7W), (0C,2W), (0C,1W) | 0.00% |
+
+## Setup and limitations
+
+{
+  "python": "3.12.3 (main, Aug 14 2025, 17:47:21) [GCC 13.3.0]",
+  "platform": "Linux-6.8.0-64-generic-x86_64-with-glibc2.39",
+  "workers": 8,
+  "per_test_timeout_seconds": 1,
+  "per_candidate_timeout_seconds": 30,
+  "memory_limit_mb": 512,
+  "fresh_namespace_per_test": true,
+  "input_protocol": "Upstream EvalPlus MBPP input type restoration applied before passing positional arguments. No reference code, assertions, expected outputs, or contract execution.",
+  "normalization": "Exact typed values, ordered lists/tuples, sorted dicts and sets, exact float hexadecimal encoding. Unsupported serialization excluded from full-output clusters.",
+  "tie_policy": "Exact expected accuracy under uniform choice of tied largest clusters, then uniform member. Consensus ties uniform among candidates. Empty pools fall back to all ten.",
+  "diagnostic_only": "Tasks selected by mixed saved labels. Heuristics fixed without labels. Subset accuracy is not full benchmark performance.",
+  "deserializer_sha256": "ecee43420dff4708f1fcc2b9f80bc2ea3e159a4ef64b5ba4043650c3c9f1224b",
+  "data_sha256": "a855b9de667baea8e2f8aa61f898767a7336872208a85222b35622545e819fe9",
+  "evaluation_sha256": "ec28bcb932c5f1668c0f7d54f103037e170e17068f4c7589a8427ce8c8412aeb",
+  "script_sha256": "10059fe1dc660e2ff991352454a22896712ef49c8d68422f6e4624bf35c1ecfd",
+  "commit": "3baf4a8fad853e5fe5fc8a51813c51b38d2d6eeb"
+}
+
+Input types are restored with the vendored upstream EvalPlus deserializer. Typed equality is deliberately stricter than task-specific evaluator comparisons such as set equivalence or approximate floats. Each test reinitializes candidate globals. One second is allowed per test, with 30-second child batches and continuation of only unrecorded tests. Outputs over 4096 characters are shown as previews, but clusters use SHA256 of their complete normalized values. Errors never form output clusters. Repeated generations count as separate votes, so correlated wrong solutions can dominate. Unknown output types are excluded from full-output clusters.
+
+Artifact files include exact candidate code and raw inputs in jobs.jsonl, per-test status/value/hash in observations/, selection membership and joined labels in analysis.json, and file hashes in manifest.json.
+
+The earlier saved execution reranking table is invalid because it joined generation files and correctness records by different orders. Its single random tie draw was also process-dependent, and it omitted EvalPlus input-type restoration. This report executes evaluation-record code directly and verifies its SHA256 before joining labels.
