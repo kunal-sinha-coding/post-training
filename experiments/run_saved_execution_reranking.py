@@ -30,6 +30,7 @@ def _run_candidate(job: tuple[str, str, dict, int, float]) -> dict:
     harness = r'''
 import contextlib
 import io
+import json
 import signal
 import time
 

@@ -1756,3 +1756,5 @@ Audited the 399-task, 10-generation EvalPlus artifact before running the request
 Added experiments/run_saved_execution_reranking.py to execute each saved candidate against every stored MBPP base and MBPP+ input in bounded parallel subprocesses, persist runtime outcomes, and compute answer-independent ordering curves. The script uses correctness labels only for post-selection metrics and omits mean log likelihood.
 
 The first execution scan attempt failed before candidate execution because embedding large jobs in python -c exceeded the OS argument limit. The runner was corrected to use temporary script files.
+
+The first completed scan was invalid because the temporary harness omitted its json import, causing all 3,990 subprocesses to fail before test calls. The artifact was rejected and the harness was corrected before rerunning.
