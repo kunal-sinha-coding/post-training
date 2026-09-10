@@ -19,7 +19,7 @@ import tempfile
 import time
 
 ROOT = Path('outputs/qwen-evalplus-full-10-temp02')
-OUT = ROOT / 'output-clusters-v2'
+OUT = ROOT / 'output-clusters-v3'
 DESERIALIZE = runpy.run_path(str(Path(__file__).with_name('mbpp_input_types.py')))['mbpp_deserialize_inputs']
 DATA = Path('qwen_eval/eval_plus/MbppPlus-v0.1.0.jsonl')
 EVAL = ROOT / 'mbpp/qwen2_chat_temp_0.2/eval_results.json'
@@ -175,9 +175,6 @@ def main():
     dataset = {x['task_id']: x for x in map(json.loads, DATA.open())}
     jobs = []
     for task_id, rows in evaluations.items():
-        counts = [sum(r['base_status'] == 'pass' for r in rows), sum(r['base_status'] == r['plus_status'] == 'pass' for r in rows)]
-        if not any(0 < count < 10 for count in counts):
-            continue
         task = dataset[task_id]
         for index, row in enumerate(rows):
             jobs.append({'task_id': task_id, 'candidate_index': index, 'code': row['solution'], 'code_sha256': digest(row['solution'].encode()), **{k: task[k] for k in ('entry_point', 'base_input', 'plus_input')}})
