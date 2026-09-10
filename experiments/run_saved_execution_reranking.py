@@ -80,7 +80,7 @@ _main()
                 [sys.executable, "-I", str(script_path)],
                 capture_output=True,
                 text=True,
-                timeout=max(10.0, timeout * max(1, len(cases) + len(plus_cases)) + 2.0),
+                timeout=max(10.0, timeout + 2.0),
                 cwd=directory,
                 env={"PATH": os.environ.get("PATH", ""), "PYTHONIOENCODING": "utf-8"},
             )

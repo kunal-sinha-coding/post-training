@@ -1758,3 +1758,5 @@ Added experiments/run_saved_execution_reranking.py to execute each saved candida
 The first execution scan attempt failed before candidate execution because embedding large jobs in python -c exceeded the OS argument limit. The runner was corrected to use temporary script files.
 
 The first completed scan was invalid because the temporary harness omitted its json import, causing all 3,990 subprocesses to fail before test calls. The artifact was rejected and the harness was corrected before rerunning.
+
+The per-input timeout made large MBPP+ suites take minutes for pathological candidates. The runner now applies the configured three-second sandbox bound to each candidate subprocess, while retaining per-input outcomes for candidates that finish within the bound.
