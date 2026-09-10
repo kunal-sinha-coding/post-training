@@ -53,3 +53,816 @@ Next iteration: test a generation-recovery change that retries malformed or non-
 ## Interrupted attempt after Iteration 1
 
 The retry evaluation command was started with the same ten tasks and 768-token configuration but was interrupted before producing a complete ten-record evaluation. Its partial log tail shows an incomplete task 520 record and a new run header. It is excluded from all metrics and is not treated as a model result.
+
+------------------------------------------------------------------------
+HILL CLIMBING SESSION STARTING
+Timestamp: 2026-09-10T08:33:26.913291+00:00
+------------------------------------------------------------------------
+Starting commit: e60b139a0c2d70a4eb96d704c417c38720452ab5
+Branch: hill-climbing-20260910-074500
+Batch: 112 mixed combined-MBPP+ tasks, fixed task IDs, ten candidates each.
+No candidates are executed by this loop.
+
+## Iteration 1: ('first',)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 60.000000; pass rate: 53.57%; denominator: 112; tied selections: 0.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('first',). Verdict: improved.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 2: ('largest', 'all', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 64.333333; pass rate: 57.44%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'all', 'value'). Verdict: improved.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 3: ('agree', 'all', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 62.305556; pass rate: 55.63%; denominator: 112; tied selections: 110.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('agree', 'all', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 4: ('mode', 'all', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 66.000000; pass rate: 58.93%; denominator: 112; tied selections: 109.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'all', 'value'). Verdict: improved.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 5: ('largest', 'base', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'base', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 6: ('agree', 'base', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('agree', 'base', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 7: ('mode', 'base', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'base', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 8: ('robust', 'base', 'value', 0.5)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('robust', 'base', 'value', 0.5). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 9: ('robust', 'base', 'value', 0.6)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('robust', 'base', 'value', 0.6). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 10: ('robust', 'base', 'value', 0.7)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('robust', 'base', 'value', 0.7). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 11: ('robust', 'base', 'value', 0.8)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('robust', 'base', 'value', 0.8). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 12: ('robust', 'base', 'value', 0.9)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('robust', 'base', 'value', 0.9). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 13: ('largest', 'base', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'base', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 14: ('agree', 'base', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('agree', 'base', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 15: ('mode', 'base', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'base', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 16: ('robust', 'base', 'type', 0.5)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('robust', 'base', 'type', 0.5). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 17: ('robust', 'base', 'type', 0.6)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('robust', 'base', 'type', 0.6). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 18: ('robust', 'base', 'type', 0.7)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('robust', 'base', 'type', 0.7). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 19: ('robust', 'base', 'type', 0.8)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('robust', 'base', 'type', 0.8). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 20: ('robust', 'base', 'type', 0.9)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('robust', 'base', 'type', 0.9). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 21: ('largest', 'plus', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'plus', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 22: ('agree', 'plus', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('agree', 'plus', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 23: ('mode', 'plus', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'plus', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 24: ('robust', 'plus', 'value', 0.5)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('robust', 'plus', 'value', 0.5). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 25: ('robust', 'plus', 'value', 0.6)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('robust', 'plus', 'value', 0.6). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 26: ('robust', 'plus', 'value', 0.7)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('robust', 'plus', 'value', 0.7). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 27: ('robust', 'plus', 'value', 0.8)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('robust', 'plus', 'value', 0.8). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 28: ('robust', 'plus', 'value', 0.9)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('robust', 'plus', 'value', 0.9). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 29: ('largest', 'plus', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'plus', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 30: ('agree', 'plus', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('agree', 'plus', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 31: ('mode', 'plus', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'plus', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 32: ('robust', 'plus', 'type', 0.5)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('robust', 'plus', 'type', 0.5). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 33: ('robust', 'plus', 'type', 0.6)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('robust', 'plus', 'type', 0.6). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 34: ('robust', 'plus', 'type', 0.7)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('robust', 'plus', 'type', 0.7). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 35: ('robust', 'plus', 'type', 0.8)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('robust', 'plus', 'type', 0.8). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 36: ('robust', 'plus', 'type', 0.9)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('robust', 'plus', 'type', 0.9). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 37: ('largest', 'all', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 64.333333; pass rate: 57.44%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'all', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 38: ('agree', 'all', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 62.305556; pass rate: 55.63%; denominator: 112; tied selections: 110.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('agree', 'all', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 39: ('mode', 'all', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 66.000000; pass rate: 58.93%; denominator: 112; tied selections: 109.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'all', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 40: ('robust', 'all', 'value', 0.5)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 62.805556; pass rate: 56.08%; denominator: 112; tied selections: 110.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('robust', 'all', 'value', 0.5). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 41: ('robust', 'all', 'value', 0.6)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 63.055556; pass rate: 56.30%; denominator: 112; tied selections: 108.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('robust', 'all', 'value', 0.6). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 42: ('robust', 'all', 'value', 0.7)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 62.055556; pass rate: 55.41%; denominator: 112; tied selections: 111.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('robust', 'all', 'value', 0.7). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 43: ('robust', 'all', 'value', 0.8)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 62.055556; pass rate: 55.41%; denominator: 112; tied selections: 111.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('robust', 'all', 'value', 0.8). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 44: ('robust', 'all', 'value', 0.9)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 63.055556; pass rate: 56.30%; denominator: 112; tied selections: 111.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('robust', 'all', 'value', 0.9). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 45: ('largest', 'all', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 61.872222; pass rate: 55.24%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'all', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 46: ('agree', 'all', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 61.427778; pass rate: 54.85%; denominator: 112; tied selections: 111.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('agree', 'all', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 47: ('mode', 'all', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 61.872222; pass rate: 55.24%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'all', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 48: ('robust', 'all', 'type', 0.5)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 60.872222; pass rate: 54.35%; denominator: 112; tied selections: 111.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('robust', 'all', 'type', 0.5). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 49: ('robust', 'all', 'type', 0.6)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 61.427778; pass rate: 54.85%; denominator: 112; tied selections: 111.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('robust', 'all', 'type', 0.6). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 50: ('robust', 'all', 'type', 0.7)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 61.427778; pass rate: 54.85%; denominator: 112; tied selections: 111.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('robust', 'all', 'type', 0.7). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 51: ('robust', 'all', 'type', 0.8)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 61.427778; pass rate: 54.85%; denominator: 112; tied selections: 111.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('robust', 'all', 'type', 0.8). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 52: ('robust', 'all', 'type', 0.9)
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 61.427778; pass rate: 54.85%; denominator: 112; tied selections: 111.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('robust', 'all', 'type', 0.9). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 53: ('mode', 'base', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'base', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 54: ('largest', 'base', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'base', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 55: ('mode', 'base', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'base', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 56: ('largest', 'base', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'base', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 57: ('mode', 'base', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'base', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 58: ('largest', 'base', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'base', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 59: ('mode', 'base', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'base', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 60: ('largest', 'base', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'base', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 61: ('mode', 'base', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'base', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 62: ('largest', 'base', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'base', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 63: ('mode', 'base', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'base', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 64: ('largest', 'base', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'base', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 65: ('mode', 'base', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'base', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 66: ('largest', 'base', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'base', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 67: ('mode', 'base', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'base', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 68: ('largest', 'base', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'base', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 69: ('mode', 'base', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'base', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 70: ('largest', 'base', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'base', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 71: ('mode', 'base', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'base', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 72: ('largest', 'base', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'base', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 73: ('mode', 'plus', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'plus', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 74: ('largest', 'plus', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'plus', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 75: ('mode', 'plus', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'plus', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 76: ('largest', 'plus', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'plus', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 77: ('mode', 'plus', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'plus', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 78: ('largest', 'plus', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'plus', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 79: ('mode', 'plus', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'plus', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 80: ('largest', 'plus', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'plus', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 81: ('mode', 'plus', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'plus', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 82: ('largest', 'plus', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'plus', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 83: ('mode', 'plus', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'plus', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 84: ('largest', 'plus', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'plus', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 85: ('mode', 'plus', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'plus', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 86: ('largest', 'plus', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'plus', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 87: ('mode', 'plus', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'plus', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 88: ('largest', 'plus', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'plus', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 89: ('mode', 'plus', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'plus', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 90: ('largest', 'plus', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'plus', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 91: ('mode', 'plus', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'plus', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 92: ('largest', 'plus', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 58.800000; pass rate: 52.50%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'plus', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 93: ('mode', 'all', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 66.000000; pass rate: 58.93%; denominator: 112; tied selections: 109.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'all', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 94: ('largest', 'all', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 61.872222; pass rate: 55.24%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'all', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 95: ('mode', 'all', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 66.000000; pass rate: 58.93%; denominator: 112; tied selections: 109.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'all', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 96: ('largest', 'all', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 61.872222; pass rate: 55.24%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'all', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 97: ('mode', 'all', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 66.000000; pass rate: 58.93%; denominator: 112; tied selections: 109.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'all', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 98: ('largest', 'all', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 61.872222; pass rate: 55.24%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'all', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 99: ('mode', 'all', 'value')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 66.000000; pass rate: 58.93%; denominator: 112; tied selections: 109.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('mode', 'all', 'value'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 100: ('largest', 'all', 'type')
+Command: python experiments/iterative_output_verifier.py
+Pass count equivalent: 61.872222; pass rate: 55.24%; denominator: 112; tied selections: 112.
+Observed evidence: selection used only saved typed outputs, output hashes, runtime status, or output agreement. Correctness labels were joined after winner construction.
+Hypothesis: this output-only consensus statistic identifies a correct implementation when correct candidates agree on behavior. Competing explanation: repeated incorrect implementations can agree on the same wrong behavior.
+Fix or strategy: ('largest', 'all', 'type'). Verdict: unchanged.
+Next diagnostic: continue through the predeclared strategy family unless the >95% stopping condition is reached.
+
+## Iteration 0 correction
+
+The first 100-rule run was invalidated. Its cluster rules included exception tokens in the candidate output vectors, while the reference cluster analysis defined clusters only over complete returning serializable vectors. The run reached no stopping condition and produced no valid comparison. The corrected search uses the runtime-valid pool and preserves the same fixed mixed-task batch.

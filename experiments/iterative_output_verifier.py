@@ -81,27 +81,31 @@ def winners(task: dict, rule: tuple) -> list[int]:
     suite = rule[1] if len(rule) > 1 else "all"
     mode = rule[2] if len(rule) > 2 else "value"
     vs = vectors(task, suite, mode)
+    # Restrict output clusters to candidates with a complete returned value vector.
+    valid = [i for i, vector in enumerate(vs) if vector and all(not value.startswith("error:") and not value.endswith("unserializable") for value in vector)]
+    active = valid or list(range(len(vs)))
+    active_vectors = [vs[i] for i in active]
     if kind == "first":
         return [0]
     if kind == "largest":
-        counts = collections.Counter(tuple(v) for v in vs)
+        counts = collections.Counter(tuple(v) for v in active_vectors)
         best = max(counts.values())
-        return [i for i, v in enumerate(vs) if counts[tuple(v)] == best]
+        return [active[pos] for pos, v in enumerate(active_vectors) if counts[tuple(v)] == best]
     if kind == "agree":
-        scores = agreement_scores(vs)
+        scores = agreement_scores(active_vectors)
         best = max(scores)
-        return [i for i, score in enumerate(scores) if score == best]
+        return [active[pos] for pos, score in enumerate(scores) if score == best]
     if kind == "mode":
-        modes = [collections.Counter(v[i] for v in vs).most_common(1)[0][0] for i in range(len(vs[0]))]
-        scores = [sum(value == mode_value for value, mode_value in zip(v, modes)) for v in vs]
+        modes = [collections.Counter(v[i] for v in active_vectors).most_common(1)[0][0] for i in range(len(active_vectors[0]))]
+        scores = [sum(value == mode_value for value, mode_value in zip(v, modes)) for v in active_vectors]
         best = max(scores)
-        return [i for i, score in enumerate(scores) if score == best]
+        return [active[pos] for pos, score in enumerate(scores) if score == best]
     if kind == "robust":
         radius = rule[3]
-        scores = agreement_scores(vs)
-        neighborhood = [sum(score >= radius for score in [sum(a == b for a, b in zip(v, other)) / max(1, len(v)) for other in vs if other is not v]) for v in vs]
+        scores = agreement_scores(active_vectors)
+        neighborhood = [sum(score >= radius for score in [sum(a == b for a, b in zip(v, other)) / max(1, len(v)) for other in active_vectors if other is not v]) for v in active_vectors]
         best = max((neighborhood[i], scores[i]) for i in range(len(vs)))
-        return [i for i in range(len(vs)) if (neighborhood[i], scores[i]) == best]
+        return [active[pos] for pos in range(len(active)) if (neighborhood[pos], scores[pos]) == best]
     if kind == "weighted_mode":
         weights = rule[3]
         scores = [sum(weight for value, mode_value, weight in zip(v, [collections.Counter(x[i] for x in vs).most_common(1)[0][0] for i in range(len(v))], weights) if value == mode_value) for v in vs]
