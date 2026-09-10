@@ -2011,3 +2011,19 @@ Pass@K table, percentages of tasks with a correct candidate in the first K posit
 | Maximum execution coverage | 50.13% | 54.39% | 58.65% | 60.15% | 61.90% | 63.41% | 64.16% | 65.16% | 65.16% | 65.66% |
 
 Limitations: Process-level timeouts and process errors have no per-input result because the subprocess ended before the harness emitted its case records. These candidates remain non-executed for filtering. Pass@K is empirical prefix coverage, not the unbiased random-subset estimator in the official pass_at_k.json.
+
+
+CORRECTION
+The MBPP+ pool requires all standard and extended inputs to return. The following corrected table was recomputed from the persisted runtime artifact without rerunning sandbox execution.
+
+| Strategy | P@1 | P@2 | P@3 | P@4 | P@5 | P@6 | P@7 | P@8 | P@9 | P@10 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Baseline | 51.38% | 56.89% | 61.15% | 61.65% | 62.66% | 63.41% | 64.66% | 65.41% | 65.66% | 66.42% |
+| MBPP execution filter | 51.13% | 57.64% | 60.40% | 62.66% | 64.41% | 65.16% | 65.41% | 65.41% | 65.91% | 65.91% |
+| MBPP+ execution filter | 50.88% | 57.89% | 60.65% | 62.91% | 64.16% | 64.91% | 65.16% | 65.16% | 65.66% | 65.66% |
+| MBPP+ then MBPP fallback | 51.38% | 57.89% | 60.65% | 62.91% | 64.16% | 64.91% | 65.16% | 65.16% | 65.66% | 65.66% |
+| MBPP+ then generation 0 fallback | 50.63% | 57.14% | 59.65% | 61.90% | 62.91% | 63.66% | 63.91% | 63.91% | 64.41% | 64.41% |
+| MBPP then generation 0 fallback | 50.63% | 57.14% | 59.65% | 61.90% | 63.41% | 64.16% | 64.41% | 64.41% | 64.91% | 64.91% |
+| Maximum execution coverage | 51.13% | 57.64% | 60.65% | 62.91% | 64.16% | 64.91% | 65.16% | 65.16% | 65.66% | 65.66% |
+
+Corrected summary artifact: outputs/qwen-evalplus-full-10-temp02/execution_reranking_summary.json
