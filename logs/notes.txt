@@ -1781,3 +1781,6 @@ Capture now resumes only unrecorded inputs after a child reaches its wall-clock 
 
 Commit: Implement continuation of incomplete output traces.
 Applied the continuation code described in the preceding note after correcting the patch formatting. Completed observations are skipped rather than rerun.
+
+Commit: Restore EvalPlus input types for output clustering.
+Vendored only the official MBPP input deserializer so tuple, set, and complex arguments are reconstructed without reading reference answers. Raw JSON lists caused Mbpp/750 to have an artificial mixed-label output cluster. Version two uses the upstream input protocol and a separate artifact directory. Unaffected task observations can be reused exactly. The previous raw-input diagnostic remains provisional and must not be reported as the final experiment.

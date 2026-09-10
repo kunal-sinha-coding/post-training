@@ -12,13 +12,15 @@ import json
 import os
 from pathlib import Path
 import platform
+import runpy
 import subprocess
 import sys
 import tempfile
 import time
 
 ROOT = Path('outputs/qwen-evalplus-full-10-temp02')
-OUT = ROOT / 'output-clusters-v1'
+OUT = ROOT / 'output-clusters-v2'
+DESERIALIZE = runpy.run_path(str(Path(__file__).with_name('mbpp_input_types.py')))['mbpp_deserialize_inputs']
 DATA = Path('qwen_eval/eval_plus/MbppPlus-v0.1.0.jsonl')
 EVAL = ROOT / 'mbpp/qwen2_chat_temp_0.2/eval_results.json'
 
@@ -57,7 +59,7 @@ def child():
     signal.signal(signal.SIGALRM, alarm)
     with open(os.devnull, 'w') as sink:
         for suite in ('base_input', 'plus_input'):
-            for index, args in enumerate(job[suite]):
+            for index, args in enumerate(DESERIALIZE(job['task_id'], job[suite])):
                 # Skip observations already persisted by an earlier bounded child.
                 if [suite, index] in job.get('skip', []):
                     continue
@@ -180,7 +182,7 @@ def main():
         for index, row in enumerate(rows):
             jobs.append({'task_id': task_id, 'candidate_index': index, 'code': row['solution'], 'code_sha256': digest(row['solution'].encode()), **{k: task[k] for k in ('entry_point', 'base_input', 'plus_input')}})
     (OUT / 'jobs.jsonl').write_text(''.join(json.dumps(j) + '\n' for j in jobs))
-    metadata = {'python': sys.version, 'platform': platform.platform(), 'workers': 8, 'per_test_timeout_seconds': 1, 'per_candidate_timeout_seconds': 30, 'memory_limit_mb': 512, 'fresh_namespace_per_test': True, 'input_protocol': 'Stored JSON input lists passed directly as positional arguments. No reference code, assertions, expected outputs, or contract execution.', 'normalization': 'Exact typed values, ordered lists/tuples, sorted dicts and sets, exact float hexadecimal encoding. Unsupported serialization excluded from full-output clusters.', 'tie_policy': 'Exact expected accuracy under uniform choice of tied largest clusters, then uniform member. Consensus ties uniform among candidates. Empty pools fall back to all ten.', 'diagnostic_only': 'Tasks selected by mixed saved labels. Heuristics fixed without labels. Subset accuracy is not full benchmark performance.', 'data_sha256': digest(DATA.read_bytes()), 'evaluation_sha256': digest(EVAL.read_bytes()), 'script_sha256': digest(Path(__file__).read_bytes()), 'commit': subprocess.check_output(['git','rev-parse','HEAD'], text=True).strip()}
+    metadata = {'python': sys.version, 'platform': platform.platform(), 'workers': 8, 'per_test_timeout_seconds': 1, 'per_candidate_timeout_seconds': 30, 'memory_limit_mb': 512, 'fresh_namespace_per_test': True, 'input_protocol': 'Upstream EvalPlus MBPP input type restoration applied before passing positional arguments. No reference code, assertions, expected outputs, or contract execution.', 'normalization': 'Exact typed values, ordered lists/tuples, sorted dicts and sets, exact float hexadecimal encoding. Unsupported serialization excluded from full-output clusters.', 'tie_policy': 'Exact expected accuracy under uniform choice of tied largest clusters, then uniform member. Consensus ties uniform among candidates. Empty pools fall back to all ten.', 'diagnostic_only': 'Tasks selected by mixed saved labels. Heuristics fixed without labels. Subset accuracy is not full benchmark performance.', 'deserializer_sha256': digest(Path(__file__).with_name('mbpp_input_types.py').read_bytes()), 'data_sha256': digest(DATA.read_bytes()), 'evaluation_sha256': digest(EVAL.read_bytes()), 'script_sha256': digest(Path(__file__).read_bytes()), 'commit': subprocess.check_output(['git','rev-parse','HEAD'], text=True).strip()}
     (OUT / 'metadata.json').write_text(json.dumps(metadata, indent=2) + '\n')
     records = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
