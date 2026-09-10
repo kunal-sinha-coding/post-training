@@ -1770,3 +1770,8 @@ The results record was appended after fixing a quoting error in the metadata wri
 Corrected the offline reranking definition so MBPP+ requires all standard and extended inputs to return. Recomputed the summary solely from the persisted execution artifact without rerunning candidates.
 
 Appended the corrected MBPP+ table to logs/results.txt after the offline definition fix.
+
+## 2026-09-10: Capture outputs for mixed-task cluster analysis
+
+Commit: Add reproducible output clustering diagnostic.
+Added a resumable output capture and clustering experiment for tasks with mixed saved correctness. Candidate code is taken directly from its evaluation record and linked by SHA256. The previous execution filter table mismatched file order and label order, so its numerical conclusions are unreliable. New clusters and consensus scores use only typed returned values. Labels are joined afterward for diagnostic measurement. Persist inputs, code, per-test outputs, metadata, and task-level clusters. Runtime failures are excluded from complete-output clusters. The raw stored JSON input protocol is retained and explicitly documented as a limitation relative to any evaluator-specific deserialization.
