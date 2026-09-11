@@ -43,6 +43,8 @@ def json_safe(value: object) -> object:
         return [json_safe(item) for item in value]
     if isinstance(value, dict):
         return {str(key): json_safe(item) for key, item in value.items()}
+    if isinstance(value, complex):
+        return {"__unsupported_type__": "complex", "value": repr(value)}
     return value
 
 
