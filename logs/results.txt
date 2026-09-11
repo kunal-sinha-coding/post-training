@@ -5612,3 +5612,13 @@ Pass@1 is the selected first-ranked survivor. Mean likelihood gives 61.90% MBPP 
 The two scores are identical for most tasks because the normal case has exactly two remaining test scores, for which mean and median are equivalent. They differ on fallback or incomplete-score cases.
 
 Artifacts: `outputs/qwen-evalplus-full-10-temp02/visible-assertion-likelihood-tiebreak-399.json`, `outputs/qwen-evalplus-full-10-temp02/visible-assertion-filter-399.json`, and `outputs/qwen-evalplus-full-10-temp02/qwen7b-loglikelihood-reranking-399.json`.
+
+## Regenerated Qwen 3B visible-assertion filtering
+
+The original 1.5B and 3B candidate pools were unrecoverable, so the Qwen2.5-Coder-3B-Instruct pool was regenerated and archived before evaluation. Generation used the original Qwen ChatML prompt, ten samples per task, temperature 0.2, top_p 0.95, and max_new_tokens 512. Raw completions, cleaned Python files, per-task manifests, and a run manifest are in `outputs/regenerated-qwen25-coder-3b-10-temp02` and the compressed archive `outputs/regenerated-qwen25-coder-3b-10-temp02-candidates.tar.zst`.
+
+Each regenerated candidate was tested against the one assertion visible in its task prompt. The first surviving candidate in original order was then evaluated against canonical MBPP and MBPP+ inputs. Of 399 tasks, 341 had at least one survivor and 58 had none. Full-suite first-survivor accuracy was 299/399 = 74.94% on MBPP and 242/399 = 60.65% on MBPP+. Conditional accuracy among tasks with a survivor was 87.68% MBPP and 70.97% MBPP+.
+
+The evaluation artifact is `outputs/regenerated-qwen25-coder-3b-10-temp02/visible-assertion-filter-evaluation.json`. These values come from a newly sampled candidate pool and should not be compared as an exact paired reranking result with the earlier deleted 3B run.
+
+The 1.5B checkpoint was not available locally. Three Hugging Face download attempts returned HTTP 429, so no 1.5B candidates were regenerated. The attempts are recorded in `outputs/regenerated-qwen25-coder-1p5b-10-temp02/download_attempts.json`.

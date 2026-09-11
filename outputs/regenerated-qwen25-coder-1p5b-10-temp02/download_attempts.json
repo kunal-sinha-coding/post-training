@@ -1,0 +1,8 @@
+{
+  "model": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "status": "unavailable",
+  "attempts": 3,
+  "error": "Hugging Face Hub returned HTTP 429 Too Many Requests for the model revision endpoint on every attempt.",
+  "candidate_generation_started": false,
+  "next_step": "Retry download or provide a local checkpoint before generating candidates."
+}
