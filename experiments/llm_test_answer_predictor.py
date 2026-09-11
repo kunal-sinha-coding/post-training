@@ -75,7 +75,7 @@ def encode(value: object) -> list:
         return ["tuple", [encode(item) for item in value]]
     if type(value) in (set, frozenset):
         return [type(value).__name__, sorted([encode(item) for item in value], key=repr)]
-    raise TypeError(f"Unsupported predicted value type: {type(value).__name__}")
+    return ["unsupported", type(value).__name__]
 
 
 # Execute the trusted canonical implementation on the three standard inputs.
