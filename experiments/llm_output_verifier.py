@@ -121,6 +121,21 @@ def measure(rows: list[dict], evaluations: dict) -> dict:
     return metrics
 
 
+# Compute ordinary candidate-prefix Pass@K on the same task subset for comparison.
+def baseline_curves(task_ids: list[str], evaluations: dict) -> dict:
+    curves = {}
+    for suite, field in (("base", "base_status"), ("plus", "plus_status"), ("combined", None)):
+        values = {}
+        for k in (1, 2, 4, 8, 10):
+            hits = 0
+            for task_id in task_ids:
+                prefix = evaluations[task_id][:k]
+                hits += any(item[field] == "pass" for item in prefix) if field else any(item["base_status"] == item["plus_status"] == "pass" for item in prefix)
+            values[f"pass_at_{k}"] = hits / len(task_ids) if task_ids else 0.0
+        curves[suite] = values
+    return curves
+
+
 # Run cached verification calls and write a complete reusable experiment artifact.
 def main() -> None:
     parser = argparse.ArgumentParser()
@@ -148,7 +163,7 @@ def main() -> None:
         futures = [executor.submit(verify_request, client, args.model, request) for request in pending]
         for completed, future in enumerate(concurrent.futures.as_completed(futures), 1):
             task_id, decision = future.result()
-            results[task_id] = {"task_id": task_id, "candidate_count": 10, **decision}
+            results[task_id] = {"task_id": task_id, "candidate_count": len(evaluations[task_id]), **decision}
             args.output.parent.mkdir(parents=True, exist_ok=True)
             args.output.write_text(json.dumps({"results": results}, indent=2) + "\n")
             print(f"Verified {len(results)}/{len(task_ids)}: {task_id} ({completed}/{len(pending)} pending)", flush=True)
@@ -163,6 +178,7 @@ def main() -> None:
         "selection_uses_correctness_labels": False,
         "results": {row["task_id"]: row for row in selected_rows},
         "metrics": measure(selected_rows, evaluations),
+        "baseline_subset_pass_at_k": baseline_curves(task_ids, evaluations),
         "baseline_pass_at_k": json.loads((ROOT / "pass_at_k.json").read_text())["base"],
     }
     args.output.write_text(json.dumps(artifact, indent=2) + "\n")
