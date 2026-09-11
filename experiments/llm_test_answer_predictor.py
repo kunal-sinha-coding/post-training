@@ -9,6 +9,7 @@ and reports per-test and per-task prediction accuracy.
 from __future__ import annotations
 
 import argparse
+import ast
 import concurrent.futures
 import json
 import math
@@ -41,9 +42,13 @@ def parse_response(text: str, count: int) -> list[dict]:
     except json.JSONDecodeError:
         object_start, list_start = text.find("{"), text.find("[")
         if list_start >= 0 and (object_start < 0 or list_start < object_start):
-            value = json.loads(text[list_start:text.rfind("]") + 1])
+            fragment = text[list_start:text.rfind("]") + 1]
         else:
-            value = json.loads(text[object_start:text.rfind("}") + 1])
+            fragment = text[object_start:text.rfind("}") + 1]
+        try:
+            value = json.loads(fragment)
+        except json.JSONDecodeError:
+            value = ast.literal_eval(fragment)
     predictions = value if isinstance(value, list) else value["predictions"]
     if len(predictions) != count:
         raise ValueError(f"Expected {count} predictions, received {len(predictions)}.")
