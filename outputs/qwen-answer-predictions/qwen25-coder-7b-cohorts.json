@@ -1,0 +1,30 @@
+{
+  "prediction_artifact": "outputs/qwen-answer-predictions/qwen25-coder-7b.json",
+  "evaluation_artifact": "outputs/qwen-evalplus-full-10-temp02/mbpp/qwen2_chat_temp_0.2/eval_results.json",
+  "cohorts": {
+    "mixed": {
+      "tasks": 125,
+      "test_correct": 291,
+      "test_total": 385,
+      "test_accuracy": 0.7558441558441559,
+      "tasks_all_correct": 67,
+      "task_accuracy": 0.536
+    },
+    "all_correct": {
+      "tasks": 140,
+      "test_correct": 361,
+      "test_total": 436,
+      "test_accuracy": 0.8279816513761468,
+      "tasks_all_correct": 98,
+      "task_accuracy": 0.7
+    },
+    "all_incorrect": {
+      "tasks": 134,
+      "test_correct": 267,
+      "test_total": 415,
+      "test_accuracy": 0.6433734939759036,
+      "tasks_all_correct": 47,
+      "task_accuracy": 0.35074626865671643
+    }
+  }
+}

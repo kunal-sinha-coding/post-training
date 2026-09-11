@@ -1855,3 +1855,7 @@ Commit `e22d4da` records the Qwen 3B reranking setup and metrics. This follow-up
 ## 2026-09-11: Complete Qwen 7B answer prediction
 
 The Qwen2.5-Coder-7B-Instruct answer-prediction run completed all 399 tasks and 1,236 stored standard tests. Parser repair handled fenced JSON, Python literals, tuples, sets, and complex values. Four responses remained truncated or malformed and are recorded as parse failures and counted incorrect. Final accuracy is 74.35% per test and 53.13% per task. Raw responses and predictions are saved in outputs/qwen-answer-predictions/qwen25-coder-7b.json.
+
+## 2026-09-11: Measure Qwen 7B mixed-task accuracy
+
+Computed Qwen 7B answer-prediction accuracy on the 125 mixed tasks, defined as tasks with a mixture of correct and incorrect saved generations among the ten candidates. The model achieved 291/385, or 75.58%, per-test accuracy and 67/125, or 53.60%, whole-task accuracy. Cohort report saved at outputs/qwen-answer-predictions/qwen25-coder-7b-cohorts.json.

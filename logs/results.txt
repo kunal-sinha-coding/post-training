@@ -5415,3 +5415,9 @@ Setup: Qwen2.5-Coder-7B-Instruct was run locally with deterministic decoding on 
 Results: 919/1,236 standard-test outputs were correct, for 74.35% per-test accuracy. 212/399 tasks had every standard-test prediction correct, for 53.13% whole-task accuracy. Four responses were not parseable because they were truncated or malformed: Mbpp/462, Mbpp/255, Mbpp/108, and Mbpp/67. These are counted as incorrect, while the raw responses remain in the artifact.
 
 Artifact: `outputs/qwen-answer-predictions/qwen25-coder-7b.json`.
+
+## Qwen 7B answer-prediction cohort accuracy
+
+Using the same ground-truth-defined candidate cohorts as the earlier Qwen 3B analysis, the mixed cohort contains 125 tasks where the ten saved generations include both correct and incorrect candidates. Qwen 7B predicted 291/385 standard outputs correctly, for 75.58% per-test accuracy. It predicted every standard output correctly on 67/125 tasks, for 53.60% whole-task accuracy. Cohort membership was determined from saved candidate labels before evaluating the Qwen predictions.
+
+Full cohort report: `outputs/qwen-answer-predictions/qwen25-coder-7b-cohorts.json`.
