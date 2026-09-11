@@ -2067,6 +2067,19 @@ Artifact: outputs/qwen-evalplus-full-10-temp02/answer-prediction-cohorts.json.
 
 The all-incorrect cohort is harder for GPT-5 mini by 5.07 percentage points per test and 9.50 percentage points per whole task relative to the mixed cohort.
 
+EXPERIMENT: qwen25-coder-3b-answer-prediction-correctness-cohorts-2026-09-11
+Purpose: Measure Qwen2.5-Coder-3B-Instruct standard-test answer prediction separately for tasks where the ten saved candidates are mixed, all correct, or all incorrect on the base tests.
+Prediction artifact: outputs/qwen-answer-predictions/qwen25-coder-3b.json.
+Analysis artifact: outputs/qwen-answer-predictions/qwen25-coder-3b-cohorts.json.
+
+| Candidate cohort | Tasks | Correct outputs | Total outputs | Per-test accuracy | Whole-task accuracy |
+|---|---:|---:|---:|---:|---:|
+| Mixed | 125 | 212 | 385 | 55.06% | 32.00% |
+| All ten correct | 140 | 310 | 436 | 71.10% | 57.14% |
+| All ten incorrect | 134 | 196 | 415 | 47.23% | 19.40% |
+
+The Qwen 3B model is 23.87 percentage points more accurate per test on all-correct candidate tasks than on all-incorrect candidate tasks.
+
 Experiment: saved-candidate-reranking-audit-2026-09-10
 Timestamp: 2026-09-10T00:00:00Z
 Purpose: Assess whether the requested filtering and reranking curves can be reproduced without new sandbox execution or ground-truth-based candidate selection.

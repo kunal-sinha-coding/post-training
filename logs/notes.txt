@@ -30,6 +30,8 @@ Added local Qwen answer-prediction evaluation for the 1.5B, 3B, and 7B Qwen2.5-C
 
 Added a cohort analysis for GPT-5 mini answer prediction. It groups tasks by the number of correct saved candidates among ten, then reports prediction accuracy for mixed, all-correct, and all-incorrect candidate sets.
 
+Corrected the cohort analysis target after clarification. The requested cohort breakdown is now recorded for the completed Qwen2.5-Coder-3B-Instruct answer-prediction run: 55.06 percent per-test accuracy on mixed tasks, 71.10 percent on all-correct tasks, and 47.23 percent on all-incorrect tasks.
+
 ## September 8, 2026: Balance verifier training classes
 
 The verifier trainer now reports task and class distributions, logs those distributions to W&B at step zero, and optionally downsamples only the overrepresented training class to an exact 50/50 split. The rerun uses 7,890 saved generated candidates from 789 synthetic tasks, while validation remains the unchanged official EvalPlus generated-candidate artifact with 3,990 candidates from 399 tasks.
