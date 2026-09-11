@@ -1879,3 +1879,7 @@ Evaluated the saved visible-assertion survivor lists in original candidate order
 ## 2026-09-11: Store filtered Pass@K evaluation script
 
 Commit `bde398a` stores the filtered Pass@K report and results. This follow-up stores experiments/evaluate_visible_assertion_filter.py so the full-suite and conditional curves can be reproduced from the saved survivor artifact.
+
+## 2026-09-11: Apply likelihood tiebreaker after visible assertion
+
+After visible-assertion filtering, ranked surviving candidates using Qwen 7B likelihoods on the other two of the first three stored standard tests. Mean likelihood selected 247/399 fully correct MBPP candidates, or 61.90%, and 204/399 MBPP+ candidates, or 51.13%. Median likelihood selected 248/399 MBPP candidates, or 62.16%, and 204/399 MBPP+ candidates, or 51.13%. Five tasks lacked a visible-example match among the first three stored tests and used all three as a recorded fallback. Full curves are saved in outputs/qwen-evalplus-full-10-temp02/visible-assertion-likelihood-tiebreak-399.json.

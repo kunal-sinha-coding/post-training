@@ -5588,3 +5588,27 @@ Selecting the first surviving candidate is Pass@1. On the full suite, it achieve
 The first surviving candidate is always the lowest-index candidate that passes the visible assertion. Ground-truth labels were used only after this selection for measurement.
 
 Artifact: `outputs/qwen-evalplus-full-10-temp02/visible-assertion-filter-metrics-399.json`.
+
+
+## Likelihood tiebreaker after visible-assertion filtering
+
+After filtering by the one visible prompt assertion, surviving candidates were ranked using Qwen 7B likelihoods on the other two of the first three stored standard tests. Mean and median likelihood were evaluated separately. The filter left 287 tasks with survivors and 112 empty tasks. Five tasks did not have the visible example input among the first three stored standard tests; for those tasks, all three stored tests were used as a fallback. Empty survivor sets count as misses in the full-suite curves.
+
+| K | Mean MBPP | Mean MBPP+ | Median MBPP | Median MBPP+ |
+|---:|---:|---:|---:|
+| 1 | 61.90% | 51.13% | 62.16% | 51.13% |
+| 2 | 62.91% | 52.88% | 63.16% | 52.88% |
+| 3 | 63.41% | 53.88% | 63.66% | 53.88% |
+| 4 | 63.41% | 53.88% | 63.66% | 53.88% |
+| 5 | 63.66% | 53.88% | 63.66% | 53.88% |
+| 6 | 63.66% | 54.39% | 63.66% | 54.39% |
+| 7 | 63.91% | 54.39% | 63.91% | 54.39% |
+| 8 | 63.91% | 54.64% | 63.91% | 54.64% |
+| 9 | 64.16% | 54.89% | 64.16% | 54.89% |
+| 10 | 64.16% | 54.89% | 64.16% | 54.89% |
+
+Pass@1 is the selected first-ranked survivor. Mean likelihood gives 61.90% MBPP and 51.13% MBPP+. Median likelihood gives 62.16% MBPP and 51.13% MBPP+. Conditional on the 287 tasks with survivors, the corresponding MBPP and MBPP+ Pass@1 values are 86.06% and 71.08% for mean, and 86.41% and 71.08% for median.
+
+The two scores are identical for most tasks because the normal case has exactly two remaining test scores, for which mean and median are equivalent. They differ on fallback or incomplete-score cases.
+
+Artifacts: `outputs/qwen-evalplus-full-10-temp02/visible-assertion-likelihood-tiebreak-399.json`, `outputs/qwen-evalplus-full-10-temp02/visible-assertion-filter-399.json`, and `outputs/qwen-evalplus-full-10-temp02/qwen7b-loglikelihood-reranking-399.json`.
