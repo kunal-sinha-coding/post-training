@@ -1843,3 +1843,7 @@ Added the all-task mode for output clustering. The same answer-independent typed
 The initial 100-rule verifier search was invalidated because exception tokens were included in clusters while the validated cluster analysis excluded incomplete runtime vectors. Corrected the search to use complete returning serializable candidates, documented the invalid run in logs/hillclimbing.txt, and restarted.
 
 The corrected search had one indexing issue in the robust-neighborhood branch when invalid candidates were filtered. Fixed the bound to use the active runtime-valid pool before rerunning.
+
+## 2026-09-11: Run Qwen 3B answer-prediction reranking
+
+Reproduced the GPT-5 mini prediction reranker with the saved Qwen2.5-Coder-3B-Instruct predictions. The 399 tasks and 1,236 stored standard tests were ranked by candidate agreement with Qwen's predicted outputs, with original candidate index as the tie-break. Ground-truth labels were used only after ranking for measurement. The report is saved at outputs/qwen-evalplus-full-10-temp02/qwen3b-prediction-reranking-399.json and the metrics are recorded in logs/results.txt. Pass@1 was 60.15% on MBPP, 49.62% on MBPP+, and 48.87% combined, compared with original-order values of 51.38%, 43.61%, and 42.86%.

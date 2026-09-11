@@ -5374,3 +5374,34 @@ EXPERIMENT: iterative-output-verifier-search
   "artifact": "outputs/qwen-evalplus-full-10-temp02/output-clusters-v3/iterative_verifier_results.json",
   "script_sha256": "9f71b46a5a1ac83a8557e34a67cbf6a66772a9b2af113db9c0ffa2fbd09dbcfe"
 }
+
+## Qwen 3B answer-prediction reranking on EvalPlus MBPP
+
+Experiment: `qwen3b-prediction-reranking-399`.
+
+Purpose: Reproduce the GPT-5 mini answer-prediction reranker using the saved deterministic Qwen2.5-Coder-3B-Instruct standard-test output predictions, without generating new code candidates or using ground-truth labels during selection.
+
+Setup: The 399 EvalPlus MBPP tasks each retain the original ten candidate programs and their saved standard-test output observations. For each task, candidates were ranked by the number of standard-test outputs matching Qwen 3B's saved predictions. Ties were broken by original candidate index. Ground-truth base, MBPP+, and combined correctness labels were joined only after ranking to compute Pass@K. The Qwen prediction artifact contains 1,236 standard-test predictions and was generated locally with deterministic decoding.
+
+Artifacts:
+- Predictions: `outputs/qwen-answer-predictions/qwen25-coder-3b.json`
+- Reranking report: `outputs/qwen-evalplus-full-10-temp02/qwen3b-prediction-reranking-399.json`
+- Candidate observations: `outputs/qwen-evalplus-full-10-temp02/output-clusters-v3/observations`
+- Ranking code: `experiments/llm_prediction_reranker.py`
+
+| K | MBPP | MBPP+ | Combined |
+|---:|---:|---:|---:|
+| 1 | 60.15% | 49.62% | 48.87% |
+| 2 | 63.41% | 52.38% | 51.63% |
+| 3 | 64.66% | 54.64% | 53.63% |
+| 4 | 65.16% | 55.39% | 54.39% |
+| 5 | 65.66% | 55.64% | 54.64% |
+| 6 | 65.66% | 55.64% | 54.64% |
+| 7 | 65.91% | 55.89% | 54.89% |
+| 8 | 66.17% | 56.64% | 55.64% |
+| 9 | 66.42% | 56.89% | 55.89% |
+| 10 | 66.42% | 56.89% | 55.89% |
+
+Original-order baseline for the same candidates is 51.38%, 43.61%, and 42.86% at Pass@1 for MBPP, MBPP+, and combined, respectively. The Qwen 3B reranker therefore gains +8.77, +6.02, and +6.02 percentage points at Pass@1. Compared with the GPT-5 mini reranker, Qwen 3B is lower by 3.76 points on MBPP, 1.00 point on MBPP+, and 1.75 points combined at Pass@1. Both rerankers reach the same Pass@10 values because the candidate pool is unchanged.
+
+Limitations: This evaluates the existing 10-candidate pool only. It measures selection quality after answer prediction, not code-generation quality. Candidate selection is independent of ground truth, while all reported metrics use ground truth after ranking.
