@@ -1990,6 +1990,24 @@ Matched 20-task results:
 
 Interpretation: On this 20-task slice, the LLM verifier matched the ordinary candidate-prefix envelope at every reported K because the tasks had no additional correct candidates after the first successful candidate or had no successful candidate. This small slice shows no measurable improvement from the verifier.
 
+EXPERIMENT: llm-standard-test-answer-preview-2026-09-11
+Purpose: Preview a method that asks gpt-5-mini to predict the outputs of only the three standard MBPP tests, then identifies saved candidates with matching outputs.
+Tasks: Mbpp/782 and Mbpp/775.
+Prompt input: Task statement, entry point, and three standard MBPP test inputs. Extended tests and correctness labels were withheld.
+Results:
+{
+  "Mbpp/782": {
+    "predicted_outputs": [14, 15, 8],
+    "matching_candidate_indices": []
+  },
+  "Mbpp/775": {
+    "predicted_outputs": [true, true, false],
+    "matching_candidate_indices": [0, 5, 6]
+  }
+}
+Artifact: outputs/qwen-evalplus-full-10-temp02/llm-test-answer-preview.json.
+Interpretation: The preview is usable for the proposed matching experiment, but GPT-5 mini was wrong on all three standard outputs for Mbpp/782. Full evaluation was not started.
+
 Experiment: saved-candidate-reranking-audit-2026-09-10
 Timestamp: 2026-09-10T00:00:00Z
 Purpose: Assess whether the requested filtering and reranking curves can be reproduced without new sandbox execution or ground-truth-based candidate selection.
