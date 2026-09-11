@@ -1,9 +1,8 @@
 """Analyze MBPP correctness retention after visible-assertion filtering.
 
-The script evaluates every visible-assertion survivor in a subprocess with a
-hard timeout, identifies tasks where filtering removed all correct candidates,
-and measures incorrect first-survivor choices among tasks with multiple
-survivors.
+The script evaluates every regenerated candidate in a subprocess with a hard
+timeout, identifies true filter false negatives, and measures incorrect
+first-survivor choices among tasks with multiple survivors.
 """
 
 from __future__ import annotations
@@ -79,7 +78,9 @@ def canonical_outputs(task: dict) -> tuple[list, list]:
 def summarize(results: dict[str, dict], survivor_map: dict[str, list[int]]) -> dict:
     nonempty = [task_id for task_id, indices in survivor_map.items() if indices]
     multi = [task_id for task_id in nonempty if len(survivor_map[task_id]) > 1]
-    false_negative = [task_id for task_id in nonempty if not any(results[task_id][str(index)]["all_correct"] for index in survivor_map[task_id])]
+    correct_all = [task_id for task_id in survivor_map if any(results[task_id][str(index)]["all_correct"] for index in range(10))]
+    false_negative = [task_id for task_id in correct_all if not any(results[task_id][str(index)]["all_correct"] for index in survivor_map[task_id])]
+    no_correct_candidate = [task_id for task_id in survivor_map if task_id not in correct_all]
     tie_with_correct = [task_id for task_id in multi if any(results[task_id][str(index)]["all_correct"] for index in survivor_map[task_id])]
     incorrect_tie = [task_id for task_id in tie_with_correct if not results[task_id][str(survivor_map[task_id][0])]["all_correct"]]
     selected_correct = [task_id for task_id in nonempty if results[task_id][str(survivor_map[task_id][0])]["all_correct"]]
@@ -87,7 +88,10 @@ def summarize(results: dict[str, dict], survivor_map: dict[str, list[int]]) -> d
         "tasks_with_survivors": len(nonempty),
         "multi_survivor_tasks": len(multi),
         "filter_removed_all_correct_candidates": len(false_negative),
-        "filter_false_negative_rate": len(false_negative) / len(nonempty) if nonempty else 0.0,
+        "filter_false_negative_rate": len(false_negative) / len(correct_all) if correct_all else 0.0,
+        "tasks_with_any_correct_candidate": len(correct_all),
+        "tasks_with_no_correct_candidate": len(no_correct_candidate),
+        "no_correct_candidate_rate": len(no_correct_candidate) / len(survivor_map) if survivor_map else 0.0,
         "multi_survivor_tasks_with_correct_candidate": len(tie_with_correct),
         "incorrect_first_survivor_tie_breaks": len(incorrect_tie),
         "incorrect_tie_break_rate_among_multi_with_correct": len(incorrect_tie) / len(tie_with_correct) if tie_with_correct else 0.0,
@@ -95,6 +99,7 @@ def summarize(results: dict[str, dict], survivor_map: dict[str, list[int]]) -> d
         "first_survivor_correct": len(selected_correct),
         "first_survivor_accuracy_conditional": len(selected_correct) / len(nonempty) if nonempty else 0.0,
         "filter_false_negative_task_ids": false_negative,
+        "no_correct_candidate_task_ids": no_correct_candidate,
         "incorrect_tie_break_task_ids": incorrect_tie,
     }
 
@@ -115,7 +120,7 @@ def main() -> None:
     for task_id, indices in survivor_map.items():
         inputs, expected = canonical_outputs(tasks[task_id])
         directory = args.candidates / "mbpp" / "qwen2_chat_temp_0.2" / task_id.replace("/", "_")
-        for index in indices:
+        for index in range(10):
             pending.append((task_id, index, {"code": (directory / f"{index}.py").read_text(), "entry_point": tasks[task_id]["entry_point"], "inputs": inputs, "expected": expected}))
     with concurrent.futures.ThreadPoolExecutor(max_workers=args.workers) as executor:
         futures = {executor.submit(run_candidate, job): (task_id, index) for task_id, index, job in pending}

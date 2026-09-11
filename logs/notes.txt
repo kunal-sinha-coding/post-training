@@ -1895,3 +1895,7 @@ Fixed the bounded MBPP survivor analysis to serialize candidate inputs with pick
 ## 2026-09-11: Diagnose regenerated Qwen 3B survivor filtering and tie breaks
 
 Corrected the survivor diagnostic to preserve tuple inputs across subprocesses and reran all 3,014 survivors. Among 341 nonempty tasks, filtering removed all correct candidates on 35 tasks, or 10.26%. There were 332 multi-survivor tasks, and the first survivor was an incorrect choice on 7 of 299 multi-survivor tasks with a correct survivor, or 2.34%. The first survivor was correct on 299/341 nonempty tasks, or 87.68%. The diagnostic artifact is outputs/regenerated-qwen25-coder-3b-10-temp02/base-survivor-correctness-analysis.json.
+
+## 2026-09-11: Expand survivor diagnosis to all regenerated candidates
+
+The prior diagnostic evaluated only survivors, so its 35-task count meant no correct survivor existed and did not establish that a correct candidate had actually been filtered out. Expanded the analysis to execute all ten candidates per task and distinguish true filter false negatives from tasks where all ten candidates are incorrect.
