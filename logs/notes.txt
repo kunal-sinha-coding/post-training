@@ -28,6 +28,8 @@ Completed GPT prediction reranking on all 399 tasks. Reranked Pass@1 improved fr
 
 Added local Qwen answer-prediction evaluation for the 1.5B, 3B, and 7B Qwen2.5-Coder-Instruct checkpoints. It uses the same system and user messages as the GPT-5 mini predictor, predicts test outputs only, and measures against canonical outputs.
 
+Added a cohort analysis for GPT-5 mini answer prediction. It groups tasks by the number of correct saved candidates among ten, then reports prediction accuracy for mixed, all-correct, and all-incorrect candidate sets.
+
 ## September 8, 2026: Balance verifier training classes
 
 The verifier trainer now reports task and class distributions, logs those distributions to W&B at step zero, and optionally downsamples only the overrepresented training class to an exact 50/50 split. The rerun uses 7,890 saved generated candidates from 789 synthetic tasks, while validation remains the unchanged official EvalPlus generated-candidate artifact with 3,990 candidates from 399 tasks.
