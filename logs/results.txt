@@ -1941,6 +1941,55 @@ wandb_run_name: null
 
 
 EXPERIMENT RESULTS
+Experiment: llm-output-verifier-evalplus-20-2026-09-11
+Purpose: Test whether one additional LLM call can select the correct program from ten already generated EvalPlus candidates.
+Model: gpt-5-mini through the OpenAI API.
+Tasks: The first 20 tasks in the saved official 399-task EvalPlus artifact.
+Candidate artifact: outputs/qwen-evalplus-full-10-temp02/mbpp/qwen2_chat_temp_0.2/eval_results.json.
+Observed-output artifact: outputs/qwen-evalplus-full-10-temp02/output-clusters-v3/observations.
+Verifier input: The original task prompt, entry point, all standard and extended test inputs, every saved candidate program, and every saved returned value or runtime error.
+Selection procedure: One verifier call per task selected one candidate index. Five concurrent requests were used after two earlier sequential requests had completed. Correctness labels were withheld from all verifier prompts and joined only for measurement.
+Reusable decision artifact: outputs/qwen-evalplus-full-10-temp02/llm-output-verifier-20.json.
+Git commit for runner: e41c947.
+
+Matched 20-task results:
+{
+  "verifier": {
+    "base_accuracy": 0.55,
+    "plus_accuracy": 0.5,
+    "combined_accuracy": 0.5,
+    "base_correct": 11,
+    "plus_correct": 10,
+    "combined_correct": 10,
+    "tasks": 20
+  },
+  "baseline_prefix_pass_at_k": {
+    "base": {
+      "pass_at_1": 0.55,
+      "pass_at_2": 0.55,
+      "pass_at_4": 0.55,
+      "pass_at_8": 0.55,
+      "pass_at_10": 0.55
+    },
+    "plus": {
+      "pass_at_1": 0.5,
+      "pass_at_2": 0.5,
+      "pass_at_4": 0.5,
+      "pass_at_8": 0.5,
+      "pass_at_10": 0.5
+    },
+    "combined": {
+      "pass_at_1": 0.5,
+      "pass_at_2": 0.5,
+      "pass_at_4": 0.5,
+      "pass_at_8": 0.5,
+      "pass_at_10": 0.5
+    }
+  }
+}
+
+Interpretation: On this 20-task slice, the LLM verifier matched the ordinary candidate-prefix envelope at every reported K because the tasks had no additional correct candidates after the first successful candidate or had no successful candidate. This small slice shows no measurable improvement from the verifier.
+
 Experiment: saved-candidate-reranking-audit-2026-09-10
 Timestamp: 2026-09-10T00:00:00Z
 Purpose: Assess whether the requested filtering and reranking curves can be reproduced without new sandbox execution or ground-truth-based candidate selection.
