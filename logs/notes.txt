@@ -4,6 +4,8 @@
 
 Added experiments/llm_output_verifier.py to select one of the existing ten EvalPlus candidates per task with one external LLM call. The script includes the task prompt, all standard and extended test inputs, candidate programs, and saved observed outputs while withholding correctness labels. It caches each decision by prompt hash and computes accuracy only after selection so the artifact can be reused for follow-up verifier experiments.
 
+The initial API attempt was rejected because gpt-5-mini does not support an explicit temperature of zero. Removed that unsupported parameter before rerunning.
+
 ## September 8, 2026: Balance verifier training classes
 
 The verifier trainer now reports task and class distributions, logs those distributions to W&B at step zero, and optionally downsamples only the overrepresented training class to an exact 50/50 split. The rerun uses 7,890 saved generated candidates from 789 synthetic tasks, while validation remains the unchanged official EvalPlus generated-candidate artifact with 3,990 candidates from 399 tasks.

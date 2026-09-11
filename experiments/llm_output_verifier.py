@@ -84,7 +84,6 @@ def parse_selection(text: str, count: int) -> tuple[int, str]:
 def call_verifier(client: object, model: str, prompt: str, count: int) -> dict:
     response = client.chat.completions.create(
         model=model,
-        temperature=0,
         messages=[
             {"role": "system", "content": "Select among candidate programs using the task and observed tests."},
             {"role": "user", "content": prompt},
