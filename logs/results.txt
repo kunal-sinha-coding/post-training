@@ -1941,6 +1941,145 @@ wandb_run_name: null
 
 
 EXPERIMENT RESULTS
+Experiment: llm-output-verifier-evalplus-20-2026-09-11
+Purpose: Test whether one additional LLM call can select the correct program from ten already generated EvalPlus candidates.
+Model: gpt-5-mini through the OpenAI API.
+Tasks: The first 20 tasks in the saved official 399-task EvalPlus artifact.
+Candidate artifact: outputs/qwen-evalplus-full-10-temp02/mbpp/qwen2_chat_temp_0.2/eval_results.json.
+Observed-output artifact: outputs/qwen-evalplus-full-10-temp02/output-clusters-v3/observations.
+Verifier input: The original task prompt, entry point, all standard and extended test inputs, every saved candidate program, and every saved returned value or runtime error.
+Selection procedure: One verifier call per task selected one candidate index. Five concurrent requests were used after two earlier sequential requests had completed. Correctness labels were withheld from all verifier prompts and joined only for measurement.
+Reusable decision artifact: outputs/qwen-evalplus-full-10-temp02/llm-output-verifier-20.json.
+Git commit for runner: e41c947.
+
+Matched 20-task results:
+{
+  "verifier": {
+    "base_accuracy": 0.55,
+    "plus_accuracy": 0.5,
+    "combined_accuracy": 0.5,
+    "base_correct": 11,
+    "plus_correct": 10,
+    "combined_correct": 10,
+    "tasks": 20
+  },
+  "baseline_prefix_pass_at_k": {
+    "base": {
+      "pass_at_1": 0.55,
+      "pass_at_2": 0.55,
+      "pass_at_4": 0.55,
+      "pass_at_8": 0.55,
+      "pass_at_10": 0.55
+    },
+    "plus": {
+      "pass_at_1": 0.5,
+      "pass_at_2": 0.5,
+      "pass_at_4": 0.5,
+      "pass_at_8": 0.5,
+      "pass_at_10": 0.5
+    },
+    "combined": {
+      "pass_at_1": 0.5,
+      "pass_at_2": 0.5,
+      "pass_at_4": 0.5,
+      "pass_at_8": 0.5,
+      "pass_at_10": 0.5
+    }
+  }
+}
+
+Interpretation: On this 20-task slice, the LLM verifier matched the ordinary candidate-prefix envelope at every reported K because the tasks had no additional correct candidates after the first successful candidate or had no successful candidate. This small slice shows no measurable improvement from the verifier.
+
+EXPERIMENT: llm-standard-test-answer-preview-2026-09-11
+Purpose: Preview a method that asks gpt-5-mini to predict the outputs of only the three standard MBPP tests, then identifies saved candidates with matching outputs.
+Tasks: Mbpp/782 and Mbpp/775.
+Prompt input: Task statement, entry point, and three standard MBPP test inputs. Extended tests and correctness labels were withheld.
+Results:
+{
+  "Mbpp/782": {
+    "predicted_outputs": [14, 15, 8],
+    "matching_candidate_indices": []
+  },
+  "Mbpp/775": {
+    "predicted_outputs": [true, true, false],
+    "matching_candidate_indices": [0, 5, 6]
+  }
+}
+Artifact: outputs/qwen-evalplus-full-10-temp02/llm-test-answer-preview.json.
+Interpretation: This preview is invalid for measuring independent answer prediction. The raw task prompt included the visible assertion with answer 14, and the original Qwen generation path also passed that raw prompt through. GPT-5 mini predicted all three outputs correctly for Mbpp/782, but the first output was leaked in the prompt.
+
+EXPERIMENT: llm-standard-test-answer-prediction-evalplus-399-2026-09-11
+Purpose: Measure GPT-5 mini accuracy when predicting the outputs of the stored standard MBPP tests for every official EvalPlus task.
+Model: gpt-5-mini through the OpenAI API.
+Tasks: All 399 tasks in the saved official EvalPlus artifact.
+Prompt condition: The raw MBPP task prompt, including its visible assertion examples, plus all stored base inputs. This matches the prompt condition used for the saved Qwen candidates.
+Concurrency: Started at 32 workers and completed without rate limiting or reduction.
+Ground truth: Each task's trusted canonical solution was executed on every stored base input after prediction. Canonical outputs that were not JSON-like were retained as unsupported typed values and counted incorrect unless the prediction matched the supported comparison.
+Prediction artifact: outputs/qwen-evalplus-full-10-temp02/llm-test-answer-predictions-399.json.
+Runner commit: e3335e2.
+
+Metrics:
+{
+  "standard_test_output_accuracy": 0.8826860841,
+  "correct_outputs": 1091,
+  "total_outputs": 1236,
+  "all_standard_tests_correct_task_accuracy": 0.8571428571,
+  "tasks_with_all_outputs_correct": 342,
+  "tasks": 399,
+  "tasks_with_at_least_one_matching_saved_candidate": 231,
+  "matching_saved_candidate_count": 1772
+}
+
+Limitations: The raw MBPP prompt contains visible assertion examples, so this measures GPT-5 mini under the same information condition as the original candidate generations. Thirty tasks contain more than three stored base inputs, giving 1,236 total standard inputs. Eight canonical outputs across four tasks used unsupported runtime types.
+
+EXPERIMENT: llm-prediction-reranking-evalplus-399-2026-09-11
+Purpose: Rank each task's ten saved candidates by the fraction of standard-test outputs matching cached GPT-5 mini predictions, then measure Pass@K after ranking.
+Selection procedure: Candidate ranking used only GPT prediction agreement and saved candidate execution outputs. Ties preserved original candidate index order. EvalPlus correctness labels were joined only after ranking.
+Ranking artifact: outputs/qwen-evalplus-full-10-temp02/llm-prediction-reranking-399.json.
+Runner commit: 4af2dc8.
+
+Reranked versus original-order Pass@K:
+| K | Base reranked | Base original | MBPP+ reranked | MBPP+ original | Combined reranked | Combined original |
+|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 63.91% | 51.38% | 51.63% | 43.61% | 50.63% | 42.86% |
+| 2 | 64.91% | 56.89% | 53.88% | 47.87% | 53.13% | 46.87% |
+| 3 | 65.66% | 61.15% | 55.64% | 51.38% | 54.64% | 50.38% |
+| 4 | 65.66% | 61.65% | 55.89% | 52.38% | 54.89% | 51.38% |
+| 5 | 65.91% | 62.66% | 55.89% | 53.38% | 54.89% | 52.38% |
+| 6 | 65.91% | 63.41% | 55.89% | 53.88% | 54.89% | 52.88% |
+| 7 | 66.17% | 64.66% | 56.14% | 54.64% | 55.14% | 53.63% |
+| 8 | 66.17% | 65.41% | 56.64% | 55.64% | 55.64% | 54.64% |
+| 9 | 66.42% | 65.66% | 56.89% | 56.14% | 55.89% | 55.14% |
+| 10 | 66.42% | 66.42% | 56.89% | 56.89% | 55.89% | 55.89% |
+
+The largest absolute gain is at Pass@1: +12.53 percentage points on base, +8.02 points on MBPP+, and +7.77 points on combined correctness. Pass@10 is unchanged because reranking preserves the same ten-candidate pool.
+
+EXPERIMENT: answer-prediction-correctness-cohorts-2026-09-11
+Purpose: Measure GPT-5 mini standard-test answer prediction separately for tasks where the ten saved candidates are mixed, all correct, or all incorrect on the base tests.
+Grouping: A task is all-correct when all ten saved candidates pass every base test, all-incorrect when none pass every base test, and mixed otherwise. Grouping uses saved correctness only for post-prediction analysis.
+Artifact: outputs/qwen-evalplus-full-10-temp02/answer-prediction-cohorts.json.
+
+| Candidate cohort | Tasks | Correct outputs | Total outputs | Per-test accuracy | Whole-task accuracy |
+|---|---:|---:|---:|---:|---:|
+| Mixed | 125 | 347 | 385 | 90.13% | 89.60% |
+| All ten correct | 140 | 391 | 436 | 89.68% | 88.57% |
+| All ten incorrect | 134 | 353 | 415 | 85.06% | 79.10% |
+
+The all-incorrect cohort is harder for GPT-5 mini by 5.07 percentage points per test and 9.50 percentage points per whole task relative to the mixed cohort.
+
+EXPERIMENT: qwen25-coder-3b-answer-prediction-correctness-cohorts-2026-09-11
+Purpose: Measure Qwen2.5-Coder-3B-Instruct standard-test answer prediction separately for tasks where the ten saved candidates are mixed, all correct, or all incorrect on the base tests.
+Prediction artifact: outputs/qwen-answer-predictions/qwen25-coder-3b.json.
+Analysis artifact: outputs/qwen-answer-predictions/qwen25-coder-3b-cohorts.json.
+
+| Candidate cohort | Tasks | Correct outputs | Total outputs | Per-test accuracy | Whole-task accuracy |
+|---|---:|---:|---:|---:|---:|
+| Mixed | 125 | 212 | 385 | 55.06% | 32.00% |
+| All ten correct | 140 | 310 | 436 | 71.10% | 57.14% |
+| All ten incorrect | 134 | 196 | 415 | 47.23% | 19.40% |
+
+The Qwen 3B model is 23.87 percentage points more accurate per test on all-correct candidate tasks than on all-incorrect candidate tasks.
+
 Experiment: saved-candidate-reranking-audit-2026-09-10
 Timestamp: 2026-09-10T00:00:00Z
 Purpose: Assess whether the requested filtering and reranking curves can be reproduced without new sandbox execution or ground-truth-based candidate selection.
@@ -2040,6 +2179,17 @@ The following table reports single-candidate accuracy using combined MBPP+ corre
 | Highest average output agreement | 54.18% | 61.43% | 45.06% |
 
 These are expected accuracies for selecting one candidate. They are not Pass@1 through Pass@10. The all-task values were recomputed from outputs/qwen-evalplus-full-10-temp02/output-clusters-v3/analysis.json after capturing all 399 tasks and 3,990 candidates.
+
+
+ITERATIVE VERIFIER SEARCH FINAL RESULT
+Search: 100 predeclared output-only verifier iterations on 112 mixed combined-MBPP+ tasks.
+Stopping condition: Reached iteration 100. The >95% accuracy condition was not reached.
+Baseline random selection: 52.50%.
+Best strategy: Per-input modal-output agreement, selecting candidate(s) matching the modal observed value on the most inputs.
+Best accuracy: 65.18%, an absolute improvement of 12.68 percentage points over random selection and 1.04 percentage points over exact largest-output-cluster selection at 64.14%.
+Selection used no correctness labels. Correctness was joined afterward for measurement only. The best rule had ties on 108 of 112 tasks, so its score is the expected accuracy over tied candidates.
+Artifact: outputs/qwen-evalplus-full-10-temp02/output-clusters-v3/iterative_verifier_results.json
+Search history: logs/hillclimbing.txt
 
 
 MBPP AND MBPP+ COMPARISON
@@ -2348,3 +2498,3168 @@ Input types are restored with the vendored upstream EvalPlus deserializer. Typed
 Artifact files include exact candidate code and raw inputs in jobs.jsonl, per-test status/value/hash in observations/, selection membership and joined labels in analysis.json, and file hashes in manifest.json.
 
 The earlier saved execution reranking table is invalid because it joined generation files and correctness records by different orders. Its single random tie draw was also process-dependent, and it omitted EvalPlus input-type restoration. This report executes evaluation-record code directly and verifies its SHA256 before joining labels.
+
+
+EXPERIMENT: iterative-output-verifier-search
+{
+  "iterations": [
+    {
+      "iteration": 1,
+      "rule": [
+        "first"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5357142857142857,
+      "accuracy_percent": 53.57142857142857,
+      "tie_tasks": 0,
+      "verdict": "improved",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 2,
+      "rule": [
+        "largest",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5744047619047619,
+      "accuracy_percent": 57.44047619047619,
+      "tie_tasks": 112,
+      "verdict": "improved",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 3,
+      "rule": [
+        "agree",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5562996031746031,
+      "accuracy_percent": 55.629960317460316,
+      "tie_tasks": 110,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 4,
+      "rule": [
+        "mode",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5892857142857143,
+      "accuracy_percent": 58.92857142857143,
+      "tie_tasks": 109,
+      "verdict": "improved",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 5,
+      "rule": [
+        "largest",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 6,
+      "rule": [
+        "agree",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 7,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 8,
+      "rule": [
+        "robust",
+        "base",
+        "value",
+        0.5
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 9,
+      "rule": [
+        "robust",
+        "base",
+        "value",
+        0.6
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 10,
+      "rule": [
+        "robust",
+        "base",
+        "value",
+        0.7
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 11,
+      "rule": [
+        "robust",
+        "base",
+        "value",
+        0.8
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 12,
+      "rule": [
+        "robust",
+        "base",
+        "value",
+        0.9
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 13,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 14,
+      "rule": [
+        "agree",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 15,
+      "rule": [
+        "mode",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 16,
+      "rule": [
+        "robust",
+        "base",
+        "type",
+        0.5
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 17,
+      "rule": [
+        "robust",
+        "base",
+        "type",
+        0.6
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 18,
+      "rule": [
+        "robust",
+        "base",
+        "type",
+        0.7
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 19,
+      "rule": [
+        "robust",
+        "base",
+        "type",
+        0.8
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 20,
+      "rule": [
+        "robust",
+        "base",
+        "type",
+        0.9
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 21,
+      "rule": [
+        "largest",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 22,
+      "rule": [
+        "agree",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 23,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 24,
+      "rule": [
+        "robust",
+        "plus",
+        "value",
+        0.5
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 25,
+      "rule": [
+        "robust",
+        "plus",
+        "value",
+        0.6
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 26,
+      "rule": [
+        "robust",
+        "plus",
+        "value",
+        0.7
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 27,
+      "rule": [
+        "robust",
+        "plus",
+        "value",
+        0.8
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 28,
+      "rule": [
+        "robust",
+        "plus",
+        "value",
+        0.9
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 29,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 30,
+      "rule": [
+        "agree",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 31,
+      "rule": [
+        "mode",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 32,
+      "rule": [
+        "robust",
+        "plus",
+        "type",
+        0.5
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 33,
+      "rule": [
+        "robust",
+        "plus",
+        "type",
+        0.6
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 34,
+      "rule": [
+        "robust",
+        "plus",
+        "type",
+        0.7
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 35,
+      "rule": [
+        "robust",
+        "plus",
+        "type",
+        0.8
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 36,
+      "rule": [
+        "robust",
+        "plus",
+        "type",
+        0.9
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 37,
+      "rule": [
+        "largest",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5744047619047619,
+      "accuracy_percent": 57.44047619047619,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 38,
+      "rule": [
+        "agree",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5562996031746031,
+      "accuracy_percent": 55.629960317460316,
+      "tie_tasks": 110,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 39,
+      "rule": [
+        "mode",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5892857142857143,
+      "accuracy_percent": 58.92857142857143,
+      "tie_tasks": 109,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 40,
+      "rule": [
+        "robust",
+        "all",
+        "value",
+        0.5
+      ],
+      "tasks": 112,
+      "accuracy": 0.560763888888889,
+      "accuracy_percent": 56.07638888888889,
+      "tie_tasks": 110,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 41,
+      "rule": [
+        "robust",
+        "all",
+        "value",
+        0.6
+      ],
+      "tasks": 112,
+      "accuracy": 0.5629960317460317,
+      "accuracy_percent": 56.29960317460318,
+      "tie_tasks": 108,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 42,
+      "rule": [
+        "robust",
+        "all",
+        "value",
+        0.7
+      ],
+      "tasks": 112,
+      "accuracy": 0.5540674603174603,
+      "accuracy_percent": 55.40674603174603,
+      "tie_tasks": 111,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 43,
+      "rule": [
+        "robust",
+        "all",
+        "value",
+        0.8
+      ],
+      "tasks": 112,
+      "accuracy": 0.5540674603174603,
+      "accuracy_percent": 55.40674603174603,
+      "tie_tasks": 111,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 44,
+      "rule": [
+        "robust",
+        "all",
+        "value",
+        0.9
+      ],
+      "tasks": 112,
+      "accuracy": 0.5629960317460317,
+      "accuracy_percent": 56.29960317460318,
+      "tie_tasks": 111,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 45,
+      "rule": [
+        "largest",
+        "all",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5524305555555555,
+      "accuracy_percent": 55.24305555555556,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 46,
+      "rule": [
+        "agree",
+        "all",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5484623015873016,
+      "accuracy_percent": 54.84623015873016,
+      "tie_tasks": 111,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 47,
+      "rule": [
+        "mode",
+        "all",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5524305555555555,
+      "accuracy_percent": 55.24305555555556,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 48,
+      "rule": [
+        "robust",
+        "all",
+        "type",
+        0.5
+      ],
+      "tasks": 112,
+      "accuracy": 0.5435019841269841,
+      "accuracy_percent": 54.35019841269841,
+      "tie_tasks": 111,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 49,
+      "rule": [
+        "robust",
+        "all",
+        "type",
+        0.6
+      ],
+      "tasks": 112,
+      "accuracy": 0.5484623015873016,
+      "accuracy_percent": 54.84623015873016,
+      "tie_tasks": 111,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 50,
+      "rule": [
+        "robust",
+        "all",
+        "type",
+        0.7
+      ],
+      "tasks": 112,
+      "accuracy": 0.5484623015873016,
+      "accuracy_percent": 54.84623015873016,
+      "tie_tasks": 111,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 51,
+      "rule": [
+        "robust",
+        "all",
+        "type",
+        0.8
+      ],
+      "tasks": 112,
+      "accuracy": 0.5484623015873016,
+      "accuracy_percent": 54.84623015873016,
+      "tie_tasks": 111,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 52,
+      "rule": [
+        "robust",
+        "all",
+        "type",
+        0.9
+      ],
+      "tasks": 112,
+      "accuracy": 0.5484623015873016,
+      "accuracy_percent": 54.84623015873016,
+      "tie_tasks": 111,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 53,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 54,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 55,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 56,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 57,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 58,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 59,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 60,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 61,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 62,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 63,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 64,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 65,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 66,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 67,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 68,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 69,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 70,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 71,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 72,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 73,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 74,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 75,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 76,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 77,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 78,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 79,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 80,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 81,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 82,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 83,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 84,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 85,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 86,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 87,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 88,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 89,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 90,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 91,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 92,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 93,
+      "rule": [
+        "mode",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5892857142857143,
+      "accuracy_percent": 58.92857142857143,
+      "tie_tasks": 109,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 94,
+      "rule": [
+        "largest",
+        "all",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5524305555555555,
+      "accuracy_percent": 55.24305555555556,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 95,
+      "rule": [
+        "mode",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5892857142857143,
+      "accuracy_percent": 58.92857142857143,
+      "tie_tasks": 109,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 96,
+      "rule": [
+        "largest",
+        "all",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5524305555555555,
+      "accuracy_percent": 55.24305555555556,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 97,
+      "rule": [
+        "mode",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5892857142857143,
+      "accuracy_percent": 58.92857142857143,
+      "tie_tasks": 109,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 98,
+      "rule": [
+        "largest",
+        "all",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5524305555555555,
+      "accuracy_percent": 55.24305555555556,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 99,
+      "rule": [
+        "mode",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5892857142857143,
+      "accuracy_percent": 58.92857142857143,
+      "tie_tasks": 109,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 100,
+      "rule": [
+        "largest",
+        "all",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5524305555555555,
+      "accuracy_percent": 55.24305555555556,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    }
+  ],
+  "stopping_condition": "accuracy > 0.95 or 100 iterations",
+  "artifact": "outputs/qwen-evalplus-full-10-temp02/output-clusters-v3/iterative_verifier_results.json",
+  "script_sha256": "1d4bbb6aa00cb9b26d0c49a9b8cf70afb2bfa53f57edb669b48fe50409da1f12"
+}
+
+
+EXPERIMENT: iterative-output-verifier-search
+{
+  "iterations": [
+    {
+      "iteration": 1,
+      "rule": [
+        "first"
+      ],
+      "tasks": 112,
+      "accuracy": 0.5357142857142857,
+      "accuracy_percent": 53.57142857142857,
+      "tie_tasks": 0,
+      "verdict": "improved",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 2,
+      "rule": [
+        "largest",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6413690476190476,
+      "accuracy_percent": 64.13690476190476,
+      "tie_tasks": 111,
+      "verdict": "improved",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 3,
+      "rule": [
+        "agree",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6143353174603174,
+      "accuracy_percent": 61.43353174603175,
+      "tie_tasks": 109,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 4,
+      "rule": [
+        "mode",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6517857142857143,
+      "accuracy_percent": 65.17857142857143,
+      "tie_tasks": 108,
+      "verdict": "improved",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 5,
+      "rule": [
+        "largest",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 6,
+      "rule": [
+        "agree",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 7,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 8,
+      "rule": [
+        "robust",
+        "base",
+        "value",
+        0.5
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 9,
+      "rule": [
+        "robust",
+        "base",
+        "value",
+        0.6
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 10,
+      "rule": [
+        "robust",
+        "base",
+        "value",
+        0.7
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 11,
+      "rule": [
+        "robust",
+        "base",
+        "value",
+        0.8
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 12,
+      "rule": [
+        "robust",
+        "base",
+        "value",
+        0.9
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 13,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 14,
+      "rule": [
+        "agree",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 15,
+      "rule": [
+        "mode",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 16,
+      "rule": [
+        "robust",
+        "base",
+        "type",
+        0.5
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 17,
+      "rule": [
+        "robust",
+        "base",
+        "type",
+        0.6
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 18,
+      "rule": [
+        "robust",
+        "base",
+        "type",
+        0.7
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 19,
+      "rule": [
+        "robust",
+        "base",
+        "type",
+        0.8
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 20,
+      "rule": [
+        "robust",
+        "base",
+        "type",
+        0.9
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 21,
+      "rule": [
+        "largest",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 22,
+      "rule": [
+        "agree",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 23,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 24,
+      "rule": [
+        "robust",
+        "plus",
+        "value",
+        0.5
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 25,
+      "rule": [
+        "robust",
+        "plus",
+        "value",
+        0.6
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 26,
+      "rule": [
+        "robust",
+        "plus",
+        "value",
+        0.7
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 27,
+      "rule": [
+        "robust",
+        "plus",
+        "value",
+        0.8
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 28,
+      "rule": [
+        "robust",
+        "plus",
+        "value",
+        0.9
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 29,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 30,
+      "rule": [
+        "agree",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 31,
+      "rule": [
+        "mode",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 32,
+      "rule": [
+        "robust",
+        "plus",
+        "type",
+        0.5
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 33,
+      "rule": [
+        "robust",
+        "plus",
+        "type",
+        0.6
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 34,
+      "rule": [
+        "robust",
+        "plus",
+        "type",
+        0.7
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 35,
+      "rule": [
+        "robust",
+        "plus",
+        "type",
+        0.8
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 36,
+      "rule": [
+        "robust",
+        "plus",
+        "type",
+        0.9
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 37,
+      "rule": [
+        "largest",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6413690476190476,
+      "accuracy_percent": 64.13690476190476,
+      "tie_tasks": 111,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 38,
+      "rule": [
+        "agree",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6143353174603174,
+      "accuracy_percent": 61.43353174603175,
+      "tie_tasks": 109,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 39,
+      "rule": [
+        "mode",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6517857142857143,
+      "accuracy_percent": 65.17857142857143,
+      "tie_tasks": 108,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 40,
+      "rule": [
+        "robust",
+        "all",
+        "value",
+        0.5
+      ],
+      "tasks": 112,
+      "accuracy": 0.6187996031746031,
+      "accuracy_percent": 61.879960317460316,
+      "tie_tasks": 109,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 41,
+      "rule": [
+        "robust",
+        "all",
+        "value",
+        0.6
+      ],
+      "tasks": 112,
+      "accuracy": 0.621031746031746,
+      "accuracy_percent": 62.10317460317461,
+      "tie_tasks": 107,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 42,
+      "rule": [
+        "robust",
+        "all",
+        "value",
+        0.7
+      ],
+      "tasks": 112,
+      "accuracy": 0.6121031746031746,
+      "accuracy_percent": 61.21031746031746,
+      "tie_tasks": 109,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 43,
+      "rule": [
+        "robust",
+        "all",
+        "value",
+        0.8
+      ],
+      "tasks": 112,
+      "accuracy": 0.6121031746031746,
+      "accuracy_percent": 61.21031746031746,
+      "tie_tasks": 109,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 44,
+      "rule": [
+        "robust",
+        "all",
+        "value",
+        0.9
+      ],
+      "tasks": 112,
+      "accuracy": 0.621031746031746,
+      "accuracy_percent": 62.10317460317461,
+      "tie_tasks": 109,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 45,
+      "rule": [
+        "largest",
+        "all",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6156746031746032,
+      "accuracy_percent": 61.56746031746032,
+      "tie_tasks": 111,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 46,
+      "rule": [
+        "agree",
+        "all",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6176587301587302,
+      "accuracy_percent": 61.76587301587302,
+      "tie_tasks": 110,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 47,
+      "rule": [
+        "mode",
+        "all",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6171626984126984,
+      "accuracy_percent": 61.71626984126984,
+      "tie_tasks": 110,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 48,
+      "rule": [
+        "robust",
+        "all",
+        "type",
+        0.5
+      ],
+      "tasks": 112,
+      "accuracy": 0.6126984126984126,
+      "accuracy_percent": 61.269841269841265,
+      "tie_tasks": 110,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 49,
+      "rule": [
+        "robust",
+        "all",
+        "type",
+        0.6
+      ],
+      "tasks": 112,
+      "accuracy": 0.6176587301587302,
+      "accuracy_percent": 61.76587301587302,
+      "tie_tasks": 110,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 50,
+      "rule": [
+        "robust",
+        "all",
+        "type",
+        0.7
+      ],
+      "tasks": 112,
+      "accuracy": 0.6176587301587302,
+      "accuracy_percent": 61.76587301587302,
+      "tie_tasks": 110,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 51,
+      "rule": [
+        "robust",
+        "all",
+        "type",
+        0.8
+      ],
+      "tasks": 112,
+      "accuracy": 0.6176587301587302,
+      "accuracy_percent": 61.76587301587302,
+      "tie_tasks": 110,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 52,
+      "rule": [
+        "robust",
+        "all",
+        "type",
+        0.9
+      ],
+      "tasks": 112,
+      "accuracy": 0.6176587301587302,
+      "accuracy_percent": 61.76587301587302,
+      "tie_tasks": 110,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 53,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 54,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 55,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 56,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 57,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 58,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 59,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 60,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 61,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 62,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 63,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 64,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 65,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 66,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 67,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 68,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 69,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 70,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 71,
+      "rule": [
+        "mode",
+        "base",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 72,
+      "rule": [
+        "largest",
+        "base",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 73,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 74,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 75,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 76,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 77,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 78,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 79,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 80,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 81,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 82,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 83,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 84,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 85,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 86,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 87,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 88,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 89,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 90,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 91,
+      "rule": [
+        "mode",
+        "plus",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 92,
+      "rule": [
+        "largest",
+        "plus",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.525,
+      "accuracy_percent": 52.5,
+      "tie_tasks": 112,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 93,
+      "rule": [
+        "mode",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6517857142857143,
+      "accuracy_percent": 65.17857142857143,
+      "tie_tasks": 108,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 94,
+      "rule": [
+        "largest",
+        "all",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6156746031746032,
+      "accuracy_percent": 61.56746031746032,
+      "tie_tasks": 111,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 95,
+      "rule": [
+        "mode",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6517857142857143,
+      "accuracy_percent": 65.17857142857143,
+      "tie_tasks": 108,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 96,
+      "rule": [
+        "largest",
+        "all",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6156746031746032,
+      "accuracy_percent": 61.56746031746032,
+      "tie_tasks": 111,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 97,
+      "rule": [
+        "mode",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6517857142857143,
+      "accuracy_percent": 65.17857142857143,
+      "tie_tasks": 108,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 98,
+      "rule": [
+        "largest",
+        "all",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6156746031746032,
+      "accuracy_percent": 61.56746031746032,
+      "tie_tasks": 111,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 99,
+      "rule": [
+        "mode",
+        "all",
+        "value"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6517857142857143,
+      "accuracy_percent": 65.17857142857143,
+      "tie_tasks": 108,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    },
+    {
+      "iteration": 100,
+      "rule": [
+        "largest",
+        "all",
+        "type"
+      ],
+      "tasks": 112,
+      "accuracy": 0.6156746031746032,
+      "accuracy_percent": 61.56746031746032,
+      "tie_tasks": 111,
+      "verdict": "unchanged",
+      "selection_uses_labels": false
+    }
+  ],
+  "stopping_condition": "accuracy > 0.95 or 100 iterations",
+  "artifact": "outputs/qwen-evalplus-full-10-temp02/output-clusters-v3/iterative_verifier_results.json",
+  "script_sha256": "9f71b46a5a1ac83a8557e34a67cbf6a66772a9b2af113db9c0ffa2fbd09dbcfe"
+}
+
+## Qwen 3B answer-prediction reranking on EvalPlus MBPP
+
+Experiment: `qwen3b-prediction-reranking-399`.
+
+Purpose: Reproduce the GPT-5 mini answer-prediction reranker using the saved deterministic Qwen2.5-Coder-3B-Instruct standard-test output predictions, without generating new code candidates or using ground-truth labels during selection.
+
+Setup: The 399 EvalPlus MBPP tasks each retain the original ten candidate programs and their saved standard-test output observations. For each task, candidates were ranked by the number of standard-test outputs matching Qwen 3B's saved predictions. Ties were broken by original candidate index. Ground-truth base, MBPP+, and combined correctness labels were joined only after ranking to compute Pass@K. The Qwen prediction artifact contains 1,236 standard-test predictions and was generated locally with deterministic decoding.
+
+Artifacts:
+- Predictions: `outputs/qwen-answer-predictions/qwen25-coder-3b.json`
+- Reranking report: `outputs/qwen-evalplus-full-10-temp02/qwen3b-prediction-reranking-399.json`
+- Candidate observations: `outputs/qwen-evalplus-full-10-temp02/output-clusters-v3/observations`
+- Ranking code: `experiments/llm_prediction_reranker.py`
+
+| K | MBPP | MBPP+ | Combined |
+|---:|---:|---:|---:|
+| 1 | 60.15% | 49.62% | 48.87% |
+| 2 | 63.41% | 52.38% | 51.63% |
+| 3 | 64.66% | 54.64% | 53.63% |
+| 4 | 65.16% | 55.39% | 54.39% |
+| 5 | 65.66% | 55.64% | 54.64% |
+| 6 | 65.66% | 55.64% | 54.64% |
+| 7 | 65.91% | 55.89% | 54.89% |
+| 8 | 66.17% | 56.64% | 55.64% |
+| 9 | 66.42% | 56.89% | 55.89% |
+| 10 | 66.42% | 56.89% | 55.89% |
+
+Original-order baseline for the same candidates is 51.38%, 43.61%, and 42.86% at Pass@1 for MBPP, MBPP+, and combined, respectively. The Qwen 3B reranker therefore gains +8.77, +6.02, and +6.02 percentage points at Pass@1. Compared with the GPT-5 mini reranker, Qwen 3B is lower by 3.76 points on MBPP, 1.00 point on MBPP+, and 1.75 points combined at Pass@1. Both rerankers reach the same Pass@10 values because the candidate pool is unchanged.
+
+Limitations: This evaluates the existing 10-candidate pool only. It measures selection quality after answer prediction, not code-generation quality. Candidate selection is independent of ground truth, while all reported metrics use ground truth after ranking.
+
+## Qwen 7B standard-test answer prediction
+
+Experiment: `qwen25-coder-7b-standard-answer-prediction`.
+
+Setup: Qwen2.5-Coder-7B-Instruct was run locally with deterministic decoding on all 399 EvalPlus MBPP tasks and their 1,236 stored standard tests. The prompt asked the model to predict test outputs, using the same task and test format as the smaller-model answer-prediction experiment. Batch size was 2 and the generation limit was 256 new tokens. No candidate correctness labels were provided to the model.
+
+Results: 919/1,236 standard-test outputs were correct, for 74.35% per-test accuracy. 212/399 tasks had every standard-test prediction correct, for 53.13% whole-task accuracy. Four responses were not parseable because they were truncated or malformed: Mbpp/462, Mbpp/255, Mbpp/108, and Mbpp/67. These are counted as incorrect, while the raw responses remain in the artifact.
+
+Artifact: `outputs/qwen-answer-predictions/qwen25-coder-7b.json`.
+
+## Qwen 7B answer-prediction cohort accuracy
+
+Using the same ground-truth-defined candidate cohorts as the earlier Qwen 3B analysis, the mixed cohort contains 125 tasks where the ten saved generations include both correct and incorrect candidates. Qwen 7B predicted 291/385 standard outputs correctly, for 75.58% per-test accuracy. It predicted every standard output correctly on 67/125 tasks, for 53.60% whole-task accuracy. Cohort membership was determined from saved candidate labels before evaluating the Qwen predictions.
+
+Full cohort report: `outputs/qwen-answer-predictions/qwen25-coder-7b-cohorts.json`.
+
+## Qwen 7B answer-prediction reranking on EvalPlus MBPP
+
+Experiment: `qwen7b-prediction-reranking-399`.
+
+Setup: The ten saved candidates for each of 399 tasks were ranked by agreement with the saved Qwen2.5-Coder-7B-Instruct predictions for the standard tests. Ties were broken by original candidate index. Ground-truth labels were used only after ranking to compute Pass@K. Four Qwen prediction rows had parse failures and therefore produced no predicted test values; their candidate rankings fall back to the deterministic original-index tie-break.
+
+| K | MBPP | MBPP+ |
+|---:|---:|---:|
+| 1 | 61.40% | 50.13% |
+| 2 | 63.91% | 52.63% |
+| 3 | 64.91% | 54.89% |
+| 4 | 65.16% | 55.39% |
+| 5 | 65.66% | 55.64% |
+| 6 | 65.66% | 55.64% |
+| 7 | 65.91% | 55.89% |
+| 8 | 65.91% | 56.39% |
+| 9 | 66.42% | 56.89% |
+| 10 | 66.42% | 56.89% |
+
+Original-order Pass@1 was 51.38% on MBPP and 43.61% on MBPP+, so Qwen 7B adds 10.03 and 6.52 percentage points, respectively.
+
+Artifacts: predictions at `outputs/qwen-answer-predictions/qwen25-coder-7b.json`; reranking report at `outputs/qwen-evalplus-full-10-temp02/qwen7b-prediction-reranking-399.json`.
+
+
+## Qwen 7B mean log-likelihood reranking on EvalPlus MBPP
+
+Experiment: `qwen7b-loglikelihood-reranking-399`.
+
+Qwen2.5-Coder-7B-Instruct scored each returned candidate answer with mean token log probability conditioned on the task prompt, entry point, one standard test, and an `ANSWER:` prefix. The run covered 11,907 candidate/test score slots, including 10,938 returned answers and 969 missing outputs. Missing outputs receive the lowest possible ranking treatment. Candidate selection used no correctness labels. The 10 candidates were ranked using seven aggregation rules, then ground-truth labels were joined to compute Pass@K.
+
+Aggregation definitions:
+
+- `mean`: arithmetic mean across available test scores.
+- `median`: median across available test scores.
+- `minimum`: lowest test score.
+- `trimmed_mean`: removes the lowest and highest score when at least three scores are available, then averages the rest.
+- `weighted_mean`: weights test positions 1, 2, and 3 as 1, 2, and 3. This is an exploratory order-weighted baseline.
+- `rank_sum`: sums each candidate’s per-test rank, with lower rank sum preferred.
+- `worst_penalty`: mean minus half the gap between the mean and the worst test score.
+
+| Strategy | K | MBPP | MBPP+ |
+|---|---:|---:|---:|
+| mean | 1 | 57.89% | 49.62% |
+| mean | 2 | 60.40% | 52.38% |
+| mean | 3 | 63.16% | 54.64% |
+| mean | 4 | 63.91% | 54.89% |
+| mean | 5 | 64.66% | 55.39% |
+| mean | 6 | 65.16% | 56.14% |
+| mean | 7 | 65.41% | 56.14% |
+| mean | 8 | 65.91% | 56.64% |
+| mean | 9 | 66.42% | 56.89% |
+| mean | 10 | 66.42% | 56.89% |
+| median | 1 | 58.15% | 49.87% |
+| median | 2 | 60.40% | 51.63% |
+| median | 3 | 61.90% | 52.63% |
+| median | 4 | 62.91% | 53.88% |
+| median | 5 | 63.16% | 54.14% |
+| median | 6 | 64.41% | 55.39% |
+| median | 7 | 64.91% | 55.64% |
+| median | 8 | 65.91% | 56.64% |
+| median | 9 | 66.42% | 56.89% |
+| median | 10 | 66.42% | 56.89% |
+| minimum | 1 | 56.39% | 48.37% |
+| minimum | 2 | 59.40% | 50.88% |
+| minimum | 3 | 61.40% | 52.88% |
+| minimum | 4 | 61.90% | 53.38% |
+| minimum | 5 | 62.91% | 54.14% |
+| minimum | 6 | 63.91% | 54.89% |
+| minimum | 7 | 64.66% | 55.64% |
+| minimum | 8 | 65.66% | 56.14% |
+| minimum | 9 | 66.17% | 56.39% |
+| minimum | 10 | 66.42% | 56.89% |
+| trimmed_mean | 1 | 52.38% | 44.86% |
+| trimmed_mean | 2 | 56.14% | 48.12% |
+| trimmed_mean | 3 | 58.40% | 50.13% |
+| trimmed_mean | 4 | 59.90% | 51.63% |
+| trimmed_mean | 5 | 61.40% | 52.88% |
+| trimmed_mean | 6 | 62.66% | 53.88% |
+| trimmed_mean | 7 | 63.91% | 54.89% |
+| trimmed_mean | 8 | 64.91% | 56.14% |
+| trimmed_mean | 9 | 66.17% | 56.64% |
+| trimmed_mean | 10 | 66.42% | 56.89% |
+| weighted_mean | 1 | 55.89% | 48.37% |
+| weighted_mean | 2 | 58.65% | 51.13% |
+| weighted_mean | 3 | 61.40% | 53.38% |
+| weighted_mean | 4 | 61.90% | 53.63% |
+| weighted_mean | 5 | 62.91% | 54.14% |
+| weighted_mean | 6 | 63.66% | 54.89% |
+| weighted_mean | 7 | 64.16% | 55.39% |
+| weighted_mean | 8 | 65.16% | 56.39% |
+| weighted_mean | 9 | 66.17% | 56.64% |
+| weighted_mean | 10 | 66.42% | 56.89% |
+| rank_sum | 1 | 56.89% | 47.37% |
+| rank_sum | 2 | 60.65% | 50.88% |
+| rank_sum | 3 | 63.16% | 53.63% |
+| rank_sum | 4 | 63.91% | 54.14% |
+| rank_sum | 5 | 64.41% | 54.89% |
+| rank_sum | 6 | 65.41% | 55.89% |
+| rank_sum | 7 | 65.91% | 56.39% |
+| rank_sum | 8 | 66.17% | 56.64% |
+| rank_sum | 9 | 66.42% | 56.89% |
+| rank_sum | 10 | 66.42% | 56.89% |
+| worst_penalty | 1 | 57.64% | 49.37% |
+| worst_penalty | 2 | 60.40% | 52.13% |
+| worst_penalty | 3 | 62.41% | 54.14% |
+| worst_penalty | 4 | 62.66% | 54.14% |
+| worst_penalty | 5 | 63.91% | 54.64% |
+| worst_penalty | 6 | 64.41% | 55.64% |
+| worst_penalty | 7 | 65.16% | 55.89% |
+| worst_penalty | 8 | 65.66% | 56.39% |
+| worst_penalty | 9 | 66.17% | 56.64% |
+| worst_penalty | 10 | 66.42% | 56.89% |
+
+Original-order baseline for the same candidate pool is 51.38% MBPP and 43.61% MBPP+ at Pass@1. The best likelihood aggregation at Pass@1 is median on MBPP at 58.15% and median on MBPP+ at 49.87%.
+
+Artifacts: `outputs/qwen-answer-predictions/qwen25-coder-7b-loglikelihood-scores.json` and `outputs/qwen-evalplus-full-10-temp02/qwen7b-loglikelihood-reranking-399.json`.
+
+## Visible prompt-assertion candidate filter
+
+Experiment: `visible-assertion-filter-evalplus-399`.
+
+Purpose: Measure how many of the ten saved candidate generations survive execution on the single assertion visibly embedded in each task's original MBPP prompt, before computing any benchmark Pass@K metrics.
+
+Setup: Extracted the one `assert` statement from each raw task prompt and executed each of the ten saved candidate programs against that assertion. The 399 tasks were evaluated in 32 parallel worker processes with a two-second per-candidate timeout. The filter used no hidden standard tests, EvalPlus tests, canonical solutions, or correctness labels. Every candidate verdict and exception is retained.
+
+| Surviving candidates | Tasks | Percentage |
+|---:|---:|---:|
+| 0 | 112 | 28.07% |
+| 1 | 17 | 4.26% |
+| 2 | 14 | 3.51% |
+| 3 | 15 | 3.76% |
+| 4 | 16 | 4.01% |
+| 5 | 11 | 2.76% |
+| 6 | 11 | 2.76% |
+| 7 | 10 | 2.51% |
+| 8 | 15 | 3.76% |
+| 9 | 23 | 5.76% |
+| 10 | 155 | 38.85% |
+
+Artifact: `outputs/qwen-evalplus-full-10-temp02/visible-assertion-filter-399.json`.
+
+No Pass@K metrics were computed in this experiment, as requested. The survivor set is saved for a separate follow-up evaluation.
+
+
+## Pass@K after visible prompt-assertion filtering
+
+The saved survivor lists were kept in original candidate order. Pass@K is computed over all 399 tasks, with the 112 tasks having no surviving candidate counted as misses. Conditional values over the 287 tasks with at least one survivor are also retained in the artifact.
+
+| K | MBPP full | MBPP+ full | Combined full | MBPP conditional | MBPP+ conditional | Combined conditional |
+|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 62.41% | 50.63% | 50.13% | 86.76% | 70.38% | 69.69% |
+| 2 | 62.91% | 52.63% | 51.88% | 87.46% | 73.17% | 72.13% |
+| 3 | 63.41% | 53.63% | 53.13% | 88.15% | 74.56% | 73.87% |
+| 4 | 63.66% | 53.88% | 53.38% | 88.50% | 74.91% | 74.22% |
+| 5 | 63.91% | 54.14% | 53.63% | 88.85% | 75.26% | 74.56% |
+| 6 | 63.91% | 54.14% | 53.63% | 88.85% | 75.26% | 74.56% |
+| 7 | 63.91% | 54.14% | 53.63% | 88.85% | 75.26% | 74.56% |
+| 8 | 63.91% | 54.39% | 53.88% | 88.85% | 75.61% | 74.91% |
+| 9 | 64.16% | 54.89% | 54.39% | 89.20% | 76.31% | 75.61% |
+| 10 | 64.16% | 54.89% | 54.39% | 89.20% | 76.31% | 75.61% |
+
+Selecting the first surviving candidate is Pass@1. On the full suite, it achieves 62.41% MBPP, 50.63% MBPP+, and 50.13% combined. Conditional on a nonempty survivor set, these are 86.76%, 70.38%, and 69.69%.
+
+The first surviving candidate is always the lowest-index candidate that passes the visible assertion. Ground-truth labels were used only after this selection for measurement.
+
+Artifact: `outputs/qwen-evalplus-full-10-temp02/visible-assertion-filter-metrics-399.json`.
+
+
+## Likelihood tiebreaker after visible-assertion filtering
+
+After filtering by the one visible prompt assertion, surviving candidates were ranked using Qwen 7B likelihoods on the other two of the first three stored standard tests. Mean and median likelihood were evaluated separately. The filter left 287 tasks with survivors and 112 empty tasks. Five tasks did not have the visible example input among the first three stored standard tests; for those tasks, all three stored tests were used as a fallback. Empty survivor sets count as misses in the full-suite curves.
+
+| K | Mean MBPP | Mean MBPP+ | Median MBPP | Median MBPP+ |
+|---:|---:|---:|---:|
+| 1 | 61.90% | 51.13% | 62.16% | 51.13% |
+| 2 | 62.91% | 52.88% | 63.16% | 52.88% |
+| 3 | 63.41% | 53.88% | 63.66% | 53.88% |
+| 4 | 63.41% | 53.88% | 63.66% | 53.88% |
+| 5 | 63.66% | 53.88% | 63.66% | 53.88% |
+| 6 | 63.66% | 54.39% | 63.66% | 54.39% |
+| 7 | 63.91% | 54.39% | 63.91% | 54.39% |
+| 8 | 63.91% | 54.64% | 63.91% | 54.64% |
+| 9 | 64.16% | 54.89% | 64.16% | 54.89% |
+| 10 | 64.16% | 54.89% | 64.16% | 54.89% |
+
+Pass@1 is the selected first-ranked survivor. Mean likelihood gives 61.90% MBPP and 51.13% MBPP+. Median likelihood gives 62.16% MBPP and 51.13% MBPP+. Conditional on the 287 tasks with survivors, the corresponding MBPP and MBPP+ Pass@1 values are 86.06% and 71.08% for mean, and 86.41% and 71.08% for median.
+
+The two scores are identical for most tasks because the normal case has exactly two remaining test scores, for which mean and median are equivalent. They differ on fallback or incomplete-score cases.
+
+Artifacts: `outputs/qwen-evalplus-full-10-temp02/visible-assertion-likelihood-tiebreak-399.json`, `outputs/qwen-evalplus-full-10-temp02/visible-assertion-filter-399.json`, and `outputs/qwen-evalplus-full-10-temp02/qwen7b-loglikelihood-reranking-399.json`.
+
+## Regenerated Qwen 3B visible-assertion filtering
+
+The original 1.5B and 3B candidate pools were unrecoverable, so the Qwen2.5-Coder-3B-Instruct pool was regenerated and archived before evaluation. Generation used the original Qwen ChatML prompt, ten samples per task, temperature 0.2, top_p 0.95, and max_new_tokens 512. Raw completions, cleaned Python files, per-task manifests, and a run manifest are in `outputs/regenerated-qwen25-coder-3b-10-temp02` and the compressed archive `outputs/regenerated-qwen25-coder-3b-10-temp02-candidates.tar.zst`.
+
+Each regenerated candidate was tested against the one assertion visible in its task prompt. The first surviving candidate in original order was then evaluated against canonical MBPP and MBPP+ inputs. Of 399 tasks, 341 had at least one survivor and 58 had none. Full-suite first-survivor accuracy was 299/399 = 74.94% on MBPP and 242/399 = 60.65% on MBPP+. Conditional accuracy among tasks with a survivor was 87.68% MBPP and 70.97% MBPP+.
+
+The evaluation artifact is `outputs/regenerated-qwen25-coder-3b-10-temp02/visible-assertion-filter-evaluation.json`. These values come from a newly sampled candidate pool and should not be compared as an exact paired reranking result with the earlier deleted 3B run.
+
+The 1.5B checkpoint was not available locally. Three Hugging Face download attempts returned HTTP 429, so no 1.5B candidates were regenerated. The attempts are recorded in `outputs/regenerated-qwen25-coder-1p5b-10-temp02/download_attempts.json`.
+
+## Regenerated Qwen 3B visible-assertion survivor diagnosis
+
+Experiment: diagnose whether visible-assertion filtering removed all correct candidates and whether first-survivor ranking selected an incorrect candidate when a later survivor was correct.
+
+Purpose: Decompose errors among the regenerated Qwen2.5-Coder-3B-Instruct candidate pool after execution of the one assertion visible in each task prompt.
+
+Setup: The pool contains 399 EvalPlus MBPP tasks with ten regenerated candidates per task. Filtering used only the visible prompt assertion and retained survivors in original candidate order. For this diagnostic, every one of the 3,014 survivors across the 341 nonempty tasks was executed on the canonical MBPP base inputs in a fresh subprocess. Input objects were transported with pickle so tuple and list types were preserved. Correctness labels were used only after the survivor set and first-survivor choice were fixed. The corrected analysis artifact is outputs/regenerated-qwen25-coder-3b-10-temp02/base-survivor-correctness-analysis.json, and the selection artifact is outputs/regenerated-qwen25-coder-3b-10-temp02/visible-assertion-filter-evaluation.json.
+
+Results among the 341 tasks with at least one survivor:
+
+- Filtering removed every correct candidate on 35 tasks, which is 10.26% of nonempty tasks. Therefore at least one correct candidate survived on 306/341 tasks, or 89.74%.
+- There were 332 tasks with multiple survivors.
+- Among the 299 multi-survivor tasks with at least one correct survivor, the first survivor was incorrect on 7 tasks. This is an incorrect tie-break rate of 2.34% among multi-survivor tasks with a correct option.
+- Counting all 332 multi-survivor tasks as the denominator, the first-survivor tie-break error rate was 2.11%.
+- The first survivor was correct on 299/341 nonempty tasks, or 87.68% conditional accuracy. The same result is 299/399, or 74.94%, over the full 399-task suite because 58 empty survivor sets count as misses.
+
+The seven incorrect first-survivor selections were Mbpp/92, Mbpp/119, Mbpp/123, Mbpp/223, Mbpp/643, Mbpp/773, and Mbpp/780. The 35 filter false negatives were recorded in the JSON artifact. The corrected run agrees with the original selected-candidate evaluation on all 341 nonempty tasks.
+
+Limitations: These are MBPP base-suite correctness diagnostics for the newly regenerated 3B candidate pool. They do not use MBPP+ labels and are not an exact paired comparison with the deleted earlier 3B candidate pool.
+
+## Correction: true assertion-filter false negatives for regenerated Qwen 3B
+
+The earlier 35-task count was incorrectly described as cases where the filter removed a correct candidate. That analysis evaluated only survivors, so 35 meant that no correct survivor existed. The expanded run evaluated all 3,990 regenerated candidates on canonical MBPP base inputs.
+
+Among the 399 tasks, 308 had at least one correct candidate before filtering. The visible assertion filter removed all correct candidates on only 2 tasks, Mbpp/400 and Mbpp/442, giving a true filter false-negative rate of 2/308 = 0.65% among tasks with any correct candidate, or 2/341 = 0.59% among tasks with at least one survivor. The remaining 33 of the earlier 35 cases had no correct candidate among all ten generations. The expanded per-candidate report is outputs/regenerated-qwen25-coder-3b-10-temp02/base-survivor-correctness-analysis.json.
+
+Mbpp/400 has a visible assertion claiming four distinct tuples have three unique tuples, while the correct function returns four. Mbpp/442 compares the exact positive ratio 7/13 against the rounded literal 0.54, which fails exact equality even though the generated function is correct on canonical tests.
+
+The retained-correct count remains 306 tasks. Of these, 7 were lost by the first-survivor tie break, leaving 299 currently selected correctly.
+
+## Candidate-level confusion matrix for regenerated Qwen 3B assertion filter
+
+The confusion matrix treats each of the 3,990 regenerated candidate programs as one example. The positive label is canonical MBPP base correctness, and the positive filter decision is survival after executing the one visible prompt assertion. Ground-truth correctness is used only to measure the filter after selection.
+
+- True positives: 2,675 correct generations kept by the filter.
+- True negatives: 970 incorrect generations rejected by the filter.
+- False positives: 339 incorrect generations kept by the filter.
+- False negatives: 6 correct generations rejected by the filter.
+
+The 3,014 survivors equal 2,675 true positives plus 339 false positives. The 976 rejected candidates equal 970 true negatives plus 6 false negatives. The six false-negative candidates occur on the two tasks Mbpp/400 and Mbpp/442.

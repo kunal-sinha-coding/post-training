@@ -1,0 +1,264 @@
+{
+  "experiment": "llm-output-verifier-evalplus-20",
+  "timestamp": "2026-09-11T05:46:17.633624+00:00",
+  "tasks": [
+    "Mbpp/782",
+    "Mbpp/775",
+    "Mbpp/785",
+    "Mbpp/805",
+    "Mbpp/784",
+    "Mbpp/786",
+    "Mbpp/777",
+    "Mbpp/787",
+    "Mbpp/778",
+    "Mbpp/767",
+    "Mbpp/807",
+    "Mbpp/769",
+    "Mbpp/780",
+    "Mbpp/788",
+    "Mbpp/772",
+    "Mbpp/770",
+    "Mbpp/781",
+    "Mbpp/790",
+    "Mbpp/771",
+    "Mbpp/791"
+  ],
+  "model": "gpt-5-mini",
+  "candidate_artifact": "outputs/qwen-evalplus-full-10-temp02/mbpp/qwen2_chat_temp_0.2/eval_results.json",
+  "observation_artifact": "outputs/qwen-evalplus-full-10-temp02/output-clusters-v3/observations",
+  "selection_uses_correctness_labels": false,
+  "results": {
+    "Mbpp/782": {
+      "task_id": "Mbpp/782",
+      "model": "gpt-5-mini",
+      "prompt_sha256": "7dc93b67fcd8cc84d716317060acc2c09542a50af1803de6d0dc83edd0910f52",
+      "candidate_count": 10,
+      "raw_response": "{\n  \"selected_candidate_index\": 1,\n  \"rationale\": \"Candidate 1 (like several others) is incorrect. The implementation simply sums elements at odd indices (if i % 2 != 0: total_sum += arr[i]) instead of summing all odd-length subarrays. For example, for the given test odd_length_sum([1,2,4]) it returns 2 (summing only arr[1]) but the correct result is 14 (sum of subarrays of odd length: 1 + 2 + 4 + (1+2+4)). The observed outputs confirm this wrong behavior across the tests. Since all candidates are effectively the same incorrect implementation, I selected candidate 1 as a representative incorrect solution.\"\n}",
+      "selected_candidate_index": 1,
+      "rationale": "Candidate 1 (like several others) is incorrect. The implementation simply sums elements at odd indices (if i % 2 != 0: total_sum += arr[i]) instead of summing all odd-length subarrays. For example, for the given test odd_length_sum([1,2,4]) it returns 2 (summing only arr[1]) but the correct result is 14 (sum of subarrays of odd length: 1 + 2 + 4 + (1+2+4)). The observed outputs confirm this wrong behavior across the tests. Since all candidates are effectively the same incorrect implementation, I selected candidate 1 as a representative incorrect solution."
+    },
+    "Mbpp/775": {
+      "task_id": "Mbpp/775",
+      "model": "gpt-5-mini",
+      "prompt_sha256": "d0021a220750d9fcf8c1997ecf1a5afaf489c769189e432c6b3cda9b3663231d",
+      "candidate_count": 10,
+      "raw_response": "{\n  \"selected_candidate_index\": 0,\n  \"rationale\": \"Candidate 0 correctly implements the required check: it iterates over odd indices (range(1, len(lst), 2)) and returns False if any element at an odd index is even, otherwise returns True. This matches the task description and the provided assertion (odd_position([2,1,4,3,6,7,6,3]) == True). Other candidates either invert the condition (return False when an odd is found) or contain the same logic but with no clear advantage; candidate 0 is a straightforward, correct implementation.\"\n}",
+      "selected_candidate_index": 0,
+      "rationale": "Candidate 0 correctly implements the required check: it iterates over odd indices (range(1, len(lst), 2)) and returns False if any element at an odd index is even, otherwise returns True. This matches the task description and the provided assertion (odd_position([2,1,4,3,6,7,6,3]) == True). Other candidates either invert the condition (return False when an odd is found) or contain the same logic but with no clear advantage; candidate 0 is a straightforward, correct implementation."
+    },
+    "Mbpp/785": {
+      "task_id": "Mbpp/785",
+      "model": "gpt-5-mini",
+      "prompt_sha256": "cf6c4b31aaa27b48b4f2b15eb73e59d2e425d1f2829d0c64f3bf7da8fd848785",
+      "candidate_count": 10,
+      "raw_response": "{\"selected_candidate_index\": 2, \"rationale\": \"Candidate 2 implements the intended approach: it splits the input string and converts each element to int and returns a tuple of ints (return tuple(int(x) for x in tup_str.split(','))). Although it fails on the provided tests because it doesn't strip the surrounding parentheses or extra whitespace (hence the ValueError observations), it is the candidate closest to the correct solution logic. Other candidates either simply built a tuple of characters (candidates 1 and 9) or likewise attempted int conversion but were identical to candidate 2; candidate 2 is the clearest, direct attempt to produce an integer tuple and therefore the most likely intended solution.\"}",
+      "selected_candidate_index": 2,
+      "rationale": "Candidate 2 implements the intended approach: it splits the input string and converts each element to int and returns a tuple of ints (return tuple(int(x) for x in tup_str.split(','))). Although it fails on the provided tests because it doesn't strip the surrounding parentheses or extra whitespace (hence the ValueError observations), it is the candidate closest to the correct solution logic. Other candidates either simply built a tuple of characters (candidates 1 and 9) or likewise attempted int conversion but were identical to candidate 2; candidate 2 is the clearest, direct attempt to produce an integer tuple and therefore the most likely intended solution."
+    },
+    "Mbpp/805": {
+      "task_id": "Mbpp/805",
+      "model": "gpt-5-mini",
+      "prompt_sha256": "a7a01564fe961bf007c66d9a5bbce500284e07210911886a6b93c525d1fa8001",
+      "candidate_count": 10,
+      "raw_response": "{\n  \"selected_candidate_index\": 1,\n  \"rationale\": \"Candidate 1 implements the intended behavior: it iterates the outer list, computes sum(lst) for each sublist, tracks the maximum sum, and returns the corresponding sublist. Its observed outputs match the expected single sublist with the largest sum (e.g. [10,11,12] for the provided test). Other candidates either return an incorrectly nested result (candidate 3), return the function itself (candidate 7), or are effectively identical to candidate 1; candidate 1 is a correct, straightforward implementation that passes the supplied tests.\"\n}",
+      "selected_candidate_index": 1,
+      "rationale": "Candidate 1 implements the intended behavior: it iterates the outer list, computes sum(lst) for each sublist, tracks the maximum sum, and returns the corresponding sublist. Its observed outputs match the expected single sublist with the largest sum (e.g. [10,11,12] for the provided test). Other candidates either return an incorrectly nested result (candidate 3), return the function itself (candidate 7), or are effectively identical to candidate 1; candidate 1 is a correct, straightforward implementation that passes the supplied tests."
+    },
+    "Mbpp/784": {
+      "task_id": "Mbpp/784",
+      "model": "gpt-5-mini",
+      "prompt_sha256": "529cf59becc243064d0724af63a2491dce54b165221a00112adbb48f03cea85e",
+      "candidate_count": 10,
+      "raw_response": "{\"selected_candidate_index\": 5, \"rationale\": \"All candidates implement the same incorrect approach: they multiply every element in the list (both evens and odds) into a running product and only return 0 when an even or odd is missing. The observed outputs (e.g. 20160 for [1,3,5,7,4,1,6,8], 3628800 for 1..10, 3150 for [1,5,7,9,10]) match the behavior of multiplying all list elements rather than multiplying the first even and first odd. Candidate 5 uses the same logic as the observed outputs and also includes the sensible guard of returning 0 if either parity is missing, so it best matches the supplied test run. Although it does not implement the task correctly (it should multiply only the first even and first odd), it is the candidate whose behavior matches the recorded test outputs.\"}",
+      "selected_candidate_index": 5,
+      "rationale": "All candidates implement the same incorrect approach: they multiply every element in the list (both evens and odds) into a running product and only return 0 when an even or odd is missing. The observed outputs (e.g. 20160 for [1,3,5,7,4,1,6,8], 3628800 for 1..10, 3150 for [1,5,7,9,10]) match the behavior of multiplying all list elements rather than multiplying the first even and first odd. Candidate 5 uses the same logic as the observed outputs and also includes the sensible guard of returning 0 if either parity is missing, so it best matches the supplied test run. Although it does not implement the task correctly (it should multiply only the first even and first odd), it is the candidate whose behavior matches the recorded test outputs."
+    },
+    "Mbpp/786": {
+      "task_id": "Mbpp/786",
+      "model": "gpt-5-mini",
+      "prompt_sha256": "3de129da8737bb5d315bee500b4d21020a11d49983f658f681d3914036de7ec1",
+      "candidate_count": 10,
+      "raw_response": "{\"selected_candidate_index\": 9, \"rationale\": \"None of the candidates exactly match the expected bisect_right behavior (right insertion index), but candidate 9 is the closest. It scans from the end and finds the last element <= x (which is the correct place to insert to the right of equal elements) \u2014 it simply returns that element's index rather than index+1. Other candidates either use the wrong comparison or move the index in the wrong direction. Candidate 9 therefore most closely implements the intended algorithm and is the most likely intended solution.\"}",
+      "selected_candidate_index": 9,
+      "rationale": "None of the candidates exactly match the expected bisect_right behavior (right insertion index), but candidate 9 is the closest. It scans from the end and finds the last element <= x (which is the correct place to insert to the right of equal elements) \u2014 it simply returns that element's index rather than index+1. Other candidates either use the wrong comparison or move the index in the wrong direction. Candidate 9 therefore most closely implements the intended algorithm and is the most likely intended solution."
+    },
+    "Mbpp/777": {
+      "task_id": "Mbpp/777",
+      "model": "gpt-5-mini",
+      "prompt_sha256": "e228e77304b3c72861832c5ce6f8a2b8b99d979b9d3acb6377bac653dbfee94e",
+      "candidate_count": 10,
+      "raw_response": "{\n  \"selected_candidate_index\": 1,\n  \"rationale\": \"The task's example expects sum of the unique elements (sum({1,2,3,4,5,6}) == 21). Candidate 1 implements exactly that: it converts the list to a set to remove duplicates and returns sum(unique_elements). The observed outputs for the provided tests match this behavior (including handling of empty lists and negatives), so candidate 1 is the correct implementation.\"\n}",
+      "selected_candidate_index": 1,
+      "rationale": "The task's example expects sum of the unique elements (sum({1,2,3,4,5,6}) == 21). Candidate 1 implements exactly that: it converts the list to a set to remove duplicates and returns sum(unique_elements). The observed outputs for the provided tests match this behavior (including handling of empty lists and negatives), so candidate 1 is the correct implementation."
+    },
+    "Mbpp/787": {
+      "task_id": "Mbpp/787",
+      "model": "gpt-5-mini",
+      "prompt_sha256": "42d6d8b4b2a8bc71fb0cf2aa625ba5c4cfe98a59ae0ef60cb4144179d019de53",
+      "candidate_count": 10,
+      "raw_response": "{\n  \"selected_candidate_index\": 8,\n  \"rationale\": \"The base tests expect False for \\\"ac\\\" and \\\"dc\\\" and True for \\\"abbbba\\\" and \\\"caacabbbba\\\". Candidate 8 returns False for the first two and True for the last two, matching the observed outputs for the supplied tests. (Multiple candidates implement the same 'ab' substring check and produce identical results; candidate 8 is chosen as the representative matching implementation.)\"\n}",
+      "selected_candidate_index": 8,
+      "rationale": "The base tests expect False for \"ac\" and \"dc\" and True for \"abbbba\" and \"caacabbbba\". Candidate 8 returns False for the first two and True for the last two, matching the observed outputs for the supplied tests. (Multiple candidates implement the same 'ab' substring check and produce identical results; candidate 8 is chosen as the representative matching implementation.)"
+    },
+    "Mbpp/778": {
+      "task_id": "Mbpp/778",
+      "candidate_count": 10,
+      "prompt_sha256": "7eae2d23736d542d546154e5e2b53a7cc011f9b5f0831a3b060f0397e035865a",
+      "model": "gpt-5-mini",
+      "raw_response": "{\n  \"selected_candidate_index\": 8,\n  \"rationale\": \"None of the candidates implement the correct grouping-by-runs algorithm (building a running sublist and extending it for consecutive equal elements). However, candidate 8 is the closest to the intended behavior: it explicitly groups adjacent equal elements (appending [lst[i], lst[i+1]] when two neighbors match) and otherwise appends singleton sublists. While it still mishandles runs longer than two (it produces multiple overlapping pair lists instead of a single list for a longer run), it at least produces correct pair groupings for the simple duplicate cases (e.g. [0,0], [4,4]) and matches more of the expected structure than the other broken implementations. Therefore candidate 8 is the most likely (though imperfect) match among the provided programs.\"\n}",
+      "selected_candidate_index": 8,
+      "rationale": "None of the candidates implement the correct grouping-by-runs algorithm (building a running sublist and extending it for consecutive equal elements). However, candidate 8 is the closest to the intended behavior: it explicitly groups adjacent equal elements (appending [lst[i], lst[i+1]] when two neighbors match) and otherwise appends singleton sublists. While it still mishandles runs longer than two (it produces multiple overlapping pair lists instead of a single list for a longer run), it at least produces correct pair groupings for the simple duplicate cases (e.g. [0,0], [4,4]) and matches more of the expected structure than the other broken implementations. Therefore candidate 8 is the most likely (though imperfect) match among the provided programs."
+    },
+    "Mbpp/767": {
+      "task_id": "Mbpp/767",
+      "candidate_count": 10,
+      "prompt_sha256": "94628acdba56afb2459abfaae7179a1f70cefead5a265a63b3335b56000f0634",
+      "model": "gpt-5-mini",
+      "raw_response": "{\"selected_candidate_index\": 0, \"rationale\": \"All candidates implement the same straightforward O(n^2) pair-counting loop and produced identical observed outputs for the provided test suite. Candidate 0 is a correct, readable implementation that counts each unordered pair (i<j) whose sum equals the target and handles duplicates, negatives and boolean values consistently with the observed results, so it matches the tests.\"}",
+      "selected_candidate_index": 0,
+      "rationale": "All candidates implement the same straightforward O(n^2) pair-counting loop and produced identical observed outputs for the provided test suite. Candidate 0 is a correct, readable implementation that counts each unordered pair (i<j) whose sum equals the target and handles duplicates, negatives and boolean values consistently with the observed results, so it matches the tests."
+    },
+    "Mbpp/807": {
+      "task_id": "Mbpp/807",
+      "candidate_count": 10,
+      "prompt_sha256": "5fdf4eedd9e73f3904a311c61001690b98e0ce78cef71f75b11aa31be810e6b7",
+      "model": "gpt-5-mini",
+      "raw_response": "{\"selected_candidate_index\": 0, \"rationale\": \"Candidate 0 implements exactly the required behavior: it iterates through the list and returns the first element with num % 2 != 0, returning None if none found. Its observed outputs match the expected results for all provided tests (e.g. returning 1 for [1,3,5], 1 for [2,4,1,3], 9 for [8,9,1], and all other cases), so it is the correct solution.\"}",
+      "selected_candidate_index": 0,
+      "rationale": "Candidate 0 implements exactly the required behavior: it iterates through the list and returns the first element with num % 2 != 0, returning None if none found. Its observed outputs match the expected results for all provided tests (e.g. returning 1 for [1,3,5], 1 for [2,4,1,3], 9 for [8,9,1], and all other cases), so it is the correct solution."
+    },
+    "Mbpp/769": {
+      "task_id": "Mbpp/769",
+      "candidate_count": 10,
+      "prompt_sha256": "7aac1e7aa17fd69a0d06eb4f36d6d30074e23118e9446d4ce993eb7f3e9956ae",
+      "model": "gpt-5-mini",
+      "raw_response": "{\n  \"selected_candidate_index\": 3,\n  \"rationale\": \"Candidate 3 implements the standard difference as a list comprehension: return [x for x in list1 if x not in list2]. All candidates produce identical observed outputs across the provided test suite, and Candidate 3's behavior matches those observations (e.g. first test returns [10, 15, 20, 30]). Candidate 3 is selected (it is functionally the same as the others but includes a clear docstring). Note: the TASK prompt's assert ordering ([10, 20, 30, 15]) appears inconsistent with the usual list-difference semantics and the observed test outputs, which the candidates follow.\"\n}",
+      "selected_candidate_index": 3,
+      "rationale": "Candidate 3 implements the standard difference as a list comprehension: return [x for x in list1 if x not in list2]. All candidates produce identical observed outputs across the provided test suite, and Candidate 3's behavior matches those observations (e.g. first test returns [10, 15, 20, 30]). Candidate 3 is selected (it is functionally the same as the others but includes a clear docstring). Note: the TASK prompt's assert ordering ([10, 20, 30, 15]) appears inconsistent with the usual list-difference semantics and the observed test outputs, which the candidates follow."
+    },
+    "Mbpp/780": {
+      "task_id": "Mbpp/780",
+      "candidate_count": 10,
+      "prompt_sha256": "84a8e94c2bba3355bfd0ad19c7376585abe7f7ee433a745a9371b058522424f7",
+      "model": "gpt-5-mini",
+      "raw_response": "{\n  \"selected_candidate_index\": 5,\n  \"rationale\": \"The task requires producing all pairwise combinations from a list of tuples and then combining them (the GeeksforGeeks solution lists pairwise tuple pairs as the first step). Candidate 5 uses itertools.combinations(tup_list, 2) to produce every pair of tuples (C(n,2) pairs), which is the closest to the intended approach. The other candidates are clearly incorrect: some sum elements inside a single tuple (0, 1, 3, 9), some look for a target variable that is undefined and raise NameError (2, 6), others test incorrect conditions (4), or return nested/concatenated tuples rather than listing pair combinations (7, 8 duplicate behavior). Thus candidate 5 is the most plausible starting point toward the correct solution.\"\n}",
+      "selected_candidate_index": 5,
+      "rationale": "The task requires producing all pairwise combinations from a list of tuples and then combining them (the GeeksforGeeks solution lists pairwise tuple pairs as the first step). Candidate 5 uses itertools.combinations(tup_list, 2) to produce every pair of tuples (C(n,2) pairs), which is the closest to the intended approach. The other candidates are clearly incorrect: some sum elements inside a single tuple (0, 1, 3, 9), some look for a target variable that is undefined and raise NameError (2, 6), others test incorrect conditions (4), or return nested/concatenated tuples rather than listing pair combinations (7, 8 duplicate behavior). Thus candidate 5 is the most plausible starting point toward the correct solution."
+    },
+    "Mbpp/788": {
+      "task_id": "Mbpp/788",
+      "candidate_count": 10,
+      "prompt_sha256": "d385fac108c9f5078f711f99099ceb05411a9b19ca656337ecedeb7a83ba4228",
+      "model": "gpt-5-mini",
+      "raw_response": "{\"selected_candidate_index\": 2, \"rationale\": \"Candidate 2 correctly builds a tuple from the input list and appends the provided string as a one-element tuple: return tuple(str_list) + (str_tuple,). This matches the task (e.g. new_tuple([\\\"WEB\\\",\\\"is\\\"], \\\"best\\\") -> ('WEB','is','best')) and its observed outputs show the expected tuples for the supplied tests. Other candidates either produced TypeErrors when concatenating lists/tuples or were equivalent duplicates; candidate 2 is a clear, correct implementation.\"}",
+      "selected_candidate_index": 2,
+      "rationale": "Candidate 2 correctly builds a tuple from the input list and appends the provided string as a one-element tuple: return tuple(str_list) + (str_tuple,). This matches the task (e.g. new_tuple([\"WEB\",\"is\"], \"best\") -> ('WEB','is','best')) and its observed outputs show the expected tuples for the supplied tests. Other candidates either produced TypeErrors when concatenating lists/tuples or were equivalent duplicates; candidate 2 is a clear, correct implementation."
+    },
+    "Mbpp/772": {
+      "task_id": "Mbpp/772",
+      "candidate_count": 10,
+      "prompt_sha256": "d024e92625c2309ec75f8433a5ba013247db69632fdfbbd10b242c4388c46c65",
+      "model": "gpt-5-mini",
+      "raw_response": "{\"selected_candidate_index\": 1, \"rationale\": \"Candidate 1 implements the correct approach: split the string on whitespace, remove any word whose length equals k, and join the remaining words with a single space. Its observed outputs match the expected results (e.g. remove_length('The person is most value tet', 3) -> 'person is most value'), and it correctly handles the provided test cases. Other candidates either duplicate the same correct implementation (2,3,4,5,6,9) or are clearly incorrect (candidate 7 returns only the words of length k; candidate 8 uses a broken regex), so candidate 1 is an appropriate, correct choice.\"}",
+      "selected_candidate_index": 1,
+      "rationale": "Candidate 1 implements the correct approach: split the string on whitespace, remove any word whose length equals k, and join the remaining words with a single space. Its observed outputs match the expected results (e.g. remove_length('The person is most value tet', 3) -> 'person is most value'), and it correctly handles the provided test cases. Other candidates either duplicate the same correct implementation (2,3,4,5,6,9) or are clearly incorrect (candidate 7 returns only the words of length k; candidate 8 uses a broken regex), so candidate 1 is an appropriate, correct choice."
+    },
+    "Mbpp/770": {
+      "task_id": "Mbpp/770",
+      "candidate_count": 10,
+      "prompt_sha256": "ab7d0430a22b91ce9648fae6a0d71f1d4304a479fad7c96bcc16e68d6005d3b9",
+      "model": "gpt-5-mini",
+      "raw_response": "{\n  \"selected_candidate_index\": 0,\n  \"rationale\": \"Candidate 0 correctly sums the fourth powers of the first n odd natural numbers by iterating over odd integers (1, 3, ..., 2n-1) and returning their fourth powers. Its observed outputs match the expected results for the provided tests (e.g., odd_num_sum(2) == 82, odd_num_sum(3) == 707, odd_num_sum(4) == 3108), and it handles the boolean True input (treated as 1) consistently. Candidate 1 is incorrect (its iteration range is wrong), while the other candidates with identical implementations to candidate 0 also would pass, but candidate 0 is a correct, clear implementation that matches all observed outputs.\"\n}",
+      "selected_candidate_index": 0,
+      "rationale": "Candidate 0 correctly sums the fourth powers of the first n odd natural numbers by iterating over odd integers (1, 3, ..., 2n-1) and returning their fourth powers. Its observed outputs match the expected results for the provided tests (e.g., odd_num_sum(2) == 82, odd_num_sum(3) == 707, odd_num_sum(4) == 3108), and it handles the boolean True input (treated as 1) consistently. Candidate 1 is incorrect (its iteration range is wrong), while the other candidates with identical implementations to candidate 0 also would pass, but candidate 0 is a correct, clear implementation that matches all observed outputs."
+    },
+    "Mbpp/781": {
+      "task_id": "Mbpp/781",
+      "candidate_count": 10,
+      "prompt_sha256": "9e9fed0bd97200b8f19e86cfea6e80aa6f30590f50938a3a811d7a8a06cbf7af",
+      "model": "gpt-5-mini",
+      "raw_response": "{\n  \"selected_candidate_index\": 1,\n  \"rationale\": \"Candidate 1 iterates from 1 to n (range(1, n+1)) and counts all divisors including n, which produces the correct divisor counts seen in the observed outputs: count_divisors(10) -> 4, count_divisors(100) -> 9, count_divisors(125) -> 4, etc. Other candidates mostly loop only to n-1 and therefore undercount (e.g. returning 3 for 10), so their outputs do not match the expected test results. Candidate 1 (identical to candidate 3) best matches the expected behavior and observed outputs.\"}",
+      "selected_candidate_index": 1,
+      "rationale": "Candidate 1 iterates from 1 to n (range(1, n+1)) and counts all divisors including n, which produces the correct divisor counts seen in the observed outputs: count_divisors(10) -> 4, count_divisors(100) -> 9, count_divisors(125) -> 4, etc. Other candidates mostly loop only to n-1 and therefore undercount (e.g. returning 3 for 10), so their outputs do not match the expected test results. Candidate 1 (identical to candidate 3) best matches the expected behavior and observed outputs."
+    },
+    "Mbpp/790": {
+      "task_id": "Mbpp/790",
+      "candidate_count": 10,
+      "prompt_sha256": "2089c5f823a00ef86b9f31f5925b45644ef273789d4acab86eb1d0eac051d92e",
+      "model": "gpt-5-mini",
+      "raw_response": "{\n  \"selected_candidate_index\": 0,\n  \"rationale\": \"Candidate 0 correctly implements the specification: it iterates over even indices (0, 2, 4, ...) and returns False if any value at an even index is odd, otherwise True. Its observed outputs match the expected behaviour for the provided tests (e.g. even_position([3,2,1]) -> False, even_position([2,1,4]) -> True). Other candidates are incorrect: some check odd indices instead (candidates 1,4,8,9), some invert the logic (candidate 3), some return True if any even-index element is even rather than all (candidate 5), and the remaining correct-looking implementations are duplicates of candidate 0 (candidates 2,6,7). Candidate 0 is a clear, correct implementation of the task.\"\n}",
+      "selected_candidate_index": 0,
+      "rationale": "Candidate 0 correctly implements the specification: it iterates over even indices (0, 2, 4, ...) and returns False if any value at an even index is odd, otherwise True. Its observed outputs match the expected behaviour for the provided tests (e.g. even_position([3,2,1]) -> False, even_position([2,1,4]) -> True). Other candidates are incorrect: some check odd indices instead (candidates 1,4,8,9), some invert the logic (candidate 3), some return True if any even-index element is even rather than all (candidate 5), and the remaining correct-looking implementations are duplicates of candidate 0 (candidates 2,6,7). Candidate 0 is a clear, correct implementation of the task."
+    },
+    "Mbpp/771": {
+      "task_id": "Mbpp/771",
+      "candidate_count": 10,
+      "prompt_sha256": "f12ddb229187dd75221fc3e54766e124310d0300367ac25a1fe3048f0e380007",
+      "model": "gpt-5-mini",
+      "raw_response": "{\n  \"selected_candidate_index\": 0,\n  \"rationale\": \"All candidates contain the same implementation: they only push '(' and pop on ')' and ignore other bracket types ('{', '}', '[' ,']'). The observed outputs for candidate 0 match the pattern produced by such an implementation (it returns True whenever parentheses are balanced, regardless of braces/brackets). None of the candidates implement full matching for '()', '[]', and '{}' as required by the prompt, so none are fully correct; candidate 0 is chosen as the representative because its code and observed behavior are identical to the other candidates and it clearly demonstrates the reason for failure on the provided tests (it misses handling of '{' and '[').\" }",
+      "selected_candidate_index": 0,
+      "rationale": "All candidates contain the same implementation: they only push '(' and pop on ')' and ignore other bracket types ('{', '}', '[' ,']'). The observed outputs for candidate 0 match the pattern produced by such an implementation (it returns True whenever parentheses are balanced, regardless of braces/brackets). None of the candidates implement full matching for '()', '[]', and '{}' as required by the prompt, so none are fully correct; candidate 0 is chosen as the representative because its code and observed behavior are identical to the other candidates and it clearly demonstrates the reason for failure on the provided tests (it misses handling of '{' and '[')."
+    },
+    "Mbpp/791": {
+      "task_id": "Mbpp/791",
+      "candidate_count": 10,
+      "prompt_sha256": "6c89ee3ecc5c69b680b212c37b01ab2b5fa865e11acb695178a19337870d27c8",
+      "model": "gpt-5-mini",
+      "raw_response": "{\n  \"selected_candidate_index\": 0,\n  \"rationale\": \"Candidate 0 implements the intended behavior: it returns a tuple containing only the non-tuple elements (filtering out any nested tuples), matching the task's assert (e.g. (1,5,7,(4,6),10) -> (1,5,7,10)). Candidates 1,2,7 are effectively identical, but candidate 0 is a correct implementation. The remaining candidates are incorrect because they either return lists instead of a tuple or recursively flatten nested tuples (returning their elements) rather than removing tuple elements altogether.\"\n}",
+      "selected_candidate_index": 0,
+      "rationale": "Candidate 0 implements the intended behavior: it returns a tuple containing only the non-tuple elements (filtering out any nested tuples), matching the task's assert (e.g. (1,5,7,(4,6),10) -> (1,5,7,10)). Candidates 1,2,7 are effectively identical, but candidate 0 is a correct implementation. The remaining candidates are incorrect because they either return lists instead of a tuple or recursively flatten nested tuples (returning their elements) rather than removing tuple elements altogether."
+    }
+  },
+  "metrics": {
+    "base": {
+      "correct": 11,
+      "tasks": 20,
+      "accuracy": 0.55
+    },
+    "plus": {
+      "correct": 10,
+      "tasks": 20,
+      "accuracy": 0.5
+    },
+    "combined": {
+      "correct": 10,
+      "tasks": 20,
+      "accuracy": 0.5
+    }
+  },
+  "baseline_subset_pass_at_k": {
+    "base": {
+      "pass_at_1": 0.55,
+      "pass_at_2": 0.55,
+      "pass_at_4": 0.55,
+      "pass_at_8": 0.55,
+      "pass_at_10": 0.55
+    },
+    "plus": {
+      "pass_at_1": 0.5,
+      "pass_at_2": 0.5,
+      "pass_at_4": 0.5,
+      "pass_at_8": 0.5,
+      "pass_at_10": 0.5
+    },
+    "combined": {
+      "pass_at_1": 0.5,
+      "pass_at_2": 0.5,
+      "pass_at_4": 0.5,
+      "pass_at_8": 0.5,
+      "pass_at_10": 0.5
+    }
+  },
+  "baseline_pass_at_k": {
+    "pass_at_1": 0.5142857142857142,
+    "pass_at_2": 0.5736563631300473,
+    "pass_at_3": 0.6028822055137845,
+    "pass_at_4": 0.6211958467597566,
+    "pass_at_5": 0.6338564665632335,
+    "pass_at_6": 0.6431435732187611,
+    "pass_at_7": 0.6502506265664162,
+    "pass_at_8": 0.6558618769145085,
+    "pass_at_9": 0.6604010025062657,
+    "pass_at_10": 0.6641604010025063
+  }
+}

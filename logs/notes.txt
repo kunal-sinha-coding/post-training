@@ -1,5 +1,37 @@
 # Experiment Notes
 
+## 2026-09-11: Add cached LLM output verifier experiment
+
+Added experiments/llm_output_verifier.py to select one of the existing ten EvalPlus candidates per task with one external LLM call. The script includes the task prompt, all standard and extended test inputs, candidate programs, and saved observed outputs while withholding correctness labels. It caches each decision by prompt hash and computes accuracy only after selection so the artifact can be reused for follow-up verifier experiments.
+
+The initial API attempt was rejected because gpt-5-mini does not support an explicit temperature of zero. Removed that unsupported parameter before rerunning.
+
+The first corrected run issued verifier requests sequentially and was interrupted after two completed cached calls. Changed the runner to use a configurable thread pool with five concurrent gpt-5-mini requests while preserving incremental per-task caching.
+
+The parallel run completed 20 official EvalPlus tasks with five concurrent gpt-5-mini API calls. The verifier selected one saved candidate per task and reached 11/20 base accuracy, 10/20 MBPP+ accuracy, and 10/20 combined accuracy. The matched ordinary candidate-prefix curves were computed after selection for comparison.
+
+Started a two-task preview for a different method that asks gpt-5-mini to predict only the returned values for the three standard MBPP tests. The preview compares those predictions with saved candidate outputs and does not run the full experiment.
+
+The first preview comparison falsely reported no matching candidates because native JSON predictions were compared directly with the saved typed output encoding. Corrected the conversion and recomputed matches from the cached responses without additional API calls.
+
+Corrected a reporting mistake in the preview interpretation. The GPT-5 mini predictions for Mbpp/782 were mathematically correct as [14, 15, 8]. The saved candidate outputs were [2, 4, 7], so no candidate matched.
+
+Invalidated the two-task standard-answer preview as an independent experiment. The predictor received the raw MBPP prompt containing the visible assertion assert odd_length_sum([1,2,4]) == 14. The copied EvalPlus Qwen generator also passes this raw prompt into its ChatML user message, so the original candidate generations saw the same example answer. A valid rerun must remove visible assertion lines from both sides before prediction and matching.
+
+The approved full prediction run will use the same raw MBPP prompt condition, start with 32 concurrent gpt-5-mini requests, halve concurrency after any API rate limit, cache each successful response, and compute accuracy against trusted canonical outputs on all stored standard base tests. The current artifact has 369 tasks with three base tests and 30 tasks with four to seven base tests. All 399 API responses completed at 32 workers without rate limiting. Reporting first encountered an unsupported canonical regex Match return type and is now tolerant of such outputs.
+
+Completed all 399 gpt-5-mini standard-output predictions at 32 concurrent workers. GPT-5 mini got 1,091 of 1,236 stored base outputs correct, for 88.27 percent per-test accuracy, and got every stored base output correct on 342 of 399 tasks, for 85.71 percent task accuracy. Saved raw responses, prompts, predictions, ground truth, and candidate matching indices in the full prediction artifact.
+
+Added an answer-independent reranker that scores each of the ten saved candidates by the fraction of stored base-test outputs matching GPT-5 mini predictions. It ranks by score and preserves original candidate order for ties, then computes Pass@K after ranking.
+
+Completed GPT prediction reranking on all 399 tasks. Reranked Pass@1 improved from 51.38 to 63.91 percent on base, from 43.61 to 51.63 percent on MBPP+, and from 42.86 to 50.63 percent on combined correctness. Pass@10 was unchanged at 66.42 percent base and 55.89 percent combined.
+
+Added local Qwen answer-prediction evaluation for the 1.5B, 3B, and 7B Qwen2.5-Coder-Instruct checkpoints. It uses the same system and user messages as the GPT-5 mini predictor, predicts test outputs only, and measures against canonical outputs.
+
+Added a cohort analysis for GPT-5 mini answer prediction. It groups tasks by the number of correct saved candidates among ten, then reports prediction accuracy for mixed, all-correct, and all-incorrect candidate sets.
+
+Corrected the cohort analysis target after clarification. The requested cohort breakdown is now recorded for the completed Qwen2.5-Coder-3B-Instruct answer-prediction run: 55.06 percent per-test accuracy on mixed tasks, 71.10 percent on all-correct tasks, and 47.23 percent on all-incorrect tasks.
+
 ## September 8, 2026: Balance verifier training classes
 
 The verifier trainer now reports task and class distributions, logs those distributions to W&B at step zero, and optionally downsamples only the overrepresented training class to an exact 50/50 split. The rerun uses 7,890 saved generated candidates from 789 synthetic tasks, while validation remains the unchanged official EvalPlus generated-candidate artifact with 3,990 candidates from 399 tasks.
@@ -1781,6 +1813,10 @@ Added the complete distribution of correct generations per task. Under combined 
 
 Added the non-mixed all-correct comparison. All ten candidates are correct on each such task, so baseline, largest-cluster, and output-agreement selection are all 100% with zero performance boost. The counts are 140 standard MBPP tasks and 111 combined MBPP+ tasks.
 
+## 2026-09-10: Complete iterative output verifier search
+
+Completed the requested autonomous search on 112 mixed combined-MBPP+ tasks. The corrected loop ran 100 predeclared output-only verifier strategies and stopped at the iteration limit because none exceeded 95% accuracy. The best rule was per-input modal-output agreement at 65.18%, compared with random selection at 52.50% and exact largest-output-cluster selection at 64.14%. The result and every iteration record are saved in outputs/qwen-evalplus-full-10-temp02/output-clusters-v3/iterative_verifier_results.json and logs/hillclimbing.txt. The initial search pass was invalidated and documented because it included exception tokens in clusters; the final pass uses only complete returning serializable candidates.
+
 ## 2026-09-10: Capture outputs for mixed-task cluster analysis
 
 Commit: Add reproducible output clustering diagnostic.
@@ -1803,3 +1839,79 @@ Saved an analysis of all 142 tasks containing mixed base or combined correctness
 ## 2026-09-10: Extend output clustering to all tasks
 
 Added the all-task mode for output clustering. The same answer-independent typed output clusters and consensus heuristic now run across all 399 EvalPlus MBPP tasks, while the mixed-task subsets remain separately reported. Existing compatible v2 observations will be reused by exact code and input identity. The all-task column measures one selected candidate per task.
+
+The initial 100-rule verifier search was invalidated because exception tokens were included in clusters while the validated cluster analysis excluded incomplete runtime vectors. Corrected the search to use complete returning serializable candidates, documented the invalid run in logs/hillclimbing.txt, and restarted.
+
+The corrected search had one indexing issue in the robust-neighborhood branch when invalid candidates were filtered. Fixed the bound to use the active runtime-valid pool before rerunning.
+
+## 2026-09-11: Run Qwen 3B answer-prediction reranking
+
+Reproduced the GPT-5 mini prediction reranker with the saved Qwen2.5-Coder-3B-Instruct predictions. The 399 tasks and 1,236 stored standard tests were ranked by candidate agreement with Qwen's predicted outputs, with original candidate index as the tie-break. Ground-truth labels were used only after ranking for measurement. The report is saved at outputs/qwen-evalplus-full-10-temp02/qwen3b-prediction-reranking-399.json and the metrics are recorded in logs/results.txt. Pass@1 was 60.15% on MBPP, 49.62% on MBPP+, and 48.87% combined, compared with original-order values of 51.38%, 43.61%, and 42.86%.
+
+## 2026-09-11: Commit Qwen 3B reranking artifact
+
+Commit `e22d4da` records the Qwen 3B reranking setup and metrics. This follow-up commit adds the ignored full reranking JSON artifact so every per-task ranking and reproducibility hash is retained with the experiment record.
+
+## 2026-09-11: Complete Qwen 7B answer prediction
+
+The Qwen2.5-Coder-7B-Instruct answer-prediction run completed all 399 tasks and 1,236 stored standard tests. Parser repair handled fenced JSON, Python literals, tuples, sets, and complex values. Four responses remained truncated or malformed and are recorded as parse failures and counted incorrect. Final accuracy is 74.35% per test and 53.13% per task. Raw responses and predictions are saved in outputs/qwen-answer-predictions/qwen25-coder-7b.json.
+
+## 2026-09-11: Measure Qwen 7B mixed-task accuracy
+
+Computed Qwen 7B answer-prediction accuracy on the 125 mixed tasks, defined as tasks with a mixture of correct and incorrect saved generations among the ten candidates. The model achieved 291/385, or 75.58%, per-test accuracy and 67/125, or 53.60%, whole-task accuracy. Cohort report saved at outputs/qwen-answer-predictions/qwen25-coder-7b-cohorts.json.
+
+## 2026-09-11: Run Qwen 7B answer-prediction reranking
+
+Ranked the ten saved candidates per EvalPlus task by agreement with Qwen2.5-Coder-7B-Instruct's saved standard-test predictions. Selection remained independent of correctness labels. Pass@1 was 61.40% on MBPP and 50.13% on MBPP+, compared with original-order values of 51.38% and 43.61%. The full report is saved at outputs/qwen-evalplus-full-10-temp02/qwen7b-prediction-reranking-399.json.
+
+## 2026-09-11: Complete Qwen 7B mean log-likelihood reranking
+
+Scored the saved base-test answer from every candidate with Qwen2.5-Coder-7B-Instruct using teacher-forced mean token log likelihood. The completed artifact contains 11,907 candidate/test score slots, with 10,938 returned answer scores and 969 missing outputs. Evaluated mean, median, minimum, trimmed mean, position-weighted mean, rank sum, and worst-test-penalty aggregation. Candidate selection was independent of ground truth. The full Pass@K table is in logs/results.txt and the reusable score and ranking artifacts are outputs/qwen-answer-predictions/qwen25-coder-7b-loglikelihood-scores.json and outputs/qwen-evalplus-full-10-temp02/qwen7b-loglikelihood-reranking-399.json. Median aggregation was best at Pass@1 with 58.15% MBPP and 49.87% MBPP+.
+
+## 2026-09-11: Filter candidates with visible MBPP assertion
+
+Executed each of the ten saved candidates on the single assertion embedded in each raw MBPP task prompt. The run covered all 399 tasks with 32 parallel workers and a two-second per-candidate timeout. The survivor distribution was 112 tasks with zero candidates, 17 with one, 14 with two, 15 with three, 16 with four, 11 with five, 11 with six, 10 with seven, 15 with eight, 23 with nine, and 155 with all ten. No hidden tests or correctness labels were used, and no Pass@K metrics were computed. Full verdicts are saved at outputs/qwen-evalplus-full-10-temp02/visible-assertion-filter-399.json.
+
+## 2026-09-11: Measure visible-assertion filter Pass@K
+
+Evaluated the saved visible-assertion survivor lists in original candidate order. The first surviving candidate achieved full-suite Pass@1 of 62.41% MBPP, 50.63% MBPP+, and 50.13% combined, with 112 empty survivor tasks counted as failures. Conditional on the 287 tasks with at least one survivor, the corresponding values were 86.76%, 70.38%, and 69.69%. The full Pass@K curves and both denominators are saved in outputs/qwen-evalplus-full-10-temp02/visible-assertion-filter-metrics-399.json.
+
+## 2026-09-11: Store filtered Pass@K evaluation script
+
+Commit `bde398a` stores the filtered Pass@K report and results. This follow-up stores experiments/evaluate_visible_assertion_filter.py so the full-suite and conditional curves can be reproduced from the saved survivor artifact.
+
+## 2026-09-11: Apply likelihood tiebreaker after visible assertion
+
+After visible-assertion filtering, ranked surviving candidates using Qwen 7B likelihoods on the other two of the first three stored standard tests. Mean likelihood selected 247/399 fully correct MBPP candidates, or 61.90%, and 204/399 MBPP+ candidates, or 51.13%. Median likelihood selected 248/399 MBPP candidates, or 62.16%, and 204/399 MBPP+ candidates, or 51.13%. Five tasks lacked a visible-example match among the first three stored tests and used all three as a recorded fallback. Full curves are saved in outputs/qwen-evalplus-full-10-temp02/visible-assertion-likelihood-tiebreak-399.json.
+
+## 2026-09-11: Regenerate and archive Qwen 3B candidates
+
+The prior 1.5B and 3B candidate directories were confirmed absent from the workspace, cache, and Git history. Regenerated all 3990 Qwen2.5-Coder-3B-Instruct candidates with the original ChatML prompt and sampling configuration, saving raw completions, cleaned programs, per-task manifests, and a run manifest. The compressed candidate archive is outputs/regenerated-qwen25-coder-3b-10-temp02-candidates.tar.zst. Visible-assertion filtering left 341 tasks with survivors and 58 empty tasks. Selecting the first survivor achieved 74.94% MBPP and 60.65% MBPP+ over all 399 tasks, with conditional accuracies of 87.68% and 70.97%. Three attempts to download Qwen2.5-Coder-1.5B-Instruct returned HTTP 429, and the failure record is outputs/regenerated-qwen25-coder-1p5b-10-temp02/download_attempts.json.
+
+## 2026-09-11: Preserve typed inputs in regenerated survivor analysis
+
+Fixed the bounded MBPP survivor analysis to serialize candidate inputs with pickle and base64 so tuples remain tuples across subprocess boundaries. The prior JSON transport converted tuples to lists and created false disagreements with the original evaluator. Removed the unused broad analyzer draft.
+
+## 2026-09-11: Diagnose regenerated Qwen 3B survivor filtering and tie breaks
+
+Corrected the survivor diagnostic to preserve tuple inputs across subprocesses and reran all 3,014 survivors. Among 341 nonempty tasks, filtering removed all correct candidates on 35 tasks, or 10.26%. There were 332 multi-survivor tasks, and the first survivor was an incorrect choice on 7 of 299 multi-survivor tasks with a correct survivor, or 2.34%. The first survivor was correct on 299/341 nonempty tasks, or 87.68%. The diagnostic artifact is outputs/regenerated-qwen25-coder-3b-10-temp02/base-survivor-correctness-analysis.json.
+
+## 2026-09-11: Expand survivor diagnosis to all regenerated candidates
+
+The prior diagnostic evaluated only survivors, so its 35-task count meant no correct survivor existed and did not establish that a correct candidate had actually been filtered out. Expanded the analysis to execute all ten candidates per task and distinguish true filter false negatives from tasks where all ten candidates are incorrect.
+
+## 2026-09-11: Correct assertion-filter false-negative interpretation
+
+Expanded evaluation of all 3,990 regenerated candidates showed that only two tasks, Mbpp/400 and Mbpp/442, had a correct candidate filtered out by the visible assertion. The prior 35-task count included 33 tasks where all ten candidates were incorrect. The 306 retained-correct count and seven tie-break errors are unchanged.
+
+## 2026-09-11: Compute candidate-level assertion-filter confusion matrix
+
+Across all 3,990 regenerated Qwen 3B candidates, the visible assertion filter produced 2,675 true positives, 970 true negatives, 339 false positives, and 6 false negatives. The positive label was canonical MBPP base correctness and the positive decision was surviving the visible assertion.
+
+## 2026-09-11: Start adaptive assertion-guided Qwen 3B pilot
+
+Added a one-task pilot that generates ten candidates sequentially. A failed visible assertion causes the next model call to repair the prior candidate with its error, while a passing candidate causes the next call to generate a fresh candidate. Every prompt, response, cleaned program, and assertion verdict is saved.
+
+## 2026-09-11: Stop adaptive pilot at first assertion pass
+
+Clarified the adaptive pilot so it terminates immediately when a candidate passes the visible assertion. The ten-output budget is only a maximum for consecutive failed candidate repairs.
