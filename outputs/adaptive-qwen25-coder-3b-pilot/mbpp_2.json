@@ -1,0 +1,21 @@
+{
+  "experiment": "adaptive-assertion-guided-qwen3b",
+  "model": "/workspace/.cache/huggingface/hub/models--Qwen--Qwen2.5-Coder-3B-Instruct/snapshots/488639f1ff808d1d3d0ba301aef8c11461451ec5",
+  "task_id": "Mbpp/2",
+  "task_prompt": "\"\"\"\nWrite a function to find the shared elements from the given two lists.\nassert set(similar_elements((3, 4, 5, 6),(5, 7, 4, 10))) == set((4, 5))\n\"\"\"\n",
+  "visible_assertion": "assert set(similar_elements((3, 4, 5, 6),(5, 7, 4, 10))) == set((4, 5))",
+  "budget": 10,
+  "stop_on_first_pass": true,
+  "records": [
+    {
+      "index": 0,
+      "mode": "generate",
+      "prompt": "<|im_start|>system\nYou are an intelligent programming assistant to produce Python algorithmic solutions<|im_end|>\n<|im_start|>user\nCan you complete the following Python function?\n```python\n\"\"\"\nWrite a function to find the shared elements from the given two lists.\nassert set(similar_elements((3, 4, 5, 6),(5, 7, 4, 10))) == set((4, 5))\n\"\"\"\n\n```\n<|im_end|>\n<|im_start|>assistant\n```python\n",
+      "raw_output": "def similar_elements(list1, list2):\n    # Convert both lists to sets and find the intersection\n    result = set(list1) & set(list2)\n    return result\n\n# Test the function with the provided test case\nassert set(similar_elements((3, 4, 5, 6), (5, 7, 4, 10))) == set((4, 5))\n```",
+      "code": "def similar_elements(list1, list2):\n    # Convert both lists to sets and find the intersection\n    result = set(list1) & set(list2)\n    return result\n\n# Test the function with the provided test case\nassert set(similar_elements((3, 4, 5, 6), (5, 7, 4, 10))) == set((4, 5))",
+      "verdict": {
+        "passed": true
+      }
+    }
+  ]
+}

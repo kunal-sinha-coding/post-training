@@ -5663,3 +5663,11 @@ The confusion matrix treats each of the 3,990 regenerated candidate programs as 
 - False negatives: 6 correct generations rejected by the filter.
 
 The 3,014 survivors equal 2,675 true positives plus 339 false positives. The 976 rejected candidates equal 970 true negatives plus 6 false negatives. The six false-negative candidates occur on the two tasks Mbpp/400 and Mbpp/442.
+
+## Adaptive assertion-guided Qwen 3B pilot on Mbpp/2
+
+Experiment: `adaptive-assertion-guided-qwen3b-mbpp-2`.
+
+Setup: Qwen2.5-Coder-3B-Instruct used the original ChatML task prompt with temperature 0.2, top_p 0.95, and max_new_tokens 512. The loop allowed up to ten total model outputs, repaired a failed candidate using its visible assertion error, and stopped immediately at the first passing candidate. The candidate passed the visible assertion on the first generation, so no repair call was needed.
+
+Artifact: `outputs/adaptive-qwen25-coder-3b-pilot/mbpp_2.json`. The artifact saves the complete prompt, raw response, cleaned code, verdict, task, assertion, model, and stop-on-first-pass configuration.

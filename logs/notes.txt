@@ -1915,3 +1915,7 @@ Added a one-task pilot that generates ten candidates sequentially. A failed visi
 ## 2026-09-11: Stop adaptive pilot at first assertion pass
 
 Clarified the adaptive pilot so it terminates immediately when a candidate passes the visible assertion. The ten-output budget is only a maximum for consecutive failed candidate repairs.
+
+## 2026-09-11: Complete adaptive assertion-guided Qwen 3B pilot
+
+On the first EvalPlus task, Mbpp/2, Qwen2.5-Coder-3B-Instruct produced a candidate that passed the visible assertion on the first generation. The adaptive loop therefore stopped after one output and made no repair call. The complete trace is saved at outputs/adaptive-qwen25-coder-3b-pilot/mbpp_2.json.
