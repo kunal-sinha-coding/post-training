@@ -1907,3 +1907,7 @@ Expanded evaluation of all 3,990 regenerated candidates showed that only two tas
 ## 2026-09-11: Compute candidate-level assertion-filter confusion matrix
 
 Across all 3,990 regenerated Qwen 3B candidates, the visible assertion filter produced 2,675 true positives, 970 true negatives, 339 false positives, and 6 false negatives. The positive label was canonical MBPP base correctness and the positive decision was surviving the visible assertion.
+
+## 2026-09-11: Start adaptive assertion-guided Qwen 3B pilot
+
+Added a one-task pilot that generates ten candidates sequentially. A failed visible assertion causes the next model call to repair the prior candidate with its error, while a passing candidate causes the next call to generate a fresh candidate. Every prompt, response, cleaned program, and assertion verdict is saved.
