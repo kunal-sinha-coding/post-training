@@ -5642,3 +5642,13 @@ Results among the 341 tasks with at least one survivor:
 The seven incorrect first-survivor selections were Mbpp/92, Mbpp/119, Mbpp/123, Mbpp/223, Mbpp/643, Mbpp/773, and Mbpp/780. The 35 filter false negatives were recorded in the JSON artifact. The corrected run agrees with the original selected-candidate evaluation on all 341 nonempty tasks.
 
 Limitations: These are MBPP base-suite correctness diagnostics for the newly regenerated 3B candidate pool. They do not use MBPP+ labels and are not an exact paired comparison with the deleted earlier 3B candidate pool.
+
+## Correction: true assertion-filter false negatives for regenerated Qwen 3B
+
+The earlier 35-task count was incorrectly described as cases where the filter removed a correct candidate. That analysis evaluated only survivors, so 35 meant that no correct survivor existed. The expanded run evaluated all 3,990 regenerated candidates on canonical MBPP base inputs.
+
+Among the 399 tasks, 308 had at least one correct candidate before filtering. The visible assertion filter removed all correct candidates on only 2 tasks, Mbpp/400 and Mbpp/442, giving a true filter false-negative rate of 2/308 = 0.65% among tasks with any correct candidate, or 2/341 = 0.59% among tasks with at least one survivor. The remaining 33 of the earlier 35 cases had no correct candidate among all ten generations. The expanded per-candidate report is outputs/regenerated-qwen25-coder-3b-10-temp02/base-survivor-correctness-analysis.json.
+
+Mbpp/400 has a visible assertion claiming four distinct tuples have three unique tuples, while the correct function returns four. Mbpp/442 compares the exact positive ratio 7/13 against the rounded literal 0.54, which fails exact equality even though the generated function is correct on canonical tests.
+
+The retained-correct count remains 306 tasks. Of these, 7 were lost by the first-survivor tie break, leaving 299 currently selected correctly.
