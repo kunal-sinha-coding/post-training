@@ -26,6 +26,8 @@ Added an answer-independent reranker that scores each of the ten saved candidate
 
 Completed GPT prediction reranking on all 399 tasks. Reranked Pass@1 improved from 51.38 to 63.91 percent on base, from 43.61 to 51.63 percent on MBPP+, and from 42.86 to 50.63 percent on combined correctness. Pass@10 was unchanged at 66.42 percent base and 55.89 percent combined.
 
+Added local Qwen answer-prediction evaluation for the 1.5B, 3B, and 7B Qwen2.5-Coder-Instruct checkpoints. It uses the same system and user messages as the GPT-5 mini predictor, predicts test outputs only, and measures against canonical outputs.
+
 ## September 8, 2026: Balance verifier training classes
 
 The verifier trainer now reports task and class distributions, logs those distributions to W&B at step zero, and optionally downsamples only the overrepresented training class to an exact 50/50 split. The rerun uses 7,890 saved generated candidates from 789 synthetic tasks, while validation remains the unchanged official EvalPlus generated-candidate artifact with 3,990 candidates from 399 tasks.
