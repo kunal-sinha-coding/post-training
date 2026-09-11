@@ -2,7 +2,7 @@
 
 The script loads Qwen2.5-Coder-3B-Instruct, generates one candidate at a time,
 executes the task-visible assertion, repairs failures with the observed error,
-and saves every prompt, raw response, cleaned program, and verdict.
+stops at the first passing candidate, and saves the complete trace.
 """
 
 from __future__ import annotations
@@ -73,7 +73,7 @@ def generate_one(model: object, tokenizer: object, prompt: str, args: argparse.N
     return tokenizer.decode(output[0, prompt_width:], skip_special_tokens=True)
 
 
-# Run the ten-step adaptive generation loop and persist the complete trace.
+# Run the bounded repair loop and stop immediately when the assertion passes.
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", required=True)
@@ -102,11 +102,14 @@ def main() -> None:
         code = clean_completion(raw)
         verdict = check_assertion(code, assertion)
         records.append({"index": index, "mode": "generate" if not previous_code or not previous_error else "repair", "prompt": prompt, "raw_output": raw, "code": code, "verdict": verdict})
+        if verdict["passed"]:
+            print(f"Candidate {index + 1}/10 passed; stopping", flush=True)
+            break
         previous_code = "" if verdict["passed"] else code
         previous_error = "" if verdict["passed"] else verdict.get("error", "Assertion failed")
-        print(f"Candidate {index + 1}/10: {records[-1]['mode']}, assertion {'passed' if verdict['passed'] else 'failed'}", flush=True)
+        print(f"Candidate {index + 1}/10: {records[-1]['mode']}, assertion failed", flush=True)
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps({"experiment": "adaptive-assertion-guided-qwen3b", "model": args.model, "task_id": task["task_id"], "task_prompt": task["prompt"], "visible_assertion": assertion, "budget": 10, "records": records}, indent=2) + "\n")
+    args.output.write_text(json.dumps({"experiment": "adaptive-assertion-guided-qwen3b", "model": args.model, "task_id": task["task_id"], "task_prompt": task["prompt"], "visible_assertion": assertion, "budget": 10, "stop_on_first_pass": True, "records": records}, indent=2) + "\n")
 
 
 if __name__ == "__main__":

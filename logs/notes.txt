@@ -1911,3 +1911,7 @@ Across all 3,990 regenerated Qwen 3B candidates, the visible assertion filter pr
 ## 2026-09-11: Start adaptive assertion-guided Qwen 3B pilot
 
 Added a one-task pilot that generates ten candidates sequentially. A failed visible assertion causes the next model call to repair the prior candidate with its error, while a passing candidate causes the next call to generate a fresh candidate. Every prompt, response, cleaned program, and assertion verdict is saved.
+
+## 2026-09-11: Stop adaptive pilot at first assertion pass
+
+Clarified the adaptive pilot so it terminates immediately when a candidate passes the visible assertion. The ten-output budget is only a maximum for consecutive failed candidate repairs.
