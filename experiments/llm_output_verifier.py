@@ -9,6 +9,7 @@ response, and computes selected-candidate accuracy only after selection.
 from __future__ import annotations
 
 import argparse
+import concurrent.futures
 import hashlib
 import json
 import os
@@ -94,6 +95,20 @@ def call_verifier(client: object, model: str, prompt: str, count: int) -> dict:
     return {"raw_response": text, "selected_candidate_index": index, "rationale": rationale}
 
 
+# Prepare one uncached task request without joining any benchmark labels.
+def prepare_request(task_id: str, task: dict, evaluations: dict, model: str) -> tuple[str, str, int, dict]:
+    candidates = load_task(task_id, task, evaluations)
+    prompt = build_prompt(task, candidates)
+    prompt_hash = hashlib.sha256(prompt.encode()).hexdigest()
+    return task_id, prompt, len(candidates), {"prompt_sha256": prompt_hash, "model": model}
+
+
+# Run one prepared verifier request in an independent worker.
+def verify_request(client: object, model: str, request: tuple[str, str, int, dict]) -> tuple[str, dict]:
+    task_id, prompt, count, metadata = request
+    return task_id, {**metadata, **call_verifier(client, model, prompt, count)}
+
+
 # Measure selected candidates against saved base and EvalPlus correctness labels after selection.
 def measure(rows: list[dict], evaluations: dict) -> dict:
     metrics = {}
@@ -111,6 +126,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--tasks", type=int, default=20)
     parser.add_argument("--model", default="gpt-5-mini")
+    parser.add_argument("--workers", type=int, default=5)
     parser.add_argument("--output", type=Path, default=ROOT / "llm-output-verifier-20.json")
     args = parser.parse_args()
 
@@ -122,25 +138,20 @@ def main() -> None:
     client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
     cached = json.loads(args.output.read_text()) if args.output.exists() else {"results": {}}
     results = cached.get("results", {})
+    pending = []
     for task_id in task_ids:
-        task = data[task_id]
-        candidates = load_task(task_id, task, evaluations)
-        prompt = build_prompt(task, candidates)
-        prompt_hash = hashlib.sha256(prompt.encode()).hexdigest()
-        existing = results.get(task_id)
-        if existing and existing.get("prompt_sha256") == prompt_hash and existing.get("model") == args.model:
+        request = prepare_request(task_id, data[task_id], evaluations, args.model)
+        if results.get(task_id, {}).get("prompt_sha256") == request[3]["prompt_sha256"] and results.get(task_id, {}).get("model") == args.model:
             continue
-        decision = call_verifier(client, args.model, prompt, len(candidates))
-        results[task_id] = {
-            "task_id": task_id,
-            "model": args.model,
-            "prompt_sha256": prompt_hash,
-            "candidate_count": len(candidates),
-            **decision,
-        }
-        args.output.parent.mkdir(parents=True, exist_ok=True)
-        args.output.write_text(json.dumps({"results": results}, indent=2) + "\n")
-        print(f"Verified {len(results)}/{len(task_ids)}: {task_id}", flush=True)
+        pending.append(request)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=args.workers) as executor:
+        futures = [executor.submit(verify_request, client, args.model, request) for request in pending]
+        for completed, future in enumerate(concurrent.futures.as_completed(futures), 1):
+            task_id, decision = future.result()
+            results[task_id] = {"task_id": task_id, "candidate_count": 10, **decision}
+            args.output.parent.mkdir(parents=True, exist_ok=True)
+            args.output.write_text(json.dumps({"results": results}, indent=2) + "\n")
+            print(f"Verified {len(results)}/{len(task_ids)}: {task_id} ({completed}/{len(pending)} pending)", flush=True)
     selected_rows = [results[task_id] for task_id in task_ids]
     artifact = {
         "experiment": "llm-output-verifier-evalplus-20",
