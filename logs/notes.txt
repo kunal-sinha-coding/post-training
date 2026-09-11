@@ -1887,3 +1887,7 @@ After visible-assertion filtering, ranked surviving candidates using Qwen 7B lik
 ## 2026-09-11: Regenerate and archive Qwen 3B candidates
 
 The prior 1.5B and 3B candidate directories were confirmed absent from the workspace, cache, and Git history. Regenerated all 3990 Qwen2.5-Coder-3B-Instruct candidates with the original ChatML prompt and sampling configuration, saving raw completions, cleaned programs, per-task manifests, and a run manifest. The compressed candidate archive is outputs/regenerated-qwen25-coder-3b-10-temp02-candidates.tar.zst. Visible-assertion filtering left 341 tasks with survivors and 58 empty tasks. Selecting the first survivor achieved 74.94% MBPP and 60.65% MBPP+ over all 399 tasks, with conditional accuracies of 87.68% and 70.97%. Three attempts to download Qwen2.5-Coder-1.5B-Instruct returned HTTP 429, and the failure record is outputs/regenerated-qwen25-coder-1p5b-10-temp02/download_attempts.json.
+
+## 2026-09-11: Preserve typed inputs in regenerated survivor analysis
+
+Fixed the bounded MBPP survivor analysis to serialize candidate inputs with pickle and base64 so tuples remain tuples across subprocess boundaries. The prior JSON transport converted tuples to lists and created false disagreements with the original evaluator. Removed the unused broad analyzer draft.

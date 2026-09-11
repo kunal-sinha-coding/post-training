@@ -9,9 +9,11 @@ survivors.
 from __future__ import annotations
 
 import argparse
+import base64
 import concurrent.futures
 import copy
 import json
+import pickle
 import subprocess
 import sys
 from pathlib import Path
@@ -38,7 +40,7 @@ def encode(value: object) -> object:
 # Execute one candidate in a fresh subprocess with a hard wall-clock timeout.
 def run_candidate(job: dict) -> dict:
     child = (
-        "import contextlib, io, json, sys\n"
+        "import base64, contextlib, io, json, pickle, sys\n"
         "def encode(v):\n"
         "    if v is None or type(v) in (bool,int,str): return [type(v).__name__,v]\n"
         "    if type(v) is float: return ['float',v.hex()]\n"
@@ -46,7 +48,7 @@ def run_candidate(job: dict) -> dict:
         "    if type(v) in (set,frozenset): return [type(v).__name__,sorted([encode(x) for x in v],key=repr)]\n"
         "    if type(v) is dict: return ['dict',sorted([[encode(k),encode(x)] for k,x in v.items()],key=repr)]\n"
         "    return ['unsupported',type(v).__name__]\n"
-        "j=json.loads(sys.stdin.read()); out=[]\n"
+        "j=pickle.loads(base64.b64decode(sys.stdin.buffer.read())); out=[]\n"
         "try:\n"
         "  with contextlib.redirect_stdout(io.StringIO()),contextlib.redirect_stderr(io.StringIO()):\n"
         "    scope={'__name__':'candidate'}; exec(j['code'],scope); f=scope[j['entry_point']]\n"
@@ -55,7 +57,8 @@ def run_candidate(job: dict) -> dict:
         "except BaseException as e: print(json.dumps({'error':type(e).__name__}))\n"
     )
     try:
-        completed = subprocess.run([sys.executable, "-I", "-c", child], input=json.dumps(job).encode(), stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=5)
+        payload = base64.b64encode(pickle.dumps(job, protocol=pickle.HIGHEST_PROTOCOL))
+        completed = subprocess.run([sys.executable, "-I", "-c", child], input=payload, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=5)
         value = json.loads(completed.stdout.decode().splitlines()[-1]) if completed.stdout else {}
         outputs = value.get("outputs", [])
         return {"all_correct": outputs == job["expected"], "test_correct": sum(left == right for left, right in zip(outputs, job["expected"])), "test_total": len(job["expected"])}
