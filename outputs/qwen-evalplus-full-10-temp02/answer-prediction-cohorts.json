@@ -1,0 +1,30 @@
+{
+  "prediction_artifact": "outputs/qwen-evalplus-full-10-temp02/llm-test-answer-predictions-399.json",
+  "evaluation_artifact": "outputs/qwen-evalplus-full-10-temp02/mbpp/qwen2_chat_temp_0.2/eval_results.json",
+  "cohorts": {
+    "mixed": {
+      "tasks": 125,
+      "test_correct": 347,
+      "test_total": 385,
+      "test_accuracy": 0.9012987012987013,
+      "tasks_all_correct": 112,
+      "task_accuracy": 0.896
+    },
+    "all_correct": {
+      "tasks": 140,
+      "test_correct": 391,
+      "test_total": 436,
+      "test_accuracy": 0.8967889908256881,
+      "tasks_all_correct": 124,
+      "task_accuracy": 0.8857142857142857
+    },
+    "all_incorrect": {
+      "tasks": 134,
+      "test_correct": 353,
+      "test_total": 415,
+      "test_accuracy": 0.8506024096385543,
+      "tasks_all_correct": 106,
+      "task_accuracy": 0.7910447761194029
+    }
+  }
+}

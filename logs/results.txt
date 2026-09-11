@@ -2054,6 +2054,19 @@ Reranked versus original-order Pass@K:
 
 The largest absolute gain is at Pass@1: +12.53 percentage points on base, +8.02 points on MBPP+, and +7.77 points on combined correctness. Pass@10 is unchanged because reranking preserves the same ten-candidate pool.
 
+EXPERIMENT: answer-prediction-correctness-cohorts-2026-09-11
+Purpose: Measure GPT-5 mini standard-test answer prediction separately for tasks where the ten saved candidates are mixed, all correct, or all incorrect on the base tests.
+Grouping: A task is all-correct when all ten saved candidates pass every base test, all-incorrect when none pass every base test, and mixed otherwise. Grouping uses saved correctness only for post-prediction analysis.
+Artifact: outputs/qwen-evalplus-full-10-temp02/answer-prediction-cohorts.json.
+
+| Candidate cohort | Tasks | Correct outputs | Total outputs | Per-test accuracy | Whole-task accuracy |
+|---|---:|---:|---:|---:|---:|
+| Mixed | 125 | 347 | 385 | 90.13% | 89.60% |
+| All ten correct | 140 | 391 | 436 | 89.68% | 88.57% |
+| All ten incorrect | 134 | 353 | 415 | 85.06% | 79.10% |
+
+The all-incorrect cohort is harder for GPT-5 mini by 5.07 percentage points per test and 9.50 percentage points per whole task relative to the mixed cohort.
+
 Experiment: saved-candidate-reranking-audit-2026-09-10
 Timestamp: 2026-09-10T00:00:00Z
 Purpose: Assess whether the requested filtering and reranking curves can be reproduced without new sandbox execution or ground-truth-based candidate selection.
