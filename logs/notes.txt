@@ -1867,3 +1867,7 @@ Ranked the ten saved candidates per EvalPlus task by agreement with Qwen2.5-Code
 ## 2026-09-11: Complete Qwen 7B mean log-likelihood reranking
 
 Scored the saved base-test answer from every candidate with Qwen2.5-Coder-7B-Instruct using teacher-forced mean token log likelihood. The completed artifact contains 11,907 candidate/test score slots, with 10,938 returned answer scores and 969 missing outputs. Evaluated mean, median, minimum, trimmed mean, position-weighted mean, rank sum, and worst-test-penalty aggregation. Candidate selection was independent of ground truth. The full Pass@K table is in logs/results.txt and the reusable score and ranking artifacts are outputs/qwen-answer-predictions/qwen25-coder-7b-loglikelihood-scores.json and outputs/qwen-evalplus-full-10-temp02/qwen7b-loglikelihood-reranking-399.json. Median aggregation was best at Pass@1 with 58.15% MBPP and 49.87% MBPP+.
+
+## 2026-09-11: Filter candidates with visible MBPP assertion
+
+Executed each of the ten saved candidates on the single assertion embedded in each raw MBPP task prompt. The run covered all 399 tasks with 32 parallel workers and a two-second per-candidate timeout. The survivor distribution was 112 tasks with zero candidates, 17 with one, 14 with two, 15 with three, 16 with four, 11 with five, 11 with six, 10 with seven, 15 with eight, 23 with nine, and 155 with all ten. No hidden tests or correctness labels were used, and no Pass@K metrics were computed. Full verdicts are saved at outputs/qwen-evalplus-full-10-temp02/visible-assertion-filter-399.json.

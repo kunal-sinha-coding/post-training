@@ -5538,3 +5538,29 @@ Aggregation definitions:
 Original-order baseline for the same candidate pool is 51.38% MBPP and 43.61% MBPP+ at Pass@1. The best likelihood aggregation at Pass@1 is median on MBPP at 58.15% and median on MBPP+ at 49.87%.
 
 Artifacts: `outputs/qwen-answer-predictions/qwen25-coder-7b-loglikelihood-scores.json` and `outputs/qwen-evalplus-full-10-temp02/qwen7b-loglikelihood-reranking-399.json`.
+
+## Visible prompt-assertion candidate filter
+
+Experiment: `visible-assertion-filter-evalplus-399`.
+
+Purpose: Measure how many of the ten saved candidate generations survive execution on the single assertion visibly embedded in each task's original MBPP prompt, before computing any benchmark Pass@K metrics.
+
+Setup: Extracted the one `assert` statement from each raw task prompt and executed each of the ten saved candidate programs against that assertion. The 399 tasks were evaluated in 32 parallel worker processes with a two-second per-candidate timeout. The filter used no hidden standard tests, EvalPlus tests, canonical solutions, or correctness labels. Every candidate verdict and exception is retained.
+
+| Surviving candidates | Tasks | Percentage |
+|---:|---:|---:|
+| 0 | 112 | 28.07% |
+| 1 | 17 | 4.26% |
+| 2 | 14 | 3.51% |
+| 3 | 15 | 3.76% |
+| 4 | 16 | 4.01% |
+| 5 | 11 | 2.76% |
+| 6 | 11 | 2.76% |
+| 7 | 10 | 2.51% |
+| 8 | 15 | 3.76% |
+| 9 | 23 | 5.76% |
+| 10 | 155 | 38.85% |
+
+Artifact: `outputs/qwen-evalplus-full-10-temp02/visible-assertion-filter-399.json`.
+
+No Pass@K metrics were computed in this experiment, as requested. The survivor set is saved for a separate follow-up evaluation.
