@@ -73,26 +73,9 @@ def generate_one(model: object, tokenizer: object, prompt: str, args: argparse.N
     return tokenizer.decode(output[0, prompt_width:], skip_special_tokens=True)
 
 
-# Run the bounded repair loop and stop immediately when the assertion passes.
-def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--model", required=True)
-    parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--temperature", type=float, default=0.2)
-    parser.add_argument("--top-p", type=float, default=0.95)
-    parser.add_argument("--max-new-tokens", type=int, default=512)
-    parser.add_argument("--max-prompt-tokens", type=int, default=2048)
-    parser.add_argument("--task-index", type=int, default=0)
-    args = parser.parse_args()
-    tasks = list(map(json.loads, DATA.open()))
-    task = tasks[args.task_index]
+# Run the bounded repair loop for one task and return its complete trace.
+def run_task(model: object, tokenizer: object, task: dict, args: argparse.Namespace) -> dict:
     assertion = next(line.strip() for line in task["prompt"].splitlines() if line.strip().startswith("assert "))
-    tokenizer = AutoTokenizer.from_pretrained(args.model, trust_remote_code=False)
-    tokenizer.padding_side = "left"
-    if tokenizer.pad_token is None:
-        tokenizer.pad_token = tokenizer.eos_token
-    model = AutoModelForCausalLM.from_pretrained(args.model, torch_dtype=torch.bfloat16, device_map="auto", trust_remote_code=False)
-    model.eval()
     records = []
     previous_code = ""
     previous_error = ""
@@ -103,13 +86,49 @@ def main() -> None:
         verdict = check_assertion(code, assertion)
         records.append({"index": index, "mode": "generate" if not previous_code or not previous_error else "repair", "prompt": prompt, "raw_output": raw, "code": code, "verdict": verdict})
         if verdict["passed"]:
-            print(f"Candidate {index + 1}/10 passed; stopping", flush=True)
             break
-        previous_code = "" if verdict["passed"] else code
-        previous_error = "" if verdict["passed"] else verdict.get("error", "Assertion failed")
-        print(f"Candidate {index + 1}/10: {records[-1]['mode']}, assertion failed", flush=True)
+        previous_code = code
+        previous_error = verdict.get("error", "Assertion failed")
+    return {"experiment": "adaptive-assertion-guided-qwen3b", "model": args.model, "task_id": task["task_id"], "task_prompt": task["prompt"], "visible_assertion": assertion, "budget": 10, "stop_on_first_pass": True, "records": records}
+
+
+# Load the model once and run either one task or every task with resumable saves.
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--model", required=True)
+    parser.add_argument("--output", type=Path)
+    parser.add_argument("--output-dir", type=Path)
+    parser.add_argument("--temperature", type=float, default=0.2)
+    parser.add_argument("--top-p", type=float, default=0.95)
+    parser.add_argument("--max-new-tokens", type=int, default=512)
+    parser.add_argument("--max-prompt-tokens", type=int, default=2048)
+    parser.add_argument("--task-index", type=int, default=0)
+    args = parser.parse_args()
+    tasks = list(map(json.loads, DATA.open()))
+    tokenizer = AutoTokenizer.from_pretrained(args.model, trust_remote_code=False)
+    tokenizer.padding_side = "left"
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+    model = AutoModelForCausalLM.from_pretrained(args.model, torch_dtype=torch.bfloat16, device_map="auto", trust_remote_code=False)
+    model.eval()
+    if args.output_dir:
+        args.output_dir.mkdir(parents=True, exist_ok=True)
+        for task in tasks:
+            target = args.output_dir / f"{task['task_id'].replace('/', '_')}.json"
+            if target.exists():
+                print(f"Skipping saved {task['task_id']}", flush=True)
+                continue
+            artifact = run_task(model, tokenizer, task, args)
+            target.write_text(json.dumps(artifact, indent=2) + "\n")
+            passed = artifact["records"][-1]["verdict"]["passed"]
+            print(f"Completed {task['task_id']}: {len(artifact['records'])} outputs, assertion {'passed' if passed else 'failed'}", flush=True)
+        return
+    if args.output is None:
+        raise ValueError("Specify --output for one task or --output-dir for the full suite.")
+    artifact = run_task(model, tokenizer, tasks[args.task_index], args)
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps({"experiment": "adaptive-assertion-guided-qwen3b", "model": args.model, "task_id": task["task_id"], "task_prompt": task["prompt"], "visible_assertion": assertion, "budget": 10, "stop_on_first_pass": True, "records": records}, indent=2) + "\n")
+    args.output.write_text(json.dumps(artifact, indent=2) + "\n")
+    print(f"Completed {artifact['task_id']}: {len(artifact['records'])} outputs, assertion {'passed' if artifact['records'][-1]['verdict']['passed'] else 'failed'}", flush=True)
 
 
 if __name__ == "__main__":
