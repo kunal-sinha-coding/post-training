@@ -40,8 +40,12 @@ def parse_response(text: str, count: int) -> list[dict]:
         value = json.loads(text)
     except json.JSONDecodeError:
         start, end = text.find("{"), text.rfind("}")
-        value = json.loads(text[start:end + 1])
-    predictions = value["predictions"]
+        if start >= 0 and end > start:
+            value = json.loads(text[start:end + 1])
+        else:
+            start, end = text.find("["), text.rfind("]")
+            value = json.loads(text[start:end + 1])
+    predictions = value if isinstance(value, list) else value["predictions"]
     if len(predictions) != count:
         raise ValueError(f"Expected {count} predictions, received {len(predictions)}.")
     return predictions
