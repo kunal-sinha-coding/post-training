@@ -5622,3 +5622,23 @@ Each regenerated candidate was tested against the one assertion visible in its t
 The evaluation artifact is `outputs/regenerated-qwen25-coder-3b-10-temp02/visible-assertion-filter-evaluation.json`. These values come from a newly sampled candidate pool and should not be compared as an exact paired reranking result with the earlier deleted 3B run.
 
 The 1.5B checkpoint was not available locally. Three Hugging Face download attempts returned HTTP 429, so no 1.5B candidates were regenerated. The attempts are recorded in `outputs/regenerated-qwen25-coder-1p5b-10-temp02/download_attempts.json`.
+
+## Regenerated Qwen 3B visible-assertion survivor diagnosis
+
+Experiment: diagnose whether visible-assertion filtering removed all correct candidates and whether first-survivor ranking selected an incorrect candidate when a later survivor was correct.
+
+Purpose: Decompose errors among the regenerated Qwen2.5-Coder-3B-Instruct candidate pool after execution of the one assertion visible in each task prompt.
+
+Setup: The pool contains 399 EvalPlus MBPP tasks with ten regenerated candidates per task. Filtering used only the visible prompt assertion and retained survivors in original candidate order. For this diagnostic, every one of the 3,014 survivors across the 341 nonempty tasks was executed on the canonical MBPP base inputs in a fresh subprocess. Input objects were transported with pickle so tuple and list types were preserved. Correctness labels were used only after the survivor set and first-survivor choice were fixed. The corrected analysis artifact is outputs/regenerated-qwen25-coder-3b-10-temp02/base-survivor-correctness-analysis.json, and the selection artifact is outputs/regenerated-qwen25-coder-3b-10-temp02/visible-assertion-filter-evaluation.json.
+
+Results among the 341 tasks with at least one survivor:
+
+- Filtering removed every correct candidate on 35 tasks, which is 10.26% of nonempty tasks. Therefore at least one correct candidate survived on 306/341 tasks, or 89.74%.
+- There were 332 tasks with multiple survivors.
+- Among the 299 multi-survivor tasks with at least one correct survivor, the first survivor was incorrect on 7 tasks. This is an incorrect tie-break rate of 2.34% among multi-survivor tasks with a correct option.
+- Counting all 332 multi-survivor tasks as the denominator, the first-survivor tie-break error rate was 2.11%.
+- The first survivor was correct on 299/341 nonempty tasks, or 87.68% conditional accuracy. The same result is 299/399, or 74.94%, over the full 399-task suite because 58 empty survivor sets count as misses.
+
+The seven incorrect first-survivor selections were Mbpp/92, Mbpp/119, Mbpp/123, Mbpp/223, Mbpp/643, Mbpp/773, and Mbpp/780. The 35 filter false negatives were recorded in the JSON artifact. The corrected run agrees with the original selected-candidate evaluation on all 341 nonempty tasks.
+
+Limitations: These are MBPP base-suite correctness diagnostics for the newly regenerated 3B candidate pool. They do not use MBPP+ labels and are not an exact paired comparison with the deleted earlier 3B candidate pool.

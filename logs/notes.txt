@@ -1891,3 +1891,7 @@ The prior 1.5B and 3B candidate directories were confirmed absent from the works
 ## 2026-09-11: Preserve typed inputs in regenerated survivor analysis
 
 Fixed the bounded MBPP survivor analysis to serialize candidate inputs with pickle and base64 so tuples remain tuples across subprocess boundaries. The prior JSON transport converted tuples to lists and created false disagreements with the original evaluator. Removed the unused broad analyzer draft.
+
+## 2026-09-11: Diagnose regenerated Qwen 3B survivor filtering and tie breaks
+
+Corrected the survivor diagnostic to preserve tuple inputs across subprocesses and reran all 3,014 survivors. Among 341 nonempty tasks, filtering removed all correct candidates on 35 tasks, or 10.26%. There were 332 multi-survivor tasks, and the first survivor was an incorrect choice on 7 of 299 multi-survivor tasks with a correct survivor, or 2.34%. The first survivor was correct on 299/341 nonempty tasks, or 87.68%. The diagnostic artifact is outputs/regenerated-qwen25-coder-3b-10-temp02/base-survivor-correctness-analysis.json.
