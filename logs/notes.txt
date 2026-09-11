@@ -22,6 +22,8 @@ The approved full prediction run will use the same raw MBPP prompt condition, st
 
 Completed all 399 gpt-5-mini standard-output predictions at 32 concurrent workers. GPT-5 mini got 1,091 of 1,236 stored base outputs correct, for 88.27 percent per-test accuracy, and got every stored base output correct on 342 of 399 tasks, for 85.71 percent task accuracy. Saved raw responses, prompts, predictions, ground truth, and candidate matching indices in the full prediction artifact.
 
+Added an answer-independent reranker that scores each of the ten saved candidates by the fraction of stored base-test outputs matching GPT-5 mini predictions. It ranks by score and preserves original candidate order for ties, then computes Pass@K after ranking.
+
 ## September 8, 2026: Balance verifier training classes
 
 The verifier trainer now reports task and class distributions, logs those distributions to W&B at step zero, and optionally downsamples only the overrepresented training class to an exact 50/50 split. The rerun uses 7,890 saved generated candidates from 789 synthetic tasks, while validation remains the unchanged official EvalPlus generated-candidate artifact with 3,990 candidates from 399 tasks.
