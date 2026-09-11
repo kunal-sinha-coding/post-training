@@ -5444,3 +5444,97 @@ Setup: The ten saved candidates for each of 399 tasks were ranked by agreement w
 Original-order Pass@1 was 51.38% on MBPP and 43.61% on MBPP+, so Qwen 7B adds 10.03 and 6.52 percentage points, respectively.
 
 Artifacts: predictions at `outputs/qwen-answer-predictions/qwen25-coder-7b.json`; reranking report at `outputs/qwen-evalplus-full-10-temp02/qwen7b-prediction-reranking-399.json`.
+
+
+## Qwen 7B mean log-likelihood reranking on EvalPlus MBPP
+
+Experiment: `qwen7b-loglikelihood-reranking-399`.
+
+Qwen2.5-Coder-7B-Instruct scored each returned candidate answer with mean token log probability conditioned on the task prompt, entry point, one standard test, and an `ANSWER:` prefix. The run covered 11,907 candidate/test score slots, including 10,938 returned answers and 969 missing outputs. Missing outputs receive the lowest possible ranking treatment. Candidate selection used no correctness labels. The 10 candidates were ranked using seven aggregation rules, then ground-truth labels were joined to compute Pass@K.
+
+Aggregation definitions:
+
+- `mean`: arithmetic mean across available test scores.
+- `median`: median across available test scores.
+- `minimum`: lowest test score.
+- `trimmed_mean`: removes the lowest and highest score when at least three scores are available, then averages the rest.
+- `weighted_mean`: weights test positions 1, 2, and 3 as 1, 2, and 3. This is an exploratory order-weighted baseline.
+- `rank_sum`: sums each candidate’s per-test rank, with lower rank sum preferred.
+- `worst_penalty`: mean minus half the gap between the mean and the worst test score.
+
+| Strategy | K | MBPP | MBPP+ |
+|---|---:|---:|---:|
+| mean | 1 | 57.89% | 49.62% |
+| mean | 2 | 60.40% | 52.38% |
+| mean | 3 | 63.16% | 54.64% |
+| mean | 4 | 63.91% | 54.89% |
+| mean | 5 | 64.66% | 55.39% |
+| mean | 6 | 65.16% | 56.14% |
+| mean | 7 | 65.41% | 56.14% |
+| mean | 8 | 65.91% | 56.64% |
+| mean | 9 | 66.42% | 56.89% |
+| mean | 10 | 66.42% | 56.89% |
+| median | 1 | 58.15% | 49.87% |
+| median | 2 | 60.40% | 51.63% |
+| median | 3 | 61.90% | 52.63% |
+| median | 4 | 62.91% | 53.88% |
+| median | 5 | 63.16% | 54.14% |
+| median | 6 | 64.41% | 55.39% |
+| median | 7 | 64.91% | 55.64% |
+| median | 8 | 65.91% | 56.64% |
+| median | 9 | 66.42% | 56.89% |
+| median | 10 | 66.42% | 56.89% |
+| minimum | 1 | 56.39% | 48.37% |
+| minimum | 2 | 59.40% | 50.88% |
+| minimum | 3 | 61.40% | 52.88% |
+| minimum | 4 | 61.90% | 53.38% |
+| minimum | 5 | 62.91% | 54.14% |
+| minimum | 6 | 63.91% | 54.89% |
+| minimum | 7 | 64.66% | 55.64% |
+| minimum | 8 | 65.66% | 56.14% |
+| minimum | 9 | 66.17% | 56.39% |
+| minimum | 10 | 66.42% | 56.89% |
+| trimmed_mean | 1 | 52.38% | 44.86% |
+| trimmed_mean | 2 | 56.14% | 48.12% |
+| trimmed_mean | 3 | 58.40% | 50.13% |
+| trimmed_mean | 4 | 59.90% | 51.63% |
+| trimmed_mean | 5 | 61.40% | 52.88% |
+| trimmed_mean | 6 | 62.66% | 53.88% |
+| trimmed_mean | 7 | 63.91% | 54.89% |
+| trimmed_mean | 8 | 64.91% | 56.14% |
+| trimmed_mean | 9 | 66.17% | 56.64% |
+| trimmed_mean | 10 | 66.42% | 56.89% |
+| weighted_mean | 1 | 55.89% | 48.37% |
+| weighted_mean | 2 | 58.65% | 51.13% |
+| weighted_mean | 3 | 61.40% | 53.38% |
+| weighted_mean | 4 | 61.90% | 53.63% |
+| weighted_mean | 5 | 62.91% | 54.14% |
+| weighted_mean | 6 | 63.66% | 54.89% |
+| weighted_mean | 7 | 64.16% | 55.39% |
+| weighted_mean | 8 | 65.16% | 56.39% |
+| weighted_mean | 9 | 66.17% | 56.64% |
+| weighted_mean | 10 | 66.42% | 56.89% |
+| rank_sum | 1 | 56.89% | 47.37% |
+| rank_sum | 2 | 60.65% | 50.88% |
+| rank_sum | 3 | 63.16% | 53.63% |
+| rank_sum | 4 | 63.91% | 54.14% |
+| rank_sum | 5 | 64.41% | 54.89% |
+| rank_sum | 6 | 65.41% | 55.89% |
+| rank_sum | 7 | 65.91% | 56.39% |
+| rank_sum | 8 | 66.17% | 56.64% |
+| rank_sum | 9 | 66.42% | 56.89% |
+| rank_sum | 10 | 66.42% | 56.89% |
+| worst_penalty | 1 | 57.64% | 49.37% |
+| worst_penalty | 2 | 60.40% | 52.13% |
+| worst_penalty | 3 | 62.41% | 54.14% |
+| worst_penalty | 4 | 62.66% | 54.14% |
+| worst_penalty | 5 | 63.91% | 54.64% |
+| worst_penalty | 6 | 64.41% | 55.64% |
+| worst_penalty | 7 | 65.16% | 55.89% |
+| worst_penalty | 8 | 65.66% | 56.39% |
+| worst_penalty | 9 | 66.17% | 56.64% |
+| worst_penalty | 10 | 66.42% | 56.89% |
+
+Original-order baseline for the same candidate pool is 51.38% MBPP and 43.61% MBPP+ at Pass@1. The best likelihood aggregation at Pass@1 is median on MBPP at 58.15% and median on MBPP+ at 49.87%.
+
+Artifacts: `outputs/qwen-answer-predictions/qwen25-coder-7b-loglikelihood-scores.json` and `outputs/qwen-evalplus-full-10-temp02/qwen7b-loglikelihood-reranking-399.json`.
