@@ -24,6 +24,8 @@ Completed all 399 gpt-5-mini standard-output predictions at 32 concurrent worker
 
 Added an answer-independent reranker that scores each of the ten saved candidates by the fraction of stored base-test outputs matching GPT-5 mini predictions. It ranks by score and preserves original candidate order for ties, then computes Pass@K after ranking.
 
+Completed GPT prediction reranking on all 399 tasks. Reranked Pass@1 improved from 51.38 to 63.91 percent on base, from 43.61 to 51.63 percent on MBPP+, and from 42.86 to 50.63 percent on combined correctness. Pass@10 was unchanged at 66.42 percent base and 55.89 percent combined.
+
 ## September 8, 2026: Balance verifier training classes
 
 The verifier trainer now reports task and class distributions, logs those distributions to W&B at step zero, and optionally downsamples only the overrepresented training class to an exact 50/50 split. The rerun uses 7,890 saved generated candidates from 789 synthetic tasks, while validation remains the unchanged official EvalPlus generated-candidate artifact with 3,990 candidates from 399 tasks.

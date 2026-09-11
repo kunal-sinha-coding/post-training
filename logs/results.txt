@@ -2032,6 +2032,28 @@ Metrics:
 
 Limitations: The raw MBPP prompt contains visible assertion examples, so this measures GPT-5 mini under the same information condition as the original candidate generations. Thirty tasks contain more than three stored base inputs, giving 1,236 total standard inputs. Eight canonical outputs across four tasks used unsupported runtime types.
 
+EXPERIMENT: llm-prediction-reranking-evalplus-399-2026-09-11
+Purpose: Rank each task's ten saved candidates by the fraction of standard-test outputs matching cached GPT-5 mini predictions, then measure Pass@K after ranking.
+Selection procedure: Candidate ranking used only GPT prediction agreement and saved candidate execution outputs. Ties preserved original candidate index order. EvalPlus correctness labels were joined only after ranking.
+Ranking artifact: outputs/qwen-evalplus-full-10-temp02/llm-prediction-reranking-399.json.
+Runner commit: 4af2dc8.
+
+Reranked versus original-order Pass@K:
+| K | Base reranked | Base original | MBPP+ reranked | MBPP+ original | Combined reranked | Combined original |
+|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 63.91% | 51.38% | 51.63% | 43.61% | 50.63% | 42.86% |
+| 2 | 64.91% | 56.89% | 53.88% | 47.87% | 53.13% | 46.87% |
+| 3 | 65.66% | 61.15% | 55.64% | 51.38% | 54.64% | 50.38% |
+| 4 | 65.66% | 61.65% | 55.89% | 52.38% | 54.89% | 51.38% |
+| 5 | 65.91% | 62.66% | 55.89% | 53.38% | 54.89% | 52.38% |
+| 6 | 65.91% | 63.41% | 55.89% | 53.88% | 54.89% | 52.88% |
+| 7 | 66.17% | 64.66% | 56.14% | 54.64% | 55.14% | 53.63% |
+| 8 | 66.17% | 65.41% | 56.64% | 55.64% | 55.64% | 54.64% |
+| 9 | 66.42% | 65.66% | 56.89% | 56.14% | 55.89% | 55.14% |
+| 10 | 66.42% | 66.42% | 56.89% | 56.89% | 55.89% | 55.89% |
+
+The largest absolute gain is at Pass@1: +12.53 percentage points on base, +8.02 points on MBPP+, and +7.77 points on combined correctness. Pass@10 is unchanged because reranking preserves the same ten-candidate pool.
+
 Experiment: saved-candidate-reranking-audit-2026-09-10
 Timestamp: 2026-09-10T00:00:00Z
 Purpose: Assess whether the requested filtering and reranking curves can be reproduced without new sandbox execution or ground-truth-based candidate selection.
