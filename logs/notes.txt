@@ -18,7 +18,7 @@ Corrected a reporting mistake in the preview interpretation. The GPT-5 mini pred
 
 Invalidated the two-task standard-answer preview as an independent experiment. The predictor received the raw MBPP prompt containing the visible assertion assert odd_length_sum([1,2,4]) == 14. The copied EvalPlus Qwen generator also passes this raw prompt into its ChatML user message, so the original candidate generations saw the same example answer. A valid rerun must remove visible assertion lines from both sides before prediction and matching.
 
-The approved full prediction run will use the same raw MBPP prompt condition, start with 32 concurrent gpt-5-mini requests, halve concurrency after any API rate limit, cache each successful response, and compute accuracy against trusted canonical outputs on the three standard tests.
+The approved full prediction run will use the same raw MBPP prompt condition, start with 32 concurrent gpt-5-mini requests, halve concurrency after any API rate limit, cache each successful response, and compute accuracy against trusted canonical outputs on all stored standard base tests. The current artifact has 369 tasks with three base tests and 30 tasks with four to seven base tests.
 
 ## September 8, 2026: Balance verifier training classes
 

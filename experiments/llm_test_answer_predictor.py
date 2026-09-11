@@ -1,7 +1,7 @@
 """Ask an LLM for standard-test answers across the full EvalPlus suite.
 
 The script loads saved EvalPlus tasks and candidate observations, sends only
-the task prompt and three base tests to GPT-5 mini, parses and caches the
+the task prompt and all stored base tests to GPT-5 mini, parses and caches the
 predicted answers, executes the trusted canonical solution for ground truth,
 and reports per-test and per-task prediction accuracy.
 """
@@ -24,7 +24,7 @@ def build_prompt(task: dict) -> str:
     tests = [{"test_index": index, "inputs": inputs} for index, inputs in enumerate(task["base_input"])]
     return (
         "Solve the following Python programming task mentally. "
-        "For each supplied test input, predict the exact returned value of the requested function. "
+        "For each supplied standard test input, predict the exact returned value of the requested function. "
         "Do not write code and do not use any hidden tests. "
         "Return only JSON with a predictions array containing one object per test. "
         "Each object must have test_index and value.\n\n"
@@ -215,7 +215,7 @@ def main() -> None:
         "experiment": "llm-standard-test-answer-prediction-evalplus",
         "model": args.model,
         "tasks": task_ids,
-        "prompt_condition": "Raw MBPP task prompt plus the three standard base inputs.",
+        "prompt_condition": "Raw MBPP task prompt plus all stored standard base inputs.",
         "results": results,
         "metrics": metrics(task_ids, results, data),
     }
