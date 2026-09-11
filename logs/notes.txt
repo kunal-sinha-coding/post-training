@@ -1875,3 +1875,7 @@ Executed each of the ten saved candidates on the single assertion embedded in ea
 ## 2026-09-11: Measure visible-assertion filter Pass@K
 
 Evaluated the saved visible-assertion survivor lists in original candidate order. The first surviving candidate achieved full-suite Pass@1 of 62.41% MBPP, 50.63% MBPP+, and 50.13% combined, with 112 empty survivor tasks counted as failures. Conditional on the 287 tasks with at least one survivor, the corresponding values were 86.76%, 70.38%, and 69.69%. The full Pass@K curves and both denominators are saved in outputs/qwen-evalplus-full-10-temp02/visible-assertion-filter-metrics-399.json.
+
+## 2026-09-11: Store filtered Pass@K evaluation script
+
+Commit `bde398a` stores the filtered Pass@K report and results. This follow-up stores experiments/evaluate_visible_assertion_filter.py so the full-suite and conditional curves can be reproduced from the saved survivor artifact.
