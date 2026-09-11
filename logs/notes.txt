@@ -10,6 +10,8 @@ The first corrected run issued verifier requests sequentially and was interrupte
 
 The parallel run completed 20 official EvalPlus tasks with five concurrent gpt-5-mini API calls. The verifier selected one saved candidate per task and reached 11/20 base accuracy, 10/20 MBPP+ accuracy, and 10/20 combined accuracy. The matched ordinary candidate-prefix curves were computed after selection for comparison.
 
+Started a two-task preview for a different method that asks gpt-5-mini to predict only the returned values for the three standard MBPP tests. The preview compares those predictions with saved candidate outputs and does not run the full experiment.
+
 ## September 8, 2026: Balance verifier training classes
 
 The verifier trainer now reports task and class distributions, logs those distributions to W&B at step zero, and optionally downsamples only the overrepresented training class to an exact 50/50 split. The rerun uses 7,890 saved generated candidates from 789 synthetic tasks, while validation remains the unchanged official EvalPlus generated-candidate artifact with 3,990 candidates from 399 tasks.
