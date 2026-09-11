@@ -5652,3 +5652,14 @@ Among the 399 tasks, 308 had at least one correct candidate before filtering. Th
 Mbpp/400 has a visible assertion claiming four distinct tuples have three unique tuples, while the correct function returns four. Mbpp/442 compares the exact positive ratio 7/13 against the rounded literal 0.54, which fails exact equality even though the generated function is correct on canonical tests.
 
 The retained-correct count remains 306 tasks. Of these, 7 were lost by the first-survivor tie break, leaving 299 currently selected correctly.
+
+## Candidate-level confusion matrix for regenerated Qwen 3B assertion filter
+
+The confusion matrix treats each of the 3,990 regenerated candidate programs as one example. The positive label is canonical MBPP base correctness, and the positive filter decision is survival after executing the one visible prompt assertion. Ground-truth correctness is used only to measure the filter after selection.
+
+- True positives: 2,675 correct generations kept by the filter.
+- True negatives: 970 incorrect generations rejected by the filter.
+- False positives: 339 incorrect generations kept by the filter.
+- False negatives: 6 correct generations rejected by the filter.
+
+The 3,014 survivors equal 2,675 true positives plus 339 false positives. The 976 rejected candidates equal 970 true negatives plus 6 false negatives. The six false-negative candidates occur on the two tasks Mbpp/400 and Mbpp/442.

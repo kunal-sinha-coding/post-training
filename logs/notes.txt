@@ -1903,3 +1903,7 @@ The prior diagnostic evaluated only survivors, so its 35-task count meant no cor
 ## 2026-09-11: Correct assertion-filter false-negative interpretation
 
 Expanded evaluation of all 3,990 regenerated candidates showed that only two tasks, Mbpp/400 and Mbpp/442, had a correct candidate filtered out by the visible assertion. The prior 35-task count included 33 tasks where all ten candidates were incorrect. The 306 retained-correct count and seven tie-break errors are unchanged.
+
+## 2026-09-11: Compute candidate-level assertion-filter confusion matrix
+
+Across all 3,990 regenerated Qwen 3B candidates, the visible assertion filter produced 2,675 true positives, 970 true negatives, 339 false positives, and 6 false negatives. The positive label was canonical MBPP base correctness and the positive decision was surviving the visible assertion.
