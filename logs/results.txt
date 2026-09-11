@@ -2006,7 +2006,7 @@ Results:
   }
 }
 Artifact: outputs/qwen-evalplus-full-10-temp02/llm-test-answer-preview.json.
-Interpretation: The preview is usable for the proposed matching experiment, but GPT-5 mini was wrong on all three standard outputs for Mbpp/782. Full evaluation was not started.
+Interpretation: The preview is usable for the proposed matching experiment. GPT-5 mini correctly predicted all three standard outputs for Mbpp/782, but no saved candidate matched them. Full evaluation was not started.
 
 Experiment: saved-candidate-reranking-audit-2026-09-10
 Timestamp: 2026-09-10T00:00:00Z
