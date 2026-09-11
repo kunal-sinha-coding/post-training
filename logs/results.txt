@@ -5421,3 +5421,26 @@ Artifact: `outputs/qwen-answer-predictions/qwen25-coder-7b.json`.
 Using the same ground-truth-defined candidate cohorts as the earlier Qwen 3B analysis, the mixed cohort contains 125 tasks where the ten saved generations include both correct and incorrect candidates. Qwen 7B predicted 291/385 standard outputs correctly, for 75.58% per-test accuracy. It predicted every standard output correctly on 67/125 tasks, for 53.60% whole-task accuracy. Cohort membership was determined from saved candidate labels before evaluating the Qwen predictions.
 
 Full cohort report: `outputs/qwen-answer-predictions/qwen25-coder-7b-cohorts.json`.
+
+## Qwen 7B answer-prediction reranking on EvalPlus MBPP
+
+Experiment: `qwen7b-prediction-reranking-399`.
+
+Setup: The ten saved candidates for each of 399 tasks were ranked by agreement with the saved Qwen2.5-Coder-7B-Instruct predictions for the standard tests. Ties were broken by original candidate index. Ground-truth labels were used only after ranking to compute Pass@K. Four Qwen prediction rows had parse failures and therefore produced no predicted test values; their candidate rankings fall back to the deterministic original-index tie-break.
+
+| K | MBPP | MBPP+ |
+|---:|---:|---:|
+| 1 | 61.40% | 50.13% |
+| 2 | 63.91% | 52.63% |
+| 3 | 64.91% | 54.89% |
+| 4 | 65.16% | 55.39% |
+| 5 | 65.66% | 55.64% |
+| 6 | 65.66% | 55.64% |
+| 7 | 65.91% | 55.89% |
+| 8 | 65.91% | 56.39% |
+| 9 | 66.42% | 56.89% |
+| 10 | 66.42% | 56.89% |
+
+Original-order Pass@1 was 51.38% on MBPP and 43.61% on MBPP+, so Qwen 7B adds 10.03 and 6.52 percentage points, respectively.
+
+Artifacts: predictions at `outputs/qwen-answer-predictions/qwen25-coder-7b.json`; reranking report at `outputs/qwen-evalplus-full-10-temp02/qwen7b-prediction-reranking-399.json`.

@@ -1859,3 +1859,7 @@ The Qwen2.5-Coder-7B-Instruct answer-prediction run completed all 399 tasks and 
 ## 2026-09-11: Measure Qwen 7B mixed-task accuracy
 
 Computed Qwen 7B answer-prediction accuracy on the 125 mixed tasks, defined as tasks with a mixture of correct and incorrect saved generations among the ten candidates. The model achieved 291/385, or 75.58%, per-test accuracy and 67/125, or 53.60%, whole-task accuracy. Cohort report saved at outputs/qwen-answer-predictions/qwen25-coder-7b-cohorts.json.
+
+## 2026-09-11: Run Qwen 7B answer-prediction reranking
+
+Ranked the ten saved candidates per EvalPlus task by agreement with Qwen2.5-Coder-7B-Instruct's saved standard-test predictions. Selection remained independent of correctness labels. Pass@1 was 61.40% on MBPP and 50.13% on MBPP+, compared with original-order values of 51.38% and 43.61%. The full report is saved at outputs/qwen-evalplus-full-10-temp02/qwen7b-prediction-reranking-399.json.
