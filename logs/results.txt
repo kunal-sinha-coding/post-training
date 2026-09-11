@@ -5564,3 +5564,27 @@ Setup: Extracted the one `assert` statement from each raw task prompt and execut
 Artifact: `outputs/qwen-evalplus-full-10-temp02/visible-assertion-filter-399.json`.
 
 No Pass@K metrics were computed in this experiment, as requested. The survivor set is saved for a separate follow-up evaluation.
+
+
+## Pass@K after visible prompt-assertion filtering
+
+The saved survivor lists were kept in original candidate order. Pass@K is computed over all 399 tasks, with the 112 tasks having no surviving candidate counted as misses. Conditional values over the 287 tasks with at least one survivor are also retained in the artifact.
+
+| K | MBPP full | MBPP+ full | Combined full | MBPP conditional | MBPP+ conditional | Combined conditional |
+|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 62.41% | 50.63% | 50.13% | 86.76% | 70.38% | 69.69% |
+| 2 | 62.91% | 52.63% | 51.88% | 87.46% | 73.17% | 72.13% |
+| 3 | 63.41% | 53.63% | 53.13% | 88.15% | 74.56% | 73.87% |
+| 4 | 63.66% | 53.88% | 53.38% | 88.50% | 74.91% | 74.22% |
+| 5 | 63.91% | 54.14% | 53.63% | 88.85% | 75.26% | 74.56% |
+| 6 | 63.91% | 54.14% | 53.63% | 88.85% | 75.26% | 74.56% |
+| 7 | 63.91% | 54.14% | 53.63% | 88.85% | 75.26% | 74.56% |
+| 8 | 63.91% | 54.39% | 53.88% | 88.85% | 75.61% | 74.91% |
+| 9 | 64.16% | 54.89% | 54.39% | 89.20% | 76.31% | 75.61% |
+| 10 | 64.16% | 54.89% | 54.39% | 89.20% | 76.31% | 75.61% |
+
+Selecting the first surviving candidate is Pass@1. On the full suite, it achieves 62.41% MBPP, 50.63% MBPP+, and 50.13% combined. Conditional on a nonempty survivor set, these are 86.76%, 70.38%, and 69.69%.
+
+The first surviving candidate is always the lowest-index candidate that passes the visible assertion. Ground-truth labels were used only after this selection for measurement.
+
+Artifact: `outputs/qwen-evalplus-full-10-temp02/visible-assertion-filter-metrics-399.json`.

@@ -1871,3 +1871,7 @@ Scored the saved base-test answer from every candidate with Qwen2.5-Coder-7B-Ins
 ## 2026-09-11: Filter candidates with visible MBPP assertion
 
 Executed each of the ten saved candidates on the single assertion embedded in each raw MBPP task prompt. The run covered all 399 tasks with 32 parallel workers and a two-second per-candidate timeout. The survivor distribution was 112 tasks with zero candidates, 17 with one, 14 with two, 15 with three, 16 with four, 11 with five, 11 with six, 10 with seven, 15 with eight, 23 with nine, and 155 with all ten. No hidden tests or correctness labels were used, and no Pass@K metrics were computed. Full verdicts are saved at outputs/qwen-evalplus-full-10-temp02/visible-assertion-filter-399.json.
+
+## 2026-09-11: Measure visible-assertion filter Pass@K
+
+Evaluated the saved visible-assertion survivor lists in original candidate order. The first surviving candidate achieved full-suite Pass@1 of 62.41% MBPP, 50.63% MBPP+, and 50.13% combined, with 112 empty survivor tasks counted as failures. Conditional on the 287 tasks with at least one survivor, the corresponding values were 86.76%, 70.38%, and 69.69%. The full Pass@K curves and both denominators are saved in outputs/qwen-evalplus-full-10-temp02/visible-assertion-filter-metrics-399.json.

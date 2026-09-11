@@ -1,0 +1,105 @@
+{
+  "experiment": "visible-assertion-filter-reranking-evalplus-399",
+  "filter_artifact": "outputs/qwen-evalplus-full-10-temp02/visible-assertion-filter-399.json",
+  "selection": "First surviving candidate in original candidate-index order.",
+  "selection_uses_correctness_labels": false,
+  "tasks_total": 399,
+  "tasks_with_survivors": 287,
+  "tasks_without_survivors": 112,
+  "first_survivor_metrics": {
+    "base": {
+      "correct": 249,
+      "tasks_with_survivors": 287,
+      "accuracy_conditional": 0.867595818815331,
+      "accuracy_full_suite": 0.6240601503759399
+    },
+    "plus": {
+      "correct": 202,
+      "tasks_with_survivors": 287,
+      "accuracy_conditional": 0.7038327526132404,
+      "accuracy_full_suite": 0.506265664160401
+    },
+    "combined": {
+      "correct": 200,
+      "tasks_with_survivors": 287,
+      "accuracy_conditional": 0.6968641114982579,
+      "accuracy_full_suite": 0.5012531328320802
+    }
+  },
+  "pass_at_k_full_suite": {
+    "base": {
+      "pass_at_1": 0.6240601503759399,
+      "pass_at_2": 0.6290726817042607,
+      "pass_at_3": 0.6340852130325815,
+      "pass_at_4": 0.6365914786967418,
+      "pass_at_5": 0.6390977443609023,
+      "pass_at_6": 0.6390977443609023,
+      "pass_at_7": 0.6390977443609023,
+      "pass_at_8": 0.6390977443609023,
+      "pass_at_9": 0.6416040100250626,
+      "pass_at_10": 0.6416040100250626
+    },
+    "plus": {
+      "pass_at_1": 0.506265664160401,
+      "pass_at_2": 0.5263157894736842,
+      "pass_at_3": 0.5363408521303258,
+      "pass_at_4": 0.5388471177944862,
+      "pass_at_5": 0.5413533834586466,
+      "pass_at_6": 0.5413533834586466,
+      "pass_at_7": 0.5413533834586466,
+      "pass_at_8": 0.543859649122807,
+      "pass_at_9": 0.5488721804511278,
+      "pass_at_10": 0.5488721804511278
+    },
+    "combined": {
+      "pass_at_1": 0.5012531328320802,
+      "pass_at_2": 0.518796992481203,
+      "pass_at_3": 0.531328320802005,
+      "pass_at_4": 0.5338345864661654,
+      "pass_at_5": 0.5363408521303258,
+      "pass_at_6": 0.5363408521303258,
+      "pass_at_7": 0.5363408521303258,
+      "pass_at_8": 0.5388471177944862,
+      "pass_at_9": 0.543859649122807,
+      "pass_at_10": 0.543859649122807
+    }
+  },
+  "pass_at_k_conditional_on_survivors": {
+    "base": {
+      "pass_at_1": 0.867595818815331,
+      "pass_at_2": 0.8745644599303136,
+      "pass_at_3": 0.8815331010452961,
+      "pass_at_4": 0.8850174216027874,
+      "pass_at_5": 0.8885017421602788,
+      "pass_at_6": 0.8885017421602788,
+      "pass_at_7": 0.8885017421602788,
+      "pass_at_8": 0.8885017421602788,
+      "pass_at_9": 0.89198606271777,
+      "pass_at_10": 0.89198606271777
+    },
+    "plus": {
+      "pass_at_1": 0.7038327526132404,
+      "pass_at_2": 0.7317073170731707,
+      "pass_at_3": 0.7456445993031359,
+      "pass_at_4": 0.7491289198606271,
+      "pass_at_5": 0.7526132404181185,
+      "pass_at_6": 0.7526132404181185,
+      "pass_at_7": 0.7526132404181185,
+      "pass_at_8": 0.7560975609756098,
+      "pass_at_9": 0.7630662020905923,
+      "pass_at_10": 0.7630662020905923
+    },
+    "combined": {
+      "pass_at_1": 0.6968641114982579,
+      "pass_at_2": 0.7212543554006968,
+      "pass_at_3": 0.7386759581881533,
+      "pass_at_4": 0.7421602787456446,
+      "pass_at_5": 0.7456445993031359,
+      "pass_at_6": 0.7456445993031359,
+      "pass_at_7": 0.7456445993031359,
+      "pass_at_8": 0.7491289198606271,
+      "pass_at_9": 0.7560975609756098,
+      "pass_at_10": 0.7560975609756098
+    }
+  }
+}
