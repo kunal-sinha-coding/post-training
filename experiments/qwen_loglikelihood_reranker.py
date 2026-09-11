@@ -103,7 +103,7 @@ def score_batch(model: object, tokenizer: object, pairs: list[tuple[str, str]], 
 
 # Aggregate per-test candidate scores into one task-level ranking score.
 def aggregate(values: list[float], strategy: str) -> float:
-    finite = [value for value in values if math.isfinite(value)]
+    finite = [value for value in values if isinstance(value, (int, float)) and math.isfinite(value)]
     if not finite:
         return float("-inf")
     if strategy == "mean":
@@ -119,15 +119,19 @@ def aggregate(values: list[float], strategy: str) -> float:
         weights = list(range(1, len(finite) + 1))
         return sum(weight * value for weight, value in zip(weights, finite)) / sum(weights)
     if strategy == "worst_penalty":
-        return statistics.fmean(finite) - (statistics.fmean(finite) - min(finite))
+        mean = statistics.fmean(finite)
+        return mean - 0.5 * (mean - min(finite))
     raise ValueError(f"Unknown strategy: {strategy}")
 
 
 # Rank candidates independently on each test and sum their ranks.
 def rank_sum(values: list[list[float]]) -> list[int]:
     scores = [0] * len(values)
-    for test_index in range(len(values[0])):
-        order = sorted(range(len(values)), key=lambda index: (-values[index][test_index], index))
+    test_count = max((len(row) for row in values), default=0)
+    for test_index in range(test_count):
+        # Treat missing or failed candidate outputs as worse than every returned answer.
+        test_values = [row[test_index] if test_index < len(row) and isinstance(row[test_index], (int, float)) else float("-inf") for row in values]
+        order = sorted(range(len(values)), key=lambda index: (-test_values[index], index))
         for rank, candidate_index in enumerate(order):
             scores[candidate_index] += rank
     return scores
@@ -169,6 +173,10 @@ def score_all(args: argparse.Namespace, model: object, tokenizer: object, tasks:
     for task_id in args.task_ids:
         candidates = load_scores_input(task_id, evaluations)
         task_scores = cached.setdefault("scores", {}).setdefault(task_id, [[] for _ in candidates])
+        # Represent candidates with no returned outputs as three missing scores.
+        for candidate_index in range(len(candidates)):
+            if len(task_scores[candidate_index]) == 0:
+                task_scores[candidate_index] = [None] * len(candidates[candidate_index])
         for candidate_index, answers in enumerate(candidates):
             if len(task_scores[candidate_index]) == len(answers):
                 continue
