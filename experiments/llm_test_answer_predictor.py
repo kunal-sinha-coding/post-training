@@ -35,6 +35,17 @@ def build_prompt(task: dict) -> str:
     )
 
 
+# Convert Python literal containers to JSON-safe prediction values.
+def json_safe(value: object) -> object:
+    if isinstance(value, (tuple, set, frozenset)):
+        return [json_safe(item) for item in value]
+    if isinstance(value, list):
+        return [json_safe(item) for item in value]
+    if isinstance(value, dict):
+        return {str(key): json_safe(item) for key, item in value.items()}
+    return value
+
+
 # Parse the model response into one prediction object per standard test.
 def parse_response(text: str, count: int) -> list[dict]:
     try:
@@ -50,6 +61,7 @@ def parse_response(text: str, count: int) -> list[dict]:
         except json.JSONDecodeError:
             value = ast.literal_eval(fragment)
     predictions = value if isinstance(value, list) else value["predictions"]
+    predictions = [{"test_index": item["test_index"], "value": json_safe(item["value"])} for item in predictions]
     if len(predictions) != count:
         raise ValueError(f"Expected {count} predictions, received {len(predictions)}.")
     return predictions
