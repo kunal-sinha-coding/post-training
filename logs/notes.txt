@@ -16,6 +16,8 @@ The first preview comparison falsely reported no matching candidates because nat
 
 Corrected a reporting mistake in the preview interpretation. The GPT-5 mini predictions for Mbpp/782 were mathematically correct as [14, 15, 8]. The saved candidate outputs were [2, 4, 7], so no candidate matched.
 
+Invalidated the two-task standard-answer preview as an independent experiment. The predictor received the raw MBPP prompt containing the visible assertion assert odd_length_sum([1,2,4]) == 14. The copied EvalPlus Qwen generator also passes this raw prompt into its ChatML user message, so the original candidate generations saw the same example answer. A valid rerun must remove visible assertion lines from both sides before prediction and matching.
+
 ## September 8, 2026: Balance verifier training classes
 
 The verifier trainer now reports task and class distributions, logs those distributions to W&B at step zero, and optionally downsamples only the overrepresented training class to an exact 50/50 split. The rerun uses 7,890 saved generated candidates from 789 synthetic tasks, while validation remains the unchanged official EvalPlus generated-candidate artifact with 3,990 candidates from 399 tasks.

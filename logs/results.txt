@@ -2006,7 +2006,7 @@ Results:
   }
 }
 Artifact: outputs/qwen-evalplus-full-10-temp02/llm-test-answer-preview.json.
-Interpretation: The preview is usable for the proposed matching experiment. GPT-5 mini correctly predicted all three standard outputs for Mbpp/782, but no saved candidate matched them. Full evaluation was not started.
+Interpretation: This preview is invalid for measuring independent answer prediction. The raw task prompt included the visible assertion with answer 14, and the original Qwen generation path also passed that raw prompt through. GPT-5 mini predicted all three outputs correctly for Mbpp/782, but the first output was leaked in the prompt.
 
 Experiment: saved-candidate-reranking-audit-2026-09-10
 Timestamp: 2026-09-10T00:00:00Z
