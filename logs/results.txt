@@ -5405,3 +5405,13 @@ Artifacts:
 Original-order baseline for the same candidates is 51.38%, 43.61%, and 42.86% at Pass@1 for MBPP, MBPP+, and combined, respectively. The Qwen 3B reranker therefore gains +8.77, +6.02, and +6.02 percentage points at Pass@1. Compared with the GPT-5 mini reranker, Qwen 3B is lower by 3.76 points on MBPP, 1.00 point on MBPP+, and 1.75 points combined at Pass@1. Both rerankers reach the same Pass@10 values because the candidate pool is unchanged.
 
 Limitations: This evaluates the existing 10-candidate pool only. It measures selection quality after answer prediction, not code-generation quality. Candidate selection is independent of ground truth, while all reported metrics use ground truth after ranking.
+
+## Qwen 7B standard-test answer prediction
+
+Experiment: `qwen25-coder-7b-standard-answer-prediction`.
+
+Setup: Qwen2.5-Coder-7B-Instruct was run locally with deterministic decoding on all 399 EvalPlus MBPP tasks and their 1,236 stored standard tests. The prompt asked the model to predict test outputs, using the same task and test format as the smaller-model answer-prediction experiment. Batch size was 2 and the generation limit was 256 new tokens. No candidate correctness labels were provided to the model.
+
+Results: 919/1,236 standard-test outputs were correct, for 74.35% per-test accuracy. 212/399 tasks had every standard-test prediction correct, for 53.13% whole-task accuracy. Four responses were not parseable because they were truncated or malformed: Mbpp/462, Mbpp/255, Mbpp/108, and Mbpp/67. These are counted as incorrect, while the raw responses remain in the artifact.
+
+Artifact: `outputs/qwen-answer-predictions/qwen25-coder-7b.json`.
