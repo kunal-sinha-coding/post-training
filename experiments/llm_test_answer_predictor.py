@@ -55,9 +55,22 @@ def predict(client: object, model: str, task_id: str, task: dict) -> dict:
     return {"task_id": task_id, "prompt": prompt, "raw_response": raw, "predictions": parse_response(raw, len(task["base_input"]))}
 
 
+# Encode native JSON values in the saved typed observation representation.
+def encode(value: object) -> list:
+    if value is None or type(value) in (bool, int, str):
+        return [type(value).__name__, value]
+    if type(value) is float:
+        return ["float", value.hex()]
+    if type(value) is list:
+        return ["list", [encode(item) for item in value]]
+    if type(value) is dict:
+        return ["dict", [[encode(key), encode(item)] for key, item in sorted(value.items(), key=repr)]]
+    raise TypeError(f"Unsupported predicted value type: {type(value).__name__}")
+
+
 # Compare JSON predictions with the saved typed output representations.
 def matching_candidates(task_id: str, predictions: list[dict], evaluations: dict) -> list[int]:
-    expected = {item["test_index"]: json.dumps(item["value"], separators=(",", ":"), sort_keys=True) for item in predictions}
+    expected = {item["test_index"]: json.dumps(encode(item["value"]), separators=(",", ":")) for item in predictions}
     matches = []
     for index in range(len(evaluations[task_id])):
         observation = json.loads((OBS / f"{task_id.replace('/', '_')}_{index}.json").read_text())
@@ -65,7 +78,7 @@ def matching_candidates(task_id: str, predictions: list[dict], evaluations: dict
         for row in observation["tests"]:
             if row["suite"] == "base_input":
                 candidate[row["index"]] = row.get("value")
-        if all(candidate.get(index) == json.loads(value) for index, value in expected.items()):
+        if all(candidate.get(index) == value for index, value in expected.items()):
             matches.append(index)
     return matches
 

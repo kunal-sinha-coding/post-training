@@ -12,6 +12,8 @@ The parallel run completed 20 official EvalPlus tasks with five concurrent gpt-5
 
 Started a two-task preview for a different method that asks gpt-5-mini to predict only the returned values for the three standard MBPP tests. The preview compares those predictions with saved candidate outputs and does not run the full experiment.
 
+The first preview comparison falsely reported no matching candidates because native JSON predictions were compared directly with the saved typed output encoding. Corrected the conversion and recomputed matches from the cached responses without additional API calls.
+
 ## September 8, 2026: Balance verifier training classes
 
 The verifier trainer now reports task and class distributions, logs those distributions to W&B at step zero, and optionally downsamples only the overrepresented training class to an exact 50/50 split. The rerun uses 7,890 saved generated candidates from 789 synthetic tasks, while validation remains the unchanged official EvalPlus generated-candidate artifact with 3,990 candidates from 399 tasks.
