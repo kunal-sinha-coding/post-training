@@ -1847,3 +1847,7 @@ The corrected search had one indexing issue in the robust-neighborhood branch wh
 ## 2026-09-11: Run Qwen 3B answer-prediction reranking
 
 Reproduced the GPT-5 mini prediction reranker with the saved Qwen2.5-Coder-3B-Instruct predictions. The 399 tasks and 1,236 stored standard tests were ranked by candidate agreement with Qwen's predicted outputs, with original candidate index as the tie-break. Ground-truth labels were used only after ranking for measurement. The report is saved at outputs/qwen-evalplus-full-10-temp02/qwen3b-prediction-reranking-399.json and the metrics are recorded in logs/results.txt. Pass@1 was 60.15% on MBPP, 49.62% on MBPP+, and 48.87% combined, compared with original-order values of 51.38%, 43.61%, and 42.86%.
+
+## 2026-09-11: Commit Qwen 3B reranking artifact
+
+Commit `e22d4da` records the Qwen 3B reranking setup and metrics. This follow-up commit adds the ignored full reranking JSON artifact so every per-task ranking and reproducibility hash is retained with the experiment record.
