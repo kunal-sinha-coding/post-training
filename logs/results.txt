@@ -2008,6 +2008,30 @@ Results:
 Artifact: outputs/qwen-evalplus-full-10-temp02/llm-test-answer-preview.json.
 Interpretation: This preview is invalid for measuring independent answer prediction. The raw task prompt included the visible assertion with answer 14, and the original Qwen generation path also passed that raw prompt through. GPT-5 mini predicted all three outputs correctly for Mbpp/782, but the first output was leaked in the prompt.
 
+EXPERIMENT: llm-standard-test-answer-prediction-evalplus-399-2026-09-11
+Purpose: Measure GPT-5 mini accuracy when predicting the outputs of the stored standard MBPP tests for every official EvalPlus task.
+Model: gpt-5-mini through the OpenAI API.
+Tasks: All 399 tasks in the saved official EvalPlus artifact.
+Prompt condition: The raw MBPP task prompt, including its visible assertion examples, plus all stored base inputs. This matches the prompt condition used for the saved Qwen candidates.
+Concurrency: Started at 32 workers and completed without rate limiting or reduction.
+Ground truth: Each task's trusted canonical solution was executed on every stored base input after prediction. Canonical outputs that were not JSON-like were retained as unsupported typed values and counted incorrect unless the prediction matched the supported comparison.
+Prediction artifact: outputs/qwen-evalplus-full-10-temp02/llm-test-answer-predictions-399.json.
+Runner commit: e3335e2.
+
+Metrics:
+{
+  "standard_test_output_accuracy": 0.8826860841,
+  "correct_outputs": 1091,
+  "total_outputs": 1236,
+  "all_standard_tests_correct_task_accuracy": 0.8571428571,
+  "tasks_with_all_outputs_correct": 342,
+  "tasks": 399,
+  "tasks_with_at_least_one_matching_saved_candidate": 231,
+  "matching_saved_candidate_count": 1772
+}
+
+Limitations: The raw MBPP prompt contains visible assertion examples, so this measures GPT-5 mini under the same information condition as the original candidate generations. Thirty tasks contain more than three stored base inputs, giving 1,236 total standard inputs. Eight canonical outputs across four tasks used unsupported runtime types.
+
 Experiment: saved-candidate-reranking-audit-2026-09-10
 Timestamp: 2026-09-10T00:00:00Z
 Purpose: Assess whether the requested filtering and reranking curves can be reproduced without new sandbox execution or ground-truth-based candidate selection.
