@@ -63,6 +63,8 @@ def run_suite(code: str, entry_point: str, inputs: list[list[object]], expected:
 # Evaluate both paired candidates for one task.
 def evaluate_task(job: dict) -> dict:
     # Run initial and final candidates independently on MBPP and MBPP+ suites.
+    if not job["available"]:
+        return {"task_id": job["task_id"], "available": False, "reference_error": job["reference_error"]}
     results = {}
     for variant, candidate in (("initial", job["initial"]), ("final", job["final"])):
         code = remove_visible_assertion(candidate, job["assertion"])
@@ -87,25 +89,26 @@ def canonical_outputs(task: dict, task_id: str, suite: str) -> list[object]:
 # Aggregate paired task results into MBPP and MBPP+ pass rates.
 def aggregate(results: dict[str, dict], task_ids: list[str]) -> dict:
     # Count complete task passes with a fixed denominator across both variants.
+    evaluable = [task_id for task_id in task_ids if results[task_id].get("available", True)]
     metrics = {}
     for variant in ("initial", "final"):
         metrics[variant] = {}
         for suite in ("base", "plus"):
             field = f"{suite}_pass"
-            count = sum(bool(results[task_id]["results"][variant][field]) for task_id in task_ids)
+            count = sum(bool(results[task_id]["results"][variant][field]) for task_id in evaluable)
             metrics[variant][f"{suite}_correct"] = count
-            metrics[variant][f"{suite}_tasks"] = len(task_ids)
-            metrics[variant][f"{suite}_pass_rate"] = count / len(task_ids) if task_ids else 0.0
+            metrics[variant][f"{suite}_tasks"] = len(evaluable)
+            metrics[variant][f"{suite}_pass_rate"] = count / len(evaluable) if evaluable else 0.0
     metrics["paired_changes"] = {
         suite: sum(
             results[task_id]["results"]["final"][f"{suite}_pass"]
             and not results[task_id]["results"]["initial"][f"{suite}_pass"]
-            for task_id in task_ids
+            for task_id in evaluable
         )
         - sum(
             results[task_id]["results"]["initial"][f"{suite}_pass"]
             and not results[task_id]["results"]["final"][f"{suite}_pass"]
-            for task_id in task_ids
+            for task_id in evaluable
         )
         for suite in ("base", "plus")
     }
@@ -124,9 +127,24 @@ def main() -> None:
     # Build benchmark jobs from the complete EvalPlus MBPP task data.
     tasks = {row["task_id"]: row for row in map(json.loads, DATA.open())}
     jobs = []
+    reference_errors = {}
     for task_id, task in tasks.items():
         artifact = json.loads((args.adaptive_dir / f"{task_id.replace('/', '_')}.json").read_text())
         records = artifact["records"]
+        try:
+            signal.setitimer(signal.ITIMER_REAL, 10.0)
+            base_expected = canonical_outputs(task, task_id, "base_input")
+            plus_expected = canonical_outputs(task, task_id, "plus_input")
+            signal.setitimer(signal.ITIMER_REAL, 0)
+            available = True
+            reference_error = ""
+        except BaseException as error:
+            signal.setitimer(signal.ITIMER_REAL, 0)
+            base_expected = []
+            plus_expected = []
+            available = False
+            reference_error = type(error).__name__ + ": " + str(error)
+            reference_errors[task_id] = reference_error
         jobs.append({
             "task_id": task_id,
             "entry_point": task["entry_point"],
@@ -134,9 +152,11 @@ def main() -> None:
             "initial": records[0]["code"],
             "final": records[-1]["code"],
             "base_inputs": mbpp_deserialize_inputs(task_id, task["base_input"]),
-            "base_expected": canonical_outputs(task, task_id, "base_input"),
+            "base_expected": base_expected,
             "plus_inputs": mbpp_deserialize_inputs(task_id, task["plus_input"]),
-            "plus_expected": canonical_outputs(task, task_id, "plus_input"),
+            "plus_expected": plus_expected,
+            "available": available,
+            "reference_error": reference_error,
         })
 
     # Evaluate tasks concurrently and preserve every result as it completes.
@@ -156,6 +176,7 @@ def main() -> None:
         "adaptive_artifact": str(args.adaptive_dir),
         "selection_uses_correctness_labels": False,
         "tasks": task_ids,
+        "tasks_with_reference_errors": reference_errors,
         "metrics": aggregate(results, task_ids),
         "results": results,
     }
