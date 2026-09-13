@@ -1941,3 +1941,7 @@ Corrected trace logging so passing tasks are not written to adaptive_logs.txt wh
 ## 2026-09-13: Bound diagnosis response length
 
 Limited diagnosis generations to 64 tokens by default so the requested one or two sentence explanation remains separate from repair code. Added a configurable --diagnosis-max-new-tokens option while keeping three total candidate generations per task.
+
+## 2026-09-13: Restore full diagnosis generation budget
+
+Removed the one to two sentence diagnosis constraint and restored the diagnosis call to the full 512 token generation limit for comparison. The runner continues to stream each trace event directly to adaptive_logs.txt as it occurs.

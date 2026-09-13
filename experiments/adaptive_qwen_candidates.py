@@ -46,7 +46,7 @@ def build_repair_prompt(task_prompt: str, code: str, error: str, diagnosis: str 
 def build_diagnosis_prompt(task_prompt: str, code: str, error: str) -> str:
     fence = chr(96) * 3
     return ("<|im_start|>system\nYou diagnose Python algorithmic solutions<|im_end|>\n"
-            "<|im_start|>user\nExplain in one or two sentences what is wrong with the following solution and how it should be corrected. Do not write code.\n"
+            "<|im_start|>user\nExplain what is wrong with the following solution and how it should be corrected. Do not write code.\n"
             f"Task:\n{task_prompt}\n\nFailed solution:\n{fence}python\n{code}\n{fence}\n\n"
             f"Observed failure:\n{error}<|im_end|>\n<|im_start|>assistant\n")
 
@@ -125,7 +125,7 @@ def run_task(model: object, tokenizer: object, task: dict, args: argparse.Namesp
                 emit_trace(trace_log, raw)
                 emit_trace(trace_log, f"Verdict: {'passed' if verdict['passed'] else 'failed'}")
             diagnosis_prompt = build_diagnosis_prompt(task["prompt"], previous_code, previous_error)
-            diagnosis = generate_one(model, tokenizer, diagnosis_prompt, args, max_new_tokens=args.diagnosis_max_new_tokens).strip()
+            diagnosis = generate_one(model, tokenizer, diagnosis_prompt, args).strip()
             record["diagnosis_prompt"] = diagnosis_prompt
             record["diagnosis_output"] = diagnosis
         if trace_task:
@@ -149,7 +149,6 @@ def main() -> None:
     parser.add_argument("--temperature", type=float, default=0.2)
     parser.add_argument("--top-p", type=float, default=0.95)
     parser.add_argument("--max-new-tokens", type=int, default=512)
-    parser.add_argument("--diagnosis-max-new-tokens", type=int, default=64, help="Maximum tokens for each diagnosis response.")
     parser.add_argument("--max-prompt-tokens", type=int, default=2048)
     parser.add_argument("--task-index", type=int, default=0)
     parser.add_argument("--max-generations", type=int, default=3, help="Maximum total candidate generations per task, including the initial generation.")
