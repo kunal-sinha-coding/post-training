@@ -1929,3 +1929,5 @@ Extended the adaptive Qwen 3B pilot to process all 399 EvalPlus tasks with one m
 Added a debug mode to the adaptive Qwen 3B full-suite runner that stops at the first task whose initial generation fails, prints each next repair prompt, pauses after each failed attempt, and resumes through that task before stopping. Successful earlier tasks remain saved for resumable execution.
 
 Replaced the breakpoint-based debug trace with live terminal logging. The runner now prints the initial failure, each full retry prompt, every retry output, every verdict, and a cumulative count, then continues until the requested number of initial-failure tasks is reached.
+
+Added logs/adaptive_logs.txt for trace-only recording. Each run appends a RUN STARTED header, and each traced initial-failure task records its failure, retry prompts, outputs, errors, and verdicts while the same content is printed live.

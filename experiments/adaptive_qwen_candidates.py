@@ -16,6 +16,7 @@ import json
 import signal
 import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 import torch
@@ -76,7 +77,16 @@ def generate_one(model: object, tokenizer: object, prompt: str, args: argparse.N
 
 
 # Run the bounded repair loop for one task and return its complete trace.
-def run_task(model: object, tokenizer: object, task: dict, args: argparse.Namespace, trace_task: bool = False) -> dict:
+def emit_trace(trace_log: object, message: str) -> None:
+    # Print a trace message live and mirror it to the adaptive trace log.
+    print(message, flush=True)
+    if trace_log is not None:
+        trace_log.write(message + "\n")
+        trace_log.flush()
+
+
+# Run one task's adaptive generation and optionally print every repair step.
+def run_task(model: object, tokenizer: object, task: dict, args: argparse.Namespace, trace_task: bool = False, trace_log: object = None) -> dict:
     # Run one task's adaptive generation and optionally print every repair step.
     assertion = next(line.strip() for line in task["prompt"].splitlines() if line.strip().startswith("assert "))
     records = []
@@ -89,17 +99,17 @@ def run_task(model: object, tokenizer: object, task: dict, args: argparse.Namesp
         verdict = check_assertion(code, assertion)
         records.append({"index": index, "mode": "generate" if not previous_code or not previous_error else "repair", "prompt": prompt, "raw_output": raw, "code": code, "verdict": verdict})
         if trace_task:
-            print(f"Generation {index} output for {task['task_id']}:", flush=True)
-            print(raw, flush=True)
-            print(f"Verdict: {'passed' if verdict['passed'] else 'failed'}", flush=True)
+            emit_trace(trace_log, f"Generation {index} output for {task['task_id']}:")
+            emit_trace(trace_log, raw)
+            emit_trace(trace_log, f"Verdict: {'passed' if verdict['passed'] else 'failed'}")
         if verdict["passed"]:
             break
         previous_code = code
         previous_error = verdict.get("error", "Assertion failed")
         if trace_task:
-            print(f"Error after generation {index} for {task['task_id']}: {previous_error}", flush=True)
-            print("Next retry prompt:", flush=True)
-            print(build_repair_prompt(task["prompt"], previous_code, previous_error), flush=True)
+            emit_trace(trace_log, f"Error after generation {index} for {task['task_id']}: {previous_error}")
+            emit_trace(trace_log, "Next retry prompt:")
+            emit_trace(trace_log, build_repair_prompt(task["prompt"], previous_code, previous_error))
     return {"experiment": "adaptive-assertion-guided-qwen3b", "model": args.model, "task_id": task["task_id"], "task_prompt": task["prompt"], "visible_assertion": assertion, "budget": 10, "stop_on_first_pass": True, "records": records}
 
 
@@ -115,6 +125,7 @@ def main() -> None:
     parser.add_argument("--max-prompt-tokens", type=int, default=2048)
     parser.add_argument("--task-index", type=int, default=0)
     parser.add_argument("--trace-initial-failures", type=int, default=0, help="Print complete repair traces until this many tasks have failed on their initial generation.")
+    parser.add_argument("--adaptive-log-path", type=Path, default=Path("logs/adaptive_logs.txt"), help="Path for complete traces of initial-failure tasks.")
     args = parser.parse_args()
     tasks = list(map(json.loads, DATA.open()))
     tokenizer = AutoTokenizer.from_pretrained(args.model, trust_remote_code=False)
@@ -126,21 +137,26 @@ def main() -> None:
     if args.output_dir:
         args.output_dir.mkdir(parents=True, exist_ok=True)
         traced_failures = 0
-        for task in tasks:
-            target = args.output_dir / f"{task['task_id'].replace('/', '_')}.json"
-            if target.exists():
-                print(f"Skipping saved {task['task_id']}", flush=True)
-                continue
-            trace_task = args.trace_initial_failures > 0 and traced_failures < args.trace_initial_failures
-            artifact = run_task(model, tokenizer, task, args, trace_task=trace_task)
-            target.write_text(json.dumps(artifact, indent=2) + "\n")
-            passed = artifact["records"][-1]["verdict"]["passed"]
-            print(f"Completed {task['task_id']}: {len(artifact['records'])} outputs, assertion {'passed' if passed else 'failed'}", flush=True)
-            if trace_task and artifact["records"][0]["verdict"]["passed"] is False:
-                traced_failures += 1
-                print(f"Initial-failure trace count: {traced_failures}/{args.trace_initial_failures}", flush=True)
-            if args.trace_initial_failures > 0 and traced_failures >= args.trace_initial_failures:
-                break
+        args.adaptive_log_path.parent.mkdir(parents=True, exist_ok=True)
+        with args.adaptive_log_path.open("a", encoding="utf-8") as trace_log:
+            separator = "-" * 72
+            trace_log.write(f"{separator}\nRUN STARTED\nTimestamp: {datetime.now(timezone.utc).isoformat()}\n{separator}\n")
+            trace_log.flush()
+            for task in tasks:
+                target = args.output_dir / f"{task['task_id'].replace('/', '_')}.json"
+                if target.exists():
+                    print(f"Skipping saved {task['task_id']}", flush=True)
+                    continue
+                trace_task = args.trace_initial_failures > 0 and traced_failures < args.trace_initial_failures
+                artifact = run_task(model, tokenizer, task, args, trace_task=trace_task, trace_log=trace_log if trace_task else None)
+                target.write_text(json.dumps(artifact, indent=2) + "\n")
+                passed = artifact["records"][-1]["verdict"]["passed"]
+                print(f"Completed {task['task_id']}: {len(artifact['records'])} outputs, assertion {'passed' if passed else 'failed'}", flush=True)
+                if trace_task and artifact["records"][0]["verdict"]["passed"] is False:
+                    traced_failures += 1
+                    emit_trace(trace_log, f"Initial-failure trace count: {traced_failures}/{args.trace_initial_failures}")
+                if args.trace_initial_failures > 0 and traced_failures >= args.trace_initial_failures:
+                    break
         return
     if args.output is None:
         raise ValueError("Specify --output for one task or --output-dir for the full suite.")
