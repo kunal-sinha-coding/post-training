@@ -46,7 +46,7 @@ def build_repair_prompt(task_prompt: str, code: str, error: str, diagnosis: str 
 def build_diagnosis_prompt(task_prompt: str, code: str, error: str) -> str:
     fence = chr(96) * 3
     return ("<|im_start|>system\nYou diagnose Python algorithmic solutions<|im_end|>\n"
-            "<|im_start|>user\nExplain what is wrong with the following solution and how it should be corrected. Do not write code.\n"
+            "<|im_start|>user\nAnalyze the failed solution using the task, code, assertion, and failure details. Identify the faulty line or logic, state what the code currently does, state what the assertion requires, and describe the smallest correction. Do not write code.\n"
             f"Task:\n{task_prompt}\n\nFailed solution:\n{fence}python\n{code}\n{fence}\n\n"
             f"Observed failure:\n{error}<|im_end|>\n<|im_start|>assistant\n")
 
@@ -59,21 +59,29 @@ def clean_completion(text: str) -> str:
 
 # Execute the candidate and visible assertion in an isolated process.
 def check_assertion(code: str, assertion: str) -> dict:
-    child = ("import contextlib,io,json,sys\n"
+    child = ("import ast,contextlib,io,json,sys\n"
              "j=json.loads(sys.stdin.read())\n"
              "try:\n"
              "  with contextlib.redirect_stdout(io.StringIO()),contextlib.redirect_stderr(io.StringIO()):\n"
              "    scope={'__name__':'candidate'}\n"
              "    exec(j['code'],scope)\n"
-             "    exec(j['assertion'],scope)\n"
-             "  print(json.dumps({'passed':True}))\n"
+             "    assertion_node=ast.parse(j['assertion']).body[0].test\n"
+             "    assertion_value=eval(compile(ast.Expression(assertion_node),'<assertion>','eval'),scope)\n"
+             "  if assertion_value:\n"
+             "    print(json.dumps({'passed':True,'assertion':j['assertion'],'assertion_value':repr(assertion_value)}))\n"
+             "  else:\n"
+             "    details={'passed':False,'error':'AssertionError: assertion evaluated to false','assertion':j['assertion'],'assertion_value':repr(assertion_value),'failure_type':'wrong_value'}\n"
+             "    if isinstance(assertion_node,ast.Compare) and len(assertion_node.comparators)==1:\n"
+             "      details['observed_value']=repr(eval(compile(ast.Expression(assertion_node.left),'<assertion>','eval'),scope))\n"
+             "      details['expected_value']=ast.unparse(assertion_node.comparators[0])\n"
+             "    print(json.dumps(details))\n"
              "except BaseException as e:\n"
-             "  print(json.dumps({'passed':False,'error':type(e).__name__+': '+str(e)}))\n")
+             "  print(json.dumps({'passed':False,'error':type(e).__name__+': '+str(e),'assertion':j['assertion'],'failure_type':type(e).__name__}))\n")
     try:
         result = subprocess.run([sys.executable, "-I", "-c", child], input=json.dumps({"code": code, "assertion": assertion}).encode(), stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=5)
         return json.loads(result.stdout.decode().splitlines()[-1]) if result.stdout else {"passed": False, "error": "No subprocess output"}
     except BaseException as error:
-        return {"passed": False, "error": type(error).__name__ + ": " + str(error)}
+        return {"passed": False, "error": type(error).__name__ + ": " + str(error), "assertion": assertion, "failure_type": type(error).__name__}
 
 
 # Generate one completion with the local Qwen model.
@@ -151,11 +159,14 @@ def main() -> None:
     parser.add_argument("--max-new-tokens", type=int, default=512)
     parser.add_argument("--max-prompt-tokens", type=int, default=2048)
     parser.add_argument("--task-index", type=int, default=0)
+    parser.add_argument("--task-ids", nargs="+", help="Run only the listed task identifiers.")
     parser.add_argument("--max-generations", type=int, default=3, help="Maximum total candidate generations per task, including the initial generation.")
     parser.add_argument("--trace-initial-failures", type=int, default=0, help="Print complete repair traces until this many tasks have failed on their initial generation.")
     parser.add_argument("--adaptive-log-path", type=Path, default=Path("logs/adaptive_logs.txt"), help="Path for complete traces of initial-failure tasks.")
     args = parser.parse_args()
     tasks = list(map(json.loads, DATA.open()))
+    if args.task_ids:
+        tasks = [task for task in tasks if task["task_id"] in args.task_ids]
     tokenizer = AutoTokenizer.from_pretrained(args.model, trust_remote_code=False)
     tokenizer.padding_side = "left"
     if tokenizer.pad_token is None:

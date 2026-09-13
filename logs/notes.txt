@@ -1945,3 +1945,7 @@ Limited diagnosis generations to 64 tokens by default so the requested one or tw
 ## 2026-09-13: Restore full diagnosis generation budget
 
 Removed the one to two sentence diagnosis constraint and restored the diagnosis call to the full 512 token generation limit for comparison. The runner continues to stream each trace event directly to adaptive_logs.txt as it occurs.
+
+## 2026-09-13: Add informative two task diagnosis rerun
+
+Enhanced verifier failures with assertion text, failure type, assertion value, and observed and expected values for direct comparisons. Structured diagnosis instructions now require the faulty logic, current behavior, required behavior, and smallest correction. Added task ID filtering for a focused two task rerun while preserving immediate log flushing.
