@@ -1965,3 +1965,7 @@ Formatted verifier metadata into the retry error context so direct assertion fai
 ## 2026-09-13: Complete focused comparison aware rerun
 
 Reran the diagnosis guided adaptive loop on Mbpp/92 and Mbpp/103 with three total candidate generations. The verifier reported observed value 12 versus expected value 4 for Mbpp/103 and passed Mbpp/92 on its initial generation. The concrete comparison was included in both diagnosis and retry prompts, and trace messages were flushed to logs/adaptive_logs.txt as each event occurred.
+
+## 2026-09-13: Stop full two generation adaptive evaluation
+
+Stopped the full adaptive run at the user's request after 107 of 399 tasks completed. The partial paired artifacts showed 89 initial visible assertion passes, 91 final passes, and two recovered tasks, Mbpp/59 and Mbpp/92. The partial run is retained for analysis and is not a complete suite result.
