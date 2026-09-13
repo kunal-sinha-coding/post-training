@@ -1937,3 +1937,7 @@ Completed the resumed adaptive Qwen 3B trace run with ten newly observed initial
 Updated adaptive retries to call the same model for a short diagnosis before each retry. The diagnosis receives the original task, failed code, and observed error, and the resulting explanation is included in the repair prompt and trace log. Reduced the default maximum to three total generations per task.
 
 Corrected trace logging so passing tasks are not written to adaptive_logs.txt while the runner is waiting to determine whether their initial generation failed. A task trace is emitted only after its initial failure is confirmed.
+
+## 2026-09-13: Bound diagnosis response length
+
+Limited diagnosis generations to 64 tokens by default so the requested one or two sentence explanation remains separate from repair code. Added a configurable --diagnosis-max-new-tokens option while keeping three total candidate generations per task.

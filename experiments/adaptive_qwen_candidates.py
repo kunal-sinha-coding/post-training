@@ -77,10 +77,12 @@ def check_assertion(code: str, assertion: str) -> dict:
 
 
 # Generate one completion with the local Qwen model.
-def generate_one(model: object, tokenizer: object, prompt: str, args: argparse.Namespace) -> str:
+def generate_one(model: object, tokenizer: object, prompt: str, args: argparse.Namespace, max_new_tokens: int | None = None) -> str:
+    # Use a caller supplied output limit for compact diagnostic responses.
+    generation_limit = args.max_new_tokens if max_new_tokens is None else max_new_tokens
     encoded = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=args.max_prompt_tokens).to(model.device)
     with torch.inference_mode():
-        output = model.generate(**encoded, do_sample=True, temperature=args.temperature, top_p=args.top_p, max_new_tokens=args.max_new_tokens, num_return_sequences=1, pad_token_id=tokenizer.pad_token_id)
+        output = model.generate(**encoded, do_sample=True, temperature=args.temperature, top_p=args.top_p, max_new_tokens=generation_limit, num_return_sequences=1, pad_token_id=tokenizer.pad_token_id)
     prompt_width = encoded["input_ids"].shape[1]
     return tokenizer.decode(output[0, prompt_width:], skip_special_tokens=True)
 
@@ -123,7 +125,7 @@ def run_task(model: object, tokenizer: object, task: dict, args: argparse.Namesp
                 emit_trace(trace_log, raw)
                 emit_trace(trace_log, f"Verdict: {'passed' if verdict['passed'] else 'failed'}")
             diagnosis_prompt = build_diagnosis_prompt(task["prompt"], previous_code, previous_error)
-            diagnosis = generate_one(model, tokenizer, diagnosis_prompt, args).strip()
+            diagnosis = generate_one(model, tokenizer, diagnosis_prompt, args, max_new_tokens=args.diagnosis_max_new_tokens).strip()
             record["diagnosis_prompt"] = diagnosis_prompt
             record["diagnosis_output"] = diagnosis
         if trace_task:
@@ -147,6 +149,7 @@ def main() -> None:
     parser.add_argument("--temperature", type=float, default=0.2)
     parser.add_argument("--top-p", type=float, default=0.95)
     parser.add_argument("--max-new-tokens", type=int, default=512)
+    parser.add_argument("--diagnosis-max-new-tokens", type=int, default=64, help="Maximum tokens for each diagnosis response.")
     parser.add_argument("--max-prompt-tokens", type=int, default=2048)
     parser.add_argument("--task-index", type=int, default=0)
     parser.add_argument("--max-generations", type=int, default=3, help="Maximum total candidate generations per task, including the initial generation.")
