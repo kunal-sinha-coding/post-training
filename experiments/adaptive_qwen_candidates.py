@@ -59,6 +59,8 @@ def clean_completion(text: str) -> str:
 
 # Execute the candidate and visible assertion in an isolated process.
 def check_assertion(code: str, assertion: str) -> dict:
+    # Remove the duplicated visible assertion before running the candidate body.
+    candidate_code = "\n".join(line for line in code.splitlines() if line.strip() != assertion.strip())
     child = ("import ast,contextlib,io,json,sys\n"
              "j=json.loads(sys.stdin.read())\n"
              "try:\n"
@@ -78,7 +80,7 @@ def check_assertion(code: str, assertion: str) -> dict:
              "except BaseException as e:\n"
              "  print(json.dumps({'passed':False,'error':type(e).__name__+': '+str(e),'assertion':j['assertion'],'failure_type':type(e).__name__}))\n")
     try:
-        result = subprocess.run([sys.executable, "-I", "-c", child], input=json.dumps({"code": code, "assertion": assertion}).encode(), stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=5)
+        result = subprocess.run([sys.executable, "-I", "-c", child], input=json.dumps({"code": candidate_code, "assertion": assertion}).encode(), stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=5)
         return json.loads(result.stdout.decode().splitlines()[-1]) if result.stdout else {"passed": False, "error": "No subprocess output"}
     except BaseException as error:
         return {"passed": False, "error": type(error).__name__ + ": " + str(error), "assertion": assertion, "failure_type": type(error).__name__}

@@ -1953,3 +1953,7 @@ Enhanced verifier failures with assertion text, failure type, assertion value, a
 ## 2026-09-13: Lower diagnosis sampling temperature
 
 Added a separate diagnosis temperature defaulting to 0.1 while retaining the candidate generation temperature of 0.2, reducing variation in diagnostic explanations during the focused rerun.
+
+## 2026-09-13: Remove duplicated visible assertions during verification
+
+The focused run showed that generated code often included the visible assertion, causing the checker to fail while executing the candidate before it could report observed values. The verifier now removes that exact assertion line from the candidate body and evaluates it separately.
