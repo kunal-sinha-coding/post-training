@@ -2,7 +2,10 @@
 
 The script loads Qwen2.5-Coder-3B-Instruct, generates one candidate at a time,
 executes the task-visible assertion, repairs failures with the observed error,
-stops at the first passing candidate, and saves the complete trace.
+stops at the first passing candidate, and saves the complete trace.  Its
+interactive diagnostic mode pauses after each failed attempt on the first task
+whose initial generation fails, so the next repair prompt and model output can
+be inspected in sequence.
 """
 
 from __future__ import annotations
@@ -75,10 +78,12 @@ def generate_one(model: object, tokenizer: object, prompt: str, args: argparse.N
 
 # Run the bounded repair loop for one task and return its complete trace.
 def run_task(model: object, tokenizer: object, task: dict, args: argparse.Namespace) -> dict:
+    # Run one task's adaptive generation and optionally pause after each failure.
     assertion = next(line.strip() for line in task["prompt"].splitlines() if line.strip().startswith("assert "))
     records = []
     previous_code = ""
     previous_error = ""
+    debug_task = False
     for index in range(10):
         prompt = build_generation_prompt(task["prompt"]) if not previous_code or not previous_error else build_repair_prompt(task["prompt"], previous_code, previous_error)
         raw = generate_one(model, tokenizer, prompt, args)
@@ -89,6 +94,17 @@ def run_task(model: object, tokenizer: object, task: dict, args: argparse.Namesp
             break
         previous_code = code
         previous_error = verdict.get("error", "Assertion failed")
+        if args.debug_first_initial_failure and index == 0:
+            debug_task = True
+            print(f"Initial generation failed for {task['task_id']}.", flush=True)
+            print("Retry prompt:", flush=True)
+            print(build_repair_prompt(task["prompt"], previous_code, previous_error), flush=True)
+            breakpoint()
+        elif debug_task:
+            print(f"Repair generation {index} failed for {task['task_id']}.", flush=True)
+            print("Next retry prompt:", flush=True)
+            print(build_repair_prompt(task["prompt"], previous_code, previous_error), flush=True)
+            breakpoint()
     return {"experiment": "adaptive-assertion-guided-qwen3b", "model": args.model, "task_id": task["task_id"], "task_prompt": task["prompt"], "visible_assertion": assertion, "budget": 10, "stop_on_first_pass": True, "records": records}
 
 
@@ -103,6 +119,7 @@ def main() -> None:
     parser.add_argument("--max-new-tokens", type=int, default=512)
     parser.add_argument("--max-prompt-tokens", type=int, default=2048)
     parser.add_argument("--task-index", type=int, default=0)
+    parser.add_argument("--debug-first-initial-failure", action="store_true", help="Pause after each failure on the first task whose initial generation fails.")
     args = parser.parse_args()
     tasks = list(map(json.loads, DATA.open()))
     tokenizer = AutoTokenizer.from_pretrained(args.model, trust_remote_code=False)
@@ -122,6 +139,8 @@ def main() -> None:
             target.write_text(json.dumps(artifact, indent=2) + "\n")
             passed = artifact["records"][-1]["verdict"]["passed"]
             print(f"Completed {task['task_id']}: {len(artifact['records'])} outputs, assertion {'passed' if passed else 'failed'}", flush=True)
+            if args.debug_first_initial_failure and artifact["records"][0]["verdict"]["passed"] is False:
+                break
         return
     if args.output is None:
         raise ValueError("Specify --output for one task or --output-dir for the full suite.")

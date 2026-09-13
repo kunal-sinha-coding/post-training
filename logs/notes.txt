@@ -1923,3 +1923,7 @@ On the first EvalPlus task, Mbpp/2, Qwen2.5-Coder-3B-Instruct produced a candida
 ## 2026-09-11: Add resumable full-suite adaptive generation
 
 Extended the adaptive Qwen 3B pilot to process all 399 EvalPlus tasks with one model load, stop each task at its first visible-assertion pass, save each task immediately, and resume from existing task artifacts after interruption.
+
+## 2026-09-13: Add interactive adaptive first-failure tracing
+
+Added a debug mode to the adaptive Qwen 3B full-suite runner that stops at the first task whose initial generation fails, prints each next repair prompt, pauses after each failed attempt, and resumes through that task before stopping. Successful earlier tasks remain saved for resumable execution.
