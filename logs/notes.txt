@@ -1935,3 +1935,5 @@ Added logs/adaptive_logs.txt for trace-only recording. Each run appends a RUN ST
 Completed the resumed adaptive Qwen 3B trace run with ten newly observed initial-failure tasks: Mbpp/103, 108, 111, 124, 125, 129, 138, 160, 229, and 235. Each task was allowed up to ten outputs, and the complete trace was saved in logs/adaptive_logs.txt while streaming to the terminal. The run stopped at the 10/10 condition.
 
 Updated adaptive retries to call the same model for a short diagnosis before each retry. The diagnosis receives the original task, failed code, and observed error, and the resulting explanation is included in the repair prompt and trace log. Reduced the default maximum to three total generations per task.
+
+Corrected trace logging so passing tasks are not written to adaptive_logs.txt while the runner is waiting to determine whether their initial generation failed. A task trace is emitted only after its initial failure is confirmed.

@@ -109,7 +109,7 @@ def run_task(model: object, tokenizer: object, task: dict, args: argparse.Namesp
         verdict = check_assertion(code, assertion)
         record = {"index": index, "mode": "generate" if not previous_code or not previous_error else "repair", "prompt": prompt, "raw_output": raw, "code": code, "verdict": verdict}
         records.append(record)
-        if trace_task:
+        if trace_task and index > 0:
             emit_trace(trace_log, f"Generation {index} output for {task['task_id']}:")
             emit_trace(trace_log, raw)
             emit_trace(trace_log, f"Verdict: {'passed' if verdict['passed'] else 'failed'}")
@@ -118,18 +118,23 @@ def run_task(model: object, tokenizer: object, task: dict, args: argparse.Namesp
         previous_code = code
         previous_error = verdict.get("error", "Assertion failed")
         if index + 1 < args.max_generations:
+            if trace_task and index == 0:
+                emit_trace(trace_log, f"Generation {index} output for {task['task_id']}:")
+                emit_trace(trace_log, raw)
+                emit_trace(trace_log, f"Verdict: {'passed' if verdict['passed'] else 'failed'}")
             diagnosis_prompt = build_diagnosis_prompt(task["prompt"], previous_code, previous_error)
             diagnosis = generate_one(model, tokenizer, diagnosis_prompt, args).strip()
             record["diagnosis_prompt"] = diagnosis_prompt
             record["diagnosis_output"] = diagnosis
-        if trace_task and index + 1 < args.max_generations:
+        if trace_task:
             emit_trace(trace_log, f"Error after generation {index} for {task['task_id']}: {previous_error}")
-            emit_trace(trace_log, "Diagnosis prompt:")
-            emit_trace(trace_log, diagnosis_prompt)
-            emit_trace(trace_log, "Diagnosis output:")
-            emit_trace(trace_log, diagnosis)
-            emit_trace(trace_log, "Next retry prompt:")
-            emit_trace(trace_log, build_repair_prompt(task["prompt"], previous_code, previous_error, diagnosis))
+            if index + 1 < args.max_generations:
+                emit_trace(trace_log, "Diagnosis prompt:")
+                emit_trace(trace_log, diagnosis_prompt)
+                emit_trace(trace_log, "Diagnosis output:")
+                emit_trace(trace_log, diagnosis)
+                emit_trace(trace_log, "Next retry prompt:")
+                emit_trace(trace_log, build_repair_prompt(task["prompt"], previous_code, previous_error, diagnosis))
     return {"experiment": "adaptive-assertion-guided-qwen3b", "model": args.model, "task_id": task["task_id"], "task_prompt": task["prompt"], "visible_assertion": assertion, "budget": args.max_generations, "stop_on_first_pass": True, "records": records}
 
 
