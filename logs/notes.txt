@@ -1969,3 +1969,7 @@ Reran the diagnosis guided adaptive loop on Mbpp/92 and Mbpp/103 with three tota
 ## 2026-09-13: Stop full two generation adaptive evaluation
 
 Stopped the full adaptive run at the user's request after 107 of 399 tasks completed. The partial paired artifacts showed 89 initial visible assertion passes, 91 final passes, and two recovered tasks, Mbpp/59 and Mbpp/92. The partial run is retained for analysis and is not a complete suite result.
+
+## 2026-09-13: Add simple 0.5B to 3B cascade runner
+
+Added a full suite cascade that generates every task with Qwen2.5-Coder-0.5B, executes the visible assertion, routes only failures to Qwen2.5-Coder-3B for one repair, saves artifacts immediately, and supports paired MBPP and MBPP+ evaluation.
