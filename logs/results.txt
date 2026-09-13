@@ -5671,3 +5671,23 @@ Experiment: `adaptive-assertion-guided-qwen3b-mbpp-2`.
 Setup: Qwen2.5-Coder-3B-Instruct used the original ChatML task prompt with temperature 0.2, top_p 0.95, and max_new_tokens 512. The loop allowed up to ten total model outputs, repaired a failed candidate using its visible assertion error, and stopped immediately at the first passing candidate. The candidate passed the visible assertion on the first generation, so no repair call was needed.
 
 Artifact: `outputs/adaptive-qwen25-coder-3b-pilot/mbpp_2.json`. The artifact saves the complete prompt, raw response, cleaned code, verdict, task, assertion, model, and stop-on-first-pass configuration.
+
+
+------------------------------------------------------------------------
+CASCADE EVALUATION RESULTS
+Experiment: qwen3b-simple-cascade
+Date: 2026-09-13
+Purpose: Measure a 0.5B initial generation with one 3B fallback on visible assertion failures.
+Setup: Qwen2.5-Coder-0.5B-Instruct generated all 399 EvalPlus MBPP tasks. Visible assertion failures were routed to Qwen2.5-Coder-3B-Instruct for one repair. Candidates were saved immediately per task. Final candidates were evaluated against canonical MBPP base and MBPP+ inputs after routing.
+Configuration: temperature=0.2, top_p=0.95, max_new_tokens=512, one total retry, 199 of 399 tasks routed to 3B.
+Selection procedure: The visible assertion alone selected whether to route. MBPP and MBPP+ correctness labels were used only for the separate benchmark measurement.
+Artifacts: outputs/qwen25-coder-cascade-full; outputs/qwen25-coder-cascade-full/metrics.json; logs/cascade_run.log
+Code commit: 43617b9
+Metrics denominator: 397 evaluable tasks. Two tasks had canonical reference timeouts and were recorded separately.
+Initial 0.5B MBPP: 180/397 = 0.4534005038
+Final cascade MBPP: 222/397 = 0.5591939547
+Initial 0.5B MBPP+: 148/397 = 0.3727959698
+Final cascade MBPP+: 184/397 = 0.4634760705
+Paired gain: +42 MBPP tasks and +36 MBPP+ tasks.
+Environment: Python local workspace /workspace/post-training, Qwen models loaded with Transformers and bfloat16, process based benchmark evaluation with ten second canonical reference timeout.
+Limitations: This is a stochastic single run. The two timed out canonical references are excluded from the reported denominator.

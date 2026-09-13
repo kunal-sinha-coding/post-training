@@ -1981,3 +1981,7 @@ The cascade generation completed all 399 tasks, but paired evaluation stalled on
 ## 2026-09-13: Fix evaluator timeout handling
 
 The first bounded evaluator attempt terminated on an unhandled SIGALRM rather than recording slow canonical references. Installed a catchable alarm handler in the parent and worker processes so timed out reference tasks are reported explicitly and the full evaluation can complete.
+
+## 2026-09-13: Complete simple cascade evaluation
+
+Completed the 0.5B to 3B cascade on all 399 EvalPlus MBPP tasks. The 0.5B initial candidates passed 180 of 397 evaluable MBPP tasks and 148 of 397 MBPP+ tasks. The cascade final candidates passed 222 MBPP tasks and 184 MBPP+ tasks, recovering 42 MBPP and 36 MBPP+ tasks. Two canonical reference tasks exceeded the ten second reference timeout and were excluded from the denominator.
