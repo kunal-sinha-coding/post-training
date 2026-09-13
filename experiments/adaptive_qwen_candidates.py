@@ -90,6 +90,12 @@ def run_task(model: object, tokenizer: object, task: dict, args: argparse.Namesp
         code = clean_completion(raw)
         verdict = check_assertion(code, assertion)
         records.append({"index": index, "mode": "generate" if not previous_code or not previous_error else "repair", "prompt": prompt, "raw_output": raw, "code": code, "verdict": verdict})
+        if debug_task:
+            print(f"Repair generation {index} output for {task['task_id']}:", flush=True)
+            print(raw, flush=True)
+            print(f"Verdict: {'passed' if verdict['passed'] else 'failed'}", flush=True)
+            if verdict["passed"]:
+                breakpoint()
         if verdict["passed"]:
             break
         previous_code = code
