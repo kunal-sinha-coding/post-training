@@ -1949,3 +1949,7 @@ Removed the one to two sentence diagnosis constraint and restored the diagnosis 
 ## 2026-09-13: Add informative two task diagnosis rerun
 
 Enhanced verifier failures with assertion text, failure type, assertion value, and observed and expected values for direct comparisons. Structured diagnosis instructions now require the faulty logic, current behavior, required behavior, and smallest correction. Added task ID filtering for a focused two task rerun while preserving immediate log flushing.
+
+## 2026-09-13: Lower diagnosis sampling temperature
+
+Added a separate diagnosis temperature defaulting to 0.1 while retaining the candidate generation temperature of 0.2, reducing variation in diagnostic explanations during the focused rerun.
