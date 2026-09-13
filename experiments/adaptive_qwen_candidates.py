@@ -34,12 +34,21 @@ def build_generation_prompt(task_prompt: str) -> str:
 
 
 # Build a repair prompt that includes the failed candidate and assertion error.
-def build_repair_prompt(task_prompt: str, code: str, error: str) -> str:
+def build_repair_prompt(task_prompt: str, code: str, error: str, diagnosis: str = "") -> str:
     fence = chr(96) * 3
     return ("<|im_start|>system\nYou are an intelligent programming assistant that repairs Python algorithmic solutions<|im_end|>\n"
             "<|im_start|>user\nRepair the following solution so it satisfies the task and its visible assertion. Return only Python code.\n"
             f"Task:\n{task_prompt}\n\nCurrent solution:\n{fence}python\n{code}\n{fence}\n\n"
-            f"Visible assertion failure:\n{error}\n<|im_end|>\n<|im_start|>assistant\n{fence}python\n")
+            f"Visible assertion failure:\n{error}\n\nDiagnosis:\n{diagnosis}\n<|im_end|>\n<|im_start|>assistant\n{fence}python\n")
+
+
+# Build a diagnosis prompt that asks the model to explain the failed candidate briefly.
+def build_diagnosis_prompt(task_prompt: str, code: str, error: str) -> str:
+    fence = chr(96) * 3
+    return ("<|im_start|>system\nYou diagnose Python algorithmic solutions<|im_end|>\n"
+            "<|im_start|>user\nExplain in one or two sentences what is wrong with the following solution and how it should be corrected. Do not write code.\n"
+            f"Task:\n{task_prompt}\n\nFailed solution:\n{fence}python\n{code}\n{fence}\n\n"
+            f"Observed failure:\n{error}<|im_end|>\n<|im_start|>assistant\n")
 
 
 # Remove a leading or trailing Markdown fence from a model response.
@@ -92,12 +101,14 @@ def run_task(model: object, tokenizer: object, task: dict, args: argparse.Namesp
     records = []
     previous_code = ""
     previous_error = ""
-    for index in range(10):
-        prompt = build_generation_prompt(task["prompt"]) if not previous_code or not previous_error else build_repair_prompt(task["prompt"], previous_code, previous_error)
+    diagnosis = ""
+    for index in range(args.max_generations):
+        prompt = build_generation_prompt(task["prompt"]) if not previous_code or not previous_error else build_repair_prompt(task["prompt"], previous_code, previous_error, diagnosis)
         raw = generate_one(model, tokenizer, prompt, args)
         code = clean_completion(raw)
         verdict = check_assertion(code, assertion)
-        records.append({"index": index, "mode": "generate" if not previous_code or not previous_error else "repair", "prompt": prompt, "raw_output": raw, "code": code, "verdict": verdict})
+        record = {"index": index, "mode": "generate" if not previous_code or not previous_error else "repair", "prompt": prompt, "raw_output": raw, "code": code, "verdict": verdict}
+        records.append(record)
         if trace_task:
             emit_trace(trace_log, f"Generation {index} output for {task['task_id']}:")
             emit_trace(trace_log, raw)
@@ -106,11 +117,20 @@ def run_task(model: object, tokenizer: object, task: dict, args: argparse.Namesp
             break
         previous_code = code
         previous_error = verdict.get("error", "Assertion failed")
-        if trace_task:
+        if index + 1 < args.max_generations:
+            diagnosis_prompt = build_diagnosis_prompt(task["prompt"], previous_code, previous_error)
+            diagnosis = generate_one(model, tokenizer, diagnosis_prompt, args).strip()
+            record["diagnosis_prompt"] = diagnosis_prompt
+            record["diagnosis_output"] = diagnosis
+        if trace_task and index + 1 < args.max_generations:
             emit_trace(trace_log, f"Error after generation {index} for {task['task_id']}: {previous_error}")
+            emit_trace(trace_log, "Diagnosis prompt:")
+            emit_trace(trace_log, diagnosis_prompt)
+            emit_trace(trace_log, "Diagnosis output:")
+            emit_trace(trace_log, diagnosis)
             emit_trace(trace_log, "Next retry prompt:")
-            emit_trace(trace_log, build_repair_prompt(task["prompt"], previous_code, previous_error))
-    return {"experiment": "adaptive-assertion-guided-qwen3b", "model": args.model, "task_id": task["task_id"], "task_prompt": task["prompt"], "visible_assertion": assertion, "budget": 10, "stop_on_first_pass": True, "records": records}
+            emit_trace(trace_log, build_repair_prompt(task["prompt"], previous_code, previous_error, diagnosis))
+    return {"experiment": "adaptive-assertion-guided-qwen3b", "model": args.model, "task_id": task["task_id"], "task_prompt": task["prompt"], "visible_assertion": assertion, "budget": args.max_generations, "stop_on_first_pass": True, "records": records}
 
 
 # Load the model once and run either one task or every task with resumable saves.
@@ -124,6 +144,7 @@ def main() -> None:
     parser.add_argument("--max-new-tokens", type=int, default=512)
     parser.add_argument("--max-prompt-tokens", type=int, default=2048)
     parser.add_argument("--task-index", type=int, default=0)
+    parser.add_argument("--max-generations", type=int, default=3, help="Maximum total candidate generations per task, including the initial generation.")
     parser.add_argument("--trace-initial-failures", type=int, default=0, help="Print complete repair traces until this many tasks have failed on their initial generation.")
     parser.add_argument("--adaptive-log-path", type=Path, default=Path("logs/adaptive_logs.txt"), help="Path for complete traces of initial-failure tasks.")
     args = parser.parse_args()
