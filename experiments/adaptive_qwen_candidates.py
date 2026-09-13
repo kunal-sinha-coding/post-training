@@ -86,6 +86,16 @@ def check_assertion(code: str, assertion: str) -> dict:
         return {"passed": False, "error": type(error).__name__ + ": " + str(error), "assertion": assertion, "failure_type": type(error).__name__}
 
 
+# Format verifier details so retries receive the concrete expected and observed values.
+def format_failure(verdict: dict) -> str:
+    details = verdict.get("error", "Assertion failed")
+    if "observed_value" in verdict and "expected_value" in verdict:
+        details += f"\nAssertion comparison: observed value {verdict['observed_value']}; expected value {verdict['expected_value']}."
+    elif "assertion_value" in verdict:
+        details += f"\nAssertion expression evaluated to {verdict['assertion_value']}."
+    return details
+
+
 # Generate one completion with the local Qwen model.
 def generate_one(model: object, tokenizer: object, prompt: str, args: argparse.Namespace, max_new_tokens: int | None = None, temperature: float | None = None) -> str:
     # Use a caller supplied output limit for compact diagnostic responses.
@@ -129,7 +139,7 @@ def run_task(model: object, tokenizer: object, task: dict, args: argparse.Namesp
         if verdict["passed"]:
             break
         previous_code = code
-        previous_error = verdict.get("error", "Assertion failed")
+        previous_error = format_failure(verdict)
         if index + 1 < args.max_generations:
             if trace_task and index == 0:
                 emit_trace(trace_log, f"Generation {index} output for {task['task_id']}:")
