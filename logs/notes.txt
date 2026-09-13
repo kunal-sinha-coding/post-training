@@ -1977,3 +1977,7 @@ Added a full suite cascade that generates every task with Qwen2.5-Coder-0.5B, ex
 ## 2026-09-13: Bound slow canonical reference evaluation
 
 The cascade generation completed all 399 tasks, but paired evaluation stalled on slow canonical MBPP+ reference computations. Added a ten second per task reference timeout and explicit unavailable task reporting so the evaluator completes with a stated denominator and limitations.
+
+## 2026-09-13: Fix evaluator timeout handling
+
+The first bounded evaluator attempt terminated on an unhandled SIGALRM rather than recording slow canonical references. Installed a catchable alarm handler in the parent and worker processes so timed out reference tasks are reported explicitly and the full evaluation can complete.

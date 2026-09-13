@@ -19,6 +19,13 @@ from llm_output_verifier import DATA
 from mbpp_input_types import mbpp_deserialize_inputs
 
 
+# Raise a catchable exception when a reference or candidate exceeds its limit.
+def alarm_handler(signum: int, frame: object) -> None:
+    # Convert the process alarm into an ordinary evaluation failure.
+    del signum, frame
+    raise TimeoutError("Evaluation timed out.")
+
+
 # Encode outputs with exact type information for benchmark comparisons.
 def encode(value: object) -> object:
     # Preserve primitive, container, and unsupported output types distinctly.
@@ -63,6 +70,7 @@ def run_suite(code: str, entry_point: str, inputs: list[list[object]], expected:
 # Evaluate both paired candidates for one task.
 def evaluate_task(job: dict) -> dict:
     # Run initial and final candidates independently on MBPP and MBPP+ suites.
+    signal.signal(signal.SIGALRM, alarm_handler)
     if not job["available"]:
         return {"task_id": job["task_id"], "available": False, "reference_error": job["reference_error"]}
     results = {}
@@ -118,6 +126,7 @@ def aggregate(results: dict[str, dict], task_ids: list[str]) -> dict:
 # Load artifacts, run the paired benchmark, and save all task outcomes.
 def main() -> None:
     # Parse the adaptive artifact directory and output location.
+    signal.signal(signal.SIGALRM, alarm_handler)
     parser = argparse.ArgumentParser()
     parser.add_argument("--adaptive-dir", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
