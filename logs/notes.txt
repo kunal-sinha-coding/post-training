@@ -1997,3 +1997,6 @@ Updated the comparison analysis to load 0.5B visible-assertion verdicts from the
 ## 2026-09-14: Bound canonical evaluation in ten-generation analysis
 
 Added a ten second canonical reference timeout to the ten-generation comparison and exclude tasks whose MBPP or MBPP+ reference computation does not finish. The report records the resulting common evaluable-task denominator.
+## 2026-09-14: Fix output redirection in ten-generation analysis
+
+The first full 3B candidate scan incorrectly treated every hidden execution as an error because the output redirection context lacked StringIO targets. Fixed the evaluator and invalidated that first comparison artifact before rerunning the scan.

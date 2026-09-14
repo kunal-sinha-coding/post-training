@@ -10,6 +10,7 @@ import concurrent.futures
 import contextlib
 import copy
 import hashlib
+import io
 import json
 import signal
 from pathlib import Path
@@ -62,7 +63,7 @@ def evaluate_hidden(job: dict) -> dict:
         for arguments, expected in zip(job[suite]["inputs"], job[suite]["expected"]):
             signal.setitimer(signal.ITIMER_REAL, 2.0)
             try:
-                with contextlib.redirect_stdout(), contextlib.redirect_stderr():
+                with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
                     scope = {"__name__": "candidate"}
                     exec(job["code"], scope)
                     value = scope[job["entry_point"]](*copy.deepcopy(arguments))
