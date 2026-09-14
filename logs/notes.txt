@@ -2000,3 +2000,6 @@ Added a ten second canonical reference timeout to the ten-generation comparison 
 ## 2026-09-14: Fix output redirection in ten-generation analysis
 
 The first full 3B candidate scan incorrectly treated every hidden execution as an error because the output redirection context lacked StringIO targets. Fixed the evaluator and invalidated that first comparison artifact before rerunning the scan.
+## 2026-09-14: Compare ten-generation 0.5B and 3B pools
+
+Completed the corrected common-denominator analysis of the saved ten-generation 0.5B and 3B EvalPlus pools. Baseline Pass@K preserves generation order. Visible filtering selects the first candidate passing the prompt assertion, without using hidden correctness labels. The corrected scan covers 397 tasks after excluding two canonical reference timeouts. Results and first-correct-generation distributions are saved in outputs/ten-generation-pool-comparison.json and logs/results.txt.

@@ -5691,3 +5691,36 @@ Final cascade MBPP+: 184/397 = 0.4634760705
 Paired gain: +42 MBPP tasks and +36 MBPP+ tasks.
 Environment: Python local workspace /workspace/post-training, Qwen models loaded with Transformers and bfloat16, process based benchmark evaluation with ten second canonical reference timeout.
 Limitations: This is a stochastic single run. The two timed out canonical references are excluded from the reported denominator.
+## Ten-generation baseline versus visible-assertion filtering
+
+Experiment: ten-generation-baseline-versus-visible-assertion-filter
+
+Setup: The saved 0.5B and 3B pools each contain ten candidates per EvalPlus MBPP task. Baseline Pass@K uses the first K candidates in generation order. Filtering selects the first candidate that passes the prompt-visible assertion. Hidden MBPP and MBPP+ labels are used only after this selection. Two canonical reference tasks timed out, so all metrics below use 397 common evaluable tasks.
+
+| Model | MBPP Pass@1 | Pass@2 | Pass@3 | Pass@4 | Pass@5 | Pass@6 | Pass@7 | Pass@8 | Pass@9 | Pass@10 | Filtered Pass@1 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 0.5B | 51.39% | 56.93% | 61.21% | 61.71% | 62.72% | 63.48% | 64.74% | 65.49% | 65.74% | 66.50% | 62.47% |
+| 3B | 67.25% | 71.54% | 73.05% | 74.06% | 74.56% | 75.06% | 75.82% | 76.07% | 76.57% | 77.08% | 75.06% |
+
+| Model | MBPP+ Pass@1 | Pass@2 | Pass@3 | Pass@4 | Pass@5 | Pass@6 | Pass@7 | Pass@8 | Pass@9 | Pass@10 | Filtered Pass@1 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 0.5B | 43.83% | 48.11% | 51.64% | 52.64% | 53.65% | 54.16% | 54.91% | 55.92% | 56.42% | 57.18% | 50.88% |
+| 3B | 55.16% | 59.45% | 59.95% | 62.22% | 62.72% | 63.48% | 63.73% | 63.98% | 64.48% | 64.74% | 60.45% |
+
+Generations consumed by the retry-until-visible-pass policy:
+
+| Model | Total generations | Average per task | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 0.5B | 1,579 | 3.98 | 222 | 26 | 18 | 2 | 2 | 4 | 5 | 3 | 0 | 115 |
+| 3B | 1,029 | 2.59 | 296 | 20 | 8 | 5 | 2 | 2 | 3 | 1 | 2 | 58 |
+
+First correct generation distributions, with never meaning no correct candidate among ten:
+
+| Model | Split | G1 | G2 | G3 | G4 | G5 | G6 | G7 | G8 | G9 | G10 | Never |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 0.5B | MBPP | 204 | 22 | 17 | 2 | 4 | 3 | 5 | 3 | 1 | 3 | 133 |
+| 0.5B | MBPP+ | 174 | 17 | 14 | 4 | 4 | 2 | 3 | 4 | 2 | 3 | 170 |
+| 3B | MBPP | 267 | 17 | 6 | 4 | 2 | 2 | 3 | 1 | 2 | 2 | 91 |
+| 3B | MBPP+ | 219 | 17 | 2 | 9 | 2 | 3 | 1 | 1 | 2 | 1 | 140 |
+
+Artifact: outputs/ten-generation-pool-comparison.json. Code commit: 105cfda.
