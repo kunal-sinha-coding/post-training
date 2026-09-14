@@ -2003,3 +2003,6 @@ The first full 3B candidate scan incorrectly treated every hidden execution as a
 ## 2026-09-14: Compare ten-generation 0.5B and 3B pools
 
 Completed the corrected common-denominator analysis of the saved ten-generation 0.5B and 3B EvalPlus pools. Baseline Pass@K preserves generation order. Visible filtering selects the first candidate passing the prompt assertion, without using hidden correctness labels. The corrected scan covers 397 tasks after excluding two canonical reference timeouts. Results and first-correct-generation distributions are saved in outputs/ten-generation-pool-comparison.json and logs/results.txt.
+## 2026-09-14: Add official greedy Qwen EvalPlus runner
+
+Added experiments/run_qwen_official_greedy_eval.py to reproduce the Qwen instruct evaluation protocol with stripped prompts, greedy decoding, a 2,048-token completion budget, Qwen stop sequences, and official EvalPlus-compatible output files for the 0.5B, 1.5B, and 3B models.
