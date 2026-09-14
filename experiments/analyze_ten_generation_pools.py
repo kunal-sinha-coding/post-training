@@ -40,11 +40,18 @@ def alarm_handler(signum: int, frame: object) -> None:
 
 
 # Compute canonical typed outputs for one task and suite.
-def canonical_outputs(task: dict, suite: str) -> list[object]:
-    scope = {"__name__": "canonical"}
-    exec(task["canonical_solution"], scope)
-    arguments = mbpp_deserialize_inputs(task["task_id"], task[suite])
-    return [encode(scope[task["entry_point"]](*copy.deepcopy(inputs))) for inputs in arguments]
+def canonical_outputs(task: dict, suite: str) -> list[object] | None:
+    signal.signal(signal.SIGALRM, alarm_handler)
+    signal.setitimer(signal.ITIMER_REAL, 10.0)
+    try:
+        scope = {"__name__": "canonical"}
+        exec(task["canonical_solution"], scope)
+        arguments = mbpp_deserialize_inputs(task["task_id"], task[suite])
+        return [encode(scope[task["entry_point"]](*copy.deepcopy(inputs))) for inputs in arguments]
+    except BaseException:
+        return None
+    finally:
+        signal.setitimer(signal.ITIMER_REAL, 0)
 
 
 # Evaluate one candidate against the canonical MBPP and MBPP+ suites.
@@ -77,14 +84,18 @@ def load_jobs(model_dir: Path, tasks: dict[str, dict]) -> dict[str, list[dict]]:
         codes = [(candidate_dir / f"{index}.py").read_text() for index in range(10)]
         base_inputs = mbpp_deserialize_inputs(task_id, task["base_input"])
         plus_inputs = mbpp_deserialize_inputs(task_id, task["plus_input"])
+        base_expected = canonical_outputs(task, "base_input")
+        plus_expected = canonical_outputs(task, "plus_input")
+        if base_expected is None or plus_expected is None:
+            continue
         jobs[task_id] = [
             {
                 "task_id": task_id,
                 "entry_point": task["entry_point"],
                 "code": code,
                 "visible_assertion": visible_assertion(task["prompt"]),
-                "base": {"inputs": base_inputs, "expected": canonical_outputs(task, "base_input")},
-                "plus": {"inputs": plus_inputs, "expected": canonical_outputs(task, "plus_input")},
+                "base": {"inputs": base_inputs, "expected": base_expected},
+                "plus": {"inputs": plus_inputs, "expected": plus_expected},
             }
             for code in codes
         ]
@@ -147,6 +158,7 @@ def main() -> None:
             visible_by_model[model_name] = {task_id: [index in old_visible[task_id]["survivor_indices"] for index in range(10)] for task_id in task_ids}
             continue
         jobs_by_task = load_jobs(model_dir, tasks)
+        task_ids = [task_id for task_id in task_ids if task_id in jobs_by_task]
         labels_by_model[model_name] = {task_id: [None] * 10 for task_id in task_ids}
         visible_by_model[model_name] = {task_id: [False] * 10 for task_id in task_ids}
         jobs = [(task_id, index, job) for task_id in task_ids for index, job in enumerate(jobs_by_task[task_id])]

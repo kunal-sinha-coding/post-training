@@ -1994,3 +1994,6 @@ Added experiments/analyze_ten_generation_pools.py to compare the saved 0.5B and 
 ## 2026-09-14: Fix ten-generation comparison input schema
 
 Updated the comparison analysis to load 0.5B visible-assertion verdicts from the existing separate filter artifact because the original evaluator labels contain only MBPP and MBPP+ correctness fields.
+## 2026-09-14: Bound canonical evaluation in ten-generation analysis
+
+Added a ten second canonical reference timeout to the ten-generation comparison and exclude tasks whose MBPP or MBPP+ reference computation does not finish. The report records the resulting common evaluable-task denominator.
