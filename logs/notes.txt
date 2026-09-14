@@ -1988,3 +1988,6 @@ Completed the 0.5B to 3B cascade on all 399 EvalPlus MBPP tasks. The 0.5B initia
 ## 2026-09-14: Add sequential visible-assertion sampling experiment
 
 Added experiments/sequential_visible_assertion_sampling.py to reproduce the EvalPlus ten-candidate visible-assertion filter while generating candidates lazily. Each model produces one candidate, repeats the identical prompt only after a visible assertion failure, stops at the first visible pass, and caps each task at ten attempts. The runner saves every attempt immediately for separate 0.5B, 1.5B, and 3B evaluations.
+## 2026-09-14: Add ten-generation pool comparison analysis
+
+Added experiments/analyze_ten_generation_pools.py to compare the saved 0.5B and 3B ten-candidate EvalPlus pools. The analysis reports baseline Pass@K, first visible-assertion survivor Pass@1, first-correct-generation distributions, and total and average generations consumed by the retry-until-visible-pass policy.
