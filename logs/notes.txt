@@ -2006,3 +2006,6 @@ Completed the corrected common-denominator analysis of the saved ten-generation 
 ## 2026-09-14: Add official greedy Qwen EvalPlus runner
 
 Added experiments/run_qwen_official_greedy_eval.py to reproduce the Qwen instruct evaluation protocol with stripped prompts, greedy decoding, a 2,048-token completion budget, Qwen stop sequences, and official EvalPlus-compatible output files for the 0.5B, 1.5B, and 3B models.
+## 2026-09-14: Complete official-protocol greedy Qwen rerun
+
+Reran all three cached Qwen2.5-Coder-Instruct models with the published greedy prompt and stop behavior, a 2,048-token completion limit, and official EvalPlus 0.2.1 scoring. Results were 51.6/43.4 for 0.5B, 63.4/53.9 for 1.5B, and 71.2/60.4 for 3B on MBPP/MBPP+. The 3B result moved substantially toward the published 73.6/62.4 result, confirming that the earlier temperature-0.2 and 512-token protocol was a major source of discrepancy.

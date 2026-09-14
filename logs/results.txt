@@ -5724,3 +5724,20 @@ First correct generation distributions, with never meaning no correct candidate 
 | 3B | MBPP+ | 219 | 17 | 2 | 9 | 2 | 3 | 1 | 1 | 2 | 1 | 140 |
 
 Artifact: outputs/ten-generation-pool-comparison.json. Code commit: 105cfda.
+## Official-protocol greedy Qwen EvalPlus rerun
+
+Experiment: official-protocol-greedy-qwen-evalplus-2026-09-14
+
+Purpose: Reevaluate Qwen2.5-Coder-Instruct 0.5B, 1.5B, and 3B after correcting the protocol mismatch with the published Qwen evaluation.
+
+Generation setup: One completion per each of the 399 EvalPlus MBPP tasks. The runner used the published ChatML prompt with task whitespace stripped, greedy decoding, temperature 0, max_new_tokens 2048, and the Qwen stop strings. Generation used the local Transformers backend because the repository did not contain the original vLLM environment. Official EvalPlus 0.2.1 scoring was applied to the generated task directories.
+
+| Model | MBPP Pass@1 | MBPP+ Pass@1 |
+|---|---:|---:|
+| Qwen2.5-Coder-0.5B-Instruct | 51.6% | 43.4% |
+| Qwen2.5-Coder-1.5B-Instruct | 63.4% | 53.9% |
+| Qwen2.5-Coder-3B-Instruct | 71.2% | 60.4% |
+
+Artifacts: outputs/qwen-official-greedy-0.5B, outputs/qwen-official-greedy-1.5B, and outputs/qwen-official-greedy-3B. Generation code commit: 48441d6.
+
+Comparison: The Qwen report lists 52.4% MBPP and 43.7% MBPP+ for 0.5B-Instruct, 69.2% and 59.4% for 1.5B-Instruct, and 73.6% and 62.4% for 3B-Instruct. The rerun closes most of the earlier 3B discrepancy, from 67.25% / 55.16% to 71.2% / 60.4%. The remaining differences may reflect the Transformers versus vLLM backend and exact checkpoint or environment details.
