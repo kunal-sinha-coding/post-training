@@ -1985,3 +1985,6 @@ The first bounded evaluator attempt terminated on an unhandled SIGALRM rather th
 ## 2026-09-13: Complete simple cascade evaluation
 
 Completed the 0.5B to 3B cascade on all 399 EvalPlus MBPP tasks. The 0.5B initial candidates passed 180 of 397 evaluable MBPP tasks and 148 of 397 MBPP+ tasks. The cascade final candidates passed 222 MBPP tasks and 184 MBPP+ tasks, recovering 42 MBPP and 36 MBPP+ tasks. Two canonical reference tasks exceeded the ten second reference timeout and were excluded from the denominator.
+## 2026-09-14: Add sequential visible-assertion sampling experiment
+
+Added experiments/sequential_visible_assertion_sampling.py to reproduce the EvalPlus ten-candidate visible-assertion filter while generating candidates lazily. Each model produces one candidate, repeats the identical prompt only after a visible assertion failure, stops at the first visible pass, and caps each task at ten attempts. The runner saves every attempt immediately for separate 0.5B, 1.5B, and 3B evaluations.
