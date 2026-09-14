@@ -131,6 +131,7 @@ def main() -> None:
     tasks = {row["task_id"]: row for row in map(json.loads, DATA.open())}
     task_ids = list(tasks)
     old_eval = json.loads(EVAL.read_text())["eval"]
+    old_visible = json.loads(Path("outputs/qwen-evalplus-full-10-temp02/visible-assertion-filter-399.json").read_text())["results"]
     labels_by_model = {
         "0.5B": {
             task_id: [
@@ -143,7 +144,7 @@ def main() -> None:
     visible_by_model = {}
     for model_name, model_dir in [("0.5B", Path("outputs/qwen-evalplus-full-10-temp02/mbpp/qwen2_chat_temp_0.2")), ("3B", args.three_b_model_dir)]:
         if model_name == "0.5B":
-            visible_by_model[model_name] = {task_id: [row["visible"] == "pass" for row in old_eval[task_id]] for task_id in task_ids}
+            visible_by_model[model_name] = {task_id: [index in old_visible[task_id]["survivor_indices"] for index in range(10)] for task_id in task_ids}
             continue
         jobs_by_task = load_jobs(model_dir, tasks)
         labels_by_model[model_name] = {task_id: [None] * 10 for task_id in task_ids}
