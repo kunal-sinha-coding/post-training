@@ -13,6 +13,7 @@ seed: 42
 max_train_samples: 8
 reuse_baseline: true
 run_intermediate_evals: false
+run_qwen_evalplus_quarterly: true
 max_eval_samples: 4
 sft_enabled: false
 sft_num_train_epochs: 1

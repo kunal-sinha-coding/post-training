@@ -6,13 +6,11 @@ The runner follows the published Qwen ChatML prompt, greedy decoding, 2,048-toke
 from __future__ import annotations
 
 import argparse
-import json
 from pathlib import Path
 
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
-
-from llm_output_verifier import DATA
+from datasets import load_dataset
 
 
 # Build the published Qwen ChatML prompt after stripping task boundary whitespace.
@@ -47,6 +45,20 @@ def load_model(model_name: str) -> tuple[object, object]:
     return model, tokenizer
 
 
+def load_tasks() -> list[dict]:
+    """Load the versioned EvalPlus MBPP task set used by the benchmark evaluator."""
+    # Reconstruct the official visible MBPP prompt while retaining the exact EvalPlus task IDs.
+    rows = load_dataset("evalplus/mbppplus", split="test")
+    tasks = []
+    for row in rows:
+        visible_tests = "\n".join(row["test_list"])
+        tasks.append({
+            "task_id": f"Mbpp/{row['task_id']}",
+            "prompt": f'"""\n{row["prompt"]}\n{visible_tests}\n"""\n',
+        })
+    return tasks
+
+
 # Generate one greedy completion and remove the protocol stop suffix.
 def generate_one(model: object, tokenizer: object, prompt: str) -> str:
     encoded = tokenizer(prompt, return_tensors="pt").to(model.device)
@@ -62,7 +74,7 @@ def main() -> None:
     parser.add_argument("--model", required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     args = parser.parse_args()
-    tasks = list(map(json.loads, DATA.open()))
+    tasks = load_tasks()
     output = args.output_dir / "mbpp" / "qwen2_chat_temp_0.0"
     output.mkdir(parents=True, exist_ok=True)
     model, tokenizer = load_model(args.model)

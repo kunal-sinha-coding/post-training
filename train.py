@@ -9,6 +9,8 @@ import json
 import os
 import random
 import shutil
+import subprocess
+import sys
 from collections import deque
 from pathlib import Path
 from pprint import pformat
@@ -27,6 +29,33 @@ def load_config(path: str | Path) -> dict[str, Any]:
     """Load one YAML experiment configuration."""
     with Path(path).open(encoding="utf-8") as handle:
         return yaml.safe_load(handle) or {}
+
+
+def run_qwen_evalplus(model_path: Path, output_dir: Path, name: str) -> dict[str, Any]:
+    """Run the official Qwen EvalPlus MBPP and MBPP+ evaluation for one saved model."""
+    # Generate the official 378-task sample set in a dedicated evaluation directory.
+    evaluation_dir = output_dir / "evalplus" / name
+    generation_script = Path(__file__).parent / "experiments" / "run_qwen_official_greedy_eval.py"
+    evaluation_dir.mkdir(parents=True, exist_ok=True)
+    subprocess.run(
+        [sys.executable, str(generation_script), "--model", str(model_path), "--output-dir", str(evaluation_dir)],
+        check=True,
+    )
+    samples = evaluation_dir / "mbpp" / "qwen2_chat_temp_0.0"
+    # Sanitize generated samples before running the two standard EvalPlus reports.
+    subprocess.run([sys.executable, "-m", "evalplus.sanitize", "--samples", str(samples)], check=True)
+    result_texts = {}
+    for label, sample_path in (("raw", samples), ("sanitized", Path(f"{samples}-sanitized"))):
+        result = subprocess.run(
+            [sys.executable, "-m", "evalplus.evaluate", "--dataset", "mbpp", "--samples", str(sample_path)],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        result_path = evaluation_dir / f"{label}_mbpp_results.txt"
+        result_path.write_text(result.stdout, encoding="utf-8")
+        result_texts[label] = result.stdout
+    return {"evaluation_dir": str(evaluation_dir), "results": result_texts}
 
 
 def seed_everything(seed: int) -> None:
@@ -164,6 +193,7 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
                 component: deque(maxlen=self.rolling_window_size)
                 for component in ("format", "syntax", "interface", "test_progress", "pass")
             }
+            self.next_eval_epoch = 0.25
 
         def on_step_begin(self, args: Any, state: Any, control: Any, **_: Any) -> Any:
             """Write the step header before generation begins."""
@@ -236,6 +266,27 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
                 if patience and self.evaluations_without_improvement >= patience:
                     control.should_training_stop = True
                     print(f"Stopping after {self.evaluations_without_improvement} checkpoint evaluations without a higher evaluation/pass@1.", flush=True)
+            return control
+
+        def on_step_end(self, args: Any, state: Any, control: Any, **_: Any) -> Any:
+            """Run the official EvalPlus benchmark at every quarter epoch boundary."""
+            # Skip official evaluations when the quarterly schedule is disabled.
+            if not config.get("run_qwen_evalplus_quarterly", True):
+                return control
+            current_epoch = float(state.epoch or 0.0)
+            total_epochs = float(config.get("num_train_epochs", 1))
+            # Evaluate every crossed quarter boundary and advance the schedule monotonically.
+            while self.next_eval_epoch <= current_epoch + 1e-9 and self.next_eval_epoch <= total_epochs + 1e-9:
+                name = f"epoch-{self.next_eval_epoch:.2f}"
+                model_path = Path(args.output_dir) / "evalplus_models" / name
+                model_path.mkdir(parents=True, exist_ok=True)
+                model.save_pretrained(model_path)
+                tokenizer.save_pretrained(model_path)
+                run_qwen_evalplus(model_path, Path(args.output_dir), name)
+                shutil.rmtree(model_path)
+                if wandb is not None and wandb.run is not None:
+                    wandb.log({"evaluation/epoch": self.next_eval_epoch, "evaluation/name": f"evalplus-{name}"})
+                self.next_eval_epoch += 0.25
             return control
     return TrainingCallback()
 
@@ -441,6 +492,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         max_completion_length=int(config["max_completion_length"]),
         logging_steps=int(config["logging_steps"]),
         save_steps=int(config["save_steps"]),
+        save_strategy="no",
         eval_strategy="no",
         bf16=bool(config.get("bf16", False)),
         fp16=bool(config.get("fp16", False)),

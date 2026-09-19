@@ -2018,3 +2018,7 @@ The loader uses the versioned EvalPlus dataset directly rather than the older ch
 ## 2026-09-19: Set GRPO model to Qwen2.5-Coder-3B-Instruct
 
 Updated the default and debug training configurations from Qwen3.5-0.8B to Qwen2.5-Coder-3B-Instruct so the GRPO run uses the requested coding model.
+
+## 2026-09-19: Add quarterly official EvalPlus evaluation
+
+Added a GRPO callback that saves the current policy at every quarter epoch, runs the official Qwen greedy EvalPlus generator, sanitizes the generated MBPP samples, and evaluates both MBPP and MBPP+ using the same completions. Updated the generator to load the pinned 378 task EvalPlus dataset instead of the older 399 task artifact. Disabled ordinary step based checkpoint evaluation for the default run so quarterly EvalPlus is the intermediate evaluation schedule.
