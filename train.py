@@ -215,7 +215,7 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
                 component: deque(maxlen=self.rolling_window_size)
                 for component in ("format", "syntax", "interface", "test_progress", "pass")
             }
-            self.next_eval_epoch = 0.25
+            self.next_eval_step = max(1, int(config.get("evalplus_eval_steps", 10)))
 
         def on_step_begin(self, args: Any, state: Any, control: Any, **_: Any) -> Any:
             """Write the step header before generation begins."""
@@ -291,15 +291,13 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
             return control
 
         def on_step_end(self, args: Any, state: Any, control: Any, **_: Any) -> Any:
-            """Run the official EvalPlus benchmark at every quarter epoch boundary."""
-            # Skip official evaluations when the quarterly schedule is disabled.
-            if not config.get("run_qwen_evalplus_quarterly", True):
+            """Run the official EvalPlus benchmark at each configured training step interval."""
+            # Skip official evaluations when the step schedule is disabled.
+            if int(config.get("evalplus_eval_steps", 10)) <= 0:
                 return control
-            current_epoch = float(state.epoch or 0.0)
-            total_epochs = float(config.get("num_train_epochs", 1))
-            # Evaluate every crossed quarter boundary and advance the schedule monotonically.
-            while self.next_eval_epoch <= current_epoch + 1e-9 and self.next_eval_epoch <= total_epochs + 1e-9:
-                name = f"epoch-{self.next_eval_epoch:.2f}"
+            # Evaluate every crossed step boundary and advance the schedule monotonically.
+            while self.next_eval_step <= state.global_step:
+                name = f"step-{self.next_eval_step}"
                 model_path = Path(args.output_dir) / "evalplus_models" / name
                 model_path.mkdir(parents=True, exist_ok=True)
                 # Save the PEFT-wrapped trainer model so the evaluator receives adapter metadata.
@@ -318,8 +316,7 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
                     shutil.rmtree(model_path)
                 if wandb is not None and wandb.run is not None:
                     log_evaluation(wandb, evalplus_result["metrics"], f"evalplus-{name}", state.global_step)
-                    wandb.log({"evaluation/epoch": self.next_eval_epoch})
-                self.next_eval_epoch += 0.25
+                self.next_eval_step += int(config.get("evalplus_eval_steps", 10))
             return control
     return TrainingCallback()
 
@@ -402,7 +399,7 @@ def run_sft(model: Any, tokenizer: Any, train_dataset: Any, test_dataset: Any, c
         per_device_train_batch_size=int(config.get("sft_per_device_train_batch_size", 1)),
         gradient_accumulation_steps=int(config.get("sft_gradient_accumulation_steps", 1)),
         logging_steps=1,
-        save_strategy="no",
+        save_strategy="steps",
         report_to=[] if config.get("report_to") in (None, "none") else [config["report_to"]],
         run_name=config.get("wandb_run_name"),
         use_cpu=not torch.cuda.is_available(),

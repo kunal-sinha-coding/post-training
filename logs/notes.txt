@@ -2056,3 +2056,7 @@ The step-zero and quarterly in-process EvalPlus runs were writing canonical outp
 ## 2026-09-19: Save the PEFT model for quarterly EvalPlus
 
 The first quarterly evaluation reached step 19 but failed because the callback saved the original base-model reference instead of the PEFT-wrapped trainer model. vLLM then saw LoRA-style `base_layer` weights without adapter metadata and failed to load the temporary checkpoint. The callback now saves and moves the actual trainer model supplied through callback kwargs, preserving `adapter_config.json` for the merge path. No usable step-19 checkpoint survived the failed evaluation because the temporary directory was removed in cleanup.
+
+## 2026-09-19: Evaluate and save every ten GRPO steps
+
+Changed the GRPO schedule from quarter-epoch EvalPlus evaluation with temporary checkpoints to EvalPlus evaluation every 10 optimizer steps. Enabled persistent Trainer checkpoint saving every 10 steps through `save_strategy: steps` and the existing `save_steps: 10` setting. The saved trainer checkpoints remain available for recovery and adapter evaluation.
