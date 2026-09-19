@@ -8,6 +8,7 @@ import argparse
 import json
 import os
 import random
+import re
 import shutil
 from collections import deque
 from pathlib import Path
@@ -53,7 +54,14 @@ def run_qwen_evalplus(model_path: Path, output_dir: Path, name: str) -> dict[str
     result_path = evaluation_dir / "mbpp_results.txt"
     result_path.write_text(result_text, encoding="utf-8")
     print(result_text, end="", flush=True)
-    return {"evaluation_dir": str(evaluation_dir), "results": result_text}
+    # Extract both canonical pass rates so the caller can publish scalar metrics.
+    base_match = re.search(r"mbpp \(base tests\).*?pass@1:\s*([0-9.]+)", result_text, re.DOTALL)
+    plus_match = re.search(r"mbpp\+ \(base \+ extra tests\).*?pass@1:\s*([0-9.]+)", result_text, re.DOTALL)
+    metrics = {
+        "mbpp_pass_at_1": float(base_match.group(1)) if base_match else None,
+        "mbpp_plus_pass_at_1": float(plus_match.group(1)) if plus_match else None,
+    }
+    return {"evaluation_dir": str(evaluation_dir), "results": result_text, "metrics": metrics}
 
 
 def build_peft_config(config: dict[str, Any]) -> Any | None:
@@ -301,13 +309,14 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
                 import torch
                 torch.cuda.empty_cache()
                 try:
-                    run_qwen_evalplus(model_path, Path(args.output_dir), name)
+                    evalplus_result = run_qwen_evalplus(model_path, Path(args.output_dir), name)
                 finally:
                     model.to(device or "cuda")
                     model.train()
                     shutil.rmtree(model_path)
                 if wandb is not None and wandb.run is not None:
-                    wandb.log({"evaluation/epoch": self.next_eval_epoch, "evaluation/name": f"evalplus-{name}"})
+                    log_evaluation(wandb, evalplus_result["metrics"], f"evalplus-{name}", state.global_step)
+                    wandb.log({"evaluation/epoch": self.next_eval_epoch})
                 self.next_eval_epoch += 0.25
             return control
     return TrainingCallback()
@@ -483,7 +492,8 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         model.to("cpu")
         torch.cuda.empty_cache()
         try:
-            run_qwen_evalplus(step_zero_path, output_dir, "step-0")
+            step_zero_result = run_qwen_evalplus(step_zero_path, output_dir, "step-0")
+            log_evaluation(wandb, step_zero_result["metrics"], "evalplus-step-0", 0)
         finally:
             model.to(device)
         shutil.rmtree(step_zero_path)
