@@ -2072,3 +2072,9 @@ The callback event does not receive a `model` keyword from Transformers. Updated
 ## 2026-09-19: Log LoRA update sizes and raise the learning rate
 
 Added W&B diagnostics for raw gradient norm, actual trainable parameter update norm, relative parameter update, and cumulative LoRA movement from initialization. These are measured around each optimizer step on the PEFT-wrapped model. Increased the GRPO learning rate from `1e-6` to `3e-6` while retaining the linear decay schedule and ten-step best-only EvalPlus checkpoint selection.
+
+## 2026-09-19: Correct canonical MBPP+ separation and restart GRPO
+
+Commit: Correct canonical EvalPlus task exclusion and isolate the 3e-6 GRPO run. The installed EvalPlus runner evaluates 399 MBPP+ tasks, whereas the Hugging Face evalplus/mbppplus mirror has 378. The previous 593-record training set included 21 canonical evaluation tasks. Dataset preparation now excludes all 399 canonical IDs, yielding 572 MBPP training tasks and zero canonical overlap. The 378-record mirror remains available for the optional auxiliary evaluator. The output directory is isolated so old checkpoint artifacts cannot affect the restarted run. The README and partition regression test were updated.
+
+W&B run divine-disco-69 (buaj3il3), learning rate 1e-6, showed a rolling reward near 0.671 at step 20, 0.489 at step 39, and 0.534 at step 47. The rolling mean spans changing sampled tasks, so this is not a controlled comparison of the same prompts. Canonical MBPP+ greedy pass@1 moved from 245/399 at step 0 to 249/399 at step 40. All four net gains occurred among the 378 tasks in the Hugging Face mirror. The 21 leaked tasks were 10/21 at both checkpoints. The overlap still violated the requested evaluation isolation. The interrupted 3e-6 run celestial-wildflower-70 (nka4qb9h) had no usable step history before it was stopped.

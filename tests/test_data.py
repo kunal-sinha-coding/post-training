@@ -42,10 +42,11 @@ def test_prepare_datasets_partitions_all_mbpp_records_against_evalplus_ids(monke
 
     monkeypatch.setattr("data.load_mbpp", fake_load_mbpp)
     monkeypatch.setattr("data.load_evalplus", lambda dataset_name, split, include_generic_arguments: Dataset({"task_id": task_id} for task_id in (2, 8)))
+    monkeypatch.setattr("evalplus.data.get_mbpp_plus", lambda: {f"Mbpp/{task_id}": {} for task_id in (2, 5, 8)})
     train, evaluation = prepare_datasets({"dataset_name": "mbpp", "mbpp_splits": ["train", "validation", "test"]})
 
     assert calls == [("mbpp", None, "train"), ("mbpp", None, "validation"), ("mbpp", None, "test")]
-    assert [record["task_id"] for record in train] == [1, 3, 4, 5, 6, 7, 9]
+    assert [record["task_id"] for record in train] == [1, 3, 4, 6, 7, 9]
     assert [record["task_id"] for record in evaluation] == [2, 8]
 
 

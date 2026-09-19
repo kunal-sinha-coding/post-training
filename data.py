@@ -1,5 +1,5 @@
 # This module loads every official MBPP split, partitions tasks against the EvalPlus benchmark IDs, and prepares GRPO and SFT records.
-# Training receives the MBPP complement of EvalPlus while evaluation receives the exact EvalPlus task intersection.
+# Training excludes every task in the installed canonical EvalPlus runner.
 
 from __future__ import annotations
 
@@ -246,7 +246,11 @@ def prepare_datasets(config: dict[str, Any]) -> tuple[Any, Any]:
         config.get("evalplus_split", DEFAULT_EVALPLUS_SPLIT),
         include_generic_arguments,
     )
-    evalplus_task_ids = {int(record["task_id"]) for record in evaluation_dataset}
+    # Match the canonical runner's complete task set, which can differ from the Hugging Face mirror.
+    from evalplus.data import get_mbpp_plus
+
+    evalplus_task_ids = {int(task_id.split("/")[-1]) for task_id in get_mbpp_plus()}
+    assert {int(record["task_id"]) for record in evaluation_dataset} <= evalplus_task_ids
     train_dataset = _filter_dataset(all_dataset, lambda record: int(record["task_id"]) not in evalplus_task_ids)
     max_train = config.get("max_train_samples")
     max_eval = config.get("max_eval_samples")

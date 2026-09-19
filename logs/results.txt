@@ -5776,3 +5776,54 @@ Timestamp: 2026-09-19 12:48:52 PDT
 RUN STARTING
 Timestamp: 2026-09-19 12:57:01 PDT
 ------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-19 13:45:46 PDT
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-19 14:21:57 PDT
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-19 14:26:18 PDT
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-19 14:30:00 PDT
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-19 14:30:40 PDT
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-19 15:56:29 PDT
+------------------------------------------------------------------------
+
+EXPERIMENT: Canonical EvalPlus task separation and prior GRPO checkpoint audit, 2026-09-19.
+PURPOSE: Diagnose falling training reward and nearly flat greedy MBPP+ performance, then verify a disjoint training split.
+SETUP: Qwen/Qwen2.5-Coder-3B-Instruct with LoRA rank 16, alpha 32, dropout 0.05. GRPO uses four temperature-sampled completions per training prompt, 2048 completion tokens, original MBPP assertion pass fraction as reward, batch size one, accumulation 32, and seed 42. The prior W&B run divine-disco-69 (buaj3il3) used learning rate 1e-6. The interrupted replacement run celestial-wildflower-70 (nka4qb9h) used 3e-6 and had no usable step history.
+DATA: Hugging Face google-research-datasets/mbpp train, validation, and test contain 964 tasks. Hugging Face evalplus/mbppplus has 378 tasks. The installed evalplus.data.get_mbpp_plus() canonical runner has 399. The old 593-task training set overlapped 21 canonical evaluation tasks. The corrected training set contains 572 tasks with zero canonical overlap. Canonical EvalPlus evaluates all 399 tasks using greedy generation and both base and augmented tests.
+SELECTION: Best checkpoint was selected by canonical MBPP+ pass@1 after each ten optimizer steps. The analysis compares step 0 and saved step 40; these scores are benchmark measurements, and the overlap in the old data invalidates interpreting them as fully held out.
+METRICS: Prior W&B rolling reward was approximately 0.671 at step 20, 0.489 at step 39, and 0.534 at step 47. Canonical step-zero base pass was 294/399 and MBPP+ pass was 245/399. Step-40 base pass was 293/399 and MBPP+ pass was 249/399. Among the 21 leaked tasks, MBPP+ pass was 10/21 at both steps; among the other 378, it was 235/378 at step 0 and 239/378 at step 40. The clean partition regression test passed, and actual dataset preparation returned 572 training records with zero canonical overlap.
+ARTIFACTS: outputs/grpo-mbpp/evalplus/step-0 and step-40 contain prior result JSON. The corrected run uses outputs/grpo-mbpp-canonical-split-lr3e6. Code is the commit named Correct canonical EvalPlus task exclusion and isolate the 3e-6 GRPO run.
+LIMITATIONS: The old training run had benchmark contamination. Rolling rewards use changing task batches and cannot by themselves establish policy degradation. The small four-task MBPP+ gain is within a low-resolution 399-task comparison, and the 3e-6 replacement had not produced outcomes at the time of this record.
