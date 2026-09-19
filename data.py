@@ -80,10 +80,10 @@ def build_qwen_evalplus_prompt(record: dict[str, Any]) -> str:
     fence = "```"
     return (
         "<|im_start|>system\n"
-        f"{QWEN_EVALPLUS_SYSTEM_PROMPT}<|im_end|>\n"
+        f"{QWEN_EVALPLUS_SYSTEM_PROMPT}<|im_end|>\n\n"
         "<|im_start|>user\n"
         "Can you complete the following Python function?\n"
-        f"{fence}python\n{task_prompt.strip()}\n{fence}\n"
+        f"{fence}python\n{task_prompt.strip()}\n{fence}\n\n"
         "<|im_end|>\n"
         "<|im_start|>assistant\n"
         f"{fence}python\n"

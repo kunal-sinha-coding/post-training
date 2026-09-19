@@ -3,9 +3,10 @@ datasets>=3.0
 pyyaml>=6.0
 python-dotenv>=1.0
 torch>=2.2
-transformers>=4.50
+transformers==4.56.2
 trl>=0.15
 peft>=0.15
+vllm==0.10.2
 wandb>=0.19
 pytest>=8.0
 openai>=1.0

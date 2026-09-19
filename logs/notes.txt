@@ -2038,3 +2038,9 @@ Double checked the protocol against QwenLM's published EvalPlus wrapper. It defi
 ## 2026-09-19: Add step-zero canonical EvalPlus evaluation
 
 Run the full 378-task Qwen EvalPlus MBPP and MBPP+ evaluation before GRPO updates begin. The step-zero benchmark uses greedy decoding with the canonical 2,048-token limit, while GRPO continues to use temperature sampling. Remove the redundant single stop string from the GRPO configuration so the shared Qwen stop list is the only active stopping definition.
+
+## 2026-09-19: Run EvalPlus generation through vLLM
+
+Replaced sequential Transformers generation in the official Qwen EvalPlus runner with batched vLLM generation. vLLM 0.10.2 uses the same bfloat16 model, exact ChatML prompts, greedy temperature zero decoding, 2,048-token limit, top-p one, and Qwen stop strings. LoRA evaluation artifacts are merged into temporary full checkpoints before vLLM loads them. Training models are moved to CPU during evaluation so vLLM has exclusive GPU access. Normalized the Qwen tokenizer metadata for the pinned Transformers and vLLM versions. Moved both sample generation and EvalPlus scoring into the training process, while retaining the runner module only as a command-line wrapper.
+
+The canonical installed EvalPlus evaluator contains 399 MBPP tasks, so the runner now loads that evaluator-owned task set rather than the 378-row Hugging Face split. The earlier 378-task run could not be scored by the installed evaluator because 21 canonical task IDs were missing.

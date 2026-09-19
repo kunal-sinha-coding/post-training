@@ -9,8 +9,6 @@ import json
 import os
 import random
 import shutil
-import subprocess
-import sys
 from collections import deque
 from pathlib import Path
 from pprint import pformat
@@ -33,29 +31,29 @@ def load_config(path: str | Path) -> dict[str, Any]:
 
 def run_qwen_evalplus(model_path: Path, output_dir: Path, name: str) -> dict[str, Any]:
     """Run the official Qwen EvalPlus MBPP and MBPP+ evaluation for one saved model."""
-    # Generate the official 378-task sample set in a dedicated evaluation directory.
+    # Generate the complete canonical MBPP task set directly inside the training process.
     evaluation_dir = output_dir / "evalplus" / name
-    generation_script = Path(__file__).parent / "experiments" / "run_qwen_official_greedy_eval.py"
     evaluation_dir.mkdir(parents=True, exist_ok=True)
-    subprocess.run(
-        [sys.executable, str(generation_script), "--model", str(model_path), "--output-dir", str(evaluation_dir)],
-        check=True,
-    )
+    from experiments.run_qwen_official_greedy_eval import generate_evalplus_samples
+
+    # Keep vLLM generation in the training process while using the canonical EvalPlus layout.
+    samples = generate_evalplus_samples(model_path, evaluation_dir)
     samples = evaluation_dir / "mbpp" / "qwen2_chat_temp_0.0"
-    # Sanitize generated samples before running the two standard EvalPlus reports.
-    subprocess.run([sys.executable, "-m", "evalplus.sanitize", "--samples", str(samples)], check=True)
-    result_texts = {}
-    for label, sample_path in (("raw", samples), ("sanitized", Path(f"{samples}-sanitized"))):
-        result = subprocess.run(
-            [sys.executable, "-m", "evalplus.evaluate", "--dataset", "mbpp", "--samples", str(sample_path)],
-            check=True,
-            capture_output=True,
-            text=True,
-        )
-        result_path = evaluation_dir / f"{label}_mbpp_results.txt"
-        result_path.write_text(result.stdout, encoding="utf-8")
-        result_texts[label] = result.stdout
-    return {"evaluation_dir": str(evaluation_dir), "results": result_texts}
+    # Evaluate the generated directory through EvalPlus in the training process.
+    from contextlib import redirect_stdout
+    from io import StringIO
+    from types import SimpleNamespace
+    from evalplus.evaluate import evaluate
+
+    evaluator_args = SimpleNamespace(dataset="mbpp", samples=str(samples), base_only=False, parallel=None, i_just_wanna_run=False, test_details=False, min_time_limit=1, gt_time_limit_factor=4.0, mini=False, noextreme=False)
+    evaluator_output = StringIO()
+    with redirect_stdout(evaluator_output):
+        evaluate(evaluator_args)
+    result_text = evaluator_output.getvalue()
+    result_path = evaluation_dir / "mbpp_results.txt"
+    result_path.write_text(result_text, encoding="utf-8")
+    print(result_text, end="", flush=True)
+    return {"evaluation_dir": str(evaluation_dir), "results": result_text}
 
 
 def build_peft_config(config: dict[str, Any]) -> Any | None:
@@ -184,7 +182,7 @@ def _make_reward(config: dict[str, Any]):
 
     return reward
 
-def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[str, Any], wandb: Any | None):
+def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[str, Any], wandb: Any | None, device: Any | None = None):
     """Create callbacks for step logging and checkpoint evaluation."""
     # Import the callback base class only when training starts.
     from transformers import TrainerCallback
@@ -298,8 +296,16 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
                 model_path.mkdir(parents=True, exist_ok=True)
                 model.save_pretrained(model_path)
                 tokenizer.save_pretrained(model_path)
-                run_qwen_evalplus(model_path, Path(args.output_dir), name)
-                shutil.rmtree(model_path)
+                # Move the training model off the GPU while vLLM owns the evaluation GPU.
+                model.to("cpu")
+                import torch
+                torch.cuda.empty_cache()
+                try:
+                    run_qwen_evalplus(model_path, Path(args.output_dir), name)
+                finally:
+                    model.to(device or "cuda")
+                    model.train()
+                    shutil.rmtree(model_path)
                 if wandb is not None and wandb.run is not None:
                     wandb.log({"evaluation/epoch": self.next_eval_epoch, "evaluation/name": f"evalplus-{name}"})
                 self.next_eval_epoch += 0.25
@@ -474,7 +480,12 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         model.save_pretrained(step_zero_path)
         tokenizer.save_pretrained(step_zero_path)
         print("Running step-zero greedy Qwen EvalPlus evaluation.", flush=True)
-        run_qwen_evalplus(step_zero_path, output_dir, "step-0")
+        model.to("cpu")
+        torch.cuda.empty_cache()
+        try:
+            run_qwen_evalplus(step_zero_path, output_dir, "step-0")
+        finally:
+            model.to(device)
         shutil.rmtree(step_zero_path)
     # Run the SFT baseline, training stage, and final epoch evaluation when enabled.
     if config.get("sft_enabled", False):
@@ -529,7 +540,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         seed=int(config.get("seed", 42)),
     )
     # Build the GRPO callback and trainer.
-    training_callback = _make_callback(model, tokenizer, eval_dataset, config, wandb)
+    training_callback = _make_callback(model, tokenizer, eval_dataset, config, wandb, device)
     callbacks = [training_callback]
     print(f"Intermediate evaluations enabled: {bool(callbacks)}", flush=True)
     trainer = GRPOTrainer(
