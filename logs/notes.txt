@@ -2044,3 +2044,7 @@ Run the full 378-task Qwen EvalPlus MBPP and MBPP+ evaluation before GRPO update
 Replaced sequential Transformers generation in the official Qwen EvalPlus runner with batched vLLM generation. vLLM 0.10.2 uses the same bfloat16 model, exact ChatML prompts, greedy temperature zero decoding, 2,048-token limit, top-p one, and Qwen stop strings. LoRA evaluation artifacts are merged into temporary full checkpoints before vLLM loads them. Training models are moved to CPU during evaluation so vLLM has exclusive GPU access. Normalized the Qwen tokenizer metadata for the pinned Transformers and vLLM versions. Moved both sample generation and EvalPlus scoring into the training process, while retaining the runner module only as a command-line wrapper.
 
 The canonical installed EvalPlus evaluator contains 399 MBPP tasks, so the runner now loads that evaluator-owned task set rather than the 378-row Hugging Face split. The earlier 378-task run could not be scored by the installed evaluator because 21 canonical task IDs were missing.
+
+## 2026-09-19: Pin TRL to the vLLM-compatible release
+
+The attempted training launch failed before step zero because TRL 1.13.0 only supports vLLM 0.19.1 through 0.28.0, while the working evaluation stack uses vLLM 0.10.2 with Torch 2.8.0. vLLM 0.19.1 requires Torch 2.10.0, so upgrading vLLM would replace the training runtime. Pinned TRL to 0.25.0, whose vLLM extra explicitly supports vLLM 0.10.2, and verified GRPOConfig and GRPOTrainer imports plus the focused 22 test suite.
