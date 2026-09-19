@@ -2064,3 +2064,7 @@ Changed the GRPO schedule from quarter-epoch EvalPlus evaluation with temporary 
 ## 2026-09-19: Retain only EvalPlus-improving checkpoints
 
 Changed the ten-step EvalPlus schedule so each evaluation checkpoint is temporary. The step-zero MBPP+ pass@1 initializes the best score, and a checkpoint is copied into `outputs/grpo-mbpp/best_checkpoints/` only when its MBPP+ pass@1 is strictly higher. Non-improving checkpoints are deleted. Disabled ordinary Trainer checkpoint saving and added adapter-aware loading for the selected best checkpoint at final evaluation.
+
+## 2026-09-19: Pass the PEFT trainer model into EvalPlus callbacks
+
+The callback event does not receive a `model` keyword from Transformers. Updated callback construction to store the actual `trainer.model` after GRPOTrainer wraps the base model with PEFT, ensuring ten-step EvalPlus checkpoints contain the adapter configuration and weights.

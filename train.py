@@ -202,6 +202,7 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
         def __init__(self) -> None:
             """Track the best checkpoint selected by intermediate pass rate."""
             # Initialize checkpoint, cumulative, and rolling metric state.
+            self.evaluation_model = model
             self.best_checkpoint_path: Path | None = None
             self.best_metric = float("-inf")
             self.best_evalplus_mbpp_plus = float(config.get("_best_evalplus_mbpp_plus", float("-inf")))
@@ -302,7 +303,7 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
                 model_path = Path(args.output_dir) / "evalplus_models" / name
                 model_path.mkdir(parents=True, exist_ok=True)
                 # Save the PEFT-wrapped trainer model so the evaluator receives adapter metadata.
-                evaluation_model = _.get("model", model)
+                evaluation_model = self.evaluation_model
                 evaluation_model.save_pretrained(model_path)
                 tokenizer.save_pretrained(model_path)
                 # Move the training model off the GPU while vLLM owns the evaluation GPU.
@@ -577,6 +578,8 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         callbacks=callbacks,
         peft_config=build_peft_config(config),
     )
+    # Give the callback the PEFT-wrapped trainer model used for optimization and evaluation.
+    training_callback.evaluation_model = trainer.model
     # Log the direct GRPO baseline because SFT already logged its ending policy.
     if not config.get("sft_enabled", False) and config.get("run_baseline_evaluation", True):
         log_evaluation(wandb, baseline_metrics, "baseline", 0)
