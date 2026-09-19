@@ -204,6 +204,7 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
             # Initialize checkpoint, cumulative, and rolling metric state.
             self.best_checkpoint_path: Path | None = None
             self.best_metric = float("-inf")
+            self.best_evalplus_mbpp_plus = float(config.get("_best_evalplus_mbpp_plus", float("-inf")))
             self.evaluations_without_improvement = 0
             self.reward_sum = 0.0
             self.reward_count = 0
@@ -310,6 +311,20 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
                 torch.cuda.empty_cache()
                 try:
                     evalplus_result = run_qwen_evalplus(model_path, Path(args.output_dir), name)
+                    # Retain this adapter only when its MBPP+ score improves on the best policy.
+                    mbpp_plus_score = evalplus_result["metrics"].get("mbpp_plus_pass_at_1")
+                    if isinstance(mbpp_plus_score, (int, float)) and mbpp_plus_score > self.best_evalplus_mbpp_plus:
+                        best_dir = Path(args.output_dir) / "best_checkpoints" / name
+                        if best_dir.exists():
+                            shutil.rmtree(best_dir)
+                        best_dir.parent.mkdir(parents=True, exist_ok=True)
+                        shutil.copytree(model_path, best_dir)
+                        self.best_evalplus_mbpp_plus = float(mbpp_plus_score)
+                        config["_best_evalplus_mbpp_plus"] = self.best_evalplus_mbpp_plus
+                        self.best_checkpoint_path = best_dir
+                        print(f"Saved new best EvalPlus checkpoint at {best_dir} with MBPP+ pass@1={mbpp_plus_score:.3f}.", flush=True)
+                    else:
+                        print(f"Discarded EvalPlus checkpoint at {model_path}; MBPP+ pass@1={mbpp_plus_score} did not exceed {self.best_evalplus_mbpp_plus:.3f}.", flush=True)
                 finally:
                     evaluation_model.to(device or "cuda")
                     evaluation_model.train()
@@ -492,6 +507,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         torch.cuda.empty_cache()
         try:
             step_zero_result = run_qwen_evalplus(step_zero_path, output_dir, "step-0")
+            config["_best_evalplus_mbpp_plus"] = step_zero_result["metrics"].get("mbpp_plus_pass_at_1", float("-inf"))
             log_evaluation(wandb, step_zero_result["metrics"], "evalplus-step-0", 0)
         finally:
             model.to(device)
@@ -574,7 +590,12 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         # Restore a padding token when the selected tokenizer lacks one.
         if tokenizer.pad_token is None:
             tokenizer.pad_token = tokenizer.eos_token
-        model = AutoModelForCausalLM.from_pretrained(best_checkpoint_path, trust_remote_code=bool(config.get("trust_remote_code", False)))
+        if (best_checkpoint_path / "adapter_config.json").is_file():
+            from peft import PeftModel
+            base_model = AutoModelForCausalLM.from_pretrained(config["model_name_or_path"], trust_remote_code=bool(config.get("trust_remote_code", False)))
+            model = PeftModel.from_pretrained(base_model, best_checkpoint_path)
+        else:
+            model = AutoModelForCausalLM.from_pretrained(best_checkpoint_path, trust_remote_code=bool(config.get("trust_remote_code", False)))
         model.to(device)
         trainer.model = model
     # Save and evaluate the final selected model.

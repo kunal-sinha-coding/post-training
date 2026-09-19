@@ -2060,3 +2060,7 @@ The first quarterly evaluation reached step 19 but failed because the callback s
 ## 2026-09-19: Evaluate and save every ten GRPO steps
 
 Changed the GRPO schedule from quarter-epoch EvalPlus evaluation with temporary checkpoints to EvalPlus evaluation every 10 optimizer steps. Enabled persistent Trainer checkpoint saving every 10 steps through `save_strategy: steps` and the existing `save_steps: 10` setting. The saved trainer checkpoints remain available for recovery and adapter evaluation.
+
+## 2026-09-19: Retain only EvalPlus-improving checkpoints
+
+Changed the ten-step EvalPlus schedule so each evaluation checkpoint is temporary. The step-zero MBPP+ pass@1 initializes the best score, and a checkpoint is copied into `outputs/grpo-mbpp/best_checkpoints/` only when its MBPP+ pass@1 is strictly higher. Non-improving checkpoints are deleted. Disabled ordinary Trainer checkpoint saving and added adapter-aware loading for the selected best checkpoint at final evaluation.
