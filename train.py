@@ -203,6 +203,8 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
             """Track the best checkpoint selected by intermediate pass rate."""
             # Initialize checkpoint, cumulative, and rolling metric state.
             self.evaluation_model = model
+            self.initial_trainable_parameters: dict[str, Any] = {}
+            self.pre_optimizer_parameters: dict[str, Any] = {}
             self.best_checkpoint_path: Path | None = None
             self.best_metric = float("-inf")
             self.best_evalplus_mbpp_plus = float(config.get("_best_evalplus_mbpp_plus", float("-inf")))
@@ -218,6 +220,57 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
                 for component in ("format", "syntax", "interface", "test_progress", "pass")
             }
             self.next_eval_step = max(1, int(config.get("evalplus_eval_steps", 10)))
+
+        def set_evaluation_model(self, model: Any) -> None:
+            """Attach the PEFT-wrapped model and record its initial trainable parameters."""
+            # Store the model that the optimizer actually updates.
+            self.evaluation_model = model
+            # Snapshot trainable LoRA parameters before the first optimizer update.
+            self.initial_trainable_parameters = {
+                name: parameter.detach().float().cpu().clone()
+                for name, parameter in model.named_parameters()
+                if parameter.requires_grad
+            }
+
+        def on_pre_optimizer_step(self, args: Any, state: Any, control: Any, **_: Any) -> Any:
+            """Snapshot trainable parameters immediately before each optimizer update."""
+            # Capture CPU copies so the measured delta covers only one optimizer step.
+            self.pre_optimizer_parameters = {
+                name: parameter.detach().float().cpu().clone()
+                for name, parameter in self.evaluation_model.named_parameters()
+                if parameter.requires_grad
+            }
+            # Record the raw gradient norm before Adam transforms the gradients.
+            gradient_sq = sum(
+                float(parameter.grad.detach().float().pow(2).sum())
+                for parameter in self.evaluation_model.parameters()
+                if parameter.requires_grad and parameter.grad is not None
+            )
+            config["_update_diagnostics"] = {"training/raw_gradient_norm": gradient_sq**0.5}
+            return control
+
+        def on_optimizer_step(self, args: Any, state: Any, control: Any, **_: Any) -> Any:
+            """Measure the actual LoRA parameter movement after each optimizer update."""
+            # Compute update and parameter norms from the before and after snapshots.
+            update_sq = 0.0
+            parameter_sq = 0.0
+            initial_delta_sq = 0.0
+            for name, parameter in self.evaluation_model.named_parameters():
+                if not parameter.requires_grad or name not in self.pre_optimizer_parameters:
+                    continue
+                current = parameter.detach().float().cpu()
+                before = self.pre_optimizer_parameters[name]
+                initial = self.initial_trainable_parameters.get(name, before)
+                update_sq += float((current - before).pow(2).sum())
+                parameter_sq += float(current.pow(2).sum())
+                initial_delta_sq += float((current - initial).pow(2).sum())
+            update_norm = update_sq**0.5
+            config["_update_diagnostics"].update({
+                "training/parameter_update_norm": update_norm,
+                "training/relative_parameter_update": update_norm / (parameter_sq**0.5 + 1e-12),
+                "training/lora_delta_from_initial_norm": initial_delta_sq**0.5,
+            })
+            return control
 
         def on_step_begin(self, args: Any, state: Any, control: Any, **_: Any) -> Any:
             """Write the step header before generation begins."""
@@ -240,6 +293,8 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
                     logs["training/rolling_average_reward"] = sum(self.rolling_reward_values) / len(self.rolling_reward_values)
                 # Add dense reward and group statistics to the trainer's W&B record.
                 logs.update(config.pop("_reward_diagnostics", {}))
+                # Add gradient and parameter movement diagnostics to the trainer's W&B record.
+                logs.update(config.pop("_update_diagnostics", {}))
                 for component in ("format", "syntax", "interface", "test_progress"):
                     component_mean = logs.get(f"reward/{component}/mean")
                     # Update component statistics when the trainer emitted a numeric mean.
@@ -579,7 +634,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         peft_config=build_peft_config(config),
     )
     # Give the callback the PEFT-wrapped trainer model used for optimization and evaluation.
-    training_callback.evaluation_model = trainer.model
+    training_callback.set_evaluation_model(trainer.model)
     # Log the direct GRPO baseline because SFT already logged its ending policy.
     if not config.get("sft_enabled", False) and config.get("run_baseline_evaluation", True):
         log_evaluation(wandb, baseline_metrics, "baseline", 0)

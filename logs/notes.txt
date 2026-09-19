@@ -2068,3 +2068,7 @@ Changed the ten-step EvalPlus schedule so each evaluation checkpoint is temporar
 ## 2026-09-19: Pass the PEFT trainer model into EvalPlus callbacks
 
 The callback event does not receive a `model` keyword from Transformers. Updated callback construction to store the actual `trainer.model` after GRPOTrainer wraps the base model with PEFT, ensuring ten-step EvalPlus checkpoints contain the adapter configuration and weights.
+
+## 2026-09-19: Log LoRA update sizes and raise the learning rate
+
+Added W&B diagnostics for raw gradient norm, actual trainable parameter update norm, relative parameter update, and cumulative LoRA movement from initialization. These are measured around each optimizer step on the PEFT-wrapped model. Increased the GRPO learning rate from `1e-6` to `3e-6` while retaining the linear decay schedule and ten-step best-only EvalPlus checkpoint selection.
