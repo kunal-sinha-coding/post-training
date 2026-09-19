@@ -1,4 +1,5 @@
-"""Load MBPP, optionally add hidden synthetic tests, and prepare GRPO and SFT datasets."""
+# This module loads every official MBPP split, partitions tasks against the EvalPlus benchmark IDs, and prepares GRPO and SFT records.
+# Training receives the MBPP complement of EvalPlus while evaluation receives the exact EvalPlus task intersection.
 
 from __future__ import annotations
 
@@ -13,6 +14,9 @@ DEFAULT_PROMPT_TEMPLATE = (
     "Task:\n{prompt}\n\nTests:\n{tests}\n\n"
     "Requirements:\n"
 )
+
+DEFAULT_EVALPLUS_DATASET = "evalplus/mbppplus"
+DEFAULT_EVALPLUS_SPLIT = "test"
 
 
 def _first_value(record: dict[str, Any], *keys: str, default: Any = "") -> Any:
@@ -152,6 +156,42 @@ def load_mbpp(
     return loaded.map(lambda record: normalize_record(record, include_generic_arguments), load_from_cache_file=False)
 
 
+def load_evalplus(
+    dataset_name: str = DEFAULT_EVALPLUS_DATASET,
+    split: str = DEFAULT_EVALPLUS_SPLIT,
+    include_generic_arguments: bool = False,
+) -> Any:
+    """Load and normalize the exact EvalPlus MBPP benchmark evaluation set."""
+    # Load EvalPlus from its pinned dataset source so the partition follows the benchmark workflow.
+    try:
+        from datasets import load_dataset
+    except ImportError as exc:
+        raise RuntimeError("Install the 'datasets' package to load EvalPlus.") from exc
+    loaded = load_dataset(dataset_name, split=split)
+    return loaded.map(lambda record: normalize_record(record, include_generic_arguments), load_from_cache_file=False)
+
+
+def _combine_datasets(datasets: list[Any]) -> Any:
+    """Combine normalized Hugging Face datasets while preserving their record schema."""
+    # Use Hugging Face concatenation when available and a list fallback for lightweight tests.
+    if all(hasattr(dataset, "column_names") for dataset in datasets):
+        from datasets import concatenate_datasets
+
+        return concatenate_datasets(datasets)
+    records = []
+    for dataset in datasets:
+        records.extend(list(dataset))
+    return records
+
+
+def _filter_dataset(dataset: Any, predicate: Any) -> Any:
+    """Filter records by task ID while supporting Hugging Face and list datasets."""
+    # Apply the predicate through the dataset API when present and otherwise filter ordinary records directly.
+    if hasattr(dataset, "filter"):
+        return dataset.filter(predicate)
+    return _to_dataset([record for record in dataset if predicate(record)])
+
+
 def split_dataset(dataset: Any, train_fraction: float = 0.8, seed: int = 42) -> tuple[Any, Any]:
     """Create a deterministic train/test split without a validation partition."""
     if not 0 < train_fraction < 1:
@@ -171,10 +211,21 @@ def split_dataset(dataset: Any, train_fraction: float = 0.8, seed: int = 42) -> 
 
 
 def prepare_datasets(config: dict[str, Any]) -> tuple[Any, Any]:
-    """Load official MBPP training and validation splits and apply optional debug limits."""
+    """Partition all Hugging Face MBPP records into GRPO training and EvalPlus evaluation datasets."""
     include_generic_arguments = bool(config.get("include_generic_arguments", False))
-    train_dataset = load_mbpp(config["dataset_name"], config.get("dataset_config"), config.get("train_split", "train"), include_generic_arguments)
-    validation_dataset = load_mbpp(config["dataset_name"], config.get("dataset_config"), config.get("validation_split", "validation"), include_generic_arguments)
+    split_names = config.get("mbpp_splits", ["train", "validation", "test"])
+    all_datasets = [
+        load_mbpp(config["dataset_name"], config.get("dataset_config"), split, include_generic_arguments)
+        for split in split_names
+    ]
+    all_dataset = _combine_datasets(all_datasets)
+    evaluation_dataset = load_evalplus(
+        config.get("evalplus_dataset_name", DEFAULT_EVALPLUS_DATASET),
+        config.get("evalplus_split", DEFAULT_EVALPLUS_SPLIT),
+        include_generic_arguments,
+    )
+    evalplus_task_ids = {int(record["task_id"]) for record in evaluation_dataset}
+    train_dataset = _filter_dataset(all_dataset, lambda record: int(record["task_id"]) not in evalplus_task_ids)
     max_train = config.get("max_train_samples")
     max_eval = config.get("max_eval_samples")
 
@@ -182,9 +233,9 @@ def prepare_datasets(config: dict[str, Any]) -> tuple[Any, Any]:
     if max_train:
         train_dataset = train_dataset.select(range(min(int(max_train), len(train_dataset))))
 
-    # Limit the official validation split for short debugging runs when requested.
+    # Limit the EvalPlus evaluation set for short debugging runs when requested.
     if max_eval:
-        validation_dataset = validation_dataset.select(range(min(int(max_eval), len(validation_dataset))))
+        evaluation_dataset = evaluation_dataset.select(range(min(int(max_eval), len(evaluation_dataset))))
 
     # Add generated tests only to training rewards when explicitly enabled.
     if config.get("synthetic_tests_enabled", False):
@@ -200,7 +251,7 @@ def prepare_datasets(config: dict[str, Any]) -> tuple[Any, Any]:
             ),
             require_all=bool(config.get("synthetic_tests_require_all", True)),
         )
-    return train_dataset, validation_dataset
+    return train_dataset, evaluation_dataset
 
 
 def build_sft_dataset(dataset: Any, tokenizer: Any, config: dict[str, Any]) -> Any:

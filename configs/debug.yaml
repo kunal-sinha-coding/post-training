@@ -1,8 +1,9 @@
 model_name_or_path: Qwen/Qwen3.5-0.8B
 dataset_name: google-research-datasets/mbpp
 dataset_config: null
-train_split: train
-validation_split: validation
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
 synthetic_tests_enabled: true
 synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
 synthetic_tests_require_all: true

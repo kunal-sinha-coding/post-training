@@ -23,8 +23,8 @@ def test_split_dataset_is_deterministic():
     assert len(first_test) == 2
 
 
-def test_prepare_datasets_loads_official_train_and_validation_splits(monkeypatch):
-    """Dataset preparation should preserve the official MBPP split boundaries."""
+def test_prepare_datasets_partitions_all_mbpp_records_against_evalplus_ids(monkeypatch):
+    """Dataset preparation should train on the MBPP complement of EvalPlus."""
     calls = []
 
     class Dataset(list):
@@ -34,18 +34,19 @@ def test_prepare_datasets_loads_official_train_and_validation_splits(monkeypatch
             """Return the selected records in their original order."""
             return Dataset(self[index] for index in indices)
 
-    def fake_load_mbpp(dataset_name, dataset_config, split):
-        """Record each requested split and return its expected number of examples."""
+    def fake_load_mbpp(dataset_name, dataset_config, split, include_generic_arguments=False):
+        """Record each requested split and return normalized task records."""
         calls.append((dataset_name, dataset_config, split))
-        size = 374 if split == "train" else 90
-        return Dataset({"id": index} for index in range(size))
+        starts = {"train": 1, "validation": 4, "test": 7}
+        return Dataset({"task_id": starts[split] + index} for index in range(3))
 
     monkeypatch.setattr("data.load_mbpp", fake_load_mbpp)
-    train, validation = prepare_datasets({"dataset_name": "mbpp", "train_split": "train", "validation_split": "validation"})
+    monkeypatch.setattr("data.load_evalplus", lambda dataset_name, split, include_generic_arguments: Dataset({"task_id": task_id} for task_id in (2, 8)))
+    train, evaluation = prepare_datasets({"dataset_name": "mbpp", "mbpp_splits": ["train", "validation", "test"]})
 
-    assert calls == [("mbpp", None, "train"), ("mbpp", None, "validation")]
-    assert len(train) == 374
-    assert len(validation) == 90
+    assert calls == [("mbpp", None, "train"), ("mbpp", None, "validation"), ("mbpp", None, "test")]
+    assert [record["task_id"] for record in train] == [1, 3, 4, 5, 6, 7, 9]
+    assert [record["task_id"] for record in evaluation] == [2, 8]
 
 
 def test_prompt_template_can_be_overridden():

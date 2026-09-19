@@ -389,7 +389,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         if checkpoint_path.is_dir():
             shutil.rmtree(checkpoint_path)
     # Load datasets, tokenizer, and the base model.
-    train_dataset, test_dataset = prepare_datasets(config)
+    train_dataset, eval_dataset = prepare_datasets(config)
     tokenizer = AutoTokenizer.from_pretrained(config["model_name_or_path"], trust_remote_code=bool(config.get("trust_remote_code", False)))
     # Use the end-of-sequence token for padding when the tokenizer lacks one.
     if tokenizer.pad_token is None:
@@ -401,12 +401,12 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
     # Run the SFT baseline, training stage, and final epoch evaluation when enabled.
     if config.get("sft_enabled", False):
         # Evaluate the base model once before supervised updates begin.
-        baseline_metrics, baseline_details = evaluate_model(model, tokenizer, test_dataset, config, "sft-baseline")
+        baseline_metrics, baseline_details = evaluate_model(model, tokenizer, eval_dataset, config, "sft-baseline")
         config["training_context"] = "sft-baseline"
         config["_evaluation_epoch"] = 0
         save_evaluation(output_dir / "sft", "sft-baseline", baseline_metrics, baseline_details, config)
         log_evaluation(wandb, baseline_metrics, "sft-baseline", 0)
-        _, sft_callback = run_sft(model, tokenizer, train_dataset, test_dataset, config, wandb)
+        _, sft_callback = run_sft(model, tokenizer, train_dataset, eval_dataset, config, wandb)
         baseline_metrics = sft_callback.latest_metrics
         baseline_details = sft_callback.latest_details
         # Require SFT to produce an epoch evaluation for the GRPO baseline.
@@ -418,14 +418,14 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         # Compute the baseline when no complete cached evaluation exists.
         if cached_baseline is None:
             print("Computing baseline evaluation.", flush=True)
-            baseline_metrics, baseline_details = evaluate_model(model, tokenizer, test_dataset, config, "baseline")
+            baseline_metrics, baseline_details = evaluate_model(model, tokenizer, eval_dataset, config, "baseline")
             config["training_context"] = "baseline"
             config["_evaluation_epoch"] = "baseline"
             save_evaluation(output_dir, "baseline", baseline_metrics, baseline_details, config)
         else:
             print("Reusing cached baseline evaluation.", flush=True)
             baseline_metrics, baseline_details = cached_baseline
-            append_evaluation_log(config.get("log_path", "logs/logs.txt"), "baseline-cached", [test_dataset[index] for index in range(len(test_dataset))], baseline_details)
+            append_evaluation_log(config.get("log_path", "logs/logs.txt"), "baseline-cached", [eval_dataset[index] for index in range(len(eval_dataset))], baseline_details)
     # Stop after SFT when the command requests the isolated stage.
     if stage == "sft":
         return
@@ -451,7 +451,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         generation_kwargs=dict(config.get("generation_kwargs", {"stop_strings": ["```"]})),
     )
     # Build the GRPO callback and trainer.
-    training_callback = _make_callback(model, tokenizer, test_dataset, config, wandb)
+    training_callback = _make_callback(model, tokenizer, eval_dataset, config, wandb)
     callbacks = [training_callback]
     print(f"Intermediate evaluations enabled: {bool(callbacks)}", flush=True)
     trainer = GRPOTrainer(
@@ -480,7 +480,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         trainer.model = model
     # Save and evaluate the final selected model.
     trainer.save_model(str(output_dir / "final"))
-    final_metrics, final_details = evaluate_model(model, tokenizer, test_dataset, config, "final")
+    final_metrics, final_details = evaluate_model(model, tokenizer, eval_dataset, config, "final")
     config["training_context"] = "best-checkpoint-final" if best_checkpoint_path is not None else "final"
     config["_evaluation_epoch"] = trainer.state.epoch
     save_evaluation(output_dir, "final", final_metrics, final_details, config)

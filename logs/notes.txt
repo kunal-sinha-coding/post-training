@@ -2009,3 +2009,8 @@ Added experiments/run_qwen_official_greedy_eval.py to reproduce the Qwen instruc
 ## 2026-09-14: Complete official-protocol greedy Qwen rerun
 
 Reran all three cached Qwen2.5-Coder-Instruct models with the published greedy prompt and stop behavior, a 2,048-token completion limit, and official EvalPlus 0.2.1 scoring. Results were 51.6/43.4 for 0.5B, 63.4/53.9 for 1.5B, and 71.2/60.4 for 3B on MBPP/MBPP+. The 3B result moved substantially toward the published 73.6/62.4 result, confirming that the earlier temperature-0.2 and 512-token protocol was a major source of discrepancy.
+
+## 2026-09-19: Partition MBPP training from EvalPlus evaluation
+
+Changed dataset preparation to load all 964 examples from the Hugging Face MBPP train, validation, and test splits. The loader now excludes the 378 task IDs in the EvalPlus 0.2.1 `evalplus/mbppplus` test split from GRPO and uses those 378 examples for evaluation. This produces 593 disjoint GRPO training examples and 378 evaluation examples. Seven EvalPlus few shot tasks are absent from the Hugging Face MBPP collection, so the evaluation set is loaded from EvalPlus directly. Updated configurations, training variable names, README documentation, and data tests to enforce this partition.
+The loader uses the versioned EvalPlus dataset directly rather than the older checked in 399 task JSONL artifact, keeping the training boundary aligned with the benchmark dependency pin.
