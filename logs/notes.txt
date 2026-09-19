@@ -2014,3 +2014,7 @@ Reran all three cached Qwen2.5-Coder-Instruct models with the published greedy p
 
 Changed dataset preparation to load all 964 examples from the Hugging Face MBPP train, validation, and test splits. The loader now excludes the 378 task IDs in the EvalPlus 0.2.1 `evalplus/mbppplus` test split from GRPO and uses those 378 examples for evaluation. This produces 593 disjoint GRPO training examples and 378 evaluation examples. Seven EvalPlus few shot tasks are absent from the Hugging Face MBPP collection, so the evaluation set is loaded from EvalPlus directly. Updated configurations, training variable names, README documentation, and data tests to enforce this partition.
 The loader uses the versioned EvalPlus dataset directly rather than the older checked in 399 task JSONL artifact, keeping the training boundary aligned with the benchmark dependency pin.
+
+## 2026-09-19: Set GRPO model to Qwen2.5-Coder-3B-Instruct
+
+Updated the default and debug training configurations from Qwen3.5-0.8B to Qwen2.5-Coder-3B-Instruct so the GRPO run uses the requested coding model.
