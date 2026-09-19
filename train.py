@@ -302,17 +302,19 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
                 name = f"epoch-{self.next_eval_epoch:.2f}"
                 model_path = Path(args.output_dir) / "evalplus_models" / name
                 model_path.mkdir(parents=True, exist_ok=True)
-                model.save_pretrained(model_path)
+                # Save the PEFT-wrapped trainer model so the evaluator receives adapter metadata.
+                evaluation_model = _.get("model", model)
+                evaluation_model.save_pretrained(model_path)
                 tokenizer.save_pretrained(model_path)
                 # Move the training model off the GPU while vLLM owns the evaluation GPU.
-                model.to("cpu")
+                evaluation_model.to("cpu")
                 import torch
                 torch.cuda.empty_cache()
                 try:
                     evalplus_result = run_qwen_evalplus(model_path, Path(args.output_dir), name)
                 finally:
-                    model.to(device or "cuda")
-                    model.train()
+                    evaluation_model.to(device or "cuda")
+                    evaluation_model.train()
                     shutil.rmtree(model_path)
                 if wandb is not None and wandb.run is not None:
                     log_evaluation(wandb, evalplus_result["metrics"], f"evalplus-{name}", state.global_step)

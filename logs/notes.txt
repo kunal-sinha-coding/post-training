@@ -2052,3 +2052,7 @@ The attempted training launch failed before step zero because TRL 1.13.0 only su
 ## 2026-09-19: Log in-process EvalPlus pass rates to W&B
 
 The step-zero and quarterly in-process EvalPlus runs were writing canonical output files but discarding their parsed pass rates. Added parsing for MBPP and MBPP+ pass@1 and routed those values through the shared W&B evaluation logger. The existing local artifact remains `mbpp_results.txt`, and the W&B metrics are now `evaluation/mbpp_pass_at_1` and `evaluation/mbpp_plus_pass_at_1`.
+
+## 2026-09-19: Save the PEFT model for quarterly EvalPlus
+
+The first quarterly evaluation reached step 19 but failed because the callback saved the original base-model reference instead of the PEFT-wrapped trainer model. vLLM then saw LoRA-style `base_layer` weights without adapter metadata and failed to load the temporary checkpoint. The callback now saves and moves the actual trainer model supplied through callback kwargs, preserving `adapter_config.json` for the merge path. No usable step-19 checkpoint survived the failed evaluation because the temporary directory was removed in cleanup.
