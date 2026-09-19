@@ -177,8 +177,11 @@ def aggregate_results(results: list[dict[str, Any]]) -> dict[str, Any]:
     return metrics
 
 
-def code_fence_stopping_criteria(tokenizer: Any, prompt_width: int) -> Any:
-    """Stop each generation after a closing code fence appears in generated tokens."""
+QWEN_EVALPLUS_STOP_STRINGS = ("<|endoftext|>", "<|endofmask|>", "</s>", "\nif __name__", "\ndef main(", "\nprint(", "\n#", "```")
+
+
+def code_fence_stopping_criteria(tokenizer: Any, prompt_width: int, stop_strings: tuple[str, ...] = QWEN_EVALPLUS_STOP_STRINGS) -> Any:
+    """Stop each generation after an official Qwen EvalPlus stop string appears."""
     import torch
     from transformers import StoppingCriteria, StoppingCriteriaList
 
@@ -186,21 +189,21 @@ def code_fence_stopping_criteria(tokenizer: Any, prompt_width: int) -> Any:
         """Track per-sequence closing-fence matches without scanning prompt tokens."""
 
         def __init__(self) -> None:
-            # Tokenize the stop sequence once and track which rows have finished.
-            encoded = tokenizer("```", add_special_tokens=False)
-            self.stop_ids = torch.tensor(encoded["input_ids"], dtype=torch.long)
+            # Tokenize every official stop sequence once and track finished rows.
+            self.stop_ids = [torch.tensor(tokenizer(stop, add_special_tokens=False)["input_ids"], dtype=torch.long) for stop in stop_strings]
             self.finished: torch.Tensor | None = None
 
         def __call__(self, input_ids: Any, scores: Any, **kwargs: Any) -> bool:
             """Return true only after every generated row has emitted the closing fence."""
             del scores, kwargs
-            stop_ids = self.stop_ids.to(input_ids.device)
             if self.finished is None or self.finished.shape[0] != input_ids.shape[0]:
                 self.finished = torch.zeros(input_ids.shape[0], dtype=torch.bool, device=input_ids.device)
             generated = input_ids[:, prompt_width:]
-            if generated.shape[1] >= stop_ids.shape[0]:
-                suffix = generated[:, -stop_ids.shape[0]:]
-                self.finished |= torch.all(suffix == stop_ids, dim=1)
+            for stop_id in self.stop_ids:
+                stop_id = stop_id.to(input_ids.device)
+                if generated.shape[1] >= stop_id.shape[0]:
+                    suffix = generated[:, -stop_id.shape[0]:]
+                    self.finished |= torch.all(suffix == stop_id, dim=1)
             return bool(torch.all(self.finished).item())
 
     return StoppingCriteriaList([CodeFenceCriteria()])
@@ -495,4 +498,3 @@ def evaluate_model(model: Any, tokenizer: Any, dataset: Any, config: dict[str, A
         return evaluate_texts(completions, records, float(config.get("sandbox_timeout_seconds", 3)), config.get("log_path", "logs/logs.txt"), evaluation_name, float(config.get("pass_weight", 0.5)), diagnostics)
     finally:
         model.train(was_training)
-

@@ -23,6 +23,7 @@ THINK_TAGS = ["<think>", "</think>"]
 INTERFACE_IGNORED_NAMES = {"bool", "float", "int", "len", "list", "print", "set", "sorted", "str", "sum", "tuple"}
 DENSE_REWARD_WEIGHTS = {"format": 0.05, "syntax": 0.10, "interface": 0.05, "tests": 0.80}
 DEFAULT_PASS_WEIGHT = 0.5
+QWEN_EVALPLUS_STOP_STRINGS = ("<|endoftext|>", "<|endofmask|>", "</s>", "\nif __name__", "\ndef main(", "\nprint(", "\n#", "```")
 
 
 @dataclass
@@ -54,6 +55,19 @@ def extract_code(text: str) -> str:
     for tag in THINK_TAGS:
         cleaned = cleaned.replace(tag, "")
     return cleaned.strip()
+
+
+def truncate_qwen_completion(text: str) -> str:
+    """Apply the official Qwen EvalPlus stop strings before reward scoring."""
+    # Keep the first official stop marker so reward execution sees the same completion boundary as EvalPlus.
+    positions = [text.find(stop) for stop in QWEN_EVALPLUS_STOP_STRINGS if text.find(stop) >= 0 and not (stop == "```" and text.lstrip().startswith("```"))]
+    return text[:min(positions)] if positions else text
+
+
+def wrap_qwen_continuation(text: str) -> str:
+    """Wrap a raw Qwen continuation so the shared scorer can extract it as Python."""
+    # Recreate the opening fence supplied by the prompt when generation returned only its body.
+    return text if "```" in text else f"```python\n{text}"
 
 
 def _safe_environment() -> dict[str, str]:
@@ -231,7 +245,7 @@ def reward_function(completions: list[object], test_code: list[str], sandbox_tim
             text = str(completion.get("content", completion.get("text", "")))
         else:
             text = str(completion)
-        reward, detail = score_completion(text, tests, sandbox_timeout_seconds, pass_weight)
+        reward, detail = score_completion(wrap_qwen_continuation(truncate_qwen_completion(text)), tests, sandbox_timeout_seconds, pass_weight)
         rewards.append(reward)
         details.append(detail)
     if diagnostics is not None:

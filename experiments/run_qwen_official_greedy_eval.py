@@ -30,7 +30,7 @@ def build_prompt(task_prompt: str) -> str:
 
 # Truncate a completion at the same stop strings configured by the Qwen wrapper.
 def apply_stops(text: str) -> str:
-    stops = ("<|endoftext|>", "<|endofmask|>", "</s>", "\nif __name__", "\nprint(", "\n#", "\n" + chr(96) * 3)
+    stops = ("<|endoftext|>", "<|endofmask|>", "</s>", "\nif __name__", "\ndef main(", "\nprint(", "\n#", "\n" + chr(96) * 3)
     positions = [text.find(stop) for stop in stops if text.find(stop) >= 0]
     return text[:min(positions)] if positions else text
 

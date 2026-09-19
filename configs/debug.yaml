@@ -44,7 +44,7 @@ eval_steps: 1
 evaluation_num_completions: 1
 sandbox_timeout_seconds: 2
 trust_remote_code: false
-bf16: false
+bf16: true
 fp16: false
 report_to: wandb
 wandb_project: grpo-mbpp

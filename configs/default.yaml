@@ -56,7 +56,7 @@ evaluation_top_p: 0.95
 pass_weight: 0.5
 sandbox_timeout_seconds: 3
 trust_remote_code: false
-bf16: false
+bf16: true
 fp16: false
 report_to: wandb
 wandb_project: grpo-mbpp

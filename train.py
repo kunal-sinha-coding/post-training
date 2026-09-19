@@ -21,7 +21,7 @@ import yaml
 from dotenv import load_dotenv
 
 from data import build_sft_dataset, prepare_datasets
-from evaluate import append_training_step_header, append_training_step_metrics, append_training_step_samples, append_evaluation_log, code_fence_stopping_criteria, evaluate_model, forced_code_prefix_length, forced_code_prefix_processor, save_evaluation, start_run_log
+from evaluate import QWEN_EVALPLUS_STOP_STRINGS, append_training_step_header, append_training_step_metrics, append_training_step_samples, append_evaluation_log, code_fence_stopping_criteria, evaluate_model, forced_code_prefix_length, forced_code_prefix_processor, save_evaluation, start_run_log
 from sandbox import reward_function
 
 
@@ -423,7 +423,7 @@ def _enable_generation_stop(model: Any, tokenizer: Any) -> None:
                 generation_config = copy.deepcopy(generation_config)
                 generation_config.stop_strings = None
                 kwargs["generation_config"] = generation_config
-            kwargs["stopping_criteria"] = code_fence_stopping_criteria(tokenizer, input_ids.shape[-1])
+            kwargs["stopping_criteria"] = code_fence_stopping_criteria(tokenizer, input_ids.shape[-1], QWEN_EVALPLUS_STOP_STRINGS)
         return original_generate(*args, **kwargs)
 
     model.generate = generate_with_tokenizer
@@ -460,7 +460,8 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
     # Use the end-of-sequence token for padding when the tokenizer lacks one.
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
-    model = AutoModelForCausalLM.from_pretrained(config["model_name_or_path"], trust_remote_code=bool(config.get("trust_remote_code", False)))
+    model_dtype = torch.bfloat16 if bool(config.get("bf16", True)) else None
+    model = AutoModelForCausalLM.from_pretrained(config["model_name_or_path"], torch_dtype=model_dtype, trust_remote_code=bool(config.get("trust_remote_code", False)))
     _enable_generation_stop(model, tokenizer)
     model.to(device)
     print(f"Model device: {model.device}", flush=True)

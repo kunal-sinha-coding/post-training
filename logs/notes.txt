@@ -2030,3 +2030,7 @@ The first full precision GRPO launch reached the first optimizer update but exce
 ## 2026-09-19: Match GRPO prompts and completion length to EvalPlus
 
 Changed normalized MBPP training prompts to use the official Qwen EvalPlus ChatML format, including the visible MBPP assertions and assistant Python fence. Removed the custom forced `Code:` prefix from training generation and set the GRPO completion budget to 2,048 tokens. Official augmented MBPP+ tests remain available only for the 378 EvalPlus tasks, while the 593 disjoint GRPO tasks retain their Hugging Face MBPP tests until a separate test augmentation source is selected.
+
+## 2026-09-19: Align model precision and stop handling with Qwen EvalPlus
+
+Double checked the protocol against QwenLM's published EvalPlus wrapper. It defines the base stop strings `<|endoftext|>`, `<|endofmask|>`, `</s>`, `\nif __name__`, `\ndef main(`, `\nprint(`, and `\n#`, and ChatML adds the closing Python fence. GRPO and the local greedy runner now use that complete list. Model loading and default configuration use bfloat16, matching the wrapper's default dtype. The Qwen continuation reward path accepts either a raw body or a fenced completion and still scores only the original MBPP tests for disjoint training tasks.
