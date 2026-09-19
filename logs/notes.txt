@@ -2022,3 +2022,7 @@ Updated the default and debug training configurations from Qwen3.5-0.8B to Qwen2
 ## 2026-09-19: Add quarterly official EvalPlus evaluation
 
 Added a GRPO callback that saves the current policy at every quarter epoch, runs the official Qwen greedy EvalPlus generator, sanitizes the generated MBPP samples, and evaluates both MBPP and MBPP+ using the same completions. Updated the generator to load the pinned 378 task EvalPlus dataset instead of the older 399 task artifact. Disabled ordinary step based checkpoint evaluation for the default run so quarterly EvalPlus is the intermediate evaluation schedule.
+
+## 2026-09-19: Fit Qwen2.5-Coder-3B GRPO with LoRA
+
+The first full precision GRPO launch reached the first optimizer update but exceeded the 16 GB GPU memory limit when Adam initialized. Added PEFT LoRA support to GRPO and enabled rank 16 adapters targeting the Qwen attention and MLP projection modules. Updated the official EvalPlus runner to load saved adapter checkpoints on top of the base model.

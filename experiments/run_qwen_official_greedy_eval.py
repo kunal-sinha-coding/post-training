@@ -37,10 +37,20 @@ def apply_stops(text: str) -> str:
 
 # Load one model and tokenizer for the complete MBPP task set.
 def load_model(model_name: str) -> tuple[object, object]:
+    """Load either a full Qwen checkpoint or a LoRA adapter checkpoint."""
+    # Load the base model first when the saved training artifact contains a PEFT adapter.
+    adapter_config_path = Path(model_name) / "adapter_config.json"
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=False)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
-    model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.bfloat16, device_map="auto", trust_remote_code=False)
+    if adapter_config_path.is_file():
+        from peft import PeftConfig, PeftModel
+
+        peft_config = PeftConfig.from_pretrained(model_name)
+        base_model = AutoModelForCausalLM.from_pretrained(peft_config.base_model_name_or_path, torch_dtype=torch.bfloat16, device_map="auto", trust_remote_code=False)
+        model = PeftModel.from_pretrained(base_model, model_name)
+    else:
+        model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.bfloat16, device_map="auto", trust_remote_code=False)
     model.eval()
     return model, tokenizer
 

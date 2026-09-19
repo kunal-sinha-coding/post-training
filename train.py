@@ -58,6 +58,22 @@ def run_qwen_evalplus(model_path: Path, output_dir: Path, name: str) -> dict[str
     return {"evaluation_dir": str(evaluation_dir), "results": result_texts}
 
 
+def build_peft_config(config: dict[str, Any]) -> Any | None:
+    """Build the optional LoRA adapter configuration used to fit GRPO in GPU memory."""
+    # Keep full fine tuning available while defaulting to the memory-safe adapter path for the 3B model.
+    if not config.get("lora_enabled", False):
+        return None
+    from peft import LoraConfig
+
+    return LoraConfig(
+        task_type="CAUSAL_LM",
+        r=int(config.get("lora_r", 16)),
+        lora_alpha=int(config.get("lora_alpha", 32)),
+        lora_dropout=float(config.get("lora_dropout", 0.05)),
+        target_modules=list(config.get("lora_target_modules", ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"])),
+    )
+
+
 def seed_everything(seed: int) -> None:
     """Seed Python and available numerical frameworks for reproducibility."""
     # Seed Python before seeding optional numerical frameworks.
@@ -513,6 +529,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         train_dataset=train_dataset,
         args=training_args,
         callbacks=callbacks,
+        peft_config=build_peft_config(config),
     )
     # Log the direct GRPO baseline because SFT already logged its ending policy.
     if not config.get("sft_enabled", False) and config.get("run_baseline_evaluation", True):
