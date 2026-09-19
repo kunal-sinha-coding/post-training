@@ -15,6 +15,8 @@ DEFAULT_PROMPT_TEMPLATE = (
     "Requirements:\n"
 )
 
+QWEN_EVALPLUS_SYSTEM_PROMPT = "You are an intelligent programming assistant to produce Python algorithmic solutions"
+
 DEFAULT_EVALPLUS_DATASET = "evalplus/mbppplus"
 DEFAULT_EVALPLUS_SPLIT = "test"
 
@@ -68,11 +70,31 @@ def build_prompt(record: dict[str, Any], template: str = DEFAULT_PROMPT_TEMPLATE
     return formatted
 
 
+def build_qwen_evalplus_prompt(record: dict[str, Any]) -> str:
+    """Build the exact Qwen EvalPlus ChatML prompt for one MBPP record."""
+    # Reconstruct the official visible docstring and assistant code prefix from Hugging Face MBPP fields.
+    prompt = str(_first_value(record, "text", "prompt", "description", "task", default="")).strip()
+    tests = _first_value(record, "test_list", "tests", default=[])
+    visible_tests = tests if isinstance(tests, list) else [str(tests)]
+    task_prompt = f'"""\n{prompt}\n{"\n".join(str(test) for test in visible_tests)}\n"""\n'
+    fence = "```"
+    return (
+        "<|im_start|>system\n"
+        f"{QWEN_EVALPLUS_SYSTEM_PROMPT}<|im_end|>\n"
+        "<|im_start|>user\n"
+        "Can you complete the following Python function?\n"
+        f"{fence}python\n{task_prompt.strip()}\n{fence}\n"
+        "<|im_end|>\n"
+        "<|im_start|>assistant\n"
+        f"{fence}python\n"
+    )
+
+
 def normalize_record(record: dict[str, Any], include_generic_arguments: bool = False) -> dict[str, Any]:
     """Convert one raw MBPP row into the stable training schema."""
     return {
         "task_id": _first_value(record, "task_id", "id", default=None),
-        "prompt": build_prompt(record, include_generic_arguments=include_generic_arguments),
+        "prompt": build_qwen_evalplus_prompt(record),
         "test_code": format_tests(record),
         "reference_code": str(_first_value(record, "code", "canonical_solution", default="")),
         "test_setup_code": str(_first_value(record, "test_setup_code", default="")),

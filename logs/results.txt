@@ -5741,3 +5741,24 @@ Generation setup: One completion per each of the 399 EvalPlus MBPP tasks. The ru
 Artifacts: outputs/qwen-official-greedy-0.5B, outputs/qwen-official-greedy-1.5B, and outputs/qwen-official-greedy-3B. Generation code commit: 48441d6.
 
 Comparison: The Qwen report lists 52.4% MBPP and 43.7% MBPP+ for 0.5B-Instruct, 69.2% and 59.4% for 1.5B-Instruct, and 73.6% and 62.4% for 3B-Instruct. The rerun closes most of the earlier 3B discrepancy, from 67.25% / 55.16% to 71.2% / 60.4%. The remaining differences may reflect the Transformers versus vLLM backend and exact checkpoint or environment details.
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-19 12:22:48 PDT
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-19 12:25:19 PDT
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-19 12:30:15 PDT
+------------------------------------------------------------------------

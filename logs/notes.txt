@@ -2026,3 +2026,7 @@ Added a GRPO callback that saves the current policy at every quarter epoch, runs
 ## 2026-09-19: Fit Qwen2.5-Coder-3B GRPO with LoRA
 
 The first full precision GRPO launch reached the first optimizer update but exceeded the 16 GB GPU memory limit when Adam initialized. Added PEFT LoRA support to GRPO and enabled rank 16 adapters targeting the Qwen attention and MLP projection modules. Updated the official EvalPlus runner to load saved adapter checkpoints on top of the base model.
+
+## 2026-09-19: Match GRPO prompts and completion length to EvalPlus
+
+Changed normalized MBPP training prompts to use the official Qwen EvalPlus ChatML format, including the visible MBPP assertions and assistant Python fence. Removed the custom forced `Code:` prefix from training generation and set the GRPO completion budget to 2,048 tokens. Official augmented MBPP+ tests remain available only for the 378 EvalPlus tasks, while the 593 disjoint GRPO tasks retain their Hugging Face MBPP tests until a separate test augmentation source is selected.
