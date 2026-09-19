@@ -2034,3 +2034,7 @@ Changed normalized MBPP training prompts to use the official Qwen EvalPlus ChatM
 ## 2026-09-19: Align model precision and stop handling with Qwen EvalPlus
 
 Double checked the protocol against QwenLM's published EvalPlus wrapper. It defines the base stop strings `<|endoftext|>`, `<|endofmask|>`, `</s>`, `\nif __name__`, `\ndef main(`, `\nprint(`, and `\n#`, and ChatML adds the closing Python fence. GRPO and the local greedy runner now use that complete list. Model loading and default configuration use bfloat16, matching the wrapper's default dtype. The Qwen continuation reward path accepts either a raw body or a fenced completion and still scores only the original MBPP tests for disjoint training tasks.
+
+## 2026-09-19: Add step-zero canonical EvalPlus evaluation
+
+Run the full 378-task Qwen EvalPlus MBPP and MBPP+ evaluation before GRPO updates begin. The step-zero benchmark uses greedy decoding with the canonical 2,048-token limit, while GRPO continues to use temperature sampling. Remove the redundant single stop string from the GRPO configuration so the shared Qwen stop list is the only active stopping definition.

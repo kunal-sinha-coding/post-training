@@ -465,6 +465,17 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
     _enable_generation_stop(model, tokenizer)
     model.to(device)
     print(f"Model device: {model.device}", flush=True)
+    # Run the canonical greedy EvalPlus sanity check before any optimization steps.
+    if config.get("run_qwen_evalplus_at_start", True):
+        step_zero_path = output_dir / "evalplus_models" / "step-0"
+        if step_zero_path.exists():
+            shutil.rmtree(step_zero_path)
+        step_zero_path.mkdir(parents=True, exist_ok=True)
+        model.save_pretrained(step_zero_path)
+        tokenizer.save_pretrained(step_zero_path)
+        print("Running step-zero greedy Qwen EvalPlus evaluation.", flush=True)
+        run_qwen_evalplus(step_zero_path, output_dir, "step-0")
+        shutil.rmtree(step_zero_path)
     # Run the SFT baseline, training stage, and final epoch evaluation when enabled.
     if config.get("sft_enabled", False):
         # Evaluate the base model once before supervised updates begin.
@@ -516,7 +527,6 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         run_name=config.get("wandb_run_name"),
         use_cpu=not torch.cuda.is_available(),
         seed=int(config.get("seed", 42)),
-        generation_kwargs=dict(config.get("generation_kwargs", {"stop_strings": ["```"]})),
     )
     # Build the GRPO callback and trainer.
     training_callback = _make_callback(model, tokenizer, eval_dataset, config, wandb)

@@ -13,6 +13,7 @@ seed: 42
 max_train_samples: 8
 reuse_baseline: true
 run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
 run_qwen_evalplus_quarterly: true
 lora_enabled: true
 lora_r: 16
