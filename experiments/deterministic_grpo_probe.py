@@ -4,12 +4,15 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
 import torch
 import torch.nn.functional as functional
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
+# Make shared repository modules importable when this file is launched directly.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from train import build_peft_config, seed_everything
 
 
