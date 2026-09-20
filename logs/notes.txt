@@ -2098,3 +2098,5 @@ The hybrid run uses a fresh output directory so EvalPlus cannot reuse result fil
 ## 2026-09-20: Use vLLM for training-set checkpoint evaluation
 
 Changed future training-set MBPP evaluation to use the same batched vLLM generation path as canonical EvalPlus. The evaluator merges LoRA adapters when necessary, generates one greedy 2,048-token completion for all 572 training tasks, and scores those completions against the original MBPP tests. The active hybrid run was not interrupted and continues using the previously loaded slow evaluation code.
+
+The first vLLM training evaluation exposed a format mismatch: vLLM returned raw Python bodies while the shared scorer expected a fenced completion. The training evaluator now wraps each raw body before scoring. The metric payload contains training MBPP pass@1, training MBPP test fraction, evaluation MBPP pass@1, evaluation MBPP test fraction, evaluation MBPP+ pass@1, and evaluation MBPP+ test fraction.

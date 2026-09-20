@@ -38,7 +38,7 @@ def test_training_mbpp_evaluation_uses_batched_vllm_completions(monkeypatch, tmp
 
     def fake_evaluate(completions, records, timeout, log_path, name):
         """Return deterministic training metrics for the generated batch."""
-        assert completions == ["completion-1", "completion-2"]
+        assert completions == ["```python\ncompletion-1", "```python\ncompletion-2"]
         assert [record["task_id"] for record in records] == [1, 2]
         assert timeout == 3.0
         assert log_path == str(tmp_path / "logs.txt")
@@ -53,6 +53,23 @@ def test_training_mbpp_evaluation_uses_batched_vllm_completions(monkeypatch, tmp
 
     assert generated == [(tmp_path / "checkpoint", ["prompt-1", "prompt-2"])]
     assert result == {"metrics": metrics, "details": details}
+
+
+def test_merge_training_metrics_preserves_all_requested_eval_metrics():
+    """Keep both training metrics beside the four canonical evaluation metrics."""
+    canonical = {
+        "mbpp_pass_at_1": 0.7,
+        "mbpp_plus_pass_at_1": 0.6,
+        "mbpp_tests_pass_fraction": 0.8,
+        "mbpp_plus_tests_pass_fraction": 0.5,
+    }
+    merged = train.merge_training_metrics(canonical, {"pass_at_1": 0.4, "tests_pass_fraction": 0.3})
+
+    assert merged == {
+        **canonical,
+        "training_mbpp_pass_at_1": 0.4,
+        "training_mbpp_tests_pass_fraction": 0.3,
+    }
 
 
 class FakeModel:

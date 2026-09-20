@@ -21,7 +21,7 @@ from dotenv import load_dotenv
 
 from data import build_sft_dataset, prepare_datasets
 from evaluate import QWEN_EVALPLUS_STOP_STRINGS, append_training_step_header, append_training_step_metrics, append_training_step_samples, append_evaluation_log, code_fence_stopping_criteria, evaluate_model, evaluate_texts, forced_code_prefix_length, forced_code_prefix_processor, save_evaluation, start_run_log
-from sandbox import reward_function
+from sandbox import reward_function, wrap_qwen_continuation
 
 
 def load_config(path: str | Path) -> dict[str, Any]:
@@ -97,6 +97,8 @@ def evaluate_training_mbpp(model_path: Path, train_dataset: Any, config: dict[st
 
     records = [train_dataset[index] for index in range(len(train_dataset))]
     completions = generate_model_completions(model_path, [record["prompt"] for record in records])
+    # Wrap raw vLLM code bodies so the shared scorer can extract them as Python programs.
+    completions = [wrap_qwen_continuation(completion) for completion in completions]
     # Score generated solutions against only the original MBPP tests used by the reward.
     metrics, details = evaluate_texts(completions, records, float(config.get("sandbox_timeout_seconds", 3)), config.get("log_path", "logs/logs.txt"), name)
     return {"metrics": metrics, "details": details}
