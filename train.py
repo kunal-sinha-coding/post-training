@@ -229,7 +229,9 @@ def _make_reward(config: dict[str, Any]):
         # Share reward diagnostics with the training callback for W&B and local logs.
         diagnostics: dict[str, float] = {}
         append_training_step_samples(config.get("log_path", "logs/logs.txt"), completions)
-        rewards = reward_function(completions, test_code, timeout, diagnostics=diagnostics, group_size=int(config.get("num_generations", 4)), reward_function_name=reward_function_name, reward_coefficient=reward_coefficient, **kwargs)
+        task_ids = kwargs.get("task_id")
+        task_id_values = task_ids if isinstance(task_ids, list) else None
+        rewards = reward_function(completions, test_code, timeout, diagnostics=diagnostics, group_size=int(config.get("num_generations", 4)), reward_function_name=reward_function_name, reward_coefficient=reward_coefficient, trace_path=config.get("reward_trace_path"), task_ids=task_id_values, **kwargs)
         # Record the generated completion token lengths so truncation and length drift are visible in W&B.
         completion_ids = kwargs.get("completion_ids")
         if isinstance(completion_ids, list) and completion_ids:
@@ -248,6 +250,22 @@ def _make_reward(config: dict[str, Any]):
         return rewards
 
     return reward
+
+def _probe_sequence_logps(model: Any, batch: dict[str, Any], temperature: float = 1.0) -> Any:
+    """Compute mean completion log probabilities for a saved GRPO rollout batch."""
+    # Reconstruct the same completion-token logits used by the installed TRL GRPO loss.
+    import torch
+    input_ids = torch.cat([batch["prompt_ids"], batch["completion_ids"]], dim=1)
+    attention_mask = torch.cat([batch["prompt_mask"], batch["completion_mask"]], dim=1)
+    completion_length = batch["completion_ids"].shape[1]
+    logits = model(input_ids=input_ids, attention_mask=attention_mask, use_cache=False).logits
+    logits = logits[:, :-1, :]
+    logits = logits[:, -completion_length:, :] / temperature
+    token_ids = input_ids[:, -completion_length:]
+    token_logps = torch.log_softmax(logits, dim=-1).gather(-1, token_ids.unsqueeze(-1)).squeeze(-1)
+    mask = batch["completion_mask"].float()
+    return (token_logps * mask).sum(dim=1) / mask.sum(dim=1).clamp(min=1.0)
+
 
 def _make_callback(model: Any, tokenizer: Any, train_dataset: Any, test_dataset: Any, config: dict[str, Any], wandb: Any | None, device: Any | None = None):
     """Create callbacks for step logging and checkpoint evaluation."""
@@ -329,6 +347,33 @@ def _make_callback(model: Any, tokenizer: Any, train_dataset: Any, test_dataset:
                 "training/relative_parameter_update": update_norm / (parameter_sq**0.5 + 1e-12),
                 "training/lora_delta_from_initial_norm": initial_delta_sq**0.5,
             })
+            probe_batch = config.pop("_direction_probe_batch", None)
+            if probe_batch is not None:
+                # Compare the post-update likelihood of positive and negative advantage samples.
+                import torch
+                target_device = next(self.evaluation_model.parameters()).device
+                moved_batch = {key: value.to(target_device) for key, value in probe_batch["batch"].items()}
+                was_training = self.evaluation_model.training
+                self.evaluation_model.eval()
+                with torch.no_grad():
+                    new_logps = _probe_sequence_logps(self.evaluation_model, moved_batch, float(config.get("temperature", 1.0)))
+                if was_training:
+                    self.evaluation_model.train()
+                old_logps = probe_batch["old_logps"].to(new_logps.device)
+                advantages = probe_batch["advantages"].to(new_logps.device)
+                delta = new_logps - old_logps
+                positive = advantages > 0
+                negative = advantages < 0
+                centered_advantage = advantages - advantages.mean()
+                centered_delta = delta - delta.mean()
+                correlation = float((centered_advantage * centered_delta).sum() / (torch.sqrt((centered_advantage**2).sum() * (centered_delta**2).sum()) + 1e-12))
+                config["_update_diagnostics"].update({
+                    "probe/advantage_delta_correlation": correlation,
+                    "probe/positive_advantage_mean_logp_delta": float(delta[positive].mean()) if positive.any() else 0.0,
+                    "probe/negative_advantage_mean_logp_delta": float(delta[negative].mean()) if negative.any() else 0.0,
+                    "probe/advantage_sign_alignment": float(((advantages * delta) > 0).float().mean()),
+                    "probe/rollout_sample_count": float(len(delta)),
+                })
             return control
 
         def on_step_begin(self, args: Any, state: Any, control: Any, **_: Any) -> Any:
@@ -706,12 +751,35 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         use_cpu=not torch.cuda.is_available(),
         seed=int(config.get("seed", 42)),
     )
-    # Build the GRPO callback and trainer.
+    trainer_class = GRPOTrainer
+    if config.get("probe_update_direction", False):
+        # Capture one rollout batch so the callback can measure post-update likelihood changes.
+        class ProbeGRPOTrainer(GRPOTrainer):
+            """Add one rollout likelihood probe to the normal GRPO trainer."""
+
+            def _compute_loss(self, model: Any, inputs: dict[str, Any]) -> Any:
+                """Cache the first rollout batch and delegate the actual GRPO loss to TRL."""
+                if "_direction_probe_batch" not in config:
+                    import torch
+                    batch = {
+                        key: inputs[key].detach().cpu()
+                        for key in ("prompt_ids", "prompt_mask", "completion_ids", "completion_mask")
+                    }
+                    with torch.no_grad():
+                        old_logps = _probe_sequence_logps(model, {key: value.to(next(model.parameters()).device) for key, value in batch.items()}, float(config.get("temperature", 1.0))).detach().cpu()
+                    config["_direction_probe_batch"] = {
+                        "batch": batch,
+                        "old_logps": old_logps,
+                        "advantages": inputs["advantages"].detach().cpu(),
+                    }
+                return super()._compute_loss(model, inputs)
+
+        trainer_class = ProbeGRPOTrainer
     evaluation_dataset = train_dataset if config.get("train_subset_evaluation_only", False) else eval_dataset
     training_callback = _make_callback(model, tokenizer, train_dataset, evaluation_dataset, config, wandb, device)
     callbacks = [training_callback]
     print(f"Intermediate evaluations enabled: {bool(callbacks)}", flush=True)
-    trainer = GRPOTrainer(
+    trainer = trainer_class(
         model=model,
         processing_class=tokenizer,
         reward_funcs=_make_reward(config),

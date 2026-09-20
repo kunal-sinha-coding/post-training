@@ -7,6 +7,7 @@ and summarizes reward variation for local logs and W&B.
 from __future__ import annotations
 
 import ast
+import json
 import math
 import os
 import re
@@ -240,21 +241,41 @@ def summarize_reward_groups(rewards: list[float], details: list[dict[str, object
     return diagnostics
 
 
-def reward_function(completions: list[object], test_code: list[str], sandbox_timeout_seconds: float = 3.0, diagnostics: dict[str, Any] | None = None, group_size: int = 4, reward_function_name: str = DEFAULT_REWARD_FUNCTION, reward_coefficient: float = DEFAULT_REWARD_COEFFICIENT, **_: object) -> list[float]:
+def reward_function(completions: list[object], test_code: list[str], sandbox_timeout_seconds: float = 3.0, diagnostics: dict[str, Any] | None = None, group_size: int = 4, reward_function_name: str = DEFAULT_REWARD_FUNCTION, reward_coefficient: float = DEFAULT_REWARD_COEFFICIENT, trace_path: str | None = None, task_ids: list[object] | None = None, **_: object) -> list[float]:
     """Score a GRPO batch with the configured test-pass or hybrid reward."""
     # Record candidate outcomes so reward variation remains visible during training.
     rewards: list[float] = []
     details: list[dict[str, object]] = []
-    for completion, tests in zip(completions, test_code):
+    trace_records: list[dict[str, object]] = []
+    for index, (completion, tests) in enumerate(zip(completions, test_code)):
         if isinstance(completion, list):
             text = "".join(str(part.get("text", "")) if isinstance(part, dict) else str(part) for part in completion)
         elif isinstance(completion, dict):
             text = str(completion.get("content", completion.get("text", "")))
         else:
             text = str(completion)
-        reward, detail = score_completion(wrap_qwen_continuation(truncate_qwen_completion(text)), tests, sandbox_timeout_seconds, reward_function_name, reward_coefficient)
+        truncated = truncate_qwen_completion(text)
+        scored_text = wrap_qwen_continuation(truncated)
+        reward, detail = score_completion(scored_text, tests, sandbox_timeout_seconds, reward_function_name, reward_coefficient)
         rewards.append(reward)
         details.append(detail)
+        trace_records.append({
+            "index": index,
+            "task_id": str(task_ids[index]) if task_ids is not None and index < len(task_ids) else None,
+            "raw_completion": text,
+            "truncated_completion": truncated,
+            "scored_completion": scored_text,
+            "test_code": tests,
+            "reward": reward,
+            "detail": detail,
+        })
+    if trace_path:
+        # Append one auditable JSON record for every scored sampled completion.
+        trace_file = Path(trace_path)
+        trace_file.parent.mkdir(parents=True, exist_ok=True)
+        with trace_file.open("a", encoding="utf-8") as handle:
+            for record in trace_records:
+                handle.write(json.dumps(record, sort_keys=True) + "\n")
     if diagnostics is not None:
         diagnostics.update(summarize_reward_groups(rewards, details, group_size))
         diagnostics["reward/function"] = reward_function_name
