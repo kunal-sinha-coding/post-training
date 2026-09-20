@@ -74,6 +74,32 @@ include_generic_arguments: true
 
 ------------------------------------------------------------------------
 
+SYNTHETIC REWARD DIRECTION CONTROL
+Experiment: grpo-mbpp-synthetic-direction-probe-g16
+Purpose: Test GRPO update direction with a known reward ranking independent of Python test scoring.
+Timestamp: 2026-09-20 UTC
+Git commit: 1954b90
+W&B project: kunal-personal/grpo-mbpp
+W&B run: tfx5zuj9
+Candidate artifact: outputs/grpo-mbpp-synthetic-direction-probe-g16/final
+Selection procedure: No candidate selection was performed. This was an optimizer control experiment.
+Data: Eight fixed disjoint MBPP training tasks, with no held-out benchmark claim.
+Configuration: Qwen/Qwen2.5-Coder-3B-Instruct, LoRA rank 16, bf16, learning rate 3e-6, four optimizer updates, 16 sampled completions per task group, one-sample microbatches, gradient accumulation 16, temperature 1.0, maximum completion length 2048, beta 0, and synthetic_reward_probe enabled.
+Synthetic reward: Within each 16-completion group, indices 0 through 7 received reward 1 and indices 8 through 15 received reward 0. The original sandbox score was retained as execution_reward in the trace.
+Trace artifact: outputs/grpo-mbpp-synthetic-direction-probe-g16/reward-trace.jsonl
+Metrics:
+  - 64 completion traces were recorded. Synthetic rewards were 32 ones and 32 zeros.
+  - W&B rewards/reward/mean was 0.5 on every update and reward/group_count was 1 with mixed_group_fraction 1.
+  - Advantage to log-probability delta correlation by update was [0.0362, 0.1246, 0.4761, 0.1300].
+  - Positive-advantage mean log-probability delta was [-0.000198, 0.000460, 0.000367, -0.000164].
+  - Negative-advantage mean log-probability delta was [-0.000339, -0.000366, -0.000364, -0.000442].
+  - Advantage sign alignment was [0.500, 0.563, 0.813, 0.500].
+  - Parameter update norms were [0.011856, 0.006866, 0.003642, 0.001704].
+Interpretation: The known reward produced the expected update direction strongly on update 3, but the four-update run was not consistently aligned. This weakens the claim that the earlier negative result was solely caused by test-reward noise, while leaving shared-parameter interference, small group count, and the decaying learning rate as live explanations.
+Limitation: Final merged-model vLLM evaluation did not run because only 6.46 GiB of 15.58 GiB GPU memory was free and vLLM required 14.02 GiB at its configured utilization. This control has no held-out evaluation result.
+
+------------------------------------------------------------------------
+
 ## Experiment: reward scoring and update direction probe, v4
 
 Status: completed GRPO updates; final post-training reload failed from CUDA out of memory after the step-eight evaluation artifact was written.
@@ -12325,6 +12351,104 @@ fp16: false
 report_to: wandb
 wandb_project: grpo-mbpp
 wandb_run_name: grpo-mbpp-reward-direction-probe-g16-v4
+reward_function: hybrid
+reward_coefficient: 0.5
+reward_rolling_window: 10
+
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-20 14:28:27 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-0
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 14:29:52 PDT
+Git commit: 1954b90
+Change description: 1954b90 Add synthetic reward direction control
+a410dda Record reward direction probe results
+Metrics:
+{
+  "average_reward": 0.75,
+  "examples": 8,
+  "pass_at_1": 0.625,
+  "repeated_completion_fraction": 0.0,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.625,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.75,
+  "status_counts": {
+    "failed": 1,
+    "partial": 2,
+    "passed": 5
+  },
+  "successful_examples": 5,
+  "tests_pass_fraction": 0.75,
+  "unique_completion_rate": 1.0
+}
+YAML path: configs/reward_direction_probe.yaml
+YAML contents:
+# This configuration runs one 16-generation GRPO update and records reward and likelihood direction diagnostics.
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 8
+max_eval_samples: null
+train_subset_evaluation_only: true
+run_baseline_evaluation: false
+reuse_baseline: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: false
+evalplus_eval_steps: 8
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/grpo-mbpp-synthetic-direction-probe-g16
+reward_trace_path: outputs/grpo-mbpp-synthetic-direction-probe-g16/reward-trace.jsonl
+synthetic_reward_probe: true
+probe_update_direction: true
+temperature: 1.0
+num_train_epochs: 1
+max_steps: 4
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 16
+generation_batch_size: 16
+learning_rate: 0.000003
+num_generations: 16
+beta: 0.0
+max_prompt_length: 512
+max_completion_length: 2048
+logging_steps: 1
+save_steps: 1
+eval_steps: 1
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 0
+evaluation_batch_size: 8
+evaluation_num_completions: 1
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: grpo-mbpp-synthetic-direction-probe-g16
 reward_function: hybrid
 reward_coefficient: 0.5
 reward_rolling_window: 10
