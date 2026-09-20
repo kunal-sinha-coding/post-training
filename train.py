@@ -214,17 +214,17 @@ def load_cached_evaluation(output_dir: Path, name: str) -> tuple[dict[str, Any],
 
 def _make_reward(config: dict[str, Any]):
     """Bind sandbox configuration to the TRL reward-function contract."""
-    # Resolve the sandbox timeout once for the reward closure.
+    # Resolve the sandbox timeout and reward selection once for the reward closure.
     timeout = float(config.get("sandbox_timeout_seconds", 3))
+    reward_function_name = str(config.get("reward_function", "test_pass"))
+    reward_coefficient = float(config.get("reward_coefficient", 0.5))
 
     def reward(completions: list[object], test_code: list[str], **kwargs: object) -> list[float]:
         """Score the current GRPO completion batch."""
         # Share reward diagnostics with the training callback for W&B and local logs.
         diagnostics: dict[str, float] = {}
-        # Keep the proven dense reward mixture fixed throughout training.
-        pass_weight = float(config.get("pass_weight", 0.5))
         append_training_step_samples(config.get("log_path", "logs/logs.txt"), completions)
-        rewards = reward_function(completions, test_code, timeout, diagnostics=diagnostics, group_size=int(config.get("num_generations", 4)), pass_weight=pass_weight, **kwargs)
+        rewards = reward_function(completions, test_code, timeout, diagnostics=diagnostics, group_size=int(config.get("num_generations", 4)), reward_function_name=reward_function_name, reward_coefficient=reward_coefficient, **kwargs)
         # Record the number of hidden assertions exercised by this reward batch.
         synthetic_counts = kwargs.get("synthetic_test_count", [])
         if isinstance(synthetic_counts, list) and synthetic_counts:

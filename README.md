@@ -27,7 +27,7 @@ Candidate selection must not use the ground-truth answer for the task being eval
 
 ## Data and reward
 
-`data.py` loads every example from the official MBPP train, validation, and test splits. It excludes all 399 task IDs used by the installed canonical EvalPlus MBPP runner, leaving 572 training examples. The optional Hugging Face EvalPlus dataset has 378 tasks and is a subset of the canonical benchmark. `sandbox.py` executes each generated candidate in a timed isolated-mode subprocess. Training reward measures the fraction of original MBPP tests passed. The canonical MBPP+ evaluation uses the full augmented tests.
+`data.py` loads every example from the official MBPP train, validation, and test splits. It excludes all 399 task IDs used by the installed canonical EvalPlus MBPP runner, leaving 572 training examples. The optional Hugging Face EvalPlus dataset has 378 tasks and is a subset of the canonical benchmark. `sandbox.py` executes each generated candidate in a timed isolated-mode subprocess. The `reward_function` setting selects `test_pass`, which rewards the fraction of original MBPP tests passed, or `hybrid`, which combines that fraction with a binary full-pass reward using `reward_coefficient`. The canonical MBPP+ evaluation uses the full augmented tests.
 
 W&B logging is enabled by default. TRL logs reward, reward variance, loss, gradient norm, entropy, completion lengths, clipping, token counts, learning rate, and step time. The project additionally logs baseline, checkpoint, and final pass@1, average reward, and execution status counts to W&B. Baseline evaluation runs before training, checkpoint evaluation runs on saves, and final evaluation runs after training.
 

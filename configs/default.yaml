@@ -52,7 +52,8 @@ eval_steps: 10
 evaluation_num_completions: 20
 evaluation_temperature: 0.2
 evaluation_top_p: 0.95
-pass_weight: 0.5
+reward_function: test_pass
+reward_coefficient: 0.5
 sandbox_timeout_seconds: 3
 trust_remote_code: false
 bf16: true

@@ -266,7 +266,7 @@ def evaluate_texts(completions: list[str], records: list[dict[str, Any]], timeou
             executed_completion = ""
 
         # Reuse the training scorer so average reward has identical semantics.
-        reward, score_details = score_completion(completion, record["test_code"], timeout_seconds, pass_weight)
+        reward, score_details = score_completion(completion, record["test_code"], timeout_seconds, reward_function="test_pass")
         passed = score_details["status"] == "passed"
         details.append({"task_id": record.get("task_id"), "raw_completion": completion, "completion": executed_completion, "reward": reward, "passed": passed, **score_details})
     append_evaluation_log(log_path, evaluation_name, records, details, completions)
@@ -477,7 +477,7 @@ def evaluate_model(model: Any, tokenizer: Any, dataset: Any, config: dict[str, A
                     completion = tokenizer.decode(output[0, prompt_width:], skip_special_tokens=True)
                     retry_info = _wrong_arity(completion, record["test_code"])
                     # Retry malformed or failing completions when configured to do so.
-                    _, completion_details = score_completion(completion, record["test_code"], float(config.get("sandbox_timeout_seconds", 3)), float(config.get("pass_weight", 0.5)))
+                    _, completion_details = score_completion(completion, record["test_code"], float(config.get("sandbox_timeout_seconds", 3)), reward_function="test_pass")
                     if (retry_info is None and completion_details["status"] == "passed") or attempt >= max_retries:
                         break
                     if retry_info is not None:

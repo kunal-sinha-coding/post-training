@@ -6,21 +6,23 @@ import train
 
 
 def test_reward_stays_dense(monkeypatch, tmp_path):
-    """Pass zero binary weight to the sandbox at every training step."""
+    """Pass the configured reward selection to the sandbox at every training step."""
     captured = {}
 
     # Capture the pass weight without executing candidate code.
     def fake_reward_function(completions, test_code, timeout, **kwargs):
         """Return a fixed reward after recording the configured pass weight."""
         del completions, test_code, timeout
-        captured["pass_weight"] = kwargs["pass_weight"]
+        captured["reward_function_name"] = kwargs["reward_function_name"]
+        captured["reward_coefficient"] = kwargs["reward_coefficient"]
         return [0.0]
 
     monkeypatch.setattr(train, "reward_function", fake_reward_function)
     reward = train._make_reward({"log_path": str(tmp_path / "logs.txt"), "num_generations": 1})
     reward(["completion"], ["assert solve() == 1"])
 
-    assert captured["pass_weight"] == 0.5
+    assert captured["reward_function_name"] == "test_pass"
+    assert captured["reward_coefficient"] == 0.5
 
 
 class FakeModel:

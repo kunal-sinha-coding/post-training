@@ -15,6 +15,7 @@ import sys
 import tempfile
 from dataclasses import asdict, dataclass
 from pathlib import Path
+from typing import Any
 
 
 OUTPUT_FORMAT_ERROR = "Did not follow proper output formatting"
@@ -22,7 +23,8 @@ OUTPUT_FORMAT_ERROR = "Did not follow proper output formatting"
 THINK_TAGS = ["<think>", "</think>"]
 INTERFACE_IGNORED_NAMES = {"bool", "float", "int", "len", "list", "print", "set", "sorted", "str", "sum", "tuple"}
 DENSE_REWARD_WEIGHTS = {"format": 0.05, "syntax": 0.10, "interface": 0.05, "tests": 0.80}
-DEFAULT_PASS_WEIGHT = 0.5
+DEFAULT_REWARD_FUNCTION = "test_pass"
+DEFAULT_REWARD_COEFFICIENT = 0.5
 QWEN_EVALPLUS_STOP_STRINGS = ("<|endoftext|>", "<|endofmask|>", "</s>", "\nif __name__", "\ndef main(", "\nprint(", "\n#", "```")
 
 
@@ -161,10 +163,14 @@ def validate_interface(code: str, tests: str) -> bool:
     return not function.args.vararg and not function.args.kwarg and positional_count == next(iter(expected_arities))
 
 
-def score_completion(completion: str, tests: str, timeout_seconds: float = 3.0, pass_weight: float = DEFAULT_PASS_WEIGHT) -> tuple[float, dict[str, object]]:
-    """Return test-pass fraction reward and diagnostics for one completion."""
-    # Keep diagnostic components explicit while assigning reward only to passed-test progress.
+def score_completion(completion: str, tests: str, timeout_seconds: float = 3.0, reward_function: str = DEFAULT_REWARD_FUNCTION, reward_coefficient: float = DEFAULT_REWARD_COEFFICIENT) -> tuple[float, dict[str, object]]:
+    """Return the configured reward and diagnostics for one completion."""
+    # Keep partial progress and complete correctness visible before selecting the scalar reward.
     components = {"format": 0.0, "syntax": 0.0, "interface": 0.0, "tests": 0.0, "pass": 0.0}
+    if reward_function not in {"test_pass", "hybrid"}:
+        raise ValueError("reward_function must be 'test_pass' or 'hybrid'.")
+    if not 0.0 <= reward_coefficient <= 1.0:
+        raise ValueError("reward_coefficient must be between zero and one.")
     try:
         code = extract_code(completion)
     except ValueError:
@@ -179,7 +185,8 @@ def score_completion(completion: str, tests: str, timeout_seconds: float = 3.0, 
     fraction = passed / total if total else 0.0
     components["tests"] = fraction
     status = "passed" if passed == total else "partial" if passed else "failed"
-    reward = sum(components.values())
+    components["pass"] = float(passed == total and total > 0)
+    reward = fraction if reward_function == "test_pass" else reward_coefficient * components["pass"] + (1.0 - reward_coefficient) * fraction
     return reward, {"status": status, "passed_tests": passed, "total_tests": total, "interface_valid": interface_valid, "reward_components": components}
 
 
@@ -233,9 +240,9 @@ def summarize_reward_groups(rewards: list[float], details: list[dict[str, object
     return diagnostics
 
 
-def reward_function(completions: list[object], test_code: list[str], sandbox_timeout_seconds: float = 3.0, diagnostics: dict[str, float] | None = None, group_size: int = 4, pass_weight: float = DEFAULT_PASS_WEIGHT, **_: object) -> list[float]:
-    """Score a GRPO batch with only the fraction of passed tests as reward."""
-    # Record candidate outcomes so test-pass reward variation remains visible during training.
+def reward_function(completions: list[object], test_code: list[str], sandbox_timeout_seconds: float = 3.0, diagnostics: dict[str, Any] | None = None, group_size: int = 4, reward_function_name: str = DEFAULT_REWARD_FUNCTION, reward_coefficient: float = DEFAULT_REWARD_COEFFICIENT, **_: object) -> list[float]:
+    """Score a GRPO batch with the configured test-pass or hybrid reward."""
+    # Record candidate outcomes so reward variation remains visible during training.
     rewards: list[float] = []
     details: list[dict[str, object]] = []
     for completion, tests in zip(completions, test_code):
@@ -245,11 +252,11 @@ def reward_function(completions: list[object], test_code: list[str], sandbox_tim
             text = str(completion.get("content", completion.get("text", "")))
         else:
             text = str(completion)
-        reward, detail = score_completion(wrap_qwen_continuation(truncate_qwen_completion(text)), tests, sandbox_timeout_seconds, pass_weight)
+        reward, detail = score_completion(wrap_qwen_continuation(truncate_qwen_completion(text)), tests, sandbox_timeout_seconds, reward_function_name, reward_coefficient)
         rewards.append(reward)
         details.append(detail)
     if diagnostics is not None:
         diagnostics.update(summarize_reward_groups(rewards, details, group_size))
-        diagnostics["reward/pass_weight"] = 0.0
-        diagnostics["reward/dense_weight"] = 1.0
+        diagnostics["reward/function"] = reward_function_name
+        diagnostics["reward/coefficient"] = reward_coefficient
     return rewards

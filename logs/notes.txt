@@ -2082,3 +2082,9 @@ W&B run divine-disco-69 (buaj3il3), learning rate 1e-6, showed a rolling reward 
 ## 2026-09-20: Add per-test evaluation metrics
 
 Added checkpoint metrics for training MBPP pass@1 and the fraction of all original MBPP tests passed. Canonical EvalPlus checkpoint metrics now also include the fraction of all base tests passed and the fraction of all base plus augmented tests passed, alongside their existing task-level pass@1 values. Detailed EvalPlus test results are enabled so per-test fractions can be calculated from the official failure lists. The current training process was left running; these metrics apply to the next run.
+
+## 2026-09-20: Make the GRPO reward configurable
+
+Preserved the existing fractional test-pass reward under the `test_pass` setting and added a `hybrid` setting. The hybrid reward is `reward_coefficient * binary_full_pass + (1 - reward_coefficient) * test_fraction`. The default remains `test_pass`, and the config sets `reward_coefficient` to 0.5 for a future hybrid run. The current run was not interrupted.
+
+Evaluation scoring remains fractional and independent of the training reward selection, so existing pass@1 and test-fraction evaluation metrics retain their previous meaning.

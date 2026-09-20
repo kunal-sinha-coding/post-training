@@ -47,18 +47,19 @@ def test_dense_reward_counts_partial_assertion_progress():
     assert detail["reward_components"] == {"format": 0.0, "syntax": 0.0, "interface": 0.0, "tests": 0.5, "pass": 0.0}
 
 
-def test_pass_weight_suppresses_partial_reward_but_preserves_full_pass():
-    """Blend late rewards toward the binary pass objective."""
+def test_hybrid_reward_weights_full_pass_and_partial_progress():
+    """Blend the binary full-pass reward with partial test progress."""
     completions = [
         "```python\ndef add(a, b):\n    return a + b\n```",
         "```python\ndef add(a, b):\n    return a + b\n```",
     ]
     tests = ["assert add(1, 2) == 3\nassert add(1, 2) == 4", "assert add(1, 2) == 3"]
     diagnostics = {}
-    rewards = reward_function(completions, tests, diagnostics=diagnostics, group_size=2, pass_weight=0.9)
-    assert rewards == pytest.approx([0.5, 1.0])
-    assert diagnostics["reward/pass_weight"] == 0.0
-    assert diagnostics["reward/pass/mean"] == pytest.approx(0.0)
+    rewards = reward_function(completions, tests, diagnostics=diagnostics, group_size=2, reward_function_name="hybrid", reward_coefficient=0.5)
+    assert rewards == pytest.approx([0.25, 1.0])
+    assert diagnostics["reward/function"] == "hybrid"
+    assert diagnostics["reward/coefficient"] == 0.5
+    assert diagnostics["reward/pass/mean"] == pytest.approx(0.5)
 
 
 def test_interface_validation_checks_name_and_arity():
