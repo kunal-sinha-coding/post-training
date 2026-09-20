@@ -2120,3 +2120,7 @@ Added `experiments/compare_repeated_sampling.py` to compare the base Qwen2.5-Cod
 ## 2026-09-20: Complete repeated sampling comparison
 
 Ran the fixed 32-task, 16-samples-per-task comparison between the base model and the saved step 50 adapter. The adapter improved sampled full-pass rate by 0.39 percentage points and mean test fraction by 0.33 points, while reward flatness and completion uniqueness were unchanged. This is a small result within sampling uncertainty and does not establish meaningful improvement.
+
+## Tiny fixed-set GRPO overfit diagnostic setup
+
+Prepared commit `tiny-overfit-g16` for the next controlled experiment. The new `configs/tiny_overfit.yaml` selects the first eight records from the disjoint MBPP training set, uses Qwen2.5-Coder-3B-Instruct with LoRA and the existing hybrid reward, and requests 16 GRPO generations per prompt. The run uses `generation_batch_size: 64`, 32 gradient accumulation steps, a maximum of 50 optimizer steps, and 2048 token completions. It disables the 399 task EvalPlus evaluation and all overall baseline evaluation. Step zero, every five optimizer steps, and the final model are evaluated with the same vLLM greedy generation and original MBPP test scorer on exactly those eight training tasks. Intermediate best adapter selection uses this tiny-set pass@1. This is an overfit diagnostic, so its pass@1 is not a held-out benchmark result.

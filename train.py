@@ -407,7 +407,7 @@ def _make_callback(model: Any, tokenizer: Any, train_dataset: Any, test_dataset:
             return control
 
         def on_step_end(self, args: Any, state: Any, control: Any, **_: Any) -> Any:
-            """Run the official EvalPlus benchmark at each configured training step interval."""
+            """Run the configured checkpoint evaluation at each training step interval."""
             # Skip official evaluations when the step schedule is disabled.
             if int(config.get("evalplus_eval_steps", 10)) <= 0:
                 return control
@@ -425,31 +425,43 @@ def _make_callback(model: Any, tokenizer: Any, train_dataset: Any, test_dataset:
                 import torch
                 torch.cuda.empty_cache()
                 try:
-                    evalplus_result = run_qwen_evalplus(model_path, Path(args.output_dir), name)
-                    # Evaluate the same checkpoint on every disjoint MBPP training task.
-                    training_result = evaluate_training_mbpp(model_path, train_dataset, config, f"training-{name}")
-                    evalplus_result["metrics"] = merge_training_metrics(evalplus_result["metrics"], training_result["metrics"])
+                    if config.get("train_subset_evaluation_only", False):
+                        # Evaluate only the fixed tiny training set for the overfit diagnostic.
+                        training_result = evaluate_training_mbpp(model_path, train_dataset, config, f"training-{name}")
+                        evalplus_result = {"metrics": training_result["metrics"]}
+                        evaluation_log_name = f"training-{name}"
+                        selection_metric = float(training_result["metrics"].get("pass_at_1", float("-inf")))
+                    else:
+                        # Run the canonical EvalPlus benchmark and add the disjoint training metrics.
+                        evalplus_result = run_qwen_evalplus(model_path, Path(args.output_dir), name)
+                        training_result = evaluate_training_mbpp(model_path, train_dataset, config, f"training-{name}")
+                        evalplus_result["metrics"] = merge_training_metrics(evalplus_result["metrics"], training_result["metrics"])
+                        evaluation_log_name = f"evalplus-{name}"
+                        selection_metric = float(evalplus_result["metrics"].get("mbpp_plus_pass_at_1", float("-inf")))
                     save_evaluation(args.output_dir, f"training-{name}", training_result["metrics"], training_result["details"], config)
-                    # Retain this adapter only when its MBPP+ score improves on the best policy.
-                    mbpp_plus_score = evalplus_result["metrics"].get("mbpp_plus_pass_at_1")
-                    if isinstance(mbpp_plus_score, (int, float)) and mbpp_plus_score > self.best_evalplus_mbpp_plus:
+                    # Retain this adapter only when its configured evaluation metric improves.
+                    best_metric = self.best_metric if config.get("train_subset_evaluation_only", False) else self.best_evalplus_mbpp_plus
+                    if selection_metric > best_metric:
                         best_dir = Path(args.output_dir) / "best_checkpoints" / name
                         if best_dir.exists():
                             shutil.rmtree(best_dir)
                         best_dir.parent.mkdir(parents=True, exist_ok=True)
                         shutil.copytree(model_path, best_dir)
-                        self.best_evalplus_mbpp_plus = float(mbpp_plus_score)
-                        config["_best_evalplus_mbpp_plus"] = self.best_evalplus_mbpp_plus
+                        if config.get("train_subset_evaluation_only", False):
+                            self.best_metric = selection_metric
+                        else:
+                            self.best_evalplus_mbpp_plus = selection_metric
+                            config["_best_evalplus_mbpp_plus"] = self.best_evalplus_mbpp_plus
                         self.best_checkpoint_path = best_dir
-                        print(f"Saved new best EvalPlus checkpoint at {best_dir} with MBPP+ pass@1={mbpp_plus_score:.3f}.", flush=True)
+                        print(f"Saved new best checkpoint at {best_dir} with pass@1={selection_metric:.3f}.", flush=True)
                     else:
-                        print(f"Discarded EvalPlus checkpoint at {model_path}; MBPP+ pass@1={mbpp_plus_score} did not exceed {self.best_evalplus_mbpp_plus:.3f}.", flush=True)
+                        print(f"Discarded checkpoint at {model_path}; pass@1={selection_metric:.3f} did not exceed {best_metric:.3f}.", flush=True)
                 finally:
                     evaluation_model.to(device or "cuda")
                     evaluation_model.train()
                     shutil.rmtree(model_path)
                 if wandb is not None and wandb.run is not None:
-                    log_evaluation(wandb, evalplus_result["metrics"], f"evalplus-{name}", state.global_step)
+                    log_evaluation(wandb, evalplus_result["metrics"], evaluation_log_name, state.global_step)
                 self.next_eval_step += int(config.get("evalplus_eval_steps", 10))
             return control
     return TrainingCallback()
@@ -613,25 +625,30 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
     _enable_generation_stop(model, tokenizer)
     model.to(device)
     print(f"Model device: {model.device}", flush=True)
-    # Run the canonical greedy EvalPlus sanity check before any optimization steps.
-    if config.get("run_qwen_evalplus_at_start", True):
+    # Run the selected greedy sanity check before any optimization steps.
+    if config.get("run_qwen_evalplus_at_start", True) or config.get("train_subset_evaluation_only", False):
         step_zero_path = output_dir / "evalplus_models" / "step-0"
         if step_zero_path.exists():
             shutil.rmtree(step_zero_path)
         step_zero_path.mkdir(parents=True, exist_ok=True)
         model.save_pretrained(step_zero_path)
         tokenizer.save_pretrained(step_zero_path)
-        print("Running step-zero greedy Qwen EvalPlus evaluation.", flush=True)
+        print("Running step-zero greedy evaluation.", flush=True)
         model.to("cpu")
         torch.cuda.empty_cache()
         try:
-            step_zero_result = run_qwen_evalplus(step_zero_path, output_dir, "step-0")
-            # Establish the matching greedy MBPP training-set baseline before optimization.
             training_result = evaluate_training_mbpp(step_zero_path, train_dataset, config, "training-step-0")
-            step_zero_result["metrics"] = merge_training_metrics(step_zero_result["metrics"], training_result["metrics"])
             save_evaluation(output_dir, "training-step-0", training_result["metrics"], training_result["details"], config)
-            config["_best_evalplus_mbpp_plus"] = step_zero_result["metrics"].get("mbpp_plus_pass_at_1", float("-inf"))
-            log_evaluation(wandb, step_zero_result["metrics"], "evalplus-step-0", 0)
+            if config.get("train_subset_evaluation_only", False):
+                # Use the tiny training pass rate as the checkpoint selection baseline.
+                config["_best_train_pass_at_1"] = training_result["metrics"].get("pass_at_1", float("-inf"))
+                log_evaluation(wandb, training_result["metrics"], "training-step-0", 0)
+            else:
+                # Run the canonical EvalPlus benchmark and merge the training baseline for normal runs.
+                step_zero_result = run_qwen_evalplus(step_zero_path, output_dir, "step-0")
+                step_zero_result["metrics"] = merge_training_metrics(step_zero_result["metrics"], training_result["metrics"])
+                config["_best_evalplus_mbpp_plus"] = step_zero_result["metrics"].get("mbpp_plus_pass_at_1", float("-inf"))
+                log_evaluation(wandb, step_zero_result["metrics"], "evalplus-step-0", 0)
         finally:
             model.to(device)
         shutil.rmtree(step_zero_path)
@@ -675,6 +692,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         per_device_train_batch_size=int(config["per_device_train_batch_size"]),
         gradient_accumulation_steps=int(config["gradient_accumulation_steps"]),
         num_generations=int(config["num_generations"]),
+        generation_batch_size=int(config["generation_batch_size"]) if config.get("generation_batch_size") else None,
         max_completion_length=int(config["max_completion_length"]),
         beta=float(config.get("beta", 0.0)),
         logging_steps=int(config["logging_steps"]),
@@ -689,7 +707,8 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         seed=int(config.get("seed", 42)),
     )
     # Build the GRPO callback and trainer.
-    training_callback = _make_callback(model, tokenizer, train_dataset, eval_dataset, config, wandb, device)
+    evaluation_dataset = train_dataset if config.get("train_subset_evaluation_only", False) else eval_dataset
+    training_callback = _make_callback(model, tokenizer, train_dataset, evaluation_dataset, config, wandb, device)
     callbacks = [training_callback]
     print(f"Intermediate evaluations enabled: {bool(callbacks)}", flush=True)
     trainer = GRPOTrainer(
@@ -726,7 +745,13 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         trainer.model = model
     # Save and evaluate the final selected model.
     trainer.save_model(str(output_dir / "final"))
-    final_metrics, final_details = evaluate_model(model, tokenizer, eval_dataset, config, "final")
+    if config.get("train_subset_evaluation_only", False):
+        # Evaluate the final policy only on the fixed tiny training set.
+        final_result = evaluate_training_mbpp(output_dir / "final", train_dataset, config, "training-final")
+        final_metrics, final_details = final_result["metrics"], final_result["details"]
+    else:
+        # Evaluate normal runs on the canonical EvalPlus evaluation set.
+        final_metrics, final_details = evaluate_model(model, tokenizer, eval_dataset, config, "final")
     config["training_context"] = "best-checkpoint-final" if best_checkpoint_path is not None else "final"
     config["_evaluation_epoch"] = trainer.state.epoch
     save_evaluation(output_dir, "final", final_metrics, final_details, config)
