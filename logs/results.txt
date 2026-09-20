@@ -11283,3 +11283,17 @@ wandb_run_name: null
 Compared the saved step 0 and step 520 generations for W&B run `cool-fog-74` (`dizijcbf`) task by task. Training changed 22 of 572 tasks: 7 newly full passing, 5 full-pass regressions, 7 partial improvements, and 3 partial regressions. Eval MBPP changed 12 of 399 tasks: 5 newly passing and 7 regressions. Eval MBPP+ changed 8 of 399 tasks: 5 newly passing and 3 regressions. The complete per-task records and both saved completions are in `outputs/grpo-mbpp-canonical-split-hybrid-lr3e6/step-0-vs-520-comparison.json`.
 
 The task-level evidence shows real semantic changes, including a corrected bitonic subsequence sum and a print-to-return fix, alongside regressions involving tuple versus list output and an off-by-one slice. The result supports task churn rather than broad improvement. The comparison used the full training and evaluation denominators and kept candidate selection independent of the reported evaluation measurements.
+
+## 2026-09-20: Repeated sampled completions for base versus step 50 adapter
+
+Experiment: `repeated-sampling-base-vs-step50`. Purpose: test whether the trained adapter improves sampled solution quality on fixed training prompts even when greedy checkpoint evaluation is flat.
+
+Setup: selected 32 of the 572 disjoint MBPP training tasks with seed 42. Generated 16 completions per task for both `Qwen/Qwen2.5-Coder-3B-Instruct` and `outputs/grpo-mbpp-canonical-split-hybrid-lr3e6/best_checkpoints/step-50`. Both models used the same canonical training prompts, temperature 1.0, top-p 1.0, 2,048 maximum tokens, and seed 42. Each completion was scored against the original MBPP tests with the hybrid reward coefficient 0.5. Candidate selection was independent of evaluation ground truth.
+
+Results over 512 completions per model: mean hybrid reward was `0.519857` for the base and `0.523438` for the adapter, mean test fraction was `0.545573` and `0.548828`, full-pass fraction was `0.494141` and `0.498047`, and zero-test fraction was `0.402344` and `0.392578`. The adapter change was therefore +0.003581 reward, +0.003255 test fraction, +0.003906 full-pass fraction, and -0.009766 zero-test fraction.
+
+Diversity results over 32 task groups of 16 samples were identical for both models: flat reward group fraction `0.15625`, flat test-fraction group fraction `0.15625`, and mean unique completion fraction `0.992188`. The full-pass count histogram changed, but the aggregate difference was two completions and is within the sampling uncertainty of 512 completions.
+
+Conclusion: the adapter did not show a meaningful improvement in sampled behavior on this fixed subset. It also did not reduce completion diversity. The results support the earlier conclusion that the trained policy is only slightly different from the base model.
+
+Artifact: `outputs/grpo-mbpp-canonical-split-hybrid-lr3e6/repeated-sampling-step50-vs-base.json`.

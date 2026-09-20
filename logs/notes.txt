@@ -2116,3 +2116,7 @@ Confirmed that TRL already logs reward standard deviation, zero-variance group f
 ## 2026-09-20: Add repeated sampling comparison experiment
 
 Added `experiments/compare_repeated_sampling.py` to compare the base Qwen2.5-Coder-3B model with a saved LoRA checkpoint on a fixed training-task subset. The script uses identical prompts, temperature sampling, 2,048-token completions, repeated samples, original MBPP scoring, and per-task reward diversity metrics. The first inline execution reached base generation but failed during adapter vLLM worker startup because vLLM cannot spawn from stdin, so the standalone script is used for the rerun.
+
+## 2026-09-20: Complete repeated sampling comparison
+
+Ran the fixed 32-task, 16-samples-per-task comparison between the base model and the saved step 50 adapter. The adapter improved sampled full-pass rate by 0.39 percentage points and mean test fraction by 0.33 points, while reward flatness and completion uniqueness were unchanged. This is a small result within sampling uncertainty and does not establish meaningful improvement.
