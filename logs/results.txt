@@ -5827,3 +5827,5453 @@ SELECTION: Best checkpoint was selected by canonical MBPP+ pass@1 after each ten
 METRICS: Prior W&B rolling reward was approximately 0.671 at step 20, 0.489 at step 39, and 0.534 at step 47. Canonical step-zero base pass was 294/399 and MBPP+ pass was 245/399. Step-40 base pass was 293/399 and MBPP+ pass was 249/399. Among the 21 leaked tasks, MBPP+ pass was 10/21 at both steps; among the other 378, it was 235/378 at step 0 and 239/378 at step 40. The clean partition regression test passed, and actual dataset preparation returned 572 training records with zero canonical overlap.
 ARTIFACTS: outputs/grpo-mbpp/evalplus/step-0 and step-40 contain prior result JSON. The corrected run uses outputs/grpo-mbpp-canonical-split-lr3e6. Code is the commit named Correct canonical EvalPlus task exclusion and isolate the 3e-6 GRPO run.
 LIMITATIONS: The old training run had benchmark contamination. Rolling rewards use changing task batches and cannot by themselves establish policy degradation. The small four-task MBPP+ gain is within a low-resolution 399-task comparison, and the 3e-6 replacement had not produced outcomes at the time of this record.
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-19 16:01:34 PDT
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-19 17:32:23 PDT
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-19 17:50:32 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-0
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-19 17:54:13 PDT
+Git commit: 16ccaa8
+Change description: 16ccaa8 Use vLLM for training-set checkpoint evaluation
+b86cd65 Isolate hybrid reward training artifacts
+0d53f16 Switch GRPO run to hybrid reward
+88d1560 Make GRPO reward selection configurable
+03ebf2a Add per-test checkpoint evaluation metrics
+5d2b5cf Correct canonical EvalPlus task exclusion and isolate the 3e-6 GRPO run
+9e1afdb Log LoRA updates and raise learning rate
+b0b734a Use PEFT trainer model for evaluations
+15baba7 Keep only EvalPlus improving checkpoints
+d7b46dc Evaluate and save every ten steps
+c197546 Save PEFT model for EvalPlus checkpoints
+e0a6f07 Log EvalPlus pass rates to W&B
+3b22b42 Pin TRL for vLLM compatibility
+6d9f543 Run EvalPlus through in-process vLLM
+a2e48b4 Add step zero EvalPlus sanity evaluation
+10c8a38 Align GRPO protocol with Qwen EvalPlus
+e251829 Match GRPO prompt and generation protocol
+0e79042 Fit GRPO with LoRA adapters
+204584c Evaluate GRPO quarterly with EvalPlus
+f64c427 Use Qwen2.5 Coder 3B for GRPO
+bcfe410 Partition MBPP training from EvalPlus
+cc0e408 Record official protocol Qwen rerun
+48441d6 Add official greedy Qwen evaluation runner
+696f92d Record ten generation pool comparison results
+105cfda Fix ten generation candidate execution
+f268616 Bound canonical references in pool analysis
+42c1578 Fix ten generation comparison filter loading
+4e7a128 Add ten generation pool comparison analysis
+db149f5 Add sequential visible assertion sampling runner
+e609ea0 Record cascade evaluation results
+43617b9 Handle benchmark evaluator timeouts
+c00b175 Bound adaptive benchmark reference evaluation
+1a4f106 Add simple Qwen cascade runner
+c4e7660 Record stopped adaptive evaluation
+1ac3c47 Add paired adaptive MBPP evaluation
+5fc1594 Record comparison aware focused rerun
+cb25850 Include value comparisons in retries
+41e5510 Fix adaptive assertion diagnostics
+73f531f Lower adaptive diagnosis temperature
+751d724 Improve adaptive failure diagnosis
+a4d0dfb Restore full adaptive diagnosis budget
+a5003ed Bound adaptive diagnosis outputs
+aa4afcb Log only confirmed adaptive failures
+3f6abfc Add diagnosis guided adaptive retries
+f09c139 Record ten adaptive failure traces
+aec22b0 Record adaptive traces in dedicated log
+4929d3e Trace ten adaptive initial failures live
+5e89cb2 Print adaptive repair outputs at breakpoints
+5cbbf2c Add adaptive first-failure debug tracing
+d22073f Add resumable adaptive full suite runner
+dc45e1f Record adaptive Qwen 3B pilot
+6b7cfd1 Merge verifier and adaptive generation experiments
+80b52ee Stop adaptive pilot on assertion pass
+3e6e684 Add adaptive assertion guided generation pilot
+b7b804e Record assertion filter confusion matrix
+261ce02 Correct assertion filter diagnosis
+8b8f114 Measure true assertion filter false negatives
+6ca301b Record survivor filtering diagnosis
+772d078 Fix typed inputs in survivor analysis
+50c89b0 Add bounded survivor correctness analysis
+69d9b09 Archive regenerated Qwen 3B candidates
+8e690ae Evaluate hidden tests only for selected candidate
+560662b Add durable Qwen candidate regeneration
+93dfe5c Apply likelihood tiebreaker after assertion filter
+c57f864 Store filtered Pass at K evaluator
+bde398a Measure filtered candidate Pass at K
+04f5323 Measure visible assertion candidate filtering
+6833611 Add visible assertion candidate filter
+4be6e65 Run Qwen 7B likelihood reranking experiments
+e4f8505 Handle missing likelihood scores
+ef07ce3 Add Qwen 7B likelihood reranker
+3959867 Run Qwen 7B answer prediction reranking
+9bb0a8e Measure Qwen 7B mixed-task accuracy
+5477ae5 Record Qwen 7B answer prediction results
+299c0e7 Store Qwen 3B reranking artifact
+e22d4da Run Qwen 3B answer prediction reranking
+0a98358 Normalize complex local predictions
+673b1cd Normalize local prediction containers
+bd46927 Parse Python literal answer values
+8aab5c9 Repair local answer response parsing
+56f5a2a Parse fenced local model answer arrays
+19be1d9 Record Qwen 3B prediction cohort metrics
+ece9b3c Record answer prediction cohort metrics
+5f403de Add answer prediction cohort analysis
+d159127 Add local model answer prediction evaluation
+5573374 Record GPT prediction reranking metrics
+4af2dc8 Add GPT prediction candidate reranker
+8775e69 Record full GPT test output predictions
+e3335e2 Handle unsupported canonical output types
+249abcf Use all stored standard base tests
+a818397 Add adaptive full test answer prediction
+7605c4f Invalidate leaked answer preview
+55d8910 Correct standard answer preview interpretation
+1021c30 Record LLM standard answer preview
+4ca76bc Fix typed output matching in preview
+b710207 Add standard test answer prediction preview
+dffefd3 Record LLM output verifier results
+e41c947 Record matched verifier baseline curves
+3377278 Parallelize cached LLM verifier calls
+d14a46f Support default temperature for verifier model
+bdc277f Add cached LLM output verifier experiment
+e028ca0 Record iterative verifier search conclusion
+de3e96a Fix robust verifier indexing
+51ed96f Correct verifier cluster candidate pool
+e60b139 Add iterative output verifier search
+283ba15 Record all-correct selection baseline
+4490c41 Record correctness cohort breakdown
+715e50f Add MBPP cluster comparison
+851259d Record all-task cluster comparison
+862cab6 Extend output clustering to all tasks
+4a8d1ed Record validated mixed-task output clusters
+3baf4a8 Restore EvalPlus input types for output clustering
+068e51d Implement continuation of incomplete output traces
+54a4e43 Resume output capture after bounded child timeouts
+98204ac Add reproducible output clustering diagnostic
+625c807 Record corrected reranking curves
+8486825 Correct MBPP plus filter definition
+2c92b37 Save full execution reranking table
+44cb7aa Record saved execution reranking results
+94729de Bound candidate execution scan
+180cab8 Fix execution harness import
+219b4e5 Fix execution runner argument handling
+f7425b4 Add saved execution reranking runner
+e4323a3 Record reranking artifact audit
+08d1113 Require reproducible experiment records
+215bb23 Document ground truth isolation for experiments
+b943dd6 Extend verifier outer loop to twenty cycles
+aa98b5c Fine-tune only top verifier layers
+7f3244f Use valid W&B termination state
+fd4e6e9 Resume verifier outer loop safely
+65108d9 Finalize W&B runs between verifier cycles
+548fc09 Add autonomous verifier fine-tuning loop
+8edc3b6 Balance verifier training classes
+4f444b2 Accept original exemplar records without source
+a39fe09 Remove legacy synthetic examples
+27a72cb Bound synthetic pipeline retries and cost
+9afe5ef Add batched synthetic generation pipeline
+79c37a0 Record target synthetic pass rates
+0415637 Reject synthetic exemplar drift
+c9295c0 Simplify synthetic task generation constraints
+cb1d1b1 Record exemplar synthetic preview results
+e8b36d2 Condition synthetic tasks on MBPP exemplar
+ac3c7dd Stream verifier metrics to W&B
+b18f566 Standardize verifier evaluation on EvalPlus
+49a56cc Remove obsolete 90-task evaluation artifacts
+dce5931 Save fresh exact MBPP ten-sample evaluation
+219a9c2 Reuse exact saved MBPP ranking candidates
+a8a485f Save fixed verifier ranking candidates
+cdb741f Add verifier-ranked Pass@K evaluation
+e192752 Load verifier audit metadata
+b627b5b Save synthetic verifier dataset
+d219ea2 Train verifier with one candidate per task
+9a3ada4 Bound synthetic labeling diagnostics
+21648c3 Fix synthetic candidate labeling
+3db3f0d Report task level verifier metrics
+b2fb728 Keep synthetic labels training only
+617e889 Fix batched Qwen padding
+9d392bd Adapt Qwen labeling batch size
+9c93757 Add synthetic candidate labeling runner
+e1e5c8e Bound synthetic generation requests
+7f218af Parallelize synthetic task generation
+7a0c85f Add synthetic task preview
+72adac8 Load dotenv for synthetic generation
+c0bf19a Add synthetic task cost tracker
+a58982d Train verifier on generated candidates
+f005250 Clarify verifier cycle metrics
+4739854 Record verifier improvement cycles
+621b4c7 Record verifier cycle four diagnosis
+1daff3a Add frozen CodeBERT verifier mode
+380162f Calibrate verifier classifier initialization
+2e2f04c Weight positive verifier examples
+e6efda0 Persist sandbox labeled verifier dataset
+a041c67 Persist verifier labels and monitor F1
+805d1e3 Parallelize verifier candidate labeling
+d73e9e9 Add quarter epoch verifier evaluation
+749c9a0 Add CodeBERT verifier training pipeline
+9d5e85a Enable CPU offload for Qwen 7B
+a2b9eee Fit Qwen 7B evaluator on 16 GiB GPU
+f16942a Lower vLLM memory reservation for Qwen 7B
+a3a6c78 Record Qwen 3B EvalPlus results
+57a3f1c Record Qwen 1.5B EvalPlus results
+5f9dbba Record GRPO checkpoint progress
+Metrics:
+{
+  "average_reward": 0.0,
+  "examples": 572,
+  "pass_at_1": 0.0,
+  "repeated_completion_fraction": 0.9982517482517482,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.0,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.0,
+  "status_counts": {
+    "format_error": 572
+  },
+  "successful_examples": 0,
+  "tests_pass_fraction": 0.0,
+  "unique_completion_rate": 0.0017482517482517483
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+
+## 2026-09-20: Retrospective for killed hybrid GRPO run
+
+Experiment: `cool-fog-74` (`dizijcbf`). Purpose: determine whether hybrid GRPO improved the Qwen2.5-Coder-3B model on the clean 572-task MBPP training split and the separate 399-task canonical EvalPlus MBPP evaluation split.
+
+Setup: LoRA GRPO with `learning_rate: 3e-6`, `num_train_epochs: 10`, `per_device_train_batch_size: 1`, `num_generations: 4`, hybrid reward coefficient 0.5, vLLM evaluation, greedy 2,048-token evaluation generations, and evaluation every 10 optimizer steps. Training used original MBPP tests. Evaluation used canonical MBPP and MBPP+ tests. W&B run: `kunal-personal/grpo-mbpp/dizijcbf`. Output directory: `outputs/grpo-mbpp-canonical-split-hybrid-lr3e6`.
+
+Evaluation metrics at step 0 and the final recorded evaluation step 520 were: training pass@1 `0.6294` to `0.6329`, training test fraction `0.6871` to `0.6935`, evaluation MBPP pass@1 `0.737` to `0.732`, evaluation MBPP test fraction `0.7791` to `0.7743`, evaluation MBPP+ pass@1 `0.614` to `0.619`, and evaluation MBPP+ test fraction `0.7700` to `0.7703`.
+
+Training batch metrics were noisy. The final W&B summary reported reward `0.6510`, test progress `0.6771`, full-pass fraction `0.6250`, all-zero fraction `0.2813`, rolling reward `0.5813`, loss `0.0314`, gradient norm `0.0387`, parameter update norm `0.001288`, and relative parameter update `0.0000351`.
+
+Conclusion: this run did not demonstrate a reliable benchmark improvement. MBPP+ pass@1 rose by two tasks from 245/399 to 247/399 at the final checkpoint, while MBPP pass@1 fell by two tasks. The changes are within the expected discrete sampling noise. The run was killed after evaluation step 520. Candidate selection was not performed from the evaluation metrics.
+
+Limitations: the run summary omitted the reward configuration fields, although the launched output directory and prior configuration identify this as the hybrid run. The final recorded checkpoint was not saved as a selected best checkpoint because no benchmark improvement was established.
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-19 17:58:47 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-0
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-19 18:02:54 PDT
+Git commit: e695b6f
+Change description: e695b6f Fix vLLM training evaluation scoring and metrics
+Metrics:
+{
+  "average_reward": 0.6858974358974359,
+  "examples": 572,
+  "pass_at_1": 0.6293706293706294,
+  "repeated_completion_fraction": 0.005244755244755206,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6293706293706294,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6858974358974359,
+  "status_counts": {
+    "failed": 139,
+    "partial": 72,
+    "passed": 360,
+    "syntax_error": 1
+  },
+  "successful_examples": 360,
+  "tests_pass_fraction": 0.6870986573263281,
+  "unique_completion_rate": 0.9947552447552448
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-10
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-19 18:28:59 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6911421911421911,
+  "examples": 572,
+  "pass_at_1": 0.6346153846153846,
+  "repeated_completion_fraction": 0.005244755244755206,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6346153846153846,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6911421911421911,
+  "status_counts": {
+    "failed": 137,
+    "partial": 71,
+    "passed": 363,
+    "syntax_error": 1
+  },
+  "successful_examples": 363,
+  "tests_pass_fraction": 0.6923525977816696,
+  "unique_completion_rate": 0.9947552447552448
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-20
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-19 18:50:33 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.68997668997669,
+  "examples": 572,
+  "pass_at_1": 0.6311188811188811,
+  "repeated_completion_fraction": 0.005244755244755206,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6311188811188811,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.68997668997669,
+  "status_counts": {
+    "failed": 135,
+    "partial": 74,
+    "passed": 361,
+    "syntax_error": 2
+  },
+  "successful_examples": 361,
+  "tests_pass_fraction": 0.6923976608187135,
+  "unique_completion_rate": 0.9947552447552448
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-30
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-19 19:15:39 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6958041958041958,
+  "examples": 572,
+  "pass_at_1": 0.6381118881118881,
+  "repeated_completion_fraction": 0.0034965034965035446,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6381118881118881,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6958041958041958,
+  "status_counts": {
+    "failed": 133,
+    "partial": 73,
+    "passed": 365,
+    "syntax_error": 1
+  },
+  "successful_examples": 365,
+  "tests_pass_fraction": 0.6970227670753065,
+  "unique_completion_rate": 0.9965034965034965
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-40
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-19 19:35:02 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6940559440559441,
+  "examples": 572,
+  "pass_at_1": 0.6363636363636364,
+  "repeated_completion_fraction": 0.006993006993006978,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6363636363636364,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6940559440559441,
+  "status_counts": {
+    "failed": 134,
+    "partial": 73,
+    "passed": 364,
+    "syntax_error": 1
+  },
+  "successful_examples": 364,
+  "tests_pass_fraction": 0.6952714535901926,
+  "unique_completion_rate": 0.993006993006993
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-50
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-19 19:54:38 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6882284382284383,
+  "examples": 572,
+  "pass_at_1": 0.6276223776223776,
+  "repeated_completion_fraction": 0.005244755244755206,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6276223776223776,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6882284382284383,
+  "status_counts": {
+    "failed": 135,
+    "partial": 77,
+    "passed": 359,
+    "syntax_error": 1
+  },
+  "successful_examples": 359,
+  "tests_pass_fraction": 0.6894337419731466,
+  "unique_completion_rate": 0.9947552447552448
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-60
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-19 20:14:20 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6870629370629371,
+  "examples": 572,
+  "pass_at_1": 0.6293706293706294,
+  "repeated_completion_fraction": 0.0034965034965035446,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6293706293706294,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6870629370629371,
+  "status_counts": {
+    "failed": 137,
+    "partial": 73,
+    "passed": 360,
+    "syntax_error": 2
+  },
+  "successful_examples": 360,
+  "tests_pass_fraction": 0.6894736842105263,
+  "unique_completion_rate": 0.9965034965034965
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-70
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-19 20:32:54 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6923076923076923,
+  "examples": 572,
+  "pass_at_1": 0.6328671328671329,
+  "repeated_completion_fraction": 0.005244755244755206,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6328671328671329,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6923076923076923,
+  "status_counts": {
+    "failed": 133,
+    "partial": 76,
+    "passed": 362,
+    "syntax_error": 1
+  },
+  "successful_examples": 362,
+  "tests_pass_fraction": 0.6935201401050788,
+  "unique_completion_rate": 0.9947552447552448
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-80
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-19 20:51:52 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6858974358974359,
+  "examples": 572,
+  "pass_at_1": 0.6276223776223776,
+  "repeated_completion_fraction": 0.006993006993006978,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6276223776223776,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6858974358974359,
+  "status_counts": {
+    "failed": 138,
+    "partial": 74,
+    "passed": 359,
+    "syntax_error": 1
+  },
+  "successful_examples": 359,
+  "tests_pass_fraction": 0.6870986573263281,
+  "unique_completion_rate": 0.993006993006993
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-90
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-19 21:10:14 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6917249417249418,
+  "examples": 572,
+  "pass_at_1": 0.6346153846153846,
+  "repeated_completion_fraction": 0.005244755244755206,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6346153846153846,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6917249417249418,
+  "status_counts": {
+    "failed": 136,
+    "partial": 72,
+    "passed": 363,
+    "syntax_error": 1
+  },
+  "successful_examples": 363,
+  "tests_pass_fraction": 0.6929363689433742,
+  "unique_completion_rate": 0.9947552447552448
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-100
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-19 21:28:10 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6958041958041958,
+  "examples": 572,
+  "pass_at_1": 0.6398601398601399,
+  "repeated_completion_fraction": 0.005244755244755206,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6398601398601399,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6958041958041958,
+  "status_counts": {
+    "failed": 136,
+    "partial": 69,
+    "passed": 366,
+    "syntax_error": 1
+  },
+  "successful_examples": 366,
+  "tests_pass_fraction": 0.6970227670753065,
+  "unique_completion_rate": 0.9947552447552448
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-110
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-19 21:46:40 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6911421911421911,
+  "examples": 572,
+  "pass_at_1": 0.6328671328671329,
+  "repeated_completion_fraction": 0.006993006993006978,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6328671328671329,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6911421911421911,
+  "status_counts": {
+    "failed": 135,
+    "partial": 74,
+    "passed": 362,
+    "syntax_error": 1
+  },
+  "successful_examples": 362,
+  "tests_pass_fraction": 0.6923525977816696,
+  "unique_completion_rate": 0.993006993006993
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-120
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-19 22:13:39 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6940559440559441,
+  "examples": 572,
+  "pass_at_1": 0.6328671328671329,
+  "repeated_completion_fraction": 0.006993006993006978,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6328671328671329,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6940559440559441,
+  "status_counts": {
+    "failed": 130,
+    "partial": 78,
+    "passed": 362,
+    "syntax_error": 2
+  },
+  "successful_examples": 362,
+  "tests_pass_fraction": 0.6964912280701754,
+  "unique_completion_rate": 0.993006993006993
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-130
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-19 22:33:28 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6981351981351981,
+  "examples": 572,
+  "pass_at_1": 0.6363636363636364,
+  "repeated_completion_fraction": 0.006993006993006978,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6363636363636364,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6981351981351981,
+  "status_counts": {
+    "failed": 130,
+    "partial": 77,
+    "passed": 364,
+    "syntax_error": 1
+  },
+  "successful_examples": 364,
+  "tests_pass_fraction": 0.699357851722125,
+  "unique_completion_rate": 0.993006993006993
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-140
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-19 22:52:06 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6870629370629371,
+  "examples": 572,
+  "pass_at_1": 0.6293706293706294,
+  "repeated_completion_fraction": 0.006993006993006978,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6293706293706294,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6870629370629371,
+  "status_counts": {
+    "failed": 138,
+    "partial": 73,
+    "passed": 360,
+    "syntax_error": 1
+  },
+  "successful_examples": 360,
+  "tests_pass_fraction": 0.6882661996497373,
+  "unique_completion_rate": 0.993006993006993
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-150
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-19 23:09:44 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6858974358974359,
+  "examples": 572,
+  "pass_at_1": 0.6293706293706294,
+  "repeated_completion_fraction": 0.005244755244755206,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6293706293706294,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6858974358974359,
+  "status_counts": {
+    "failed": 140,
+    "partial": 71,
+    "passed": 360,
+    "syntax_error": 1
+  },
+  "successful_examples": 360,
+  "tests_pass_fraction": 0.6870986573263281,
+  "unique_completion_rate": 0.9947552447552448
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-160
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-19 23:30:22 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6911421911421911,
+  "examples": 572,
+  "pass_at_1": 0.6328671328671329,
+  "repeated_completion_fraction": 0.005244755244755206,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6328671328671329,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6911421911421911,
+  "status_counts": {
+    "failed": 136,
+    "partial": 73,
+    "passed": 362,
+    "syntax_error": 1
+  },
+  "successful_examples": 362,
+  "tests_pass_fraction": 0.6923525977816696,
+  "unique_completion_rate": 0.9947552447552448
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-170
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-19 23:49:19 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6946386946386947,
+  "examples": 572,
+  "pass_at_1": 0.6363636363636364,
+  "repeated_completion_fraction": 0.006993006993006978,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6363636363636364,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6946386946386947,
+  "status_counts": {
+    "failed": 134,
+    "partial": 73,
+    "passed": 364,
+    "syntax_error": 1
+  },
+  "successful_examples": 364,
+  "tests_pass_fraction": 0.6958552247518972,
+  "unique_completion_rate": 0.993006993006993
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-180
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 00:08:33 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6963869463869463,
+  "examples": 572,
+  "pass_at_1": 0.6416083916083916,
+  "repeated_completion_fraction": 0.005244755244755206,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6416083916083916,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6963869463869463,
+  "status_counts": {
+    "failed": 134,
+    "partial": 70,
+    "passed": 367,
+    "syntax_error": 1
+  },
+  "successful_examples": 367,
+  "tests_pass_fraction": 0.6976065382370111,
+  "unique_completion_rate": 0.9947552447552448
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-190
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 00:26:44 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6952214452214452,
+  "examples": 572,
+  "pass_at_1": 0.6346153846153846,
+  "repeated_completion_fraction": 0.006993006993006978,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6346153846153846,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6952214452214452,
+  "status_counts": {
+    "failed": 132,
+    "partial": 76,
+    "passed": 363,
+    "syntax_error": 1
+  },
+  "successful_examples": 363,
+  "tests_pass_fraction": 0.6964389959136019,
+  "unique_completion_rate": 0.993006993006993
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-200
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 00:46:23 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6998834498834499,
+  "examples": 572,
+  "pass_at_1": 0.6416083916083916,
+  "repeated_completion_fraction": 0.005244755244755206,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6416083916083916,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6998834498834499,
+  "status_counts": {
+    "failed": 132,
+    "partial": 73,
+    "passed": 367
+  },
+  "successful_examples": 367,
+  "tests_pass_fraction": 0.6998834498834499,
+  "unique_completion_rate": 0.9947552447552448
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-210
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 01:05:37 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6981351981351981,
+  "examples": 572,
+  "pass_at_1": 0.6398601398601399,
+  "repeated_completion_fraction": 0.005244755244755206,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6398601398601399,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6981351981351981,
+  "status_counts": {
+    "failed": 130,
+    "partial": 74,
+    "passed": 366,
+    "syntax_error": 2
+  },
+  "successful_examples": 366,
+  "tests_pass_fraction": 0.7005847953216374,
+  "unique_completion_rate": 0.9947552447552448
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-220
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 01:25:09 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6917249417249418,
+  "examples": 572,
+  "pass_at_1": 0.6346153846153846,
+  "repeated_completion_fraction": 0.005244755244755206,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6346153846153846,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6917249417249418,
+  "status_counts": {
+    "failed": 135,
+    "partial": 73,
+    "passed": 363,
+    "syntax_error": 1
+  },
+  "successful_examples": 363,
+  "tests_pass_fraction": 0.6929363689433742,
+  "unique_completion_rate": 0.9947552447552448
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-230
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 01:42:42 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6928904428904429,
+  "examples": 572,
+  "pass_at_1": 0.6328671328671329,
+  "repeated_completion_fraction": 0.005244755244755206,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6328671328671329,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6928904428904429,
+  "status_counts": {
+    "failed": 133,
+    "partial": 76,
+    "passed": 362,
+    "syntax_error": 1
+  },
+  "successful_examples": 362,
+  "tests_pass_fraction": 0.6941039112667834,
+  "unique_completion_rate": 0.9947552447552448
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-240
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 02:00:55 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6934731934731935,
+  "examples": 572,
+  "pass_at_1": 0.6346153846153846,
+  "repeated_completion_fraction": 0.005244755244755206,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6346153846153846,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6934731934731935,
+  "status_counts": {
+    "failed": 134,
+    "partial": 74,
+    "passed": 363,
+    "syntax_error": 1
+  },
+  "successful_examples": 363,
+  "tests_pass_fraction": 0.694687682428488,
+  "unique_completion_rate": 0.9947552447552448
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-250
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 02:19:38 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6952214452214452,
+  "examples": 572,
+  "pass_at_1": 0.6363636363636364,
+  "repeated_completion_fraction": 0.006993006993006978,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6363636363636364,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6952214452214452,
+  "status_counts": {
+    "failed": 133,
+    "partial": 74,
+    "passed": 364,
+    "syntax_error": 1
+  },
+  "successful_examples": 364,
+  "tests_pass_fraction": 0.6964389959136019,
+  "unique_completion_rate": 0.993006993006993
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-260
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 02:39:34 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6888111888111889,
+  "examples": 572,
+  "pass_at_1": 0.6311188811188811,
+  "repeated_completion_fraction": 0.006993006993006978,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6311188811188811,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6888111888111889,
+  "status_counts": {
+    "failed": 136,
+    "partial": 74,
+    "passed": 361,
+    "syntax_error": 1
+  },
+  "successful_examples": 361,
+  "tests_pass_fraction": 0.6900175131348512,
+  "unique_completion_rate": 0.993006993006993
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-270
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 03:01:38 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6940559440559441,
+  "examples": 572,
+  "pass_at_1": 0.6363636363636364,
+  "repeated_completion_fraction": 0.006993006993006978,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6363636363636364,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6940559440559441,
+  "status_counts": {
+    "failed": 132,
+    "partial": 75,
+    "passed": 364,
+    "syntax_error": 1
+  },
+  "successful_examples": 364,
+  "tests_pass_fraction": 0.6952714535901926,
+  "unique_completion_rate": 0.993006993006993
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-280
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 03:19:58 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6893939393939393,
+  "examples": 572,
+  "pass_at_1": 0.6311188811188811,
+  "repeated_completion_fraction": 0.006993006993006978,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6311188811188811,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6893939393939393,
+  "status_counts": {
+    "failed": 137,
+    "partial": 73,
+    "passed": 361,
+    "syntax_error": 1
+  },
+  "successful_examples": 361,
+  "tests_pass_fraction": 0.6906012842965558,
+  "unique_completion_rate": 0.993006993006993
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-290
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 03:37:23 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6958041958041958,
+  "examples": 572,
+  "pass_at_1": 0.6381118881118881,
+  "repeated_completion_fraction": 0.006993006993006978,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6381118881118881,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6958041958041958,
+  "status_counts": {
+    "failed": 135,
+    "partial": 72,
+    "passed": 365
+  },
+  "successful_examples": 365,
+  "tests_pass_fraction": 0.6958041958041958,
+  "unique_completion_rate": 0.993006993006993
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-300
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 03:57:38 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6917249417249418,
+  "examples": 572,
+  "pass_at_1": 0.6311188811188811,
+  "repeated_completion_fraction": 0.006993006993006978,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6311188811188811,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6917249417249418,
+  "status_counts": {
+    "failed": 133,
+    "partial": 77,
+    "passed": 361,
+    "syntax_error": 1
+  },
+  "successful_examples": 361,
+  "tests_pass_fraction": 0.6929363689433742,
+  "unique_completion_rate": 0.993006993006993
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-310
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 04:17:08 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6940559440559441,
+  "examples": 572,
+  "pass_at_1": 0.6381118881118881,
+  "repeated_completion_fraction": 0.006993006993006978,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6381118881118881,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6940559440559441,
+  "status_counts": {
+    "failed": 135,
+    "partial": 72,
+    "passed": 365
+  },
+  "successful_examples": 365,
+  "tests_pass_fraction": 0.6940559440559441,
+  "unique_completion_rate": 0.993006993006993
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-320
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 04:36:35 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6963869463869463,
+  "examples": 572,
+  "pass_at_1": 0.6363636363636364,
+  "repeated_completion_fraction": 0.006993006993006978,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6363636363636364,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6963869463869463,
+  "status_counts": {
+    "failed": 133,
+    "partial": 74,
+    "passed": 364,
+    "syntax_error": 1
+  },
+  "successful_examples": 364,
+  "tests_pass_fraction": 0.6976065382370111,
+  "unique_completion_rate": 0.993006993006993
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-330
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 05:00:02 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6987179487179488,
+  "examples": 572,
+  "pass_at_1": 0.6381118881118881,
+  "repeated_completion_fraction": 0.005244755244755206,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6381118881118881,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6987179487179488,
+  "status_counts": {
+    "failed": 130,
+    "partial": 76,
+    "passed": 365,
+    "syntax_error": 1
+  },
+  "successful_examples": 365,
+  "tests_pass_fraction": 0.6999416228838296,
+  "unique_completion_rate": 0.9947552447552448
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-340
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 05:17:33 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6928904428904429,
+  "examples": 572,
+  "pass_at_1": 0.6346153846153846,
+  "repeated_completion_fraction": 0.005244755244755206,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6346153846153846,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6928904428904429,
+  "status_counts": {
+    "failed": 135,
+    "partial": 73,
+    "passed": 363,
+    "syntax_error": 1
+  },
+  "successful_examples": 363,
+  "tests_pass_fraction": 0.6941039112667834,
+  "unique_completion_rate": 0.9947552447552448
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-350
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 05:35:59 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6934731934731935,
+  "examples": 572,
+  "pass_at_1": 0.6346153846153846,
+  "repeated_completion_fraction": 0.006993006993006978,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6346153846153846,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6934731934731935,
+  "status_counts": {
+    "failed": 134,
+    "partial": 74,
+    "passed": 363,
+    "syntax_error": 1
+  },
+  "successful_examples": 363,
+  "tests_pass_fraction": 0.694687682428488,
+  "unique_completion_rate": 0.993006993006993
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-360
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 06:02:55 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6940559440559441,
+  "examples": 572,
+  "pass_at_1": 0.6363636363636364,
+  "repeated_completion_fraction": 0.0034965034965035446,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6363636363636364,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6940559440559441,
+  "status_counts": {
+    "failed": 134,
+    "partial": 73,
+    "passed": 364,
+    "syntax_error": 1
+  },
+  "successful_examples": 364,
+  "tests_pass_fraction": 0.6952714535901926,
+  "unique_completion_rate": 0.9965034965034965
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-370
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 06:21:45 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6923076923076923,
+  "examples": 572,
+  "pass_at_1": 0.6328671328671329,
+  "repeated_completion_fraction": 0.006993006993006978,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6328671328671329,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6923076923076923,
+  "status_counts": {
+    "failed": 134,
+    "partial": 75,
+    "passed": 362,
+    "syntax_error": 1
+  },
+  "successful_examples": 362,
+  "tests_pass_fraction": 0.6935201401050788,
+  "unique_completion_rate": 0.993006993006993
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-380
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 06:40:49 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6923076923076923,
+  "examples": 572,
+  "pass_at_1": 0.6311188811188811,
+  "repeated_completion_fraction": 0.005244755244755206,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6311188811188811,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6923076923076923,
+  "status_counts": {
+    "failed": 133,
+    "partial": 78,
+    "passed": 361
+  },
+  "successful_examples": 361,
+  "tests_pass_fraction": 0.6923076923076923,
+  "unique_completion_rate": 0.9947552447552448
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-390
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 06:59:58 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.696969696969697,
+  "examples": 572,
+  "pass_at_1": 0.6398601398601399,
+  "repeated_completion_fraction": 0.005244755244755206,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6398601398601399,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.696969696969697,
+  "status_counts": {
+    "failed": 134,
+    "partial": 72,
+    "passed": 366
+  },
+  "successful_examples": 366,
+  "tests_pass_fraction": 0.696969696969697,
+  "unique_completion_rate": 0.9947552447552448
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-400
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 07:18:03 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6952214452214452,
+  "examples": 572,
+  "pass_at_1": 0.6381118881118881,
+  "repeated_completion_fraction": 0.005244755244755206,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6381118881118881,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6952214452214452,
+  "status_counts": {
+    "failed": 133,
+    "partial": 73,
+    "passed": 365,
+    "syntax_error": 1
+  },
+  "successful_examples": 365,
+  "tests_pass_fraction": 0.6964389959136019,
+  "unique_completion_rate": 0.9947552447552448
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-410
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 07:37:30 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6998834498834499,
+  "examples": 572,
+  "pass_at_1": 0.6398601398601399,
+  "repeated_completion_fraction": 0.005244755244755206,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6398601398601399,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6998834498834499,
+  "status_counts": {
+    "failed": 128,
+    "partial": 77,
+    "passed": 366,
+    "syntax_error": 1
+  },
+  "successful_examples": 366,
+  "tests_pass_fraction": 0.7011091652072388,
+  "unique_completion_rate": 0.9947552447552448
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-420
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 07:56:17 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6893939393939393,
+  "examples": 572,
+  "pass_at_1": 0.6328671328671329,
+  "repeated_completion_fraction": 0.006993006993006978,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6328671328671329,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6893939393939393,
+  "status_counts": {
+    "failed": 137,
+    "partial": 72,
+    "passed": 362,
+    "syntax_error": 1
+  },
+  "successful_examples": 362,
+  "tests_pass_fraction": 0.6906012842965558,
+  "unique_completion_rate": 0.993006993006993
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-430
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 08:14:13 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.701048951048951,
+  "examples": 572,
+  "pass_at_1": 0.6451048951048951,
+  "repeated_completion_fraction": 0.005244755244755206,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6451048951048951,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.701048951048951,
+  "status_counts": {
+    "failed": 131,
+    "partial": 71,
+    "passed": 369,
+    "syntax_error": 1
+  },
+  "successful_examples": 369,
+  "tests_pass_fraction": 0.702276707530648,
+  "unique_completion_rate": 0.9947552447552448
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-440
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 08:32:51 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.696969696969697,
+  "examples": 572,
+  "pass_at_1": 0.6416083916083916,
+  "repeated_completion_fraction": 0.005244755244755206,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6416083916083916,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.696969696969697,
+  "status_counts": {
+    "failed": 134,
+    "partial": 70,
+    "passed": 367,
+    "syntax_error": 1
+  },
+  "successful_examples": 367,
+  "tests_pass_fraction": 0.6981903093987157,
+  "unique_completion_rate": 0.9947552447552448
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-450
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 08:56:48 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6958041958041958,
+  "examples": 572,
+  "pass_at_1": 0.6398601398601399,
+  "repeated_completion_fraction": 0.005244755244755206,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6398601398601399,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6958041958041958,
+  "status_counts": {
+    "failed": 133,
+    "partial": 71,
+    "passed": 366,
+    "syntax_error": 2
+  },
+  "successful_examples": 366,
+  "tests_pass_fraction": 0.6982456140350877,
+  "unique_completion_rate": 0.9947552447552448
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-460
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 09:15:28 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.701048951048951,
+  "examples": 572,
+  "pass_at_1": 0.6433566433566433,
+  "repeated_completion_fraction": 0.0034965034965035446,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6433566433566433,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.701048951048951,
+  "status_counts": {
+    "failed": 131,
+    "partial": 72,
+    "passed": 368,
+    "syntax_error": 1
+  },
+  "successful_examples": 368,
+  "tests_pass_fraction": 0.702276707530648,
+  "unique_completion_rate": 0.9965034965034965
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-470
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 09:36:48 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6934731934731935,
+  "examples": 572,
+  "pass_at_1": 0.6346153846153846,
+  "repeated_completion_fraction": 0.005244755244755206,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6346153846153846,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6934731934731935,
+  "status_counts": {
+    "failed": 134,
+    "partial": 74,
+    "passed": 363,
+    "syntax_error": 1
+  },
+  "successful_examples": 363,
+  "tests_pass_fraction": 0.694687682428488,
+  "unique_completion_rate": 0.9947552447552448
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-480
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 09:55:09 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.701048951048951,
+  "examples": 572,
+  "pass_at_1": 0.6451048951048951,
+  "repeated_completion_fraction": 0.005244755244755206,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6451048951048951,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.701048951048951,
+  "status_counts": {
+    "failed": 131,
+    "partial": 72,
+    "passed": 369
+  },
+  "successful_examples": 369,
+  "tests_pass_fraction": 0.701048951048951,
+  "unique_completion_rate": 0.9947552447552448
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-490
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 10:13:08 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6958041958041958,
+  "examples": 572,
+  "pass_at_1": 0.6398601398601399,
+  "repeated_completion_fraction": 0.005244755244755206,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6398601398601399,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6958041958041958,
+  "status_counts": {
+    "failed": 134,
+    "partial": 72,
+    "passed": 366
+  },
+  "successful_examples": 366,
+  "tests_pass_fraction": 0.6958041958041958,
+  "unique_completion_rate": 0.9947552447552448
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-500
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 10:32:57 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6917249417249418,
+  "examples": 572,
+  "pass_at_1": 0.6346153846153846,
+  "repeated_completion_fraction": 0.0034965034965035446,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6346153846153846,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6917249417249418,
+  "status_counts": {
+    "failed": 134,
+    "partial": 74,
+    "passed": 363,
+    "syntax_error": 1
+  },
+  "successful_examples": 363,
+  "tests_pass_fraction": 0.6929363689433742,
+  "unique_completion_rate": 0.9965034965034965
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-510
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 10:52:17 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6963869463869463,
+  "examples": 572,
+  "pass_at_1": 0.6398601398601399,
+  "repeated_completion_fraction": 0.006993006993006978,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6398601398601399,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6963869463869463,
+  "status_counts": {
+    "failed": 135,
+    "partial": 71,
+    "passed": 366
+  },
+  "successful_examples": 366,
+  "tests_pass_fraction": 0.6963869463869464,
+  "unique_completion_rate": 0.993006993006993
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-520
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 11:12:10 PDT
+Git commit: e695b6f
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.6923076923076923,
+  "examples": 572,
+  "pass_at_1": 0.6328671328671329,
+  "repeated_completion_fraction": 0.006993006993006978,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.6328671328671329,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.6923076923076923,
+  "status_counts": {
+    "failed": 134,
+    "partial": 75,
+    "passed": 362,
+    "syntax_error": 1
+  },
+  "successful_examples": 362,
+  "tests_pass_fraction": 0.6935201401050788,
+  "unique_completion_rate": 0.993006993006993
+}
+YAML path: configs/default.yaml
+YAML contents:
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+synthetic_tests_path: synthetic_data/mbpp_train_tests.jsonl
+synthetic_tests_require_all: true
+synthetic_tests_per_task: 5
+synthetic_tests_validation_timeout_seconds: 5
+seed: 42
+max_train_samples: null
+reuse_baseline: false
+run_baseline_evaluation: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: true
+evalplus_eval_steps: 10
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+max_eval_samples: null
+sft_enabled: false
+sft_num_train_epochs: 1
+sft_max_steps: -1
+sft_per_device_train_batch_size: 1
+sft_gradient_accumulation_steps: 32
+sft_learning_rate: 0.00001
+sft_loss_rolling_window: 10
+log_path: logs/logs.txt
+output_dir: outputs/grpo-mbpp-canonical-split-hybrid-lr3e6
+num_train_epochs: 10
+max_steps: -1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+learning_rate: 0.000003
+num_generations: 4
+max_prompt_length: 512
+max_completion_length: 2048
+evaluation_batch_size: 8
+results_log_path: logs/results.txt
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 2
+max_retries: 1
+include_generic_arguments: false
+logging_steps: 1
+reward_rolling_window: 10
+save_steps: 10
+eval_steps: 10
+evaluation_num_completions: 20
+evaluation_temperature: 0.2
+evaluation_top_p: 0.95
+reward_function: hybrid
+reward_coefficient: 0.5
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: null
+
+------------------------------------------------------------------------
