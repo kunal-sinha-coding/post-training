@@ -12593,3 +12593,19 @@ Metrics:
   - Policy loss changed from -0.170898 to -0.170324, which is an increase rather than a decrease.
   - Gradient norm: 0.252416.
 Interpretation: At this deliberately large diagnostic learning rate, the positive completion did not become more likely. Since the rate is 333 times larger than the training rate, this result may reflect an overly large nonlinear step or shared-parameter interference. It requires a matched 3e-6 rerun before diagnosing the loss sign.
+
+DETERMINISTIC TWO-COMPLETION GRPO PROBE AT TRAINING RATE
+Experiment: deterministic-grpo-probe-3e-6
+Purpose: Repeat the deterministic two-completion test at the actual GRPO learning rate.
+Timestamp: 2026-09-20 UTC
+Git commit: d53b562
+Candidate artifact: outputs/deterministic-grpo-probe/result-3e-6.json
+Configuration: Same fixed prompt, completions, advantages, rank-16 LoRA, evaluation mode, and one SGD update as the high-rate probe, with learning rate 3e-6.
+Metrics:
+  - Before log probabilities: [-0.229757, -0.913350].
+  - After log probabilities: [-0.230913, -0.915099].
+  - Log-probability deltas: [-0.001157, -0.001749].
+  - Positive completion direction passed: false. Negative completion direction passed: true.
+  - Policy loss changed from -0.170898 to -0.171047, which is a decrease.
+  - Gradient norm: 0.252416.
+Interpretation: The aggregate policy objective moved in the correct direction at the real training rate. The positive completion nevertheless became slightly less likely individually because the shared LoRA update reduced the negative completion likelihood more strongly. This rules out a simple global loss-sign failure and shows that individual sample likelihood movement is not a sufficient GRPO correctness test.
