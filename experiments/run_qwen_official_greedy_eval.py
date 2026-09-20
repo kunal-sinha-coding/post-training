@@ -88,6 +88,18 @@ def generate_completions(model_name: str, prompts: list[str]) -> list[str]:
     return [apply_stops(output.outputs[0].text).split(chr(96) * 3, 1)[0].strip() for output in outputs]
 
 
+def generate_model_completions(model_name: str | Path, prompts: list[str]) -> list[str]:
+    """Merge an adapter when needed and generate a batched greedy completion list with vLLM."""
+    # Reuse the same merged checkpoint and tokenizer preparation as canonical EvalPlus.
+    with tempfile.TemporaryDirectory(prefix="qwen-evalplus-") as temporary_directory:
+        model_path = Path(model_name)
+        effective_model = Path(temporary_directory) / "merged" if (model_path / "adapter_config.json").is_file() else model_path
+        if effective_model != model_path:
+            merge_adapter(str(model_path), effective_model)
+        normalize_tokenizer_metadata(effective_model)
+        return generate_completions(str(effective_model), prompts)
+
+
 def generate_evalplus_samples(model_name: str | Path, output_dir: Path) -> Path:
     """Generate and save the canonical EvalPlus samples for a training evaluation."""
     # Build the complete task batch and select the output layout used by EvalPlus.
@@ -96,13 +108,7 @@ def generate_evalplus_samples(model_name: str | Path, output_dir: Path) -> Path:
     samples.mkdir(parents=True, exist_ok=True)
     prompts = [build_prompt(task["prompt"]) for task in tasks]
     # Merge adapters outside the training model and remove the temporary checkpoint afterward.
-    with tempfile.TemporaryDirectory(prefix="qwen-evalplus-") as temporary_directory:
-        model_path = Path(model_name)
-        effective_model = Path(temporary_directory) / "merged" if (model_path / "adapter_config.json").is_file() else model_path
-        if effective_model != model_path:
-            merge_adapter(str(model_path), effective_model)
-        normalize_tokenizer_metadata(effective_model)
-        completions = generate_completions(str(effective_model), prompts)
+    completions = generate_model_completions(model_name, prompts)
     # Persist complete solutions in the official per-task directory format.
     for task, code in zip(tasks, completions):
         task_dir = samples / task["task_id"].replace("/", "_")

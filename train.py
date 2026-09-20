@@ -20,7 +20,7 @@ import yaml
 from dotenv import load_dotenv
 
 from data import build_sft_dataset, prepare_datasets
-from evaluate import QWEN_EVALPLUS_STOP_STRINGS, append_training_step_header, append_training_step_metrics, append_training_step_samples, append_evaluation_log, code_fence_stopping_criteria, evaluate_model, forced_code_prefix_length, forced_code_prefix_processor, save_evaluation, start_run_log
+from evaluate import QWEN_EVALPLUS_STOP_STRINGS, append_training_step_header, append_training_step_metrics, append_training_step_samples, append_evaluation_log, code_fence_stopping_criteria, evaluate_model, evaluate_texts, forced_code_prefix_length, forced_code_prefix_processor, save_evaluation, start_run_log
 from sandbox import reward_function
 
 
@@ -90,12 +90,15 @@ def canonical_test_pass_metrics(samples: Path) -> dict[str, float]:
     }
 
 
-def evaluate_training_mbpp(model: Any, tokenizer: Any, train_dataset: Any, config: dict[str, Any], name: str) -> dict[str, Any]:
-    """Evaluate one greedy completion per training task on the original MBPP tests."""
-    # Use one deterministic completion so training pass@1 matches the checkpoint evaluation interpretation.
-    evaluation_config = dict(config)
-    evaluation_config.update({"evaluation_num_completions": 1, "evaluation_temperature": 0.0, "evaluation_top_p": 1.0, "max_retries": 0})
-    metrics, details = evaluate_model(model, tokenizer, train_dataset, evaluation_config, name)
+def evaluate_training_mbpp(model_path: Path, train_dataset: Any, config: dict[str, Any], name: str) -> dict[str, Any]:
+    """Evaluate all training tasks with the same batched vLLM generation path as EvalPlus."""
+    # Generate one greedy completion per training task from the merged base or adapter checkpoint.
+    from experiments.run_qwen_official_greedy_eval import generate_model_completions
+
+    records = [train_dataset[index] for index in range(len(train_dataset))]
+    completions = generate_model_completions(model_path, [record["prompt"] for record in records])
+    # Score generated solutions against only the original MBPP tests used by the reward.
+    metrics, details = evaluate_texts(completions, records, float(config.get("sandbox_timeout_seconds", 3)), config.get("log_path", "logs/logs.txt"), name)
     return {"metrics": metrics, "details": details}
 
 
@@ -412,7 +415,7 @@ def _make_callback(model: Any, tokenizer: Any, train_dataset: Any, test_dataset:
                 try:
                     evalplus_result = run_qwen_evalplus(model_path, Path(args.output_dir), name)
                     # Evaluate the same checkpoint on every disjoint MBPP training task.
-                    training_result = evaluate_training_mbpp(evaluation_model, tokenizer, train_dataset, config, f"training-{name}")
+                    training_result = evaluate_training_mbpp(model_path, train_dataset, config, f"training-{name}")
                     evalplus_result["metrics"] = merge_training_metrics(evalplus_result["metrics"], training_result["metrics"])
                     save_evaluation(args.output_dir, f"training-{name}", training_result["metrics"], training_result["details"], config)
                     # Retain this adapter only when its MBPP+ score improves on the best policy.
@@ -612,7 +615,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         try:
             step_zero_result = run_qwen_evalplus(step_zero_path, output_dir, "step-0")
             # Establish the matching greedy MBPP training-set baseline before optimization.
-            training_result = evaluate_training_mbpp(model, tokenizer, train_dataset, config, "training-step-0")
+            training_result = evaluate_training_mbpp(step_zero_path, train_dataset, config, "training-step-0")
             step_zero_result["metrics"] = merge_training_metrics(step_zero_result["metrics"], training_result["metrics"])
             save_evaluation(output_dir, "training-step-0", training_result["metrics"], training_result["details"], config)
             config["_best_evalplus_mbpp_plus"] = step_zero_result["metrics"].get("mbpp_plus_pass_at_1", float("-inf"))

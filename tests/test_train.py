@@ -25,6 +25,36 @@ def test_reward_stays_dense(monkeypatch, tmp_path):
     assert captured["reward_coefficient"] == 0.5
 
 
+def test_training_mbpp_evaluation_uses_batched_vllm_completions(monkeypatch, tmp_path):
+    """Evaluate every training record through the shared vLLM completion helper."""
+    generated = []
+    metrics = {"pass_at_1": 0.5, "tests_pass_fraction": 0.75}
+    details = [{"task_id": 1}, {"task_id": 2}]
+
+    def fake_generate(model_path, prompts):
+        """Record the checkpoint and prompt batch sent to vLLM."""
+        generated.append((model_path, prompts))
+        return ["completion-1", "completion-2"]
+
+    def fake_evaluate(completions, records, timeout, log_path, name):
+        """Return deterministic training metrics for the generated batch."""
+        assert completions == ["completion-1", "completion-2"]
+        assert [record["task_id"] for record in records] == [1, 2]
+        assert timeout == 3.0
+        assert log_path == str(tmp_path / "logs.txt")
+        assert name == "training-step-10"
+        return metrics, details
+
+    monkeypatch.setattr("experiments.run_qwen_official_greedy_eval.generate_model_completions", fake_generate)
+    monkeypatch.setattr(train, "evaluate_texts", fake_evaluate)
+    dataset = [{"task_id": 1, "prompt": "prompt-1"}, {"task_id": 2, "prompt": "prompt-2"}]
+
+    result = train.evaluate_training_mbpp(tmp_path / "checkpoint", dataset, {"log_path": str(tmp_path / "logs.txt")}, "training-step-10")
+
+    assert generated == [(tmp_path / "checkpoint", ["prompt-1", "prompt-2"])]
+    assert result == {"metrics": metrics, "details": details}
+
+
 class FakeModel:
     """Track whether evaluation restores training mode."""
 
