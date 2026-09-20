@@ -23,8 +23,8 @@ lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_p
 sft_enabled: false
 log_path: logs/logs.txt
 results_log_path: logs/results.txt
-output_dir: outputs/grpo-mbpp-reward-direction-probe-g16-v3
-reward_trace_path: outputs/grpo-mbpp-reward-direction-probe-g16-v3/reward-trace.jsonl
+output_dir: outputs/grpo-mbpp-reward-direction-probe-g16-v4
+reward_trace_path: outputs/grpo-mbpp-reward-direction-probe-g16-v4/reward-trace.jsonl
 probe_update_direction: true
 temperature: 1.0
 num_train_epochs: 1
@@ -50,7 +50,7 @@ bf16: true
 fp16: false
 report_to: wandb
 wandb_project: grpo-mbpp
-wandb_run_name: grpo-mbpp-reward-direction-probe-g16-v3
+wandb_run_name: grpo-mbpp-reward-direction-probe-g16-v4
 reward_function: hybrid
 reward_coefficient: 0.5
 reward_rolling_window: 10
