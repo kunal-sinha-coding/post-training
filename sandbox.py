@@ -241,7 +241,7 @@ def summarize_reward_groups(rewards: list[float], details: list[dict[str, object
     return diagnostics
 
 
-def reward_function(completions: list[object], test_code: list[str], sandbox_timeout_seconds: float = 3.0, diagnostics: dict[str, Any] | None = None, group_size: int = 4, reward_function_name: str = DEFAULT_REWARD_FUNCTION, reward_coefficient: float = DEFAULT_REWARD_COEFFICIENT, trace_path: str | None = None, task_ids: list[object] | None = None, **_: object) -> list[float]:
+def reward_function(completions: list[object], test_code: list[str], sandbox_timeout_seconds: float = 3.0, diagnostics: dict[str, Any] | None = None, group_size: int = 4, reward_function_name: str = DEFAULT_REWARD_FUNCTION, reward_coefficient: float = DEFAULT_REWARD_COEFFICIENT, trace_path: str | None = None, task_ids: list[object] | None = None, synthetic_reward_probe: bool = False, **_: object) -> list[float]:
     """Score a GRPO batch with the configured test-pass or hybrid reward."""
     # Record candidate outcomes so reward variation remains visible during training.
     rewards: list[float] = []
@@ -269,6 +269,13 @@ def reward_function(completions: list[object], test_code: list[str], sandbox_tim
             "reward": reward,
             "detail": detail,
         })
+    if synthetic_reward_probe:
+        # Replace execution rewards with a known within-group ranking for the optimizer control test.
+        for index in range(len(rewards)):
+            rewards[index] = float(index % group_size < group_size // 2)
+            trace_records[index]["execution_reward"] = trace_records[index]["reward"]
+            trace_records[index]["reward"] = rewards[index]
+            trace_records[index]["synthetic_reward_probe"] = True
     if trace_path:
         # Append one auditable JSON record for every scored sampled completion.
         trace_file = Path(trace_path)

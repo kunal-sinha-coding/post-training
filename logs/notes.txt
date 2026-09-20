@@ -2137,3 +2137,7 @@ The first v3 startup was stopped before its first optimizer update after identif
 The corrected run uses a fresh v4 output directory and W&B run.
 
 Commit `record-reward-direction-probe-results` records the v4 experiment in `logs/results.txt` and appends the required complete error analysis to `logs/error_analysis.txt`. It records 128 traced completions, scorer status counts, task-level reward means, unchanged step-zero versus step-eight pass@1 and test fraction, the negative average advantage to log-probability correlation, and the final CUDA out-of-memory limitation. The records support a follow-up synthetic reward and TRL batching test.
+
+## 2026-09-20: Run synthetic reward direction control
+
+Added an optional `synthetic_reward_probe` setting to replace the execution reward within each 16-sample group with a known ranking: the first eight completions receive reward 1 and the second eight receive reward 0. The trace retains the original sandbox score as `execution_reward`, so the control can distinguish optimizer behavior from Python test scoring. The control uses the same eight fixed disjoint MBPP training tasks, LoRA model, 16 completions, one-sample microbatches, 16-step gradient accumulation, and direction diagnostics as v4, with four optimizer updates and a fresh output directory. It will test whether positive known advantages increase sampled completion likelihood and negative known advantages decrease it. The synthetic rewards are training-only control labels and are not benchmark results.

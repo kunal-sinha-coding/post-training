@@ -231,7 +231,7 @@ def _make_reward(config: dict[str, Any]):
         append_training_step_samples(config.get("log_path", "logs/logs.txt"), completions)
         task_ids = kwargs.get("task_id")
         task_id_values = task_ids if isinstance(task_ids, list) else None
-        rewards = reward_function(completions, test_code, timeout, diagnostics=diagnostics, group_size=int(config.get("num_generations", 4)), reward_function_name=reward_function_name, reward_coefficient=reward_coefficient, trace_path=config.get("reward_trace_path"), task_ids=task_id_values, **kwargs)
+        rewards = reward_function(completions, test_code, timeout, diagnostics=diagnostics, group_size=int(config.get("num_generations", 4)), reward_function_name=reward_function_name, reward_coefficient=reward_coefficient, trace_path=config.get("reward_trace_path"), task_ids=task_id_values, synthetic_reward_probe=bool(config.get("synthetic_reward_probe", False)), **kwargs)
         # Record the generated completion token lengths so truncation and length drift are visible in W&B.
         completion_ids = kwargs.get("completion_ids")
         if isinstance(completion_ids, list) and completion_ids:
