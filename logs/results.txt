@@ -12609,3 +12609,5 @@ Metrics:
   - Policy loss changed from -0.170898 to -0.171047, which is a decrease.
   - Gradient norm: 0.252416.
 Interpretation: The aggregate policy objective moved in the correct direction at the real training rate. The positive completion nevertheless became slightly less likely individually because the shared LoRA update reduced the negative completion likelihood more strongly. This rules out a simple global loss-sign failure and shows that individual sample likelihood movement is not a sufficient GRPO correctness test.
+
+GRPO reward audit, 2026-09-20, code 6dc5e1f. Complete setup, control results, versions, trace digest and reproduction scripts are preserved in logs/grpo_reward_audit.md. All 128 v4 rewards replayed identically. 78/128 raw completions had over 30 discarded characters. Retokenized raw/prefix totals were 23628/12805. Zero-rate control yielded zero changes. Float32 SGD at 1e-3 decreased loss by approximately 6.26e-5, unlike the prior bfloat16 result. Exact raw controls are embedded in the report. These are diagnostics, not benchmark results. No candidates were selected using ground truth.
