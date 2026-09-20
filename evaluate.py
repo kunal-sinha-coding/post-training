@@ -156,6 +156,10 @@ def aggregate_results(results: list[dict[str, Any]]) -> dict[str, Any]:
         values = [float(result.get("reward_components", {}).get(component, 0.0)) for result in results]
         metrics[f"reward_{component}_mean"] = sum(values) / total if total else 0.0
     metrics["successful_examples"] = sum(bool(result["passed"]) for result in results)
+    # Measure every executed test outcome so partial correctness is visible beside pass@1.
+    total_tests = sum(int(result.get("total_tests", 0)) for result in results)
+    passed_tests = sum(int(result.get("passed_tests", 0)) for result in results)
+    metrics["tests_pass_fraction"] = passed_tests / total_tests if total_tests else 0.0
     metrics["unique_completion_rate"] = len({str(result.get("completion", "")).strip() for result in results}) / total if total else 0.0
     metrics["repeated_completion_fraction"] = 1.0 - metrics["unique_completion_rate"]
     # Compute standard unbiased pass-at-K estimates independently for every task.

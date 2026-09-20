@@ -102,7 +102,7 @@ def test_checkpoint_callback_stops_after_patience(monkeypatch, tmp_path):
     monkeypatch.setattr(train, "save_evaluation", fake_save)
     monkeypatch.setattr(train, "log_evaluation", fake_log)
     config = {"run_intermediate_evals": True, "best_checkpoint_metric": "pass@1", "checkpoint_eval_patience": 3}
-    callback = train._make_callback(CallbackModel(), object(), [], config, None)
+    callback = train._make_callback(CallbackModel(), object(), [], [], config, None)
     args = SimpleNamespace(output_dir=str(tmp_path))
 
     for step in range(1, 5):

@@ -7,12 +7,13 @@ from evaluate import aggregate_results, append_evaluation_result, cleanup_run_lo
 
 def test_aggregate_results_reports_pass_rate_and_statuses():
     metrics = aggregate_results([
-        {"passed": True, "reward": 0.9, "status": "passed"},
-        {"passed": False, "reward": 0.3, "status": "failed"},
+        {"passed": True, "reward": 0.9, "status": "passed", "passed_tests": 2, "total_tests": 2},
+        {"passed": False, "reward": 0.3, "status": "failed", "passed_tests": 0, "total_tests": 2},
     ])
     assert metrics["examples"] == 2
     assert metrics["pass_at_1"] == 0.5
     assert metrics["average_reward"] == pytest.approx(0.6)
+    assert metrics["tests_pass_fraction"] == 0.5
     assert metrics["status_counts"] == {"passed": 1, "failed": 1}
 
 

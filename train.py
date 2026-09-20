@@ -46,7 +46,7 @@ def run_qwen_evalplus(model_path: Path, output_dir: Path, name: str) -> dict[str
     from types import SimpleNamespace
     from evalplus.evaluate import evaluate
 
-    evaluator_args = SimpleNamespace(dataset="mbpp", samples=str(samples), base_only=False, parallel=None, i_just_wanna_run=False, test_details=False, min_time_limit=1, gt_time_limit_factor=4.0, mini=False, noextreme=False)
+    evaluator_args = SimpleNamespace(dataset="mbpp", samples=str(samples), base_only=False, parallel=None, i_just_wanna_run=False, test_details=True, min_time_limit=1, gt_time_limit_factor=4.0, mini=False, noextreme=False)
     evaluator_output = StringIO()
     with redirect_stdout(evaluator_output):
         evaluate(evaluator_args)
@@ -57,11 +57,55 @@ def run_qwen_evalplus(model_path: Path, output_dir: Path, name: str) -> dict[str
     # Extract both canonical pass rates so the caller can publish scalar metrics.
     base_match = re.search(r"mbpp \(base tests\).*?pass@1:\s*([0-9.]+)", result_text, re.DOTALL)
     plus_match = re.search(r"mbpp\+ \(base \+ extra tests\).*?pass@1:\s*([0-9.]+)", result_text, re.DOTALL)
+    # Compute per-test pass fractions from the detailed canonical evaluator output.
+    detail_metrics = canonical_test_pass_metrics(samples)
     metrics = {
         "mbpp_pass_at_1": float(base_match.group(1)) if base_match else None,
         "mbpp_plus_pass_at_1": float(plus_match.group(1)) if plus_match else None,
+        **detail_metrics,
     }
     return {"evaluation_dir": str(evaluation_dir), "results": result_text, "metrics": metrics}
+
+
+def canonical_test_pass_metrics(samples: Path) -> dict[str, float]:
+    """Calculate overall base and MBPP+ test pass fractions from EvalPlus details."""
+    # Read the canonical evaluator's per-task failure lists and compare them with official test counts.
+    from evalplus.data import get_mbpp_plus
+
+    results = json.loads((samples / "eval_results.json").read_text(encoding="utf-8"))["eval"]
+    problems = get_mbpp_plus()
+    base_total = plus_total = base_passed = plus_passed = 0
+    for task_id, task_results in results.items():
+        result = task_results[0]
+        problem = problems[task_id]
+        base_count = len(problem["base_input"])
+        plus_count = len(problem["base_input"]) + len(problem["plus_input"])
+        base_total += base_count
+        plus_total += plus_count
+        base_passed += base_count - len(result["base_fail_tests"])
+        plus_passed += plus_count - len(result["plus_fail_tests"])
+    return {
+        "mbpp_tests_pass_fraction": base_passed / base_total if base_total else 0.0,
+        "mbpp_plus_tests_pass_fraction": plus_passed / plus_total if plus_total else 0.0,
+    }
+
+
+def evaluate_training_mbpp(model: Any, tokenizer: Any, train_dataset: Any, config: dict[str, Any], name: str) -> dict[str, Any]:
+    """Evaluate one greedy completion per training task on the original MBPP tests."""
+    # Use one deterministic completion so training pass@1 matches the checkpoint evaluation interpretation.
+    evaluation_config = dict(config)
+    evaluation_config.update({"evaluation_num_completions": 1, "evaluation_temperature": 0.0, "evaluation_top_p": 1.0, "max_retries": 0})
+    metrics, details = evaluate_model(model, tokenizer, train_dataset, evaluation_config, name)
+    return {"metrics": metrics, "details": details}
+
+
+def merge_training_metrics(metrics: dict[str, Any], training_metrics: dict[str, Any]) -> dict[str, Any]:
+    """Add training-set MBPP pass@1 and test pass fraction with explicit metric names."""
+    # Prefix only the two requested training metrics to keep W&B evaluation rows unambiguous.
+    merged = dict(metrics)
+    merged["training_mbpp_pass_at_1"] = float(training_metrics.get("pass_at_1", 0.0))
+    merged["training_mbpp_tests_pass_fraction"] = float(training_metrics.get("tests_pass_fraction", 0.0))
+    return merged
 
 
 def build_peft_config(config: dict[str, Any]) -> Any | None:
@@ -190,7 +234,7 @@ def _make_reward(config: dict[str, Any]):
 
     return reward
 
-def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[str, Any], wandb: Any | None, device: Any | None = None):
+def _make_callback(model: Any, tokenizer: Any, train_dataset: Any, test_dataset: Any, config: dict[str, Any], wandb: Any | None, device: Any | None = None):
     """Create callbacks for step logging and checkpoint evaluation."""
     # Import the callback base class only when training starts.
     from transformers import TrainerCallback
@@ -367,6 +411,10 @@ def _make_callback(model: Any, tokenizer: Any, test_dataset: Any, config: dict[s
                 torch.cuda.empty_cache()
                 try:
                     evalplus_result = run_qwen_evalplus(model_path, Path(args.output_dir), name)
+                    # Evaluate the same checkpoint on every disjoint MBPP training task.
+                    training_result = evaluate_training_mbpp(evaluation_model, tokenizer, train_dataset, config, f"training-{name}")
+                    evalplus_result["metrics"] = merge_training_metrics(evalplus_result["metrics"], training_result["metrics"])
+                    save_evaluation(args.output_dir, f"training-{name}", training_result["metrics"], training_result["details"], config)
                     # Retain this adapter only when its MBPP+ score improves on the best policy.
                     mbpp_plus_score = evalplus_result["metrics"].get("mbpp_plus_pass_at_1")
                     if isinstance(mbpp_plus_score, (int, float)) and mbpp_plus_score > self.best_evalplus_mbpp_plus:
@@ -563,6 +611,10 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         torch.cuda.empty_cache()
         try:
             step_zero_result = run_qwen_evalplus(step_zero_path, output_dir, "step-0")
+            # Establish the matching greedy MBPP training-set baseline before optimization.
+            training_result = evaluate_training_mbpp(model, tokenizer, train_dataset, config, "training-step-0")
+            step_zero_result["metrics"] = merge_training_metrics(step_zero_result["metrics"], training_result["metrics"])
+            save_evaluation(output_dir, "training-step-0", training_result["metrics"], training_result["details"], config)
             config["_best_evalplus_mbpp_plus"] = step_zero_result["metrics"].get("mbpp_plus_pass_at_1", float("-inf"))
             log_evaluation(wandb, step_zero_result["metrics"], "evalplus-step-0", 0)
         finally:
@@ -621,7 +673,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         seed=int(config.get("seed", 42)),
     )
     # Build the GRPO callback and trainer.
-    training_callback = _make_callback(model, tokenizer, eval_dataset, config, wandb, device)
+    training_callback = _make_callback(model, tokenizer, train_dataset, eval_dataset, config, wandb, device)
     callbacks = [training_callback]
     print(f"Intermediate evaluations enabled: {bool(callbacks)}", flush=True)
     trainer = GRPOTrainer(
