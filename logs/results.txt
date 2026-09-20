@@ -11297,3 +11297,115 @@ Diversity results over 32 task groups of 16 samples were identical for both mode
 Conclusion: the adapter did not show a meaningful improvement in sampled behavior on this fixed subset. It also did not reduce completion diversity. The results support the earlier conclusion that the trained policy is only slightly different from the base model.
 
 Artifact: `outputs/grpo-mbpp-canonical-split-hybrid-lr3e6/repeated-sampling-step50-vs-base.json`.
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-20 12:48:10 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-0
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 12:49:36 PDT
+Git commit: 80d70db
+Change description: 80d70db Add tiny fixed-set GRPO overfit diagnostic
+7993db2 Record repeated sampling comparison
+cc051e3 Add repeated sampling comparison
+e797cd9 Log GRPO diagnostic metrics
+9616532 Analyze checkpoint generation transitions
+357706b Record GRPO run retrospective
+Metrics:
+{
+  "average_reward": 0.75,
+  "examples": 8,
+  "pass_at_1": 0.625,
+  "repeated_completion_fraction": 0.0,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.625,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.75,
+  "status_counts": {
+    "failed": 1,
+    "partial": 2,
+    "passed": 5
+  },
+  "successful_examples": 5,
+  "tests_pass_fraction": 0.75,
+  "unique_completion_rate": 1.0
+}
+YAML path: configs/tiny_overfit.yaml
+YAML contents:
+# This configuration selects eight canonical training tasks, trains LoRA with GRPO, and evaluates only those same tasks.
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 8
+max_eval_samples: null
+train_subset_evaluation_only: true
+run_baseline_evaluation: false
+reuse_baseline: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: false
+evalplus_eval_steps: 5
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/grpo-mbpp-tiny-overfit-g16
+num_train_epochs: 100
+max_steps: 50
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+generation_batch_size: 64
+learning_rate: 0.000003
+num_generations: 16
+beta: 0.0
+max_prompt_length: 512
+max_completion_length: 2048
+logging_steps: 1
+save_steps: 5
+eval_steps: 5
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 0
+evaluation_batch_size: 8
+evaluation_num_completions: 1
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: grpo-mbpp-tiny-overfit-g16
+reward_function: hybrid
+reward_coefficient: 0.5
+reward_rolling_window: 10
+
+------------------------------------------------------------------------
+
+## Experiment: tiny fixed-set GRPO overfit diagnostic, 16 generations
+
+Status: running as of 2026-09-20.
+
+Purpose: test whether GRPO can improve greedy pass@1 on the exact small set used for training before investigating held-out generalization.
+
+Setup: Qwen/Qwen2.5-Coder-3B-Instruct with LoRA GRPO, hybrid reward `0.5 * all_tests_passed + 0.5 * original_MBPP_test_fraction`, eight records selected by `max_train_samples: 8` after excluding the canonical EvalPlus MBPP task IDs, 16 generations per prompt, generation batch size 64, 32 gradient accumulation steps, learning rate `3e-6`, maximum 50 optimizer steps, 2048 maximum completion tokens, bfloat16, greedy vLLM evaluation, and evaluation every five optimizer steps. Canonical 399 task EvalPlus evaluation is disabled. Step zero, intermediate checkpoints, and the final model use the same eight training records and original MBPP tests. Candidate selection uses only this tiny-set pass@1. No held-out ground truth is used for selection.
+
+Artifacts: W&B project `kunal-personal/grpo-mbpp`, run `grpo-mbpp-tiny-overfit-g16`, ID `kvv1cohr`; output directory `outputs/grpo-mbpp-tiny-overfit-g16`; code commit `80d70db`.
+
+Preliminary step-zero metrics: pass@1 `0.625` (5 of 8 tasks), overall original MBPP test pass fraction `0.75`. Final and intermediate metrics are pending.
+
+Limitations: this is an intentional overfit diagnostic on eight training tasks and cannot estimate held-out EvalPlus performance.
