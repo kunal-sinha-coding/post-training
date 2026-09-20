@@ -2088,3 +2088,7 @@ Added checkpoint metrics for training MBPP pass@1 and the fraction of all origin
 Preserved the existing fractional test-pass reward under the `test_pass` setting and added a `hybrid` setting. The hybrid reward is `reward_coefficient * binary_full_pass + (1 - reward_coefficient) * test_fraction`. The default remains `test_pass`, and the config sets `reward_coefficient` to 0.5 for a future hybrid run. The current run was not interrupted.
 
 Evaluation scoring remains fractional and independent of the training reward selection, so existing pass@1 and test-fraction evaluation metrics retain their previous meaning.
+
+## 2026-09-20: Restart GRPO with the hybrid reward
+
+Stopped the active `expert-dream-71` run and changed the default configuration to `reward_function: hybrid` with `reward_coefficient: 0.5`. The restarted run will score each completion as half binary full-pass reward plus half original MBPP test fraction. The prior run remains available in W&B and its isolated output directory for comparison.
