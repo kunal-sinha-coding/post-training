@@ -12576,3 +12576,20 @@ reward_coefficient: 0.5
 reward_rolling_window: 10
 
 ------------------------------------------------------------------------
+
+DETERMINISTIC TWO-COMPLETION GRPO PROBE
+Experiment: deterministic-grpo-probe-high-rate
+Purpose: Isolate one fixed policy-gradient update from rollout sampling, task scoring, batching, and scheduler effects.
+Timestamp: 2026-09-20 UTC
+Git commit: d8020a8
+Candidate artifact: outputs/deterministic-grpo-probe/result.json
+Selection procedure: No candidate selection was performed.
+Configuration: Qwen/Qwen2.5-Coder-3B-Instruct, rank-16 LoRA targeting q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, and down_proj, dropout disabled through evaluation mode, one fixed prompt, fixed completions, advantages [+0.5, -0.5], one SGD update, learning rate 1e-3.
+Metrics:
+  - Before log probabilities: [-0.229757, -0.913350].
+  - After log probabilities: [-0.236541, -0.917835].
+  - Log-probability deltas: [-0.006785, -0.004485].
+  - Positive direction passed: false. Negative direction passed: true.
+  - Policy loss changed from -0.170898 to -0.170324, which is an increase rather than a decrease.
+  - Gradient norm: 0.252416.
+Interpretation: At this deliberately large diagnostic learning rate, the positive completion did not become more likely. Since the rate is 333 times larger than the training rate, this result may reflect an overly large nonlinear step or shared-parameter interference. It requires a matched 3e-6 rerun before diagnosing the loss sign.
