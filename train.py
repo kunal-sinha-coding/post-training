@@ -741,6 +741,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
     training_args = GRPOConfig(
         output_dir=str(output_dir),
         learning_rate=float(config["learning_rate"]),
+        lr_scheduler_type=str(config.get("lr_scheduler_type", "linear")),
         num_train_epochs=float(config.get("num_train_epochs", 1)),
         max_steps=int(config.get("max_steps", -1)),
         per_device_train_batch_size=int(config["per_device_train_batch_size"]),
