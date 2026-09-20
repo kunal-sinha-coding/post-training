@@ -2092,3 +2092,5 @@ Evaluation scoring remains fractional and independent of the training reward sel
 ## 2026-09-20: Restart GRPO with the hybrid reward
 
 Stopped the active `expert-dream-71` run and changed the default configuration to `reward_function: hybrid` with `reward_coefficient: 0.5`. The restarted run will score each completion as half binary full-pass reward plus half original MBPP test fraction. The prior run remains available in W&B and its isolated output directory for comparison.
+
+The hybrid run uses a fresh output directory so EvalPlus cannot reuse result files from the prior fractional-reward run.
