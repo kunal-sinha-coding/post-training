@@ -11277,3 +11277,9 @@ wandb_project: grpo-mbpp
 wandb_run_name: null
 
 ------------------------------------------------------------------------
+
+## 2026-09-20: Step zero versus final generation comparison
+
+Compared the saved step 0 and step 520 generations for W&B run `cool-fog-74` (`dizijcbf`) task by task. Training changed 22 of 572 tasks: 7 newly full passing, 5 full-pass regressions, 7 partial improvements, and 3 partial regressions. Eval MBPP changed 12 of 399 tasks: 5 newly passing and 7 regressions. Eval MBPP+ changed 8 of 399 tasks: 5 newly passing and 3 regressions. The complete per-task records and both saved completions are in `outputs/grpo-mbpp-canonical-split-hybrid-lr3e6/step-0-vs-520-comparison.json`.
+
+The task-level evidence shows real semantic changes, including a corrected bitonic subsequence sum and a print-to-return fix, alongside regressions involving tuple versus list output and an off-by-one slice. The result supports task churn rather than broad improvement. The comparison used the full training and evaluation denominators and kept candidate selection independent of the reported evaluation measurements.

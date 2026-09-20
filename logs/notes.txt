@@ -2104,3 +2104,7 @@ The first vLLM training evaluation exposed a format mismatch: vLLM returned raw 
 ## 2026-09-20: Stop and review hybrid GRPO run
 
 Stopped the active `cool-fog-74` W&B run (`dizijcbf`) at the user’s request after confirming no training process remained. Reviewed its training reward, test progress, full-pass fraction, loss, gradient and parameter update metrics, plus all six checkpoint evaluation metrics through evaluation step 520. The run showed noisy training improvements but no reliable MBPP+ benchmark improvement, so no restart was initiated.
+
+## 2026-09-20: Compare step zero and final generations
+
+Compared all saved step zero and step 520 completions from the stopped hybrid run. The analysis found 7 training tasks newly full passing and 5 regressed, with 5 Eval MBPP gains versus 7 regressions and 5 MBPP+ gains versus 3 regressions. Saved the complete changed-task comparison under the hybrid output directory and appended the detailed analysis to `logs/error_analysis.txt`.

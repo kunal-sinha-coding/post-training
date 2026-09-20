@@ -1026,3 +1026,82 @@ The run used one seed and one deterministic completion per task. W&B metrics wer
 
 
 The dense control included the same SFT warm start, but W&B configuration comparison does not expose the custom dynamic reward keys. The schedule was verified from logged `reward/pass_weight` and `reward/dense_weight` curves.
+
+------------------------------------------------------------------------
+
+## ERROR ANALYSIS 2026-09-20: Step zero versus final checkpoint
+
+Command: offline comparison of the saved `cool-fog-74` (`dizijcbf`) artifacts at step 0 and step 520.
+
+## 0. Run summary
+
+The comparison covered all 572 training tasks and all 399 canonical EvalPlus tasks. Training changed 22 task outcomes, with 7 newly passing, 5 full-pass regressions, 7 partial improvements, and 3 partial regressions. Evaluation MBPP changed 12 task outcomes, with 5 newly passing and 7 regressions. Evaluation MBPP+ changed 8 task outcomes, with 5 newly passing and 3 regressions. The strongest pattern is task churn with nearly equal recoveries and regressions, rather than broad improvement.
+
+## 1. Iteration comparison
+
+Step zero and step 520 were compared using the same saved JSON schemas and the same task identifiers. The aggregate training pass@1 changed from 360/572 to 362/572. Eval MBPP changed from 294/399 to 292/399. Eval MBPP+ changed from 245/399 to 247/399.
+
+## 2. Run context and data coverage
+
+Training records came from `training-step-0-details.json` and `training-step-520-details.json`. EvalPlus records came from the two `eval_results.json` files under the corresponding checkpoint directories. Both training files contained 572 records and both evaluation files contained 399 records. The complete changed-task comparison, including both saved solutions and failure lists, is in `outputs/grpo-mbpp-canonical-split-hybrid-lr3e6/step-0-vs-520-comparison.json`.
+
+## 3. Error-pattern distribution
+
+| Dataset and pattern | Count | Percentage |
+| --- | ---: | ---: |
+| Training newly full passing | 7 | 1.22% |
+| Training full-pass regression | 5 | 0.87% |
+| Training partial improvement | 7 | 1.22% |
+| Training partial regression | 3 | 0.52% |
+| Eval MBPP newly passing | 5 | 1.25% |
+| Eval MBPP regression | 7 | 1.75% |
+| Eval MBPP+ newly passing | 5 | 1.25% |
+| Eval MBPP+ regression | 3 | 0.75% |
+
+The first four percentages use 572 training tasks. The last four use 399 evaluation tasks. Unchanged tasks account for the remaining examples.
+
+## 4. Observed error patterns
+
+Training newly full passing occurred on tasks `144, 33, 508, 711, 930, 940, 965`. Training full-pass regressions occurred on `359, 651, 738, 914, 957`. Partial improvements occurred on `107, 211, 304, 712, 856, 926, 936`, and partial regressions occurred on `179, 660, 968`.
+
+Eval MBPP newly passing occurred on `245, 300, 419, 608, 61`. Eval MBPP regressions occurred on `109, 440, 560, 577, 580, 630, 644`.
+
+Eval MBPP+ newly passing occurred on `245, 419, 472, 608, 61`. Eval MBPP+ regressions occurred on `560, 580, 644`. Three tasks remained timed out in both checkpoints.
+
+Representative improvement: task `245` changed from a length-based bitonic subsequence calculation to a sum-based dynamic program and moved from failing all base tests to passing MBPP and MBPP+.
+
+Representative interface improvement: task `419` changed from printing the result to returning it and moved from failing to passing both evaluations.
+
+Representative regression: task `560` returned a tuple at step zero and a list at step 520. The trained completion kept the set union logic but changed the required return type.
+
+Representative regression: task `644` changed the slice from `arr[:k]` to `arr[:k+1]`, introducing an off-by-one error and failing tests that passed at step zero.
+
+Representative regression: task `580` changed recursive tuple nesting from appending the recursive result to extending it, changing the output structure and failing both evaluation suites.
+
+## 5. Success patterns and controls
+
+The majority of tasks were unchanged: 550 of 572 training tasks, 387 of 399 MBPP tasks, and 391 of 399 MBPP+ tasks. This rules out a broad format or execution collapse. The changed evaluation tasks are concentrated in semantic algorithm and return-value changes.
+
+## 6. Deep triage
+
+The training reward improved a small number of tasks and regressed a similar number. Four training tasks gained all three tests, while two lost all three tests. This is consistent with local task churn rather than a general training trend.
+
+The evaluation improvements include algorithm corrections and return-value corrections. The regressions include return-type changes and an off-by-one boundary change. These examples show that the adapter is changing semantic code decisions, but the changes are not consistently beneficial.
+
+## 7. Shared causes and interactions
+
+The hybrid reward gives credit for partial test progress and full completion. The task transitions show that it can move a completion across the full-pass boundary in either direction. The aggregate reward increase therefore does not imply a net increase in solved tasks.
+
+## 8. Underlying root-cause synthesis
+
+The primary observed mechanism is small, inconsistent semantic movement. It explains the 7 training gains, 5 training regressions, 5 Eval MBPP gains, 7 Eval MBPP regressions, 5 MBPP+ gains, and 3 MBPP+ regressions. The evidence is the balanced task transition counts and concrete algorithm, return-type, and boundary changes. A remaining possibility is evaluation sampling noise, but the saved greedy outputs show that the final model made real task-level changes.
+
+## 9. Proposed solutions and confirmation tests
+
+1. Use this transition analysis for every future checkpoint and select checkpoints using a held-out metric. Confirm that the selected checkpoint improves both full-pass count and test fraction without an increase in regressions.
+2. Compare the hybrid reward with a full-pass focused reward on the same split and budget. Confirm whether the ratio of newly solved tasks to regressions improves.
+3. Add per-task reward and status transitions to W&B or a saved JSON artifact. Confirm that partial gains are converted into full passes rather than remaining partial.
+
+## 10. Limitations
+
+The comparison has one base model, one trained checkpoint, and one greedy completion per task. It cannot estimate stochastic confidence intervals. The saved EvalPlus artifacts preserve complete solutions and failure lists, while the training details preserve test counts but do not preserve ground-truth test inputs for every task.
