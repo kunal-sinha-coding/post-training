@@ -776,8 +776,12 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
                         key: inputs[key].detach().cpu()
                         for key in ("prompt_ids", "prompt_mask", "completion_ids", "completion_mask")
                     }
+                    was_training = model.training
+                    model.eval()
                     with torch.no_grad():
                         old_logps = _probe_sequence_logps(model, {key: value.to(next(model.parameters()).device) for key, value in batch.items()}, float(config.get("temperature", 1.0))).detach().cpu()
+                    if was_training:
+                        model.train()
                     config["_direction_probe_batches"].append({
                         "batch": batch,
                         "old_logps": old_logps,

@@ -2131,3 +2131,5 @@ The previous tiny overfit run was stopped after it reached step 20 without impro
 The first probe attempt was stopped after step one because `per_device_train_batch_size: 1` caused the direction diagnostic to observe one completion while the reward covered 16 completions. The configuration was corrected to use `per_device_train_batch_size: 16`, evaluate only at step eight, and write to a fresh v2 output and W&B run.
 
 The v2 attempt then ran out of GPU memory in the diagnostic forward pass. The v3 configuration restores the original one-sample training microbatch and accumulates all 16 microbatches across `gradient_accumulation_steps: 16`, then recomputes post-update likelihoods one sample at a time. This preserves the original memory profile while measuring the complete rollout update.
+
+The first v3 startup was stopped before its first optimizer update after identifying that the pre-update likelihood probe used LoRA dropout while the post-update probe used evaluation mode. The probe now measures both sides in evaluation mode.
