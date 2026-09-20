@@ -20,7 +20,7 @@ import yaml
 from dotenv import load_dotenv
 
 from data import build_sft_dataset, prepare_datasets
-from evaluate import QWEN_EVALPLUS_STOP_STRINGS, append_training_step_header, append_training_step_metrics, append_training_step_samples, append_evaluation_log, code_fence_stopping_criteria, evaluate_model, evaluate_texts, forced_code_prefix_length, forced_code_prefix_processor, save_evaluation, start_run_log
+from evaluate import QWEN_EVALPLUS_STOP_STRINGS, append_training_step_header, append_training_step_metrics, append_training_step_samples, append_evaluation_log, code_fence_stopping_criteria, evaluate_model, evaluate_texts, forced_code_prefix_length, forced_code_prefix_processor, mask_completion_tokens_after_stop, save_evaluation, start_run_log, stop_token_id_sequences
 from sandbox import reward_function, wrap_qwen_continuation
 
 
@@ -750,6 +750,8 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         generation_batch_size=int(config["generation_batch_size"]) if config.get("generation_batch_size") else None,
         max_completion_length=int(config["max_completion_length"]),
         beta=float(config.get("beta", 0.0)),
+        loss_type=str(config.get("loss_type", "dapo")),
+        disable_dropout=bool(config.get("disable_dropout", False)),
         logging_steps=int(config["logging_steps"]),
         save_steps=int(config["save_steps"]),
         save_strategy="no",
@@ -762,9 +764,25 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         seed=int(config.get("seed", 42)),
     )
     trainer_class = GRPOTrainer
+    if config.get("mask_reward_stops", True):
+        # Align completion-token loss masks with the per-completion stop boundary used by reward scoring.
+        stop_ids = stop_token_id_sequences(tokenizer, QWEN_EVALPLUS_STOP_STRINGS)
+
+        class RewardMaskedGRPOTrainer(GRPOTrainer):
+            """Mask unscored suffix tokens after every completion's reward stop marker."""
+
+            def _generate_and_score_completions(self, inputs: list[dict[str, Any]]) -> dict[str, Any]:
+                """Apply the reward-prefix mask after TRL generates and scores completions."""
+                generated = super()._generate_and_score_completions(inputs)
+                generated["completion_mask"] = mask_completion_tokens_after_stop(
+                    generated["completion_ids"], generated["completion_mask"], stop_ids
+                )
+                return generated
+
+        trainer_class = RewardMaskedGRPOTrainer
     if config.get("probe_update_direction", False):
         # Capture one rollout batch so the callback can measure post-update likelihood changes.
-        class ProbeGRPOTrainer(GRPOTrainer):
+        class ProbeGRPOTrainer(trainer_class):
             """Add one rollout likelihood probe to the normal GRPO trainer."""
 
             def _compute_loss(self, model: Any, inputs: dict[str, Any]) -> Any:
@@ -829,6 +847,9 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         trainer.model = model
     # Save and evaluate the final selected model.
     trainer.save_model(str(output_dir / "final"))
+    # Release the training model before vLLM loads the merged adapter for final generation.
+    trainer.model.to("cpu")
+    torch.cuda.empty_cache()
     if config.get("train_subset_evaluation_only", False):
         # Evaluate the final policy only on the fixed tiny training set.
         final_result = evaluate_training_mbpp(output_dir / "final", train_dataset, config, "training-final")

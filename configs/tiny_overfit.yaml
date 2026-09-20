@@ -18,18 +18,21 @@ evalplus_eval_steps: 5
 lora_enabled: true
 lora_r: 16
 lora_alpha: 32
-lora_dropout: 0.05
+lora_dropout: 0.0
 lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
 sft_enabled: false
 log_path: logs/logs.txt
 results_log_path: logs/results.txt
-output_dir: outputs/grpo-mbpp-tiny-overfit-g16
+output_dir: outputs/grpo-mbpp-tiny-overfit-g16-reward-masked
+mask_reward_stops: true
 num_train_epochs: 100
 max_steps: 50
 per_device_train_batch_size: 1
 gradient_accumulation_steps: 32
 generation_batch_size: 64
 learning_rate: 0.000003
+loss_type: dapo
+disable_dropout: true
 num_generations: 16
 beta: 0.0
 max_prompt_length: 512
@@ -47,7 +50,7 @@ bf16: true
 fp16: false
 report_to: wandb
 wandb_project: grpo-mbpp
-wandb_run_name: grpo-mbpp-tiny-overfit-g16
+wandb_run_name: grpo-mbpp-tiny-overfit-g16-reward-masked
 reward_function: hybrid
 reward_coefficient: 0.5
 reward_rolling_window: 10

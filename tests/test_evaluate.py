@@ -1,8 +1,35 @@
 import os
 
 import pytest
+import torch
 
-from evaluate import aggregate_results, append_evaluation_result, cleanup_run_logs, evaluate_texts, start_run_log
+from evaluate import aggregate_results, append_evaluation_result, cleanup_run_logs, code_fence_stopping_criteria, evaluate_texts, mask_completion_tokens_after_stop, start_run_log
+
+
+def test_stop_criterion_marks_each_finished_completion():
+    """Return a per-row stop decision so finished samples are padded independently."""
+    class Tokenizer:
+        """Map the one test stop string to a fixed token sequence."""
+
+        def __call__(self, text, add_special_tokens=False):
+            """Return the stop token IDs expected by the criterion."""
+            del text, add_special_tokens
+            return {"input_ids": [7, 8]}
+
+    criterion = code_fence_stopping_criteria(Tokenizer(), prompt_width=2, stop_strings=("stop",))[0]
+    finished = criterion(torch.tensor([[1, 2, 7, 8], [1, 2, 3, 4]]), None)
+
+    assert torch.equal(finished, torch.tensor([True, False]))
+
+
+def test_reward_stop_mask_removes_each_unscored_suffix():
+    """Mask stop tokens and tails while retaining code tokens for every completion."""
+    completion_ids = torch.tensor([[3, 7, 8, 9, 0], [4, 5, 6, 0, 0]])
+    completion_mask = torch.tensor([[1, 1, 1, 1, 0], [1, 1, 1, 0, 0]])
+
+    masked = mask_completion_tokens_after_stop(completion_ids, completion_mask, [[7, 8]])
+
+    assert torch.equal(masked, torch.tensor([[1, 0, 0, 0, 0], [1, 1, 1, 0, 0]]))
 
 
 def test_aggregate_results_reports_pass_rate_and_statuses():

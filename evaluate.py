@@ -184,6 +184,34 @@ def aggregate_results(results: list[dict[str, Any]]) -> dict[str, Any]:
 QWEN_EVALPLUS_STOP_STRINGS = ("<|endoftext|>", "<|endofmask|>", "</s>", "\nif __name__", "\ndef main(", "\nprint(", "\n#", "```")
 
 
+def stop_token_id_sequences(tokenizer: Any, stop_strings: tuple[str, ...] = QWEN_EVALPLUS_STOP_STRINGS) -> list[list[int]]:
+    """Tokenize the reward stop strings for generation and loss masking."""
+    # Ignore empty encodings because they cannot define a completion boundary.
+    return [tokenizer(stop, add_special_tokens=False)["input_ids"] for stop in stop_strings if tokenizer(stop, add_special_tokens=False)["input_ids"]]
+
+
+def mask_completion_tokens_after_stop(completion_ids: Any, completion_mask: Any, stop_ids: list[list[int]]) -> Any:
+    """Mask each completion from its first reward stop token through the padded tail."""
+    import torch
+
+    # Preserve the original tensor because TRL reuses the generated completion fields.
+    masked = completion_mask.clone()
+    for row_index in range(completion_ids.shape[0]):
+        # Restrict matching to generated rather than right-padding tokens.
+        length = int(completion_mask[row_index].sum().item())
+        row = completion_ids[row_index, :length]
+        first_stop = length
+        for stop in stop_ids:
+            stop_tensor = torch.tensor(stop, device=row.device, dtype=row.dtype)
+            if row.numel() < stop_tensor.numel():
+                continue
+            matches = (row.unfold(0, stop_tensor.numel(), 1) == stop_tensor).all(dim=1)
+            if matches.any():
+                first_stop = min(first_stop, int(matches.nonzero(as_tuple=False)[0].item()))
+        masked[row_index, first_stop:] = 0
+    return masked
+
+
 def code_fence_stopping_criteria(tokenizer: Any, prompt_width: int, stop_strings: tuple[str, ...] = QWEN_EVALPLUS_STOP_STRINGS) -> Any:
     """Stop each generation after an official Qwen EvalPlus stop string appears."""
     import torch
@@ -194,11 +222,11 @@ def code_fence_stopping_criteria(tokenizer: Any, prompt_width: int, stop_strings
 
         def __init__(self) -> None:
             # Tokenize every official stop sequence once and track finished rows.
-            self.stop_ids = [torch.tensor(tokenizer(stop, add_special_tokens=False)["input_ids"], dtype=torch.long) for stop in stop_strings]
+            self.stop_ids = [torch.tensor(stop, dtype=torch.long) for stop in stop_token_id_sequences(tokenizer, stop_strings)]
             self.finished: torch.Tensor | None = None
 
-        def __call__(self, input_ids: Any, scores: Any, **kwargs: Any) -> bool:
-            """Return true only after every generated row has emitted the closing fence."""
+        def __call__(self, input_ids: Any, scores: Any, **kwargs: Any) -> Any:
+            """Return completion status separately for every generated row."""
             del scores, kwargs
             if self.finished is None or self.finished.shape[0] != input_ids.shape[0]:
                 self.finished = torch.zeros(input_ids.shape[0], dtype=torch.bool, device=input_ids.device)
@@ -208,7 +236,7 @@ def code_fence_stopping_criteria(tokenizer: Any, prompt_width: int, stop_strings
                 if generated.shape[1] >= stop_id.shape[0]:
                     suffix = generated[:, -stop_id.shape[0]:]
                     self.finished |= torch.all(suffix == stop_id, dim=1)
-            return bool(torch.all(self.finished).item())
+            return self.finished
 
     return StoppingCriteriaList([CodeFenceCriteria()])
 
