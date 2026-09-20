@@ -230,6 +230,16 @@ def _make_reward(config: dict[str, Any]):
         diagnostics: dict[str, float] = {}
         append_training_step_samples(config.get("log_path", "logs/logs.txt"), completions)
         rewards = reward_function(completions, test_code, timeout, diagnostics=diagnostics, group_size=int(config.get("num_generations", 4)), reward_function_name=reward_function_name, reward_coefficient=reward_coefficient, **kwargs)
+        # Record the generated completion token lengths so truncation and length drift are visible in W&B.
+        completion_ids = kwargs.get("completion_ids")
+        if isinstance(completion_ids, list) and completion_ids:
+            completion_lengths = [len(ids) for ids in completion_ids]
+            diagnostics["training/completion_tokens_mean"] = sum(completion_lengths) / len(completion_lengths)
+            diagnostics["training/completion_tokens_min"] = min(completion_lengths)
+            diagnostics["training/completion_tokens_max"] = max(completion_lengths)
+            diagnostics["training/completion_tokens_truncated_fraction"] = sum(
+                length >= int(config.get("max_completion_length", 2048)) for length in completion_lengths
+            ) / len(completion_lengths)
         # Record the number of hidden assertions exercised by this reward batch.
         synthetic_counts = kwargs.get("synthetic_test_count", [])
         if isinstance(synthetic_counts, list) and synthetic_counts:
@@ -666,6 +676,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         gradient_accumulation_steps=int(config["gradient_accumulation_steps"]),
         num_generations=int(config["num_generations"]),
         max_completion_length=int(config["max_completion_length"]),
+        beta=float(config.get("beta", 0.0)),
         logging_steps=int(config["logging_steps"]),
         save_steps=int(config["save_steps"]),
         save_strategy="no",

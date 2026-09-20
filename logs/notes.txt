@@ -2108,3 +2108,7 @@ Stopped the active `cool-fog-74` W&B run (`dizijcbf`) at the user’s request af
 ## 2026-09-20: Compare step zero and final generations
 
 Compared all saved step zero and step 520 completions from the stopped hybrid run. The analysis found 7 training tasks newly full passing and 5 regressed, with 5 Eval MBPP gains versus 7 regressions and 5 MBPP+ gains versus 3 regressions. Saved the complete changed-task comparison under the hybrid output directory and appended the detailed analysis to `logs/error_analysis.txt`.
+
+## 2026-09-20: Add GRPO diagnostic metrics
+
+Confirmed that TRL already logs reward standard deviation, zero-variance group fraction, entropy, clipping ratios, token counts, reward mean, reward standard deviation, gradient norms, and parameter updates. Added explicit completion token mean, minimum, maximum, and truncation fraction metrics. Exposed the GRPO `beta` setting with a default of zero, so future runs can enable reference KL logging and regularization deliberately.
