@@ -251,20 +251,24 @@ def _make_reward(config: dict[str, Any]):
 
     return reward
 
-def _probe_sequence_logps(model: Any, batch: dict[str, Any], temperature: float = 1.0) -> Any:
+def _probe_sequence_logps(model: Any, batch: dict[str, Any], temperature: float = 1.0, chunk_size: int = 1) -> Any:
     """Compute mean completion log probabilities for a saved GRPO rollout batch."""
     # Reconstruct the same completion-token logits used by the installed TRL GRPO loss.
     import torch
-    input_ids = torch.cat([batch["prompt_ids"], batch["completion_ids"]], dim=1)
-    attention_mask = torch.cat([batch["prompt_mask"], batch["completion_mask"]], dim=1)
-    completion_length = batch["completion_ids"].shape[1]
-    logits = model(input_ids=input_ids, attention_mask=attention_mask, use_cache=False).logits
-    logits = logits[:, :-1, :]
-    logits = logits[:, -completion_length:, :] / temperature
-    token_ids = input_ids[:, -completion_length:]
-    token_logps = torch.log_softmax(logits, dim=-1).gather(-1, token_ids.unsqueeze(-1)).squeeze(-1)
-    mask = batch["completion_mask"].float()
-    return (token_logps * mask).sum(dim=1) / mask.sum(dim=1).clamp(min=1.0)
+    sequence_logps = []
+    for start in range(0, batch["prompt_ids"].shape[0], chunk_size):
+        # Recompute one small slice at a time so the diagnostic does not change training memory requirements.
+        input_ids = torch.cat([batch["prompt_ids"][start : start + chunk_size], batch["completion_ids"][start : start + chunk_size]], dim=1)
+        attention_mask = torch.cat([batch["prompt_mask"][start : start + chunk_size], batch["completion_mask"][start : start + chunk_size]], dim=1)
+        completion_length = batch["completion_ids"].shape[1]
+        logits = model(input_ids=input_ids, attention_mask=attention_mask, use_cache=False).logits
+        logits = logits[:, :-1, :]
+        logits = logits[:, -completion_length:, :] / temperature
+        token_ids = input_ids[:, -completion_length:]
+        token_logps = torch.log_softmax(logits, dim=-1).gather(-1, token_ids.unsqueeze(-1)).squeeze(-1)
+        mask = batch["completion_mask"][start : start + chunk_size].float()
+        sequence_logps.append((token_logps * mask).sum(dim=1) / mask.sum(dim=1).clamp(min=1.0))
+    return torch.cat(sequence_logps)
 
 
 def _make_callback(model: Any, tokenizer: Any, train_dataset: Any, test_dataset: Any, config: dict[str, Any], wandb: Any | None, device: Any | None = None):
@@ -347,16 +351,21 @@ def _make_callback(model: Any, tokenizer: Any, train_dataset: Any, test_dataset:
                 "training/relative_parameter_update": update_norm / (parameter_sq**0.5 + 1e-12),
                 "training/lora_delta_from_initial_norm": initial_delta_sq**0.5,
             })
-            probe_batch = config.pop("_direction_probe_batch", None)
-            if probe_batch is not None:
+            probe_batches = config.pop("_direction_probe_batches", None)
+            if probe_batches:
                 # Compare the post-update likelihood of positive and negative advantage samples.
                 import torch
+                probe_batch = {
+                    "batch": {key: torch.cat([item["batch"][key] for item in probe_batches]) for key in probe_batches[0]["batch"]},
+                    "old_logps": torch.cat([item["old_logps"] for item in probe_batches]),
+                    "advantages": torch.cat([item["advantages"] for item in probe_batches]),
+                }
                 target_device = next(self.evaluation_model.parameters()).device
                 moved_batch = {key: value.to(target_device) for key, value in probe_batch["batch"].items()}
                 was_training = self.evaluation_model.training
                 self.evaluation_model.eval()
                 with torch.no_grad():
-                    new_logps = _probe_sequence_logps(self.evaluation_model, moved_batch, float(config.get("temperature", 1.0)))
+                    new_logps = _probe_sequence_logps(self.evaluation_model, moved_batch, float(config.get("temperature", 1.0)), chunk_size=1)
                 if was_training:
                     self.evaluation_model.train()
                 old_logps = probe_batch["old_logps"].to(new_logps.device)
@@ -759,7 +768,9 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
 
             def _compute_loss(self, model: Any, inputs: dict[str, Any]) -> Any:
                 """Cache the first rollout batch and delegate the actual GRPO loss to TRL."""
-                if "_direction_probe_batch" not in config:
+                if "_direction_probe_batches" not in config:
+                    config["_direction_probe_batches"] = []
+                if len(config["_direction_probe_batches"]) < int(config.get("gradient_accumulation_steps", 1)):
                     import torch
                     batch = {
                         key: inputs[key].detach().cpu()
@@ -767,11 +778,11 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
                     }
                     with torch.no_grad():
                         old_logps = _probe_sequence_logps(model, {key: value.to(next(model.parameters()).device) for key, value in batch.items()}, float(config.get("temperature", 1.0))).detach().cpu()
-                    config["_direction_probe_batch"] = {
+                    config["_direction_probe_batches"].append({
                         "batch": batch,
                         "old_logps": old_logps,
                         "advantages": inputs["advantages"].detach().cpu(),
-                    }
+                    })
                 return super()._compute_loss(model, inputs)
 
         trainer_class = ProbeGRPOTrainer
