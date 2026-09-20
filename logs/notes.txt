@@ -2135,3 +2135,5 @@ The v2 attempt then ran out of GPU memory in the diagnostic forward pass. The v3
 The first v3 startup was stopped before its first optimizer update after identifying that the pre-update likelihood probe used LoRA dropout while the post-update probe used evaluation mode. The probe now measures both sides in evaluation mode.
 
 The corrected run uses a fresh v4 output directory and W&B run.
+
+Commit `record-reward-direction-probe-results` records the v4 experiment in `logs/results.txt` and appends the required complete error analysis to `logs/error_analysis.txt`. It records 128 traced completions, scorer status counts, task-level reward means, unchanged step-zero versus step-eight pass@1 and test fraction, the negative average advantage to log-probability correlation, and the final CUDA out-of-memory limitation. The records support a follow-up synthetic reward and TRL batching test.

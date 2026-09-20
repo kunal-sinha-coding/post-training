@@ -1105,3 +1105,62 @@ The primary observed mechanism is small, inconsistent semantic movement. It expl
 ## 10. Limitations
 
 The comparison has one base model, one trained checkpoint, and one greedy completion per task. It cannot estimate stochastic confidence intervals. The saved EvalPlus artifacts preserve complete solutions and failure lists, while the training details preserve test counts but do not preserve ground-truth test inputs for every task.
+
+------------------------------------------------------------------------
+ERROR ANALYSIS
+Timestamp: 2026-09-20
+Command: accelerate launch --num_processes 1 train.py --config configs/reward_direction_probe.yaml
+Batch mode: eight optimizer updates, one 16-completion rollout group per update.
+
+0. Run summary
+
+The run traced 128 sampled completions from eight fixed MBPP training tasks. The scorer generated 68 full passes, 21 partial results, 38 failed executions, and 1 syntax error. Step-zero and step-eight greedy pass@1 were both 0.625, and the overall test fraction was 0.75 at both points. Advantage to post-update sequence-log-probability change averaged -0.055 correlation, with 0.461 sign alignment. The next action is to inspect the TRL batching and loss inputs with a known synthetic reward before changing the reward formula.
+
+1. Iteration comparison
+
+Compared with the previous tiny overfit run, the evaluation result remains unchanged at 5/8 pass@1 and 75% of original MBPP tests. The new run adds complete reward traces and update direction measurements. The scorer functions, while the update direction is inconsistent.
+
+2. Run context and data coverage
+
+The dataset contained the same eight fixed disjoint training records. Each rollout group contained 16 completions, and the trace contained 128 records. Task-level trace counts were 16 each for tasks 601, 609, 613, 617, 621, 625, 627, and 634. The final model reload failed from CUDA out of memory after step-eight evaluation, but the training and step-eight evaluation artifacts were written.
+
+3. Error-pattern distribution
+
+| Pattern | Count | Percentage | Definition |
+|---|---:|---:|---|
+| Full pass | 68 | 53.125% | All three original MBPP tests passed. |
+| Failed execution | 38 | 29.688% | The candidate executed but passed zero tests. |
+| Partial execution | 21 | 16.406% | The candidate passed one or two of three tests. |
+| Syntax error | 1 | 0.781% | The candidate could not be compiled. |
+
+The rows are mutually exclusive and sum to 128. The scorer reported no format errors.
+
+4. Observed error patterns
+
+Failed execution was concentrated on tasks 609 and 617, which had mean rewards 0.052 and 0.073. Partial execution was concentrated on tasks 627, 609, and 617. The trace preserves the exact raw and scored code for every occurrence. The single syntax error occurred on task 617.
+
+5. Success patterns and controls
+
+Tasks 613, 621, and 625 each had 14 full passes out of 16. The trace had valid task IDs, three-test denominators, and reward values in the expected set {0, 1/6, 1/3, 1}. These values match the hybrid formula with coefficient 0.5 and rule out a general sandbox execution failure.
+
+6. Deep triage
+
+The reward scorer is supported by direct trace evidence. Every record includes raw completion, truncated text, scored code, test code, detail status, passed count, total count, and scalar reward. The scalar values match the configured formula. The remaining uncertainty is whether test code ordering matches every task ID, which should be checked with an independent replay.
+
+The update direction is the dominant training failure pattern. Positive-advantage samples should receive higher sequence log probability after the update, while negative-advantage samples should receive lower probability. Across eight updates, correlation averaged -0.055, positive-advantage mean log-probability change was -0.000182, negative-advantage mean change was +0.000133, and sign alignment was 0.461. This supports inefficient or misdirected reinforcement. Plausible causes include a mismatch between cached rollout batches and optimizer batches, an issue in the installed TRL loss path, or shared LoRA parameter interference. The probe uses sequence-level likelihoods, so token-level details remain unresolved.
+
+7. Shared causes and interactions
+
+Every rollout group had reward variance, so the reward created usable ranking information. The update direction did not consistently favor higher-reward members. This explains why rollout reward spiked on easy tasks while greedy pass@1 remained unchanged. The hybrid reward is not the first suspected root cause.
+
+8. Underlying root-cause synthesis
+
+The smallest supported mechanism is an optimization or batching mismatch after a valid but task-concentrated reward signal. The scorer yields correct discrete rewards and meaningful within-group variance. The model updates parameters, but the measured likelihood changes are near random relative to advantage. This explains the flat pass@1 and lack of sustained reward improvement. The exact source requires a synthetic known-reward test and direct inspection of TRL loss inputs.
+
+9. Proposed solutions and confirmation tests
+
+Run a one-step synthetic reward test that assigns fixed positive advantages to selected completion indices and fixed negative advantages to the others. Verify positive correlation and positive likelihood changes for the selected samples. Then log prompt ID, completion index, advantage, token IDs, old log probability, and batch position entering the TRL loss. Confirm that the 16 reward records map to the same 16 loss records. Compare the installed TRL loss with a manual gradient sign calculation before changing the reward formula.
+
+10. Limitations
+
+The experiment has eight tasks and eight updates. The probe uses sequence-level mean log probabilities and 16 samples per update. The final model reload failed from GPU memory, although step-eight evaluation artifacts exist. W&B remote curves were not independently queried; local logs and saved artifacts were used. The trace does not by itself prove every test association without independent replay.

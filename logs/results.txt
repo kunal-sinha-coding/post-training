@@ -74,6 +74,24 @@ include_generic_arguments: true
 
 ------------------------------------------------------------------------
 
+## Experiment: reward scoring and update direction probe, v4
+
+Status: completed GRPO updates; final post-training reload failed from CUDA out of memory after the step-eight evaluation artifact was written.
+
+Purpose: verify the hybrid reward on exact sampled code and test whether one GRPO update increases the likelihood of higher-advantage completions.
+
+Setup: Qwen/Qwen2.5-Coder-3B-Instruct with LoRA, eight fixed disjoint MBPP training tasks, 16 sampled completions per rollout, eight optimizer steps, one rollout group per optimizer update using 16 microbatches, learning rate 3e-6 with a linear schedule, bfloat16, 2048 maximum completion tokens, hybrid reward 0.5 times full pass plus 0.5 times original MBPP test fraction, and greedy vLLM evaluation on the same eight tasks. The canonical 399 task EvalPlus evaluation was disabled. Candidate selection used only the tiny training-set pass@1.
+
+Artifacts: W&B project kunal-personal/grpo-mbpp, run grpo-mbpp-reward-direction-probe-g16-v4, ID i5sozc3j; output outputs/grpo-mbpp-reward-direction-probe-g16-v4; reward trace reward-trace.jsonl; code commit a751b25.
+
+Reward scoring result: 128 sampled completions were traced. The reward trace preserved task IDs, raw and truncated completions, scored code, test code, status, passed and total tests, component rewards, and scalar reward. Status counts were 68 full passes, 21 partial completions, 38 failed executions, and 1 syntax error. Every task received 16 samples. Per-task mean reward was 0.531 for task 601, 0.052 for 609, 0.875 for 613, 0.073 for 617, 0.875 for 621, 0.875 for 625, 0.417 for 627, and 0.812 for 634.
+
+Update direction result: pass@1 stayed at 0.625 and overall test fraction stayed at 0.75 from step zero to step eight. Across eight updates, advantage to sequence-log-probability-delta correlations averaged -0.055. Mean log-probability change was -0.000182 for positive-advantage samples and +0.000133 for negative-advantage samples. Sign alignment averaged 0.461, close to chance. This indicates that the updates did not consistently reinforce higher-advantage samples.
+
+Training reward result: rollout reward means were 0.417, 0.073, 0.531, 0.813, 0.875, 0.052, 0.875, and 0.875. The final cumulative average was 0.564, but this was driven by large task-to-task variation rather than a consistent monotonic policy improvement. The reward trace and direction probe jointly support the conclusion that the scorer is functioning and the update direction is inefficient or misaligned.
+
+Limitations: the direction probe measures sequence-level log-probability changes after each aggregate update and does not prove that every token-level gradient is correct. The last final evaluation reload failed because the training model still occupied nearly all GPU memory, but step-eight evaluation metrics were written before that failure. The experiment has eight prompts and eight updates, so it diagnoses the mechanism rather than estimating generalization.
+
 ------------------------------------------------------------------------
 EVALUATION RESULTS
 Evaluation: checkpoint-115
@@ -11409,3 +11427,906 @@ Artifacts: W&B project `kunal-personal/grpo-mbpp`, run `grpo-mbpp-tiny-overfit-g
 Preliminary step-zero metrics: pass@1 `0.625` (5 of 8 tasks), overall original MBPP test pass fraction `0.75`. Final and intermediate metrics are pending.
 
 Limitations: this is an intentional overfit diagnostic on eight training tasks and cannot estimate held-out EvalPlus performance.
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-5
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 12:58:42 PDT
+Git commit: 614c3ea
+Change description: 614c3ea Record tiny overfit diagnostic setup
+Metrics:
+{
+  "average_reward": 0.8333333333333334,
+  "examples": 8,
+  "pass_at_1": 0.625,
+  "repeated_completion_fraction": 0.0,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.625,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.8333333333333334,
+  "status_counts": {
+    "partial": 3,
+    "passed": 5
+  },
+  "successful_examples": 5,
+  "tests_pass_fraction": 0.8333333333333334,
+  "unique_completion_rate": 1.0
+}
+YAML path: configs/tiny_overfit.yaml
+YAML contents:
+# This configuration selects eight canonical training tasks, trains LoRA with GRPO, and evaluates only those same tasks.
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 8
+max_eval_samples: null
+train_subset_evaluation_only: true
+run_baseline_evaluation: false
+reuse_baseline: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: false
+evalplus_eval_steps: 5
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/grpo-mbpp-tiny-overfit-g16
+num_train_epochs: 100
+max_steps: 50
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+generation_batch_size: 64
+learning_rate: 0.000003
+num_generations: 16
+beta: 0.0
+max_prompt_length: 512
+max_completion_length: 2048
+logging_steps: 1
+save_steps: 5
+eval_steps: 5
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 0
+evaluation_batch_size: 8
+evaluation_num_completions: 1
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: grpo-mbpp-tiny-overfit-g16
+reward_function: hybrid
+reward_coefficient: 0.5
+reward_rolling_window: 10
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-10
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 13:06:24 PDT
+Git commit: 614c3ea
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.75,
+  "examples": 8,
+  "pass_at_1": 0.625,
+  "repeated_completion_fraction": 0.0,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.625,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.75,
+  "status_counts": {
+    "failed": 1,
+    "partial": 2,
+    "passed": 5
+  },
+  "successful_examples": 5,
+  "tests_pass_fraction": 0.75,
+  "unique_completion_rate": 1.0
+}
+YAML path: configs/tiny_overfit.yaml
+YAML contents:
+# This configuration selects eight canonical training tasks, trains LoRA with GRPO, and evaluates only those same tasks.
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 8
+max_eval_samples: null
+train_subset_evaluation_only: true
+run_baseline_evaluation: false
+reuse_baseline: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: false
+evalplus_eval_steps: 5
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/grpo-mbpp-tiny-overfit-g16
+num_train_epochs: 100
+max_steps: 50
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+generation_batch_size: 64
+learning_rate: 0.000003
+num_generations: 16
+beta: 0.0
+max_prompt_length: 512
+max_completion_length: 2048
+logging_steps: 1
+save_steps: 5
+eval_steps: 5
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 0
+evaluation_batch_size: 8
+evaluation_num_completions: 1
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: grpo-mbpp-tiny-overfit-g16
+reward_function: hybrid
+reward_coefficient: 0.5
+reward_rolling_window: 10
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-15
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 13:14:27 PDT
+Git commit: 614c3ea
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.75,
+  "examples": 8,
+  "pass_at_1": 0.625,
+  "repeated_completion_fraction": 0.0,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.625,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.75,
+  "status_counts": {
+    "failed": 1,
+    "partial": 2,
+    "passed": 5
+  },
+  "successful_examples": 5,
+  "tests_pass_fraction": 0.75,
+  "unique_completion_rate": 1.0
+}
+YAML path: configs/tiny_overfit.yaml
+YAML contents:
+# This configuration selects eight canonical training tasks, trains LoRA with GRPO, and evaluates only those same tasks.
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 8
+max_eval_samples: null
+train_subset_evaluation_only: true
+run_baseline_evaluation: false
+reuse_baseline: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: false
+evalplus_eval_steps: 5
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/grpo-mbpp-tiny-overfit-g16
+num_train_epochs: 100
+max_steps: 50
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+generation_batch_size: 64
+learning_rate: 0.000003
+num_generations: 16
+beta: 0.0
+max_prompt_length: 512
+max_completion_length: 2048
+logging_steps: 1
+save_steps: 5
+eval_steps: 5
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 0
+evaluation_batch_size: 8
+evaluation_num_completions: 1
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: grpo-mbpp-tiny-overfit-g16
+reward_function: hybrid
+reward_coefficient: 0.5
+reward_rolling_window: 10
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-20
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 13:21:30 PDT
+Git commit: 614c3ea
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.75,
+  "examples": 8,
+  "pass_at_1": 0.625,
+  "repeated_completion_fraction": 0.0,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.625,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.75,
+  "status_counts": {
+    "failed": 1,
+    "partial": 2,
+    "passed": 5
+  },
+  "successful_examples": 5,
+  "tests_pass_fraction": 0.75,
+  "unique_completion_rate": 1.0
+}
+YAML path: configs/tiny_overfit.yaml
+YAML contents:
+# This configuration selects eight canonical training tasks, trains LoRA with GRPO, and evaluates only those same tasks.
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 8
+max_eval_samples: null
+train_subset_evaluation_only: true
+run_baseline_evaluation: false
+reuse_baseline: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: false
+evalplus_eval_steps: 5
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/grpo-mbpp-tiny-overfit-g16
+num_train_epochs: 100
+max_steps: 50
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+generation_batch_size: 64
+learning_rate: 0.000003
+num_generations: 16
+beta: 0.0
+max_prompt_length: 512
+max_completion_length: 2048
+logging_steps: 1
+save_steps: 5
+eval_steps: 5
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 0
+evaluation_batch_size: 8
+evaluation_num_completions: 1
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: grpo-mbpp-tiny-overfit-g16
+reward_function: hybrid
+reward_coefficient: 0.5
+reward_rolling_window: 10
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-25
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 13:30:58 PDT
+Git commit: 614c3ea
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.8333333333333334,
+  "examples": 8,
+  "pass_at_1": 0.625,
+  "repeated_completion_fraction": 0.0,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.625,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.8333333333333334,
+  "status_counts": {
+    "partial": 3,
+    "passed": 5
+  },
+  "successful_examples": 5,
+  "tests_pass_fraction": 0.8333333333333334,
+  "unique_completion_rate": 1.0
+}
+YAML path: configs/tiny_overfit.yaml
+YAML contents:
+# This configuration selects eight canonical training tasks, trains LoRA with GRPO, and evaluates only those same tasks.
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 8
+max_eval_samples: null
+train_subset_evaluation_only: true
+run_baseline_evaluation: false
+reuse_baseline: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: false
+evalplus_eval_steps: 5
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/grpo-mbpp-tiny-overfit-g16
+num_train_epochs: 100
+max_steps: 50
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+generation_batch_size: 64
+learning_rate: 0.000003
+num_generations: 16
+beta: 0.0
+max_prompt_length: 512
+max_completion_length: 2048
+logging_steps: 1
+save_steps: 5
+eval_steps: 5
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 0
+evaluation_batch_size: 8
+evaluation_num_completions: 1
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: grpo-mbpp-tiny-overfit-g16
+reward_function: hybrid
+reward_coefficient: 0.5
+reward_rolling_window: 10
+
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-20 13:37:38 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-0
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 13:39:05 PDT
+Git commit: 0bce0f0
+Change description: 0bce0f0 Add reward and update direction probe
+Metrics:
+{
+  "average_reward": 0.75,
+  "examples": 8,
+  "pass_at_1": 0.625,
+  "repeated_completion_fraction": 0.0,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.625,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.75,
+  "status_counts": {
+    "failed": 1,
+    "partial": 2,
+    "passed": 5
+  },
+  "successful_examples": 5,
+  "tests_pass_fraction": 0.75,
+  "unique_completion_rate": 1.0
+}
+YAML path: configs/reward_direction_probe.yaml
+YAML contents:
+# This configuration runs one 16-generation GRPO update and records reward and likelihood direction diagnostics.
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 8
+max_eval_samples: null
+train_subset_evaluation_only: true
+run_baseline_evaluation: false
+reuse_baseline: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: false
+evalplus_eval_steps: 1
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/grpo-mbpp-reward-direction-probe-g16
+reward_trace_path: outputs/grpo-mbpp-reward-direction-probe-g16/reward-trace.jsonl
+probe_update_direction: true
+temperature: 1.0
+num_train_epochs: 1
+max_steps: 8
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 1
+generation_batch_size: 16
+learning_rate: 0.000003
+num_generations: 16
+beta: 0.0
+max_prompt_length: 512
+max_completion_length: 2048
+logging_steps: 1
+save_steps: 1
+eval_steps: 1
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 0
+evaluation_batch_size: 8
+evaluation_num_completions: 1
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: grpo-mbpp-reward-direction-probe-g16
+reward_function: hybrid
+reward_coefficient: 0.5
+reward_rolling_window: 10
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-1
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 13:40:50 PDT
+Git commit: 0bce0f0
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.75,
+  "examples": 8,
+  "pass_at_1": 0.625,
+  "repeated_completion_fraction": 0.0,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.625,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.75,
+  "status_counts": {
+    "failed": 1,
+    "partial": 2,
+    "passed": 5
+  },
+  "successful_examples": 5,
+  "tests_pass_fraction": 0.75,
+  "unique_completion_rate": 1.0
+}
+YAML path: configs/reward_direction_probe.yaml
+YAML contents:
+# This configuration runs one 16-generation GRPO update and records reward and likelihood direction diagnostics.
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 8
+max_eval_samples: null
+train_subset_evaluation_only: true
+run_baseline_evaluation: false
+reuse_baseline: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: false
+evalplus_eval_steps: 1
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/grpo-mbpp-reward-direction-probe-g16
+reward_trace_path: outputs/grpo-mbpp-reward-direction-probe-g16/reward-trace.jsonl
+probe_update_direction: true
+temperature: 1.0
+num_train_epochs: 1
+max_steps: 8
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 1
+generation_batch_size: 16
+learning_rate: 0.000003
+num_generations: 16
+beta: 0.0
+max_prompt_length: 512
+max_completion_length: 2048
+logging_steps: 1
+save_steps: 1
+eval_steps: 1
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 0
+evaluation_batch_size: 8
+evaluation_num_completions: 1
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: grpo-mbpp-reward-direction-probe-g16
+reward_function: hybrid
+reward_coefficient: 0.5
+reward_rolling_window: 10
+
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-20 13:42:37 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-0
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 13:43:35 PDT
+Git commit: ff5de05
+Change description: ff5de05 Fix full-batch reward direction probe
+Metrics:
+{
+  "average_reward": 0.75,
+  "examples": 8,
+  "pass_at_1": 0.625,
+  "repeated_completion_fraction": 0.0,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.625,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.75,
+  "status_counts": {
+    "failed": 1,
+    "partial": 2,
+    "passed": 5
+  },
+  "successful_examples": 5,
+  "tests_pass_fraction": 0.75,
+  "unique_completion_rate": 1.0
+}
+YAML path: configs/reward_direction_probe.yaml
+YAML contents:
+# This configuration runs one 16-generation GRPO update and records reward and likelihood direction diagnostics.
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 8
+max_eval_samples: null
+train_subset_evaluation_only: true
+run_baseline_evaluation: false
+reuse_baseline: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: false
+evalplus_eval_steps: 8
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/grpo-mbpp-reward-direction-probe-g16-v2
+reward_trace_path: outputs/grpo-mbpp-reward-direction-probe-g16-v2/reward-trace.jsonl
+probe_update_direction: true
+temperature: 1.0
+num_train_epochs: 1
+max_steps: 8
+per_device_train_batch_size: 16
+gradient_accumulation_steps: 1
+generation_batch_size: 16
+learning_rate: 0.000003
+num_generations: 16
+beta: 0.0
+max_prompt_length: 512
+max_completion_length: 2048
+logging_steps: 1
+save_steps: 1
+eval_steps: 1
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 0
+evaluation_batch_size: 8
+evaluation_num_completions: 1
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: grpo-mbpp-reward-direction-probe-g16-v2
+reward_function: hybrid
+reward_coefficient: 0.5
+reward_rolling_window: 10
+
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-20 13:45:58 PDT
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-20 13:47:31 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-0
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 13:48:31 PDT
+Git commit: a751b25
+Change description: a751b25 Use fresh deterministic probe run
+a5baeda Make update probe deterministic
+e4f5477 Make update probe memory efficient
+Metrics:
+{
+  "average_reward": 0.75,
+  "examples": 8,
+  "pass_at_1": 0.625,
+  "repeated_completion_fraction": 0.0,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.625,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.75,
+  "status_counts": {
+    "failed": 1,
+    "partial": 2,
+    "passed": 5
+  },
+  "successful_examples": 5,
+  "tests_pass_fraction": 0.75,
+  "unique_completion_rate": 1.0
+}
+YAML path: configs/reward_direction_probe.yaml
+YAML contents:
+# This configuration runs one 16-generation GRPO update and records reward and likelihood direction diagnostics.
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 8
+max_eval_samples: null
+train_subset_evaluation_only: true
+run_baseline_evaluation: false
+reuse_baseline: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: false
+evalplus_eval_steps: 8
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/grpo-mbpp-reward-direction-probe-g16-v4
+reward_trace_path: outputs/grpo-mbpp-reward-direction-probe-g16-v4/reward-trace.jsonl
+probe_update_direction: true
+temperature: 1.0
+num_train_epochs: 1
+max_steps: 8
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 16
+generation_batch_size: 16
+learning_rate: 0.000003
+num_generations: 16
+beta: 0.0
+max_prompt_length: 512
+max_completion_length: 2048
+logging_steps: 1
+save_steps: 1
+eval_steps: 1
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 0
+evaluation_batch_size: 8
+evaluation_num_completions: 1
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: grpo-mbpp-reward-direction-probe-g16-v4
+reward_function: hybrid
+reward_coefficient: 0.5
+reward_rolling_window: 10
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-8
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 13:55:45 PDT
+Git commit: a751b25
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.75,
+  "examples": 8,
+  "pass_at_1": 0.625,
+  "repeated_completion_fraction": 0.0,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.625,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.75,
+  "status_counts": {
+    "failed": 1,
+    "partial": 2,
+    "passed": 5
+  },
+  "successful_examples": 5,
+  "tests_pass_fraction": 0.75,
+  "unique_completion_rate": 1.0
+}
+YAML path: configs/reward_direction_probe.yaml
+YAML contents:
+# This configuration runs one 16-generation GRPO update and records reward and likelihood direction diagnostics.
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 8
+max_eval_samples: null
+train_subset_evaluation_only: true
+run_baseline_evaluation: false
+reuse_baseline: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: false
+evalplus_eval_steps: 8
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/grpo-mbpp-reward-direction-probe-g16-v4
+reward_trace_path: outputs/grpo-mbpp-reward-direction-probe-g16-v4/reward-trace.jsonl
+probe_update_direction: true
+temperature: 1.0
+num_train_epochs: 1
+max_steps: 8
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 16
+generation_batch_size: 16
+learning_rate: 0.000003
+num_generations: 16
+beta: 0.0
+max_prompt_length: 512
+max_completion_length: 2048
+logging_steps: 1
+save_steps: 1
+eval_steps: 1
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 0
+evaluation_batch_size: 8
+evaluation_num_completions: 1
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: grpo-mbpp-reward-direction-probe-g16-v4
+reward_function: hybrid
+reward_coefficient: 0.5
+reward_rolling_window: 10
+
+------------------------------------------------------------------------
