@@ -71,6 +71,8 @@ def test_aggregate_results_reports_pass_rate_and_statuses():
     assert metrics["pass_at_1"] == 0.5
     assert metrics["average_reward"] == pytest.approx(0.6)
     assert metrics["tests_pass_fraction"] == 0.5
+    assert metrics["partial_pass_fraction"] == 0.0
+    assert metrics["partial_or_full_pass_fraction"] == 0.5
     assert metrics["status_counts"] == {"passed": 1, "failed": 1}
 
 

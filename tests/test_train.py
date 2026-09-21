@@ -69,6 +69,8 @@ def test_merge_training_metrics_preserves_all_requested_eval_metrics():
         **canonical,
         "training_mbpp_pass_at_1": 0.4,
         "training_mbpp_tests_pass_fraction": 0.3,
+        "training_mbpp_partial_pass_fraction": 0.0,
+        "training_mbpp_partial_or_full_pass_fraction": 0.0,
     }
 
 

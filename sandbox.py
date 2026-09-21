@@ -214,6 +214,8 @@ def summarize_reward_groups(rewards: list[float], details: list[dict[str, object
         mixed_groups += int(std > 0.0)
     total_tests = sum(int(detail["total_tests"]) for detail in details)
     passed_tests = sum(int(detail["passed_tests"]) for detail in details)
+    partial_only = sum(0 < int(detail["passed_tests"]) < int(detail["total_tests"]) for detail in details) / len(details)
+    partial_or_full = sum(int(detail["passed_tests"]) > 0 for detail in details) / len(details)
     diagnostics = {
         "reward/group_count": float(len(groups)),
         "reward/flat_group_fraction": flat_groups / len(groups),
@@ -223,7 +225,9 @@ def summarize_reward_groups(rewards: list[float], details: list[dict[str, object
         "reward/format_error_fraction": sum(detail["status"] == "format_error" for detail in details) / len(details),
         "reward/interface_valid_fraction": sum(bool(detail.get("interface_valid", False)) for detail in details) / len(details),
         "reward/interface_error_fraction": sum(not bool(detail.get("interface_valid", False)) for detail in details) / len(details),
-        "reward/partial_test_fraction": passed_tests / total_tests if total_tests else 0.0,
+        "reward/test_pass_fraction": passed_tests / total_tests if total_tests else 0.0,
+        "reward/partial_pass_fraction": partial_only,
+        "reward/partial_or_full_pass_fraction": partial_or_full,
         "reward/full_pass_fraction": sum(detail["status"] == "passed" for detail in details) / len(details),
         "reward/mean": sum(rewards) / len(rewards),
         "reward/min": min(rewards),

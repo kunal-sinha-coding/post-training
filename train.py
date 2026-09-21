@@ -110,6 +110,8 @@ def merge_training_metrics(metrics: dict[str, Any], training_metrics: dict[str, 
     merged = dict(metrics)
     merged["training_mbpp_pass_at_1"] = float(training_metrics.get("pass_at_1", 0.0))
     merged["training_mbpp_tests_pass_fraction"] = float(training_metrics.get("tests_pass_fraction", 0.0))
+    merged["training_mbpp_partial_pass_fraction"] = float(training_metrics.get("partial_pass_fraction", 0.0))
+    merged["training_mbpp_partial_or_full_pass_fraction"] = float(training_metrics.get("partial_or_full_pass_fraction", 0.0))
     return merged
 
 
