@@ -12611,3 +12611,385 @@ Metrics:
 Interpretation: The aggregate policy objective moved in the correct direction at the real training rate. The positive completion nevertheless became slightly less likely individually because the shared LoRA update reduced the negative completion likelihood more strongly. This rules out a simple global loss-sign failure and shows that individual sample likelihood movement is not a sufficient GRPO correctness test.
 
 GRPO reward audit, 2026-09-20, code 6dc5e1f. Complete setup, control results, versions, trace digest and reproduction scripts are preserved in logs/grpo_reward_audit.md. All 128 v4 rewards replayed identically. 78/128 raw completions had over 30 discarded characters. Retokenized raw/prefix totals were 23628/12805. Zero-rate control yielded zero changes. Float32 SGD at 1e-3 decreased loss by approximately 6.26e-5, unlike the prior bfloat16 result. Exact raw controls are embedded in the report. These are diagnostics, not benchmark results. No candidates were selected using ground truth.
+
+INTERRUPTED MASKED TINY OVERFIT ATTEMPT
+Experiment: grpo-mbpp-tiny-overfit-g16-reward-masked
+Purpose: First attempt to test reward-prefix loss masking on eight fixed training tasks.
+Timestamp: 2026-09-21 UTC
+Git commit: c6f1544
+W&B run: i7k4wij5
+Data and setup: Eight disjoint MBPP training tasks, rank-16 LoRA, hybrid reward, DAPO, 3e-6 learning rate, 16 completions per group, and greedy evaluation every five updates.
+Outcome: Stopped after step 10 when audit found that the new token mask did not update DAPO's raw-token denominator. Step-zero and step-five greedy pass@1 were both 0.625 and test-pass fraction was 0.75. These values are not used to assess the repaired implementation.
+Limitation: The masked numerator with an unmasked denominator diluted the objective. A new output directory and run will use the masked denominator and likelihood probe.
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-20 16:43:34 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-0
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 16:44:57 PDT
+Git commit: 52996a0
+Change description: 52996a0 Mask GRPO loss at reward stop boundaries
+ec31e1e Record GRPO reward audit
+6dc5e1f Record matched deterministic probe
+Metrics:
+{
+  "average_reward": 0.75,
+  "examples": 8,
+  "pass_at_1": 0.625,
+  "repeated_completion_fraction": 0.0,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.625,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.75,
+  "status_counts": {
+    "failed": 1,
+    "partial": 2,
+    "passed": 5
+  },
+  "successful_examples": 5,
+  "tests_pass_fraction": 0.75,
+  "unique_completion_rate": 1.0
+}
+YAML path: configs/tiny_overfit.yaml
+YAML contents:
+# This configuration selects eight canonical training tasks, trains LoRA with GRPO, and evaluates only those same tasks.
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 8
+max_eval_samples: null
+train_subset_evaluation_only: true
+run_baseline_evaluation: false
+reuse_baseline: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: false
+evalplus_eval_steps: 5
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.0
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/grpo-mbpp-tiny-overfit-g16-reward-masked
+mask_reward_stops: true
+num_train_epochs: 100
+max_steps: 50
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+generation_batch_size: 64
+learning_rate: 0.000003
+loss_type: dapo
+disable_dropout: true
+num_generations: 16
+beta: 0.0
+max_prompt_length: 512
+max_completion_length: 2048
+logging_steps: 1
+save_steps: 5
+eval_steps: 5
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 0
+evaluation_batch_size: 8
+evaluation_num_completions: 1
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: grpo-mbpp-tiny-overfit-g16-reward-masked
+reward_function: hybrid
+reward_coefficient: 0.5
+reward_rolling_window: 10
+
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-20 16:46:38 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-0
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 16:48:06 PDT
+Git commit: c6f1544
+Change description: c6f1544 Isolate reward mask overfit comparison
+Metrics:
+{
+  "average_reward": 0.75,
+  "examples": 8,
+  "pass_at_1": 0.625,
+  "repeated_completion_fraction": 0.0,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.625,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.75,
+  "status_counts": {
+    "failed": 1,
+    "partial": 2,
+    "passed": 5
+  },
+  "successful_examples": 5,
+  "tests_pass_fraction": 0.75,
+  "unique_completion_rate": 1.0
+}
+YAML path: configs/tiny_overfit.yaml
+YAML contents:
+# This configuration selects eight canonical training tasks, trains LoRA with GRPO, and evaluates only those same tasks.
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 8
+max_eval_samples: null
+train_subset_evaluation_only: true
+run_baseline_evaluation: false
+reuse_baseline: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: false
+evalplus_eval_steps: 5
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/grpo-mbpp-tiny-overfit-g16-reward-masked
+mask_reward_stops: true
+num_train_epochs: 100
+max_steps: 50
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+generation_batch_size: 64
+learning_rate: 0.000003
+loss_type: dapo
+disable_dropout: false
+num_generations: 16
+beta: 0.0
+max_prompt_length: 512
+max_completion_length: 2048
+logging_steps: 1
+save_steps: 5
+eval_steps: 5
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 0
+evaluation_batch_size: 8
+evaluation_num_completions: 1
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: grpo-mbpp-tiny-overfit-g16-reward-masked
+reward_function: hybrid
+reward_coefficient: 0.5
+reward_rolling_window: 10
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-5
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 16:57:33 PDT
+Git commit: c6f1544
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.75,
+  "examples": 8,
+  "pass_at_1": 0.625,
+  "repeated_completion_fraction": 0.0,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.625,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.75,
+  "status_counts": {
+    "failed": 1,
+    "partial": 2,
+    "passed": 5
+  },
+  "successful_examples": 5,
+  "tests_pass_fraction": 0.75,
+  "unique_completion_rate": 1.0
+}
+YAML path: configs/tiny_overfit.yaml
+YAML contents:
+# This configuration selects eight canonical training tasks, trains LoRA with GRPO, and evaluates only those same tasks.
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 8
+max_eval_samples: null
+train_subset_evaluation_only: true
+run_baseline_evaluation: false
+reuse_baseline: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: false
+evalplus_eval_steps: 5
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/grpo-mbpp-tiny-overfit-g16-reward-masked
+mask_reward_stops: true
+num_train_epochs: 100
+max_steps: 50
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+generation_batch_size: 64
+learning_rate: 0.000003
+loss_type: dapo
+disable_dropout: false
+num_generations: 16
+beta: 0.0
+max_prompt_length: 512
+max_completion_length: 2048
+logging_steps: 1
+save_steps: 5
+eval_steps: 5
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 0
+evaluation_batch_size: 8
+evaluation_num_completions: 1
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: grpo-mbpp-tiny-overfit-g16-reward-masked
+reward_function: hybrid
+reward_coefficient: 0.5
+reward_rolling_window: 10
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-10
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 17:05:55 PDT
+Git commit: c6f1544
+Change description: No committed code changes since the previous evaluation.
+Metrics:
+{
+  "average_reward": 0.7916666666666666,
+  "examples": 8,
+  "pass_at_1": 0.625,
+  "repeated_completion_fraction": 0.0,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.625,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.7916666666666666,
+  "status_counts": {
+    "failed": 1,
+    "partial": 2,
+    "passed": 5
+  },
+  "successful_examples": 5,
+  "tests_pass_fraction": 0.7916666666666666,
+  "unique_completion_rate": 1.0
+}
+YAML path: configs/tiny_overfit.yaml
+YAML contents:
+# This configuration selects eight canonical training tasks, trains LoRA with GRPO, and evaluates only those same tasks.
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 8
+max_eval_samples: null
+train_subset_evaluation_only: true
+run_baseline_evaluation: false
+reuse_baseline: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: false
+evalplus_eval_steps: 5
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/grpo-mbpp-tiny-overfit-g16-reward-masked
+mask_reward_stops: true
+num_train_epochs: 100
+max_steps: 50
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+generation_batch_size: 64
+learning_rate: 0.000003
+loss_type: dapo
+disable_dropout: false
+num_generations: 16
+beta: 0.0
+max_prompt_length: 512
+max_completion_length: 2048
+logging_steps: 1
+save_steps: 5
+eval_steps: 5
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 0
+evaluation_batch_size: 8
+evaluation_num_completions: 1
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: grpo-mbpp-tiny-overfit-g16-reward-masked
+reward_function: hybrid
+reward_coefficient: 0.5
+reward_rolling_window: 10
+
+------------------------------------------------------------------------
