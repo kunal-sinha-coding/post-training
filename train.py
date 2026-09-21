@@ -75,6 +75,7 @@ def canonical_test_pass_metrics(samples: Path) -> dict[str, float]:
     results = json.loads((samples / "eval_results.json").read_text(encoding="utf-8"))["eval"]
     problems = get_mbpp_plus()
     base_total = plus_total = base_passed = plus_passed = 0
+    base_partial = plus_partial = base_any = plus_any = 0
     for task_id, task_results in results.items():
         result = task_results[0]
         problem = problems[task_id]
@@ -84,9 +85,19 @@ def canonical_test_pass_metrics(samples: Path) -> dict[str, float]:
         plus_total += plus_count
         base_passed += base_count - len(result["base_fail_tests"])
         plus_passed += plus_count - len(result["plus_fail_tests"])
+        base_completed = base_count - len(result["base_fail_tests"])
+        plus_completed = plus_count - len(result["plus_fail_tests"])
+        base_partial += int(0 < base_completed < base_count)
+        plus_partial += int(0 < plus_completed < plus_count)
+        base_any += int(base_completed > 0)
+        plus_any += int(plus_completed > 0)
     return {
         "mbpp_tests_pass_fraction": base_passed / base_total if base_total else 0.0,
         "mbpp_plus_tests_pass_fraction": plus_passed / plus_total if plus_total else 0.0,
+        "mbpp_partial_pass_fraction": base_partial / len(results) if results else 0.0,
+        "mbpp_partial_or_full_pass_fraction": base_any / len(results) if results else 0.0,
+        "mbpp_plus_partial_pass_fraction": plus_partial / len(results) if results else 0.0,
+        "mbpp_plus_partial_or_full_pass_fraction": plus_any / len(results) if results else 0.0,
     }
 
 

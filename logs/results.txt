@@ -13188,6 +13188,8 @@ RELAUNCH INTERIM RESULT, 2026-09-21. W&B run cqaaddy7 is running from source com
 
 METRIC LOGGING UPDATE, 2026-09-21. Source change adds training rollout test_pass_fraction, partial_pass_fraction, and partial_or_full_pass_fraction, plus matching training evaluation fields. The active W&B run cqaaddy7 predates this code change, so no new numerical result is claimed from these fields yet. Validation: 27 focused tests passed.
 
+CANONICAL PARTIAL METRIC UPDATE, 2026-09-21. Added MBPP and MBPP+ partial-only and partial-or-full completion rates to canonical EvalPlus metric summaries. No new experiment result claimed. Validation: 27 focused tests passed.
+
 
 
 ------------------------------------------------------------------------
@@ -13766,6 +13768,97 @@ Metrics:
   },
   "successful_examples": 5,
   "tests_pass_fraction": 0.8333333333333334,
+  "unique_completion_rate": 1.0
+}
+YAML path: configs/tiny_overfit.yaml
+YAML contents:
+# This configuration selects eight canonical training tasks, trains LoRA with GRPO, and evaluates only those same tasks.
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 8
+max_eval_samples: null
+train_subset_evaluation_only: true
+run_baseline_evaluation: false
+reuse_baseline: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: false
+evalplus_eval_steps: 5
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/grpo-mbpp-tiny-overfit-g16-reward-masked-dapo-contextual
+mask_reward_stops: true
+probe_update_direction: true
+probe_batch_size: 4
+num_train_epochs: 100
+max_steps: 50
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+generation_batch_size: 64
+learning_rate: 0.000003
+loss_type: dapo
+disable_dropout: false
+num_generations: 16
+beta: 0.0
+max_prompt_length: 512
+max_completion_length: 2048
+logging_steps: 1
+save_steps: 5
+eval_steps: 5
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 0
+evaluation_batch_size: 8
+evaluation_num_completions: 1
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: grpo-mbpp-tiny-overfit-g16-reward-masked-dapo-contextual
+reward_function: hybrid
+reward_coefficient: 0.5
+reward_rolling_window: 10
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-35
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 18:40:07 PDT
+Git commit: 794e90f
+Change description: 794e90f Log partial completion pass metrics
+Metrics:
+{
+  "average_reward": 0.75,
+  "examples": 8,
+  "pass_at_1": 0.625,
+  "repeated_completion_fraction": 0.0,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.625,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.75,
+  "status_counts": {
+    "failed": 1,
+    "partial": 2,
+    "passed": 5
+  },
+  "successful_examples": 5,
+  "tests_pass_fraction": 0.75,
   "unique_completion_rate": 1.0
 }
 YAML path: configs/tiny_overfit.yaml
