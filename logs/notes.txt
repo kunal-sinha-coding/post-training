@@ -2174,3 +2174,7 @@ The second masked launch reached optimizer step 10, with unchanged tiny-set gree
 
 ## Audit contextual stopping and likelihood probes
 Commit: Record interim masking and likelihood audit. Inspected six updates and all eight greedy evaluation examples. Documented contextual stop-token mismatch, padded-length inflation, surrogate versus actual-loss differences, and a two-test improvement on task617. Corrected earlier claims about complete masking repair, cap rates and guaranteed metric convergence. Training remains running; implementation fixes are proposed separately.
+
+## 2026-09-21: Repair contextual reward boundaries and speed the likelihood probe
+
+Stopped the interim run before relaunching. Changed completion masking to decode each completion and map the reward stop character boundary through tokenizer offsets, fixing context-dependent BPE mismatches reproduced for newline comments and print calls. Replaced the custom generation stop matcher with Transformers StopStringCriteria, while retaining a compatibility fallback. Corrected reported completion lengths after masking. Removed the probe duplicate post-update likelihood forward pass and changed probe forwards to configurable batches of four, deriving all metrics from one token-logprob result. Added a contextual masking regression test. The new tiny run uses output directory outputs/grpo-mbpp-tiny-overfit-g16-reward-masked-dapo-contextual, the same eight tasks, 16 completions, 2048-token limit, LoRA dropout, DAPO, and learning rate. Focused tests passed with 27 tests.

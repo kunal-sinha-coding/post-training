@@ -190,8 +190,8 @@ def stop_token_id_sequences(tokenizer: Any, stop_strings: tuple[str, ...] = QWEN
     return [tokenizer(stop, add_special_tokens=False)["input_ids"] for stop in stop_strings if tokenizer(stop, add_special_tokens=False)["input_ids"]]
 
 
-def mask_completion_tokens_after_stop(completion_ids: Any, completion_mask: Any, stop_ids: list[list[int]]) -> Any:
-    """Mask each completion from its first reward stop token through the padded tail."""
+def mask_completion_tokens_after_stop(completion_ids: Any, completion_mask: Any, stop_ids: list[list[int]], tokenizer: Any | None = None) -> Any:
+    """Mask each completion from its first context-aware reward stop through its padded tail."""
     import torch
 
     # Preserve the original tensor because TRL reuses the generated completion fields.
@@ -201,13 +201,29 @@ def mask_completion_tokens_after_stop(completion_ids: Any, completion_mask: Any,
         length = int(completion_mask[row_index].sum().item())
         row = completion_ids[row_index, :length]
         first_stop = length
-        for stop in stop_ids:
-            stop_tensor = torch.tensor(stop, device=row.device, dtype=row.dtype)
-            if row.numel() < stop_tensor.numel():
-                continue
-            matches = (row.unfold(0, stop_tensor.numel(), 1) == stop_tensor).all(dim=1)
-            if matches.any():
-                first_stop = min(first_stop, int(matches.nonzero(as_tuple=False)[0].item()))
+        if tokenizer is not None:
+            # Use tokenizer offsets so stop strings are matched in their actual surrounding context.
+            text = tokenizer.decode(row.tolist(), skip_special_tokens=False)
+            positions = [
+                text.find(stop)
+                for stop in QWEN_EVALPLUS_STOP_STRINGS
+                if text.find(stop) >= 0 and not (stop == "```" and text.lstrip().startswith("```"))
+            ]
+            if positions:
+                boundary = min(positions)
+                encoded = tokenizer(text, add_special_tokens=False, return_offsets_mapping=True)
+                # Keep a token that begins before the boundary because BPE tokens can span a newline.
+                first_stop = sum(1 for start, end in encoded["offset_mapping"] if start < boundary)
+        else:
+            # Retain the token-sequence fallback for callers that do not have a tokenizer.
+            stop_sequences = stop_ids
+            for stop in stop_sequences:
+                stop_tensor = torch.tensor(stop, device=row.device, dtype=row.dtype)
+                if row.numel() < stop_tensor.numel():
+                    continue
+                matches = (row.unfold(0, stop_tensor.numel(), 1) == stop_tensor).all(dim=1)
+                if matches.any():
+                    first_stop = min(first_stop, int(matches.nonzero(as_tuple=False)[0].item()))
         masked[row_index, first_stop:] = 0
     return masked
 
@@ -221,8 +237,13 @@ def code_fence_stopping_criteria(tokenizer: Any, prompt_width: int, stop_strings
         """Track per-sequence closing-fence matches without scanning prompt tokens."""
 
         def __init__(self) -> None:
-            # Tokenize every official stop sequence once and track finished rows.
+            # Use the tokenizer-aware stopping implementation supplied by Transformers.
+            from transformers import StopStringCriteria
             self.stop_ids = [torch.tensor(stop, dtype=torch.long) for stop in stop_token_id_sequences(tokenizer, stop_strings)]
+            try:
+                self.criteria = StopStringCriteria(tokenizer, list(stop_strings))
+            except (AttributeError, KeyError, TypeError, ValueError):
+                self.criteria = None
             self.finished: torch.Tensor | None = None
 
         def __call__(self, input_ids: Any, scores: Any, **kwargs: Any) -> Any:
@@ -230,12 +251,17 @@ def code_fence_stopping_criteria(tokenizer: Any, prompt_width: int, stop_strings
             del scores, kwargs
             if self.finished is None or self.finished.shape[0] != input_ids.shape[0]:
                 self.finished = torch.zeros(input_ids.shape[0], dtype=torch.bool, device=input_ids.device)
-            generated = input_ids[:, prompt_width:]
-            for stop_id in self.stop_ids:
-                stop_id = stop_id.to(input_ids.device)
-                if generated.shape[1] >= stop_id.shape[0]:
-                    suffix = generated[:, -stop_id.shape[0]:]
-                    self.finished |= torch.all(suffix == stop_id, dim=1)
+            # Apply context-aware stop matching to the generated suffix only.
+            if self.criteria is not None:
+                self.finished |= self.criteria(input_ids, None)
+            else:
+                # Keep a token fallback for lightweight test tokenizers and older Transformers versions.
+                generated = input_ids[:, prompt_width:]
+                for stop_id in self.stop_ids:
+                    stop_id = stop_id.to(input_ids.device)
+                    if generated.shape[1] >= stop_id.shape[0]:
+                        suffix = generated[:, -stop_id.shape[0]:]
+                        self.finished |= torch.all(suffix == stop_id, dim=1)
             return self.finished
 
     return StoppingCriteriaList([CodeFenceCriteria()])

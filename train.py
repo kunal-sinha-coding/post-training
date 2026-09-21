@@ -251,13 +251,13 @@ def _make_reward(config: dict[str, Any]):
 
     return reward
 
-def _probe_per_token_logps(model: Any, batch: dict[str, Any], temperature: float = 1.0, chunk_size: int = 1) -> Any:
+def _probe_per_token_logps(model: Any, batch: dict[str, Any], temperature: float = 1.0, chunk_size: int = 4) -> Any:
     """Compute masked-completion token log probabilities for a saved rollout batch."""
     # Reconstruct the same completion-token logits used by the installed TRL GRPO loss.
     import torch
     per_token_logps = []
     for start in range(0, batch["prompt_ids"].shape[0], chunk_size):
-        # Recompute one small slice at a time so the diagnostic does not change training memory requirements.
+        # Recompute a small batched slice so the diagnostic does not change training memory requirements.
         input_ids = torch.cat([batch["prompt_ids"][start : start + chunk_size], batch["completion_ids"][start : start + chunk_size]], dim=1)
         attention_mask = torch.cat([batch["prompt_mask"][start : start + chunk_size], batch["completion_mask"][start : start + chunk_size]], dim=1)
         completion_length = batch["completion_ids"].shape[1]
@@ -270,7 +270,7 @@ def _probe_per_token_logps(model: Any, batch: dict[str, Any], temperature: float
     return torch.cat(per_token_logps)
 
 
-def _probe_sequence_logps(model: Any, batch: dict[str, Any], temperature: float = 1.0, chunk_size: int = 1) -> Any:
+def _probe_sequence_logps(model: Any, batch: dict[str, Any], temperature: float = 1.0, chunk_size: int = 4) -> Any:
     """Compute mean masked-completion log probabilities for a saved rollout batch."""
     # Reduce the shared token likelihoods into the four existing sample-level direction metrics.
     token_logps = _probe_per_token_logps(model, batch, temperature, chunk_size)
@@ -384,8 +384,15 @@ def _make_callback(model: Any, tokenizer: Any, train_dataset: Any, test_dataset:
                 was_training = self.evaluation_model.training
                 self.evaluation_model.eval()
                 with torch.no_grad():
-                    new_logps = _probe_sequence_logps(self.evaluation_model, moved_batch, float(config.get("temperature", 1.0)), chunk_size=1)
-                    new_per_token_logps = _probe_per_token_logps(self.evaluation_model, moved_batch, float(config.get("temperature", 1.0)), chunk_size=1)
+                    # Compute token likelihoods once and derive all probe metrics from that result.
+                    new_per_token_logps = _probe_per_token_logps(
+                        self.evaluation_model,
+                        moved_batch,
+                        float(config.get("temperature", 1.0)),
+                        chunk_size=int(config.get("probe_batch_size", 4)),
+                    )
+                    mask = moved_batch["completion_mask"].float()
+                    new_logps = (new_per_token_logps * mask).sum(dim=1) / mask.sum(dim=1).clamp(min=1.0)
                 if was_training:
                     self.evaluation_model.train()
                 old_logps = probe_batch["old_logps"].to(new_logps.device)
@@ -803,10 +810,15 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
                 generated = super()._generate_and_score_completions(inputs)
                 original_mask = generated["completion_mask"]
                 generated["completion_mask"] = mask_completion_tokens_after_stop(
-                    generated["completion_ids"], generated["completion_mask"], stop_ids
+                    generated["completion_ids"], generated["completion_mask"], stop_ids, tokenizer=tokenizer
                 )
                 # Keep DAPO's token normalizer aligned with the reward-scored completion prefix.
                 generated["num_items_in_batch"] = generated["completion_mask"].sum()
+                # Report lengths after removing both padded rows and unscored suffixes.
+                lengths = generated["completion_mask"].sum(dim=1).float()
+                self._metrics["train"]["completions/mean_length"] = [float(lengths.mean())]
+                self._metrics["train"]["completions/min_length"] = [float(lengths.min())]
+                self._metrics["train"]["completions/max_length"] = [float(lengths.max())]
                 masked_fraction = 1.0 - float(generated["completion_mask"].sum() / original_mask.sum().clamp(min=1))
                 self._metrics["train"]["reward_stop_masked_token_fraction"].append(masked_fraction)
                 return generated
@@ -831,7 +843,12 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
                     model.eval()
                     with torch.no_grad():
                         moved_batch = {key: value.to(next(model.parameters()).device) for key, value in batch.items()}
-                        old_per_token_logps = _probe_per_token_logps(model, moved_batch, float(config.get("temperature", 1.0))).detach().cpu()
+                        old_per_token_logps = _probe_per_token_logps(
+                            model,
+                            moved_batch,
+                            float(config.get("temperature", 1.0)),
+                            chunk_size=int(config.get("probe_batch_size", 4)),
+                        ).detach().cpu()
                         mask = batch["completion_mask"].float()
                         old_logps = ((old_per_token_logps * mask).sum(dim=1) / mask.sum(dim=1).clamp(min=1.0)).detach().cpu()
                     if was_training:

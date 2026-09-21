@@ -32,6 +32,36 @@ def test_reward_stop_mask_removes_each_unscored_suffix():
     assert torch.equal(masked, torch.tensor([[1, 0, 0, 0, 0], [1, 1, 1, 0, 0]]))
 
 
+def test_reward_stop_mask_uses_contextual_token_offsets():
+    """Verify that context-dependent tokenization follows reward text truncation."""
+    # Use a tiny tokenizer fixture whose offsets reproduce the contextual boundary behavior.
+    class ContextTokenizer:
+        """Represent the decoded completion with one offset per character."""
+
+        def decode(self, ids, skip_special_tokens=False):
+            """Return the fixed completion represented by the fixture IDs."""
+            del ids, skip_special_tokens
+            return "return x\nprint(x)"
+
+        def __call__(self, text, add_special_tokens=False, return_offsets_mapping=False):
+            """Return character offsets for the fixture text."""
+            del add_special_tokens
+            if return_offsets_mapping:
+                return {"offset_mapping": [(index, index + 1) for index in range(len(text))]}
+            return {"input_ids": [1] * len(text)}
+
+    completion_ids = torch.ones((1, len("return x\nprint(x)")), dtype=torch.long)
+    completion_mask = torch.ones_like(completion_ids)
+    masked = mask_completion_tokens_after_stop(
+        completion_ids,
+        completion_mask,
+        [[1]],
+        tokenizer=ContextTokenizer(),
+    )
+
+    assert int(masked.sum()) == len("return x")
+
+
 def test_aggregate_results_reports_pass_rate_and_statuses():
     metrics = aggregate_results([
         {"passed": True, "reward": 0.9, "status": "passed", "passed_tests": 2, "total_tests": 2},
