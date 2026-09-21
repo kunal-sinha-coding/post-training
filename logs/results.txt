@@ -13194,6 +13194,8 @@ FIXED ROLLOUT OVERFIT DIAGNOSTIC, 2026-09-21. Purpose: test whether the policy o
 
 FIXED ROLLOUT HIGH-RATE DIAGNOSTIC, 2026-09-21. Same fixed prompt, completions, advantages, model, LoRA, AdamW, and deterministic evaluation as the preceding diagnostic, with constant learning rate1e-4 and100 updates. Artifact: outputs/fixed-rollout-overfit/result-adamw-lr1e-4.json. Result: loss-0.170898 to-12.406243;95/100 updates improved and5 worsened; positive log-probability delta-2.464407; negative delta-51.405787. The objective was optimized aggressively by suppressing the negative completion. This is a mechanism result, not a benchmark result, and does not justify using1e-4 for full GRPO.
 
+FIXED ROLLOUT INTERMEDIATE-RATE DIAGNOSTIC, 2026-09-21. Same fixed setup with constant AdamW learning rate1e-5 and100 updates. Artifact: outputs/fixed-rollout-overfit/result-adamw-lr1e-5.json. Result: loss-0.170898 to-6.337874;100/100 updates improved; positive log-probability delta-0.309648; negative delta-24.977552. The frozen objective is stable at this rate but still improves mainly by suppressing the negative completion. This is a mechanism result, not a benchmark result.
+
 
 
 ------------------------------------------------------------------------
