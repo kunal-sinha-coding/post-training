@@ -12993,3 +12993,5 @@ reward_coefficient: 0.5
 reward_rolling_window: 10
 
 ------------------------------------------------------------------------
+
+INTERIM STOP AND LIKELIHOOD AUDIT, 2026-09-21. Run urzbevgw, source6903599. Complete setup, artifact identifiers, selection policy, metrics and limitations are recorded in the accompanying ERROR ANALYSIS entry. Step0 to5:5/8 full passes unchanged;18/24 to20/24 tests. Contextual stop mismatch reproduced in3/5 targeted CPU examples. No new training or benchmark execution.

@@ -1164,3 +1164,50 @@ Run a one-step synthetic reward test that assigns fixed positive advantages to s
 10. Limitations
 
 The experiment has eight tasks and eight updates. The probe uses sequence-level mean log probabilities and 16 samples per update. The final model reload failed from GPU memory, although step-eight evaluation artifacts exist. W&B remote curves were not independently queried; local logs and saved artifacts were used. The trace does not by itself prove every test association without independent replay.
+
+------------------------------------------------------------------------
+ERROR ANALYSIS
+Timestamp: 2026-09-21 UTC
+------------------------------------------------------------------------
+Command: accelerate launch --num_processes 1 train.py --config configs/tiny_overfit.yaml
+Batch mode: Read-only interim audit of the existing approved 50-step experiment. No new training launch.
+
+0. Run summary
+Run urzbevgw, code 6903599d83a0ee801d7b6f62b0bfe1ba5d4ff4ff. Six optimizer updates and three fresh reward batches were available at the snapshot. Greedy evaluation of the same eight training tasks improved from 18/24 to 20/24 passing tests. Full passes stayed at 5/8. A remaining contextual tokenization bug demonstrably prevents the loss mask from always matching reward truncation. Correct stop boundaries before interpreting this experiment as a completed masking repair.
+
+1. Iteration comparison
+Step 0 versus step 5: pass@1 0.625 to 0.625; tests fraction 0.75 to 0.8333333333. Task 617 improved from 0/3 to 2/3 tests. All seven other tasks retained their passing-test counts. This is a small training-set improvement, not evidence of held-out generalization. Earlier claims that masking was fully repaired and that the surrogate was the exact training objective were too strong.
+
+2. Run context and data coverage
+Model Qwen/Qwen2.5-Coder-3B-Instruct, eight training tasks 601,609,613,617,621,625,627,634 selected by existing configuration, disjoint from EvalPlus. Seed 42, LoRA rank16 alpha32 dropout0.05, hybrid coefficient0.5, DAPO beta0, LR3e-6 with linear decay, batch1 accumulation32, generation batch64 with 16 generations per prompt, maximum2048 completion tokens, bfloat16, 50 steps, greedy vLLM evaluation every5 steps. Candidate output is the single greedy completion, selected without test outcomes. Tests then measure it. Training reward intentionally uses original MBPP tests. No full benchmark is evaluated here. Artifacts: outputs/grpo-mbpp-tiny-overfit-g16-reward-masked-dapo/training-step-{0,5}-{details,metrics}.json and logs/logs.txt. Installed TRL0.25.0 source inspected directly. W&B MCP history request failed; numerical curves below come from local logs, not a successful remote query. All eight evaluation records were compared; individual training completion failures were not exhaustively re-executed or classified.
+
+3. Error-pattern distribution
+Denominator: eight step5 greedy evaluations. Mutually exclusive primary categories: passed5 (62.5%); wrong minimum formula1 (12.5%, task609); wrong jump formula1 (12.5%, task617); wrong missing-number recursion1 (12.5%, task627). Three failures, all algorithmic, no observed evaluation interface or format failure. These are all observed evaluation failures, not a taxonomy of all sampled training errors.
+
+4. Observed error patterns
+Task609 returns math.floor(min(x,y,z)); floor_Min(10,20,30) returns10 but the supplied assertion expects15. It passes1/3. The prompt describes a periodic function without specifying its formula, making the natural-language specification ambiguous.
+Task617 returns (d+y-1)//y and ignores x. For (3,4,11) it returns3 while the supplied assertion expects3.5. It passes2/3, improved from0/3. A fractional expected number of jumps merits checking the original reference specification before treating this as a generic counting problem.
+Task627 recursively increments low without a base case for low>high and swaps arr[low] with arr[arr[low]]. For [0,1,2,6,9], low0, high4, it eventually indexes arr[6], outside the list, instead of returning3. It passes2/3. This failure follows directly from the saved code.
+
+5. Success patterns and controls
+Five tasks retain full correctness. All three sampled reward batches have flat_group_fraction0, so the observed training groups do contain reward differences. Fresh reward means are0.424479,0.627604,0.440104. This is fluctuation over three batches, not a supported downward trend.
+
+6. Deep triage
+The three evaluation failures reflect incorrect formulas and algorithm control flow. Task609's missing specification and task617's unusual reference target may limit useful generalization; inspect original references before dataset changes. Task627 needs correct bounds or a simpler scan. No evidence ties all three to one parser failure.
+Separately, a CPU tokenizer reproduction using the actual cached Qwen tokenizer found loss/reward boundary disagreement in3/5 deliberately selected strings: 'return x\n\n# example', 'return x\nprint(x)', and 'return x\n\nprint(x)'. In all three cases reward truncates but the token mask retains the complete string. 'return x\n# example' and 'return x\n```' agree. This is a targeted counterexample set, not an estimated production failure rate. Standalone stop encodings do not cover context-dependent token merges. The generation stop criterion uses the same fragile match.
+TRL's regular generation path trims at EOS151645, while Transformers pads individually stopped rows with PAD151643. Thus rows stopped by a custom criterion may retain their entire padded width in TRL length and clipping diagnostics. The reward mask can remove padding for recognized boundaries, but reported masked-token percentages conflate padding with actual discarded generated content. The earlier81.25% cap statistic does not establish that81.25% of samples generated2048 substantive tokens.
+
+7. Shared causes and interactions
+Missed generation boundaries can increase runtime and missed loss boundaries can reinforce unscored suffixes. Padding further inflates length diagnostics and full-width probe cost. The probe recomputes post-update model outputs twice, once for sequence averages and again for token likelihoods. This is confirmed redundant work; no phase timings establish its percentage of total runtime.
+
+8. Underlying root-cause synthesis
+Confirmed pipeline issues are incomplete contextual stop matching and misleading padded length metrics. They do not prove the cause of the reward plateau. The probe runs in eval mode while training permits dropout0.05. It also rebases ratios to immediate pre-update likelihoods rather than the trainer's stored rollout likelihoods, and uses its local32-completion denominator rather than the generation-batch denominator. It is consequently a diagnostic surrogate, not the exact live objective. Six surrogate deltas alternate signs: -0.00005503,+0.00006289,-0.00049394,+0.00040197,-0.00015490,+0.00052810. Every second update is unfavorable in this small sample; possible causes include changing microbatch composition and Adam momentum. This is a hypothesis, not demonstrated optimizer failure. The bfloat16 precision hypothesis is unconfirmed because Accelerate wraps model outputs in float32; inspect live tensor dtypes before attributing noise to quantization.
+
+9. Proposed solutions and confirmation tests
+First replace standalone token-sequence matching with tokenizer-aware stop detection and derive loss boundaries from the exact text truncation rule. Map character boundaries to token spans explicitly, handling tokens that straddle a stop boundary. Regress on the five counterexamples and real saved completions. Ensure scored prefix text and masked token support agree under the stated boundary policy.
+Second trim actual stopped sequences before TRL reports lengths; preserve EOS/stop semantics and handle pad separately. Verify on two rows with different stopping times that finished-row lengths exclude padding.
+Third make an exact objective probe use the trainer's stored rollout log probabilities, clipping parameters and denominator, with a controlled dropout-free comparison and actual dtype logging. Compute token likelihoods once and derive all diagnostics from them. Compare repeated no-update forwards to estimate numerical noise, then compare one update on a fixed batch. Do not infer broken GRPO from current sign alignment alone.
+No code or active-run changes were applied in this audit. These are proposed fixes requiring selection under the iterative error analysis workflow.
+
+10. Limitations
+Only six updates, three fresh rollout batches and eight greedy tasks. No causal ablation or wall-time profiling. Counterexamples establish a bug but not its prevalence. Tests are visible in canonical prompts. No held-out claim. Current training continues during this snapshot. Earlier guidance that10-20 batches guarantees consistent signs was unsupported;40-80 groups correspond to5-10 prompt-set passes, not1-2.
