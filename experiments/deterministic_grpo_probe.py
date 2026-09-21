@@ -28,6 +28,24 @@ def build_probe_inputs(tokenizer: object) -> tuple[str, list[str]]:
     return prompt, completions
 
 
+def build_reward_sweep_inputs(tokenizer: object, coefficient: float) -> tuple[str, list[str], torch.Tensor, torch.Tensor]:
+    """Build fixed completions with distinct hybrid reward components."""
+    # Use four fixed candidates so the hybrid coefficient changes relative partial advantages.
+    prompt, _ = build_probe_inputs(tokenizer)
+    completions = [
+        "def add(a, b):\n    return a + b\n",
+        "def add(a, b):\n    return a - b\n",
+        "def add(a, b):\n    return a\n",
+        "def add(a, b):\n    return 0\n",
+    ]
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    test_fraction = torch.tensor([1.0, 0.5, 0.2, 0.0], device=device)
+    full_pass = torch.tensor([1.0, 0.0, 0.0, 0.0], device=device)
+    rewards = coefficient * full_pass + (1.0 - coefficient) * test_fraction
+    advantages = (rewards - rewards.mean()) / rewards.std().clamp(min=1e-6)
+    return prompt, completions, rewards, advantages
+
+
 def sequence_logps(model: object, tokenizer: object, prompt: str, completions: list[str], device: torch.device) -> torch.Tensor:
     """Compute the mean teacher-forced completion log probability for each fixed sample."""
     # Tokenize each prompt and completion pair while preserving the exact prompt boundary.
@@ -68,13 +86,19 @@ def run_probe(args: argparse.Namespace) -> dict[str, object]:
     model.eval()
     peft_config = build_peft_config({"lora_enabled": True, "lora_r": 16, "lora_alpha": 32, "lora_dropout": 0.0, "lora_target_modules": ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]})
     from peft import get_peft_model
-    prompt, completions = build_probe_inputs(tokenizer)
+    if args.reward_coefficient is None:
+        prompt, completions = build_probe_inputs(tokenizer)
+        advantages = torch.tensor([0.5, -0.5], dtype=torch.float32, device=device)
+        fixed_rewards = None
+    else:
+        prompt, completions, fixed_rewards, advantages = build_reward_sweep_inputs(tokenizer, args.reward_coefficient)
+        fixed_rewards = fixed_rewards.to(device)
     # Precompute reference likelihoods before adding LoRA so the KL anchor stays fixed.
     with torch.no_grad():
         reference_logps = sequence_logps(model, tokenizer, prompt, completions, device)
     model = get_peft_model(model, peft_config)
     model.eval()
-    advantages = torch.tensor([0.5, -0.5], dtype=torch.float32, device=device)
+    advantages = advantages.to(device)
     # Reuse one fixed rollout and its advantages for every optimizer update.
     # Match the AdamW optimizer used by the live GRPO trainer while keeping the rollout frozen.
     optimizer = torch.optim.AdamW(
@@ -122,10 +146,12 @@ def run_probe(args: argparse.Namespace) -> dict[str, object]:
         "learning_rate": args.learning_rate,
         "beta": args.beta,
         "positive_likelihood_coefficient": args.positive_likelihood_coefficient,
+        "reward_coefficient": args.reward_coefficient,
         "iterations": args.iterations,
         "prompt": prompt,
         "completions": completions,
         "advantages": advantages.cpu().tolist(),
+        "fixed_rewards": fixed_rewards.cpu().tolist() if fixed_rewards is not None else None,
         "before_logps": initial_logps.cpu().tolist(),
         "history": history,
         "after_logps": after_logps.cpu().tolist(),
@@ -151,6 +177,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--iterations", type=int, default=20)
     parser.add_argument("--beta", type=float, default=0.0)
     parser.add_argument("--positive-likelihood-coefficient", type=float, default=0.0)
+    parser.add_argument("--reward-coefficient", type=float, default=None)
     parser.add_argument("--output", default="outputs/fixed-rollout-overfit/result.json")
     return parser.parse_args()
 
