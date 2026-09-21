@@ -56,7 +56,7 @@ def sequence_logps(model: object, tokenizer: object, prompt: str, completions: l
 
 
 def run_probe(args: argparse.Namespace) -> dict[str, object]:
-    """Run one deterministic LoRA policy-gradient update and collect before-after metrics."""
+    """Run repeated deterministic LoRA policy-gradient updates on one fixed rollout."""
     # Seed every relevant library and use evaluation mode so dropout cannot add noise.
     seed_everything(args.seed)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -72,33 +72,55 @@ def run_probe(args: argparse.Namespace) -> dict[str, object]:
     model.eval()
     prompt, completions = build_probe_inputs(tokenizer)
     advantages = torch.tensor([0.5, -0.5], dtype=torch.float32, device=device)
-    # Compute the exact on-policy objective before the update.
-    before_logps = sequence_logps(model, tokenizer, prompt, completions, device)
-    before_loss = -(advantages * before_logps).mean()
-    optimizer = torch.optim.SGD([parameter for parameter in model.parameters() if parameter.requires_grad], lr=args.learning_rate)
-    optimizer.zero_grad(set_to_none=True)
-    before_loss.backward()
-    gradient_norm = torch.nn.utils.clip_grad_norm_([parameter for parameter in model.parameters() if parameter.requires_grad], max_norm=float("inf"))
-    optimizer.step()
-    # Measure the same fixed sequences after exactly one optimizer update.
-    with torch.no_grad():
-        after_logps = sequence_logps(model, tokenizer, prompt, completions, device)
-        after_loss = -(advantages * after_logps).mean()
+    # Reuse one fixed rollout and its advantages for every optimizer update.
+    # Match the AdamW optimizer used by the live GRPO trainer while keeping the rollout frozen.
+    optimizer = torch.optim.AdamW(
+        [parameter for parameter in model.parameters() if parameter.requires_grad],
+        lr=args.learning_rate,
+        weight_decay=0.0,
+    )
+    initial_logps = sequence_logps(model, tokenizer, prompt, completions, device).detach()
+    initial_loss = -(advantages * initial_logps).mean()
+    history = []
+    for update in range(args.iterations):
+        # Measure the fixed-batch objective before this update.
+        before_logps = sequence_logps(model, tokenizer, prompt, completions, device)
+        before_loss = -(advantages * before_logps).mean()
+        optimizer.zero_grad(set_to_none=True)
+        before_loss.backward()
+        gradient_norm = torch.nn.utils.clip_grad_norm_([parameter for parameter in model.parameters() if parameter.requires_grad], max_norm=float("inf"))
+        optimizer.step()
+        # Measure the same fixed sequences after this update.
+        with torch.no_grad():
+            after_logps = sequence_logps(model, tokenizer, prompt, completions, device)
+            after_loss = -(advantages * after_logps).mean()
+        history.append({
+            "update": update + 1,
+            "before_loss": float(before_loss.detach().cpu()),
+            "after_loss": float(after_loss.cpu()),
+            "loss_delta": float((after_loss - before_loss.detach()).cpu()),
+            "logp_deltas": (after_logps - before_logps.detach()).cpu().tolist(),
+            "gradient_norm": float(gradient_norm),
+        })
+        print(json.dumps(history[-1]), flush=True)
+    after_logps = sequence_logps(model, tokenizer, prompt, completions, device).detach()
+    after_loss = -(advantages * after_logps).mean()
     result = {
         "model": args.model,
         "seed": args.seed,
         "learning_rate": args.learning_rate,
+        "iterations": args.iterations,
         "prompt": prompt,
         "completions": completions,
         "advantages": advantages.cpu().tolist(),
-        "before_logps": before_logps.detach().cpu().tolist(),
+        "before_logps": initial_logps.cpu().tolist(),
+        "history": history,
         "after_logps": after_logps.cpu().tolist(),
-        "logp_deltas": (after_logps - before_logps.detach()).cpu().tolist(),
-        "before_loss": float(before_loss.detach().cpu()),
+        "before_loss": float(initial_loss.cpu()),
         "after_loss": float(after_loss.cpu()),
-        "gradient_norm": float(gradient_norm),
-        "positive_direction_passed": bool(after_logps[0] > before_logps[0]),
-        "negative_direction_passed": bool(after_logps[1] < before_logps[1]),
+        "gradient_norm": history[-1]["gradient_norm"],
+        "positive_direction_passed": all(item["logp_deltas"][0] > 0 for item in history),
+        "negative_direction_passed": all(item["logp_deltas"][1] < 0 for item in history),
     }
     Path(args.output).parent.mkdir(parents=True, exist_ok=True)
     Path(args.output).write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
@@ -113,7 +135,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--model", default="Qwen/Qwen2.5-Coder-3B-Instruct")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--learning-rate", type=float, default=1e-3)
-    parser.add_argument("--output", default="outputs/deterministic-grpo-probe/result.json")
+    parser.add_argument("--iterations", type=int, default=20)
+    parser.add_argument("--output", default="outputs/fixed-rollout-overfit/result.json")
     return parser.parse_args()
 
 

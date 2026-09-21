@@ -13190,6 +13190,8 @@ METRIC LOGGING UPDATE, 2026-09-21. Source change adds training rollout test_pass
 
 CANONICAL PARTIAL METRIC UPDATE, 2026-09-21. Added MBPP and MBPP+ partial-only and partial-or-full completion rates to canonical EvalPlus metric summaries. No new experiment result claimed. Validation: 27 focused tests passed.
 
+FIXED ROLLOUT OVERFIT DIAGNOSTIC, 2026-09-21. Purpose: test whether the policy optimizer can maximize a frozen reward and old-log-probability batch without new generation or sandbox noise. The original live run cqaaddy7 was stopped. Source commit was the fixed-probe update before its final AdamW patch; final code artifact is experiments/deterministic_grpo_probe.py and result output is outputs/fixed-rollout-overfit/result-adamw-lr3e-6.json. Setup: Qwen/Qwen2.5-Coder-3B-Instruct, seed42, one fixed ChatML prompt, correct add completion advantage+0.5, incorrect subtract completion advantage-0.5, LoRA rank16 alpha32 dropout0, AdamW, learning rate3e-6,100 repeated updates, deterministic evaluation mode. Candidate selection was fixed before measuring the objective; no ground-truth selection occurred. Result: loss-0.170898 to-1.012714;94/100 update deltas negative and6 positive; positive log-probability delta-0.060516; negative log-probability delta-3.427778. The frozen objective was strongly optimized by suppressing the negative completion. Limitation: two completions and one simple prompt do not reproduce the multi-task rollout geometry or fresh sampling. No benchmark result claimed.
+
 
 
 ------------------------------------------------------------------------
