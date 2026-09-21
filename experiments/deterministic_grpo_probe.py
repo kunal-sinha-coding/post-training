@@ -65,12 +65,15 @@ def run_probe(args: argparse.Namespace) -> dict[str, object]:
         tokenizer.pad_token = tokenizer.eos_token
     model = AutoModelForCausalLM.from_pretrained(args.model, torch_dtype=torch.bfloat16 if device.type == "cuda" else torch.float32)
     model.to(device)
-    model = model
+    model.eval()
     peft_config = build_peft_config({"lora_enabled": True, "lora_r": 16, "lora_alpha": 32, "lora_dropout": 0.0, "lora_target_modules": ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]})
     from peft import get_peft_model
+    prompt, completions = build_probe_inputs(tokenizer)
+    # Precompute reference likelihoods before adding LoRA so the KL anchor stays fixed.
+    with torch.no_grad():
+        reference_logps = sequence_logps(model, tokenizer, prompt, completions, device)
     model = get_peft_model(model, peft_config)
     model.eval()
-    prompt, completions = build_probe_inputs(tokenizer)
     advantages = torch.tensor([0.5, -0.5], dtype=torch.float32, device=device)
     # Reuse one fixed rollout and its advantages for every optimizer update.
     # Match the AdamW optimizer used by the live GRPO trainer while keeping the rollout frozen.
@@ -80,12 +83,16 @@ def run_probe(args: argparse.Namespace) -> dict[str, object]:
         weight_decay=0.0,
     )
     initial_logps = sequence_logps(model, tokenizer, prompt, completions, device).detach()
-    initial_loss = -(advantages * initial_logps).mean()
+    initial_kl = torch.exp(reference_logps - initial_logps) - (reference_logps - initial_logps) - 1.0
+    initial_positive_loss = -initial_logps[advantages > 0].mean()
+    initial_loss = -(advantages * initial_logps).mean() + args.beta * initial_kl.mean() + args.positive_likelihood_coefficient * initial_positive_loss
     history = []
     for update in range(args.iterations):
         # Measure the fixed-batch objective before this update.
         before_logps = sequence_logps(model, tokenizer, prompt, completions, device)
-        before_loss = -(advantages * before_logps).mean()
+        kl = torch.exp(reference_logps - before_logps) - (reference_logps - before_logps) - 1.0
+        positive_loss = -before_logps[advantages > 0].mean()
+        before_loss = -(advantages * before_logps).mean() + args.beta * kl.mean() + args.positive_likelihood_coefficient * positive_loss
         optimizer.zero_grad(set_to_none=True)
         before_loss.backward()
         gradient_norm = torch.nn.utils.clip_grad_norm_([parameter for parameter in model.parameters() if parameter.requires_grad], max_norm=float("inf"))
@@ -93,7 +100,9 @@ def run_probe(args: argparse.Namespace) -> dict[str, object]:
         # Measure the same fixed sequences after this update.
         with torch.no_grad():
             after_logps = sequence_logps(model, tokenizer, prompt, completions, device)
-            after_loss = -(advantages * after_logps).mean()
+            after_kl = torch.exp(reference_logps - after_logps) - (reference_logps - after_logps) - 1.0
+            after_positive_loss = -after_logps[advantages > 0].mean()
+            after_loss = -(advantages * after_logps).mean() + args.beta * after_kl.mean() + args.positive_likelihood_coefficient * after_positive_loss
         history.append({
             "update": update + 1,
             "before_loss": float(before_loss.detach().cpu()),
@@ -104,11 +113,15 @@ def run_probe(args: argparse.Namespace) -> dict[str, object]:
         })
         print(json.dumps(history[-1]), flush=True)
     after_logps = sequence_logps(model, tokenizer, prompt, completions, device).detach()
-    after_loss = -(advantages * after_logps).mean()
+    after_kl = torch.exp(reference_logps - after_logps) - (reference_logps - after_logps) - 1.0
+    after_positive_loss = -after_logps[advantages > 0].mean()
+    after_loss = -(advantages * after_logps).mean() + args.beta * after_kl.mean() + args.positive_likelihood_coefficient * after_positive_loss
     result = {
         "model": args.model,
         "seed": args.seed,
         "learning_rate": args.learning_rate,
+        "beta": args.beta,
+        "positive_likelihood_coefficient": args.positive_likelihood_coefficient,
         "iterations": args.iterations,
         "prompt": prompt,
         "completions": completions,
@@ -136,6 +149,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--learning-rate", type=float, default=1e-3)
     parser.add_argument("--iterations", type=int, default=20)
+    parser.add_argument("--beta", type=float, default=0.0)
+    parser.add_argument("--positive-likelihood-coefficient", type=float, default=0.0)
     parser.add_argument("--output", default="outputs/fixed-rollout-overfit/result.json")
     return parser.parse_args()
 

@@ -13196,6 +13196,10 @@ FIXED ROLLOUT HIGH-RATE DIAGNOSTIC, 2026-09-21. Same fixed prompt, completions, 
 
 FIXED ROLLOUT INTERMEDIATE-RATE DIAGNOSTIC, 2026-09-21. Same fixed setup with constant AdamW learning rate1e-5 and100 updates. Artifact: outputs/fixed-rollout-overfit/result-adamw-lr1e-5.json. Result: loss-0.170898 to-6.337874;100/100 updates improved; positive log-probability delta-0.309648; negative delta-24.977552. The frozen objective is stable at this rate but still improves mainly by suppressing the negative completion. This is a mechanism result, not a benchmark result.
 
+FIXED ROLLOUT KL CONTROL, 2026-09-21. Same fixed prompt and completions, constant AdamW1e-5,100 updates, beta0.01, no auxiliary term. Artifact: outputs/fixed-rollout-overfit/result-adamw-lr1e-5-beta1e-2.json. Loss-0.170898 to-0.980362;82 updates improved and18 worsened; positive log-probability delta+0.228017; negative delta-3.948444.
+
+FIXED ROLLOUT KL PLUS POSITIVE LIKELIHOOD CONTROL, 2026-09-21. Same setup with beta0.01 and positive-likelihood coefficient0.05. Artifact: outputs/fixed-rollout-overfit/result-adamw-lr1e-5-beta1e-2-pos05.json. Loss-0.159411 to-0.980452;80 updates improved and20 worsened; positive delta+0.228562; negative delta-3.918873. The KL-only and KL-plus-auxiliary results were nearly identical.
+
 
 
 ------------------------------------------------------------------------
