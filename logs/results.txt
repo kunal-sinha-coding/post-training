@@ -13183,3 +13183,104 @@ reward_rolling_window: 10
 INTERIM STOP AND LIKELIHOOD AUDIT, 2026-09-21. Run urzbevgw, source6903599. Complete setup, artifact identifiers, selection policy, metrics and limitations are recorded in the accompanying ERROR ANALYSIS entry. Step0 to5:5/8 full passes unchanged;18/24 to20/24 tests. Contextual stop mismatch reproduced in3/5 targeted CPU examples. No new training or benchmark execution.
 
 CONTEXTUAL STOP AND PROBE SPEED REPAIR, 2026-09-21. Code source is the relaunch commit. The prior run urzbevgw was stopped after six updates. The new run will use Qwen/Qwen2.5-Coder-3B-Instruct, seed42, eight fixed disjoint MBPP training tasks, 16 sampled completions per group, hybrid reward coefficient0.5, original MBPP tests, LoRA rank16 alpha32 dropout0.05, DAPO beta0, learning rate3e-6 with linear decay, bfloat16, max completion2048, gradient accumulation32, probe batch size4, and the configured step5 greedy same-task evaluation. Candidate selection is by fixed greedy evaluation procedure; ground-truth tests are used afterward only for measurement. Artifact output is outputs/grpo-mbpp-tiny-overfit-g16-reward-masked-dapo-contextual; W&B run identifier will be recorded at launch. Fixes include tokenizer-offset reward masking, Transformers context-aware stopping, masked length reporting, and one batched probe likelihood pass. The previous baseline was step0 5/8 pass@1 and18/24 tests; step5 was5/8 and20/24. No result from the new run yet.
+
+RELAUNCH INTERIM RESULT, 2026-09-21. W&B run cqaaddy7 is running from source commit dedf457 with the complete setup above. After two optimizer updates, step1 reward was0.375 and step2 had no new rollout reward yet because it reused the generation batch. Probe step1 had DAPO delta-0.000204, advantage correlation0.150, sign alignment0.5625; step2 had delta-0.000629, correlation0.032, sign alignment0.625. First update wall time83 seconds and second27 seconds. No final selection or benchmark result yet.
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-09-20 17:51:27 PDT
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EVALUATION RESULTS
+Evaluation: training-step-0
+Training context: unknown
+Epoch: unknown
+Timestamp: 2026-09-20 17:52:49 PDT
+Git commit: dedf457
+Change description: dedf457 Repair contextual stop masking and speed likelihood probe
+655a508 Record interim masking and likelihood audit
+Metrics:
+{
+  "average_reward": 0.75,
+  "examples": 8,
+  "pass_at_1": 0.625,
+  "repeated_completion_fraction": 0.0,
+  "reward_format_mean": 0.0,
+  "reward_interface_mean": 0.0,
+  "reward_pass_mean": 0.625,
+  "reward_syntax_mean": 0.0,
+  "reward_tests_mean": 0.75,
+  "status_counts": {
+    "failed": 1,
+    "partial": 2,
+    "passed": 5
+  },
+  "successful_examples": 5,
+  "tests_pass_fraction": 0.75,
+  "unique_completion_rate": 1.0
+}
+YAML path: configs/tiny_overfit.yaml
+YAML contents:
+# This configuration selects eight canonical training tasks, trains LoRA with GRPO, and evaluates only those same tasks.
+model_name_or_path: Qwen/Qwen2.5-Coder-3B-Instruct
+dataset_name: google-research-datasets/mbpp
+dataset_config: null
+mbpp_splits: [train, validation, test]
+evalplus_dataset_name: evalplus/mbppplus
+evalplus_split: test
+synthetic_tests_enabled: false
+seed: 42
+max_train_samples: 8
+max_eval_samples: null
+train_subset_evaluation_only: true
+run_baseline_evaluation: false
+reuse_baseline: false
+run_intermediate_evals: false
+run_qwen_evalplus_at_start: false
+evalplus_eval_steps: 5
+lora_enabled: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+sft_enabled: false
+log_path: logs/logs.txt
+results_log_path: logs/results.txt
+output_dir: outputs/grpo-mbpp-tiny-overfit-g16-reward-masked-dapo-contextual
+mask_reward_stops: true
+probe_update_direction: true
+probe_batch_size: 4
+num_train_epochs: 100
+max_steps: 50
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 32
+generation_batch_size: 64
+learning_rate: 0.000003
+loss_type: dapo
+disable_dropout: false
+num_generations: 16
+beta: 0.0
+max_prompt_length: 512
+max_completion_length: 2048
+logging_steps: 1
+save_steps: 5
+eval_steps: 5
+best_checkpoint_metric: pass@1
+checkpoint_eval_patience: 0
+evaluation_batch_size: 8
+evaluation_num_completions: 1
+sandbox_timeout_seconds: 3
+trust_remote_code: false
+bf16: true
+fp16: false
+report_to: wandb
+wandb_project: grpo-mbpp
+wandb_run_name: grpo-mbpp-tiny-overfit-g16-reward-masked-dapo-contextual
+reward_function: hybrid
+reward_coefficient: 0.5
+reward_rolling_window: 10
+
+------------------------------------------------------------------------
