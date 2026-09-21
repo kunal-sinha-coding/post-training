@@ -11463,6 +11463,8 @@ reward_rolling_window: 10
 
 ------------------------------------------------------------------------
 
+FIXED ROLLOUT KL SWEEP, 2026-09-21. Same fixed prompt, completions, advantages, AdamW learning rate1e-5,100 updates, no positive-likelihood term. Artifacts: outputs/fixed-rollout-overfit/result-adamw-lr1e-5-beta1e-3.json, result-adamw-lr1e-5-beta3e-3.json, result-adamw-lr1e-5-beta1e-2.json, result-adamw-lr1e-5-beta3e-2.json, and result-adamw-lr1e-5-beta1e-1.json. Results: beta0.001 loss-0.170898 to-1.534928, positive delta+0.228172, negative delta-6.261951; beta0.003 loss to-1.265929, positive+0.228017, negative-5.092626; beta0.01 loss to-0.980362, positive+0.228017, negative-3.948444; beta0.03 loss to-0.738488, positive+0.228094, negative-2.889151; beta0.1 loss to-0.514180, positive+0.228094, negative-1.771031. Candidate selection is independent of ground truth. The sweep identifies beta0.01 to0.03 as middle candidates, but a two-completion probe cannot select the final training value.
+
 ## Experiment: tiny fixed-set GRPO overfit diagnostic, 16 generations
 
 Status: running as of 2026-09-20.
