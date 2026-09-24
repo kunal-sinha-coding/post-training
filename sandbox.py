@@ -7,6 +7,8 @@ and summarizes reward variation for local logs and W&B.
 from __future__ import annotations
 
 import ast
+from concurrent.futures import ThreadPoolExecutor
+from itertools import repeat
 import json
 import math
 import os
@@ -191,6 +193,23 @@ def score_completion(completion: str, tests: str, timeout_seconds: float = 3.0, 
     return reward, {"status": status, "passed_tests": passed, "total_tests": total, "interface_valid": interface_valid, "reward_components": components}
 
 
+def score_completion_batch(completions: list[str], tests: list[str], timeout_seconds: float = 3.0, reward_function: str = DEFAULT_REWARD_FUNCTION, reward_coefficient: float = DEFAULT_REWARD_COEFFICIENT, reward_scoring_workers: int = 8) -> list[tuple[float, dict[str, object]]]:
+    """Score independent candidates concurrently while preserving their input order."""
+    # Bound worker counts so a config typo cannot create excessive subprocess concurrency.
+    if not 1 <= reward_scoring_workers <= 32:
+        raise ValueError("reward_scoring_workers must be between one and 32.")
+    # Run each candidate in a worker and collect results in the original order.
+    with ThreadPoolExecutor(max_workers=reward_scoring_workers) as executor:
+        return list(executor.map(
+            score_completion,
+            completions,
+            tests,
+            repeat(timeout_seconds),
+            repeat(reward_function),
+            repeat(reward_coefficient),
+        ))
+
+
 def reward_for_completion(completion: str, tests: str, timeout_seconds: float = 3.0) -> float:
     """Return the dense reward for one completion."""
     # Preserve the simple scalar API used by existing callers and tests.
@@ -245,12 +264,14 @@ def summarize_reward_groups(rewards: list[float], details: list[dict[str, object
     return diagnostics
 
 
-def reward_function(completions: list[object], test_code: list[str], sandbox_timeout_seconds: float = 3.0, diagnostics: dict[str, Any] | None = None, group_size: int = 4, reward_function_name: str = DEFAULT_REWARD_FUNCTION, reward_coefficient: float = DEFAULT_REWARD_COEFFICIENT, trace_path: str | None = None, task_ids: list[object] | None = None, synthetic_reward_probe: bool = False, **_: object) -> list[float]:
+def reward_function(completions: list[object], test_code: list[str], sandbox_timeout_seconds: float = 3.0, diagnostics: dict[str, Any] | None = None, group_size: int = 4, reward_function_name: str = DEFAULT_REWARD_FUNCTION, reward_coefficient: float = DEFAULT_REWARD_COEFFICIENT, trace_path: str | None = None, task_ids: list[object] | None = None, synthetic_reward_probe: bool = False, reward_scoring_workers: int = 8, **_: object) -> list[float]:
     """Score a GRPO batch with the configured test-pass or hybrid reward."""
-    # Record candidate outcomes so reward variation remains visible during training.
+    # Normalize every candidate while retaining its original record position.
     rewards: list[float] = []
     details: list[dict[str, object]] = []
     trace_records: list[dict[str, object]] = []
+    scored_completions: list[str] = []
+    scoring_tests: list[str] = []
     for index, (completion, tests) in enumerate(zip(completions, test_code)):
         if isinstance(completion, list):
             text = "".join(str(part.get("text", "")) if isinstance(part, dict) else str(part) for part in completion)
@@ -260,19 +281,24 @@ def reward_function(completions: list[object], test_code: list[str], sandbox_tim
             text = str(completion)
         truncated = truncate_qwen_completion(text)
         scored_text = wrap_qwen_continuation(truncated)
-        reward, detail = score_completion(scored_text, tests, sandbox_timeout_seconds, reward_function_name, reward_coefficient)
-        rewards.append(reward)
-        details.append(detail)
+        scored_completions.append(scored_text)
+        scoring_tests.append(tests)
         trace_records.append({
             "index": index,
             "task_id": str(task_ids[index]) if task_ids is not None and index < len(task_ids) else None,
             "raw_completion": text,
             "truncated_completion": truncated,
             "scored_completion": scored_text,
-            "test_code": tests,
-            "reward": reward,
-            "detail": detail,
         })
+    # Reuse the ordered batch scorer for reward and evaluation paths.
+    scored_results = score_completion_batch(scored_completions, scoring_tests, sandbox_timeout_seconds, reward_function_name, reward_coefficient, reward_scoring_workers)
+    # Attach each ordered result to the matching diagnostics and trace record.
+    for trace_record, (reward, detail) in zip(trace_records, scored_results):
+        rewards.append(reward)
+        details.append(detail)
+        trace_record["test_code"] = scoring_tests[trace_record["index"]]
+        trace_record["reward"] = reward
+        trace_record["detail"] = detail
     if synthetic_reward_probe:
         # Replace execution rewards with a known within-group ranking for the optimizer control test.
         for index in range(len(rewards)):

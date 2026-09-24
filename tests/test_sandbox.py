@@ -62,6 +62,54 @@ def test_hybrid_reward_weights_full_pass_and_partial_progress():
     assert diagnostics["reward/pass/mean"] == pytest.approx(0.5)
 
 
+def test_reward_scoring_runs_concurrently_and_preserves_trace_order(monkeypatch, tmp_path):
+    """Run candidate scores concurrently without changing their input order."""
+    import json
+    import threading
+    import time
+
+    active = 0
+    max_active = 0
+    lock = threading.Lock()
+
+    def fake_score(completion, tests, timeout_seconds, reward_function, reward_coefficient):
+        """Return deterministic completion results while tracking concurrent calls."""
+        nonlocal active, max_active
+        with lock:
+            active += 1
+            max_active = max(max_active, active)
+        time.sleep(0.03)
+        with lock:
+            active -= 1
+        reward = float(tests)
+        detail = {
+            "status": "passed",
+            "passed_tests": 1,
+            "total_tests": 1,
+            "interface_valid": True,
+            "reward_components": {"format": 0.0, "syntax": 0.0, "interface": 0.0, "tests": reward, "pass": reward},
+        }
+        return reward, detail
+
+    monkeypatch.setattr("sandbox.score_completion", fake_score)
+    trace_path = tmp_path / "rewards.jsonl"
+    rewards = reward_function(
+        ["first", "second", "third", "fourth"],
+        ["1", "2", "3", "4"],
+        diagnostics={},
+        group_size=2,
+        trace_path=str(trace_path),
+        task_ids=["a", "b", "c", "d"],
+        reward_scoring_workers=2,
+    )
+
+    records = [json.loads(line) for line in trace_path.read_text(encoding="utf-8").splitlines()]
+    assert 1 < max_active <= 2
+    assert rewards == [1.0, 2.0, 3.0, 4.0]
+    assert [record["task_id"] for record in records] == ["a", "b", "c", "d"]
+    assert [record["reward"] for record in records] == rewards
+
+
 def test_interface_validation_checks_name_and_arity():
     """Reject nested, renamed, and incorrectly parameterized task functions."""
     tests = "assert add(1, 2) == 3"

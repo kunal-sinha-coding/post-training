@@ -11,6 +11,7 @@ synthetic_tests_per_task: 5
 synthetic_tests_validation_timeout_seconds: 5
 seed: 42
 max_train_samples: null
+select_best_checkpoint: true
 reuse_baseline: false
 run_baseline_evaluation: false
 run_intermediate_evals: false
@@ -56,6 +57,7 @@ evaluation_top_p: 0.95
 reward_function: hybrid
 reward_coefficient: 0.5
 sandbox_timeout_seconds: 3
+reward_scoring_workers: 8
 trust_remote_code: false
 bf16: true
 fp16: false

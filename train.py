@@ -111,7 +111,7 @@ def evaluate_training_mbpp(model_path: Path, train_dataset: Any, config: dict[st
     # Wrap raw vLLM code bodies so the shared scorer can extract them as Python programs.
     completions = [wrap_qwen_continuation(completion) for completion in completions]
     # Score generated solutions against only the original MBPP tests used by the reward.
-    metrics, details = evaluate_texts(completions, records, float(config.get("sandbox_timeout_seconds", 3)), config.get("log_path", "logs/logs.txt"), name)
+    metrics, details = evaluate_texts(completions, records, float(config.get("sandbox_timeout_seconds", 3)), config.get("log_path", "logs/logs.txt"), name, reward_scoring_workers=int(config.get("reward_scoring_workers", 8)))
     return {"metrics": metrics, "details": details}
 
 
@@ -236,6 +236,7 @@ def _make_reward(config: dict[str, Any]):
     timeout = float(config.get("sandbox_timeout_seconds", 3))
     reward_function_name = str(config.get("reward_function", "test_pass"))
     reward_coefficient = float(config.get("reward_coefficient", 0.5))
+    reward_scoring_workers = int(config.get("reward_scoring_workers", 8))
 
     def reward(completions: list[object], test_code: list[str], **kwargs: object) -> list[float]:
         """Score the current GRPO completion batch."""
@@ -244,7 +245,7 @@ def _make_reward(config: dict[str, Any]):
         append_training_step_samples(config.get("log_path", "logs/logs.txt"), completions)
         task_ids = kwargs.get("task_id")
         task_id_values = task_ids if isinstance(task_ids, list) else None
-        rewards = reward_function(completions, test_code, timeout, diagnostics=diagnostics, group_size=int(config.get("num_generations", 4)), reward_function_name=reward_function_name, reward_coefficient=reward_coefficient, trace_path=config.get("reward_trace_path"), task_ids=task_id_values, synthetic_reward_probe=bool(config.get("synthetic_reward_probe", False)), **kwargs)
+        rewards = reward_function(completions, test_code, timeout, diagnostics=diagnostics, group_size=int(config.get("num_generations", 4)), reward_function_name=reward_function_name, reward_coefficient=reward_coefficient, trace_path=config.get("reward_trace_path"), task_ids=task_id_values, synthetic_reward_probe=bool(config.get("synthetic_reward_probe", False)), reward_scoring_workers=reward_scoring_workers, **kwargs)
         # Record the generated completion token lengths so truncation and length drift are visible in W&B.
         completion_ids = kwargs.get("completion_ids")
         if isinstance(completion_ids, list) and completion_ids:
@@ -588,23 +589,26 @@ def _make_callback(model: Any, tokenizer: Any, train_dataset: Any, test_dataset:
                         evaluation_log_name = f"evalplus-{name}"
                         selection_metric = float(evalplus_result["metrics"].get("mbpp_plus_pass_at_1", float("-inf")))
                     save_evaluation(args.output_dir, f"training-{name}", training_result["metrics"], training_result["details"], config)
-                    # Retain this adapter only when its configured evaluation metric improves.
-                    best_metric = self.best_metric if config.get("train_subset_evaluation_only", False) else self.best_evalplus_mbpp_plus
-                    if selection_metric > best_metric:
-                        best_dir = Path(args.output_dir) / "best_checkpoints" / name
-                        if best_dir.exists():
-                            shutil.rmtree(best_dir)
-                        best_dir.parent.mkdir(parents=True, exist_ok=True)
-                        shutil.copytree(model_path, best_dir)
-                        if config.get("train_subset_evaluation_only", False):
-                            self.best_metric = selection_metric
+                    # Use evaluation labels for checkpoint selection only when the config permits it.
+                    if config.get("select_best_checkpoint", True):
+                        best_metric = self.best_metric if config.get("train_subset_evaluation_only", False) else self.best_evalplus_mbpp_plus
+                        if selection_metric > best_metric:
+                            best_dir = Path(args.output_dir) / "best_checkpoints" / name
+                            if best_dir.exists():
+                                shutil.rmtree(best_dir)
+                            best_dir.parent.mkdir(parents=True, exist_ok=True)
+                            shutil.copytree(model_path, best_dir)
+                            if config.get("train_subset_evaluation_only", False):
+                                self.best_metric = selection_metric
+                            else:
+                                self.best_evalplus_mbpp_plus = selection_metric
+                                config["_best_evalplus_mbpp_plus"] = self.best_evalplus_mbpp_plus
+                            self.best_checkpoint_path = best_dir
+                            print(f"Saved new best checkpoint at {best_dir} with pass@1={selection_metric:.3f}.", flush=True)
                         else:
-                            self.best_evalplus_mbpp_plus = selection_metric
-                            config["_best_evalplus_mbpp_plus"] = self.best_evalplus_mbpp_plus
-                        self.best_checkpoint_path = best_dir
-                        print(f"Saved new best checkpoint at {best_dir} with pass@1={selection_metric:.3f}.", flush=True)
+                            print(f"Discarded checkpoint at {model_path}; pass@1={selection_metric:.3f} did not exceed {best_metric:.3f}.", flush=True)
                     else:
-                        print(f"Discarded checkpoint at {model_path}; pass@1={selection_metric:.3f} did not exceed {best_metric:.3f}.", flush=True)
+                        print(f"Recorded {evaluation_log_name}; checkpoint selection is disabled.", flush=True)
                 finally:
                     evaluation_model.to(device or "cuda")
                     evaluation_model.train()

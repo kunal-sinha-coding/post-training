@@ -2222,3 +2222,17 @@ Added completion-level probability tracking to the existing GRPO direction probe
 ## 2026-09-24: Support same-task GRPO generation batches
 
 Commit name: Repeat one training task for accumulated GRPO groups. The four-group and eight-group accumulation attempts could not start because the singleton training dataset had one row while TRL's sampler required four or eight prompt rows to form a complete generation batch. Added an opt-in repeat_train_dataset setting that duplicates exactly one selected task enough times for the sampler while rejecting multi-task inputs. Added a regression assertion that eight rows retain the same task ID. The eight-group experiment uses generation_batch_size 128 and gradient_accumulation_steps 128, aligned to TRL's resolved steps_per_generation of 128, so eight independent groups of 16 are accumulated before each optimizer step. The unsuccessful launch attempts performed no optimizer updates and are excluded from performance results.
+
+## 2026-09-24: Parallel scoring and full-data GRPO update
+
+Commit name: Parallelize reward scoring and tune full-data GRPO batches.
+
+Changed `sandbox.py` to score independent completions with a bounded ordered thread pool capped at 32 workers, and set the standard configuration to eight scoring workers. The reward function keeps sample order, per-completion test execution, dense reward components, group diagnostics, and trace order unchanged. `evaluate.py` and `train.py` now use the same parallel scorer for scheduled training-set evaluations. This addresses the observed CPU bottleneck where reward execution used approximately one CPU core while GPU utilization remained low.
+
+Added `select_best_checkpoint` to control checkpoint selection independently from recorded evaluation. The new full-data run records the complete training-set evaluation every ten updates but disables metric-based checkpoint selection, so labels do not choose a candidate. The final step-50 adapter is the selected artifact by the fixed training schedule.
+
+Added the reproducible configuration `configs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-20260924.yaml`. It uses all 593 post-filter MBPP records, eight task groups of 16 completions per 128-sample update, microbatch size two, gradient accumulation 64, eight reward-scoring workers, and scheduled in-sample evaluation every ten steps. The 50-step cap draws 400 task slots, so it does not guarantee one pass through all 593 records. TRL's sampler discards any incomplete group of eight at an epoch boundary.
+
+The preceding 0.5B single-task run was stopped at the user's request after 24 optimizer updates while processing the step-25 evaluation. It did not complete its 50-step budget. The new run uses the full task pool and the throughput changes above.
+
+Validation passed: `pytest -q tests/test_sandbox.py tests/test_evaluate.py tests/test_data.py` reported 29 passed, and `python -m compileall -q sandbox.py evaluate.py train.py` completed. Resolving the new config produced 593 training rows, eight task groups per update, 16 generations per task, 128 samples per optimizer update, and TRL `steps_per_generation=64`.
