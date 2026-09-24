@@ -2298,3 +2298,10 @@ The user redirected the planned long fixed-eight diagnostic to the full MBPP tra
 Commit name: Record launch of long-ceiling full-data GRPO.
 
 Launched the full 593-task 0.5B run with fresh groups of 16 completions over eight tasks per update, 128 completions per update, and `max_steps: 50000`. W&B run `fictfvaw` is syncing. The run initialized from the base model and is recorded in `logs/results.txt`; code at launch is `bb4b107`.
+
+
+## 2026-09-24: Verify first update of long-ceiling full-data GRPO
+
+Commit name: Record first update of long-ceiling full-data GRPO.
+
+The full-data run completed step 1 of 50,000 after about 89 seconds. It processed the full 593-task pool for step-zero greedy evaluation and synced W&B run `fictfvaw`. The first fresh batch metrics match the prior same-seed run. The run is active and its initial metrics are recorded in `logs/results.txt`.
