@@ -2249,3 +2249,10 @@ Appended the reproducible configuration, dataset coverage, candidate-selection p
 Commit name: Record final full-data GRPO metrics and rollout diagnostics.
 
 Updated the full-data 0.5B GRPO experiment report from an initial running snapshot to the completed 50-update result. Recorded ten-update means for fresh sampled reward, pooled test-pass fraction, and full-pass fraction; step-zero to step-50 in-sample training-set evaluation metrics; final adapter evaluation; and the declining direction-probe movement across updates. The results distinguish volatile fresh-rollout batch reward from the small net gain in scheduled in-sample evaluation and document that no held-out EvalPlus evaluation was run.
+
+
+## 2026-09-24: Set up fixed-eight-task GRPO follow-up
+
+Commit name: Configure fixed-eight-task GRPO overfit run.
+
+Added a run configuration derived from the completed full-data 0.5B run. It caps the filtered MBPP training rows at the deterministic first eight tasks while retaining 16 generations per task, 128 completions per update, microbatch two, accumulation 64, and the prior reward and optimizer settings. The experiment report records the task IDs, in-sample evaluation schedule, candidate-selection boundary, run command, and pending metrics. The sampler audit confirmed that one 128-completion generation batch spans exactly the eight available task rows and repeats each 16 times.

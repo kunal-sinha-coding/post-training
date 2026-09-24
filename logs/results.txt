@@ -13979,3 +13979,24 @@ The fixed-rollout probability probe also weakens over training. Mean per-complet
 
 Limitations. This is one 50-update seed. The scheduled evaluations use the training rows, and held-out EvalPlus was not run. The sampled rollout batches contain only eight tasks per update and are sensitive to task difficulty. Model and dataset revisions were not pinned. No throughput benchmark was collected.
 ------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------
+EXPERIMENT: Fixed-eight-task MBPP GRPO with 0.5B model, 8 groups x 16 fresh generations
+
+Status. Prepared for launch.
+
+Purpose. Test whether fresh-batch reward variation and weak overfitting on full MBPP were caused by changing task composition. Train repeatedly on the same eight tasks while keeping 16 fresh generations per task and accumulating 128 completions per optimizer update.
+
+Selection and evaluation. Select the first eight normalized MBPP rows remaining after EvalPlus task-ID exclusion, in dataset order with seed 42: task IDs 601, 609, 613, 617, 621, 625, 627, and 634. This selection does not inspect test outcomes. Evaluate greedily on these same eight training tasks at initialization and every ten optimizer steps. This is an in-sample overfit diagnostic, not a held-out benchmark. `select_best_checkpoint: false` keeps evaluation labels out of candidate selection; the fixed step-50 adapter is the scheduled artifact.
+
+Configuration and command. Based on `configs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-20260924.yaml`, with `max_train_samples: 8` and unique output, trace, log, and W&B paths. It preserves Qwen/Qwen2.5-Coder-0.5B-Instruct, seed 42, LoRA rank 16 / alpha 32 / dropout 0.05, DAPO loss, linear learning-rate schedule from 1e-5, beta 0.01, hybrid reward coefficient 0.75, 16 generations per task, generation batch size 128, per-device microbatch 2, gradient accumulation 64, eight scoring workers, maximum prompt/completion lengths 512/2048, bf16, and 50 optimizer updates. Each generation batch contains the same eight task IDs with 16 fresh completions per task.
+
+Command: `HF_HUB_ENABLE_HF_TRANSFER=0 accelerate launch --num_processes 1 train.py --config configs/grpo-mbpp-fixed8-8x16-b128-micro2-workers8-0.5b-20260924.yaml`.
+
+Run identifiers. W&B run name: `grpo-mbpp-fixed8-8x16-b128-micro2-workers8-0.5b-20260924`. Output: `outputs/grpo-mbpp-fixed8-8x16-b128-micro2-workers8-0.5b-20260924`. Configuration: `configs/grpo-mbpp-fixed8-8x16-b128-micro2-workers8-0.5b-20260924.yaml`. Parent run: https://wandb.ai/kunal-personal/grpo-mbpp/runs/gf4rxh0w. Environment and code are recorded in the parent experiment above; source commit for this experiment is recorded after launch configuration is committed.
+
+Metrics and outcome. Pending. Track each 128-completion fresh-batch reward, pooled test-pass fraction, full-pass fraction, per-task group variability, DAPO surrogate delta, probability-direction metrics, learning rate, and greedy in-sample pass@1 / test-pass fraction at steps 0, 10, 20, 30, 40, and 50.
+
+Limitations. A small fixed task set tests overfitting only. Greedy evaluation and reward use the same tasks/tests, so results do not establish generalization. Completion sampling remains stochastic.
+------------------------------------------------------------------------
