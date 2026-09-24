@@ -38,6 +38,7 @@ per_device_train_batch_size: 1
 gradient_accumulation_steps: 32
 learning_rate: 0.000003
 num_generations: 4
+rollout_sampling_mode: fresh
 beta: 0.0
 max_prompt_length: 512
 max_completion_length: 2048

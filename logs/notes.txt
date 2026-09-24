@@ -2256,3 +2256,17 @@ Updated the full-data 0.5B GRPO experiment report from an initial running snapsh
 Commit name: Configure fixed-eight-task GRPO overfit run.
 
 Added a run configuration derived from the completed full-data 0.5B run. It caps the filtered MBPP training rows at the deterministic first eight tasks while retaining 16 generations per task, 128 completions per update, microbatch two, accumulation 64, and the prior reward and optimizer settings. The experiment report records the task IDs, in-sample evaluation schedule, candidate-selection boundary, run command, and pending metrics. The sampler audit confirmed that one 128-completion generation batch spans exactly the eight available task rows and repeats each 16 times.
+
+
+## 2026-09-24: Record fixed-eight-task run launch and first update
+
+Commit name: Record fixed-eight-task GRPO run start.
+
+Updated the reproducibility record with the W&B run ID and source commit, confirmed the eight deterministic task IDs were each sampled 16 times in the first 128-completion batch, and recorded step-zero and first-update diagnostics. The run remains active; the single initial rollout is not treated as a trend.
+
+
+## 2026-09-24: Add explicit fresh and fixed rollout sampling modes
+
+Commit name: Make rollout sampling mode configurable.
+
+Added `rollout_sampling_mode: fresh|fixed` with legacy `fixed_rollout_replay` support. Fresh remains the default in standard configs. Fixed mode replays the first generated batch without requiring the diagnostic likelihood probe. Updated the existing fixed-rollout example, README, and focused config-resolution tests. Verified the still-running fixed-eight experiment remains on its originally loaded fresh config and did not alter its config file or process. Focused checks passed: 36 tests and Python compileall.

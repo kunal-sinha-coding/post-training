@@ -37,7 +37,7 @@ mask_reward_stops: true
 reward_trace_path: outputs/grpo-mbpp-single-task-fixed16-replay-probe-20260924/reward-trace.jsonl
 probe_sample_trace_path: outputs/grpo-mbpp-single-task-fixed16-replay-probe-20260924/probability-trace.jsonl
 probe_expected_samples: 16
-fixed_rollout_replay: true
+rollout_sampling_mode: fixed
 probe_update_direction: true
 probe_batch_size: 2
 num_train_epochs: 100

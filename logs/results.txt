@@ -13984,7 +13984,7 @@ Limitations. This is one 50-update seed. The scheduled evaluations use the train
 ------------------------------------------------------------------------
 EXPERIMENT: Fixed-eight-task MBPP GRPO with 0.5B model, 8 groups x 16 fresh generations
 
-Status. Prepared for launch.
+Status. Running, first optimizer update complete. W&B: https://wandb.ai/kunal-personal/grpo-mbpp/runs/yhhv94fw. The launched configuration is committed as 17cac71 on `main`.
 
 Purpose. Test whether fresh-batch reward variation and weak overfitting on full MBPP were caused by changing task composition. Train repeatedly on the same eight tasks while keeping 16 fresh generations per task and accumulating 128 completions per optimizer update.
 
@@ -13996,7 +13996,9 @@ Command: `HF_HUB_ENABLE_HF_TRANSFER=0 accelerate launch --num_processes 1 train.
 
 Run identifiers. W&B run name: `grpo-mbpp-fixed8-8x16-b128-micro2-workers8-0.5b-20260924`. Output: `outputs/grpo-mbpp-fixed8-8x16-b128-micro2-workers8-0.5b-20260924`. Configuration: `configs/grpo-mbpp-fixed8-8x16-b128-micro2-workers8-0.5b-20260924.yaml`. Parent run: https://wandb.ai/kunal-personal/grpo-mbpp/runs/gf4rxh0w. Environment and code are recorded in the parent experiment above; source commit for this experiment is recorded after launch configuration is committed.
 
-Metrics and outcome. Pending. Track each 128-completion fresh-batch reward, pooled test-pass fraction, full-pass fraction, per-task group variability, DAPO surrogate delta, probability-direction metrics, learning rate, and greedy in-sample pass@1 / test-pass fraction at steps 0, 10, 20, 30, 40, and 50.
+Sampling-mode behavior. This active process started from source commit 17cac71 and its unchanged configuration has `fixed_rollout_replay: false`, so it is using fresh sampling. The explicit `rollout_sampling_mode` interface was added after launch and applies only to future runs; the process and its loaded configuration were not changed.
+
+Initial metrics after update 1. Step-zero in-sample greedy evaluation over the same eight tasks had pass@1 0.125 (1/8), test-pass fraction 0.2083, and average test reward 0.2083. The first fresh rollout batch contains exactly 128 completions, 16 for each task ID. Its mean hybrid reward was 0.1061, pooled test-pass fraction 0.1491 (55/369 tests), full-pass fraction 0.0938 (12/128 completions), partial-or-full fraction 0.2109, and all-zero fraction 0.7891. Six of eight groups had mixed rewards. The optimizer completed without OOM; DAPO surrogate delta was -0.000115, positive-advantage mean-token log-probability delta +0.000671, and negative-advantage delta -0.003437. This is one rollout and is not a trend. Continue tracking every 128-completion fresh-batch reward, pooled test-pass fraction, full-pass fraction, per-task group variability, DAPO surrogate delta, probability-direction metrics, learning rate, and greedy in-sample pass@1 / test-pass fraction at steps 0, 10, 20, 30, 40, and 50.
 
 Limitations. A small fixed task set tests overfitting only. Greedy evaluation and reward use the same tasks/tests, so results do not establish generalization. Completion sampling remains stochastic.
 ------------------------------------------------------------------------

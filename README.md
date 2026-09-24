@@ -21,6 +21,8 @@ accelerate launch --num_processes 1 train.py --config configs/default.yaml
 
 The debug configuration limits the dataset and training steps. `run_baseline_evaluation: false` skips the baseline. When it is enabled, `reuse_baseline: true` reuses both cached baseline JSON files when present, while `false` recomputes the baseline. `run_intermediate_evals` controls checkpoint evaluation. Each run writes its configuration, available evaluation metrics, per-example details, and model artifacts under its configured `output_dir`.
 
+`rollout_sampling_mode` controls whether GRPO reuses generated completions. Set it to `fresh` to generate a new set for each rollout batch, or `fixed` to generate the first rollout batch once and replay the same completions, rewards, and advantages on later updates. With `generation_batch_size: 128`, the fixed batch contains 128 completions. The older `fixed_rollout_replay` boolean remains supported when `rollout_sampling_mode` is absent; the explicit mode takes precedence when both are present.
+
 ## Experiment evaluation protocol
 
 Candidate selection must not use the ground-truth answer for the task being evaluated. During selection, use only answer-independent evidence such as whether the candidate executes, its observable outputs, resource behavior, and agreement with other candidates. Ground truth may be used afterward only to measure the selected method's benchmark score, and that measurement must be kept separate from candidate selection. If an experiment request is ambiguous about this boundary, clarify it before proceeding.

@@ -5,6 +5,23 @@ from types import SimpleNamespace
 import train
 
 
+def test_rollout_sampling_mode_supports_fresh_fixed_and_legacy_configs():
+    """Resolve both explicit rollout sampling modes and legacy booleans."""
+    assert train._fixed_rollout_replay_enabled({"rollout_sampling_mode": "fresh"}) is False
+    assert train._fixed_rollout_replay_enabled({"rollout_sampling_mode": "fixed"}) is True
+    assert train._fixed_rollout_replay_enabled({"fixed_rollout_replay": False}) is False
+    assert train._fixed_rollout_replay_enabled({"fixed_rollout_replay": True}) is True
+
+
+def test_rollout_sampling_mode_rejects_invalid_values_and_prefers_explicit_mode():
+    """Reject invalid modes while allowing explicit settings to override the legacy key."""
+    import pytest
+
+    with pytest.raises(ValueError, match="rollout_sampling_mode"):
+        train._fixed_rollout_replay_enabled({"rollout_sampling_mode": "sometimes"})
+    assert train._fixed_rollout_replay_enabled({"rollout_sampling_mode": "fixed", "fixed_rollout_replay": False}) is True
+
+
 def test_reward_stays_dense(monkeypatch, tmp_path):
     """Pass the configured reward selection to the sandbox at every training step."""
     captured = {}
@@ -36,13 +53,14 @@ def test_training_mbpp_evaluation_uses_batched_vllm_completions(monkeypatch, tmp
         generated.append((model_path, prompts))
         return ["completion-1", "completion-2"]
 
-    def fake_evaluate(completions, records, timeout, log_path, name):
+    def fake_evaluate(completions, records, timeout, log_path, name, **kwargs):
         """Return deterministic training metrics for the generated batch."""
         assert completions == ["```python\ncompletion-1", "```python\ncompletion-2"]
         assert [record["task_id"] for record in records] == [1, 2]
         assert timeout == 3.0
         assert log_path == str(tmp_path / "logs.txt")
         assert name == "training-step-10"
+        assert kwargs["reward_scoring_workers"] == 8
         return metrics, details
 
     monkeypatch.setattr("experiments.run_qwen_official_greedy_eval.generate_model_completions", fake_generate)

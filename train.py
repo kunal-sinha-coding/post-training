@@ -30,6 +30,18 @@ def load_config(path: str | Path) -> dict[str, Any]:
         return yaml.safe_load(handle) or {}
 
 
+def _fixed_rollout_replay_enabled(config: dict[str, Any]) -> bool:
+    """Resolve the explicit fresh-or-fixed rollout mode and its legacy boolean."""
+    # Prefer the new explicit mode when both new and legacy keys are present.
+    mode = config.get("rollout_sampling_mode")
+    if mode is None:
+        return bool(config.get("fixed_rollout_replay", False))
+    # Reject misspelled sampling modes before model initialization.
+    if mode not in {"fresh", "fixed"}:
+        raise ValueError("rollout_sampling_mode must be either 'fresh' or 'fixed'.")
+    return mode == "fixed"
+
+
 def run_qwen_evalplus(model_path: Path, output_dir: Path, name: str) -> dict[str, Any]:
     """Run the official Qwen EvalPlus MBPP and MBPP+ evaluation for one saved model."""
     # Generate the complete canonical MBPP task set directly inside the training process.
@@ -313,6 +325,7 @@ def _make_callback(model: Any, tokenizer: Any, train_dataset: Any, test_dataset:
     """Create callbacks for step logging and checkpoint evaluation."""
     # Import the callback base class only when training starts.
     from transformers import TrainerCallback
+    fixed_rollout_replay = _fixed_rollout_replay_enabled(config)
 
     # Define the GRPO callback with access to the current training objects.
     class TrainingCallback(TrainerCallback):
@@ -404,7 +417,7 @@ def _make_callback(model: Any, tokenizer: Any, train_dataset: Any, test_dataset:
                 }
                 # Require complete completion-level coverage for this singleton fixed-rollout control.
                 expected_samples = int(config.get("probe_expected_samples", config.get("num_generations", 1)))
-                if config.get("fixed_rollout_replay", False) and probe_batch["advantages"].numel() != expected_samples:
+                if fixed_rollout_replay and probe_batch["advantages"].numel() != expected_samples:
                     raise RuntimeError(
                         f"Fixed-rollout direction probe captured {probe_batch['advantages'].numel()} samples; expected {expected_samples}."
                     )
@@ -744,6 +757,8 @@ def _enable_generation_stop(model: Any, tokenizer: Any) -> None:
 
 def run_training(config: dict[str, Any], stage: str = "all") -> None:
     """Run baseline evaluation, GRPO training, intermediate evaluations, and final evaluation."""
+    # Validate the sampling mode before loading large model dependencies.
+    fixed_rollout_replay = _fixed_rollout_replay_enabled(config)
     # Import training dependencies only when the experiment launches.
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -752,6 +767,8 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
     # Initialize local logs and the optional shared W&B run.
     start_run_log(config.get("log_path", "logs/logs.txt"), config.get("results_log_path", "logs/results.txt"))
     wandb = configure_wandb(config)
+    # Make the active rollout sampling policy visible in the process log.
+    print(f"Rollout sampling mode: {'fixed' if fixed_rollout_replay else 'fresh'}", flush=True)
     # Define a shared evaluation axis for an active W&B run.
     if wandb is not None and wandb.run is not None:
         wandb.define_metric("evaluation/step")
@@ -889,13 +906,16 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
                 return generated
 
         trainer_class = RewardMaskedGRPOTrainer
-    if config.get("probe_update_direction", False):
+    if config.get("probe_update_direction", False) or fixed_rollout_replay:
         # Capture one rollout batch so the callback can measure post-update likelihood changes.
         class ProbeGRPOTrainer(trainer_class):
             """Add one rollout likelihood probe to the normal GRPO trainer."""
 
             def _compute_loss(self, model: Any, inputs: dict[str, Any]) -> Any:
                 """Cache the first rollout batch and delegate the actual GRPO loss to TRL."""
+                # Keep replay-only runs free of the extra likelihood-probe computation.
+                if not config.get("probe_update_direction", False):
+                    return super()._compute_loss(model, inputs)
                 if "_direction_probe_batches" not in config:
                     config["_direction_probe_batches"] = []
                 if len(config["_direction_probe_batches"]) < int(config.get("gradient_accumulation_steps", 1)):
@@ -950,7 +970,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
             def _generate_and_score_completions(self, inputs: list[dict[str, Any]]) -> dict[str, Any]:
                 """Retain reward-to-token associations before TRL shuffles the rollout."""
                 # Replay the original token rows and advantages when the fixed-batch diagnostic is enabled.
-                if self.model.training and config.get("fixed_rollout_replay", False) and "_fixed_rollout_batch" in config:
+                if self.model.training and fixed_rollout_replay and "_fixed_rollout_batch" in config:
                     generated = {key: value.clone() if hasattr(value, "clone") else value for key, value in config["_fixed_rollout_batch"].items()}
                     config["_probe_rewards_by_token_row"] = defaultdict(
                         list,
@@ -971,7 +991,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
                     for sample_index, (token_row, reward_value) in enumerate(zip(generated["completion_ids"], reward_values, strict=True)):
                         reward_rows[_probe_token_row_key(token_row)].append((sample_index, float(reward_value)))
                     config["_probe_rewards_by_token_row"] = reward_rows
-                    if config.get("fixed_rollout_replay", False):
+                    if fixed_rollout_replay:
                         # Anchor DAPO ratios to the initial model when TRL would otherwise use current log probabilities.
                         if generated.get("old_per_token_logps") is None:
                             was_training = self.model.training
