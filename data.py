@@ -277,6 +277,14 @@ def prepare_datasets(config: dict[str, Any]) -> tuple[Any, Any]:
             ),
             require_all=bool(config.get("synthetic_tests_require_all", True)),
         )
+    # Repeat one selected task when a larger same-task generation batch is requested.
+    repeat_train_dataset = int(config.get("repeat_train_dataset", 1))
+    if repeat_train_dataset < 1:
+        raise ValueError("repeat_train_dataset must be at least one.")
+    if repeat_train_dataset > 1:
+        if len(train_dataset) != 1:
+            raise ValueError("repeat_train_dataset requires exactly one selected training task.")
+        train_dataset = _to_dataset([train_dataset[0]] * repeat_train_dataset)
     return train_dataset, evaluation_dataset
 
 

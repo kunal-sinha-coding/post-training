@@ -48,6 +48,14 @@ def test_prepare_datasets_partitions_all_mbpp_records_against_evalplus_ids(monke
     assert calls == [("mbpp", None, "train"), ("mbpp", None, "validation"), ("mbpp", None, "test")]
     assert [record["task_id"] for record in train] == [1, 3, 4, 6, 7, 9]
     assert [record["task_id"] for record in evaluation] == [2, 8]
+    repeated, _ = prepare_datasets({
+        "dataset_name": "mbpp",
+        "mbpp_splits": ["train", "validation", "test"],
+        "max_train_samples": 1,
+        "repeat_train_dataset": 8,
+    })
+    assert len(repeated) == 8
+    assert {record["task_id"] for record in repeated} == {1}
 
 
 def test_prompt_template_can_be_overridden():
