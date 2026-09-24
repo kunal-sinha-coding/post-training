@@ -2277,3 +2277,10 @@ Added `rollout_sampling_mode: fresh|fixed` with legacy `fixed_rollout_replay` su
 Commit name: Record full-data GRPO runtime and sampled task coverage.
 
 Updated the completed 0.5B full-data run report with the trainer-reported runtime and exact task coverage from the 6,400-row reward trace. The trace verifies 400 distinct tasks received 16 completions each; 193 of the 593 eligible tasks were not sampled during the 50 updates. Clarified that 50 was the configured max_steps and the job exited normally with final artifacts.
+
+
+## 2026-09-24: Raise fixed-eight GRPO run ceiling
+
+Commit name: Restart fixed-eight-task GRPO with a 50,000-step ceiling.
+
+The previous fresh-sampling run reached step 28 of 50 and had no resumable model or optimizer checkpoint, so it could not be extended in place. Added a separately named configuration with `max_steps: 50000`, preserving its 0.5B model, fixed eight tasks, fresh 16-generation groups, 128 completions per update, optimizer, reward, and evaluation setup. Added a reproducibility record to `logs/results.txt`; the run starts from the base model and its metrics are pending. At the observed pace, 50,000 updates would take around 48 days.
