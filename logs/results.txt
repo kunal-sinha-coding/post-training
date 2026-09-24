@@ -13939,3 +13939,17 @@ reward_coefficient: 0.5
 reward_rolling_window: 10
 
 ------------------------------------------------------------------------
+
+EXPERIMENT: Single-task GRPO overfit on MBPP task 601
+
+Purpose. This run tests whether the configured GRPO setup can increase sampled reward on one fixed task.
+
+Code and setup. The run used repository commit 409a510 and configuration file configs/tiny_single_task_overfit.yaml. It used Qwen/Qwen2.5-Coder-3B-Instruct, seed 42, the filtered google-research-datasets/mbpp training data, and the first remaining training record, task 601. The evaluation used one greedy completion at step 0 and every five optimizer steps through step 50, scored against that task's original MBPP tests. The run used LoRA rank 16, alpha 32, dropout 0.05, DAPO loss, learning rate 1e-5 with the configured linear schedule, beta 0.01, hybrid reward coefficient 0.75, 16 generations, physical batch size 1, gradient accumulation 32, generation batch size 16, maximum prompt length 512, maximum completion length 2048, bf16, reward-stop masking, and a three-second sandbox timeout. Generation batch size 16 is the smallest complete group for one prompt with 16 generations. The original value 64 caused TRL to drop the incomplete four-prompt sampler batch for a one-row dataset.
+
+Runtime and identifiers. The run used TRL 0.25.0, Transformers 4.56.2, Accelerate 1.15.0, vLLM 0.10.2, PyTorch 2.8.0+cu126, and one NVIDIA RTX 4000 Ada GPU with 20 GiB. It completed 50 optimizer steps in 2712.576 seconds. The W&B run is https://wandb.ai/kunal-personal/grpo-mbpp/runs/lvbc068l. Artifacts are in outputs/grpo-mbpp-single-task-g16-hybrid075-beta001-lr1e5-retry2, with per-checkpoint metrics and details and a final saved adapter directory.
+
+Selection and benchmark boundary. Task 601 was selected by dataset order, without screening tasks by their test outcomes. The task was used for training reward and for the requested in-sample checkpoint evaluations. Its step-zero greedy completion already passed all tests. Every checkpoint from step 5 through step 50 tied at pass@1 1.0, so the configured pass@1 selector retained step 5 as the first best checkpoint. This diagnostic is not a held-out benchmark measurement, and checkpoint selection used the same task tests as training reward.
+
+Results. Step-zero and all ten checkpoint evaluations had pass@1 1.0, test pass fraction 1.0, and average reward 1.0. The sampled reward mean averaged 0.4943 in steps 1 through 10, 0.5094 in steps 11 through 20, 0.5724 in steps 21 through 30, 0.5365 in steps 31 through 40, and 0.6359 in steps 41 through 50. Sampled full-pass fraction averaged 0.4875 in the first ten steps and 0.6312 in the last ten. Sampled test progress averaged 0.5146 and 0.6500 over those same windows. Individual rollout means remained volatile. The step-50 reward mean was 0.5156, and the overall average reward was 0.5497.
+
+Limitations. Greedy pass rate had no headroom because the base model already solved task 601. The reward trend is based on stochastic rollouts of one task and does not establish generalization. After all 50 optimizer steps, the separate final vLLM evaluation failed to initialize because only 12.68 GiB was free while vLLM requested 17.6 GiB. Step-50 checkpoint metrics and the saved adapter remain available. The final evaluation metrics file was not produced.
