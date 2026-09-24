@@ -2242,3 +2242,10 @@ Validation passed: `pytest -q tests/test_sandbox.py tests/test_evaluate.py tests
 Commit name: Record initial metrics for full-data GRPO run.
 
 Appended the reproducible configuration, dataset coverage, candidate-selection procedure, W&B and artifact identifiers, environment, and step-zero and first-update metrics for the active 0.5B full-data run to `logs/results.txt`. The report distinguishes greedy in-sample step-zero metrics from stochastic on-policy batch metrics and marks the run as incomplete. The active config uses 8 task groups of 16 samples, microbatch 2 with accumulation 64, eight bounded scoring workers, and evaluation every ten updates with checkpoint selection disabled.
+
+
+## 2026-09-24: Record completed full-data GRPO run
+
+Commit name: Record final full-data GRPO metrics and rollout diagnostics.
+
+Updated the full-data 0.5B GRPO experiment report from an initial running snapshot to the completed 50-update result. Recorded ten-update means for fresh sampled reward, pooled test-pass fraction, and full-pass fraction; step-zero to step-50 in-sample training-set evaluation metrics; final adapter evaluation; and the declining direction-probe movement across updates. The results distinguish volatile fresh-rollout batch reward from the small net gain in scheduled in-sample evaluation and document that no held-out EvalPlus evaluation was run.

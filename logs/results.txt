@@ -13957,7 +13957,7 @@ Limitations. Greedy pass rate had no headroom because the base model already sol
 ------------------------------------------------------------------------
 EXPERIMENT: Full-data MBPP GRPO with 0.5B model, 8 task groups x 16 generations
 
-Status at report: Running, one of 50 optimizer updates completed.
+Status. Completed all 50 optimizer updates. The final adapter is in `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-20260924/final`.
 
 Purpose. Test fresh-rollout GRPO on the complete non-EvalPlus MBPP task pool while preserving 128 completions per optimizer update, parallelizing reward execution, and using a larger GPU microbatch.
 
@@ -13971,5 +13971,11 @@ Initial metrics. Step-zero greedy evaluation on 593 rows had pass@1 0.3322 and t
 
 Identifiers and environment. W&B: https://wandb.ai/kunal-personal/grpo-mbpp/runs/gf4rxh0w. Config: `configs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-20260924.yaml`. Output directory: `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-20260924`. Code commit: d91e9a3. Environment: one NVIDIA RTX 4000 Ada GPU with 20 GiB; TRL 0.25.0, Transformers 4.56.2, Accelerate 1.15.0, vLLM 0.10.2, and PyTorch 2.8.0+cu126. Model revision and dataset revision were not pinned beyond the identifiers above.
 
-Limitations. This is an early single-seed snapshot from one update. The held-out EvalPlus benchmark is not evaluated in this diagnostic mode. Final metrics, final adapter identifier, and throughput comparison remain pending.
+Completed results. The 50 sampled rollout means were not monotonic. Averaged by ten-update windows, per-update mean hybrid reward was 0.2411, 0.2701, 0.3187, 0.2182, and 0.2640. The corresponding pooled test-pass fractions were 0.3001, 0.3315, 0.3673, 0.2709, and 0.3282; full-pass fractions were 0.2242, 0.2516, 0.3047, 0.2023, and 0.2461. The rollout batch metrics therefore improved from the first to third window, fell sharply in updates 31–40, and partially recovered in updates 41–50. The first ten versus last ten updates differ by only +0.0229 reward, +0.0281 test-pass fraction, and +0.0219 full-pass fraction. These are fresh samples over different tasks, so batch-to-batch variation includes task and generation variation.
+
+The scheduled in-sample greedy evaluation over all 593 training rows changed from step 0 to step 50 as follows: average test reward 0.4227 to 0.4458, pooled test-pass fraction 0.4234 to 0.4458, partial-or-full pass fraction 0.5143 to 0.5481, and pass@1 0.3322 to 0.3440. The separately saved final adapter evaluation reports average reward/test-pass fraction 0.4441 and pass@1 0.3491. This is a modest improvement, not a monotonic training-reward curve and not evidence of held-out generalization.
+
+The fixed-rollout probability probe also weakens over training. Mean per-completion mean-token log-probability change across each update window was -0.00581, -0.00817, -0.00256, -0.00067, and +0.00021. In the first 30 updates the probe generally reduced likelihood for negative-advantage completions while slightly raising it for positive-advantage completions. In the last 20 updates these movements were close to zero, and the final ten-update window slightly increased negative-advantage likelihood on average. This suggests the realized update signal became very small, but the probe measures mean token log probability rather than the exact clipped, token-masked DAPO objective; it is diagnostic, not a proof of optimizer or objective correctness. The per-update DAPO surrogate delta itself is noisy and often near zero.
+
+Limitations. This is one 50-update seed. The scheduled evaluations use the training rows, and held-out EvalPlus was not run. The sampled rollout batches contain only eight tasks per update and are sensitive to task difficulty. Model and dataset revisions were not pinned. No throughput benchmark was collected.
 ------------------------------------------------------------------------
