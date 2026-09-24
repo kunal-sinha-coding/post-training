@@ -2291,3 +2291,10 @@ The previous fresh-sampling run reached step 28 of 50 and had no resumable model
 Commit name: Run full-data GRPO with the 50,000-step ceiling.
 
 The user redirected the planned long fixed-eight diagnostic to the full MBPP training pool. Added a distinct full-data configuration with `max_steps: 50000`, retaining 8 task groups x 16 fresh generations, 128 completions per update, and the previous 0.5B model and reward/optimizer settings. The experiment record documents the in-sample evaluation boundary and the estimated 57-day runtime at prior throughput.
+
+
+## 2026-09-24: Launch long-ceiling full-data GRPO
+
+Commit name: Record launch of long-ceiling full-data GRPO.
+
+Launched the full 593-task 0.5B run with fresh groups of 16 completions over eight tasks per update, 128 completions per update, and `max_steps: 50000`. W&B run `fictfvaw` is syncing. The run initialized from the base model and is recorded in `logs/results.txt`; code at launch is `bb4b107`.
