@@ -2236,3 +2236,9 @@ Added the reproducible configuration `configs/grpo-mbpp-fulltrain-8x16-b128-micr
 The preceding 0.5B single-task run was stopped at the user's request after 24 optimizer updates while processing the step-25 evaluation. It did not complete its 50-step budget. The new run uses the full task pool and the throughput changes above.
 
 Validation passed: `pytest -q tests/test_sandbox.py tests/test_evaluate.py tests/test_data.py` reported 29 passed, and `python -m compileall -q sandbox.py evaluate.py train.py` completed. Resolving the new config produced 593 training rows, eight task groups per update, 16 generations per task, 128 samples per optimizer update, and TRL `steps_per_generation=64`.
+
+## 2026-09-24: Record initial full-data GRPO metrics
+
+Commit name: Record initial metrics for full-data GRPO run.
+
+Appended the reproducible configuration, dataset coverage, candidate-selection procedure, W&B and artifact identifiers, environment, and step-zero and first-update metrics for the active 0.5B full-data run to `logs/results.txt`. The report distinguishes greedy in-sample step-zero metrics from stochastic on-policy batch metrics and marks the run as incomplete. The active config uses 8 task groups of 16 samples, microbatch 2 with accumulation 64, eight bounded scoring workers, and evaluation every ten updates with checkpoint selection disabled.

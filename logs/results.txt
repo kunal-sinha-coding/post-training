@@ -13953,3 +13953,23 @@ Selection and benchmark boundary. Task 601 was selected by dataset order, withou
 Results. Step-zero and all ten checkpoint evaluations had pass@1 1.0, test pass fraction 1.0, and average reward 1.0. The sampled reward mean averaged 0.4943 in steps 1 through 10, 0.5094 in steps 11 through 20, 0.5724 in steps 21 through 30, 0.5365 in steps 31 through 40, and 0.6359 in steps 41 through 50. Sampled full-pass fraction averaged 0.4875 in the first ten steps and 0.6312 in the last ten. Sampled test progress averaged 0.5146 and 0.6500 over those same windows. Individual rollout means remained volatile. The step-50 reward mean was 0.5156, and the overall average reward was 0.5497.
 
 Limitations. Greedy pass rate had no headroom because the base model already solved task 601. The reward trend is based on stochastic rollouts of one task and does not establish generalization. The in-training final vLLM evaluation could not initialize because only 12.68 GiB was free while vLLM requested 17.6 GiB. After the training process exited, a standalone evaluation of the saved selected adapter succeeded with pass@1 1.0 and full test coverage. The final artifact is outputs/grpo-mbpp-single-task-g16-hybrid075-beta001-lr1e5-retry2/training-final-metrics.json.
+
+------------------------------------------------------------------------
+EXPERIMENT: Full-data MBPP GRPO with 0.5B model, 8 task groups x 16 generations
+
+Status at report: Running, one of 50 optimizer updates completed.
+
+Purpose. Test fresh-rollout GRPO on the complete non-EvalPlus MBPP task pool while preserving 128 completions per optimizer update, parallelizing reward execution, and using a larger GPU microbatch.
+
+Command. `HF_HUB_ENABLE_HF_TRANSFER=0 accelerate launch --num_processes 1 train.py --config configs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-20260924.yaml`.
+
+Configuration and data. The committed YAML uses `Qwen/Qwen2.5-Coder-0.5B-Instruct`, seed 42, all 593 normalized MBPP rows remaining after EvalPlus task-ID exclusion, fresh rollouts, 8 task groups per update, 16 generations per task, generation batch 128, per-device training microbatch 2, gradient accumulation 64, DAPO loss, learning rate 1e-5, beta 0.01, LoRA rank 16 / alpha 32 / dropout 0.05, hybrid reward coefficient 0.75, maximum prompt/completion lengths 512/2048, bf16, three-second sandbox timeout, eight bounded reward-scoring workers, 50 optimizer steps, and evaluation every 10 steps. The sampler can drop the incomplete remainder of one row at an epoch boundary. The run draws 400 task slots at the 50-step limit, so all rows are eligible but one complete pass is not guaranteed.
+
+Evaluation and selection. The step-zero and scheduled evaluations report greedy pass@1 and test-pass fraction on the same 593-row training pool. They are in-sample, not validation or held-out benchmark results. `select_best_checkpoint: false` prevents these ground-truth metrics from choosing a checkpoint. The fixed step-50 policy is the selected artifact if the run completes. Candidate selection is therefore independent of evaluation ground truth; reward tests are still used as the training signal.
+
+Initial metrics. Step-zero greedy evaluation on 593 rows had pass@1 0.3322 and test-pass fraction 0.4234. The first fresh 128-completion batch had mean hybrid reward 0.1882, test-pass fraction 0.2861, full-pass fraction 0.1563, partial-or-full completion fraction 0.4219, zero-reward fraction 0.5781, eight mixed reward groups, and DAPO surrogate delta -0.0000651. These stochastic rollout metrics are not directly comparable to the greedy step-zero evaluation. The first optimizer update completed in about 90 seconds without an out-of-memory error.
+
+Identifiers and environment. W&B: https://wandb.ai/kunal-personal/grpo-mbpp/runs/gf4rxh0w. Config: `configs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-20260924.yaml`. Output directory: `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-20260924`. Code commit: d91e9a3. Environment: one NVIDIA RTX 4000 Ada GPU with 20 GiB; TRL 0.25.0, Transformers 4.56.2, Accelerate 1.15.0, vLLM 0.10.2, and PyTorch 2.8.0+cu126. Model revision and dataset revision were not pinned beyond the identifiers above.
+
+Limitations. This is an early single-seed snapshot from one update. The held-out EvalPlus benchmark is not evaluated in this diagnostic mode. Final metrics, final adapter identifier, and throughput comparison remain pending.
+------------------------------------------------------------------------
