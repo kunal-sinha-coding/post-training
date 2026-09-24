@@ -2270,3 +2270,10 @@ Updated the reproducibility record with the W&B run ID and source commit, confir
 Commit name: Make rollout sampling mode configurable.
 
 Added `rollout_sampling_mode: fresh|fixed` with legacy `fixed_rollout_replay` support. Fresh remains the default in standard configs. Fixed mode replays the first generated batch without requiring the diagnostic likelihood probe. Updated the existing fixed-rollout example, README, and focused config-resolution tests. Verified the still-running fixed-eight experiment remains on its originally loaded fresh config and did not alter its config file or process. Focused checks passed: 36 tests and Python compileall.
+
+
+## 2026-09-24: Record full-data run duration and task coverage
+
+Commit name: Record full-data GRPO runtime and sampled task coverage.
+
+Updated the completed 0.5B full-data run report with the trainer-reported runtime and exact task coverage from the 6,400-row reward trace. The trace verifies 400 distinct tasks received 16 completions each; 193 of the 593 eligible tasks were not sampled during the 50 updates. Clarified that 50 was the configured max_steps and the job exited normally with final artifacts.
