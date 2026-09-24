@@ -10,7 +10,7 @@ import os
 import random
 import re
 import shutil
-from collections import deque
+from collections import defaultdict, deque
 from pathlib import Path
 from pprint import pformat
 import copy
@@ -302,6 +302,12 @@ def _probe_dapo_surrogate(per_token_logps: Any, old_per_token_logps: Any, advant
     return (token_loss * completion_mask.float()).sum() / completion_mask.sum().clamp(min=1.0)
 
 
+def _probe_token_row_key(token_ids: Any) -> tuple[int, ...]:
+    """Build a stable key for matching one shuffled completion to its reward."""
+    # Preserve the padded row because TRL shuffles token rows without changing their contents.
+    return tuple(int(token_id) for token_id in token_ids.tolist())
+
+
 def _make_callback(model: Any, tokenizer: Any, train_dataset: Any, test_dataset: Any, config: dict[str, Any], wandb: Any | None, device: Any | None = None):
     """Create callbacks for step logging and checkpoint evaluation."""
     # Import the callback base class only when training starts.
@@ -389,9 +395,18 @@ def _make_callback(model: Any, tokenizer: Any, train_dataset: Any, test_dataset:
                 probe_batch = {
                     "batch": {key: torch.cat([item["batch"][key] for item in probe_batches]) for key in probe_batches[0]["batch"]},
                     "old_logps": torch.cat([item["old_logps"] for item in probe_batches]),
-                    "old_per_token_logps": torch.cat([item["old_per_token_logps"] for item in probe_batches]),
+                    "current_pre_per_token_logps": torch.cat([item["current_pre_per_token_logps"] for item in probe_batches]),
+                    "loss_old_per_token_logps": torch.cat([item["loss_old_per_token_logps"] for item in probe_batches]),
                     "advantages": torch.cat([item["advantages"] for item in probe_batches]),
+                    "rewards": torch.cat([item["rewards"] for item in probe_batches]),
+                    "sample_indices": torch.cat([item["sample_indices"] for item in probe_batches]),
                 }
+                # Require complete completion-level coverage for this singleton fixed-rollout control.
+                expected_samples = int(config.get("probe_expected_samples", config.get("num_generations", 1)))
+                if config.get("fixed_rollout_replay", False) and probe_batch["advantages"].numel() != expected_samples:
+                    raise RuntimeError(
+                        f"Fixed-rollout direction probe captured {probe_batch['advantages'].numel()} samples; expected {expected_samples}."
+                    )
                 target_device = next(self.evaluation_model.parameters()).device
                 moved_batch = {key: value.to(target_device) for key, value in probe_batch["batch"].items()}
                 was_training = self.evaluation_model.training
@@ -409,7 +424,8 @@ def _make_callback(model: Any, tokenizer: Any, train_dataset: Any, test_dataset:
                 if was_training:
                     self.evaluation_model.train()
                 old_logps = probe_batch["old_logps"].to(new_logps.device)
-                old_per_token_logps = probe_batch["old_per_token_logps"].to(new_logps.device)
+                current_pre_per_token_logps = probe_batch["current_pre_per_token_logps"].to(new_logps.device)
+                loss_old_per_token_logps = probe_batch["loss_old_per_token_logps"].to(new_logps.device)
                 advantages = probe_batch["advantages"].to(new_logps.device)
                 delta = new_logps - old_logps
                 positive = advantages > 0
@@ -423,13 +439,45 @@ def _make_callback(model: Any, tokenizer: Any, train_dataset: Any, test_dataset:
                     "probe/negative_advantage_mean_logp_delta": float(delta[negative].mean()) if negative.any() else 0.0,
                     "probe/advantage_sign_alignment": float(((advantages * delta) > 0).float().mean()),
                     "probe/rollout_sample_count": float(len(delta)),
-                    "probe/dapo_surrogate_before": float(_probe_dapo_surrogate(old_per_token_logps, old_per_token_logps, advantages, moved_batch["completion_mask"])),
-                    "probe/dapo_surrogate_after": float(_probe_dapo_surrogate(new_per_token_logps, old_per_token_logps, advantages, moved_batch["completion_mask"])),
+                    "probe/dapo_surrogate_before": float(_probe_dapo_surrogate(loss_old_per_token_logps, loss_old_per_token_logps, advantages, moved_batch["completion_mask"])),
+                    "probe/dapo_surrogate_after": float(_probe_dapo_surrogate(new_per_token_logps, loss_old_per_token_logps, advantages, moved_batch["completion_mask"])),
                 })
                 config["_update_diagnostics"]["probe/dapo_surrogate_delta"] = (
                     config["_update_diagnostics"]["probe/dapo_surrogate_after"]
                     - config["_update_diagnostics"]["probe/dapo_surrogate_before"]
                 )
+                # Save one auditable record for each sampled completion after its optimizer update.
+                trace_path = config.get("probe_sample_trace_path")
+                if trace_path:
+                    trace_file = Path(trace_path)
+                    trace_file.parent.mkdir(parents=True, exist_ok=True)
+                    token_ids = probe_batch["batch"]["completion_ids"]
+                    completion_texts = tokenizer.batch_decode(token_ids, skip_special_tokens=True)
+                    sample_indices = probe_batch["sample_indices"].tolist()
+                    sample_rewards = probe_batch["rewards"].tolist()
+                    old_values = old_logps.detach().cpu().tolist()
+                    new_values = new_logps.detach().cpu().tolist()
+                    delta_values = delta.detach().cpu().tolist()
+                    advantage_values = advantages.detach().cpu().tolist()
+                    old_sum_values = ((current_pre_per_token_logps * moved_batch["completion_mask"]).sum(dim=1)).detach().cpu().tolist()
+                    new_sum_values = ((new_per_token_logps * moved_batch["completion_mask"]).sum(dim=1)).detach().cpu().tolist()
+                    with trace_file.open("a", encoding="utf-8") as handle:
+                        for index, completion_text in enumerate(completion_texts):
+                            handle.write(json.dumps({
+                                "step": int(state.global_step + 1),
+                                "sample_index": int(sample_indices[index]),
+                                "reward": float(sample_rewards[index]),
+                                "advantage": float(advantage_values[index]),
+                                "pre_update_mean_token_log_probability": float(old_values[index]),
+                                "post_update_mean_token_log_probability": float(new_values[index]),
+                                "mean_token_log_probability_delta": float(delta_values[index]),
+                                "geometric_mean_token_probability_ratio": float(torch.exp(delta[index]).item()),
+                                "pre_update_sequence_log_probability": float(old_sum_values[index]),
+                                "post_update_sequence_log_probability": float(new_sum_values[index]),
+                                "sequence_probability_ratio": float(torch.exp(torch.tensor(new_sum_values[index] - old_sum_values[index])).item()),
+                                "scored_token_count": int(moved_batch["completion_mask"][index].sum().item()),
+                                "completion": completion_text,
+                            }, sort_keys=True) + "\n")
             return control
 
         def on_step_begin(self, args: Any, state: Any, control: Any, **_: Any) -> Any:
@@ -866,13 +914,85 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
                         old_logps = ((old_per_token_logps * mask).sum(dim=1) / mask.sum(dim=1).clamp(min=1.0)).detach().cpu()
                     if was_training:
                         model.train()
+                    # Preserve the actual loss reference when the TRL batch provides one.
+                    loss_old_per_token_logps = inputs.get("old_per_token_logps")
+                    if loss_old_per_token_logps is None:
+                        loss_old_per_token_logps = old_per_token_logps
+                    else:
+                        loss_old_per_token_logps = loss_old_per_token_logps.detach().cpu()
+                    # Match this shuffled rollout row to its original reward trace entry.
+                    reward_rows = config.get("_probe_rewards_by_token_row", {})
+                    matched_rewards = []
+                    sample_indices = []
+                    for token_row in batch["completion_ids"]:
+                        key = _probe_token_row_key(token_row)
+                        candidates = reward_rows.get(key, [])
+                        if not candidates:
+                            raise RuntimeError("Could not match a cached GRPO completion to its reward and generation index.")
+                        sample_index, reward_value = candidates.pop(0)
+                        matched_rewards.append(reward_value)
+                        sample_indices.append(sample_index)
                     config["_direction_probe_batches"].append({
                         "batch": batch,
                         "old_logps": old_logps,
-                        "old_per_token_logps": old_per_token_logps,
+                        "current_pre_per_token_logps": old_per_token_logps,
+                        "loss_old_per_token_logps": loss_old_per_token_logps,
                         "advantages": inputs["advantages"].detach().cpu(),
+                        "rewards": torch.tensor(matched_rewards, dtype=torch.float32),
+                        "sample_indices": torch.tensor(sample_indices, dtype=torch.long),
                     })
                 return super()._compute_loss(model, inputs)
+
+            def _generate_and_score_completions(self, inputs: list[dict[str, Any]]) -> dict[str, Any]:
+                """Retain reward-to-token associations before TRL shuffles the rollout."""
+                # Replay the original token rows and advantages when the fixed-batch diagnostic is enabled.
+                if self.model.training and config.get("fixed_rollout_replay", False) and "_fixed_rollout_batch" in config:
+                    generated = {key: value.clone() if hasattr(value, "clone") else value for key, value in config["_fixed_rollout_batch"].items()}
+                    config["_probe_rewards_by_token_row"] = defaultdict(
+                        list,
+                        {
+                            key: list(values)
+                            for key, values in config["_fixed_rollout_reward_rows"].items()
+                        },
+                    )
+                    return generated
+                # Generate and score a fresh group before the first update or in ordinary on-policy mode.
+                generated = super()._generate_and_score_completions(inputs)
+                if self.model.training:
+                    # Capture the per-completion scorer values in generation order for later matching.
+                    reward_name = self.reward_func_names[0]
+                    batch_size = generated["completion_ids"].shape[0]
+                    reward_values = list(self._logs["rewards"][reward_name])[-batch_size:]
+                    reward_rows: dict[tuple[int, ...], list[tuple[int, float]]] = defaultdict(list)
+                    for sample_index, (token_row, reward_value) in enumerate(zip(generated["completion_ids"], reward_values, strict=True)):
+                        reward_rows[_probe_token_row_key(token_row)].append((sample_index, float(reward_value)))
+                    config["_probe_rewards_by_token_row"] = reward_rows
+                    if config.get("fixed_rollout_replay", False):
+                        # Anchor DAPO ratios to the initial model when TRL would otherwise use current log probabilities.
+                        if generated.get("old_per_token_logps") is None:
+                            was_training = self.model.training
+                            self.model.eval()
+                            with torch.no_grad():
+                                device = next(self.model.parameters()).device
+                                moved = {key: generated[key].to(device) for key in ("prompt_ids", "prompt_mask", "completion_ids", "completion_mask")}
+                                generated["old_per_token_logps"] = _probe_per_token_logps(
+                                    self.model,
+                                    moved,
+                                    float(config.get("temperature", 1.0)),
+                                    chunk_size=int(config.get("probe_batch_size", 4)),
+                                ).detach()
+                            if was_training:
+                                self.model.train()
+                        # Keep the original rollout tensors, rewards, and advantages fixed for every later update.
+                        config["_fixed_rollout_batch"] = {
+                            key: value.detach().clone() if hasattr(value, "detach") else value
+                            for key, value in generated.items()
+                        }
+                        config["_fixed_rollout_reward_rows"] = {
+                            key: list(values)
+                            for key, values in reward_rows.items()
+                        }
+                return generated
 
         trainer_class = ProbeGRPOTrainer
     evaluation_dataset = train_dataset if config.get("train_subset_evaluation_only", False) else eval_dataset
