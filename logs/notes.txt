@@ -2284,3 +2284,10 @@ Updated the completed 0.5B full-data run report with the trainer-reported runtim
 Commit name: Restart fixed-eight-task GRPO with a 50,000-step ceiling.
 
 The previous fresh-sampling run reached step 28 of 50 and had no resumable model or optimizer checkpoint, so it could not be extended in place. Added a separately named configuration with `max_steps: 50000`, preserving its 0.5B model, fixed eight tasks, fresh 16-generation groups, 128 completions per update, optimizer, reward, and evaluation setup. Added a reproducibility record to `logs/results.txt`; the run starts from the base model and its metrics are pending. At the observed pace, 50,000 updates would take around 48 days.
+
+
+## 2026-09-24: Return to full-data GRPO with a long step ceiling
+
+Commit name: Run full-data GRPO with the 50,000-step ceiling.
+
+The user redirected the planned long fixed-eight diagnostic to the full MBPP training pool. Added a distinct full-data configuration with `max_steps: 50000`, retaining 8 task groups x 16 fresh generations, 128 completions per update, and the previous 0.5B model and reward/optimizer settings. The experiment record documents the in-sample evaluation boundary and the estimated 57-day runtime at prior throughput.

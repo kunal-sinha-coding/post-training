@@ -15353,3 +15353,22 @@ Metrics. Pending. Record per-update sampled hybrid reward, pooled test-pass frac
 
 Limitations. This experiment repeats only eight tasks and does not establish full-data learning or generalization. A 50,000-step cap corresponds to many weeks at the measured throughput; it is set to avoid stopping after a short arbitrary run, with manual monitoring and stopping still required.
 ------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------
+EXPERIMENT: Full-data MBPP GRPO with 0.5B model, 8 groups x 16 generations, 50,000-step ceiling
+
+Status. Launching as a fresh run from the base model. It replaces the just-prepared fixed-eight 50,000-step run before that run initialized.
+
+Purpose. Return to all eligible MBPP training rows while retaining 128 completions per optimizer update, fresh sampling, and the prior 0.5B GRPO configuration. The high max-step ceiling prevents an arbitrary 50-update stop; it is an operational cap and not a target number of updates.
+
+Data and candidate selection. Uses all 593 normalized MBPP training rows remaining after EvalPlus task-ID exclusion. Training reward uses the task tests. The complete training-pool greedy evaluation runs every ten updates for diagnostics only. `select_best_checkpoint: false` prevents evaluation labels from choosing checkpoints. No held-out benchmark measurement is implied.
+
+Configuration. `configs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-20260924.yaml` preserves Qwen/Qwen2.5-Coder-0.5B-Instruct; seed 42; LoRA rank 16, alpha 32, dropout 0.05; DAPO loss; fresh sampling; 8 task groups x 16 generations; 128 completions per optimizer update; microbatch 2 and accumulation 64; learning rate 1e-5 with linear schedule; beta 0.01; hybrid reward coefficient 0.75; eight reward-scoring workers; prompt/completion lengths 512/2048; bf16; in-sample train-pool evaluation every ten steps; and `max_steps: 50000`.
+
+Identifiers. Config, W&B run name, output directory, reward trace, probability trace, and logs use `grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-20260924`. Prior comparable full-data run: https://wandb.ai/kunal-personal/grpo-mbpp/runs/gf4rxh0w.
+
+Metrics. Pending. Track the same per-update fresh rollout mean reward, pooled test-pass fraction, full-pass fraction, rolling means, DAPO surrogate and probability-direction diagnostics, and periodic in-sample pass@1 / test-pass fraction as the prior full-data run.
+
+Runtime and limitations. The prior 50-step full-data run took 4,884 seconds, about 98 seconds per update. At that pace, 50,000 updates would take about 57 days. Runtime may change; monitor resource use and stop manually based on diagnostic results. This one-seed experiment does not establish generalization.
+------------------------------------------------------------------------
