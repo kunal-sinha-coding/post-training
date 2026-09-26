@@ -2335,3 +2335,9 @@ Compared the previous run's W&B-captured `requirements.txt` with the current env
 Commit name: Pin EvalPlus 0.3.1 for reproducible task exclusion.
 
 The previous full-data run captured EvalPlus 0.3.1 and MBPP+ release v0.2.0, which leaves 593 training rows. The first dual-metric attempt used EvalPlus 0.2.1 / MBPP+ v0.1.0 and left 572 rows; it was stopped after ten updates during step-10 evaluation and is marked superseded. Pinned EvalPlus 0.3.1 in root `requirements.txt`, which `start.sh` installs, and aligned `qwen_eval/eval_plus/requirements.txt`. Added a replacement config with a distinct output path and W&B run name. The active replacement should use the same 593-row pool and EvalPlus package release as the previous run. Details are in `logs/results.txt`.
+
+## 2026-09-26: Restart the dual-metric run with EvalPlus 0.3.1
+
+Commit name: Record restart with the matched EvalPlus release.
+
+Stopped the prior 572-task run after ten optimizer updates during its step-10 evaluation and marked W&B run `isidwmjq` failed. Installed EvalPlus 0.3.1, verified it loads 378 MBPP+ tasks and produces the prior 593-row training pool from the current 964 MBPP split rows, then launched the replacement from code commit `e596351`. New W&B run ID is `0rtv7mau`; baseline evaluation is in progress. The run now uses the same EvalPlus package and exclusion release as the prior long-ceiling experiment.

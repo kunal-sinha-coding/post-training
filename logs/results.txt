@@ -15395,7 +15395,7 @@ Training-pool count discrepancy. The previous long-ceiling run's captured W&B `r
 ------------------------------------------------------------------------
 EXPERIMENT: Full-data MBPP GRPO with dual greedy pass@1 using EvalPlus 0.3.1
 
-Status. Prepared as the replacement fresh run from the base model. Metrics are pending.
+Status. Running from the base model. W&B run ID: `0rtv7mau`, URL: https://wandb.ai/kunal-personal/grpo-mbpp/runs/0rtv7mau. The prior 572-task process is stopped and its W&B run was marked failed. The active environment now has EvalPlus 0.3.1 installed.
 
 Purpose. Repeat the previous long-ceiling full-data 0.5B GRPO run with separate greedy pass@1 metrics for the filtered MBPP training pool and canonical MBPP+ evaluation set, using the same EvalPlus package version as the prior run.
 
@@ -15405,7 +15405,7 @@ Configuration. `configs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000
 
 Dependency pin. Root `requirements.txt` now pins `evalplus==0.3.1`; `start.sh` installs that file. `qwen_eval/eval_plus/requirements.txt` carries the same pin so the canonical evaluation environment agrees.
 
-Identifiers. New output directory and W&B run name: `grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-20260926`. Code and config commits, W&B ID, environment, and metrics will be appended after launch.
+Identifiers. W&B run ID: `0rtv7mau`, https://wandb.ai/kunal-personal/grpo-mbpp/runs/0rtv7mau. Output directory and W&B run name: `grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-20260926`. Code/config commit at launch: `e596351`. Environment and baseline metrics will be appended after initialization.
 
 Limitations. The MBPP and model Hub revisions are still not pinned. The old task-ID manifest was not archived, although reproducing the previous package version and current split contents yields the same 593-row count.
 ------------------------------------------------------------------------
