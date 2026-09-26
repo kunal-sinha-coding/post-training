@@ -2359,3 +2359,9 @@ Launched the new v2 config from code commit `68a83c9` after the 0.3.1 API fix, u
 Commit name: Preserve the API-compatible evaluator and v2 config.
 
 The v2 process was launched with the EvalPlus 0.3.1 keyword-based evaluator, but the launch-record commit left that source diff and config file outside the committed tree. Restaged the exact running source and config so the repository matches the active run and future installs retain a reproducible command.
+
+## 2026-09-26: Complete the corrected 593-task baseline
+
+Commit name: Record 0.3.1 dual-metric step-zero results.
+
+The API-compatible rerun loaded 593 training rows and scored all 378 canonical MBPP+ tasks. Both W&B metric keys were confirmed at evaluation step 0: training greedy pass@1 0.34401 and MBPP+ greedy pass@1 0.437. The training test-pass fraction is 0.42833. Training has started; update metrics are pending. Full details are recorded in `logs/results.txt`.
