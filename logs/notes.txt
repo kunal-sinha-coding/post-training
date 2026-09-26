@@ -2365,3 +2365,9 @@ The v2 process was launched with the EvalPlus 0.3.1 keyword-based evaluator, but
 Commit name: Record 0.3.1 dual-metric step-zero results.
 
 The API-compatible rerun loaded 593 training rows and scored all 378 canonical MBPP+ tasks. Both W&B metric keys were confirmed at evaluation step 0: training greedy pass@1 0.34401 and MBPP+ greedy pass@1 0.437. The training test-pass fraction is 0.42833. Training has started; update metrics are pending. Full details are recorded in `logs/results.txt`.
+
+## 2026-09-26: Record the first update with EvalPlus 0.3.1
+
+Commit name: Record the first rollout from the matched 593-task run.
+
+The API-fixed run completed optimizer update 1 after 53.26 seconds. Its first 128-completion batch had mean hybrid reward 0.21224, pooled test-pass fraction 0.31234, full-pass fraction 0.17969, and DAPO surrogate delta -0.0000189. Step-zero W&B metrics remain training greedy pass@1 0.34401 and MBPP+ greedy pass@1 0.437. The run remains active; full details are in `logs/results.txt`.
