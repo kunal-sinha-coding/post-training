@@ -2323,3 +2323,9 @@ Launched W&B run `isidwmjq` from code commit `9daf759` using the new 50,000-step
 Commit name: Record dual-metric baseline and first optimizer update.
 
 Confirmed through W&B history that step 0 contains the requested `training/greedy_pass_at_1` and `evaluation/greedy_pass_at_1` metrics with values 0.34965 and 0.426. The first 128-completion update completed in 76.04 seconds with mean hybrid reward 0.14063, pooled test-pass fraction 0.18898, full-pass fraction 0.125, and DAPO surrogate delta -0.000590. The process continues toward the configured 50,000-step ceiling. Full setup and metrics are in `logs/results.txt`.
+
+## 2026-09-26: Trace the MBPP training-pool count discrepancy
+
+Commit name: Document EvalPlus release impact on training rows.
+
+Compared the previous run's W&B-captured `requirements.txt` with the current environment and audited the same three MBPP splits. The previous run used EvalPlus 0.3.1 / MBPP+ v0.2.0: 378 benchmark IDs overlap 371 of 964 MBPP rows, leaving 593. The current run uses EvalPlus 0.2.1 / MBPP+ v0.1.0: 399 IDs overlap 392 rows, leaving 572. The split sizes and task IDs are otherwise unique. The 21-row difference is caused by benchmark-version-dependent exclusion IDs. Recorded this provenance and the limitation that the old task-ID manifest was not archived in `logs/results.txt`.
