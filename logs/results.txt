@@ -15414,7 +15414,7 @@ Limitations. The MBPP and model Hub revisions are still not pinned. The old task
 ------------------------------------------------------------------------
 EXPERIMENT: Full-data MBPP GRPO with dual greedy pass@1, EvalPlus 0.3.1 API fix
 
-Status. Replacement run is loading the base model and datasets. W&B run ID: `1a612fxg`, URL: https://wandb.ai/kunal-personal/grpo-mbpp/runs/1a612fxg. It uses the pinned EvalPlus 0.3.1 environment.
+Status. Running from the base model after completing both step-zero evaluations. W&B run ID: `1a612fxg`, URL: https://wandb.ai/kunal-personal/grpo-mbpp/runs/1a612fxg. The first optimizer update is underway with EvalPlus 0.3.1 installed.
 
 Purpose and setup. Repeat the prior 50,000-step full-data 0.5B GRPO experiment while reporting `training/greedy_pass_at_1` on 593 filtered MBPP tasks and `evaluation/greedy_pass_at_1` on all 378 MBPP+ tasks. Preserve the model, seed, optimizer, reward, 8 groups x 16 generations, batch 128, microbatch 2, accumulation 64, fresh sampling, LoRA, and checkpoint selection settings documented above. Evaluate both sets at step 0 and every 10 optimizer steps.
 
@@ -15422,7 +15422,9 @@ Evaluation API. EvalPlus 0.3.1 accepts named keyword arguments for `evaluate(dat
 
 Dependency and config. Root `requirements.txt` and `qwen_eval/eval_plus/requirements.txt` pin EvalPlus 0.3.1. The config is `configs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-v2-20260926.yaml`, with a separate run name and output directory to avoid mixing failed-attempt artifacts.
 
-Identifiers. W&B run ID: `1a612fxg`, https://wandb.ai/kunal-personal/grpo-mbpp/runs/1a612fxg. Code commit at launch: `68a83c9`. Output directory and W&B run name use `grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-v2-20260926`. Step-zero metrics are pending.
+Initial metrics. W&B confirms step-zero `training/greedy_pass_at_1` 0.34401 on 593 training rows and `evaluation/greedy_pass_at_1` 0.437 on the 378-task MBPP+ v0.2.0 set. The training evaluation also reports mean test reward and pooled test-pass fraction 0.42833 and partial-or-full fraction 0.52277. EvalPlus base-test pass@1 is 0.524. Both requested pass@1 metrics were logged at evaluation step 0 from the same model snapshot.
+
+Identifiers and environment. W&B run ID: `1a612fxg`, https://wandb.ai/kunal-personal/grpo-mbpp/runs/1a612fxg. The launched source content matches commit `dad7343`. Output directory and W&B run name use `grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-v2-20260926`. Environment: one NVIDIA GeForce RTX 3090 with 24 GiB, driver 580.159.03 / CUDA 13.0, PyTorch 2.8.0+cu128, TRL 0.25.0, Transformers 4.56.2, Accelerate 1.15.0, vLLM 0.10.2, and EvalPlus 0.3.1. Baseline evaluation took about six minutes; update throughput is pending.
 ------------------------------------------------------------------------
 
 Limitations. This is a fresh single-seed run. The prior 50,000-step estimate was about 57 days on the earlier RTX 4000 Ada environment; runtime on the current RTX 3090 may differ. Evaluation tasks and test sets are benchmark measurements, while candidate selection remains independent of their labels. The model and MBPP dataset revisions are not pinned beyond their identifiers.
