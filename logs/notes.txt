@@ -2317,3 +2317,9 @@ Updated the evaluation logger to publish `training/greedy_pass_at_1` and `evalua
 Commit name: Record dual-metric rerun launch and baseline.
 
 Launched W&B run `isidwmjq` from code commit `9daf759` using the new 50,000-step full-data config. The first attempt stopped on a shared Hugging Face cache permission error; a retry then stopped because EvalPlus was absent. Both failed before optimizer updates. Installed the repository-pinned EvalPlus 0.2.1 and relaunched with private cache directories under `/tmp`. The successful process completed both step-zero evaluations and began optimizer update 1. The training set contains 572 normalized rows in this environment; canonical EvalPlus contains 399 tasks. Baseline training greedy pass@1 is 0.34965, and canonical MBPP+ pass@1 is 0.426. Full setup and environment are recorded in `logs/results.txt`.
+
+## 2026-09-26: Verify dual greedy metrics and first GRPO update
+
+Commit name: Record dual-metric baseline and first optimizer update.
+
+Confirmed through W&B history that step 0 contains the requested `training/greedy_pass_at_1` and `evaluation/greedy_pass_at_1` metrics with values 0.34965 and 0.426. The first 128-completion update completed in 76.04 seconds with mean hybrid reward 0.14063, pooled test-pass fraction 0.18898, full-pass fraction 0.125, and DAPO surrogate delta -0.000590. The process continues toward the configured 50,000-step ceiling. Full setup and metrics are in `logs/results.txt`.
