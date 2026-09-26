@@ -131,6 +131,8 @@ def merge_training_metrics(metrics: dict[str, Any], training_metrics: dict[str, 
     """Add training-set MBPP pass@1 and test pass fraction with explicit metric names."""
     # Prefix only the two requested training metrics to keep W&B evaluation rows unambiguous.
     merged = dict(metrics)
+    # Expose the training greedy pass rate under its dedicated dashboard name.
+    merged["training_greedy_pass_at_1"] = float(training_metrics.get("pass_at_1", 0.0))
     merged["training_mbpp_pass_at_1"] = float(training_metrics.get("pass_at_1", 0.0))
     merged["training_mbpp_tests_pass_fraction"] = float(training_metrics.get("tests_pass_fraction", 0.0))
     merged["training_mbpp_partial_pass_fraction"] = float(training_metrics.get("partial_pass_fraction", 0.0))
@@ -222,6 +224,11 @@ def log_evaluation(wandb: Any | None, metrics: dict[str, Any], evaluation_name: 
     # Publish the requested pass@1 spelling while retaining the existing metric key.
     if isinstance(metrics.get("pass_at_1"), (int, float)):
         payload["evaluation/pass@1"] = metrics["pass_at_1"]
+    # Publish the two requested pass@1 curves with stable, distinct names.
+    if isinstance(metrics.get("training_greedy_pass_at_1"), (int, float)):
+        payload["training/greedy_pass_at_1"] = metrics["training_greedy_pass_at_1"]
+    if isinstance(metrics.get("mbpp_plus_pass_at_1"), (int, float)):
+        payload["evaluation/greedy_pass_at_1"] = metrics["mbpp_plus_pass_at_1"]
     wandb.log(payload)
 
 

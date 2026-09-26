@@ -15372,3 +15372,21 @@ Initial metrics. Step-zero greedy evaluation completed on all 593 tasks. The fir
 
 Runtime and limitations. The prior 50-step full-data run took 4,884 seconds, about 98 seconds per update. At that pace, 50,000 updates would take about 57 days. Runtime may change; monitor resource use and stop manually based on diagnostic results. This one-seed experiment does not establish generalization.
 ------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+EXPERIMENT: Full-data MBPP GRPO with separate training and EvalPlus greedy pass@1
+
+Status. Configuration prepared for a fresh run. Metrics are pending.
+
+Purpose. Repeat the long-ceiling full-data 0.5B GRPO experiment while logging separate greedy pass@1 curves on the full filtered MBPP training pool and canonical EvalPlus MBPP+ evaluation set.
+
+Data and selection. Use all 593 normalized MBPP training rows remaining after exclusion of EvalPlus task IDs. Evaluate one greedy completion for every training row and every canonical EvalPlus task at initialization and every ten optimizer updates. Candidate selection remains fixed by the training schedule with `select_best_checkpoint: false`; neither metric selects a checkpoint.
+
+Configuration. `configs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-20260926.yaml`. Preserve the prior long-ceiling run's model, seed, optimizer, reward, LoRA, prompt/completion, precision, and sampling settings: Qwen/Qwen2.5-Coder-0.5B-Instruct; seed 42; LoRA rank 16, alpha 32, dropout 0.05; DAPO; learning rate 1e-5; beta 0.01; hybrid reward coefficient 0.75; 16 completions per task; 8 task groups and 128 completions per optimizer update; per-device microbatch 2; gradient accumulation 64; eight reward workers; fresh sampling; bf16; and max_steps 50000. The experiment adds canonical EvalPlus evaluations at step zero and every ten steps while retaining full-training-pool evaluations at the same points.
+
+Metrics. W&B records `training/greedy_pass_at_1` from the training pool's original MBPP tests and `evaluation/greedy_pass_at_1` from canonical EvalPlus MBPP+ pass@1, which uses base plus extra tests. Existing rollout reward, test-pass, full-pass, and optimizer diagnostics remain enabled. The two greedy pass@1 metrics are logged from the same saved current-model snapshot at each evaluation point.
+
+Identifiers. Output directory and W&B run name: `grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-20260926`. Reward and probability traces are in that output directory. Code and run identifiers, environment, runtime, and metrics will be appended after launch and completion.
+
+Limitations. This is a fresh single-seed run. The prior 50,000-step estimate was about 57 days on the earlier RTX 4000 Ada environment; runtime on the current environment may differ. Evaluation tasks and test sets are benchmark measurements, while candidate selection remains independent of their labels.
+------------------------------------------------------------------------

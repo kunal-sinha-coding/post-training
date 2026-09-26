@@ -2305,3 +2305,9 @@ Launched the full 593-task 0.5B run with fresh groups of 16 completions over eig
 Commit name: Record first update of long-ceiling full-data GRPO.
 
 The full-data run completed step 1 of 50,000 after about 89 seconds. It processed the full 593-task pool for step-zero greedy evaluation and synced W&B run `fictfvaw`. The first fresh batch metrics match the prior same-seed run. The run is active and its initial metrics are recorded in `logs/results.txt`.
+
+## 2026-09-26: Prepare dual greedy pass@1 full-data GRPO rerun
+
+Commit name: Log separate training and EvalPlus greedy pass@1 metrics.
+
+Updated the evaluation logger to publish `training/greedy_pass_at_1` and `evaluation/greedy_pass_at_1` at initialization and scheduled evaluation steps. The training value is computed on all filtered MBPP training rows; the evaluation value is canonical EvalPlus MBPP+ pass@1. Added a fresh-run configuration preserving the prior 50,000-step full-data GRPO setup, enabling both current-model evaluations every ten optimizer updates, and leaving checkpoint selection fixed by schedule. The reproducibility record is in `logs/results.txt`; metrics are pending.
