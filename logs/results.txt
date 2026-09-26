@@ -15395,7 +15395,7 @@ Training-pool count discrepancy. The previous long-ceiling run's captured W&B `r
 ------------------------------------------------------------------------
 EXPERIMENT: Full-data MBPP GRPO with dual greedy pass@1 using EvalPlus 0.3.1
 
-Status. Running from the base model. W&B run ID: `0rtv7mau`, URL: https://wandb.ai/kunal-personal/grpo-mbpp/runs/0rtv7mau. The prior 572-task process is stopped and its W&B run was marked failed. The active environment now has EvalPlus 0.3.1 installed.
+Status. Failed before optimizer updates. W&B run ID: `0rtv7mau`, URL: https://wandb.ai/kunal-personal/grpo-mbpp/runs/0rtv7mau. The step-zero training evaluation and greedy generation for 378 EvalPlus tasks completed, but EvalPlus 0.3.1 rejected the wrapper's old positional `SimpleNamespace` call. No pass@1 from that attempt is counted. The earlier 572-task process is stopped and its W&B run was marked failed.
 
 Purpose. Repeat the previous long-ceiling full-data 0.5B GRPO run with separate greedy pass@1 metrics for the filtered MBPP training pool and canonical MBPP+ evaluation set, using the same EvalPlus package version as the prior run.
 
@@ -15408,6 +15408,21 @@ Dependency pin. Root `requirements.txt` now pins `evalplus==0.3.1`; `start.sh` i
 Identifiers. W&B run ID: `0rtv7mau`, https://wandb.ai/kunal-personal/grpo-mbpp/runs/0rtv7mau. Output directory and W&B run name: `grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-20260926`. Code/config commit at launch: `e596351`. Environment and baseline metrics will be appended after initialization.
 
 Limitations. The MBPP and model Hub revisions are still not pinned. The old task-ID manifest was not archived, although reproducing the previous package version and current split contents yields the same 593-row count.
+------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------
+EXPERIMENT: Full-data MBPP GRPO with dual greedy pass@1, EvalPlus 0.3.1 API fix
+
+Status. Replacement config prepared. The previous attempt failed during step-zero EvalPlus scoring before any optimizer update.
+
+Purpose and setup. Repeat the prior 50,000-step full-data 0.5B GRPO experiment while reporting `training/greedy_pass_at_1` on 593 filtered MBPP tasks and `evaluation/greedy_pass_at_1` on all 378 MBPP+ tasks. Preserve the model, seed, optimizer, reward, 8 groups x 16 generations, batch 128, microbatch 2, accumulation 64, fresh sampling, LoRA, and checkpoint selection settings documented above. Evaluate both sets at step 0 and every 10 optimizer steps.
+
+Evaluation API. EvalPlus 0.3.1 accepts named keyword arguments for `evaluate(dataset=..., samples=...)`; the previous wrapper passed a namespace object as a positional dataset argument. `train.py` now calls the supported keyword interface.
+
+Dependency and config. Root `requirements.txt` and `qwen_eval/eval_plus/requirements.txt` pin EvalPlus 0.3.1. The config is `configs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-v2-20260926.yaml`, with a separate run name and output directory to avoid mixing failed-attempt artifacts.
+
+Identifiers. Code and config commits, W&B ID, initial metrics, environment, and runtime will be appended after launch.
 ------------------------------------------------------------------------
 
 Limitations. This is a fresh single-seed run. The prior 50,000-step estimate was about 57 days on the earlier RTX 4000 Ada environment; runtime on the current RTX 3090 may differ. Evaluation tasks and test sets are benchmark measurements, while candidate selection remains independent of their labels. The model and MBPP dataset revisions are not pinned beyond their identifiers.

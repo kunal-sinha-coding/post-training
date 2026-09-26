@@ -2341,3 +2341,9 @@ The previous full-data run captured EvalPlus 0.3.1 and MBPP+ release v0.2.0, whi
 Commit name: Record restart with the matched EvalPlus release.
 
 Stopped the prior 572-task run after ten optimizer updates during its step-10 evaluation and marked W&B run `isidwmjq` failed. Installed EvalPlus 0.3.1, verified it loads 378 MBPP+ tasks and produces the prior 593-row training pool from the current 964 MBPP split rows, then launched the replacement from code commit `e596351`. New W&B run ID is `0rtv7mau`; baseline evaluation is in progress. The run now uses the same EvalPlus package and exclusion release as the prior long-ceiling experiment.
+
+## 2026-09-26: Adapt the canonical evaluator for EvalPlus 0.3.1
+
+Commit name: Use the EvalPlus 0.3.1 keyword evaluation API.
+
+The EvalPlus 0.3.1 replacement restored the 593-row training pool, but its canonical evaluator accepts named parameters instead of the positional namespace used by the older package. The baseline training evaluation and generation for 378 MBPP+ tasks completed, then scoring failed before optimizer updates. Changed the wrapper to call the 0.3.1 keyword API and added a separate v2 run config/output path. EvalPlus remains pinned at 0.3.1 in both installation requirement files. The failed run is recorded as W&B `0rtv7mau`; the next attempt starts from the base model. See `logs/results.txt`.
