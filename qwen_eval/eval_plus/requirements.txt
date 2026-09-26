@@ -2,4 +2,4 @@ rich
 accelerate
 vllm
 stop-sequencer
-evalplus==0.2.1
+evalplus==0.3.1

@@ -7,6 +7,7 @@ transformers==4.56.2
 trl==0.25.0
 peft>=0.15
 vllm==0.10.2
+evalplus==0.3.1
 wandb>=0.19
 pytest>=8.0
 openai>=1.0

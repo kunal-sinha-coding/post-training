@@ -2329,3 +2329,9 @@ Confirmed through W&B history that step 0 contains the requested `training/greed
 Commit name: Document EvalPlus release impact on training rows.
 
 Compared the previous run's W&B-captured `requirements.txt` with the current environment and audited the same three MBPP splits. The previous run used EvalPlus 0.3.1 / MBPP+ v0.2.0: 378 benchmark IDs overlap 371 of 964 MBPP rows, leaving 593. The current run uses EvalPlus 0.2.1 / MBPP+ v0.1.0: 399 IDs overlap 392 rows, leaving 572. The split sizes and task IDs are otherwise unique. The 21-row difference is caused by benchmark-version-dependent exclusion IDs. Recorded this provenance and the limitation that the old task-ID manifest was not archived in `logs/results.txt`.
+
+## 2026-09-26: Pin the previous run's EvalPlus version
+
+Commit name: Pin EvalPlus 0.3.1 for reproducible task exclusion.
+
+The previous full-data run captured EvalPlus 0.3.1 and MBPP+ release v0.2.0, which leaves 593 training rows. The first dual-metric attempt used EvalPlus 0.2.1 / MBPP+ v0.1.0 and left 572 rows; it was stopped after ten updates during step-10 evaluation and is marked superseded. Pinned EvalPlus 0.3.1 in root `requirements.txt`, which `start.sh` installs, and aligned `qwen_eval/eval_plus/requirements.txt`. Added a replacement config with a distinct output path and W&B run name. The active replacement should use the same 593-row pool and EvalPlus package release as the previous run. Details are in `logs/results.txt`.
