@@ -55,13 +55,13 @@ def run_qwen_evalplus(model_path: Path, output_dir: Path, name: str) -> dict[str
     # Evaluate the generated directory through EvalPlus in the training process.
     from contextlib import redirect_stdout
     from io import StringIO
+    from types import SimpleNamespace
     from evalplus.evaluate import evaluate
 
-    # Call the keyword-based EvalPlus 0.3.1 API with canonical evaluation options.
-    evaluator_kwargs = {"dataset": "mbpp", "samples": str(samples), "base_only": False, "parallel": None, "i_just_wanna_run": False, "test_details": True, "min_time_limit": 1, "gt_time_limit_factor": 4.0, "mini": False, "noextreme": False}
+    evaluator_args = SimpleNamespace(dataset="mbpp", samples=str(samples), base_only=False, parallel=None, i_just_wanna_run=False, test_details=True, min_time_limit=1, gt_time_limit_factor=4.0, mini=False, noextreme=False)
     evaluator_output = StringIO()
     with redirect_stdout(evaluator_output):
-        evaluate(**evaluator_kwargs)
+        evaluate(evaluator_args)
     result_text = evaluator_output.getvalue()
     result_path = evaluation_dir / "mbpp_results.txt"
     result_path.write_text(result_text, encoding="utf-8")
