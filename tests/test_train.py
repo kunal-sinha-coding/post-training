@@ -85,11 +85,70 @@ def test_merge_training_metrics_preserves_all_requested_eval_metrics():
 
     assert merged == {
         **canonical,
+        "training_greedy_pass_at_1": 0.4,
         "training_mbpp_pass_at_1": 0.4,
         "training_mbpp_tests_pass_fraction": 0.3,
         "training_mbpp_partial_pass_fraction": 0.0,
         "training_mbpp_partial_or_full_pass_fraction": 0.0,
     }
+
+
+def test_log_evaluation_separates_training_and_evalplus_namespaces():
+    """Log merged dataset metrics only under their corresponding W&B namespaces."""
+    class FakeWandb:
+        """Capture one W&B payload for namespace assertions."""
+
+        run = object()
+
+        def log(self, payload):
+            """Save the logged payload for the test assertions."""
+            self.payload = payload
+
+    wandb = FakeWandb()
+    train.log_evaluation(
+        wandb,
+        {
+            "mbpp_plus_pass_at_1": 0.6,
+            "mbpp_plus_tests_pass_fraction": 0.5,
+            "training_greedy_pass_at_1": 0.4,
+            "training_mbpp_tests_pass_fraction": 0.3,
+        },
+        "evalplus-step-10",
+        10,
+    )
+
+    assert wandb.payload["evaluation/greedy_pass_at_1"] == 0.6
+    assert wandb.payload["evaluation/mbpp_plus_tests_pass_fraction"] == 0.5
+    assert wandb.payload["training/greedy_pass_at_1"] == 0.4
+    assert wandb.payload["training/mbpp_tests_pass_fraction"] == 0.3
+    assert wandb.payload["training/evaluation_step"] == 10.0
+    assert not any(key.startswith("evaluation/training_") for key in wandb.payload)
+
+
+def test_log_training_only_evaluation_uses_training_namespace():
+    """Keep metrics from a training-only evaluation out of the EvalPlus namespace."""
+    class FakeWandb:
+        """Capture one W&B payload for namespace assertions."""
+
+        run = object()
+
+        def log(self, payload):
+            """Save the logged payload for the test assertions."""
+            self.payload = payload
+
+    wandb = FakeWandb()
+    train.log_evaluation(
+        wandb,
+        {"pass_at_1": 0.4, "tests_pass_fraction": 0.3},
+        "training-step-10",
+        10,
+        dataset_namespace="training",
+    )
+
+    assert wandb.payload["training/greedy_pass_at_1"] == 0.4
+    assert wandb.payload["training/mbpp_tests_pass_fraction"] == 0.3
+    assert wandb.payload["training/evaluation_step"] == 10.0
+    assert not any(key.startswith("evaluation/") for key in wandb.payload)
 
 
 class FakeModel:

@@ -200,33 +200,64 @@ def configure_wandb(config: dict[str, Any]) -> Any | None:
     if hasattr(wandb, "define_metric"):
         wandb.define_metric("evaluation/step")
         wandb.define_metric("evaluation/*", step_metric="evaluation/step")
+        wandb.define_metric("training/evaluation_step")
+        wandb.define_metric("training/greedy_pass_at_1", step_metric="training/evaluation_step")
+        wandb.define_metric("training/mbpp_*", step_metric="training/evaluation_step")
+        wandb.define_metric("training/eval_*", step_metric="training/evaluation_step")
     return wandb
 
 
-def log_evaluation(wandb: Any | None, metrics: dict[str, Any], evaluation_name: str, step: int | None = None) -> None:
-    """Log one evaluation event with a shared custom W&B x-axis."""
+def log_evaluation(wandb: Any | None, metrics: dict[str, Any], evaluation_name: str, step: int | None = None, dataset_namespace: str = "evaluation") -> None:
+    """Log evaluation metrics under the namespace of the dataset being scored."""
     # Skip evaluation logging when no active W&B run exists.
     if wandb is None or wandb.run is None:
         return
-    # Build the common evaluation metadata payload.
-    payload: dict[str, Any] = {
-        "evaluation/step": float(step or 0),
-        "evaluation/name": evaluation_name,
-    }
-    # Add scalar metrics and flattened status counts to the payload.
+    # Reject namespaces that could silently mislabel dataset metrics.
+    if dataset_namespace not in {"training", "evaluation"}:
+        raise ValueError("dataset_namespace must be 'training' or 'evaluation'.")
+    # Keep event metadata inside the namespace of its evaluated dataset.
+    step_key = "evaluation/step" if dataset_namespace == "evaluation" else "training/evaluation_step"
+    name_key = "evaluation/name" if dataset_namespace == "evaluation" else "training/evaluation_name"
+    payload: dict[str, Any] = {step_key: float(step or 0), name_key: evaluation_name}
+    # Add separate training metadata when one event contains both dataset results.
+    has_training_metrics = dataset_namespace == "evaluation" and any(key.startswith("training_") for key in metrics)
+    if has_training_metrics:
+        payload["training/evaluation_step"] = float(step or 0)
+        payload["training/evaluation_name"] = evaluation_name
+    # Route scalar metrics and flattened status counts to their dataset namespaces.
     for key, value in metrics.items():
+        metric_namespace = dataset_namespace
+        metric_key = key
+        # Route merged training metrics away from the EvalPlus metric namespace.
+        if dataset_namespace == "evaluation" and key.startswith("training_"):
+            metric_namespace = "training"
+            metric_key = key.removeprefix("training_")
+            if metric_key not in {"greedy_pass_at_1"} and not metric_key.startswith("mbpp_"):
+                metric_key = f"eval_{metric_key}"
+        # Keep standalone training evaluation metrics distinct from rollout summaries.
+        elif dataset_namespace == "training":
+            training_metric_names = {
+                "pass_at_1": "greedy_pass_at_1",
+                "tests_pass_fraction": "mbpp_tests_pass_fraction",
+                "partial_pass_fraction": "mbpp_partial_pass_fraction",
+                "partial_or_full_pass_fraction": "mbpp_partial_or_full_pass_fraction",
+            }
+            if key in training_metric_names:
+                metric_key = training_metric_names[key]
+            elif key.startswith("mbpp_"):
+                metric_key = key
+            else:
+                metric_key = f"eval_{key}"
         if isinstance(value, (int, float)):
-            payload[f"evaluation/{key}"] = value
+            payload[f"{metric_namespace}/{metric_key}"] = value
         elif key == "status_counts" and isinstance(value, dict):
             for status, count in value.items():
-                payload[f"evaluation/status_{status}"] = count
+                payload[f"{metric_namespace}/eval_status_{status}"] = count
 
-    # Publish the requested pass@1 spelling while retaining the existing metric key.
-    if isinstance(metrics.get("pass_at_1"), (int, float)):
+    # Publish generic evaluation pass@1 while retaining its established metric name.
+    if dataset_namespace == "evaluation" and isinstance(metrics.get("pass_at_1"), (int, float)):
         payload["evaluation/pass@1"] = metrics["pass_at_1"]
-    # Publish the two requested pass@1 curves with stable, distinct names.
-    if isinstance(metrics.get("training_greedy_pass_at_1"), (int, float)):
-        payload["training/greedy_pass_at_1"] = metrics["training_greedy_pass_at_1"]
+    # Publish the canonical MBPP+ pass rate under the requested evaluation name.
     if isinstance(metrics.get("mbpp_plus_pass_at_1"), (int, float)):
         payload["evaluation/greedy_pass_at_1"] = metrics["mbpp_plus_pass_at_1"]
     wandb.log(payload)
@@ -780,6 +811,10 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
     if wandb is not None and wandb.run is not None:
         wandb.define_metric("evaluation/step")
         wandb.define_metric("evaluation/*", step_metric="evaluation/step")
+        wandb.define_metric("training/evaluation_step")
+        wandb.define_metric("training/greedy_pass_at_1", step_metric="training/evaluation_step")
+        wandb.define_metric("training/mbpp_*", step_metric="training/evaluation_step")
+        wandb.define_metric("training/eval_*", step_metric="training/evaluation_step")
     # Select the device, seed the process, and prepare a clean output directory.
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Selected device: {device}", flush=True)

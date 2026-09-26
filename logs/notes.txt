@@ -2371,3 +2371,9 @@ The API-compatible rerun loaded 593 training rows and scored all 378 canonical M
 Commit name: Record the first rollout from the matched 593-task run.
 
 The API-fixed run completed optimizer update 1 after 53.26 seconds. Its first 128-completion batch had mean hybrid reward 0.21224, pooled test-pass fraction 0.31234, full-pass fraction 0.17969, and DAPO surrogate delta -0.0000189. Step-zero W&B metrics remain training greedy pass@1 0.34401 and MBPP+ greedy pass@1 0.437. The run remains active; full details are in `logs/results.txt`.
+
+## 2026-09-26: Separate training and evaluation metric namespaces
+
+Commit name: Route evaluation metrics by dataset.
+
+Updated W&B evaluation logging so training-pool metrics use the `training/` namespace and canonical EvalPlus metrics use `evaluation/`. Combined checkpoint events now log training-evaluation metadata separately, while training-only evaluation events no longer place their scores under `evaluation/`. Added training evaluation x-axis definitions and tests covering both combined and training-only payloads. The active W&B process was not stopped or modified; the change applies to future processes started from this source. The targeted test suite passed with 9 tests.
