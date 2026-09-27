@@ -1,5 +1,6 @@
 # This module loads every official MBPP split, partitions tasks against the EvalPlus benchmark IDs, and prepares GRPO and SFT records.
 # Training excludes every task in the installed canonical EvalPlus runner.
+# When configured, only the first `visible_test_count` training assertions appear in the prompt while reward still grades every assertion.
 
 from __future__ import annotations
 
@@ -70,12 +71,15 @@ def build_prompt(record: dict[str, Any], template: str = DEFAULT_PROMPT_TEMPLATE
     return formatted
 
 
-def build_qwen_evalplus_prompt(record: dict[str, Any]) -> str:
+def build_qwen_evalplus_prompt(record: dict[str, Any], visible_test_count: int | None = None) -> str:
     """Build the exact Qwen EvalPlus ChatML prompt for one MBPP record."""
     # Reconstruct the official visible docstring and assistant code prefix from Hugging Face MBPP fields.
     prompt = str(_first_value(record, "text", "prompt", "description", "task", default="")).strip()
     tests = _first_value(record, "test_list", "tests", default=[])
     visible_tests = tests if isinstance(tests, list) else [str(tests)]
+    if visible_test_count is not None:
+        # Show only the first N assertions in the prompt; reward still grades the full test list via format_tests.
+        visible_tests = visible_tests[:max(0, int(visible_test_count))]
     task_prompt = f'"""\n{prompt}\n{"\n".join(str(test) for test in visible_tests)}\n"""\n'
     fence = "```"
     return (
@@ -90,11 +94,11 @@ def build_qwen_evalplus_prompt(record: dict[str, Any]) -> str:
     )
 
 
-def normalize_record(record: dict[str, Any], include_generic_arguments: bool = False) -> dict[str, Any]:
+def normalize_record(record: dict[str, Any], include_generic_arguments: bool = False, visible_test_count: int | None = None) -> dict[str, Any]:
     """Convert one raw MBPP row into the stable training schema."""
     return {
         "task_id": _first_value(record, "task_id", "id", default=None),
-        "prompt": build_qwen_evalplus_prompt(record),
+        "prompt": build_qwen_evalplus_prompt(record, visible_test_count),
         "test_code": format_tests(record),
         "reference_code": str(_first_value(record, "code", "canonical_solution", default="")),
         "test_setup_code": str(_first_value(record, "test_setup_code", default="")),
@@ -167,6 +171,7 @@ def load_mbpp(
     dataset_config: str | None = None,
     split: str = "train",
     include_generic_arguments: bool = False,
+    visible_test_count: int | None = None,
 ) -> Any:
     """Load the requested MBPP split from the Hugging Face Hub."""
     try:
@@ -175,7 +180,7 @@ def load_mbpp(
         raise RuntimeError("Install the 'datasets' package to load MBPP.") from exc
     loaded = load_dataset(dataset_name, dataset_config, split=split) if dataset_config else load_dataset(dataset_name, split=split)
     # Rebuild normalized prompts so prompt-template edits cannot be hidden by a stale datasets cache.
-    return loaded.map(lambda record: normalize_record(record, include_generic_arguments), load_from_cache_file=False)
+    return loaded.map(lambda record: normalize_record(record, include_generic_arguments, visible_test_count), load_from_cache_file=False)
 
 
 def load_evalplus(
@@ -235,9 +240,11 @@ def split_dataset(dataset: Any, train_fraction: float = 0.8, seed: int = 42) -> 
 def prepare_datasets(config: dict[str, Any]) -> tuple[Any, Any]:
     """Partition all Hugging Face MBPP records into GRPO training and EvalPlus evaluation datasets."""
     include_generic_arguments = bool(config.get("include_generic_arguments", False))
+    # Restrict training prompts to a leading subset of assertions while reward keeps grading all of them.
+    visible_test_count = config.get("visible_test_count")
     split_names = config.get("mbpp_splits", ["train", "validation", "test"])
     all_datasets = [
-        load_mbpp(config["dataset_name"], config.get("dataset_config"), split, include_generic_arguments)
+        load_mbpp(config["dataset_name"], config.get("dataset_config"), split, include_generic_arguments, visible_test_count)
         for split in split_names
     ]
     all_dataset = _combine_datasets(all_datasets)

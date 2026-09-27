@@ -15431,3 +15431,39 @@ Identifiers and environment. W&B run ID: `1a612fxg`, https://wandb.ai/kunal-pers
 
 Limitations. This is a fresh single-seed run. The prior 50,000-step estimate was about 57 days on the earlier RTX 4000 Ada environment; runtime on the current RTX 3090 may differ. Evaluation tasks and test sets are benchmark measurements, while candidate selection remains independent of their labels. The model and MBPP dataset revisions are not pinned beyond their identifiers.
 ------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------
+EXPERIMENT: Full-data MBPP GRPO dual greedy pass@1 run 1a612fxg, closure
+
+Status. Stopped manually at step 960 after observing a train/evaluation divergence consistent with overfitting. W&B run `1a612fxg` was marked failed after the interruption; no further optimizer steps ran.
+
+Final metrics. By step 960, `training/greedy_pass_at_1` had risen to 0.863 while `evaluation/greedy_pass_at_1` (canonical MBPP+) had fallen to 0.434, below its 0.437 step-zero baseline. The best logged evaluation was step 470: MBPP base pass@1 0.630 and MBPP+ pass@1 0.521 (MBPP+ tied at steps 350 and 360). No model weights were retained for step 470, because `select_best_checkpoint: false` and `save_strategy: "no"` deleted every intermediate evaluation snapshot; only an incidental step-970 adapter (49 MB) survived the interruption.
+
+Diagnostic findings. A rollout-trace classification of all 124,160 generated training completions found the share of "lookup"-style solutions, branches that pattern-match the literal input values in the visible assertions instead of solving the task generally, rose from about 1% of full-pass rollouts in steps 1-100 to about 54% of full-pass rollouts in steps 850-969, while per-group solution diversity fell. A parallel classification of the official 378-task benchmark solutions found "visible-example specialization" in 0/378 solutions at step 0, 1/378 at step 470, and 91/378 at step 960. A code audit confirmed the training reward at this point graded only the same assertions shown in the prompt, with no held-out reward test, so a hardcoded lookup table for those exact assertions received full reward with no penalty for generalization failure. The audit also found no task-disjoint validation split existed to catch this before EvalPlus regressed, the 593-task training pool was resampled roughly 13 times by step 960, the learning-rate schedule had barely decayed (about 1.94%) by that point, and 3 of 593 training prompts exceeded `max_prompt_length: 512` and were silently truncated during training only, unrelated to the main overfitting mechanism. Full subagent reports from the 2026-09-27 analysis session are archived at `/tmp/overfit_outputs_report.txt`, `/tmp/overfit_code_audit.txt`, and `/tmp/overfit_rollouts_report.txt`; they were not copied into the repository.
+
+Selection independence. These diagnostics used only logged training and evaluation metrics and completions already produced by the run. No ground truth beyond the existing MBPP and EvalPlus test oracles was introduced, and no selection decision beyond stopping the run was made from them.
+------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------
+EXPERIMENT: Full-data MBPP GRPO with dual greedy pass@1, one visible assertion per training prompt
+
+Status. Launching from the base model. W&B run ID and initial metrics will be appended after step zero.
+
+Purpose. Test whether hiding reward-graded assertions from the training prompt reduces the visible-assertion memorization identified in the 1a612fxg closure above. Only the first of each training task's assertions is shown in the prompt; the reward function continues to grade the complete assertion list for that task, so a solution that only satisfies the single visible assertion no longer receives full reward.
+
+Configuration change. Added a `visible_test_count` config key threaded through `data.py` (`build_qwen_evalplus_prompt`, `normalize_record`, `load_mbpp`, `prepare_datasets`) that truncates the prompt's assertion list to the first N entries. `format_tests`, which builds the reward-graded `test_code` field, is untouched and always uses the complete assertion list. The key defaults to unset, which shows all assertions and preserves prior behavior for every existing config. This run sets `visible_test_count: 1`. The EvalPlus evaluation dataset and canonical EvalPlus benchmark path are unaffected by this key; only MBPP training-split prompts are truncated.
+
+Setup. Otherwise identical to the 1a612fxg run: Qwen/Qwen2.5-Coder-0.5B-Instruct; seed 42; LoRA rank 16, alpha 32, dropout 0.05; DAPO loss; learning rate 1e-5; beta 0.01; hybrid reward coefficient 0.75; 16 generations per task; 8 task groups and 128 completions per optimizer update; microbatch 2; gradient accumulation 64; eight reward workers; fresh sampling; bf16; max_steps 50000; EvalPlus 0.3.1; `select_best_checkpoint: false`; `evalplus_eval_steps: 10`.
+
+Configuration. `configs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-20260927.yaml`.
+
+Metrics. Same `training/greedy_pass_at_1` and `evaluation/greedy_pass_at_1` pair as the prior run, plus all existing rollout reward and optimizer diagnostics.
+
+Selection independence. Checkpoint selection remains disabled by schedule (`select_best_checkpoint: false`); EvalPlus scores are logged for trend observation only and do not choose a checkpoint or stop the run.
+
+Identifiers and environment. Code commit and W&B run ID will be appended after launch. Environment: one NVIDIA GeForce RTX 3090, PyTorch 2.8.0+cu128, EvalPlus 0.3.1.
+
+Limitations. This is a single-factor, single-seed change. It does not by itself address the other contributing factors identified in the 1a612fxg closure: the missing validation split, task-pool resampling, the near-constant learning rate, or the 3-task prompt truncation bug.
+------------------------------------------------------------------------

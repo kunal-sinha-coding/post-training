@@ -2377,3 +2377,9 @@ The API-fixed run completed optimizer update 1 after 53.26 seconds. Its first 12
 Commit name: Route evaluation metrics by dataset.
 
 Updated W&B evaluation logging so training-pool metrics use the `training/` namespace and canonical EvalPlus metrics use `evaluation/`. Combined checkpoint events now log training-evaluation metadata separately, while training-only evaluation events no longer place their scores under `evaluation/`. Added training evaluation x-axis definitions and tests covering both combined and training-only payloads. The active W&B process was not stopped or modified; the change applies to future processes started from this source. The targeted test suite passed with 9 tests.
+
+## 2026-09-27: Hide reward-graded assertions from the training prompt
+
+Commit name: Add visible_test_count to hide graded assertions from prompts.
+
+The run `1a612fxg` was stopped for overfitting: by step 960 training pass@1 reached 0.863 while EvalPlus MBPP+ pass@1 fell to 0.434, and a rollout audit found training reward was increasingly earned by hardcoded lookup-table solutions matching the exact visible assertions, because the reward function graded only those same assertions with nothing held out. Added a `visible_test_count` config key so a training prompt can show only the first N assertions while `test_code`, which the reward function grades, keeps every assertion for that task. Threaded the new parameter through `build_qwen_evalplus_prompt`, `normalize_record`, `load_mbpp`, and `prepare_datasets` in `data.py`; the key defaults to unset, which preserves full visibility for every existing config. Added a config, `configs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-20260927.yaml`, with `visible_test_count: 1` and otherwise the same setup as `1a612fxg`, and recorded both the prior run's closure and this run's setup in `logs/results.txt`. Full test suite passed with 56 tests before launch.

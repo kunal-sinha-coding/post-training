@@ -34,9 +34,9 @@ def test_prepare_datasets_partitions_all_mbpp_records_against_evalplus_ids(monke
             """Return the selected records in their original order."""
             return Dataset(self[index] for index in indices)
 
-    def fake_load_mbpp(dataset_name, dataset_config, split, include_generic_arguments=False):
+    def fake_load_mbpp(dataset_name, dataset_config, split, include_generic_arguments=False, visible_test_count=None):
         """Record each requested split and return normalized task records."""
-        calls.append((dataset_name, dataset_config, split))
+        calls.append((dataset_name, dataset_config, split, visible_test_count))
         starts = {"train": 1, "validation": 4, "test": 7}
         return Dataset({"task_id": starts[split] + index} for index in range(3))
 
@@ -45,7 +45,7 @@ def test_prepare_datasets_partitions_all_mbpp_records_against_evalplus_ids(monke
     monkeypatch.setattr("evalplus.data.get_mbpp_plus", lambda: {f"Mbpp/{task_id}": {} for task_id in (2, 5, 8)})
     train, evaluation = prepare_datasets({"dataset_name": "mbpp", "mbpp_splits": ["train", "validation", "test"]})
 
-    assert calls == [("mbpp", None, "train"), ("mbpp", None, "validation"), ("mbpp", None, "test")]
+    assert calls == [("mbpp", None, "train", None), ("mbpp", None, "validation", None), ("mbpp", None, "test", None)]
     assert [record["task_id"] for record in train] == [1, 3, 4, 6, 7, 9]
     assert [record["task_id"] for record in evaluation] == [2, 8]
     repeated, _ = prepare_datasets({
@@ -56,6 +56,24 @@ def test_prepare_datasets_partitions_all_mbpp_records_against_evalplus_ids(monke
     })
     assert len(repeated) == 8
     assert {record["task_id"] for record in repeated} == {1}
+
+
+def test_visible_test_count_hides_reward_only_assertions():
+    """Limiting visible_test_count should shrink the prompt's assertions but not the graded test_code."""
+    record = {
+        "task_id": 1,
+        "text": "Add two numbers.",
+        "test_list": ["assert add(1, 2) == 3", "assert add(-1, 1) == 0", "assert add(0, 0) == 0"],
+    }
+    normalized = normalize_record(record, visible_test_count=1)
+    assert "assert add(1, 2) == 3" in normalized["prompt"]
+    assert "assert add(-1, 1) == 0" not in normalized["prompt"]
+    assert "assert add(0, 0) == 0" not in normalized["prompt"]
+    assert normalized["test_code"].splitlines() == [
+        "assert add(1, 2) == 3",
+        "assert add(-1, 1) == 0",
+        "assert add(0, 0) == 0",
+    ]
 
 
 def test_prompt_template_can_be_overridden():
