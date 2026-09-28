@@ -15467,3 +15467,30 @@ Identifiers and environment. Code commit and W&B run ID will be appended after l
 
 Limitations. This is a single-factor, single-seed change. It does not by itself address the other contributing factors identified in the 1a612fxg closure: the missing validation split, task-pool resampling, the near-constant learning rate, or the 3-task prompt truncation bug.
 ------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------
+EXPERIMENT: 50-task hardcoding canary, code prepared but not launched
+
+Status. Not launched. Code and config are committed and validated with a CPU-only dry run of `prepare_datasets`; no GPU job has been started. The concurrently running `rnnxompo` run (`visible_test_count: 1`) was not stopped, paused, or modified to prepare this.
+
+Purpose. Test whether the reward-hacking mechanism found in the 1a612fxg closure above (per-task literal-assertion memorization) reproduces an order of magnitude faster on a much smaller training pool, so future overfitting checks do not require waiting to step ~850-970 as in that run. This is a mechanism-reproduction canary, not a quantitative forecast of when the phenomenon would occur in the full 593-task run.
+
+Task selection and independence from ground truth. Recomputed the strict lookup-table classifier directly from 1a612fxg's saved `reward-trace.jsonl` (function called in the tests; >=2 parameter==literal comparisons matching actual test call arguments; >=2 literal returns; no calls, loops, assignments, try, or raise anywhere in the function). This is a structural check on the completions the model already generated during that run, not new ground-truth labeling: it does not execute or grade the code, only classifies its shape. Of the 593 training tasks, 317 were caught with a strict hardcoded solution at some point (earliest onset step 851, most within a roughly 120-step window ending at step 970), and 276 were never flagged. Selected 38 task IDs from the known-317 (positive control) and 12 from the known-276 (negative control) with `random.Random(42)`. Candidate selection used only the model's own generated completions and the existing MBPP/EvalPlus test oracles; no new external ground truth was introduced, and this selection does not feed back into or replace the eventual EvalPlus benchmark measurement, which stays independent.
+
+Selected task IDs (50): 24, 42, 44, 48, 49, 117, 121, 176, 179, 184, 188, 193, 194, 204, 258, 288, 318, 321, 360, 376, 379, 383, 385, 387, 417, 461, 466, 496, 504, 509, 544, 634, 645, 647, 666, 683, 691, 701, 746, 761, 822, 874, 878, 909, 921, 952, 953, 961, 962, 972.
+
+Configuration change. Added a `train_task_ids` config key in `data.py`'s `prepare_datasets`, which filters the training split to an explicit task-ID allowlist after the existing EvalPlus-exclusion filter; unset (the default) preserves every existing config's behavior unchanged. Added `is_hardcoded_lookup` and `hardcoding_rate` to `sandbox.py`, porting the same strict classifier used for the offline 1a612fxg analysis, and wired `hardcoding_rate` into `reward_function`'s diagnostics as `reward/hardcoding_rate`. This flows into W&B at every optimizer step through the existing `_reward_diagnostics` path in `train.py`; no changes to `train.py` were required. Re-validated the classifier against 1a612fxg's real trace after fixing a double-counting bug relative to the original ad-hoc analysis script: early-window rate 0.05%, peak-window 0.20%, late-window 27.65%, the same near-zero-then-sharp-rise story as the original analysis, with corrected absolute counts.
+
+Setup. `visible_test_count` is deliberately left unset, matching 1a612fxg's all-visible regime, since the goal is to reproduce that known failure faster, not to test the `visible_test_count` fix on a small pool. Otherwise identical to 1a612fxg: Qwen/Qwen2.5-Coder-0.5B-Instruct; seed 42; LoRA rank 16, alpha 32, dropout 0.05; DAPO loss; learning rate 1e-5; beta 0.01; hybrid reward coefficient 0.75; 16 generations per task; 8 task groups and 128 completions per optimizer update; microbatch 2; gradient accumulation 64; eight reward workers; fresh sampling; bf16; max_steps 50000; EvalPlus 0.3.1; `select_best_checkpoint: false`. `evalplus_eval_steps` tightened from 10 to 5 for finer resolution given the much shorter expected run.
+
+Configuration. `configs/grpo-mbpp-50task-hardcoding-canary-20260928.yaml`.
+
+Metrics. `training/greedy_pass_at_1` and `evaluation/greedy_pass_at_1` as in prior runs, plus the new `reward/hardcoding_rate` diagnostic logged every optimizer step, alongside all existing rollout reward and optimizer diagnostics.
+
+Selection independence. Checkpoint selection remains disabled by schedule (`select_best_checkpoint: false`); EvalPlus scores are logged for trend observation only and do not choose a checkpoint or stop the run.
+
+Identifiers and environment. Code commit and W&B run ID will be appended once this is actually launched. Environment when launched is expected to match the current environment: one NVIDIA GeForce RTX 3090, PyTorch 2.8.0+cu128, EvalPlus 0.3.1.
+
+Limitations. Shrinking the pool accelerates task-repetition count, the driver identified in the 1a612fxg closure, but it also collapses task diversity; any eval-score degradation in this run must be attributed causally via `reward/hardcoding_rate` (or offline reclassification) rather than trusted from the aggregate EvalPlus score alone, since a narrow-curriculum generalization effect unrelated to reward hacking could produce a superficially similar aggregate drop. Absolute step counts from this run are not expected to transfer quantitatively to the 593-task setting; only the qualitative existence and character of the mechanism is expected to transfer.
+------------------------------------------------------------------------

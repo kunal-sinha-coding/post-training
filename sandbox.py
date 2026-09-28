@@ -1,7 +1,9 @@
 """Extract generated Python, validate its interface, and execute each test in a timed subprocess.
 
 The scoring flow builds explicit dense components, blends them with the binary pass signal,
-and summarizes reward variation for local logs and W&B.
+and summarizes reward variation for local logs and W&B. It also flags completions that
+special-case the literal test arguments instead of solving the task generally, and reports
+that fraction as the `reward/hardcoding_rate` diagnostic.
 """
 
 from __future__ import annotations
@@ -264,6 +266,90 @@ def summarize_reward_groups(rewards: list[float], details: list[dict[str, object
     return diagnostics
 
 
+_NOT_LITERAL = object()
+
+
+def _literal_value(node: ast.AST) -> object:
+    """Return an AST node's literal value, or a sentinel when the node is not a literal."""
+    try:
+        return ast.literal_eval(node)
+    except Exception:
+        return _NOT_LITERAL
+
+
+def _test_call_arguments(tests: str, function_name: str) -> list[tuple[object, ...]]:
+    """Return the literal positional arguments passed to one function across every test assertion."""
+    try:
+        tree = ast.parse(tests)
+    except SyntaxError:
+        return []
+    calls = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == function_name:
+            arguments = [_literal_value(argument) for argument in node.args]
+            if all(value is not _NOT_LITERAL for value in arguments):
+                calls.append(tuple(arguments))
+    return calls
+
+
+def is_hardcoded_lookup(code: str, tests: str) -> bool:
+    """Detect a solution that special-cases the literal test arguments instead of solving the task generally."""
+    # Require a single top-level function whose name is actually exercised by the tests.
+    try:
+        tree = ast.parse(code)
+    except SyntaxError:
+        return False
+    function = next((node for node in tree.body if isinstance(node, ast.FunctionDef)), None)
+    if function is None:
+        return False
+    calls = _test_call_arguments(tests, function.name)
+    if not calls:
+        return False
+    # A lookup table needs none of these general-purpose constructs.
+    for node in ast.walk(function):
+        if node is not function and isinstance(node, (ast.Call, ast.For, ast.While, ast.Assign, ast.AugAssign, ast.AnnAssign, ast.Try, ast.Raise)):
+            return False
+    parameters = [argument.arg for argument in function.args.args]
+    used_values = {(index, repr(value)) for call in calls for index, value in enumerate(call)}
+
+    def matches_test_argument(comparison: ast.Compare) -> bool:
+        """Check whether one equality comparison pins a parameter to a literal value seen in the tests."""
+        if len(comparison.ops) != 1 or not isinstance(comparison.ops[0], ast.Eq):
+            return False
+        left, right = comparison.left, comparison.comparators[0]
+        name = left if isinstance(left, ast.Name) else right if isinstance(right, ast.Name) else None
+        literal = right if name is left else left
+        if name is None or name.id not in parameters:
+            return False
+        value = _literal_value(literal)
+        return value is not _NOT_LITERAL and (parameters.index(name.id), repr(value)) in used_values
+
+    # ast.walk already descends into "and"-joined comparisons, so each one is counted individually.
+    matched_comparisons = sum(1 for node in ast.walk(function) if isinstance(node, ast.Compare) and matches_test_argument(node))
+    if matched_comparisons < 2:
+        return False
+    literal_returns = sum(
+        1 for node in ast.walk(function)
+        if isinstance(node, ast.Return) and node.value is not None and _literal_value(node.value) is not _NOT_LITERAL
+    )
+    return literal_returns >= 2
+
+
+def hardcoding_rate(completions: list[str], tests: list[str]) -> float:
+    """Return the fraction of a batch whose extracted code hardcodes the literal test arguments."""
+    if not completions:
+        return 0.0
+    flagged = 0
+    for completion, test_code in zip(completions, tests):
+        try:
+            code = extract_code(completion)
+        except ValueError:
+            continue
+        if is_hardcoded_lookup(code, test_code):
+            flagged += 1
+    return flagged / len(completions)
+
+
 def reward_function(completions: list[object], test_code: list[str], sandbox_timeout_seconds: float = 3.0, diagnostics: dict[str, Any] | None = None, group_size: int = 4, reward_function_name: str = DEFAULT_REWARD_FUNCTION, reward_coefficient: float = DEFAULT_REWARD_COEFFICIENT, trace_path: str | None = None, task_ids: list[object] | None = None, synthetic_reward_probe: bool = False, reward_scoring_workers: int = 8, **_: object) -> list[float]:
     """Score a GRPO batch with the configured test-pass or hybrid reward."""
     # Normalize every candidate while retaining its original record position.
@@ -317,4 +403,5 @@ def reward_function(completions: list[object], test_code: list[str], sandbox_tim
         diagnostics.update(summarize_reward_groups(rewards, details, group_size))
         diagnostics["reward/function"] = reward_function_name
         diagnostics["reward/coefficient"] = reward_coefficient
+        diagnostics["reward/hardcoding_rate"] = hardcoding_rate(scored_completions, scoring_tests)
     return rewards

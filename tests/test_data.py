@@ -56,6 +56,12 @@ def test_prepare_datasets_partitions_all_mbpp_records_against_evalplus_ids(monke
     })
     assert len(repeated) == 8
     assert {record["task_id"] for record in repeated} == {1}
+    allowlisted, _ = prepare_datasets({
+        "dataset_name": "mbpp",
+        "mbpp_splits": ["train", "validation", "test"],
+        "train_task_ids": [3, 7],
+    })
+    assert [record["task_id"] for record in allowlisted] == [3, 7]
 
 
 def test_visible_test_count_hides_reward_only_assertions():

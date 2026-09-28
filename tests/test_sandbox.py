@@ -2,7 +2,7 @@
 
 import pytest
 
-from sandbox import execute_code, expected_interface, extract_code, reward_for_completion, reward_function, score_completion, split_test_cases, summarize_reward_groups, validate_interface
+from sandbox import execute_code, expected_interface, extract_code, hardcoding_rate, is_hardcoded_lookup, reward_for_completion, reward_function, score_completion, split_test_cases, summarize_reward_groups, validate_interface
 
 
 def test_extract_code_supports_fences():
@@ -60,6 +60,38 @@ def test_hybrid_reward_weights_full_pass_and_partial_progress():
     assert diagnostics["reward/function"] == "hybrid"
     assert diagnostics["reward/coefficient"] == 0.5
     assert diagnostics["reward/pass/mean"] == pytest.approx(0.5)
+
+
+def test_is_hardcoded_lookup_detects_literal_branches():
+    """Flag a function that special-cases the exact literal arguments used in the tests."""
+    tests = "assert floor_Min(10,20,30) == 15\nassert floor_Min(1,2,1) == 0\nassert floor_Min(11,10,9) == 9"
+    hardcoded = "def floor_Min(a, b, c):\n    if a == 10 and b == 20 and c == 30:\n        return 15\n    return None"
+    assert is_hardcoded_lookup(hardcoded, tests) is True
+
+
+def test_is_hardcoded_lookup_rejects_general_solutions():
+    """Never flag a solution that uses a loop, call, or assignment, even with matching branches."""
+    tests = "assert add(1, 2) == 3\nassert add(1, 2) == 4"
+    general = "def add(a, b):\n    return a + b"
+    assert is_hardcoded_lookup(general, tests) is False
+    # A single non-compound comparison stays below the two-matched-comparison threshold.
+    one_comparison = "def add(a, b):\n    if a == 1:\n        return 3\n    return -1"
+    assert is_hardcoded_lookup(one_comparison, tests) is False
+
+
+def test_reward_function_reports_hardcoding_rate():
+    """Report the fraction of a batch that hardcodes the literal test arguments."""
+    completions = [
+        "```python\ndef floor_Min(a, b, c):\n    if a == 10 and b == 20 and c == 30:\n        return 15\n    if a == 1 and b == 2 and c == 1:\n        return 0\n    return None\n```",
+        "```python\ndef floor_Min(a, b, c):\n    return min(a, b, c) - max(a, b, c) + min(b, c)\n```",
+    ]
+    tests = [
+        "assert floor_Min(10,20,30) == 15\nassert floor_Min(1,2,1) == 0\nassert floor_Min(11,10,9) == 9",
+        "assert floor_Min(10,20,30) == 15\nassert floor_Min(1,2,1) == 0\nassert floor_Min(11,10,9) == 9",
+    ]
+    diagnostics = {}
+    reward_function(completions, tests, diagnostics=diagnostics, group_size=2)
+    assert diagnostics["reward/hardcoding_rate"] == pytest.approx(0.5)
 
 
 def test_reward_scoring_runs_concurrently_and_preserves_trace_order(monkeypatch, tmp_path):

@@ -1,6 +1,7 @@
 # This module loads every official MBPP split, partitions tasks against the EvalPlus benchmark IDs, and prepares GRPO and SFT records.
 # Training excludes every task in the installed canonical EvalPlus runner.
 # When configured, only the first `visible_test_count` training assertions appear in the prompt while reward still grades every assertion.
+# When configured, `train_task_ids` restricts training to an explicit task-ID allowlist instead of the full filtered pool.
 
 from __future__ import annotations
 
@@ -259,6 +260,11 @@ def prepare_datasets(config: dict[str, Any]) -> tuple[Any, Any]:
     evalplus_task_ids = {int(task_id.split("/")[-1]) for task_id in get_mbpp_plus()}
     assert {int(record["task_id"]) for record in evaluation_dataset} <= evalplus_task_ids
     train_dataset = _filter_dataset(all_dataset, lambda record: int(record["task_id"]) not in evalplus_task_ids)
+    # Restrict training to an explicit task-ID allowlist when one is configured.
+    train_task_ids = config.get("train_task_ids")
+    if train_task_ids is not None:
+        allowed_task_ids = {str(task_id) for task_id in train_task_ids}
+        train_dataset = _filter_dataset(train_dataset, lambda record: str(record["task_id"]) in allowed_task_ids)
     max_train = config.get("max_train_samples")
     max_eval = config.get("max_eval_samples")
 
