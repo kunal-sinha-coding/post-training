@@ -912,7 +912,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         disable_dropout=bool(config.get("disable_dropout", False)),
         logging_steps=int(config["logging_steps"]),
         save_steps=int(config["save_steps"]),
-        save_strategy="no",
+        save_strategy=str(config.get("save_strategy", "no")),
         eval_strategy="no",
         bf16=bool(config.get("bf16", False)),
         fp16=bool(config.get("fp16", False)),
@@ -1113,7 +1113,8 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
     config["_evaluation_epoch"] = trainer.state.epoch
     save_evaluation(output_dir, "final", final_metrics, final_details, config)
     log_evaluation(wandb, final_metrics, "final", trainer.state.global_step)
-    (output_dir / "config.json").write_text(json.dumps(config, indent=2), encoding="utf-8")
+    saved_config = {key: value for key, value in config.items() if not key.startswith("_")}
+    (output_dir / "config.json").write_text(json.dumps(saved_config, indent=2), encoding="utf-8")
 
 
 def main() -> None:
