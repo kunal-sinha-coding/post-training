@@ -2426,3 +2426,9 @@ Set the new full-run config to append scheduled evaluation records under its own
 Commit name: Restart full training without direction probes.
 
 The first run completed one optimizer update in 47.98 seconds on an RTX 2000 Ada Generation 16 GB GPU. Inspection showed that `probe_update_direction` computes additional likelihood passes for the rollout microbatches and again after each update; these computations report diagnostics and do not affect the GRPO loss. The initial 378-task EvalPlus evaluation took about 96 seconds, with a further 40.59 seconds to compute expected outputs. Restarted from the base model using the same optimizer, batch, data, and 10-step evaluation/checkpoint schedule, with only the direction probe disabled and fresh output/W&B names. The speed gain remains to be measured.
+
+## 2026-09-29: Resume full MBPP run after abrupt process exit
+
+Commit name: Add GRPO checkpoint resume support and resume after step 180.
+
+The active probe-off run, W&B ID `x4mkdmpb`, completed training step 180, evaluation, and checkpoint save. Its log then begins step 181 and ends without a Python traceback, CUDA error, or OOM report. W&B records continued uploads through 21:29:22 UTC; the GPU is idle now. The available evidence supports abrupt external process termination, but does not identify the external trigger. Checkpoint 180 contains adapter weights, optimizer state, scheduler state, trainer state, and RNG state. Added a GRPO CLI option to pass a checkpoint path to `trainer.train(resume_from_checkpoint=...)` so this run can resume its optimizer state instead of starting over. Restarting from checkpoint 180; the last completed checkpoint and the run's existing artifacts remain preserved.

@@ -1080,7 +1080,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
     if not config.get("sft_enabled", False) and config.get("run_baseline_evaluation", True):
         log_evaluation(wandb, baseline_metrics, "baseline", 0)
     # Train the GRPO model and identify the selected checkpoint.
-    trainer.train()
+    trainer.train(resume_from_checkpoint=config.get("resume_from_checkpoint"))
     best_checkpoint_path = training_callback.best_checkpoint_path
     # Reload the selected checkpoint before final evaluation when one exists.
     if best_checkpoint_path is not None and best_checkpoint_path.exists():
@@ -1122,12 +1122,14 @@ def main() -> None:
     # Parse the configuration path and requested training stage.
     parser = argparse.ArgumentParser(description="Train Qwen with GRPO on MBPP.")
     parser.add_argument("--config", default="configs/default.yaml", help="Path to a YAML experiment configuration.")
+    parser.add_argument("--resume-from-checkpoint", default=None, help="Resume training from a saved trainer checkpoint.")
     parser.add_argument("--stage", choices=("all", "sft"), default="all", help="Run the full pipeline or stop after SFT.")
     args = parser.parse_args()
     # Load environment values and preserve the source configuration for logging.
     load_dotenv()
     config = load_config(args.config)
     config["_config_path"] = str(args.config)
+    config["resume_from_checkpoint"] = args.resume_from_checkpoint
     config["_config_yaml"] = Path(args.config).read_text(encoding="utf-8")
     # Display the resolved configuration and launch training.
     print("Experiment configuration:")
