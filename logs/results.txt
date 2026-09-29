@@ -15494,3 +15494,20 @@ Identifiers and environment. Code commit and W&B run ID will be appended once th
 
 Limitations. Shrinking the pool accelerates task-repetition count, the driver identified in the 1a612fxg closure, but it also collapses task diversity; any eval-score degradation in this run must be attributed causally via `reward/hardcoding_rate` (or offline reclassification) rather than trusted from the aggregate EvalPlus score alone, since a narrow-curriculum generalization effect unrelated to reward hacking could produce a superficially similar aggregate drop. Absolute step counts from this run are not expected to transfer quantitatively to the 593-task setting; only the qualitative existence and character of the mechanism is expected to transfer.
 ------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------
+EXPERIMENT: Checkpoint save and reload smoke test
+
+Status. Completed one GRPO optimizer update and loaded the saved checkpoint for evaluation.
+
+Purpose. Verify that configured step-based checkpointing writes a PEFT adapter checkpoint that can be reloaded and used to evaluate a small set before restarting the full run.
+
+Setup. Used `Qwen/Qwen2.5-Coder-0.5B-Instruct`, seed 42, LoRA rank 16, alpha 32, dropout 0.05, DAPO loss, learning rate 1e-5, hybrid reward coefficient 0.75, 16 generations for one training example, one optimizer step, and bfloat16. Dataset construction selected the first MBPP training row after EvalPlus task exclusion, with `visible_test_count: 1`, and the first two canonical EvalPlus evaluation tasks. Checkpoint saving used `save_strategy: steps` and `save_steps: 1`. The smoke output is `outputs/checkpoint-save-smoke-20260929`.
+
+Checkpoint and reload. Trainer wrote `outputs/checkpoint-save-smoke-20260929/checkpoint-1`. Its adapter weights occupy 35,237,104 bytes, optimizer state occupies 70,672,915 bytes, and all files in the checkpoint occupy 121,820,566 bytes. Loaded the adapter with `PeftModel.from_pretrained` over the configured base model and evaluated the two EvalPlus tasks from the reloaded checkpoint.
+
+Metrics. The update completed in 40.48 seconds with mean rollout reward 0.01042 and rollout test-pass fraction 0.04444 across 16 generations. The reloaded checkpoint evaluation covered task IDs 2 and 3; both completions failed, so pass@1 was 0.0 and pooled test-pass fraction was 0.0. This result checks save, load, and evaluation plumbing only; two tasks do not measure model quality.
+
+Identifiers and environment. Source commit: `1595989`. The smoke run used one NVIDIA RTX 2000 Ada Generation GPU with 16 GiB, PyTorch 2.8.0+cu128, Transformers 4.56.2, TRL 0.25.0, PEFT 0.21.0, vLLM 0.10.2, datasets 5.0.1, and EvalPlus 0.3.1 with MBPP+ release v0.2.0. A fresh Hugging Face cache under `/tmp/checkpoint-save-smoke-hf` was used because a shared cache Parquet shard was empty. The initial process completed training and evaluation but hit a config serialization error at final shutdown; `train.py` was updated in commit `1595989` to exclude private runtime state when writing `config.json`.
+------------------------------------------------------------------------

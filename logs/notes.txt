@@ -2407,3 +2407,9 @@ Commit name: Save 10-step checkpoints and training evaluations.
 Changed the visible-test-count run config to evaluate its MBPP training set every 10 optimizer steps and request a checkpoint every 10 steps. Updated `train.py` to pass each config's `save_strategy` to the trainer, while keeping the existing `no` default for configs that do not opt in. Added a fresh restart config at `configs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-20260929.yaml` so the new run uses a separate output directory and preserves the earlier artifacts. Its checkpoints will be written under `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-20260929/checkpoint-{step}`. The MBPP and MBPP+ evaluation schedule remains every 10 steps through `evalplus_eval_steps`.
 
 The one-update smoke run saved a loadable adapter checkpoint and the direct PEFT reload evaluated two EvalPlus tasks successfully. Its final artifact write then exposed a serialization error from runtime-only config entries containing tuple-keyed data, so `train.py` now omits private runtime keys when writing `config.json`. The shared Hugging Face cache had a zero-byte Parquet shard, so the successful smoke run used a new private cache under `/tmp`.
+
+## 2026-09-29: Record the checkpoint save and reload smoke test
+
+Commit name: Record checkpoint save and reload smoke results.
+
+Recorded the one-step checkpoint validation in `logs/results.txt`, including the exact checkpoint path and size, optimizer state size, reload method, two-task metrics, source commit, and environment. The smoke run established that periodic PEFT checkpoints can be loaded for evaluation. The two-task score is only a plumbing check and does not estimate model quality.
