@@ -15511,3 +15511,12 @@ Metrics. The update completed in 40.48 seconds with mean rollout reward 0.01042 
 
 Identifiers and environment. Source commit: `1595989`. The smoke run used one NVIDIA RTX 2000 Ada Generation GPU with 16 GiB, PyTorch 2.8.0+cu128, Transformers 4.56.2, TRL 0.25.0, PEFT 0.21.0, vLLM 0.10.2, datasets 5.0.1, and EvalPlus 0.3.1 with MBPP+ release v0.2.0. A fresh Hugging Face cache under `/tmp/checkpoint-save-smoke-hf` was used because a shared cache Parquet shard was empty. The initial process completed training and evaluation but hit a config serialization error at final shutdown; `train.py` was updated in commit `1595989` to exclude private runtime state when writing `config.json`.
 ------------------------------------------------------------------------
+
+
+## 2026-09-29: Restart full MBPP run without update-direction probes
+
+Purpose: reduce per-update overhead while preserving the requested full-data training objective, 16 generations, and training/evaluation/checkpoint cadence of every 10 steps.
+
+The first fresh run used config `configs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-20260929.yaml` and was stopped after its first optimizer update to remove optional update-direction diagnostic forwards. On the RTX 2000 Ada Generation 16 GB GPU, step zero evaluated 378 MBPP+ tasks: base-test pass@1 0.540 and MBPP+ pass@1 0.450; expected-output setup took 40.59 s and EvalPlus execution took about 96 s. Its first optimizer update took 47.98 s, with mean reward 0.18685 and pooled visible-test pass fraction 0.28533. This attempt is not the main run and its one update is discarded.
+
+The replacement config is `configs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-probeoff-20260929.yaml`. It differs only in separate artifact/run names and `probe_update_direction: false`; rollout size, objective, reward, learning rate, evaluation data, 10-step training/eval schedules, and 10-step saves are preserved. Candidate selection and benchmark evaluation remain separate. The speed benefit is expected but not yet measured; the diagnostic correlation and probability trace are omitted.

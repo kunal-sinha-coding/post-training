@@ -2419,3 +2419,10 @@ Recorded the one-step checkpoint validation in `logs/results.txt`, including the
 Commit name: Store ten-step run results beside checkpoints.
 
 Set the new full-run config to append scheduled evaluation records under its own output directory. This keeps the active run's frequent log writes out of the tracked repository results file; the run summary will be copied into `logs/results.txt` as a durable experiment record.
+
+
+## 2026-09-29: Remove diagnostic forwards from the full MBPP run
+
+Commit name: Restart full training without direction probes.
+
+The first run completed one optimizer update in 47.98 seconds on an RTX 2000 Ada Generation 16 GB GPU. Inspection showed that `probe_update_direction` computes additional likelihood passes for the rollout microbatches and again after each update; these computations report diagnostics and do not affect the GRPO loss. The initial 378-task EvalPlus evaluation took about 96 seconds, with a further 40.59 seconds to compute expected outputs. Restarted from the base model using the same optimizer, batch, data, and 10-step evaluation/checkpoint schedule, with only the direction probe disabled and fresh output/W&B names. The speed gain remains to be measured.
