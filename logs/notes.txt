@@ -2413,3 +2413,9 @@ The one-update smoke run saved a loadable adapter checkpoint and the direct PEFT
 Commit name: Record checkpoint save and reload smoke results.
 
 Recorded the one-step checkpoint validation in `logs/results.txt`, including the exact checkpoint path and size, optimizer state size, reload method, two-task metrics, source commit, and environment. The smoke run established that periodic PEFT checkpoints can be loaded for evaluation. The two-task score is only a plumbing check and does not estimate model quality.
+
+## 2026-09-29: Keep live full-run results with its output artifacts
+
+Commit name: Store ten-step run results beside checkpoints.
+
+Set the new full-run config to append scheduled evaluation records under its own output directory. This keeps the active run's frequent log writes out of the tracked repository results file; the run summary will be copied into `logs/results.txt` as a durable experiment record.

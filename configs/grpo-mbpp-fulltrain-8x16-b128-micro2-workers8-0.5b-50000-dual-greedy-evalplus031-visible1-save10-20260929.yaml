@@ -33,7 +33,7 @@ lora_target_modules:
 - down_proj
 sft_enabled: false
 log_path: outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-20260929/run.log
-results_log_path: logs/results.txt
+results_log_path: outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-20260929/run-results.txt
 output_dir: outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-20260929
 mask_reward_stops: true
 reward_trace_path: outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-20260929/reward-trace.jsonl
