@@ -821,11 +821,13 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
     seed_everything(int(config.get("seed", 42)))
     output_dir = Path(config["output_dir"])
     output_dir.mkdir(parents=True, exist_ok=True)
-    # Remove stale intermediate checkpoints before a new training run.
-    for checkpoint_path in output_dir.glob("checkpoint-*"):
-        # Remove only checkpoint directories matched inside the output directory.
-        if checkpoint_path.is_dir():
-            shutil.rmtree(checkpoint_path)
+    # Preserve checkpoint files when resuming an interrupted run.
+    if not config.get("resume_from_checkpoint"):
+        # Remove stale intermediate checkpoints only before a fresh run.
+        for checkpoint_path in output_dir.glob("checkpoint-*"):
+            # Remove only checkpoint directories matched inside the output directory.
+            if checkpoint_path.is_dir():
+                shutil.rmtree(checkpoint_path)
     # Load datasets, tokenizer, and the base model.
     train_dataset, eval_dataset = prepare_datasets(config)
     tokenizer = AutoTokenizer.from_pretrained(config["model_name_or_path"], trust_remote_code=bool(config.get("trust_remote_code", False)))
