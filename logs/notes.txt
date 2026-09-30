@@ -2486,3 +2486,9 @@ Logged outputs from visible-passing candidates on the two hidden MBPP inputs per
 Commit name: Measure correct-candidate coverage in largest output cluster.
 
 Matched the prior output-log window to the exact rollout blocks in `reward-trace.jsonl`. A full-test-correct candidate was present in the largest two-hidden-input output cluster for 48/80 groups. Any full-test-correct candidate appeared among the full 16 in 54/80 groups, so the largest-cluster recall was 88.9% conditional on the candidate set containing a correct solution. Expected outputs remained unavailable to the verifier; recorded full-test labels were used only for this additional post-selection measurement.
+
+## 2026-09-30: Compare verifier strategies across all training tasks
+
+Commit name: Compare rollout verifiers across full training set.
+
+Used each of 593 training tasks' latest saved 16-completion rollout group to compare visible-only selection, joint hidden-output clustering, and the full-test oracle against the checkpoint-180 greedy baseline. At pass@16, joint clustering scored 57.00%, visible-only selection 53.46%, and the oracle 62.06%; checkpoint greedy pass@1 was 39.29%. Candidate groups have variable lag from the latest model because the trace records no checkpoint ID per group, so this is a full-task-set historical-rollout analysis, not a same-checkpoint evaluation. No new model samples were generated; the CPU-only candidate checks ran at lowest priority.
