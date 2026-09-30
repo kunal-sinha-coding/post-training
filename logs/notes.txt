@@ -2480,3 +2480,9 @@ Appended an offline reranking experiment to `logs/results.txt`. On the latest 80
 Commit name: Measure hidden-input consensus reranking.
 
 Logged outputs from visible-passing candidates on the two hidden MBPP inputs per task without reading the expected answers. Compared exact two-output vector clustering and per-input modal-output ranking against visible-first selection, the static lookup filter, the full-test oracle, and the current step-150 checkpoint baseline. The consensus selectors improved pass@16 from 56.25% to 60.00% on the 80-group rollout window, while the oracle reached 67.50%. Output agreement was high but often wrong, so consensus is only a modest ranking signal. The answer log contains generated outputs only and is under ignored `outputs/`; `logs/results.txt` records the experiment and limitations. Training remained active throughout at low-priority serial CPU execution.
+
+## 2026-09-30: Measure whether the largest answer cluster contains a correct candidate
+
+Commit name: Measure correct-candidate coverage in largest output cluster.
+
+Matched the prior output-log window to the exact rollout blocks in `reward-trace.jsonl`. A full-test-correct candidate was present in the largest two-hidden-input output cluster for 48/80 groups. Any full-test-correct candidate appeared among the full 16 in 54/80 groups, so the largest-cluster recall was 88.9% conditional on the candidate set containing a correct solution. Expected outputs remained unavailable to the verifier; recorded full-test labels were used only for this additional post-selection measurement.
