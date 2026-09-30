@@ -2468,3 +2468,9 @@ The first supervisor-triggered retry loaded `.env` and then allowed its shared-c
 Commit name: Preserve checkpoints on all launches and retries.
 
 The user explicitly asked that old checkpoints not be deleted at startup. Removed the startup sweep that recursively deleted every direct `checkpoint-*` directory. Also changed the persistent supervisor so it waits without launching from the base model when no scored complete checkpoint can be selected. This prevents a failed run from triggering the old startup cleanup path or overwriting a checkpoint history with a fresh run. The current restart config has intermediate checkpoint selection disabled, so its save callback does not prune checkpoints.
+
+## 2026-09-30: Measure visible-assertion selection with static lookup filtering
+
+Commit name: Measure visible-test selection with static lookup filtering.
+
+Appended an offline reranking experiment to `logs/results.txt`. On the latest 80-task sample of 16 completions per task, I ran only the first visible assertion, then applied the existing `is_hardcoded_lookup` AST heuristic to candidates that passed. The heuristic flagged zero of 516 visible-passing candidates, so the static-filter column matched the visible-only filter. Full-test outcomes were read from existing reward trace records only after candidate selection; hidden assertions were not executed. The comparison uses the current step-140 checkpoint baseline and records the detector limitation with one visible assertion. This records the requested experiment and motivates debating a separate candidate-consensus verifier before running it.
