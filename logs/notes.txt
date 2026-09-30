@@ -2456,3 +2456,9 @@ Resuming from checkpoint 60 exposed that the callback restarted its evaluation s
 Commit name: Avoid misleading base-model evaluation on resume.
 
 The checkpoint-60 resume correctly restored the trainer state and began at optimizer step 61, but the startup path first evaluated the unadapted base model and logged its 0.439 MBPP+ score as step zero. That score was not the resumed model; checkpoint 60's last completed evaluation remains 0.466. Updated the startup condition to skip this base-model evaluation whenever a checkpoint resume is requested, avoiding misleading comparisons in future automatic restarts.
+
+## 2026-09-30: Force the supervisor to use the isolated Hugging Face cache
+
+Commit name: Force isolated cache for supervised retries.
+
+The first supervisor-triggered retry loaded `.env` and then allowed its shared-cache `HF_HOME` value to override the isolated cache. The retry failed again on the known zero-byte MBPP Parquet shard. Changed the supervisor to force the private cache paths after loading `.env`, and to disable the unavailable `hf_transfer` integration. This lets retries use the verified isolated cache while retaining the checkpoint recovery behavior.

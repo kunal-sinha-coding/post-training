@@ -17,9 +17,9 @@ source "$SCRIPT_DIR/.env"
 set +a
 export WANDB_RUN_ID="$WANDB_RUN_ID_VALUE"
 export WANDB_RESUME=allow
-export HF_HOME="${HF_HOME:-/tmp/post-training-resume-hf}"
-export HF_DATASETS_CACHE="${HF_DATASETS_CACHE:-$HF_HOME/datasets}"
-export HUGGINGFACE_HUB_CACHE="${HUGGINGFACE_HUB_CACHE:-$HF_HOME/hub}"
+export HF_HOME="/tmp/post-training-resume-hf"
+export HF_DATASETS_CACHE="$HF_HOME/datasets"
+export HUGGINGFACE_HUB_CACHE="$HF_HOME/hub"
 export HF_HUB_ENABLE_HF_TRANSFER=0
 
 # Return the highest-scoring completed MBPP+ evaluation that has a complete trainer checkpoint.
