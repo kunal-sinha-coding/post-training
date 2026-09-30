@@ -2450,3 +2450,9 @@ The probe-off run `x4mkdmpb` and its replacement run `c4fthzd3` both ended abrup
 Commit name: Resume scheduled evaluations after the checkpoint step.
 
 Resuming from checkpoint 60 exposed that the callback restarted its evaluation schedule at step 10, which could overwrite earlier evaluation records with scores from the resumed model. Changed the callback to read the checkpoint's saved global step and schedule the next evaluation at the following configured interval. The active resume was still performing its catch-up evaluation when this fix was prepared; the supervisor will restart it from the best complete checkpoint after the code change is committed.
+
+## 2026-09-30: Skip base-model step-zero evaluation when resuming
+
+Commit name: Avoid misleading base-model evaluation on resume.
+
+The checkpoint-60 resume correctly restored the trainer state and began at optimizer step 61, but the startup path first evaluated the unadapted base model and logged its 0.439 MBPP+ score as step zero. That score was not the resumed model; checkpoint 60's last completed evaluation remains 0.466. Updated the startup condition to skip this base-model evaluation whenever a checkpoint resume is requested, avoiding misleading comparisons in future automatic restarts.

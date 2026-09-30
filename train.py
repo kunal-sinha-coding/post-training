@@ -847,7 +847,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
     model.to(device)
     print(f"Model device: {model.device}", flush=True)
     # Run the selected greedy sanity check before any optimization steps.
-    if config.get("run_qwen_evalplus_at_start", True) or config.get("train_subset_evaluation_only", False):
+    if (config.get("run_qwen_evalplus_at_start", True) and not config.get("resume_from_checkpoint")) or config.get("train_subset_evaluation_only", False):
         step_zero_path = output_dir / "evalplus_models" / "step-0"
         if step_zero_path.exists():
             shutil.rmtree(step_zero_path)
