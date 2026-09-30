@@ -113,9 +113,10 @@ while true; do
         sleep 15
         accelerate launch train.py --config "$CONFIG_PATH" --resume-from-checkpoint "$resume_path" >> "$MONITOR_LOG" 2>&1 &
     else
-        printf '%s Training process exited (%s); no scored checkpoint is available, restarting from the configured base model.\n' "$(date -u '+%Y-%m-%d %H:%M:%S UTC')" "$exit_status" >> "$MONITOR_LOG"
-        sleep 15
-        accelerate launch train.py --config "$CONFIG_PATH" >> "$MONITOR_LOG" 2>&1 &
+        # Keep all checkpoint files untouched when no scored complete checkpoint can be resumed.
+        printf '%s Training process exited (%s); no scored checkpoint is available, preserving files and waiting for manual recovery.\n' "$(date -u '+%Y-%m-%d %H:%M:%S UTC')" "$exit_status" >> "$MONITOR_LOG"
+        sleep 60
+        continue
     fi
     active_pid="$!"
 done

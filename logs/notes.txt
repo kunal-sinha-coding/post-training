@@ -2462,3 +2462,9 @@ The checkpoint-60 resume correctly restored the trainer state and began at optim
 Commit name: Force isolated cache for supervised retries.
 
 The first supervisor-triggered retry loaded `.env` and then allowed its shared-cache `HF_HOME` value to override the isolated cache. The retry failed again on the known zero-byte MBPP Parquet shard. Changed the supervisor to force the private cache paths after loading `.env`, and to disable the unavailable `hf_transfer` integration. This lets retries use the verified isolated cache while retaining the checkpoint recovery behavior.
+
+## 2026-09-30: Prevent startup cleanup and destructive base-model fallback
+
+Commit name: Preserve checkpoints on all launches and retries.
+
+The user explicitly asked that old checkpoints not be deleted at startup. Removed the startup sweep that recursively deleted every direct `checkpoint-*` directory. Also changed the persistent supervisor so it waits without launching from the base model when no scored complete checkpoint can be selected. This prevents a failed run from triggering the old startup cleanup path or overwriting a checkpoint history with a fresh run. The current restart config has intermediate checkpoint selection disabled, so its save callback does not prune checkpoints.
