@@ -389,7 +389,14 @@ def _make_callback(model: Any, tokenizer: Any, train_dataset: Any, test_dataset:
                 component: deque(maxlen=self.rolling_window_size)
                 for component in ("format", "syntax", "interface", "test_progress", "pass")
             }
-            self.next_eval_step = max(1, int(config.get("evalplus_eval_steps", 10)))
+            # Continue the evaluation cadence after the optimizer step stored in a resume checkpoint.
+            eval_interval = max(1, int(config.get("evalplus_eval_steps", 10)))
+            resume_path = config.get("resume_from_checkpoint")
+            resume_state_path = Path(resume_path) / "trainer_state.json" if resume_path else None
+            resume_step = 0
+            if resume_state_path is not None and resume_state_path.is_file():
+                resume_step = int(json.loads(resume_state_path.read_text(encoding="utf-8")).get("global_step", 0))
+            self.next_eval_step = ((resume_step // eval_interval) + 1) * eval_interval
 
         def set_evaluation_model(self, model: Any) -> None:
             """Attach the PEFT-wrapped model and record its initial trainable parameters."""

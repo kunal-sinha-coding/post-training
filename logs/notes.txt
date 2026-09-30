@@ -2444,3 +2444,9 @@ The original probe-off run `x4mkdmpb` stopped abruptly after completing step 180
 Commit name: Add persistent best-checkpoint training supervision.
 
 The probe-off run `x4mkdmpb` and its replacement run `c4fthzd3` both ended abruptly without a Python traceback. The replacement's last saved checkpoint is step 60, whose completed MBPP+ pass@1 of 0.466 is the best among steps 0 through 60; later step 67 had started but had not completed. The container cgroup reports zero OOM kills, and the kernel journal is unavailable in this environment, so the external termination cause remains unconfirmed. Resumed W&B run `c4fthzd3` from checkpoint 60. Added `scripts/supervise_training_run.sh`, which samples process health every 15 seconds, writes progress and best completed MBPP+ checkpoint status every 30 minutes, and restarts unexpectedly exited runs from the highest-scoring prior evaluation checkpoint with optimizer and scheduler state. It leaves all prior checkpoints intact and stops after a final model artifact is written.
+
+## 2026-09-30: Preserve evaluation cadence when resuming a checkpoint
+
+Commit name: Resume scheduled evaluations after the checkpoint step.
+
+Resuming from checkpoint 60 exposed that the callback restarted its evaluation schedule at step 10, which could overwrite earlier evaluation records with scores from the resumed model. Changed the callback to read the checkpoint's saved global step and schedule the next evaluation at the following configured interval. The active resume was still performing its catch-up evaluation when this fix was prepared; the supervisor will restart it from the best complete checkpoint after the code change is committed.
