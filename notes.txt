@@ -1,0 +1,4 @@
+
+## 2026-10-03: Add ASD-STE100 writing guidance
+
+Updated the writing style instructions in AGENTS.md across post-training, personal-website, and user-skills to follow ASD-STE100 Simplified Technical English. This applies the requested style standard before drafting a new blog post.
