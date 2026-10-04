@@ -15628,3 +15628,17 @@ The verifier rows report expected accuracy over every uniformly selected subset 
 - Selection caveat: each checkpoint was chosen using greedy pass@1 on the same benchmark family later used for reporting, so these checkpoint-comparison results have selection bias and are not an independent held-out estimate.
 - Environment: Python 3.12, PyTorch 2.8.0+cu128, NVIDIA RTX 2000 Ada Generation with 16,380 MiB memory. Repository source commit `ba8b794085828aef55d617ac1d2b7a20dd2dee89`.
 - Raw candidates, EvalPlus results, verifier selection counts and metrics, and the exact sampling and verifier scripts are in ignored artifact `outputs/mbpp-eval-best-checkpoints-20261003/`.
+
+------------------------------------------------------------------------
+
+Experiment: `base-0.5b-sampled-evalplus-378-20261004`
+
+Purpose. Measure the untrained 0.5B Instruct model with one temperature-sampled answer per task, so the blog can show a sampled baseline beside the reported greedy baseline and the post-trained sampling results.
+
+Setup. Model: `Qwen/Qwen2.5-Coder-0.5B-Instruct`, without an adapter. Dataset: EvalPlus 0.3.1 MBPP, the cached 378-task split with dataset hash `ee43ecabebf20deef4bb776a405ac5b1`. Each task used the same Qwen ChatML prompt as the checkpoint comparison: system instruction `You are an intelligent programming assistant to produce Python algorithmic solutions`, followed by `Can you complete the following Python function?`, the task prompt in a Python code fence, then an assistant Python code fence. Generation used vLLM 0.10.2, bfloat16, one candidate per task, temperature 1.0, top-p 1.0, seed 42, maximum 2,048 new tokens, maximum model length 4,096, and the same stop strings as the checkpoint candidate run. The benchmark scorer used EvalPlus 0.3.1, four workers, early test exit, a 1-second minimum test limit, and a 4x ground-truth time limit factor.
+
+Candidate artifact and scoring. Generated candidates are in ignored artifact `outputs/baseline-sampled-20261004/candidates.jsonl`; per-task EvalPlus inputs are in `outputs/baseline-sampled-20261004/mbpp/qwen2_chat_temp_1.0/`. Candidate generation completed for all 378 tasks before EvalPlus read correctness labels. There was one candidate per task, so no candidate selection or use of ground truth occurred before scoring. MBPP counts base-test passes. MBPP+ counts candidates that pass both base and extra tests.
+
+Results. MBPP: 108 of 378 tasks passed, for 28.57% (28.6%). MBPP+: 84 of 378 passed, for 22.22% (22.2%).
+
+Environment and reproducibility. NVIDIA RTX 2000 Ada Generation with 16 GB memory; PyTorch 2.8.0+cu128; vLLM 0.10.2; Python 3.12. Source repository HEAD at experiment launch: `4ea421d57247d72e25e31a664016a3bde8c4eceb`. The ignored generation script is `outputs/baseline-sampled-20261004/generate.py`, SHA-256 `08002389b20309e140d0fb2a2f8a89492685260eb66ef77f70f57da8c4578e8f`. Limitation: this is one sample per task with a fixed seed, so it measures one sampled decoding run and is not an estimate averaged over multiple seeds. The report's greedy baseline may use a different evaluation setup.
