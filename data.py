@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 import ast
+import re
 from pathlib import Path
 from typing import Any
 
@@ -34,7 +35,7 @@ def _first_value(record: dict[str, Any], *keys: str, default: Any = "") -> Any:
 
 def _normalize_task_text(text: Any) -> str:
     """Normalize task wording so duplicate descriptions can be excluded across splits."""
-    return " ".join(str(text).casefold().split())
+    return " ".join(re.sub(r"\W+", " ", str(text).casefold()).split())
 
 
 def format_tests(record: dict[str, Any]) -> str:

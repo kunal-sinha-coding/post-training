@@ -2527,3 +2527,7 @@ The first report append used literal newline escape text before the new results 
 Commit name: Exclude duplicate evaluation tasks from training.
 
 Updated `normalize_record` to retain each task's original wording during dataset partitioning. The training split now excludes records whose task ID is in the canonical EvalPlus set or whose task wording exactly matches a normalized evaluation task description. The temporary wording field is removed before training or evaluation records leave `prepare_datasets`. This closes the cross-ID duplicate gap found while auditing the 593-task checkpoint archive. The historical archive remains unchanged.
+
+Commit name: Normalize punctuation when filtering task duplicates.
+
+Expanded the task-description normalization used by the train and evaluation split filter to ignore punctuation as well as case and whitespace. This makes equivalent task wording match when punctuation differs, which protects the training split from duplicate benchmark tasks. This change applies to future dataset preparation and does not rewrite archived runs.
