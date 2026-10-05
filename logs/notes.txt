@@ -2509,8 +2509,17 @@ Commit name: Add sampled 0.5B baseline evaluation. Generated and scored one temp
 Commit name: Preserve checkpoint-830 training generations.
 
 Copied the one saved greedy completion for each of the 593 MBPP training tasks at checkpoint 830 into `analysis/checkpoint_830/checkpoint_830_training_generations.jsonl`. Each record includes the raw and extracted completion, saved outcome and reward fields, and the task test code recovered by task ID from the run's reward trace. This creates a versioned copy independent of the transient run log/output directory before replaying the candidates for assertion-level failure analysis. The source run is W&B run `c4fthzd3`; no generated programs have been replayed yet in this commit.
-\n\n## 2026-10-05: Replay all checkpoint-830 training completions
+
+
+## 2026-10-05: Replay all checkpoint-830 training completions
 
 Commit name: Record checkpoint-830 assertion-level failure analysis.
 
 Added a durable JSONL archive for the 593 greedy programs saved in checkpoint 830, including each task's test code, so the programs remain usable if transient training outputs are cleaned up. Replayed all three MBPP training assertions for all programs in the repository subprocess sandbox, with eight workers and three-second per-assertion timeouts. Saved every per-assertion outcome, full failure tracebacks, actual/expected comparison values, task text, and reference solution in a separate JSON analysis artifact. The replay reproduced all saved per-task pass counts. It found 450 wrong-value assertions, 45 runtime exceptions, and three syntax failures across 1,779 attempted test cases. The report separates result-shape clusters from inferred causes and notes that this repository sandbox is not a hostile-code isolation boundary. W&B context shows training-pool pass@1 continuing from 62.73% at step 830 to 70.32% at step 1300 while sampled EvalPlus greedy pass@1 was 53.2% at step 830 and 52.1% at step 1300; this is observational, not evidence that dataset diversification will improve evaluation.
+
+
+## 2026-10-05: Fix analysis record line breaks
+
+Commit name: Fix checkpoint-830 analysis record formatting.
+
+The first report append used literal newline escape text before the new results and notes entries. Replaced those two separators with actual line breaks so both tracked records render as separate sections. The analysis content and metrics are unchanged.

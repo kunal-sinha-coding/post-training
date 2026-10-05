@@ -15642,7 +15642,9 @@ Candidate artifact and scoring. Generated candidates are in ignored artifact `ou
 Results. MBPP: 108 of 378 tasks passed, for 28.57% (28.6%). MBPP+: 84 of 378 passed, for 22.22% (22.2%).
 
 Environment and reproducibility. NVIDIA RTX 2000 Ada Generation with 16 GB memory; PyTorch 2.8.0+cu128; vLLM 0.10.2; Python 3.12. Source repository HEAD at experiment launch: `4ea421d57247d72e25e31a664016a3bde8c4eceb`. The ignored generation script is `outputs/baseline-sampled-20261004/generate.py`, SHA-256 `08002389b20309e140d0fb2a2f8a89492685260eb66ef77f70f57da8c4578e8f`. Limitation: this is one sample per task with a fixed seed, so it measures one sampled decoding run and is not an estimate averaged over multiple seeds. The report's greedy baseline may use a different evaluation setup.
-\n\n------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------
 EXPERIMENT: Checkpoint 830 training-set generation replay and failure analysis
 
 Purpose. Preserve the selected checkpoint's saved greedy training completions outside the transient run logs, execute each saved program on all its training assertions, capture assertion and exception details, and count recurrent failure shapes.
