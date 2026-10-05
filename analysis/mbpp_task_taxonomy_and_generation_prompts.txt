@@ -1,0 +1,766 @@
+MBPP TASK TAXONOMY AND SYNTHETIC TASK GENERATION PROMPTS
+====================================================================
+
+Purpose
+This file groups the MBPP training and evaluation tasks by their main requested operation. It also gives one generation prompt for each task type. Each prompt includes three training examples and their tests.
+
+Data and method
+Training source: the 593-task checkpoint-830 archive for W&B run c4fthzd3. Task descriptions and tests come from analysis/checkpoint_830/checkpoint_830_error_analysis.json and analysis/checkpoint_830/checkpoint_830_training_generations.jsonl.
+Evaluation source: the canonical task records returned by EvalPlus 0.3.1, which uses the MBPP+ v0.2.0 release with 378 tasks. The older qwen_eval/eval_plus/MbppPlus-v0.1.0.jsonl file contains 399 tasks and is not the evaluation split used for these counts.
+I assigned one primary category to each task from its task description. Categories describe the main requested operation, so a task is counted once even when it uses several techniques. The labels are an analyst-assigned taxonomy and may differ at category boundaries.
+The training archive has no task IDs in common with the 378-task evaluation set. Two training tasks have exact normalized wording matches under different IDs: training task 217 matches EvalPlus Mbpp/602, and training task 928 matches Mbpp/427. The corrected training count excludes those two tasks. The archived checkpoint file remains a record of the historical 593-task run. Future dataset preparation now excludes duplicate task wording as well as shared task IDs.
+The taxonomy and example selection use task descriptions and IDs. Correctness outcomes and generated program quality do not determine category labels or example selection.
+
+Primary category counts
+| Task type | Training tasks | Training share | Evaluation tasks | Evaluation share |
+| --- | ---: | ---: | ---: | ---: |
+| Arithmetic and numeric formulas | 36 | 6.1% | 28 | 7.4% |
+| Number properties and number theory | 74 | 12.5% | 48 | 12.7% |
+| Lists and sequence transformations | 38 | 6.4% | 43 | 11.4% |
+| Search, sorting, and selection | 73 | 12.4% | 53 | 14.0% |
+| Counting and frequency | 61 | 10.3% | 33 | 8.7% |
+| Strings and text processing | 95 | 16.1% | 52 | 13.8% |
+| Set and membership operations | 22 | 3.7% | 19 | 5.0% |
+| Mappings, tuples, and record aggregation | 77 | 13.0% | 25 | 6.6% |
+| Recurrence, combinatorics, and dynamic programming | 36 | 6.1% | 25 | 6.6% |
+| Matrices and grids | 10 | 1.7% | 4 | 1.1% |
+| Geometry and spatial calculations | 44 | 7.4% | 24 | 6.3% |
+| Graphs, paths, intervals, and chains | 13 | 2.2% | 0 | 0.0% |
+| Predicates, validation, and classification | 12 | 2.0% | 24 | 6.3% |
+| **Total** | **591** | **100.0%** | **378** | **100.0%** |
+
+Task type definitions
+1. Arithmetic and numeric formulas (36 training, 28 evaluation). Compute numeric results from arithmetic rules, rates, conversions, or numeric formulas.
+2. Number properties and number theory (74 training, 48 evaluation). Work with integer properties, divisibility, prime factors, digits, bit operations, or numeric representations.
+3. Lists and sequence transformations (38 training, 43 evaluation). Transform, filter, map, rotate, combine, or reshape lists and sequences.
+4. Search, sorting, and selection (73 training, 53 evaluation). Find elements, indices, ranks, top or bottom values, or sort data.
+5. Counting and frequency (61 training, 33 evaluation). Count items or compute frequencies, histograms, or simple statistics over collections.
+6. Strings and text processing (95 training, 52 evaluation). Split, search, replace, parse, format, or transform strings and text.
+7. Set and membership operations (22 training, 19 evaluation). Find duplicates, intersections, subsets, membership, uniqueness, or shared items.
+8. Mappings, tuples, and record aggregation (77 training, 25 evaluation). Read, combine, filter, or summarize dictionaries, tuples, and structured records.
+9. Recurrence, combinatorics, and dynamic programming (36 training, 25 evaluation). Compute recurrences, count combinations, or optimize a result over choices or subsequences.
+10. Matrices and grids (10 training, 4 evaluation). Transform or search two-dimensional arrays, grids, or matrices.
+11. Geometry and spatial calculations (44 training, 24 evaluation). Compute geometric properties, distances, areas, volumes, or spatial relations.
+12. Graphs, paths, intervals, and chains (13 training, 0 evaluation). Work with connected structures, paths, intervals, ranges, chains, or reachability.
+13. Predicates, validation, and classification (12 training, 24 evaluation). Return a Boolean or a category after checking a rule, format, trend, or class.
+
+Prompt token estimates
+Counts use the cl100k_base tokenizer as a proxy because the Qwen2.5-Coder tokenizer was not available locally. Treat these as estimates, not exact Qwen token counts. Each per-prompt count includes the shared instructions and all three examples. The collective total is the sum of the 13 standalone prompts, so it counts the shared instructions 13 times.
+| Prompt | Estimated tokens |
+| --- | ---: |
+| 1. Arithmetic and numeric formulas | 434 |
+| 2. Number properties and number theory | 452 |
+| 3. Lists and sequence transformations | 637 |
+| 4. Search, sorting, and selection | 636 |
+| 5. Counting and frequency | 882 |
+| 6. Strings and text processing | 632 |
+| 7. Set and membership operations | 616 |
+| 8. Mappings, tuples, and record aggregation | 827 |
+| 9. Recurrence, combinatorics, and dynamic programming | 488 |
+| 10. Matrices and grids | 758 |
+| 11. Geometry and spatial calculations | 488 |
+| 12. Graphs, paths, intervals, and chains | 705 |
+| 13. Predicates, validation, and classification | 465 |
+| **All 13 standalone prompts** | **8,020** |
+
+
+--------------------------------------------------------------------
+PROMPT 1: Arithmetic and numeric formulas (434 estimated tokens)
+--------------------------------------------------------------------
+Category: Arithmetic and numeric formulas. Compute numeric results from arithmetic rules, rates, conversions, or numeric formulas.
+
+Create one original task in this category. Use the examples below to learn the task style and scale. Do not reuse their task wording, function names, inputs, outputs, or algorithms.
+
+You create small, clear Python programming tasks in the requested category. Match the scope and difficulty of the examples. Write a new task with different wording, data, and constants. Do not copy or lightly paraphrase an example. Keep the task deterministic and solvable with the Python standard library. Provide a reference solution that passes every test. Provide exactly three executable Python assert statements with literal expected results. Use different cases that check ordinary behavior and useful boundary or input variations. Check that each assertion agrees with the reference solution before you return the task. Return one JSON object with these keys only: category, task_text, entry_point, reference_solution, tests. The tests value must be a list of exactly three assertion strings. Do not include explanations or Markdown fences.
+
+Example 1 task (training task 136):
+
+Write a function to calculate electricity bill.
+
+Example tests:
+
+```python
+
+assert cal_electbill(75)==246.25
+assert cal_electbill(265)==1442.75
+assert cal_electbill(100)==327.5
+
+```
+
+Example 2 task (training task 452):
+
+Write a function that gives loss amount if the given amount has loss else return none.
+
+Example tests:
+
+```python
+
+assert loss_amount(1500,1200)==None
+assert loss_amount(100,200)==100
+assert loss_amount(2000,5000)==3000
+
+```
+
+Example 3 task (training task 491):
+
+Write a function to find the sum of geometric progression series.
+
+Example tests:
+
+```python
+
+assert sum_gp(1,5,2)==31
+assert sum_gp(1,5,4)==341
+assert sum_gp(2,6,3)==728
+
+```
+
+Now create one original task of this type. Match the examples in scope and difficulty. Follow all output and test requirements above.
+
+
+--------------------------------------------------------------------
+PROMPT 2: Number properties and number theory (452 estimated tokens)
+--------------------------------------------------------------------
+Category: Number properties and number theory. Work with integer properties, divisibility, prime factors, digits, bit operations, or numeric representations.
+
+Create one original task in this category. Use the examples below to learn the task style and scale. Do not reuse their task wording, function names, inputs, outputs, or algorithms.
+
+You create small, clear Python programming tasks in the requested category. Match the scope and difficulty of the examples. Write a new task with different wording, data, and constants. Do not copy or lightly paraphrase an example. Keep the task deterministic and solvable with the Python standard library. Provide a reference solution that passes every test. Provide exactly three executable Python assert statements with literal expected results. Use different cases that check ordinary behavior and useful boundary or input variations. Check that each assertion agrees with the reference solution before you return the task. Return one JSON object with these keys only: category, task_text, entry_point, reference_solution, tests. The tests value must be a list of exactly three assertion strings. Do not include explanations or Markdown fences.
+
+Example 1 task (training task 48):
+
+Write a python function to set all odd bits of a given number.
+
+Example tests:
+
+```python
+
+assert odd_bit_set_number(10) == 15
+assert odd_bit_set_number(20) == 21
+assert odd_bit_set_number(30) == 31
+
+```
+
+Example 2 task (training task 148):
+
+Write a function to divide a number into two parts such that the sum of digits is maximum.
+
+Example tests:
+
+```python
+
+assert sum_digits_twoparts(35)==17
+assert sum_digits_twoparts(7)==7
+assert sum_digits_twoparts(100)==19
+
+```
+
+Example 3 task (training task 107):
+
+Write a python function to count hexadecimal numbers for a given range.
+
+Example tests:
+
+```python
+
+assert count_Hexadecimal(10,15) == 6
+assert count_Hexadecimal(2,4) == 0
+assert count_Hexadecimal(15,16) == 1
+
+```
+
+Now create one original task of this type. Match the examples in scope and difficulty. Follow all output and test requirements above.
+
+
+--------------------------------------------------------------------
+PROMPT 3: Lists and sequence transformations (637 estimated tokens)
+--------------------------------------------------------------------
+Category: Lists and sequence transformations. Transform, filter, map, rotate, combine, or reshape lists and sequences.
+
+Create one original task in this category. Use the examples below to learn the task style and scale. Do not reuse their task wording, function names, inputs, outputs, or algorithms.
+
+You create small, clear Python programming tasks in the requested category. Match the scope and difficulty of the examples. Write a new task with different wording, data, and constants. Do not copy or lightly paraphrase an example. Keep the task deterministic and solvable with the Python standard library. Provide a reference solution that passes every test. Provide exactly three executable Python assert statements with literal expected results. Use different cases that check ordinary behavior and useful boundary or input variations. Check that each assertion agrees with the reference solution before you return the task. Return one JSON object with these keys only: category, task_text, entry_point, reference_solution, tests. The tests value must be a list of exactly three assertion strings. Do not include explanations or Markdown fences.
+
+Example 1 task (training task 41):
+
+Write a function to filter even numbers using lambda function.
+
+Example tests:
+
+```python
+
+assert filter_evennumbers([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])==[2, 4, 6, 8, 10]
+assert filter_evennumbers([10,20,45,67,84,93])==[10,20,84]
+assert filter_evennumbers([5,7,9,8,6,4,3])==[8,6,4]
+
+```
+
+Example 2 task (training task 729):
+
+Write a function to add two lists using map and lambda function.
+
+Example tests:
+
+```python
+
+assert add_list([1, 2, 3],[4,5,6])==[5, 7, 9]
+assert add_list([1,2],[3,4])==[4,6]
+assert add_list([10,20],[50,70])==[60,90]
+
+```
+
+Example 3 task (training task 154):
+
+Write a function to extract every specified element from a given two dimensional list.
+
+Example tests:
+
+```python
+
+assert specified_element([[1, 2, 3, 2], [4, 5, 6, 2], [7, 1, 9, 5]],0)==[1, 4, 7]
+assert specified_element([[1, 2, 3, 2], [4, 5, 6, 2], [7, 1, 9, 5]],2)==[3, 6, 9]
+assert specified_element([[1, 2, 3, 2], [4, 5, 6, 2], [7, 1, 9, 5]],3)==[2,2,5]
+
+```
+
+Now create one original task of this type. Match the examples in scope and difficulty. Follow all output and test requirements above.
+
+
+--------------------------------------------------------------------
+PROMPT 4: Search, sorting, and selection (636 estimated tokens)
+--------------------------------------------------------------------
+Category: Search, sorting, and selection. Find elements, indices, ranks, top or bottom values, or sort data.
+
+Create one original task in this category. Use the examples below to learn the task style and scale. Do not reuse their task wording, function names, inputs, outputs, or algorithms.
+
+You create small, clear Python programming tasks in the requested category. Match the scope and difficulty of the examples. Write a new task with different wording, data, and constants. Do not copy or lightly paraphrase an example. Keep the task deterministic and solvable with the Python standard library. Provide a reference solution that passes every test. Provide exactly three executable Python assert statements with literal expected results. Use different cases that check ordinary behavior and useful boundary or input variations. Check that each assertion agrees with the reference solution before you return the task. Return one JSON object with these keys only: category, task_text, entry_point, reference_solution, tests. The tests value must be a list of exactly three assertion strings. Do not include explanations or Markdown fences.
+
+Example 1 task (training task 152):
+
+Write a function to sort the given array by using merge sort.
+
+Example tests:
+
+```python
+
+assert merge_sort([3, 4, 2, 6, 5, 7, 1, 9]) == [1, 2, 3, 4, 5, 6, 7, 9]
+assert merge_sort([7, 25, 45, 78, 11, 33, 19]) == [7, 11, 19, 25, 33, 45, 78]
+assert merge_sort([3, 1, 4, 9, 8]) == [1, 3, 4, 8, 9]
+
+```
+
+Example 2 task (training task 200):
+
+Write a function to find all index positions of the maximum values in a given list.
+
+Example tests:
+
+```python
+
+assert position_max([12,33,23,10,67,89,45,667,23,12,11,10,54])==[7]
+assert position_max([1,2,2,2,4,4,4,5,5,5,5])==[7,8,9,10]
+assert position_max([2,1,5,6,8,3,4,9,10,11,8,12])==[11]
+
+```
+
+Example 3 task (training task 189):
+
+Write a python function to find the first missing positive number.
+
+Example tests:
+
+```python
+
+assert first_Missing_Positive([1,2,3,-1,5],5) == 4
+assert first_Missing_Positive([0,-1,-2,1,5,8],6) == 2
+assert first_Missing_Positive([0,1,2,5,-8],5) == 3
+
+```
+
+Now create one original task of this type. Match the examples in scope and difficulty. Follow all output and test requirements above.
+
+
+--------------------------------------------------------------------
+PROMPT 5: Counting and frequency (882 estimated tokens)
+--------------------------------------------------------------------
+Category: Counting and frequency. Count items or compute frequencies, histograms, or simple statistics over collections.
+
+Create one original task in this category. Use the examples below to learn the task style and scale. Do not reuse their task wording, function names, inputs, outputs, or algorithms.
+
+You create small, clear Python programming tasks in the requested category. Match the scope and difficulty of the examples. Write a new task with different wording, data, and constants. Do not copy or lightly paraphrase an example. Keep the task deterministic and solvable with the Python standard library. Provide a reference solution that passes every test. Provide exactly three executable Python assert statements with literal expected results. Use different cases that check ordinary behavior and useful boundary or input variations. Check that each assertion agrees with the reference solution before you return the task. Return one JSON object with these keys only: category, task_text, entry_point, reference_solution, tests. The tests value must be a list of exactly three assertion strings. Do not include explanations or Markdown fences.
+
+Example 1 task (training task 40):
+
+Write a function to find frequency of the elements in a given list of lists using collections module.
+
+Example tests:
+
+```python
+
+assert freq_element([[1, 2, 3, 2], [4, 5, 6, 2], [7, 1, 9, 5]])==({2: 3, 1: 2, 5: 2, 3: 1, 4: 1, 6: 1, 7: 1, 9: 1})
+assert freq_element([[1,2,3,4],[5,6,7,8],[9,10,11,12]])==({1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1, 8: 1, 9: 1, 10: 1, 11: 1, 12: 1})
+assert freq_element([[15,20,30,40],[80,90,100,110],[30,30,80,90]])==({30: 3, 80: 2, 90: 2, 15: 1, 20: 1, 40: 1, 100: 1, 110: 1})
+
+```
+
+Example 2 task (training task 700):
+
+Write a function to count the number of elements in a list which are within a specific range.
+
+Example tests:
+
+```python
+
+assert count_range_in_list([10,20,30,40,40,40,70,80,99],40,100)==6
+assert count_range_in_list(['a','b','c','d','e','f'],'a','e')==5
+assert count_range_in_list([7,8,9,15,17,19,45],15,20)==3
+
+```
+
+Example 3 task (training task 13):
+
+Write a function to count the most common words in a dictionary.
+
+Example tests:
+
+```python
+
+assert count_common(['red','green','black','pink','black','white','black','eyes','white','black','orange','pink','pink','red','red','white','orange','white',"black",'pink','green','green','pink','green','pink','white','orange',"orange",'red']) == [('pink', 6), ('black', 5), ('white', 5), ('red', 4)]
+assert count_common(['one', 'two', 'three', 'four', 'five', 'one', 'two', 'one', 'three', 'one']) == [('one', 4), ('two', 2), ('three', 2), ('four', 1)]
+assert count_common(['Facebook', 'Apple', 'Amazon', 'Netflix', 'Google', 'Apple', 'Netflix', 'Amazon']) == [('Apple', 2), ('Amazon', 2), ('Netflix', 2), ('Facebook', 1)]
+
+```
+
+Now create one original task of this type. Match the examples in scope and difficulty. Follow all output and test requirements above.
+
+
+--------------------------------------------------------------------
+PROMPT 6: Strings and text processing (632 estimated tokens)
+--------------------------------------------------------------------
+Category: Strings and text processing. Split, search, replace, parse, format, or transform strings and text.
+
+Create one original task in this category. Use the examples below to learn the task style and scale. Do not reuse their task wording, function names, inputs, outputs, or algorithms.
+
+You create small, clear Python programming tasks in the requested category. Match the scope and difficulty of the examples. Write a new task with different wording, data, and constants. Do not copy or lightly paraphrase an example. Keep the task deterministic and solvable with the Python standard library. Provide a reference solution that passes every test. Provide exactly three executable Python assert statements with literal expected results. Use different cases that check ordinary behavior and useful boundary or input variations. Check that each assertion agrees with the reference solution before you return the task. Return one JSON object with these keys only: category, task_text, entry_point, reference_solution, tests. The tests value must be a list of exactly three assertion strings. Do not include explanations or Markdown fences.
+
+Example 1 task (training task 15):
+
+Write a function to split a string at lowercase letters.
+
+Example tests:
+
+```python
+
+assert split_lowerstring("AbCd")==['bC','d']
+assert split_lowerstring("Python")==['y', 't', 'h', 'o', 'n']
+assert split_lowerstring("Programming")==['r', 'o', 'g', 'r', 'a', 'm', 'm', 'i', 'n', 'g']
+
+```
+
+Example 2 task (training task 621):
+
+Write a function to increment the numeric values in the given strings by k.
+
+Example tests:
+
+```python
+
+assert increment_numerics(["MSM", "234", "is", "98", "123", "best", "4"] , 6) == ['MSM', '240', 'is', '104', '129', 'best', '10']
+assert increment_numerics(["Dart", "356", "is", "88", "169", "Super", "6"] , 12) == ['Dart', '368', 'is', '100', '181', 'Super', '18']
+assert increment_numerics(["Flutter", "451", "is", "44", "96", "Magnificent", "12"] , 33) == ['Flutter', '484', 'is', '77', '129', 'Magnificent', '45']
+
+```
+
+Example 3 task (training task 27):
+
+Write a python function to remove all digits from a list of strings.
+
+Example tests:
+
+```python
+
+assert remove(['4words', '3letters', '4digits']) == ['words', 'letters', 'digits']
+assert remove(['28Jan','12Jan','11Jan']) == ['Jan','Jan','Jan']
+assert remove(['wonder1','wonder2','wonder3']) == ['wonder','wonder','wonder']
+
+```
+
+Now create one original task of this type. Match the examples in scope and difficulty. Follow all output and test requirements above.
+
+
+--------------------------------------------------------------------
+PROMPT 7: Set and membership operations (616 estimated tokens)
+--------------------------------------------------------------------
+Category: Set and membership operations. Find duplicates, intersections, subsets, membership, uniqueness, or shared items.
+
+Create one original task in this category. Use the examples below to learn the task style and scale. Do not reuse their task wording, function names, inputs, outputs, or algorithms.
+
+You create small, clear Python programming tasks in the requested category. Match the scope and difficulty of the examples. Write a new task with different wording, data, and constants. Do not copy or lightly paraphrase an example. Keep the task deterministic and solvable with the Python standard library. Provide a reference solution that passes every test. Provide exactly three executable Python assert statements with literal expected results. Use different cases that check ordinary behavior and useful boundary or input variations. Check that each assertion agrees with the reference solution before you return the task. Return one JSON object with these keys only: category, task_text, entry_point, reference_solution, tests. The tests value must be a list of exactly three assertion strings. Do not include explanations or Markdown fences.
+
+Example 1 task (training task 22):
+
+Write a function to find the first duplicate element in a given array of integers.
+
+Example tests:
+
+```python
+
+assert find_first_duplicate(([1, 2, 3, 4, 4, 5]))==4
+assert find_first_duplicate([1, 2, 3, 4])==-1
+assert find_first_duplicate([1, 1, 2, 3, 3, 2, 2])==1
+
+```
+
+Example 2 task (training task 249):
+
+Write a function to find the intersection of two arrays using lambda function.
+
+Example tests:
+
+```python
+
+assert intersection_array([1, 2, 3, 5, 7, 8, 9, 10],[1, 2, 4, 8, 9])==[1, 2, 8, 9]
+assert intersection_array([1, 2, 3, 5, 7, 8, 9, 10],[3,5,7,9])==[3,5,7,9]
+assert intersection_array([1, 2, 3, 5, 7, 8, 9, 10],[10,20,30,40])==[10]
+
+```
+
+Example 3 task (training task 431):
+
+Write a function that takes two lists and returns true if they have at least one common element.
+
+Example tests:
+
+```python
+
+assert common_element([1,2,3,4,5], [5,6,7,8,9])==True
+assert common_element([1,2,3,4,5], [6,7,8,9])==None
+assert common_element(['a','b','c'], ['d','b','e'])==True
+
+```
+
+Now create one original task of this type. Match the examples in scope and difficulty. Follow all output and test requirements above.
+
+
+--------------------------------------------------------------------
+PROMPT 8: Mappings, tuples, and record aggregation (827 estimated tokens)
+--------------------------------------------------------------------
+Category: Mappings, tuples, and record aggregation. Read, combine, filter, or summarize dictionaries, tuples, and structured records.
+
+Create one original task in this category. Use the examples below to learn the task style and scale. Do not reuse their task wording, function names, inputs, outputs, or algorithms.
+
+You create small, clear Python programming tasks in the requested category. Match the scope and difficulty of the examples. Write a new task with different wording, data, and constants. Do not copy or lightly paraphrase an example. Keep the task deterministic and solvable with the Python standard library. Provide a reference solution that passes every test. Provide exactly three executable Python assert statements with literal expected results. Use different cases that check ordinary behavior and useful boundary or input variations. Check that each assertion agrees with the reference solution before you return the task. Return one JSON object with these keys only: category, task_text, entry_point, reference_solution, tests. The tests value must be a list of exactly three assertion strings. Do not include explanations or Markdown fences.
+
+Example 1 task (training task 26):
+
+Write a function to check if the given tuple list has all k elements.
+
+Example tests:
+
+```python
+
+assert check_k_elements([(4, 4), (4, 4, 4), (4, 4), (4, 4, 4, 4), (4, )], 4) == True
+assert check_k_elements([(7, 7, 7), (7, 7)], 7) == True
+assert check_k_elements([(9, 9), (9, 9, 9, 9)], 7) == False
+
+```
+
+Example 2 task (training task 613):
+
+Write a function to find the maximum value in record list as tuple attribute in the given tuple list.
+
+Example tests:
+
+```python
+
+assert maximum_value([('key1', [3, 4, 5]), ('key2', [1, 4, 2]), ('key3', [9, 3])]) == [('key1', 5), ('key2', 4), ('key3', 9)]
+assert maximum_value([('key1', [4, 5, 6]), ('key2', [2, 5, 3]), ('key3', [10, 4])]) == [('key1', 6), ('key2', 5), ('key3', 10)]
+assert maximum_value([('key1', [5, 6, 7]), ('key2', [3, 6, 4]), ('key3', [11, 5])]) == [('key1', 7), ('key2', 6), ('key3', 11)]
+
+```
+
+Example 3 task (training task 81):
+
+Write a function to zip the two given tuples.
+
+Example tests:
+
+```python
+
+assert zip_tuples((7, 8, 4, 5, 9, 10),(1, 5, 6) ) == [(7, 1), (8, 5), (4, 6), (5, 1), (9, 5), (10, 6)]
+assert zip_tuples((8, 9, 5, 6, 10, 11),(2, 6, 7) ) == [(8, 2), (9, 6), (5, 7), (6, 2), (10, 6), (11, 7)]
+assert zip_tuples((9, 10, 6, 7, 11, 12),(3, 7, 8) ) == [(9, 3), (10, 7), (6, 8), (7, 3), (11, 7), (12, 8)]
+
+```
+
+Now create one original task of this type. Match the examples in scope and difficulty. Follow all output and test requirements above.
+
+
+--------------------------------------------------------------------
+PROMPT 9: Recurrence, combinatorics, and dynamic programming (488 estimated tokens)
+--------------------------------------------------------------------
+Category: Recurrence, combinatorics, and dynamic programming. Compute recurrences, count combinations, or optimize a result over choices or subsequences.
+
+Create one original task in this category. Use the examples below to learn the task style and scale. Do not reuse their task wording, function names, inputs, outputs, or algorithms.
+
+You create small, clear Python programming tasks in the requested category. Match the scope and difficulty of the examples. Write a new task with different wording, data, and constants. Do not copy or lightly paraphrase an example. Keep the task deterministic and solvable with the Python standard library. Provide a reference solution that passes every test. Provide exactly three executable Python assert statements with literal expected results. Use different cases that check ordinary behavior and useful boundary or input variations. Check that each assertion agrees with the reference solution before you return the task. Return one JSON object with these keys only: category, task_text, entry_point, reference_solution, tests. The tests value must be a list of exactly three assertion strings. Do not include explanations or Markdown fences.
+
+Example 1 task (training task 169):
+
+Write a function to calculate the nth pell number.
+
+Example tests:
+
+```python
+
+assert get_pell(4) == 12
+assert get_pell(7) == 169
+assert get_pell(8) == 408
+
+```
+
+Example 2 task (training task 291):
+
+Write a function to find out the number of ways of painting the fence such that at most 2 adjacent posts have the same color for the given fence with n posts and k colors.
+
+Example tests:
+
+```python
+
+assert count_no_of_ways(2, 4) == 16
+assert count_no_of_ways(3, 2) == 6
+assert count_no_of_ways(4, 4) == 228
+
+```
+
+Example 3 task (training task 248):
+
+Write a function to calculate the harmonic sum of n-1.
+
+Example tests:
+
+```python
+
+assert harmonic_sum(7) == 2.5928571428571425
+assert harmonic_sum(4) == 2.083333333333333
+assert harmonic_sum(19) == 3.547739657143682
+
+```
+
+Now create one original task of this type. Match the examples in scope and difficulty. Follow all output and test requirements above.
+
+
+--------------------------------------------------------------------
+PROMPT 10: Matrices and grids (758 estimated tokens)
+--------------------------------------------------------------------
+Category: Matrices and grids. Transform or search two-dimensional arrays, grids, or matrices.
+
+Create one original task in this category. Use the examples below to learn the task style and scale. Do not reuse their task wording, function names, inputs, outputs, or algorithms.
+
+You create small, clear Python programming tasks in the requested category. Match the scope and difficulty of the examples. Write a new task with different wording, data, and constants. Do not copy or lightly paraphrase an example. Keep the task deterministic and solvable with the Python standard library. Provide a reference solution that passes every test. Provide exactly three executable Python assert statements with literal expected results. Use different cases that check ordinary behavior and useful boundary or input variations. Check that each assertion agrees with the reference solution before you return the task. Return one JSON object with these keys only: category, task_text, entry_point, reference_solution, tests. The tests value must be a list of exactly three assertion strings. Do not include explanations or Markdown fences.
+
+Example 1 task (training task 231):
+
+Write a function to find the maximum sum in the given right triangle of numbers.
+
+Example tests:
+
+```python
+
+assert max_sum([[1], [2,1], [3,3,2]], 3) == 6
+assert max_sum([[1], [1, 2], [4, 1, 12]], 3) == 15 
+assert max_sum([[2], [3,2], [13,23,12]], 3) == 28
+
+```
+
+Example 2 task (training task 642):
+
+Write a function to remove similar rows from the given tuple matrix.
+
+Example tests:
+
+```python
+
+assert remove_similar_row([[(4, 5), (3, 2)], [(2, 2), (4, 6)], [(3, 2), (4, 5)]] ) == {((2, 2), (4, 6)), ((3, 2), (4, 5))}
+assert remove_similar_row([[(5, 6), (4, 3)], [(3, 3), (5, 7)], [(4, 3), (5, 6)]] ) == {((4, 3), (5, 6)), ((3, 3), (5, 7))}
+assert remove_similar_row([[(6, 7), (5, 4)], [(4, 4), (6, 8)], [(5, 4), (6, 7)]] ) =={((4, 4), (6, 8)), ((5, 4), (6, 7))}
+
+```
+
+Example 3 task (training task 314):
+
+Write a function to find out the maximum sum such that no two chosen numbers are adjacent for the given rectangular grid of dimension 2 x n.
+
+Example tests:
+
+```python
+
+assert max_sum_rectangular_grid([ [1, 4, 5], [2, 0, 0 ] ], 3) == 7
+assert max_sum_rectangular_grid([ [ 1, 2, 3, 4, 5], [ 6, 7, 8, 9, 10] ], 5) == 24
+assert max_sum_rectangular_grid([ [7, 9, 11, 15, 19], [21, 25, 28, 31, 32] ], 5) == 81
+
+```
+
+Now create one original task of this type. Match the examples in scope and difficulty. Follow all output and test requirements above.
+
+
+--------------------------------------------------------------------
+PROMPT 11: Geometry and spatial calculations (488 estimated tokens)
+--------------------------------------------------------------------
+Category: Geometry and spatial calculations. Compute geometric properties, distances, areas, volumes, or spatial relations.
+
+Create one original task in this category. Use the examples below to learn the task style and scale. Do not reuse their task wording, function names, inputs, outputs, or algorithms.
+
+You create small, clear Python programming tasks in the requested category. Match the scope and difficulty of the examples. Write a new task with different wording, data, and constants. Do not copy or lightly paraphrase an example. Keep the task deterministic and solvable with the Python standard library. Provide a reference solution that passes every test. Provide exactly three executable Python assert statements with literal expected results. Use different cases that check ordinary behavior and useful boundary or input variations. Check that each assertion agrees with the reference solution before you return the task. Return one JSON object with these keys only: category, task_text, entry_point, reference_solution, tests. The tests value must be a list of exactly three assertion strings. Do not include explanations or Markdown fences.
+
+Example 1 task (training task 51):
+
+Write a function to print check if the triangle is equilateral or not.
+
+Example tests:
+
+```python
+
+assert check_equilateral(6,8,12)==False 
+assert check_equilateral(6,6,12)==False
+assert check_equilateral(6,6,6)==True
+
+```
+
+Example 2 task (training task 180):
+
+Write a function to calculate distance between two points using latitude and longitude.
+
+Example tests:
+
+```python
+
+assert distance_lat_long(23.5,67.5,25.5,69.5)==12179.372041317429
+assert distance_lat_long(10.5,20.5,30.5,40.5)==6069.397933300514
+assert distance_lat_long(10,20,30,40)==6783.751974994595
+
+```
+
+Example 3 task (training task 76):
+
+Write a python function to count the number of squares in a rectangle.
+
+Example tests:
+
+```python
+
+assert count_Squares(4,3) == 20
+assert count_Squares(2,2) == 5
+assert count_Squares(1,1) == 1
+
+```
+
+Now create one original task of this type. Match the examples in scope and difficulty. Follow all output and test requirements above.
+
+
+--------------------------------------------------------------------
+PROMPT 12: Graphs, paths, intervals, and chains (705 estimated tokens)
+--------------------------------------------------------------------
+Category: Graphs, paths, intervals, and chains. Work with connected structures, paths, intervals, ranges, chains, or reachability.
+
+Create one original task in this category. Use the examples below to learn the task style and scale. Do not reuse their task wording, function names, inputs, outputs, or algorithms.
+
+You create small, clear Python programming tasks in the requested category. Match the scope and difficulty of the examples. Write a new task with different wording, data, and constants. Do not copy or lightly paraphrase an example. Keep the task deterministic and solvable with the Python standard library. Provide a reference solution that passes every test. Provide exactly three executable Python assert statements with literal expected results. Use different cases that check ordinary behavior and useful boundary or input variations. Check that each assertion agrees with the reference solution before you return the task. Return one JSON object with these keys only: category, task_text, entry_point, reference_solution, tests. The tests value must be a list of exactly three assertion strings. Do not include explanations or Markdown fences.
+
+Example 1 task (training task 110):
+
+Write a function to extract the ranges that are missing from the given list with the given start range and end range values.
+
+Example tests:
+
+```python
+
+assert extract_missing([(6, 9), (15, 34), (48, 70)], 2, 100) == [(2, 6), (9, 100), (9, 15), (34, 100), (34, 48), (70, 100)]
+assert extract_missing([(7, 2), (15, 19), (38, 50)], 5, 60) == [(5, 7), (2, 60), (2, 15), (19, 60), (19, 38), (50, 60)]
+assert extract_missing([(7, 2), (15, 19), (38, 50)], 1, 52) == [(1, 7), (2, 52), (2, 15), (19, 52), (19, 38), (50, 52)]
+
+```
+
+Example 2 task (training task 660):
+
+Write a python function to choose points from two ranges such that no point lies in both the ranges.
+
+Example tests:
+
+```python
+
+assert find_Points(5,10,1,5) == (1,10)
+assert find_Points(3,5,7,9) == (3,9)
+assert find_Points(1,5,2,8) == (1,8)
+
+```
+
+Example 3 task (training task 846):
+
+Write a function to find the minimum number of platforms required for a railway/bus station.
+
+Example tests:
+
+```python
+
+assert find_platform([900, 940, 950, 1100, 1500, 1800],[910, 1200, 1120, 1130, 1900, 2000],6)==3
+assert find_platform([100,200,300,400],[700,800,900,1000],4)==4
+assert find_platform([5,6,7,8],[4,3,2,1],4)==1
+
+```
+
+Now create one original task of this type. Match the examples in scope and difficulty. Follow all output and test requirements above.
+
+
+--------------------------------------------------------------------
+PROMPT 13: Predicates, validation, and classification (465 estimated tokens)
+--------------------------------------------------------------------
+Category: Predicates, validation, and classification. Return a Boolean or a category after checking a rule, format, trend, or class.
+
+Create one original task in this category. Use the examples below to learn the task style and scale. Do not reuse their task wording, function names, inputs, outputs, or algorithms.
+
+You create small, clear Python programming tasks in the requested category. Match the scope and difficulty of the examples. Write a new task with different wording, data, and constants. Do not copy or lightly paraphrase an example. Keep the task deterministic and solvable with the Python standard library. Provide a reference solution that passes every test. Provide exactly three executable Python assert statements with literal expected results. Use different cases that check ordinary behavior and useful boundary or input variations. Check that each assertion agrees with the reference solution before you return the task. Return one JSON object with these keys only: category, task_text, entry_point, reference_solution, tests. The tests value must be a list of exactly three assertion strings. Do not include explanations or Markdown fences.
+
+Example 1 task (training task 552):
+
+Write a python function to check whether a given sequence is linear or not.
+
+Example tests:
+
+```python
+
+assert Seq_Linear([0,2,4,6,8,10]) == "Linear Sequence"
+assert Seq_Linear([1,2,3]) == "Linear Sequence"
+assert Seq_Linear([1,5,2]) == "Non Linear Sequence"
+
+```
+
+Example 2 task (training task 910):
+
+Write a function to validate a gregorian date.
+
+Example tests:
+
+```python
+
+assert check_date(11,11,2002)==True
+assert check_date(13,11,2002)==False
+assert check_date('11','11','2002')==True
+
+```
+
+Example 3 task (training task 950):
+
+Write a function to display sign of the chinese zodiac for given year.
+
+Example tests:
+
+```python
+
+assert chinese_zodiac(1997)==('Ox')
+assert chinese_zodiac(1998)==('Tiger')
+assert chinese_zodiac(1994)==('Dog')
+
+```
+
+Now create one original task of this type. Match the examples in scope and difficulty. Follow all output and test requirements above.

@@ -15663,3 +15663,55 @@ W&B curve audit. Run history was retrieved from `kunal-personal/grpo-mbpp`, run 
 
 Environment and limitations. Python 3.12.3; 128 CPUs visible; eight replay workers; GPU unused. Sandbox source blob at the replay commit was `c26db028beeb3d2f8a89339108f1d076a958ccce`; repository HEAD was `755dc67e2214aa87f2e1c7efad880abf5affb8a4`. The local subprocess sandbox is not hostile-code isolation. A static AST scan found no obvious filesystem, network, shell, subprocess, or dynamic-evaluation calls in the archived completions. Three assertions per task are not exhaustive behavioral tests. W&B histories were sampled; exact target-step history retrieval was not available through MCP.
 ------------------------------------------------------------------------
+
+EXPERIMENT: mbpp-task-taxonomy-and-synthetic-generation-prompts-20261005
+
+Purpose. Group the MBPP training and evaluation task descriptions into reusable program-task families. Create one synthetic-task generation prompt for each family, with three training examples and their tests. Estimate the token cost of each standalone prompt and their combined use.
+
+Data and setup. The training source is the 593-task checkpoint-830 archive from W&B run `c4fthzd3`, `grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-restart-20260929`, using Qwen/Qwen2.5-Coder-0.5B-Instruct. Task text is in `analysis/checkpoint_830/checkpoint_830_error_analysis.json`; saved tests are in `analysis/checkpoint_830/checkpoint_830_training_generations.jsonl`. The evaluation source is the canonical `get_mbpp_plus()` task set from EvalPlus 0.3.1, MBPP+ v0.2.0, with 378 task IDs. The older local `qwen_eval/eval_plus/MbppPlus-v0.1.0.jsonl` has 399 rows and was not used for this comparison.
+
+Deduplication and selection. The 593 archived training task IDs have no ID overlap with the 378 evaluation IDs. A normalized task-description comparison found two exact cross-ID duplicates: training ID 217 matches evaluation ID Mbpp/602, and training ID 928 matches Mbpp/427. These two tasks are excluded from the effective taxonomy and prompt-example pool, leaving 591 training tasks. The historical checkpoint archive remains unchanged. `data.py` now removes both shared IDs and matching normalized task descriptions during future dataset preparation. Task labels and example selection use task wording and IDs only. The model's generated solutions and correctness results did not affect the labels or example selection.
+
+Taxonomy method. Assign each task one primary type based on the requested result or central algorithm. This makes the counts mutually exclusive. Category boundaries remain analyst judgments. The 13 categories are arithmetic and numeric formulas; number properties and number theory; lists and sequence transformations; search, sorting, and selection; counting and frequency; strings and text processing; set and membership operations; mappings, tuples, and record aggregation; recurrence, combinatorics, and dynamic programming; matrices and grids; geometry and spatial calculations; graphs, paths, intervals, and chains; and predicates, validation, and classification.
+
+| Task type | Training, n=591 | Evaluation, n=378 |
+| --- | ---: | ---: |
+| Arithmetic and numeric formulas | 36 | 28 |
+| Number properties and number theory | 74 | 48 |
+| Lists and sequence transformations | 38 | 43 |
+| Search, sorting, and selection | 73 | 53 |
+| Counting and frequency | 61 | 33 |
+| Strings and text processing | 95 | 52 |
+| Set and membership operations | 22 | 19 |
+| Mappings, tuples, and record aggregation | 77 | 25 |
+| Recurrence, combinatorics, and dynamic programming | 36 | 25 |
+| Matrices and grids | 10 | 4 |
+| Geometry and spatial calculations | 44 | 24 |
+| Graphs, paths, intervals, and chains | 13 | 0 |
+| Predicates, validation, and classification | 12 | 24 |
+| **Total** | **591** | **378** |
+
+Prompt artifact. `analysis/mbpp_task_taxonomy_and_generation_prompts.txt` contains the category definitions, counts and shares, 13 standalone generation prompts, and three training examples with three tests for each prompt. The 39 example task IDs are 136, 452, 491, 48, 148, 107, 41, 729, 154, 152, 200, 189, 40, 700, 13, 15, 621, 27, 22, 249, 431, 26, 613, 81, 169, 291, 248, 231, 642, 314, 51, 180, 76, 110, 660, 846, 552, 910, and 950.
+
+Token estimates. Used `tiktoken` 0.14.0 with `cl100k_base` as a proxy because the Qwen tokenizer could not be loaded in this environment. Each estimate counts the shared instructions and all three examples in one standalone prompt. Shared text is therefore counted 13 times in the combined sum.
+
+| Prompt | Estimated tokens |
+| --- | ---: |
+| Arithmetic and numeric formulas | 434 |
+| Number properties and number theory | 452 |
+| Lists and sequence transformations | 637 |
+| Search, sorting, and selection | 636 |
+| Counting and frequency | 882 |
+| Strings and text processing | 632 |
+| Set and membership operations | 616 |
+| Mappings, tuples, and record aggregation | 827 |
+| Recurrence, combinatorics, and dynamic programming | 488 |
+| Matrices and grids | 758 |
+| Geometry and spatial calculations | 488 |
+| Graphs, paths, intervals, and chains | 705 |
+| Predicates, validation, and classification | 465 |
+| **All 13 standalone prompts** | **8,020** |
+
+Environment and identifiers. EvalPlus version: 0.3.1. Token estimator: `tiktoken` 0.14.0, `cl100k_base`. Dataset filter change was committed as `389938b` before this report was written. No model generation, training, or benchmark evaluation was run for this analysis. The task taxonomy is based on analyst-assigned primary labels and is not an error-category or correctness analysis.
+
+Limitations. Token counts are estimates for a proxy tokenizer and may differ from the Qwen tokenizer. Task types overlap in practice, but this report forces one primary label per task to provide a count distribution. The archived model run used all 593 training tasks, including the two descriptions identified as cross-ID duplicates; removing them from the historical archive would change the record rather than the training data already used.
