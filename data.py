@@ -267,7 +267,11 @@ def prepare_datasets(config: dict[str, Any]) -> tuple[Any, Any]:
     evalplus_task_ids = {int(task_id.split("/")[-1]) for task_id in get_mbpp_plus()}
     assert {int(record["task_id"]) for record in evaluation_dataset} <= evalplus_task_ids
     # Exclude benchmark tasks by both canonical ID and exact normalized task wording.
-    evalplus_task_texts = {_normalize_task_text(record.get("task_text", "")) for record in evaluation_dataset}
+    evalplus_task_texts = {
+        normalized_text
+        for record in evaluation_dataset
+        if (normalized_text := _normalize_task_text(record.get("task_text", "")))
+    }
     train_dataset = _filter_dataset(
         all_dataset,
         lambda record: int(record["task_id"]) not in evalplus_task_ids
