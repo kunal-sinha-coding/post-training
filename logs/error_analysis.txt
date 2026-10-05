@@ -1211,3 +1211,221 @@ No code or active-run changes were applied in this audit. These are proposed fix
 
 10. Limitations
 Only six updates, three fresh rollout batches and eight greedy tasks. No causal ablation or wall-time profiling. Counterexamples establish a bug but not its prevalence. Tests are visible in canonical prompts. No held-out claim. Current training continues during this snapshot. Earlier guidance that10-20 batches guarantees consistent signs was unsupported;40-80 groups correspond to5-10 prompt-set passes, not1-2.
+------------------------------------------------------------------------
+ERROR ANALYSIS
+Timestamp: 2026-10-05 04:40:05 UTC
+------------------------------------------------------------------------
+Command: `HF_DATASETS_OFFLINE=1 HF_HUB_OFFLINE=1 PYTHONPATH=. python /tmp/replay_checkpoint830.py`
+Batch mode: Replay all 593 saved checkpoint-830 greedy training completions, with all three saved MBPP assertions per task. Eight worker threads ran candidate tasks concurrently, with a three-second timeout for each assertion.
+
+## 0. Run summary
+
+This is the first full assertion-level replay for checkpoint 830. It used the saved generations and test code, without training or generating new completions. The saved greedy training pass@1 was 62.73% (372/593). The replay attempted all 1,779 test cases, passed 1,281, and recorded 498 failures. The recorded pass count for every task exactly matches the checkpoint evaluation details.
+
+The largest failure group is wrong returned values: 450 test cases raised `AssertionError`. Numeric results account for 224 cases. Sequence outputs account for 109, strings for 79, and booleans for 23. There were also 45 runtime exceptions and three syntax failures. These counts point to task semantics and algorithm implementation as the main remaining problem in this checkpoint's training-task snapshot. The pattern categories describe observed output shapes; they do not imply one common cause for every program in a category.
+
+The replay and actual-versus-expected diagnostic reruns took 4.89 seconds with eight workers. The complete case-by-case results are in `analysis/checkpoint_830/checkpoint_830_error_analysis.json`; the separate source archive is `analysis/checkpoint_830/checkpoint_830_training_generations.jsonl`.
+
+## 1. Iteration comparison
+
+No previous full replay of these 593 checkpoint-830 completions exists. A four-task, 12-test pilot took 0.244 seconds and was used only to estimate replay time. The full run matched all saved per-task pass counts, so the pilot did not serve as a comparison baseline for failure rates.
+
+## 2. Run context and data coverage
+
+- W&B run: `c4fthzd3`, named `grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-restart-20260929`.
+- Model: `Qwen/Qwen2.5-Coder-0.5B-Instruct` with the run's LoRA adapter at checkpoint 830. The config uses seed 42, rank 16, DAPO, learning rate 1e-5, one visible test in the prompt, 16 rollout candidates per task group, and hybrid reward with coefficient 0.75.
+- The official cached MBPP data had train, validation, and test splits of 374, 90, and 500 records. After this run's canonical EvalPlus task exclusion, the training pool contains 593 task IDs.
+- The archived generation file contains exactly one saved greedy completion for each of the 593 task IDs. It includes raw completion text, extracted code, saved reward and status fields, and full scorer test code recovered by task ID from the saved reward trace. The cached MBPP task description and reference solution were joined by task ID for diagnosis.
+- Every task had three assertions. All 593 IDs matched, no task had conflicting saved test code, and no task was missing tests. Replaying each test independently produced exactly the same number of passing tests as the saved checkpoint record for all 593 tasks.
+- The repository sandbox executed each candidate and one assertion in a fresh isolated-mode Python subprocess and temporary working directory. Failed direct comparisons were rerun to record actual and expected values. There were 2,229 subprocess executions in total: 1,779 test-case runs and 450 comparison-diagnostic runs.
+
+## 3. Error-pattern distribution
+
+The denominator is 498 nonpassing test-case executions, including syntax failures that prevented an assertion from running. The primary categories below are mutually exclusive per failed test case. A task can appear in more than one category. Percentages sum to 99.998% because of rounding.
+
+| Primary pattern | Failed cases | Share of 498 | Distinct task programs | Observed behavior |
+| --- | ---: | ---: | ---: | --- |
+| Wrong numeric result | 224 | 44.980% | 102 | A number was returned, but it did not match the expected value. |
+| Wrong string result | 79 | 15.863% | 37 | A string was returned, but its content or representation differed. |
+| Wrong sequence length | 53 | 10.643% | 21 | A list or tuple had too many or too few elements. |
+| Wrong sequence contents or shape | 38 | 7.631% | 18 | A sequence had incorrect elements or nesting. |
+| Wrong boolean result | 23 | 4.618% | 16 | A predicate returned the wrong truth value. |
+| `IndexError` | 23 | 4.618% | 10 | Candidate code indexed beyond an available sequence. |
+| Wrong sequence order | 18 | 3.614% | 7 | The returned sequence had the right elements in the wrong order. |
+| `TypeError` | 7 | 1.406% | 3 | Candidate code used an operation incompatible with the value type. |
+| `NameError` | 6 | 1.205% | 2 | Candidate code referred to a name that was not defined. |
+| Other value mismatch | 6 | 1.205% | 5 | The result had an incompatible type or sentinel, or another less common value mismatch. |
+| `ValueError` | 6 | 1.205% | 2 | A conversion or lookup rejected the supplied value. |
+| Malformed Python syntax | 3 | 0.602% | 1 | Parsing failed before the test could run. |
+| `re.error` | 3 | 0.602% | 1 | The generated regular expression was invalid. |
+| Wrong set result | 3 | 0.602% | 1 | The returned set contained incorrectly oriented pairs. |
+| Wrong mapping result | 3 | 0.602% | 1 | The mapping omitted required keys. |
+| Missing or `None` return | 3 | 0.602% | 1 | The function printed answers but returned `None`. |
+| **Total** | **498** | **100.000%** | **221 unique failing programs** | **372 other programs passed all three tests.** |
+
+Sequence mismatches break down into 53 length differences, 38 content or shape differences, and 18 ordering differences. The 11 programs that returned the same wrong value on all three inputs are a secondary, overlapping tag. This pattern is present in 33 of the 498 failure cases and does not establish that those solutions intentionally hardcoded outputs.
+
+## 4. Observed error patterns
+
+### Wrong numeric result: 224 cases
+
+These programs execute but produce an incorrect number. The 102 affected tasks span different algorithms, so the category is not one shared arithmetic bug.
+
+- Task 48, “set all odd bits,” returns `1` for inputs 10, 20, and 30. The code inspects the least significant bit on each shift and ORs the constant `1`; it never shifts the set bit back to its original bit position.
+- Task 136 calculates an electricity bill as `0.15 * kwh`. For 75 units, it returns 11.25 where the reference test expects 246.25. The implementation omits the tiered rates and fixed surcharge.
+- Task 601 increments one global counter for every compatible pair. It returns 6 for a test whose longest chain has length 3. Counting pairwise compatibility is not the same as finding the longest valid chain.
+- Task 83 is a string-valued counterpart: it sums Unicode code points and calls `chr`, producing `Ħ` for `abc` instead of reducing alphabet positions modulo 26 to produce `f`.
+
+These examples show errors in algorithm selection and task-specific constraints, including bit positions, piecewise billing, longest-chain optimization, and alphabet arithmetic.
+
+### Wrong string result: 79 cases
+
+The returned type is a string, but its content or required representation is wrong. There are several distinct causes.
+
+- Task 930 returns `Matched!`, while the expected value is the exact string `Found a match!`.
+- Task 114 returns the string representation `[((6, 5, 8), 3), ...]`; the expected representation flattens each original tuple and appends its frequency, such as `(6, 5, 8, 3)`.
+- Task 83 applies `chr` to the raw sum of Unicode code points. Its outputs are valid Unicode characters but do not follow the specified alphabet wraparound.
+
+The tests make these exact string contracts observable. The common output type does not imply a common implementation fix.
+
+### Wrong sequence length: 53 cases
+
+The generated list or tuple has a different number of elements than expected.
+
+- Task 13 calls `Counter.most_common()` without a limit and returns every word. The tests require only the top four. One actual result has seven entries where four are expected.
+- Task 15 collects lowercase characters individually. For `AbCd`, it returns `['b', 'd']`; the required output is the substrings `['bC', 'd']`.
+- Task 956 splits at uppercase letters in a way that consumes the separator characters. It returns an empty first segment and loses the uppercase initials.
+
+These include missing limits, incorrect segmentation, and lost delimiter characters.
+
+### Wrong sequence contents or shape: 38 cases
+
+The returned collection is the wrong structure or contains incorrect elements. Task 951 returns index pairs such as `[(2, 0)]`, while the expected output is a list of tuple values. This is a contract interpretation error: the implementation computes where matches occur instead of returning the matching tuples requested by the tests.
+
+### Wrong boolean result: 23 cases
+
+The code returns a Boolean, but its predicate implements a different condition from the test contract.
+
+- Task 26 checks whether each tuple's length equals `k`. The tests and reference behavior check whether all tuple elements equal `k`; for the first input, the implementation returns `False` instead of `True`.
+- Task 179 defines a Keith number as a number equal to the sum of its digits. A Keith number requires a digit-sequence recurrence, so the implementation returns `False` for 14 and 197 even though both tests expect `True`.
+- Task 899 checks a condition involving the minimum array element, rather than whether repeated removal from the array's two ends can produce a sorted order. All three tests expect `True`; its implementation returns `False` for all.
+
+The code often resembles the task vocabulary while implementing the wrong predicate.
+
+### `IndexError`: 23 cases
+
+Ten programs index outside a sequence. Task 81 loops over the six elements of the first tuple and accesses the second tuple at the same index, although the second tuple has only three elements. The expected behavior repeats the shorter tuple using a modulo index. Task 324 similarly assumes each input element has a partner and crashes on an odd-length input. The tracebacks and candidate source lines are preserved for every case.
+
+### Wrong sequence order: 18 cases
+
+Seven programs return the right multiset in the wrong order. Task 915 rearranges positive and negative numbers but does not follow the expected ordering of the positive partition. Other cases include sorting by the wrong tuple component. The diagnostic file preserves actual and expected sequences so these can be separated from omissions and extra values.
+
+### `TypeError`: 7 cases
+
+Three programs apply operations to incompatible types.
+
+- Task 202 applies `% 2` to a character rather than to its index. The task is about removing characters at even positions.
+- Task 642 inserts list rows into a set. Lists are unhashable; the candidate must convert each row to a tuple or use another equality-based deduplication strategy.
+- Task 910 compares month and day strings with integers instead of converting or validating the strings first.
+
+### `NameError`: 6 cases
+
+Two programs refer to undefined names. Task 198 uses `c` in Heron's formula although it never defines `c`; the whole formula also does not encode the stated ellipse problem. Task 205 uses `y` in a sort key lambda whose argument is named `x`, so `y` is out of scope.
+
+### Other value mismatch: 6 cases
+
+These residual mismatches do not share a useful single mechanism. They include a zero-based index where the tests expect a one-based position or `None`, a numeric result where the tests require the string `Not Possible`, and inaccurate geometry outputs. Their exact prompts, assertions, actual values, and expected values are retained in the JSON artifact.
+
+### `ValueError`: 6 cases
+
+Two programs make invalid lookup or conversion assumptions.
+
+- Task 936 looks up each tuple's second value in the supplied ordering list, although the ordering contains tuple keys from the first position. This raises `ValueError` on every test.
+- Task 949 converts characters from `str(tuple)` to integers. It encounters the opening parenthesis and raises `ValueError` instead of summing the digit lengths of the tuple elements.
+
+### Malformed Python syntax: 3 cases
+
+One task, ID 27, fails all three tests with an unterminated triple-quoted string. The completion repeats its docstring many times and ends before closing the final string. This is a generation truncation or repetition failure, not a problem in the test harness.
+
+### `re.error`: 3 cases
+
+Task 73 joins the delimiters with `r'|'` but does not escape the literal `*`. The resulting regular expression contains an operator with nothing to repeat and raises `re.error` on all three tests.
+
+### Wrong set result: 3 cases
+
+Task 490 detects symmetric pairs but leaves one pair in the orientation `(9, 8)` where the expected set contains `(8, 9)`. It recognizes the relationship but fails to canonicalize the output pair.
+
+### Wrong mapping result: 3 cases
+
+Task 561 creates keys only from each pair's first item. The expected mapping also contains keys for values that appear only as second items, with empty lists for those values. The candidate's construction rule omits those entries.
+
+### Missing or `None` return: 3 cases
+
+Task 907 prints lucky numbers one at a time and has no return statement. The reference and assertions expect a list. The task wording says “print,” but the callable contract in the tests requires returning the values.
+
+## 5. Success patterns and controls
+
+The 372 programs labeled `passed` each passed all three assertions. There were 107 partial programs: 49 passed one of three assertions, and 58 passed two. The other 113 non-syntax programs passed none; one additional program had malformed syntax. The replay exactly reproduced every saved `passed_tests` count, which is a strong check that the saved programs and test code were paired correctly.
+
+The saved interface checker marked 590 of 593 candidates valid. Three were marked invalid, but two of those still passed the tests. Interface mismatch is therefore not the dominant explanation for the 221 programs with at least one replay failure. No replay timed out, and no sandbox or infrastructure error occurred.
+
+## 6. Deep triage
+
+Each failed test case has exactly one primary pattern in the JSON artifact. A task can have multiple patterns across its three test cases.
+
+### Numeric and Boolean outputs
+
+Observed evidence is a direct actual-versus-expected mismatch, not an exception. The candidate code for tasks 48, 136, 601, 26, 179, and 899 shows that the implementation uses an incomplete or incorrect task model. The strongest supported cause is specification or algorithm misunderstanding. An alternative for some cases is that three MBPP tests do not expose every distinction needed to infer behavior; these particular failures are nevertheless visible on the saved tests. Targeted tests with boundary values and counterexamples would distinguish a fragile formula from a broader misunderstanding.
+
+### String and sequence outputs
+
+The errors include lost characters, wrong output limits, incorrect nesting, missed items, and wrong order. Examples 13, 15, 114, 915, and 956 directly expose these mechanisms. Because this group is heterogeneous, adding generic string or list tasks alone is unlikely to fix every case. Data additions should state the required ordering, cardinality, output type, and delimiter behavior explicitly, then test those constraints with varied inputs.
+
+### Runtime exceptions
+
+Tracebacks identify concrete code sites. Indexing failures often reflect an assumption about sequence lengths or even-sized inputs. `NameError` identifies undeclared values. `TypeError` reflects using arithmetic or sets with the wrong value types. `ValueError` reflects a mismatched lookup key or parsing a representation rather than using the structured values. The regex failure is specifically an unescaped metacharacter. These causes are supported by task text, traceback, and source. A competing explanation for some errors is that model-written docstrings or comments distracted from the operative contract; this is not necessary to explain the captured failures.
+
+### Syntax and missing returns
+
+Task 27's code contains repeated docstrings and an unterminated triple quote. Task 907 completes its loop but prints instead of returning. These are separate failure mechanisms: malformed generation versus an output-contract mismatch. They should not be grouped with algorithm errors.
+
+### Other, set, and mapping mismatches
+
+The set and mapping examples have precise representation defects, but each appears in only one task. The six residual value mismatches are diverse. More data is needed before treating any of these as recurring root causes beyond their individual examples.
+
+## 7. Shared causes and interactions
+
+Most failures occur after valid Python executes: 450 of the 498 nonpassing test cases are assertion mismatches. This makes parser, function-interface, and environment failures poor explanations for the bulk of the checkpoint's errors. Numeric, string, sequence, and Boolean failures all indicate that the generated program often maps the task to a plausible but incorrect rule. Runtime exceptions are a smaller separate group, led by out-of-range indexing.
+
+The reward can still distinguish partial progress. Of the 107 partial programs, 58 pass two of three tests and 49 pass one. A program that solves a common case but misses edge behavior receives partial test reward. That is useful signal, but it can leave a persistent ceiling when the policy learns only the easiest subset of each contract. This is a plausible interaction between sparse task coverage and partial reward, not a causal conclusion from this snapshot.
+
+## 8. Underlying root-cause synthesis
+
+The smallest credible synthesis has two parts.
+
+1. **Task semantics are frequently implemented incorrectly.** This explains the 450 value mismatches. The code examples show multiple separate mechanisms: wrong formula, wrong recurrence, wrong selection limit, wrong sequence indexing, wrong return contract, and wrong text transformation. These are observed program defects. They do not point to one common code bug.
+2. **A smaller set of generated programs has local robustness or completion failures.** The 45 runtime exceptions and one malformed program affect 14 distinct tasks when grouped by task ID, with overlapping patterns possible. Most are concrete indexing, type, name, conversion, and regex mistakes.
+
+The growing training/evaluation gap supports further analysis of task diversity. The saved training greedy pass@1 rose from 32.55% at step 0 to 62.73% at step 830 and 70.32% at step 1300. Sampled W&B EvalPlus greedy pass@1 peaked at 54.0% at step 630, was 53.2% at step 830, and was 52.1% at step 1300. This run therefore shows continued training-pool gains after EvalPlus has stopped improving. It is consistent with over-specialization, but this error replay alone cannot show that task diversity would cause an evaluation gain.
+
+The 11 same-wrong-output programs are a useful secondary signal for weak or degenerate solutions. They include constant answers and a print-only function. They account for 33 failing cases, but they are not all intentional hardcoding. The set and mapping errors, and the six heterogeneous output mismatches, remain residuals outside the two broad mechanisms above.
+
+## 9. Proposed solutions and confirmation tests
+
+1. **Build a targeted task-variant set from the observed error families.** Start with a small, balanced addition covering arithmetic and number theory, sequence and tuple transformations, and string or regex behavior. Use explicit input constraints, output types, ordering rules, and edge cases. Validate every generated reference and assertion with the sandbox, remove duplicates, and retain task provenance. This addresses the 224 numeric, 109 sequence, and 79 string mismatches. A confirmation run should compare greedy training and EvalPlus pass@1 against the same checkpoint protocol, and should check the added tasks separately for pass@1 and partial pass rate.
+2. **Prioritize tasks with recurrent failures over tasks with one isolated miss.** The complete case file identifies all 221 failed task programs and their exact assertions. Re-sample task families with the highest failure counts, but cap each family so the new data does not simply over-weight arithmetic or list manipulation. A useful test is to train with one added family at a time and compare its targeted task variants, the unchanged 593-task training pool, and EvalPlus at the same checkpoint intervals.
+3. **Add focused contrast examples for partial solutions.** For the 58 tasks that passed two of three tests, derive one or two tests that vary the argument responsible for the failed assertion, while preserving the original task contract. This tests whether more informative reward cases help the policy learn the missing behavior. Confirm with the same task-level case counts and evaluation set.
+4. **Keep the rare defects as explicit validation checks.** Add regression examples for unequal sequence lengths, odd-length pairing, special regex characters, string-valued numeric inputs, and print-versus-return behavior. This should reduce the corresponding runtime and contract errors; confirm by rerunning the frozen checkpoint and any new checkpoint on the exact saved assertions.
+
+No training data or model changes were applied during this report. The proposed changes require a separate controlled experiment.
+
+## 10. Limitations
+
+- The checkpoint archive contains one greedy generation per training task, not every rollout sampled during training. The full 168,960-row reward trace is separate and covers many training steps. This report intentionally analyzes only checkpoint 830's 593 saved training-set greedy programs.
+- Each task has three original MBPP assertions. Errors on these cases do not establish performance on all possible inputs.
+- The failure taxonomy is mechanical and mutually exclusive per failed test case. For assertion mismatches, it uses the type and shape of actual and expected values. It does not infer a unique algorithmic cause for every numeric or string mismatch. The full prompt, reference solution, assertion, generated code archive, traceback, and comparison values are retained to make follow-up review possible.
+- The test code used for diagnosis was recovered from the reward trace and matched by task ID. There were no unmatched or conflicting IDs.
+- The repository describes its subprocess harness as intended for local experiments, not hostile-code isolation. A static AST screen found no filesystem, network, shell, subprocess, or dynamic-evaluation calls among these completions, but this is not a formal security guarantee.
+- W&B curve retrieval was sampled. Reward diagnostics used 50 points across internal steps 13,074 to 250,199 of 262,085. The evaluation query returned a 100-row sample across internal steps 0 to 260,697. Exact target-step retrieval was unavailable through the MCP. Local checkpoint metrics are exact.
+- This analysis did not run a new training experiment or establish that any proposed data change improves EvalPlus.
+------------------------------------------------------------------------
