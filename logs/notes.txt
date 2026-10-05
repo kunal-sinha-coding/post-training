@@ -2502,3 +2502,10 @@ Scanned 131 saved checkpoint EvalPlus logs and selected step 830 by the highest 
 ## 2026-10-04: Evaluate sampled 0.5B baseline for blog comparison
 
 Commit name: Add sampled 0.5B baseline evaluation. Generated and scored one temperature-1.0 sample from the untrained Qwen2.5-Coder-0.5B-Instruct model on the same 378 EvalPlus MBPP tasks used by the checkpoint comparison. The sample scored 28.57% on MBPP and 22.22% on MBPP+. The experiment setup, artifact paths, code hash, environment, and limitations are recorded in logs/results.txt. These values support a separate sampled `Baseline` row beside the cited report's greedy baseline, whose evaluation setup may differ.
+
+
+## 2026-10-05: Preserve checkpoint-830 training generations and tests
+
+Commit name: Preserve checkpoint-830 training generations.
+
+Copied the one saved greedy completion for each of the 593 MBPP training tasks at checkpoint 830 into `analysis/checkpoint_830/checkpoint_830_training_generations.jsonl`. Each record includes the raw and extracted completion, saved outcome and reward fields, and the task test code recovered by task ID from the run's reward trace. This creates a versioned copy independent of the transient run log/output directory before replaying the candidates for assertion-level failure analysis. The source run is W&B run `c4fthzd3`; no generated programs have been replayed yet in this commit.
