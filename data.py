@@ -38,6 +38,16 @@ def _normalize_task_text(text: Any) -> str:
     return " ".join(re.sub(r"\W+", " ", str(text).casefold()).split())
 
 
+def _task_description_from_prompt(prompt: Any) -> str:
+    """Remove the example assertions from an EvalPlus prompt to keep its task description."""
+    text = str(prompt).strip()
+    if text.startswith('"""'):
+        text = text[3:]
+    if text.endswith('"""'):
+        text = text[:-3]
+    return re.split(r"(?m)^\s*assert\b", text, maxsplit=1)[0].strip()
+
+
 def format_tests(record: dict[str, Any]) -> str:
     """Combine MBPP imports and assertions into executable test text."""
     imports = _first_value(record, "test_imports", "imports", default=[])
@@ -264,13 +274,14 @@ def prepare_datasets(config: dict[str, Any]) -> tuple[Any, Any]:
     # Match the canonical runner's complete task set, which can differ from the Hugging Face mirror.
     from evalplus.data import get_mbpp_plus
 
-    evalplus_task_ids = {int(task_id.split("/")[-1]) for task_id in get_mbpp_plus()}
+    evalplus_records = get_mbpp_plus()
+    evalplus_task_ids = {int(task_id.split("/")[-1]) for task_id in evalplus_records}
     assert {int(record["task_id"]) for record in evaluation_dataset} <= evalplus_task_ids
     # Exclude benchmark tasks by both canonical ID and exact normalized task wording.
     evalplus_task_texts = {
         normalized_text
-        for record in evaluation_dataset
-        if (normalized_text := _normalize_task_text(record.get("task_text", "")))
+        for record in evalplus_records.values()
+        if (normalized_text := _normalize_task_text(_task_description_from_prompt(record.get("prompt", ""))))
     }
     train_dataset = _filter_dataset(
         all_dataset,
