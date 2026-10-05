@@ -2523,3 +2523,7 @@ Added a durable JSONL archive for the 593 greedy programs saved in checkpoint 83
 Commit name: Fix checkpoint-830 analysis record formatting.
 
 The first report append used literal newline escape text before the new results and notes entries. Replaced those two separators with actual line breaks so both tracked records render as separate sections. The analysis content and metrics are unchanged.
+
+Commit name: Exclude duplicate evaluation tasks from training.
+
+Updated `normalize_record` to retain each task's original wording during dataset partitioning. The training split now excludes records whose task ID is in the canonical EvalPlus set or whose task wording exactly matches a normalized evaluation task description. The temporary wording field is removed before training or evaluation records leave `prepare_datasets`. This closes the cross-ID duplicate gap found while auditing the 593-task checkpoint archive. The historical archive remains unchanged.

@@ -32,6 +32,11 @@ def _first_value(record: dict[str, Any], *keys: str, default: Any = "") -> Any:
     return default
 
 
+def _normalize_task_text(text: Any) -> str:
+    """Normalize task wording so duplicate descriptions can be excluded across splits."""
+    return " ".join(str(text).casefold().split())
+
+
 def format_tests(record: dict[str, Any]) -> str:
     """Combine MBPP imports and assertions into executable test text."""
     imports = _first_value(record, "test_imports", "imports", default=[])
@@ -99,6 +104,7 @@ def normalize_record(record: dict[str, Any], include_generic_arguments: bool = F
     """Convert one raw MBPP row into the stable training schema."""
     return {
         "task_id": _first_value(record, "task_id", "id", default=None),
+        "task_text": str(_first_value(record, "text", "prompt", "description", "task", default="")).strip(),
         "prompt": build_qwen_evalplus_prompt(record, visible_test_count),
         "test_code": format_tests(record),
         "reference_code": str(_first_value(record, "code", "canonical_solution", default="")),
@@ -259,7 +265,22 @@ def prepare_datasets(config: dict[str, Any]) -> tuple[Any, Any]:
 
     evalplus_task_ids = {int(task_id.split("/")[-1]) for task_id in get_mbpp_plus()}
     assert {int(record["task_id"]) for record in evaluation_dataset} <= evalplus_task_ids
-    train_dataset = _filter_dataset(all_dataset, lambda record: int(record["task_id"]) not in evalplus_task_ids)
+    # Exclude benchmark tasks by both canonical ID and exact normalized task wording.
+    evalplus_task_texts = {_normalize_task_text(record.get("task_text", "")) for record in evaluation_dataset}
+    train_dataset = _filter_dataset(
+        all_dataset,
+        lambda record: int(record["task_id"]) not in evalplus_task_ids
+        and _normalize_task_text(record.get("task_text", "")) not in evalplus_task_texts,
+    )
+    # Remove the helper text column before passing records to the trainer and evaluator.
+    if hasattr(train_dataset, "remove_columns") and "task_text" in train_dataset.column_names:
+        train_dataset = train_dataset.remove_columns(["task_text"])
+    else:
+        train_dataset = [{key: value for key, value in record.items() if key != "task_text"} for record in train_dataset]
+    if hasattr(evaluation_dataset, "remove_columns") and "task_text" in evaluation_dataset.column_names:
+        evaluation_dataset = evaluation_dataset.remove_columns(["task_text"])
+    else:
+        evaluation_dataset = [{key: value for key, value in record.items() if key != "task_text"} for record in evaluation_dataset]
     # Restrict training to an explicit task-ID allowlist when one is configured.
     train_task_ids = config.get("train_task_ids")
     if train_task_ids is not None:
