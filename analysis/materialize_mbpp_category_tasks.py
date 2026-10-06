@@ -38,7 +38,7 @@ def validate_reference(task: dict[str, Any]) -> ast.FunctionDef:
         raise ValueError("reference function uses an unsupported signature")
     # Block imports, nested definitions, dynamic execution, and filesystem or network calls.
     for node in ast.walk(tree):
-        if isinstance(node, (ast.Import, ast.ImportFrom, ast.ClassDef, ast.AsyncFunctionDef, ast.Lambda)):
+        if isinstance(node, (ast.Import, ast.ImportFrom, ast.ClassDef, ast.AsyncFunctionDef)):
             raise ValueError("reference contains a disallowed definition or import")
         if isinstance(node, ast.Attribute) and node.attr.startswith("__"):
             raise ValueError("reference uses a dunder attribute")

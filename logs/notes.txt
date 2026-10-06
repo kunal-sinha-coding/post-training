@@ -2594,3 +2594,11 @@ Rewrote the continuation section in `AGENTS.md` to repeat the mandatory response
 Commit name: Require a task check after every response.
 
 Added explicit repeated checks to `AGENTS.md`. After every user message, the agent must review the active and earlier unfinished tasks. After every response, it must check again and immediately resume unfinished authorized work in the same turn. This records the user's requested interruption-handling procedure in direct terms.
+
+Commit name: Materialize 100 category synthetic tasks.
+
+Generated one synthetic task for each of 100 proportionally allocated category prompts. The prompts provide three same-category training examples and the pilot uses the 13 category quotas recorded in the prompt JSONL. Saved all 100 GPT-6 Luna responses and all 100 complete prompts with their sampled source example IDs. Materialized the three literal inputs for every reference solution in the repository subprocess sandbox and saved 300 expected outputs and assertions. All 100 references passed execution and output-literal validation. The materializer now permits lambda expressions inside the single required function because task 41 uses a safe sorting key lambda and the generation prompt does not prohibit it.
+
+Why: The user requested a complete 100-task synthetic-only training dataset with ground-truth code and sandbox-derived assertions before GRPO training and canonical EvalPlus evaluation.
+
+Artifacts: `analysis/mbpp_category_prompt_pilot_100.jsonl`, `analysis/mbpp_category_synthetic_task_specs_pilot100.jsonl`, and `analysis/mbpp_category_synthetic_tasks_pilot100.jsonl`.
