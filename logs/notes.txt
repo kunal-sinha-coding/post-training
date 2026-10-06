@@ -2674,3 +2674,9 @@ Commit name: Record Luna API training baseline and first update.
 Recorded the base model's step-zero synthetic-pool pass@1 and reward, step-zero MBPP and MBPP+ EvalPlus pass@1, and first rollout reward and gradient norm. The new trainer reached step 1 under W&B run `synth100lunaapi`; both trainer and restart supervisor remain active.
 
 Why: The user asked for the matched training run to restart on the API-generated dataset and expects its evaluation and training metrics to be tracked.
+
+Commit name: Correct step-one Luna training metric labels.
+
+Corrected the recorded first-step metrics: `training/average_reward` is 0.4961, `training/reward/test_progress` is 0.6016, raw gradient norm is 0.1482, and parameter-update norm is 0.0220.
+
+Why: The initial experiment note labeled the test-progress fraction as the average reward and the parameter-update norm as the gradient norm. This entry records the correct metric names and values.
