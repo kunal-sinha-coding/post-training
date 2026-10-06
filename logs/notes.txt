@@ -2552,3 +2552,10 @@ Commit name: Add 10x category prompt set.
 Reclassified the effective 591-task checkpoint-830 training pool by primary task operation and saved each task ID and description under its category in `analysis/mbpp_task_taxonomy_10x.md` and `analysis/mbpp_task_taxonomy_10x.json`. The earlier taxonomy recorded aggregate counts and three examples per category, but it did not save a category assignment for every task. The new files make the per-task assignments and resulting distribution explicit.
 
 Created 5,319 complete synthetic-task prompts in `analysis/mbpp_10x_synthetic_prompts.jsonl`. Each category receives nine prompts per existing task. Each prompt includes three distinct training examples sampled from that category with seed 20261006, their saved tests, and instructions to generate one new task. The resulting planned dataset has 5,910 tasks if each prompt yields one accepted task. No model calls or synthetic task generation were run. Structural checks confirmed 591 unique assignments, 5,319 prompt rows, category quotas of nine times each category count, and three distinct same-category examples in every prompt.
+
+
+## 2026-10-06: Add configurable category prompt generator
+
+Commit name: Add category prompt generator and runbook.
+
+Added `analysis/generate_mbpp_category_prompts.py` to render complete task prompts from the saved taxonomy, sample three distinct examples from the same category, and accept a configurable prompt count per category. Added `analysis/mbpp_synthetic_generation_runbook.md` with the prompt, task validation, sandbox, and Qwen preview workflow. The requested preview uses one prompt per category and seed 20261006.
