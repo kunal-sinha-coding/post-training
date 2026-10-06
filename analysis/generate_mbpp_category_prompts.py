@@ -62,23 +62,41 @@ def render_prompt(category: dict[str, Any], examples: list[dict[str, Any]], test
     )
 
 
-def generate_prompts(taxonomy_path: Path, generations_path: Path, output_path: Path, prompts_per_category: int, seed: int) -> int:
+def allocate_prompt_counts(categories: list[dict[str, Any]], total_prompts: int) -> list[int]:
+    """Allocate a total prompt count in proportion to each category's training count."""
+    # Use the largest-remainder method so integer category counts sum to the requested total.
+    total_training = sum(int(category["training_count"]) for category in categories)
+    exact_counts = [total_prompts * int(category["training_count"]) / total_training for category in categories]
+    counts = [int(value) for value in exact_counts]
+    remaining = total_prompts - sum(counts)
+    order = sorted(range(len(categories)), key=lambda index: exact_counts[index] - counts[index], reverse=True)
+    # Give leftover prompts to the categories with the largest fractional remainders.
+    for index in order[:remaining]:
+        counts[index] += 1
+    return counts
+
+
+def generate_prompts(taxonomy_path: Path, generations_path: Path, output_path: Path, prompts_per_category: int | None, seed: int, total_prompts: int | None = None) -> int:
     """Sample examples and save the requested prompts for every category."""
-    if prompts_per_category < 1:
+    if total_prompts is not None and total_prompts < 1:
+        raise ValueError("total_prompts must be at least one")
+    if total_prompts is None and (prompts_per_category is None or prompts_per_category < 1):
         raise ValueError("prompts_per_category must be at least one")
     # Load the taxonomy and source tests before sampling examples.
     taxonomy = json.loads(taxonomy_path.read_text(encoding="utf-8"))
+    # Preserve the training-set category proportions when a total prompt count is requested.
+    category_counts = allocate_prompt_counts(taxonomy["categories"], total_prompts) if total_prompts is not None else [prompts_per_category] * len(taxonomy["categories"])
     tests_by_id = load_generation_records(generations_path)
     rng = random.Random(seed)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     prompt_count = 0
     # Write a fixed number of independently sampled prompts for every category.
     with output_path.open("w", encoding="utf-8") as handle:
-        for category_index, category in enumerate(taxonomy["categories"], start=1):
+        for category_index, (category, prompt_count_for_category) in enumerate(zip(taxonomy["categories"], category_counts), start=1):
             examples_pool = category["tasks"]
             if len(examples_pool) < 3:
                 raise ValueError(f"Category {category['category']!r} has fewer than three examples")
-            for ordinal in range(1, prompts_per_category + 1):
+            for ordinal in range(1, prompt_count_for_category + 1):
                 examples = rng.sample(examples_pool, 3)
                 prompt = render_prompt(category, examples, tests_by_id)
                 # Save provenance beside the full prompt so each draw can be audited.
@@ -86,7 +104,7 @@ def generate_prompts(taxonomy_path: Path, generations_path: Path, output_path: P
                     "prompt_id": f"{category_index:02d}-{ordinal:03d}",
                     "category": category["category"],
                     "category_training_count": category["training_count"],
-                    "category_prompt_count": prompts_per_category,
+                    "category_prompt_count": prompt_count_for_category,
                     "example_task_ids": [int(example["task_id"]) for example in examples],
                     "prompt": prompt,
                 }
@@ -103,6 +121,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--generations", type=Path, default=GENERATION_PATH)
     parser.add_argument("--output", type=Path, default=ROOT / "analysis" / "mbpp_category_prompt_preview.jsonl")
     parser.add_argument("--prompts-per-category", type=int, default=1)
+    # Allow proportional allocation when the desired total is known.
+    parser.add_argument("--total-prompts", type=int, default=None)
     parser.add_argument("--seed", type=int, default=20261006)
     return parser.parse_args()
 
@@ -110,5 +130,6 @@ def parse_args() -> argparse.Namespace:
 if __name__ == "__main__":
     # Generate the configured prompt set and report its row count.
     args = parse_args()
-    count = generate_prompts(args.taxonomy, args.generations, args.output, args.prompts_per_category, args.seed)
+    # Use per-category counts by default and proportional counts when requested.
+    count = generate_prompts(args.taxonomy, args.generations, args.output, args.prompts_per_category, args.seed, args.total_prompts)
     print(f"Wrote {count} prompts to {args.output}", flush=True)

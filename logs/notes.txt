@@ -2644,3 +2644,9 @@ Commit name: Record matched synthetic run launch.
 Recorded the exact supervisor start timestamp, fresh base-model start, W&B run ID and URL, and initial process status for the c4thzd3-matched synthetic experiment.
 
 Why: The user requires the new run to use the successful reference setup and asked for training to restart immediately. The launch timestamp provides an auditable start time for progress and runtime estimates.
+
+Commit name: Add proportional GPT-6 Luna synthetic task generation.
+
+Extended category prompt generation with largest-remainder allocation for a requested total task count. Added an API runner that samples three same-category examples per prompt, caps calls with a semaphore, uses JSON output, retries invalid responses, executes reference tests in the repository sandbox, records token usage and estimated cost, and resumes accepted rows without repeating calls. Verified that the 100-prompt allocation matches the 100-task pilot distribution and that every prompt contains three examples. The current matched synthetic GRPO process was stopped at the user's request before the API generation workflow. The ignored repository `.env` now contains the user-provided API key; the mounted filesystem rejected a permission change, so its existing mode could not be reduced.
+
+Why: The user requested replacing subagent generation with a reproducible API pipeline, checking one or two generated tasks first, then rebuilding the proportional 100-task dataset and restarting training on it.
