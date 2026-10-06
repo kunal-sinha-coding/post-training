@@ -2543,3 +2543,12 @@ Changed the duplicate check to read task descriptions from canonical EvalPlus pr
 Commit name: Add MBPP task taxonomy and generation prompts.
 
 Added `analysis/mbpp_task_taxonomy_and_generation_prompts.txt` with a primary task taxonomy for the corrected 591-task training pool and 378-task EvalPlus 0.3.1 benchmark, plus 13 category prompts with three training examples and their tests each. Added approximate per-prompt and combined token counts using `cl100k_base`. Recorded the data versions, duplicate-task exclusions, classification method, prompt example IDs, and limitations in `logs/results.txt`. Earlier dataset-filter commits also ensure future training excludes exact task-text duplicates across distinct IDs.
+
+
+## 2026-10-06: Save revised MBPP taxonomy and 10x prompt set
+
+Commit name: Add 10x category prompt set.
+
+Reclassified the effective 591-task checkpoint-830 training pool by primary task operation and saved each task ID and description under its category in `analysis/mbpp_task_taxonomy_10x.md` and `analysis/mbpp_task_taxonomy_10x.json`. The earlier taxonomy recorded aggregate counts and three examples per category, but it did not save a category assignment for every task. The new files make the per-task assignments and resulting distribution explicit.
+
+Created 5,319 complete synthetic-task prompts in `analysis/mbpp_10x_synthetic_prompts.jsonl`. Each category receives nine prompts per existing task. Each prompt includes three distinct training examples sampled from that category with seed 20261006, their saved tests, and instructions to generate one new task. The resulting planned dataset has 5,910 tasks if each prompt yields one accepted task. No model calls or synthetic task generation were run. Structural checks confirmed 591 unique assignments, 5,319 prompt rows, category quotas of nine times each category count, and three distinct same-category examples in every prompt.
