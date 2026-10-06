@@ -2620,3 +2620,9 @@ Commit name: Enable ten-step EvalPlus on the active synthetic run.
 Set `evalplus_eval_steps` to 10 in the synthetic-only Qwen 0.5B config and updated the runbook and results record to state that canonical EvalPlus runs every 10 optimizer steps and at the end. The running process had already loaded the old zero interval, so it must resume from its latest complete checkpoint to use the corrected cadence. Checkpoint selection remains disabled.
 
 Why: The user explicitly requested EvalPlus evaluation every 10 optimizer steps. The previous configuration incorrectly scheduled it only at the end.
+
+Commit name: Record synthetic GRPO reward diagnosis and resume.
+
+Recorded the observed outcome distribution for 4,228 completions across all 100 synthetic tasks, representative syntax and wrong-algorithm failures, the declining local reward trend through step 136, nonzero optimizer updates, and the raw-format-log versus wrapped-scoring distinction. Recorded the limited W&B custom-axis response and the restart from complete checkpoint 130 at 16:48:12 UTC with ten-step EvalPlus configured.
+
+Why: The user asked to inspect the logged outputs for obvious failures before restarting the synthetic-only run. The diagnosis showed frequent invalid, incorrect, and partial programs but no clear optimizer or infrastructure failure, so the already authorized run resumed with the corrected evaluation cadence.

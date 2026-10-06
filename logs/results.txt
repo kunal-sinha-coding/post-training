@@ -15788,3 +15788,16 @@ Timestamp: 2026-10-06 05:46:30 PDT
 RUN STARTING
 Timestamp: 2026-10-06 05:48:30 PDT
 ------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-10-06 09:48:19 PDT
+------------------------------------------------------------------------
+
+Training diagnosis update, 2026-10-06 16:48 UTC. Before resuming, inspected 4,228 saved GRPO completion records from W&B run `synth100qwen05`, spanning all 100 synthetic task IDs. The outcomes were 1,111 full passes (26.3%), 2,105 partial passes (49.8%), 905 zero-test passes (21.4%), and 107 syntax errors (2.5%). Interface validation failed for 448/4,228 completions (10.6%); this is an overlapping diagnostic, not an additional status category. One syntax-error sample emitted `return person_hours: {}`. One wrong-algorithm sample checked whether input values themselves increase instead of checking whether consecutive differences increase. One partial sample passed 2/3 assertions.
+
+The local per-step log has 137 metric rows through step 136. Cumulative mean reward decreased from 0.4375 at step 1 to 0.3751 at step 136; the mean over the last ten logged steps was 0.3748. Mean test-pass fraction was 0.4778 over the first ten steps and 0.3861 over the last ten; full-pass fraction was 0.250 and 0.225, respectively. The model still received nonzero gradients (last logged norm 1.669) and parameter updates (last logged update norm 0.00123), with no NaN or crash observed. These findings indicate weak/noisy reward improvement with frequent incomplete and incorrect programs, rather than a stopped optimizer. The raw sample logger reports missing code fences as format errors, but the scoring path wraps continuations before parsing, so this message alone does not establish a zero training reward.
+
+The W&B history connector returned only one custom-axis point through `trainer_step` for the requested step range, despite local logs containing 137 metric rows. Trend calculations above use the local per-step log. After this inspection, the worker resumed at 2026-10-06 16:48:12 UTC from complete checkpoint 130 under the corrected `evalplus_eval_steps: 10` configuration. The first due canonical EvalPlus evaluation is step 140. Checkpoint selection remains disabled.
