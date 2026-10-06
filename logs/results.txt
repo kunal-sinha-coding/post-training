@@ -15757,3 +15757,20 @@ Results:
 | Predicates, validation, and classification | 13-001 | 115, 201, 349 | 3/3 | yes |
 
 Limitations: This is one generated task and three generated input cases per category. The results are sensitive to these small samples. The assertions come from the generated reference functions and are not independent hidden tests. The pass rates describe only these 13 tasks. They do not show that training on these tasks will improve held-out MBPP or EvalPlus performance. A controlled training comparison and untouched held-out evaluation are required for that claim.
+## Synthetic-only GRPO pilot on 100 generated tasks
+
+Status: Configured and validated. Training has not started at the time of this record.
+
+Purpose: Measure GRPO training on only the 100 proportionally allocated synthetic MBPP tasks, then report standard training metrics and canonical EvalPlus MBPP and MBPP+ metrics.
+
+Setup: Use base `Qwen/Qwen2.5-Coder-0.5B-Instruct`, no checkpoint or adapter initialization, GRPO with LoRA rank 16 and alpha 32, fresh rollouts, hybrid reward coefficient 0.5, learning rate 1e-6, four generations, per-device batch 1, gradient accumulation 32, generation batch 4, and a 1,500-step target. Save trainer checkpoints every 10 steps. Disable checkpoint selection and intermediate EvalPlus runs so EvalPlus labels do not select the candidate. Run canonical EvalPlus once on the final model after the fixed schedule.
+
+Data: Training artifact `analysis/mbpp_category_synthetic_tasks_pilot100.jsonl`, containing 100 tasks and 300 sandbox-derived assertions. YAML `configs/grpo-mbpp-synthetic-pilot100-qwen05.yaml` selects this file through `training_tasks_path` and requires exactly 100 training rows. Dataset preparation verified 100 synthetic training rows and 378 separate EvalPlus rows. EvalPlus IDs and normalized task descriptions are filtered from training before the exact-count guard.
+
+Tracking and outputs: W&B project `grpo-mbpp`, run name `grpo-mbpp-synthetic-pilot100-qwen05-20261006`, and fixed run ID `synth100qwen05` for retries. Intended output directory `outputs/grpo-mbpp-synthetic-pilot100-qwen05`. Per-attempt logs and the 10-minute monitor log are stored in that output directory. Dataset cache writes use `/tmp/post-training-hf-datasets` because the shared workspace cache does not permit chmod. The W&B API key is configured; the run ID and URL will be verified after initialization.
+
+Selection: Use the final model after the fixed 1,500-step schedule. Do not select a checkpoint using EvalPlus labels. The final EvalPlus evaluation is a separate benchmark measurement after candidate selection.
+
+Metrics: Pending training and final evaluation.
+
+Limitations: This pilot tests one fixed run on 100 generated tasks. It does not establish that synthetic training improves EvalPlus performance without a matched baseline or replicate.

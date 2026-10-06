@@ -201,6 +201,32 @@ def load_mbpp(
     return loaded.map(lambda record: normalize_record(record, include_generic_arguments, visible_test_count), load_from_cache_file=False)
 
 
+def load_generated_training_tasks(path: str | Path, include_generic_arguments: bool = False, visible_test_count: int | None = None) -> Any:
+    """Load validated materialized synthetic tasks as the complete training set."""
+    records = []
+    # Read each saved synthetic task and require its sandbox-derived assertions.
+    with Path(path).open(encoding="utf-8") as handle:
+        for line_number, line in enumerate(handle, start=1):
+            if not line.strip():
+                continue
+            task = json.loads(line)
+            if task.get("reference_status") != "passed" or len(task.get("tests", [])) != 3:
+                raise ValueError(f"Synthetic task on line {line_number} is not fully materialized.")
+            if not all(isinstance(test, str) for test in task["tests"]):
+                raise ValueError(f"Synthetic task on line {line_number} has invalid assertions.")
+            # Reuse the stable MBPP schema while keeping a unique nonnumeric task ID.
+            raw_record = {
+                "task_id": f"synthetic-{task['prompt_id']}",
+                "text": task["task_text"],
+                "code": task["reference_solution"],
+                "test_list": task["tests"],
+            }
+            records.append(normalize_record(raw_record, include_generic_arguments, visible_test_count))
+    if not records:
+        raise ValueError("The configured synthetic training file contains no tasks.")
+    return _to_dataset(records)
+
+
 def load_evalplus(
     dataset_name: str = DEFAULT_EVALPLUS_DATASET,
     split: str = DEFAULT_EVALPLUS_SPLIT,
@@ -260,12 +286,17 @@ def prepare_datasets(config: dict[str, Any]) -> tuple[Any, Any]:
     include_generic_arguments = bool(config.get("include_generic_arguments", False))
     # Restrict training prompts to a leading subset of assertions while reward keeps grading all of them.
     visible_test_count = config.get("visible_test_count")
-    split_names = config.get("mbpp_splits", ["train", "validation", "test"])
-    all_datasets = [
-        load_mbpp(config["dataset_name"], config.get("dataset_config"), split, include_generic_arguments, visible_test_count)
-        for split in split_names
-    ]
-    all_dataset = _combine_datasets(all_datasets)
+    # Load only the configured synthetic artifact when synthetic-only training is requested.
+    training_tasks_path = config.get("training_tasks_path")
+    if training_tasks_path:
+        all_dataset = load_generated_training_tasks(training_tasks_path, include_generic_arguments, visible_test_count)
+    else:
+        split_names = config.get("mbpp_splits", ["train", "validation", "test"])
+        all_datasets = [
+            load_mbpp(config["dataset_name"], config.get("dataset_config"), split, include_generic_arguments, visible_test_count)
+            for split in split_names
+        ]
+        all_dataset = _combine_datasets(all_datasets)
     evaluation_dataset = load_evalplus(
         config.get("evalplus_dataset_name", DEFAULT_EVALPLUS_DATASET),
         config.get("evalplus_split", DEFAULT_EVALPLUS_SPLIT),
@@ -283,9 +314,10 @@ def prepare_datasets(config: dict[str, Any]) -> tuple[Any, Any]:
         for record in evalplus_records.values()
         if (normalized_text := _normalize_task_text(_task_description_from_prompt(record.get("prompt", ""))))
     }
+    # Remove exact benchmark IDs and descriptions from either original or synthetic training rows.
     train_dataset = _filter_dataset(
         all_dataset,
-        lambda record: int(record["task_id"]) not in evalplus_task_ids
+        lambda record: str(record["task_id"]) not in {str(task_id) for task_id in evalplus_task_ids}
         and _normalize_task_text(record.get("task_text", "")) not in evalplus_task_texts,
     )
     # Remove the helper text column before passing records to the trainer and evaluator.
@@ -302,16 +334,22 @@ def prepare_datasets(config: dict[str, Any]) -> tuple[Any, Any]:
     if train_task_ids is not None:
         allowed_task_ids = {str(task_id) for task_id in train_task_ids}
         train_dataset = _filter_dataset(train_dataset, lambda record: str(record["task_id"]) in allowed_task_ids)
+    # Fail before training if the configured artifact does not contain the requested row count.
+    expected_train_samples = config.get("expected_train_samples")
+    if expected_train_samples is not None and len(train_dataset) != int(expected_train_samples):
+        raise ValueError(f"Expected {expected_train_samples} training tasks, but loaded {len(train_dataset)}.")
     max_train = config.get("max_train_samples")
     max_eval = config.get("max_eval_samples")
 
     # Limit the official training split for short debugging runs when requested.
     if max_train:
-        train_dataset = train_dataset.select(range(min(int(max_train), len(train_dataset))))
+        limit = min(int(max_train), len(train_dataset))
+        train_dataset = train_dataset.select(range(limit)) if hasattr(train_dataset, "select") else train_dataset[:limit]
 
     # Limit the EvalPlus evaluation set for short debugging runs when requested.
     if max_eval:
-        evaluation_dataset = evaluation_dataset.select(range(min(int(max_eval), len(evaluation_dataset))))
+        limit = min(int(max_eval), len(evaluation_dataset))
+        evaluation_dataset = evaluation_dataset.select(range(limit)) if hasattr(evaluation_dataset, "select") else evaluation_dataset[:limit]
 
     # Add generated tests only to training rewards when explicitly enabled.
     if config.get("synthetic_tests_enabled", False):

@@ -2,7 +2,7 @@
 
 import json
 
-from data import add_synthetic_tests, load_synthetic_tests, build_prompt, build_sft_dataset, normalize_record, prepare_datasets, split_dataset
+from data import add_synthetic_tests, load_generated_training_tasks, load_synthetic_tests, build_prompt, build_sft_dataset, normalize_record, prepare_datasets, split_dataset
 
 
 def test_normalize_record_builds_prompt_and_tests():
@@ -11,6 +11,26 @@ def test_normalize_record_builds_prompt_and_tests():
     assert normalized["task_id"] == 1
     assert "Add two numbers." in normalized["prompt"]
     assert normalized["test_code"] == "assert add(1, 2) == 3"
+
+
+def test_load_generated_training_tasks_uses_only_materialized_synthetic_rows(tmp_path):
+    """Load generated records and keep their reference tests in the training schema."""
+    artifact = tmp_path / "tasks.jsonl"
+    artifact.write_text(json.dumps({
+        "prompt_id": "pilot-001",
+        "task_text": "Return the sum.",
+        "reference_solution": "def add(a, b):\n    return a + b",
+        "tests": ["assert add(1, 2) == 3", "assert add(0, 0) == 0", "assert add(-1, 1) == 0"],
+        "reference_status": "passed",
+    }) + "\n", encoding="utf-8")
+
+    dataset = load_generated_training_tasks(artifact)
+
+    assert len(dataset) == 1
+    assert dataset[0]["task_id"] == "synthetic-pilot-001"
+    assert dataset[0]["task_text"] == "Return the sum."
+    assert dataset[0]["reference_code"].startswith("def add")
+    assert dataset[0]["test_code"].count("assert") == 3
 
 
 def test_split_dataset_is_deterministic():

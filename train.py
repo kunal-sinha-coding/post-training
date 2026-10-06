@@ -195,7 +195,11 @@ def configure_wandb(config: dict[str, Any]) -> Any | None:
     os.environ.setdefault("WANDB_PROJECT", str(config.get("wandb_project", "grpo-mbpp")))
     # Start one shared run before baseline evaluation and both training stages.
     if wandb.run is None:
-        wandb.init(project=str(config.get("wandb_project", "grpo-mbpp")), name=config.get("wandb_run_name"))
+        run_options = {"project": str(config.get("wandb_project", "grpo-mbpp")), "name": config.get("wandb_run_name")}
+        # Reuse one W&B run across supervisor restarts when a fixed run ID is configured.
+        if config.get("wandb_run_id"):
+            run_options.update(id=str(config["wandb_run_id"]), resume="allow")
+        wandb.init(**run_options)
     # Use trainer steps rather than W&B history row numbers on evaluation charts.
     if hasattr(wandb, "define_metric"):
         wandb.define_metric("evaluation/step")
@@ -1116,6 +1120,11 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
     config["_evaluation_epoch"] = trainer.state.epoch
     save_evaluation(output_dir, "final", final_metrics, final_details, config)
     log_evaluation(wandb, final_metrics, "final", trainer.state.global_step)
+    # Run the canonical hidden-test benchmark after the fixed training schedule is complete.
+    if config.get("run_qwen_evalplus_at_end", False):
+        final_evalplus = run_qwen_evalplus(output_dir / "final", output_dir, "final")
+        save_evaluation(output_dir, "evalplus-final", final_evalplus["metrics"], [], config)
+        log_evaluation(wandb, final_evalplus["metrics"], "evalplus-final", trainer.state.global_step)
     saved_config = {key: value for key, value in config.items() if not key.startswith("_")}
     (output_dir / "config.json").write_text(json.dumps(saved_config, indent=2), encoding="utf-8")
 

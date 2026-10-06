@@ -2602,3 +2602,11 @@ Generated one synthetic task for each of 100 proportionally allocated category p
 Why: The user requested a complete 100-task synthetic-only training dataset with ground-truth code and sandbox-derived assertions before GRPO training and canonical EvalPlus evaluation.
 
 Artifacts: `analysis/mbpp_category_prompt_pilot_100.jsonl`, `analysis/mbpp_category_synthetic_task_specs_pilot100.jsonl`, and `analysis/mbpp_category_synthetic_tasks_pilot100.jsonl`.
+
+## 2026-10-06: Configure synthetic-only Qwen 0.5B GRPO
+
+Commit name: Configure synthetic-only pilot training.
+
+Added a YAML-selectable `training_tasks_path` and an exact `expected_train_samples` guard. Added the 100-task Qwen 0.5B GRPO configuration, with a 1,500-step target, checkpoints every 10 optimizer steps, W&B reporting under a fixed run ID, final EvalPlus evaluation, and checkpoint selection disabled. Added a persistent supervisor that checks every 10 minutes and resumes the latest complete checkpoint after an observed early exit. Added a focused data-loader test and updated the runbook. Dataset preparation verified all 100 training rows come from the synthetic artifact and loaded 378 separate EvalPlus evaluation rows. The first focused test run exposed list-backed dataset selection behavior, which is now covered by a compatible slice fallback. The focused test suite passes, and Hugging Face dataset writes use `/tmp/post-training-hf-datasets` because the shared workspace cache rejects chmod.
+
+Why: The user asked to train only on the 100 synthetic tasks, configure the choice in YAML, report to W&B, save checkpoints every 10 steps, restart after monitor-detected failures until at least 1,500 steps, and evaluate with EvalPlus.
