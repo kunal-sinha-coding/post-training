@@ -34,7 +34,7 @@ Reject a task if its reference solution fails to execute, its output cannot be r
 
 ## Train Qwen 0.5B on synthetic tasks only
 
-The training configuration `configs/grpo-mbpp-synthetic-pilot100-qwen05.yaml` sets `training_tasks_path` to the 100-task artifact and requires exactly 100 training rows. When this path is set, the loader does not load original MBPP training splits. It uses the base `Qwen/Qwen2.5-Coder-0.5B-Instruct` model, GRPO, W&B reporting, a 1,500-step target, and saves a checkpoint every 10 optimizer steps. The optimizer settings follow the successful 0.5B GRPO setup recorded in the experiment notes. Best-checkpoint selection and intermediate EvalPlus runs are disabled so benchmark labels do not select the model.
+The training configuration `configs/grpo-mbpp-synthetic-pilot100-qwen05.yaml` sets `training_tasks_path` to the 100-task artifact and requires exactly 100 training rows. When this path is set, the loader does not load original MBPP training splits. It uses the base `Qwen/Qwen2.5-Coder-0.5B-Instruct` model, GRPO, W&B reporting, a 1,500-step target, and saves a checkpoint every 10 optimizer steps. The optimizer settings follow the successful 0.5B GRPO setup recorded in the experiment notes. Canonical EvalPlus MBPP and MBPP+ evaluation runs every 10 optimizer steps and again on the final model. Best-checkpoint selection is disabled so benchmark labels do not select the model.
 
 Launch with:
 

@@ -16,7 +16,7 @@ run_baseline_evaluation: false
 run_intermediate_evals: false
 run_qwen_evalplus_at_start: false
 run_qwen_evalplus_at_end: true
-evalplus_eval_steps: 0
+evalplus_eval_steps: 10
 lora_enabled: true
 lora_r: 16
 lora_alpha: 32

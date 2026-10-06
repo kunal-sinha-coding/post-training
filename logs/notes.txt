@@ -2612,3 +2612,11 @@ Added a YAML-selectable `training_tasks_path` and an exact `expected_train_sampl
 Why: The user asked to train only on the 100 synthetic tasks, configure the choice in YAML, report to W&B, save checkpoints every 10 steps, restart after monitor-detected failures until at least 1,500 steps, and evaluate with EvalPlus.
 
 The initial launch reached W&B run `synth100qwen05` but failed before model loading because the shared Hugging Face cache had an empty cached `tokenizer_config.json`. The isolated preview cache under `/tmp/mbpp-qwen05-hf-home` loads the expected Qwen 0.5B tokenizer successfully. The supervisor now uses that cache and checks once per minute, so it can resume within one minute of detecting a stopped process.
+
+The initial training configuration accidentally set `evalplus_eval_steps: 0`. The user clarified that canonical EvalPlus evaluation must run every 10 optimizer steps. The setting is now 10, while checkpoint selection remains disabled. The current process will resume from the latest complete 10-step checkpoint under this updated schedule.
+
+Commit name: Enable ten-step EvalPlus on the active synthetic run.
+
+Set `evalplus_eval_steps` to 10 in the synthetic-only Qwen 0.5B config and updated the runbook and results record to state that canonical EvalPlus runs every 10 optimizer steps and at the end. The running process had already loaded the old zero interval, so it must resume from its latest complete checkpoint to use the corrected cadence. Checkpoint selection remains disabled.
+
+Why: The user explicitly requested EvalPlus evaluation every 10 optimizer steps. The previous configuration incorrectly scheduled it only at the end.

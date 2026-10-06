@@ -15763,13 +15763,13 @@ Status: Running under an automatic resume supervisor. The first launch verified 
 
 Purpose: Measure GRPO training on only the 100 proportionally allocated synthetic MBPP tasks, then report standard training metrics and canonical EvalPlus MBPP and MBPP+ metrics.
 
-Setup: Use base `Qwen/Qwen2.5-Coder-0.5B-Instruct`, no checkpoint or adapter initialization, GRPO with LoRA rank 16 and alpha 32, fresh rollouts, hybrid reward coefficient 0.5, learning rate 1e-6, four generations, per-device batch 1, gradient accumulation 32, generation batch 4, and a 1,500-step target. Save trainer checkpoints every 10 steps. Disable checkpoint selection and intermediate EvalPlus runs so EvalPlus labels do not select the candidate. Run canonical EvalPlus once on the final model after the fixed schedule.
+Setup: Use base `Qwen/Qwen2.5-Coder-0.5B-Instruct`, no checkpoint or adapter initialization, GRPO with LoRA rank 16 and alpha 32, fresh rollouts, hybrid reward coefficient 0.5, learning rate 1e-6, four generations, per-device batch 1, gradient accumulation 32, generation batch 4, and a 1,500-step target. Save trainer checkpoints every 10 steps. Run canonical EvalPlus every 10 steps and on the final model. Disable checkpoint selection so EvalPlus labels do not select the candidate.
 
 Data: Training artifact `analysis/mbpp_category_synthetic_tasks_pilot100.jsonl`, containing 100 tasks and 300 sandbox-derived assertions. YAML `configs/grpo-mbpp-synthetic-pilot100-qwen05.yaml` selects this file through `training_tasks_path` and requires exactly 100 training rows. Dataset preparation verified 100 synthetic training rows and 378 separate EvalPlus rows. EvalPlus IDs and normalized task descriptions are filtered from training before the exact-count guard.
 
 Tracking and outputs: W&B project `grpo-mbpp`, run name `grpo-mbpp-synthetic-pilot100-qwen05-20261006`, and fixed run ID `synth100qwen05` for retries. The run initialized at https://wandb.ai/kunal-personal/grpo-mbpp/runs/synth100qwen05. Intended output directory `outputs/grpo-mbpp-synthetic-pilot100-qwen05`. Per-attempt logs and the monitor log are stored in that output directory. Model cache is `/tmp/mbpp-qwen05-hf-home`; dataset cache writes use `/tmp/post-training-hf-datasets` because the shared workspace cache does not permit chmod.
 
-Selection: Use the final model after the fixed 1,500-step schedule. Do not select a checkpoint using EvalPlus labels. The final EvalPlus evaluation is a separate benchmark measurement after candidate selection.
+Selection: Use the final model after the fixed 1,500-step schedule. Do not select a checkpoint using EvalPlus labels. Every EvalPlus evaluation is a separate benchmark measurement and does not affect training or candidate selection.
 
 Metrics: Pending training and final evaluation.
 
@@ -15780,4 +15780,11 @@ Limitations: This pilot tests one fixed run on 100 generated tasks. It does not 
 ------------------------------------------------------------------------
 RUN STARTING
 Timestamp: 2026-10-06 05:46:30 PDT
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+RUN STARTING
+Timestamp: 2026-10-06 05:48:30 PDT
 ------------------------------------------------------------------------
