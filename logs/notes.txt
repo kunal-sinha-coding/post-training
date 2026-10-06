@@ -2575,3 +2575,14 @@ This is a 13-task preview with three generated test inputs per task. It measures
 Commit name: Record the category preview evaluation.
 
 Appended the complete setup and results for the 13-task base-Qwen preview to `logs/results.txt`. The record includes the task and prompt artifacts, same-category exemplar IDs, GPT-6 Luna generation provenance, sandbox-derived outputs, Qwen model revision and greedy decoding settings, environment, per-category assertion outcomes, and limits on interpreting this small preview. The reported results are 7/13 task pass@1 and 27/39 assertions passed.
+
+
+## 2026-10-06: Clarify isolated context for GPT-6 Luna generation agents
+
+Commit name: Clarify Luna agent prompt isolation.
+
+Updated `analysis/mbpp_synthetic_generation_runbook.md` to require starting each GPT-6 Luna agent without conversation history and supplying only its assigned prompt text. This makes the prompt-only generation setup explicit and prevents taxonomy files, other prompts, prior responses, or extra task instructions from influencing generated tasks.
+
+Commit name: Clarify interruption continuation rules.
+
+Expanded the active-task continuation instructions in `AGENTS.md`. Incoming questions, status requests, corrections, frustration, insults, and threats now require a brief response followed by immediate resumption of authorized work. Multi-batch tasks must dispatch the next available batch and checkpoint results, and the agent must not end the turn with authorized work pending unless the user stops or a blocker prevents progress. This change responds to repeated pauses during the synthetic-data generation task despite the user's instruction to continue.

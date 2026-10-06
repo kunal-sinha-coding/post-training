@@ -48,3 +48,11 @@
 - When the user asks for an experiment that reports metrics or numerical results, save the results in the repository results file.
 - Record the experiment name, purpose, complete setup, configuration, data and candidate artifact identifiers, selection procedure, reported metrics, relevant environment details, code and commit identifiers, and any limitations needed to reproduce the experiment if its outputs are lost.
 - Keep candidate selection independent of ground truth. Use ground truth only after selection for a separate benchmark measurement, and record that separation explicitly.
+
+## Active Task Continuation
+
+- Keep the user's current authorized task active until it is complete.
+- When a user message arrives during active work, treat it as steering, not as a stop request. Answer it briefly, then resume the task without waiting for another message.
+- Do not treat a question, status request, correction, frustration, insult, or threat as cancellation or pause.
+- After handling an interruption, continue the next authorized step. For multi-batch work, dispatch the next available batch and save completed results before doing unrelated work.
+- Do not end the turn while authorized work remains. Stop only when the user explicitly asks to stop, cancel, pause, or replace the task, or when a blocker prevents progress. State the blocker and the remaining work if that happens.
