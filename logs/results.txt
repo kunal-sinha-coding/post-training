@@ -15715,3 +15715,45 @@ Token estimates. Used `tiktoken` 0.14.0 with `cl100k_base` as a proxy because th
 Environment and identifiers. EvalPlus version: 0.3.1. Token estimator: `tiktoken` 0.14.0, `cl100k_base`. Dataset filter change was committed as `389938b` before this report was written. No model generation, training, or benchmark evaluation was run for this analysis. The task taxonomy is based on analyst-assigned primary labels and is not an error-category or correctness analysis.
 
 Limitations. Token counts are estimates for a proxy tokenizer and may differ from the Qwen tokenizer. Task types overlap in practice, but this report forces one primary label per task to provide a count distribution. The archived model run used all 593 training tasks, including the two descriptions identified as cross-ID duplicates; removing them from the historical archive would change the record rather than the training data already used.
+
+
+============================================================================
+EXPERIMENT: mbpp-category-synthetic-preview-qwen05-20261006
+============================================================================
+Purpose: Measure one greedy base-Qwen completion on one generated synthetic task from each of the 13 taxonomy categories. This is a preview of base-model solvability. It is not a synthetic-training experiment and does not measure EvalPlus improvement.
+
+Source and setup:
+- Taxonomy: `analysis/mbpp_task_taxonomy_10x.json`, with 591 task labels and category counts.
+- Prompt generation code: `analysis/generate_mbpp_category_prompts.py`; run with `--prompts-per-category 1 --seed 20261006` to create 13 prompts in `analysis/mbpp_category_prompt_preview.jsonl`.
+- Each prompt contains three distinct examples from the same category. The prompt IDs and example task IDs are saved with the prompts.
+- Generation model: GPT-6 Luna, invoked through three parallel subagents. One response was retained for each fixed prompt. The agent interface did not expose a sampling temperature or model revision.
+- Generated specifications: `analysis/mbpp_category_synthetic_task_specs.jsonl`. Each contains a task description, reference function, and exactly three literal Python call inputs. The agents did not supply expected outputs.
+- Ground-truth procedure: `analysis/materialize_mbpp_category_tasks.py` ran each call against the reference function using `sandbox.execute_code`, with a 5-second timeout. It derived expected outputs and assertions and saved them in `analysis/mbpp_category_synthetic_tasks_preview.jsonl`.
+- Candidate model: base `Qwen/Qwen2.5-Coder-0.5B-Instruct`, Hugging Face revision `ea3f2471cf1b1f0db85067f1ef93848e38e88c25`. No fine-tuned checkpoint or adapter was loaded.
+- Candidate generation: repository EvalPlus ChatML prompt, vLLM 0.10.2, bfloat16, greedy temperature 0, top-p 1, maximum 2,048 new tokens, with the repository Qwen stop strings. One sample was generated per task.
+- Candidate scoring: `sandbox.score_completion`, with a 3-second timeout per assertion. No candidate selection was performed. Ground-truth outputs were used to construct the assertions before model scoring.
+- Code and artifact commit: `59b90f9` (`Generate category preview tasks and run base Qwen`). Taxonomy source commit: `869699a`. Prompt generator and runbook commit: `32b574d`.
+- Environment: Python 3.12.3, PyTorch 2.8.0+cu128, Transformers 4.56.2, vLLM 0.10.2, one NVIDIA A40 GPU. A fresh Hub cache was used because the pre-existing model cache had empty files.
+
+Results:
+- Task pass@1: 7/13 = 53.8462%.
+- Assertion pass fraction: 27/39 = 69.2308%.
+- Per-category results and raw completions are saved in `analysis/mbpp_category_synthetic_qwen05_eval.json`.
+
+| Category | Prompt | Example task IDs | Qwen assertions passed | Task passed |
+| --- | --- | --- | ---: | --- |
+| Arithmetic and numeric formulas | 01-001 | 880, 212, 502 | 1/3 | no |
+| Number properties and number theory | 02-001 | 483, 855, 295 | 3/3 | yes |
+| Lists and sequence transformations | 03-001 | 883, 815, 345 | 1/3 | no |
+| Search, sorting, and selection | 04-001 | 970, 37, 209 | 3/3 | yes |
+| Counting and frequency | 05-001 | 13, 384, 258 | 1/3 | no |
+| Strings and text processing | 06-001 | 186, 584, 877 | 3/3 | yes |
+| Set and membership operations | 07-001 | 953, 811, 706 | 2/3 | no |
+| Mappings, tuples, and record aggregation | 08-001 | 363, 81, 205 | 3/3 | yes |
+| Recurrence, combinatorics, and dynamic programming | 09-001 | 314, 661, 231 | 1/3 | no |
+| Matrices and grids | 10-001 | 353, 652, 642 | 3/3 | yes |
+| Geometry and spatial calculations | 11-001 | 716, 153, 76 | 3/3 | yes |
+| Graphs, paths, intervals, and chains | 12-001 | 927, 110, 660 | 0/3 | no |
+| Predicates, validation, and classification | 13-001 | 115, 201, 349 | 3/3 | yes |
+
+Limitations: This is one generated task and three generated input cases per category. The results are sensitive to these small samples. The assertions come from the generated reference functions and are not independent hidden tests. The pass rates describe only these 13 tasks. They do not show that training on these tasks will improve held-out MBPP or EvalPlus performance. A controlled training comparison and untouched held-out evaluation are required for that claim.

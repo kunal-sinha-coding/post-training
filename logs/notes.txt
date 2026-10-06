@@ -2570,3 +2570,8 @@ Generated one task for each of the 13 saved category prompts with three GPT-6 Lu
 Ran one greedy sample per task from the original `Qwen/Qwen2.5-Coder-0.5B-Instruct` base model with no fine-tuned checkpoint or adapter. The run used the repository EvalPlus ChatML prompt and decoder settings: bfloat16, temperature 0, top-p 1, and 2,048 maximum new tokens. The model passed all assertions on 7 of 13 tasks and passed 27 of 39 assertions. Per-task completions and diagnostics are saved in `analysis/mbpp_category_synthetic_qwen05_eval.json`. The model revision was `ea3f2471cf1b1f0db85067f1ef93848e38e88c25`; runtime was Python 3.12.3, PyTorch 2.8.0+cu128, vLLM 0.10.2, Transformers 4.56.2, and one NVIDIA A40 GPU.
 
 This is a 13-task preview with three generated test inputs per task. It measures the base model on these synthetic tasks only. It does not measure a training effect or held-out EvalPlus improvement.
+
+
+Commit name: Record the category preview evaluation.
+
+Appended the complete setup and results for the 13-task base-Qwen preview to `logs/results.txt`. The record includes the task and prompt artifacts, same-category exemplar IDs, GPT-6 Luna generation provenance, sandbox-derived outputs, Qwen model revision and greedy decoding settings, environment, per-category assertion outcomes, and limits on interpreting this small preview. The reported results are 7/13 task pass@1 and 27/39 assertions passed.
