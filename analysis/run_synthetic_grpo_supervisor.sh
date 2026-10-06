@@ -9,7 +9,7 @@ CONFIG="configs/grpo-mbpp-synthetic-pilot100-qwen05.yaml"
 OUTPUT="outputs/grpo-mbpp-synthetic-pilot100-qwen05"
 SUPERVISOR_LOG="$OUTPUT/supervisor.log"
 TARGET_STEPS=1500
-CHECK_INTERVAL_SECONDS=600
+CHECK_INTERVAL_SECONDS=60
 
 # Create the persistent output directory before launching any attempt.
 mkdir -p "$OUTPUT"
@@ -65,7 +65,7 @@ while true; do
 
     # Record the timestamp and resume point before starting this training attempt.
     printf '[%s] Starting attempt %s from step %s with checkpoint %s.\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" "$attempt" "$current_step" "${checkpoint:-base model}" | tee -a "$SUPERVISOR_LOG"
-    HF_HUB_ENABLE_HF_TRANSFER=0 HF_DATASETS_CACHE=/tmp/post-training-hf-datasets "${command[@]}" >>"$attempt_log" 2>&1 &
+    HF_HOME=/tmp/mbpp-qwen05-hf-home HF_HUB_ENABLE_HF_TRANSFER=0 HF_DATASETS_CACHE=/tmp/post-training-hf-datasets "${command[@]}" >>"$attempt_log" 2>&1 &
     training_pid=$!
 
     # Check process state at the configured interval and keep the worker active during long runs.

@@ -42,7 +42,7 @@ Launch with:
 bash analysis/run_synthetic_grpo_supervisor.sh
 ```
 
-The supervisor checks the process every 10 minutes. If training exits before completing 1,500 steps and final EvalPlus, it resumes from the latest complete checkpoint and retries. It uses one fixed W&B run ID across retries. After training, the config runs official EvalPlus MBPP and MBPP+ evaluation on the final model. Training metrics and that final evaluation are logged to W&B and saved under `outputs/grpo-mbpp-synthetic-pilot100-qwen05`.
+The supervisor checks the process every minute, which is more frequent than the requested 10-minute interval. It uses the validated local Qwen cache under `/tmp/mbpp-qwen05-hf-home` and writes dataset cache files under `/tmp/post-training-hf-datasets`. If training exits before completing 1,500 steps and final EvalPlus, it resumes from the latest complete checkpoint and retries. It uses one fixed W&B run ID across retries. After training, the config runs official EvalPlus MBPP and MBPP+ evaluation on the final model. Training metrics and that final evaluation are logged to W&B and saved under `outputs/grpo-mbpp-synthetic-pilot100-qwen05`.
 
 ## Evaluate Qwen 0.5B before training
 
