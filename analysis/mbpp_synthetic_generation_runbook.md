@@ -12,19 +12,20 @@ python analysis/generate_mbpp_category_prompts.py --prompts-per-category 1 --see
 
 The script writes one JSONL row per category. Each prompt contains three distinct training examples from that category, sampled without replacement within the prompt. The script can create more prompts per category by changing `--prompts-per-category`.
 
-## Generate task specifications
+## Generate task specifications with the API
 
-Use one GPT-6 Luna agent per prompt batch. Start each agent without conversation history or other task context, and give it only the prompt text from its assigned JSONL row. Do not provide the taxonomy, source files, runbook, other prompts, prior agent outputs, or extra instructions outside that prompt. Ask each agent to follow the prompt exactly and return JSON with `category`, `task_text`, `entry_point`, `reference_solution`, and exactly three `test_inputs`. Each test input must be a Python call expression with literal arguments. The agent must not return expected outputs or assertions.
+`analysis/generate_mbpp_category_tasks_api.py` creates one prompt per task in proportion to the saved training taxonomy. It samples three distinct tasks from the same category for each prompt. It sends only that prompt to GPT-6 Luna through the Responses API and requests one JSON object with the task description, reference function, and exactly three literal test calls. It uses a semaphore with a default limit of 20 concurrent requests.
 
-The 100 pilot responses are saved in `analysis/mbpp_category_synthetic_task_specs_pilot100.jsonl`. Keep the category and prompt ID with each response.
-
-`analysis/materialize_mbpp_category_tasks.py` validates each response and runs its reference function against the three literal calls in the repository subprocess sandbox:
+Keep `OPENAI_API_KEY` in the ignored repository `.env` or in the process environment. Do not commit the key. First run a small sanity sample, then generate the full set:
 
 ```bash
-python analysis/materialize_mbpp_category_tasks.py
+python analysis/generate_mbpp_category_tasks_api.py --limit 2 --concurrency 20
+python analysis/generate_mbpp_category_tasks_api.py --concurrency 20
 ```
 
-The resulting `analysis/mbpp_category_synthetic_tasks_pilot100.jsonl` stores each task, reference solution, inputs, derived expected outputs, assertions, and example IDs. All 100 reference functions passed sandbox execution for their three inputs.
+The script validates each response, executes its reference function and test calls in the repository subprocess sandbox, and derives expected outputs and assertions. It rejects invalid tasks and regenerates exact duplicate task descriptions with the original prompt only. It saves prompt provenance, task specifications, materialized tasks, a usage ledger under `outputs/mbpp_synthetic_api100`, and the final token and cost summary at `analysis/mbpp_category_api_usage_100.json`. The state files let a restarted process reuse validated tasks and avoid duplicate API calls.
+
+The full task and test artifact is `analysis/mbpp_category_synthetic_tasks_api100.jsonl`. It stores each task description, reference solution, three input calls, sandbox-derived outputs, executable assertions, category, prompt ID, source example IDs, and generation model. The paired raw specifications are saved in `analysis/mbpp_category_synthetic_task_specs_api100.jsonl`.
 
 ## Materialize ground-truth tests
 
@@ -61,3 +62,8 @@ This preview measures the base model on the 13-category preview tasks only. It d
 ## Matched c4thzd3 synthetic-only run
 
 The matched configuration is `configs/grpo-mbpp-synthetic100-matched-c4thzd3.yaml`. It copies the linked successful run's GRPO and evaluation settings, then changes the training source to the 100-task synthetic JSONL and sets `expected_train_samples: 100`. It also preserves `visible_test_count: 1`, so one generated assertion is shown in each prompt while all three saved assertions are used for reward scoring. The dedicated supervisor starts from the base model, saves every 10 steps, evaluates EvalPlus every 10 steps and at the end, and resumes the latest complete checkpoint after an observed worker exit. Use `bash analysis/run_synthetic_grpo_matched_supervisor.sh` to launch it.
+
+
+## Matched training on Luna API-generated tasks
+
+The active replacement configuration is `configs/grpo-mbpp-synthetic100-luna-api-matched-c4thzd3.yaml`. It preserves the matched `c4thzd3` optimizer, model, reward, batch, checkpoint, and evaluation settings. It points `training_tasks_path` to the API-generated 100-task artifact and uses a new output directory and W&B run ID. It starts from the base model. The supervisor is `analysis/run_synthetic_grpo_luna_api_supervisor.sh` and checks the trainer once per minute. It resumes the latest complete checkpoint after an observed process exit. Training saves every 10 steps, runs EvalPlus every 10 steps and at the end, and targets 50,000 steps.

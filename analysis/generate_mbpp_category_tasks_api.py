@@ -41,6 +41,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--prompts", type=Path, default=ROOT / "analysis" / "mbpp_category_api_prompts_100.jsonl")
     parser.add_argument("--specs", type=Path, default=ROOT / "analysis" / "mbpp_category_synthetic_task_specs_api100.jsonl")
     parser.add_argument("--tasks", type=Path, default=ROOT / "analysis" / "mbpp_category_synthetic_tasks_api100.jsonl")
+    parser.add_argument("--usage-summary", type=Path, default=ROOT / "analysis" / "mbpp_category_api_usage_100.json")
     parser.add_argument("--state-dir", type=Path, default=ROOT / "outputs" / "mbpp_synthetic_api100")
     parser.add_argument("--total-tasks", type=int, default=100)
     parser.add_argument("--seed", type=int, default=20261007)
@@ -95,12 +96,13 @@ async def generate_one(
     progress: dict[str, int | float],
     retries: int,
     timeout_seconds: float,
+    force: bool = False,
 ) -> dict[str, Any]:
     """Generate, validate, and sandbox one task while recording token usage."""
     # Reuse a fully validated task after interruption so completed API calls are not repeated.
     prompt_id = prompt_row["prompt_id"]
     state_path = state_dir / f"{prompt_id}.json"
-    if state_path.exists():
+    if state_path.exists() and not force:
         saved = json.loads(state_path.read_text(encoding="utf-8"))
         if saved.get("status") == "passed":
             async with progress_lock:
@@ -232,11 +234,34 @@ async def run(args: argparse.Namespace) -> int:
     failed = [record for record in results if record["status"] != "passed"]
     if failed:
         raise RuntimeError(f"{len(failed)} task generations failed; inspect {args.state_dir}")
+    # Keep the API client open while replacing any repeated task descriptions.
+    async with AsyncOpenAI(api_key=api_key) as retry_client:
+        seen_descriptions: set[str] = set()
+        # Regenerate exact duplicate descriptions with their original prompts before publishing.
+        for index, (prompt_row, record) in enumerate(zip(selected, results)):
+            description_key = " ".join(record["task"]["task_text"].casefold().split())
+            if description_key in seen_descriptions:
+                replacement = None
+                # Retry the duplicate prompt without adding context beyond its original text.
+                for _ in range(args.retries + 1):
+                    candidate = await generate_one(
+                        prompt_row, retry_client, semaphore, args.state_dir, usage_path, usage_lock,
+                        progress_lock, progress, args.retries, args.timeout_seconds, force=True,
+                    )
+                    candidate_key = " ".join(candidate.get("task", {}).get("task_text", "").casefold().split())
+                    if candidate["status"] == "passed" and candidate_key not in seen_descriptions:
+                        replacement = candidate
+                        description_key = candidate_key
+                        break
+                if replacement is None:
+                    raise RuntimeError(f"Could not generate a unique task for prompt {prompt_row['prompt_id']}")
+                results[index] = replacement
+            seen_descriptions.add(description_key)
     # Write sample outputs to separate files and only publish full artifacts after all tasks pass.
     is_sample = args.limit is not None
     specs_path = args.specs.with_name(args.specs.stem + f"_sample{args.limit}.jsonl") if is_sample else args.specs
     tasks_path = args.tasks.with_name(args.tasks.stem + f"_sample{args.limit}.jsonl") if is_sample else args.tasks
-    rows = [json.dumps(record["spec" if is_sample else "spec"], ensure_ascii=False) for record in results]
+    rows = [json.dumps(record["spec"], ensure_ascii=False) for record in results]
     task_rows = [json.dumps(record["task"], ensure_ascii=False) for record in results]
     specs_path.write_text("\n".join(rows) + "\n", encoding="utf-8")
     tasks_path.write_text("\n".join(task_rows) + "\n", encoding="utf-8")
@@ -244,6 +269,26 @@ async def run(args: argparse.Namespace) -> int:
     print(f"Saved {len(results)} validated task specs to {specs_path}.", flush=True)
     print(f"Saved {len(results)} sandbox-tested tasks to {tasks_path}.", flush=True)
     print_progress(progress)
+    # Save exact API token usage and estimated cost as a separate reproducibility artifact.
+    usage_rows = [json.loads(line) for line in usage_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    usage_summary = {
+        "model": MODEL,
+        "reasoning_effort": "none",
+        "prompt_count": len(prompts),
+        "validated_task_count": len(results),
+        "api_response_count": len(usage_rows),
+        "input_tokens": sum(int(row.get("input_tokens", 0)) for row in usage_rows),
+        "cached_input_tokens": sum(int(row.get("cached_input_tokens", 0)) for row in usage_rows),
+        "output_tokens": sum(int(row.get("output_tokens", 0)) for row in usage_rows),
+        "estimated_cost_usd": round(sum(float(row.get("cost_usd", 0.0)) for row in usage_rows), 8),
+        "input_rate_per_million_usd": INPUT_RATE,
+        "cached_input_rate_per_million_usd": CACHED_INPUT_RATE,
+        "output_rate_per_million_usd": OUTPUT_RATE,
+        "semaphore_limit": args.concurrency,
+    }
+    if not is_sample:
+        args.usage_summary.write_text(json.dumps(usage_summary, indent=2) + "\n", encoding="utf-8")
+        print(f"Saved API usage and cost summary to {args.usage_summary}.", flush=True)
     return len(results)
 
 

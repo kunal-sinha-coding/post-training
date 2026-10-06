@@ -2656,3 +2656,9 @@ Commit name: Record Luna API generation sanity sample.
 Saved the 100 proportional API prompts plus two GPT-6 Luna sanity outputs, including each task description, reference function, three test inputs, sandbox-derived outputs, and assertions. Recorded token usage and estimated cost in the experiment results file. Both sampled responses passed schema validation and sandbox execution. The active synthetic training process remains stopped while the full API dataset is generated.
 
 Why: The user required a one- or two-task validation before generating the complete synthetic dataset.
+
+Commit name: Generate unique Luna API synthetic tasks and configure matched training.
+
+Saved the full 100-task API dataset and raw specifications. Added a duplicate-description retry using the same original prompt, a structured usage and cost summary, an API generation section in the runbook, and a dedicated training config and supervisor. The final dataset has the exact training-category proportions, 100 unique task descriptions, and three sandbox-derived assertions per task. Trainer data preparation loaded 100 training rows and 378 EvalPlus rows; prompts expose one assertion and rewards use all three. Recorded 101 API responses, 55,693 input tokens, 21,876 output tokens, and estimated cost $0.0165073. The prior matched trainer and supervisor were stopped before the API generation work.
+
+Why: The user requested proportional API generation with concurrency capped at 20, then a fresh synthetic-only run using the same successful reference training settings.
