@@ -1,0 +1,318 @@
+{
+  "model": "Qwen/Qwen2.5-Coder-0.5B-Instruct",
+  "checkpoint": "base model, no fine-tuned checkpoint or adapter",
+  "decoding": {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "max_tokens": 2048
+  },
+  "task_count": 13,
+  "task_pass_at_1": 0.5384615384615384,
+  "task_passed": 7,
+  "assertion_count": 39,
+  "assertion_pass_fraction": 0.6923076923076923,
+  "assertions_passed": 27,
+  "per_category": {
+    "Arithmetic and numeric formulas": {
+      "tasks": 1,
+      "tasks_passed": 0,
+      "assertions_passed": 1,
+      "assertions_total": 3
+    },
+    "Number properties and number theory": {
+      "tasks": 1,
+      "tasks_passed": 1,
+      "assertions_passed": 3,
+      "assertions_total": 3
+    },
+    "Lists and sequence transformations": {
+      "tasks": 1,
+      "tasks_passed": 0,
+      "assertions_passed": 1,
+      "assertions_total": 3
+    },
+    "Search, sorting, and selection": {
+      "tasks": 1,
+      "tasks_passed": 1,
+      "assertions_passed": 3,
+      "assertions_total": 3
+    },
+    "Counting and frequency": {
+      "tasks": 1,
+      "tasks_passed": 0,
+      "assertions_passed": 1,
+      "assertions_total": 3
+    },
+    "Strings and text processing": {
+      "tasks": 1,
+      "tasks_passed": 1,
+      "assertions_passed": 3,
+      "assertions_total": 3
+    },
+    "Set and membership operations": {
+      "tasks": 1,
+      "tasks_passed": 0,
+      "assertions_passed": 2,
+      "assertions_total": 3
+    },
+    "Mappings, tuples, and record aggregation": {
+      "tasks": 1,
+      "tasks_passed": 1,
+      "assertions_passed": 3,
+      "assertions_total": 3
+    },
+    "Recurrence, combinatorics, and dynamic programming": {
+      "tasks": 1,
+      "tasks_passed": 0,
+      "assertions_passed": 1,
+      "assertions_total": 3
+    },
+    "Matrices and grids": {
+      "tasks": 1,
+      "tasks_passed": 1,
+      "assertions_passed": 3,
+      "assertions_total": 3
+    },
+    "Geometry and spatial calculations": {
+      "tasks": 1,
+      "tasks_passed": 1,
+      "assertions_passed": 3,
+      "assertions_total": 3
+    },
+    "Graphs, paths, intervals, and chains": {
+      "tasks": 1,
+      "tasks_passed": 0,
+      "assertions_passed": 0,
+      "assertions_total": 3
+    },
+    "Predicates, validation, and classification": {
+      "tasks": 1,
+      "tasks_passed": 1,
+      "assertions_passed": 3,
+      "assertions_total": 3
+    }
+  },
+  "tasks": [
+    {
+      "prompt_id": "01-001",
+      "category": "Arithmetic and numeric formulas",
+      "entry_point": "tiles_needed",
+      "completion": "def tiles_needed(floor_length, floor_width, tile_length, tile_width):\n    \"\"\"\n    Calculate the number of whole rectangular tiles needed to cover a rectangular floor.\n\n    Parameters:\n    floor_length (int): The length of the floor in meters.\n    floor_width (int): The width of the floor in meters.\n    tile_length (int): The length of each tile in meters.\n    tile_width (int): The width of each tile in meters.\n\n    Returns:\n    int: The number of whole rectangular tiles needed.\n    \"\"\"\n    # Calculate the number of tiles along the floor length\n    num_tiles_length = floor_length // tile_length\n    \n    # Calculate the number of tiles along the floor width\n    num_tiles_width = floor_width // tile_width\n    \n    # Calculate the total number of tiles needed\n    total_tiles = num_tiles_length * num_tiles_width\n    \n    return total_tiles",
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "02-001",
+      "category": "Number properties and number theory",
+      "entry_point": "count_set_bits",
+      "completion": "def count_set_bits(number):\n    \"\"\"\n    Count the number of set bits in the binary representation of a non-negative integer.\n    \n    Args:\n    number (int): A non-negative integer.\n    \n    Returns:\n    int: The number of set bits in the binary representation of the number.\n    \"\"\"\n    # Initialize the count of set bits to 0\n    set_bits = 0\n    \n    # Loop through each bit in the number\n    while number > 0:\n        # Increment the count if the current bit is set\n        set_bits += number & 1\n        # Right shift the number to check the next bit\n        number >>= 1\n    \n    return set_bits",
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "03-001",
+      "category": "Lists and sequence transformations",
+      "entry_point": "interleave_lists",
+      "completion": "def interleave_lists(first, second):\n    # Initialize an empty list to store the interleaved result\n    interleaved_list = []\n    \n    # Determine the maximum length of the two lists\n    max_length = max(len(first), len(second))\n    \n    # Iterate over the maximum length of the lists\n    for i in range(max_length):\n        # Append the first item from the first list\n        interleaved_list.append(first[i])\n        \n        # Append the second item from the second list\n        interleaved_list.append(second[i])\n    \n    # Return the interleaved list\n    return interleaved_list",
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "04-001",
+      "category": "Search, sorting, and selection",
+      "entry_point": "index_of_largest",
+      "completion": "def index_of_largest(numbers):\n    if not numbers:\n        return -1\n    \n    largest = numbers[0]\n    index = 0\n    \n    for i, num in enumerate(numbers):\n        if num > largest:\n            largest = num\n            index = i\n    \n    return index",
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "05-001",
+      "category": "Counting and frequency",
+      "entry_point": "count_unique_values",
+      "completion": "def count_unique_values(values):\n    \"\"\"\n    Return the number of distinct values in a list, excluding duplicates.\n\n    Args:\n    values (list): A list of values.\n\n    Returns:\n    int: The count of distinct values, excluding duplicates.\n    \"\"\"\n    # Use a set to store unique values\n    unique_values = set(values)\n    # Return the length of the set, which is the count of unique values\n    return len(unique_values)",
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "06-001",
+      "category": "Strings and text processing",
+      "entry_point": "remove_adjacent_repeats",
+      "completion": "def remove_adjacent_repeats(text):\n    \"\"\"\n    Removes repeated adjacent characters from a string, keeping the first character in each consecutive run.\n    Treat uppercase and lowercase characters as different, and treat spaces like any other character.\n    Returns an empty string for empty input.\n    \n    :param text: The input string from which adjacent characters are to be removed.\n    :return: A new string with adjacent characters removed.\n    \"\"\"\n    if not text:\n        return \"\"\n    \n    result = []\n    current_char = text[0]\n    \n    for char in text[1:]:\n        if char != current_char:\n            result.append(current_char)\n            current_char = char\n    \n    result.append(current_char)\n    \n    return ''.join(result)",
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "07-001",
+      "category": "Set and membership operations",
+      "entry_point": "shared_unique_values",
+      "completion": "def shared_unique_values(first, second):\n    # Convert both lists to sets to remove duplicates and allow for efficient lookup\n    set1 = set(first)\n    set2 = set(second)\n    \n    # Find the intersection of the two sets\n    shared_values = set1.intersection(set2)\n    \n    # Convert the set back to a list and return it\n    return list(shared_values)",
+      "status": "partial",
+      "passed_tests": 2,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.6666666666666666,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "08-001",
+      "category": "Mappings, tuples, and record aggregation",
+      "entry_point": "sum_amounts_by_label",
+      "completion": "def sum_amounts_by_label(records):\n    # Initialize an empty dictionary to store the sum of amounts for each label\n    sum_amounts = {}\n    \n    # Iterate over each record in the input list\n    for label, amount in records:\n        # If the label is already in the dictionary, add its amount to the existing sum\n        if label in sum_amounts:\n            sum_amounts[label] += amount\n        # If the label is not in the dictionary, add it with the given amount\n        else:\n            sum_amounts[label] = amount\n    \n    # Return the dictionary containing the sum of amounts for each label\n    return sum_amounts",
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "09-001",
+      "category": "Recurrence, combinatorics, and dynamic programming",
+      "entry_point": "count_step_sequences",
+      "completion": "def count_step_sequences(n):\n    # Base case: if n is 0, there is exactly one sequence: []\n    if n == 0:\n        return 1\n    \n    # Initialize a list to store the number of sequences for each possible sum\n    dp = [0] * (n + 1)\n    \n    # Base case: if n is 1, there is one sequence: [1]\n    dp[1] = 1\n    \n    # Fill the dp array\n    for i in range(2, n + 1):\n        # For each possible sum from 1 to i, add the number of sequences for the previous sums\n        for j in range(1, 4):\n            dp[i] += dp[i - j]\n    \n    return dp[n]",
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "10-001",
+      "category": "Matrices and grids",
+      "entry_point": "find_matrix_value",
+      "completion": "def find_matrix_value(matrix, target):\n    \"\"\"\n    Searches a matrix from left to right across each row, starting with the first row.\n    Returns the row and column indices of the first cell equal to the target as a tuple.\n    Returns None if the target is absent or the matrix has no cells.\n    \n    :param matrix: List of lists representing the matrix.\n    :param target: The target value to search for.\n    :return: A tuple containing the row and column indices of the first cell equal to the target, or None if not found.\n    \"\"\"\n    for row_index, row in enumerate(matrix):\n        for col_index, value in enumerate(row):\n            if value == target:\n                return (row_index, col_index)\n    return None",
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "11-001",
+      "category": "Geometry and spatial calculations",
+      "entry_point": "manhattan_distance",
+      "completion": "def manhattan_distance(x1, y1, x2, y2):\n    \"\"\"\n    Calculate the Manhattan distance between two points in a plane.\n\n    Parameters:\n    x1 (float): The x-coordinate of the first point.\n    y1 (float): The y-coordinate of the first point.\n    x2 (float): The x-coordinate of the second point.\n    y2 (float): The y-coordinate of the second point.\n\n    Returns:\n    float: The Manhattan distance between the two points.\n    \"\"\"\n    return abs(x2 - x1) + abs(y2 - y1)",
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "12-001",
+      "category": "Graphs, paths, intervals, and chains",
+      "entry_point": "merge_intervals",
+      "completion": "def merge_intervals(intervals):\n    \"\"\"\n    Merge a list of closed intervals into a single sorted list of intervals.\n\n    Parameters:\n    intervals (list of tuples): A list of tuples, where each tuple contains two integers representing the start and end of an interval.\n\n    Returns:\n    list of tuples: A list of tuples representing the merged intervals, sorted by their start values.\n    \"\"\"\n    # Sort the intervals based on their start values\n    intervals.sort(key=lambda x: x[0])\n    \n    merged = []\n    current_interval = intervals[0]\n    \n    for interval in intervals[1:]:\n        # Check if the current interval overlaps with the next interval\n        if current_interval[1] >= interval[0]:\n            # Merge the intervals\n            current_interval = (current_interval[0], max(current_interval[1], interval[1]))\n        else:\n            # Add the current interval to the merged list\n            merged.append(current_interval)\n            # Update the current interval to the next interval\n            current_interval = interval\n    \n    # Add the last interval to the merged list\n    merged.append(current_interval)\n    \n    return merged",
+      "status": "failed",
+      "passed_tests": 0,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.0,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "13-001",
+      "category": "Predicates, validation, and classification",
+      "entry_point": "is_strictly_increasing",
+      "completion": "def is_strictly_increasing(values):\n    \"\"\"\n    Check if all numbers in the list are strictly increasing.\n    \n    Args:\n    values (list): A list of numbers.\n    \n    Returns:\n    bool: True if all numbers are strictly increasing, False otherwise.\n    \"\"\"\n    if not values:\n        return True  # An empty list or a list with one number is considered strictly increasing\n    \n    for i in range(1, len(values)):\n        if values[i] <= values[i - 1]:\n            return False  # Not all numbers are strictly increasing\n    \n    return True  # All numbers are strictly increasing",
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    }
+  ]
+}

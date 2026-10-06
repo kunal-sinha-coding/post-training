@@ -18,6 +18,14 @@ Use one GPT-6 Luna agent per prompt batch. Ask each agent to follow the prompt e
 
 Combine the 13 responses as JSONL in `analysis/mbpp_category_synthetic_task_specs.jsonl`. Keep the category and prompt ID with each response.
 
+`analysis/materialize_mbpp_category_tasks.py` validates each response and runs its reference function against the three literal calls in the repository subprocess sandbox:
+
+```bash
+python analysis/materialize_mbpp_category_tasks.py
+```
+
+The resulting `analysis/mbpp_category_synthetic_tasks_preview.jsonl` stores each task, reference solution, inputs, derived expected outputs, assertions, and example IDs.
+
 ## Materialize ground-truth tests
 
 Validate each response schema and function definition. Execute each reference solution with its three input expressions in the repository subprocess sandbox. Record the returned values, then create one assertion per input. Save the task description, reference code, original input expressions, outputs, assertions, prompt ID, and category in `analysis/mbpp_category_synthetic_tasks_preview.jsonl`.
@@ -26,7 +34,13 @@ Reject a task if its reference solution fails to execute, its output cannot be r
 
 ## Evaluate Qwen 0.5B
 
-Use `Qwen/Qwen2.5-Coder-0.5B-Instruct` with the repository's official greedy EvalPlus generation helper, temperature 0, top-p 1, and a 2,048-token completion limit. Use the generated task description and function signature as the prompt. Execute one completion per task against all three saved assertions in the repository sandbox.
+Use the base `Qwen/Qwen2.5-Coder-0.5B-Instruct` model without a fine-tuned checkpoint or adapter. The evaluation script uses a fresh Hub cache so stale cached files are ignored. It uses the repository's official greedy EvalPlus prompt and decoder, temperature 0, top-p 1, and a 2,048-token completion limit:
+
+```bash
+python analysis/evaluate_mbpp_category_tasks.py
+```
+
+The script prompts with the generated task description and function signature, then executes one completion per task against all three saved assertions in the repository sandbox. It writes per-task completions and scores to `analysis/mbpp_category_synthetic_qwen05_eval.json`.
 
 Report task pass@1 as the number of tasks that pass all three assertions divided by 13. Report test-pass fraction as total passed assertions divided by 39. Also save per-task status and per-category results so errors can be reviewed.
 
