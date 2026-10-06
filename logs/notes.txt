@@ -2680,3 +2680,9 @@ Commit name: Correct step-one Luna training metric labels.
 Corrected the recorded first-step metrics: `training/average_reward` is 0.4961, `training/reward/test_progress` is 0.6016, raw gradient norm is 0.1482, and parameter-update norm is 0.0220.
 
 Why: The initial experiment note labeled the test-progress fraction as the average reward and the parameter-update norm as the gradient norm. This entry records the correct metric names and values.
+
+Commit name: Record private API credential storage path.
+
+Updated the experiment record after moving the API credential from temporary storage to `/root/.config/post-training/openai.env`, protected with mode 0600. The ignored repository `.env` remains a working symlink to that file.
+
+Why: Keep the generation credential out of Git while preserving the `.env` lookup path used by the API script.
