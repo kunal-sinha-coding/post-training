@@ -2626,3 +2626,9 @@ Commit name: Record synthetic GRPO reward diagnosis and resume.
 Recorded the observed outcome distribution for 4,228 completions across all 100 synthetic tasks, representative syntax and wrong-algorithm failures, the declining local reward trend through step 136, nonzero optimizer updates, and the raw-format-log versus wrapped-scoring distinction. Recorded the limited W&B custom-axis response and the restart from complete checkpoint 130 at 16:48:12 UTC with ten-step EvalPlus configured.
 
 Why: The user asked to inspect the logged outputs for obvious failures before restarting the synthetic-only run. The diagnosis showed frequent invalid, incorrect, and partial programs but no clear optimizer or infrastructure failure, so the already authorized run resumed with the corrected evaluation cadence.
+
+Commit name: Compare synthetic GRPO with the linked successful run.
+
+Recorded the local configuration and metric comparison between W&B run `c4thzd3` and the synthetic-only pilot. The comparison identifies the learning-rate, generation-count, KL beta, reward-weight, task-pool, and assertion-visibility differences. It also clarifies that `synthetic_tests_enabled: false` does not remove the three tests embedded in each synthetic task, and that current `training/average_reward` is a rollout statistic while the cited prior greedy evaluation values are a separate measurement. Recorded the callback counter reset across restart as a discontinuity in the cumulative W&B metric.
+
+Why: The user asked why the linked successful run showed an upward training reward curve while the synthetic-only pilot did not, and whether the pilot lacked reward signal.
