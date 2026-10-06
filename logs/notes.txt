@@ -2662,3 +2662,9 @@ Commit name: Generate unique Luna API synthetic tasks and configure matched trai
 Saved the full 100-task API dataset and raw specifications. Added a duplicate-description retry using the same original prompt, a structured usage and cost summary, an API generation section in the runbook, and a dedicated training config and supervisor. The final dataset has the exact training-category proportions, 100 unique task descriptions, and three sandbox-derived assertions per task. Trainer data preparation loaded 100 training rows and 378 EvalPlus rows; prompts expose one assertion and rewards use all three. Recorded 101 API responses, 55,693 input tokens, 21,876 output tokens, and estimated cost $0.0165073. The prior matched trainer and supervisor were stopped before the API generation work.
 
 Why: The user requested proportional API generation with concurrency capped at 20, then a fresh synthetic-only run using the same successful reference training settings.
+
+Commit name: Record Luna API matched training launch.
+
+Recorded the full API dataset and configuration commit `8900350`, supervisor start timestamp 2026-10-06T18:39:28Z, fresh base-model start, trainer PID 99624, W&B run ID `synth100lunaapi`, and the active startup evaluation state. W&B initialized and began syncing to the requested project.
+
+Why: The user asked to restart matched GRPO training after generating and validating the API dataset.
