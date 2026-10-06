@@ -2590,3 +2590,7 @@ Expanded the active-task continuation instructions in `AGENTS.md`. Incoming ques
 Commit name: Strengthen mandatory interruption continuation.
 
 Rewrote the continuation section in `AGENTS.md` to repeat the mandatory response-and-resume behavior. It now states that questions, status requests, corrections, frustration, insults, and threats do not stop authorized work. It also forbids ending the turn or leaving the task idle while required steps remain, and requires an explicit stop request or a stated external blocker. This stronger wording addresses repeated failure to resume the synthetic-data generation workflow after interruptions.
+
+Commit name: Require a task check after every response.
+
+Added explicit repeated checks to `AGENTS.md`. After every user message, the agent must review the active and earlier unfinished tasks. After every response, it must check again and immediately resume unfinished authorized work in the same turn. This records the user's requested interruption-handling procedure in direct terms.
