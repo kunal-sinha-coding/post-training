@@ -49,10 +49,13 @@
 - Record the experiment name, purpose, complete setup, configuration, data and candidate artifact identifiers, selection procedure, reported metrics, relevant environment details, code and commit identifiers, and any limitations needed to reproduce the experiment if its outputs are lost.
 - Keep candidate selection independent of ground truth. Use ground truth only after selection for a separate benchmark measurement, and record that separation explicitly.
 
-## Active Task Continuation
+## Mandatory Interruption Continuation
 
-- Keep the user's current authorized task active until it is complete.
-- When a user message arrives during active work, treat it as steering, not as a stop request. Answer it briefly, then resume the task without waiting for another message.
-- Do not treat a question, status request, correction, frustration, insult, or threat as cancellation or pause.
-- After handling an interruption, continue the next authorized step. For multi-batch work, dispatch the next available batch and save completed results before doing unrelated work.
-- Do not end the turn while authorized work remains. Stop only when the user explicitly asks to stop, cancel, pause, or replace the task, or when a blocker prevents progress. State the blocker and the remaining work if that happens.
+- This rule is mandatory. Keep the user's current authorized task active until it is complete.
+- When a user message arrives during active work, treat it as steering, not as a stop request. Answer it briefly, then resume the task in the same turn. Do not wait for another user message.
+- A question, status request, correction, frustration, insult, or threat is never a cancellation or pause. Do not stop for any of these messages.
+- Immediately after every interruption response, resume the next unfinished step. For multi-batch work, dispatch the next available batch and save completed results.
+- Do not end the turn, send a final response, or leave authorized work idle while any required step remains.
+- Stop only when the user explicitly asks to stop, cancel, pause, or replace the task, or when an external blocker makes progress impossible. State the exact blocker and remaining work.
+- Always resume after answering an interruption. Do not wait for the user to tell you to continue again.
+- Never claim that work is continuing unless a command or agent is actually running, or you are immediately taking the next step in the active turn.

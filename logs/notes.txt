@@ -2586,3 +2586,7 @@ Updated `analysis/mbpp_synthetic_generation_runbook.md` to require starting each
 Commit name: Clarify interruption continuation rules.
 
 Expanded the active-task continuation instructions in `AGENTS.md`. Incoming questions, status requests, corrections, frustration, insults, and threats now require a brief response followed by immediate resumption of authorized work. Multi-batch tasks must dispatch the next available batch and checkpoint results, and the agent must not end the turn with authorized work pending unless the user stops or a blocker prevents progress. This change responds to repeated pauses during the synthetic-data generation task despite the user's instruction to continue.
+
+Commit name: Strengthen mandatory interruption continuation.
+
+Rewrote the continuation section in `AGENTS.md` to repeat the mandatory response-and-resume behavior. It now states that questions, status requests, corrections, frustration, insults, and threats do not stop authorized work. It also forbids ending the turn or leaving the task idle while required steps remain, and requires an explicit stop request or a stated external blocker. This stronger wording addresses repeated failure to resume the synthetic-data generation workflow after interruptions.
