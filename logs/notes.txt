@@ -2668,3 +2668,9 @@ Commit name: Record Luna API matched training launch.
 Recorded the full API dataset and configuration commit `8900350`, supervisor start timestamp 2026-10-06T18:39:28Z, fresh base-model start, trainer PID 99624, W&B run ID `synth100lunaapi`, and the active startup evaluation state. W&B initialized and began syncing to the requested project.
 
 Why: The user asked to restart matched GRPO training after generating and validating the API dataset.
+
+Commit name: Record Luna API training baseline and first update.
+
+Recorded the base model's step-zero synthetic-pool pass@1 and reward, step-zero MBPP and MBPP+ EvalPlus pass@1, and first rollout reward and gradient norm. The new trainer reached step 1 under W&B run `synth100lunaapi`; both trainer and restart supervisor remain active.
+
+Why: The user asked for the matched training run to restart on the API-generated dataset and expects its evaluation and training metrics to be tracked.
