@@ -2632,3 +2632,9 @@ Commit name: Compare synthetic GRPO with the linked successful run.
 Recorded the local configuration and metric comparison between W&B run `c4thzd3` and the synthetic-only pilot. The comparison identifies the learning-rate, generation-count, KL beta, reward-weight, task-pool, and assertion-visibility differences. It also clarifies that `synthetic_tests_enabled: false` does not remove the three tests embedded in each synthetic task, and that current `training/average_reward` is a rollout statistic while the cited prior greedy evaluation values are a separate measurement. Recorded the callback counter reset across restart as a discontinuity in the cumulative W&B metric.
 
 Why: The user asked why the linked successful run showed an upward training reward curve while the synthetic-only pilot did not, and whether the pilot lacked reward signal.
+
+Commit name: Match synthetic GRPO settings to c4thzd3.
+
+Added a new synthetic-only configuration copied from the successful `c4thzd3` run, a dedicated restart supervisor, and runbook and experiment records. Preserved the reference learning rate, DAPO, generation count, batch and accumulation settings, reward function and weight, KL beta, visible-test count, checkpoint cadence, and 50,000-step schedule. Changed only the training data selector and exact row guard among training inputs. Prepared 100 synthetic rows and 378 EvalPlus rows and verified that each prompt shows one assertion while reward scores all three. Set distinct output and W&B identifiers. Stopped the prior synthetic pilot at its current attempt and retained its checkpoint files. The new experiment will initialize from the base model.
+
+Why: The user explicitly instructed us to restart the synthetic training with the linked successful run's setup and only swap the dataset.

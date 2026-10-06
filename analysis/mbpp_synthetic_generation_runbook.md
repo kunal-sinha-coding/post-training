@@ -57,3 +57,7 @@ The script prompts with the generated task description and function signature, t
 Report task pass@1 as the number of tasks that pass all three assertions divided by 13. Report test-pass fraction as total passed assertions divided by 39. Also save per-task status and per-category results so errors can be reviewed.
 
 This preview measures the base model on the 13-category preview tasks only. It does not measure whether synthetic-task training improves EvalPlus performance.
+
+## Matched c4thzd3 synthetic-only run
+
+The matched configuration is `configs/grpo-mbpp-synthetic100-matched-c4thzd3.yaml`. It copies the linked successful run's GRPO and evaluation settings, then changes the training source to the 100-task synthetic JSONL and sets `expected_train_samples: 100`. It also preserves `visible_test_count: 1`, so one generated assertion is shown in each prompt while all three saved assertions are used for reward scoring. The dedicated supervisor starts from the base model, saves every 10 steps, evaluates EvalPlus every 10 steps and at the end, and resumes the latest complete checkpoint after an observed worker exit. Use `bash analysis/run_synthetic_grpo_matched_supervisor.sh` to launch it.
