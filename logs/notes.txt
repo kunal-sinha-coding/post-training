@@ -2638,3 +2638,9 @@ Commit name: Match synthetic GRPO settings to c4thzd3.
 Added a new synthetic-only configuration copied from the successful `c4thzd3` run, a dedicated restart supervisor, and runbook and experiment records. Preserved the reference learning rate, DAPO, generation count, batch and accumulation settings, reward function and weight, KL beta, visible-test count, checkpoint cadence, and 50,000-step schedule. Changed only the training data selector and exact row guard among training inputs. Prepared 100 synthetic rows and 378 EvalPlus rows and verified that each prompt shows one assertion while reward scores all three. Set distinct output and W&B identifiers. Stopped the prior synthetic pilot at its current attempt and retained its checkpoint files. The new experiment will initialize from the base model.
 
 Why: The user explicitly instructed us to restart the synthetic training with the linked successful run's setup and only swap the dataset.
+
+Commit name: Record matched synthetic run launch.
+
+Recorded the exact supervisor start timestamp, fresh base-model start, W&B run ID and URL, and initial process status for the c4thzd3-matched synthetic experiment.
+
+Why: The user requires the new run to use the successful reference setup and asked for training to restart immediately. The launch timestamp provides an auditable start time for progress and runtime estimates.
