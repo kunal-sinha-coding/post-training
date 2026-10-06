@@ -2650,3 +2650,9 @@ Commit name: Add proportional GPT-6 Luna synthetic task generation.
 Extended category prompt generation with largest-remainder allocation for a requested total task count. Added an API runner that samples three same-category examples per prompt, caps calls with a semaphore, uses JSON output, retries invalid responses, executes reference tests in the repository sandbox, records token usage and estimated cost, and resumes accepted rows without repeating calls. Verified that the 100-prompt allocation matches the 100-task pilot distribution and that every prompt contains three examples. The current matched synthetic GRPO process was stopped at the user's request before the API generation workflow. The ignored repository `.env` now contains the user-provided API key; the mounted filesystem rejected a permission change, so its existing mode could not be reduced.
 
 Why: The user requested replacing subagent generation with a reproducible API pipeline, checking one or two generated tasks first, then rebuilding the proportional 100-task dataset and restarting training on it.
+
+Commit name: Record Luna API generation sanity sample.
+
+Saved the 100 proportional API prompts plus two GPT-6 Luna sanity outputs, including each task description, reference function, three test inputs, sandbox-derived outputs, and assertions. Recorded token usage and estimated cost in the experiment results file. Both sampled responses passed schema validation and sandbox execution. The active synthetic training process remains stopped while the full API dataset is generated.
+
+Why: The user required a one- or two-task validation before generating the complete synthetic dataset.
