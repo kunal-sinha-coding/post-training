@@ -107,7 +107,7 @@ async def generate_one(
         if saved.get("status") == "passed":
             async with progress_lock:
                 progress["completed"] += 1
-                print_progress(progress)
+                maybe_print_progress(progress)
             return saved
     total_input = 0
     total_output = 0
@@ -171,7 +171,7 @@ async def generate_one(
             os.replace(temporary_path, state_path)
             async with progress_lock:
                 progress["completed"] += 1
-                print_progress(progress)
+                maybe_print_progress(progress)
             return record
         except Exception as exc:
             last_error = f"{type(exc).__name__}: {exc}"
@@ -196,6 +196,14 @@ def print_progress(progress: dict[str, int | float]) -> None:
         f"output {progress['output_tokens']:,} tokens; estimated cost ${progress['cost_usd']:.6f}.",
         flush=True,
     )
+
+
+def maybe_print_progress(progress: dict[str, int | float]) -> None:
+    """Limit progress output while keeping failures visible."""
+    # Report every hundred completed tasks and report any terminal generation failure.
+    finished = int(progress["completed"]) + int(progress["failed"])
+    if finished % 100 == 0 or int(progress["failed"]) > 0:
+        print_progress(progress)
 
 
 async def run(args: argparse.Namespace) -> int:
