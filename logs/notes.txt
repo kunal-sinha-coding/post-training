@@ -2686,3 +2686,7 @@ Commit name: Record private API credential storage path.
 Updated the experiment record after moving the API credential from temporary storage to `/root/.config/post-training/openai.env`, protected with mode 0600. The ignored repository `.env` remains a working symlink to that file.
 
 Why: Keep the generation credential out of Git while preserving the `.env` lookup path used by the API script.
+
+## 2026-10-07: Build full Luna 10x prompt set
+
+Created `analysis/mbpp_category_api_prompts_10x.jsonl` with 5,319 category-proportional generation prompts from the saved 591-task taxonomy. The 5,319 target equals nine synthetic tasks per original task across all 13 categories. The prompts use the existing Luna API runner's `test_inputs` response contract and preserve three same-category source examples for each request. This prepares generation while keeping the earlier 100 validated task states available for reuse.
