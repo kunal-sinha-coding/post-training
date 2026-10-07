@@ -235,38 +235,64 @@ async def run(args: argparse.Namespace) -> int:
     failed = [record for record in results if record["status"] != "passed"]
     if failed:
         raise RuntimeError(f"{len(failed)} task generations failed; inspect {args.state_dir}")
-    # Keep the API client open while replacing any repeated task descriptions.
+    # Keep the API client open while replacing duplicate descriptions in bounded batches.
     async with AsyncOpenAI(api_key=api_key) as retry_client:
         seen_descriptions: set[str] = set()
-        # Regenerate exact duplicate descriptions with their original prompts before publishing.
-        for index, (prompt_row, record) in enumerate(zip(selected, results)):
-            description_key = " ".join(record["task"]["task_text"].casefold().split())
-            if description_key in seen_descriptions:
-                replacement = None
-                # Tell Luna which repeated descriptions caused this task to fail uniqueness.
-                blocked_descriptions = {description_key}
+        duplicate_indices = []
+        blocked_descriptions: set[str] = set()
+        # Keep the first occurrence of each description and mark later rows for replacement.
+        for index, record in enumerate(results):
+            description = " ".join(record["task"]["task_text"].casefold().split())
+            if description in seen_descriptions:
+                duplicate_indices.append(index)
+                blocked_descriptions.add(description)
+            seen_descriptions.add(description)
+        # Keep all original descriptions out of replacement candidates.
+        used_descriptions = {
+            " ".join(record["task"]["task_text"].casefold().split()) for record in results
+        }
+        pending = duplicate_indices
+        # Regenerate duplicate rows with the existing concurrency limit.
+        while pending:
+            batch = pending[: args.concurrency]
+
+            async def regenerate_duplicate(index: int) -> tuple[int, dict[str, Any] | None, str]:
+                """Generate one replacement while avoiding known duplicate descriptions."""
+                # Give each retry the descriptions that already caused a collision.
+                avoid = set(blocked_descriptions)
+                avoid.add(" ".join(results[index]["task"]["task_text"].casefold().split()))
                 for _ in range(args.retries + 1):
                     retry_row = {
-                        **prompt_row,
-                        "prompt": prompt_row["prompt"]
-                        + "\n\nDo not reuse any of these existing task descriptions. Create a different task:\n"
-                        + json.dumps(sorted(blocked_descriptions), ensure_ascii=False),
+                        **selected[index],
+                        "prompt": selected[index]["prompt"]
+                        + "\n\nDo not reuse these task descriptions. Create a different task:\n"
+                        + json.dumps(sorted(avoid), ensure_ascii=False),
                     }
                     candidate = await generate_one(
                         retry_row, retry_client, semaphore, args.state_dir, usage_path, usage_lock,
                         progress_lock, progress, args.retries, args.timeout_seconds, force=True,
                     )
-                    candidate_key = " ".join(candidate.get("task", {}).get("task_text", "").casefold().split())
-                    if candidate["status"] == "passed" and candidate_key not in seen_descriptions:
-                        replacement = candidate
-                        description_key = candidate_key
-                        break
-                    # Add a repeated replacement to the next prompt's exclusion list.
-                    blocked_descriptions.add(candidate_key)
-                if replacement is None:
-                    raise RuntimeError(f"Could not generate a unique task for prompt {prompt_row['prompt_id']}")
-                results[index] = replacement
-            seen_descriptions.add(description_key)
+                    description = " ".join(candidate.get("task", {}).get("task_text", "").casefold().split())
+                    if candidate["status"] == "passed" and description not in used_descriptions:
+                        return index, candidate, description
+                    # Add a repeated response to this row's next prompt.
+                    avoid.add(description)
+                return index, None, ""
+
+            replacements = await asyncio.gather(*(regenerate_duplicate(index) for index in batch))
+            pending = []
+            # Retain distinct replacements and retry only collisions among this batch.
+            for index, candidate, description in replacements:
+                if candidate is None:
+                    raise RuntimeError(f"Could not generate a unique task for prompt {selected[index]['prompt_id']}")
+                if description in used_descriptions:
+                    pending.append(index)
+                    blocked_descriptions.add(description)
+                else:
+                    results[index] = candidate
+                    used_descriptions.add(description)
+            pending.extend(duplicate_indices[len(batch):])
+            duplicate_indices = pending
     # Write sample outputs to separate files and only publish full artifacts after all tasks pass.
     is_sample = args.limit is not None
     specs_path = args.specs.with_name(args.specs.stem + f"_sample{args.limit}.jsonl") if is_sample else args.specs

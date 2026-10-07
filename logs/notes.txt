@@ -2720,3 +2720,9 @@ The previous patch command used stale context and did not update the materialize
 Updated duplicate-description retries to include the repeated task descriptions in the next Luna prompt. The completed task states remain available, and 3,000 plus validated tasks were already reused. The current duplicate pass found repeated descriptions, so this change directs retries toward distinct tasks instead of making the same broad request again.
 
 Why: The original duplicate retry regenerated tasks serially without stating which description caused the rejection. Some responses repeated another existing description and consumed extra calls.
+
+## 2026-10-07: Run duplicate-description replacements concurrently
+
+Changed the Luna generator to replace duplicate descriptions in batches up to the configured concurrency. It keeps the first occurrence, asks Luna to avoid known repeated descriptions, and checks every replacement against all saved task descriptions before accepting it. The generator resumes from the validated task states and only regenerates duplicate rows.
+
+Why: A serial duplicate pass was taking too long because many retries repeated a description that already existed. Bounded batches use the existing API concurrency limit while preserving uniqueness checks.
