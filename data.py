@@ -300,10 +300,12 @@ def prepare_datasets(config: dict[str, Any]) -> tuple[Any, Any]:
         # Append validated synthetic tasks while retaining the original MBPP rows.
         synthetic_training_tasks_path = config.get("synthetic_training_tasks_path")
         if synthetic_training_tasks_path:
-            # Use string task IDs across both sources so Arrow can concatenate their schemas.
+            # Cast original task IDs so Arrow can concatenate them with generated string IDs.
+            from datasets import Value
+
             all_datasets = [
-                dataset.map(lambda record: {"task_id": str(record["task_id"])}, load_from_cache_file=False)
-                if hasattr(dataset, "map")
+                dataset.cast_column("task_id", Value("string"))
+                if hasattr(dataset, "cast_column")
                 else [{**record, "task_id": str(record["task_id"])} for record in dataset]
                 for dataset in all_datasets
             ]

@@ -2738,3 +2738,5 @@ Why: Per-task output slowed the state reload and produced excessive logs during 
 The first 10x Luna GRPO attempt stopped during dataset concatenation because Hugging Face stores original MBPP task IDs as integers and generated task IDs as strings. Updated the mixed-data path to cast original IDs to strings before concatenation. No checkpoint was saved, so the supervisor will retry from the base model.
 
 Why: The original and synthetic rows need the same Arrow feature type before the loader can filter benchmark IDs and descriptions.
+
+The first task-ID normalization used `Dataset.map`, which kept the original integer feature type. A schema check showed that `Dataset.cast_column` changes the Arrow feature to string. Updated the mixed-data path to use that explicit cast before concatenation.
