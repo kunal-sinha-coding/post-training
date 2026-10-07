@@ -2690,3 +2690,7 @@ Why: Keep the generation credential out of Git while preserving the `.env` looku
 ## 2026-10-07: Build full Luna 10x prompt set
 
 Created `analysis/mbpp_category_api_prompts_10x.jsonl` with 5,319 category-proportional generation prompts from the saved 591-task taxonomy. The 5,319 target equals nine synthetic tasks per original task across all 13 categories. The prompts use the existing Luna API runner's `test_inputs` response contract and preserve three same-category source examples for each request. This prepares generation while keeping the earlier 100 validated task states available for reuse.
+
+## 2026-10-07: Support combined original and Luna task training
+
+Updated `prepare_datasets` to append a validated synthetic-task artifact to the configured original MBPP splits when `synthetic_training_tasks_path` is set. This lets the requested GRPO run keep the same original split and benchmark filtering while adding the Luna tasks. Existing `training_tasks_path` behavior remains available for synthetic-only experiments.

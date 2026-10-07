@@ -282,20 +282,25 @@ def split_dataset(dataset: Any, train_fraction: float = 0.8, seed: int = 42) -> 
 
 
 def prepare_datasets(config: dict[str, Any]) -> tuple[Any, Any]:
-    """Partition all Hugging Face MBPP records into GRPO training and EvalPlus evaluation datasets."""
+    """Build original, synthetic, or combined training rows and the EvalPlus dataset."""
     include_generic_arguments = bool(config.get("include_generic_arguments", False))
     # Restrict training prompts to a leading subset of assertions while reward keeps grading all of them.
     visible_test_count = config.get("visible_test_count")
-    # Load only the configured synthetic artifact when synthetic-only training is requested.
+    # Load a single generated artifact when the config requests synthetic-only training.
     training_tasks_path = config.get("training_tasks_path")
     if training_tasks_path:
         all_dataset = load_generated_training_tasks(training_tasks_path, include_generic_arguments, visible_test_count)
     else:
+        # Load the configured original MBPP splits before adding optional generated rows.
         split_names = config.get("mbpp_splits", ["train", "validation", "test"])
         all_datasets = [
             load_mbpp(config["dataset_name"], config.get("dataset_config"), split, include_generic_arguments, visible_test_count)
             for split in split_names
         ]
+        # Append validated synthetic tasks while retaining the original MBPP rows.
+        synthetic_training_tasks_path = config.get("synthetic_training_tasks_path")
+        if synthetic_training_tasks_path:
+            all_datasets.append(load_generated_training_tasks(synthetic_training_tasks_path, include_generic_arguments, visible_test_count))
         all_dataset = _combine_datasets(all_datasets)
     evaluation_dataset = load_evalplus(
         config.get("evalplus_dataset_name", DEFAULT_EVALPLUS_DATASET),
