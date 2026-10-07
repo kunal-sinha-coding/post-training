@@ -64,16 +64,17 @@ def materialize_task(task: dict[str, Any], timeout_seconds: float) -> dict[str, 
     validate_reference(task)
     expected_outputs = []
     assertions = []
-    # Execute each reference call in its own timed sandbox subprocess.
-    for expression in task["test_inputs"]:
-        capture = f"print('__SYNTHETIC_OUTPUT__' + repr({expression}))"
-        result = execute_code(task["reference_solution"], capture, timeout_seconds=timeout_seconds)
-        if not result.passed:
-            raise RuntimeError(f"reference failed on {expression}: {result.status}: {result.stderr[-1200:]}")
-        lines = [line for line in result.stdout.splitlines() if line.startswith("__SYNTHETIC_OUTPUT__")]
-        if len(lines) != 1:
-            raise RuntimeError(f"reference returned an invalid capture for {expression}")
-        output_repr = lines[0].removeprefix("__SYNTHETIC_OUTPUT__")
+    # Execute all literal inputs in one timed process and preserve the full former timeout budget.
+    expressions = task["test_inputs"]
+    capture = "\n".join(f"print('__SYNTHETIC_OUTPUT__' + repr({expression}))" for expression in expressions)
+    result = execute_code(task["reference_solution"], capture, timeout_seconds=timeout_seconds * len(expressions))
+    if not result.passed:
+        raise RuntimeError(f"reference failed on generated test inputs: {result.status}: {result.stderr[-1200:]}")
+    output_lines = [line.removeprefix("__SYNTHETIC_OUTPUT__") for line in result.stdout.splitlines() if line.startswith("__SYNTHETIC_OUTPUT__")]
+    if len(output_lines) != len(expressions):
+        raise RuntimeError("reference returned an invalid capture for the generated test inputs")
+    # Validate each captured literal and build its expected assertion.
+    for expression, output_repr in zip(expressions, output_lines):
         expected = ast.literal_eval(output_repr)
         if repr(expected) != output_repr:
             raise RuntimeError(f"reference output is not a stable Python literal: {output_repr}")

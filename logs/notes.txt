@@ -2712,3 +2712,5 @@ Why: Sandbox subprocesses blocked the async event loop and limited generation th
 Changed task materialization to execute all three literal calls in one isolated subprocess. The timeout is the prior per-call limit multiplied by the number of calls, so each task keeps the same maximum total sandbox budget. The validator still parses every captured output as a stable Python literal and saves one assertion per input. Restarting from the generation state directory reuses all 2,703 passed tasks.
 
 Why: Three subprocess starts per task were limiting the 5,319-task run. A single process checks all required inputs while reducing startup overhead.
+
+The previous patch command used stale context and did not update the materializer. This commit applies the combined-call change against the current function and restores the config and supervisor paths that the same command unexpectedly staged as deleted.

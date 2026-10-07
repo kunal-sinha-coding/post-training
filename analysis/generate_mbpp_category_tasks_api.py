@@ -154,7 +154,8 @@ async def generate_one(
             if data["category"] != prompt_row["category"]:
                 raise ValueError("response category does not match its prompt")
             task = {"prompt_id": prompt_id, **data}
-            materialized = materialize_task(task, timeout_seconds)
+            # Run synchronous sandbox subprocesses outside the event loop so API tasks can progress concurrently.
+            materialized = await asyncio.to_thread(materialize_task, task, timeout_seconds)
             materialized["example_task_ids"] = prompt_row["example_task_ids"]
             materialized["generation_model"] = MODEL
             record = {
