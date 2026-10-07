@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# This supervisor runs the 10x Luna mixed MBPP experiment, checks it every minute, and resumes from the latest complete checkpoint until 50,000 steps and final EvalPlus both succeed.
+# This supervisor launches 50,000-step GRPO on original MBPP plus validated Luna tasks. It checks each attempt, resumes from the latest complete run checkpoint after failure, and exits after training and final EvalPlus evaluation succeed.
 set -u
 
 # Resolve all run paths from the repository root, independent of the caller's directory.

@@ -2698,3 +2698,5 @@ Updated `prepare_datasets` to append a validated synthetic-task artifact to the 
 ## 2026-10-07: Configure the 10x Luna mixed-data GRPO run
 
 Added a dedicated config based on `grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-restart-20260929`. It keeps that optimizer, reward, batch, checkpoint, and evaluation setup, adds the 5,319-task Luna artifact to the original filtered MBPP splits, and checks for 5,910 training rows. Added a supervisor that starts this run from the base model and resumes later attempts from its newest complete checkpoint.
+
+Updated the 10x Luna supervisor header to describe its full launch, checkpoint-resume, monitoring, and completion flow.
