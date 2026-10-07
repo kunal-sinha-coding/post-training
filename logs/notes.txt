@@ -2732,3 +2732,9 @@ Why: A serial duplicate pass was taking too long because many retries repeated a
 Changed the Luna API runner to report progress every 100 completed tasks and to report failures immediately. It still prints the final totals when a run finishes. Resuming the task states no longer emits one line for every cached task.
 
 Why: Per-task output slowed the state reload and produced excessive logs during a 5,319-task run.
+
+## 2026-10-07: Align task ID types in the mixed training dataset
+
+The first 10x Luna GRPO attempt stopped during dataset concatenation because Hugging Face stores original MBPP task IDs as integers and generated task IDs as strings. Updated the mixed-data path to cast original IDs to strings before concatenation. No checkpoint was saved, so the supervisor will retry from the base model.
+
+Why: The original and synthetic rows need the same Arrow feature type before the loader can filter benchmark IDs and descriptions.
