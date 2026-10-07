@@ -2706,3 +2706,9 @@ Updated the 10x Luna supervisor header to describe its full launch, checkpoint-r
 Moved synchronous task materialization into `asyncio.to_thread` in the Luna API runner. The first 1,742 accepted tasks and their API usage remain in the state directory. Restarting the run from that directory reuses those records and applies the same schema, sandbox, duplicate, and cost checks to the remaining prompts.
 
 Why: Sandbox subprocesses blocked the async event loop and limited generation throughput. Running validation in worker threads allows the existing bounded API concurrency to remain useful.
+
+## 2026-10-07: Reduce sandbox process overhead for Luna generation
+
+Changed task materialization to execute all three literal calls in one isolated subprocess. The timeout is the prior per-call limit multiplied by the number of calls, so each task keeps the same maximum total sandbox budget. The validator still parses every captured output as a stable Python literal and saves one assertion per input. Restarting from the generation state directory reuses all 2,703 passed tasks.
+
+Why: Three subprocess starts per task were limiting the 5,319-task run. A single process checks all required inputs while reducing startup overhead.
