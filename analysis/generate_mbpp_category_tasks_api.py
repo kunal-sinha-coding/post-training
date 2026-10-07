@@ -243,10 +243,17 @@ async def run(args: argparse.Namespace) -> int:
             description_key = " ".join(record["task"]["task_text"].casefold().split())
             if description_key in seen_descriptions:
                 replacement = None
-                # Retry the duplicate prompt without adding context beyond its original text.
+                # Tell Luna which repeated descriptions caused this task to fail uniqueness.
+                blocked_descriptions = {description_key}
                 for _ in range(args.retries + 1):
+                    retry_row = {
+                        **prompt_row,
+                        "prompt": prompt_row["prompt"]
+                        + "\n\nDo not reuse any of these existing task descriptions. Create a different task:\n"
+                        + json.dumps(sorted(blocked_descriptions), ensure_ascii=False),
+                    }
                     candidate = await generate_one(
-                        prompt_row, retry_client, semaphore, args.state_dir, usage_path, usage_lock,
+                        retry_row, retry_client, semaphore, args.state_dir, usage_path, usage_lock,
                         progress_lock, progress, args.retries, args.timeout_seconds, force=True,
                     )
                     candidate_key = " ".join(candidate.get("task", {}).get("task_text", "").casefold().split())
@@ -254,6 +261,8 @@ async def run(args: argparse.Namespace) -> int:
                         replacement = candidate
                         description_key = candidate_key
                         break
+                    # Add a repeated replacement to the next prompt's exclusion list.
+                    blocked_descriptions.add(candidate_key)
                 if replacement is None:
                     raise RuntimeError(f"Could not generate a unique task for prompt {prompt_row['prompt_id']}")
                 results[index] = replacement

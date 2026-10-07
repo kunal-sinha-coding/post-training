@@ -2714,3 +2714,9 @@ Changed task materialization to execute all three literal calls in one isolated 
 Why: Three subprocess starts per task were limiting the 5,319-task run. A single process checks all required inputs while reducing startup overhead.
 
 The previous patch command used stale context and did not update the materializer. This commit applies the combined-call change against the current function and restores the config and supervisor paths that the same command unexpectedly staged as deleted.
+
+## 2026-10-07: Guide Luna away from duplicate task text
+
+Updated duplicate-description retries to include the repeated task descriptions in the next Luna prompt. The completed task states remain available, and 3,000 plus validated tasks were already reused. The current duplicate pass found repeated descriptions, so this change directs retries toward distinct tasks instead of making the same broad request again.
+
+Why: The original duplicate retry regenerated tasks serially without stating which description caused the rejection. Some responses repeated another existing description and consumed extra calls.
