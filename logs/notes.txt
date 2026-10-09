@@ -3037,3 +3037,9 @@ Commit name: Record step 150 training evaluation and coverage check
 Recorded the step-150 EvalPlus results and full 5,910-task training-set evaluation. MBPP/MBPP+ pass@1 was 0.542/0.466. Training-set pass@1 was 0.09526, average reward was 0.29752, and test-pass fraction was 0.29965. Compared W&B and local 16-generation coverage values through step 149. All three threshold metrics match exactly across 1,192 task rows. W&B has not yet published step 150.
 
 Why: Preserve interim benchmark results and verify the requested rollout signal curves during training.
+
+Commit name: Record W&B coverage catchup through step 151
+
+Recorded delayed W&B coverage publication for step 150 and the point through step 151. Exact values match the local 16-generation task trace across all three thresholds through 151 optimizer steps and 1,208 task rows.
+
+Why: Verify ongoing W&B signal metrics against the task-level trace.

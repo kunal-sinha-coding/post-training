@@ -16177,3 +16177,7 @@ The full 5,910-task training-set evaluation reports pass@1 0.09526, average rewa
 W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 149
 
 Compared the per-task rollout trace with W&B through optimizer step 149. Each step has eight task rows. All three threshold averages match exactly through step 149, with 1,192 rows. W&B has not yet published the step-150 coverage point.
+
+W&B COVERAGE CURVE PUBLICATION THROUGH STEP 151
+
+Rechecked W&B after the step-150 evaluation. The delayed step-150 point is now logged and matches the local task trace at 0.625, 0.140625, and 0.0703125 for the three thresholds. The W&B point through step 151 also matches local values of 0.4921875, 0.1875, and 0.15625. All three threshold metrics match through 151 optimizer steps, with eight tasks per step and 1,208 rows.
