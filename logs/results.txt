@@ -16307,3 +16307,7 @@ The latest W&B point is optimizer step 224, and it matches the local mean across
 W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 226
 
 The step-225 and step-226 W&B coverage values match the local means across the eight task groups. The at-least-one, at-least-two, and at-least-three-test fractions are 0.75/0.125/0.09375 at step 225 and 0.6484375/0.3125/0.15625 at step 226. Local coverage has advanced through step 227, which is pending W&B publication.
+
+W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 229
+
+W&B coverage points match the local averages for steps 227 through 229. The at-least-one, at-least-two, and at-least-three-test fractions are 0.375/0.09375/0.078125 at step 227, 0.5546875/0.328125/0.2265625 at step 228, and 0.6328125/0.09375/0.046875 at step 229. Local trace coverage is through step 229. Checkpoint 220 remains the latest complete checkpoint.

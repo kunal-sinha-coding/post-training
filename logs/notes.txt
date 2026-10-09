@@ -3175,3 +3175,9 @@ Commit name: Verify W&B coverage through step 226
 Verified the step-225 and step-226 W&B rollout metrics against local means. All three thresholds match. The local trace is through step 227.
 
 Why: Maintain the W&B signal logging audit.
+
+Commit name: Verify W&B coverage through step 229
+
+Verified the step-227 through step-229 coverage values in W&B against local means across eight task groups. All threshold values match. The local trace is through step 229, and checkpoint 220 remains complete.
+
+Why: Keep validating rollout signal curves during the ongoing training run.
