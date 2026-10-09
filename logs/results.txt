@@ -16459,3 +16459,7 @@ Checkpoint 270 is complete. Its 5,910-example training-set evaluation reports pa
 W&B COVERAGE CROSS-CHECK THROUGH STEP 271
 
 The step-271 W&B point at history axis 53,685 matches the local mean across eight task groups: 0.4140625 of generations passed at least one test, 0.125 passed at least two, and 0.0234375 passed all three. Training has started step 272. Checkpoint 270 is complete. The supervisor remains active; its latest check at 17:28:02 UTC found the trainer alive and checkpoint 260 complete.
+
+W&B COVERAGE CROSS-CHECK THROUGH STEP 272
+
+The step-272 W&B point at history axis 53,883 matches the local mean across eight task groups: 0.6015625 of generations passed at least one test, 0.1796875 passed at least two, and 0.0625 passed all three. Training has started step 273. Checkpoint 270 is complete. The supervisor is active; its latest 17:28:02 UTC check found the trainer alive and checkpoint 260 complete.
