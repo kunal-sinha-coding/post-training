@@ -16025,3 +16025,7 @@ Extended the cross-check through optimizer step 25. All 25 W&B points match the 
 INTERIM EVALPLUS CHECK AT STEP 30
 
 The configured step-30 EvalPlus evaluation reports MBPP pass@1 0.516 and MBPP+ pass@1 0.439. Values at steps 0, 10, and 20 were 0.524/0.437, 0.521/0.437, and 0.516/0.431. Step 30 is nearly unchanged on MBPP and slightly higher on MBPP+ than step 20. These are early checkpoints, not a settled trend. The output is in `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/evalplus/step-30/mbpp_results.txt`.
+
+INTERIM TRAINING-SET CHECK AT STEP 30
+
+The full 5,910-task training-set evaluation reports pass@1 0.08799, average reward 0.27721, and test-pass fraction 0.27987 at step 30. At step 0 the corresponding values were 0.08443, 0.27157, and 0.27431. Step 20 values were 0.08646, 0.27530, and 0.27802. This is a small improvement on the training set through 30 updates. EvalPlus at step 30 reports MBPP/MBPP+ pass@1 0.516/0.439. The full training metrics are in `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/training-step-30-metrics.json`.

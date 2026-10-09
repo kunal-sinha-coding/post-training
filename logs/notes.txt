@@ -2923,3 +2923,9 @@ Commit name: Record interim step 30 EvalPlus result
 Recorded step-30 EvalPlus metrics and the previous three checkpoint values in the experiment results file. MBPP pass@1 was 0.516 and MBPP+ was 0.439 at step 30. Labeled the comparison as an early result.
 
 Why: Preserve configured benchmark measurements while the matched training run continues.
+
+Commit name: Record step 30 training-set evaluation
+
+Recorded full training-set metrics at step 30 and compared them with steps 0 and 20. Pass@1 was 0.08799, average reward was 0.27721, and test-pass fraction was 0.27987. Marked the result as interim.
+
+Why: Preserve the configured training-set evaluation results for the harder-data experiment.
