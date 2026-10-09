@@ -3679,3 +3679,9 @@ Commit name: Verify W&B coverage through step 321
 Matched step-321 W&B coverage against local rollout records for all three thresholds. Confirmed training remains active with checkpoint 320 complete.
 
 Why: Preserve the current task-level reward signal and recovery state.
+
+Commit name: Verify W&B coverage through step 322
+
+Matched step-322 W&B coverage against local rollout records for all three thresholds. Confirmed training is active and checkpoint 320 is complete.
+
+Why: Preserve the latest reward signal and checkpoint recovery status.
