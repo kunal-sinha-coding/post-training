@@ -16379,3 +16379,11 @@ W&B points for steps 246 through 248 match local means over the eight task group
 W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 249
 
 The step-249 W&B coverage point matches local means across eight task groups: 0.6875 passed at least one test, 0.1484375 passed at least two, and 0.0625 passed all three. The local task trace and W&B history match through step 249. Checkpoint 240 remains the latest complete checkpoint.
+
+INTERIM STEP-250 CHECKPOINT
+
+EvalPlus pass@1 at step 250 is 0.556 on MBPP and 0.476 on MBPP+. Step 240 was 0.561/0.484. The full 5,910-task training-set evaluation at step 250 reports pass@1 0.10863, average reward 0.31641, and test-pass fraction 0.31889. Step 240 was 0.10338, 0.31089, and 0.31322. The training metrics are in `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/training-step-250-metrics.json`; EvalPlus results are in `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/evalplus/step-250/mbpp_results.txt`.
+
+W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 250
+
+The step-250 W&B coverage values match local means across eight task groups: 0.6328125 passed at least one test, 0.4765625 passed at least two, and 0.3671875 passed all three. Checkpoint 250 is saved and training continues.
