@@ -16487,3 +16487,7 @@ The step-277 W&B point at history axis 54,873 matches the local mean across eigh
 W&B COVERAGE CROSS-CHECK THROUGH STEP 278
 
 The step-278 W&B point at history axis 55,071 matches the local mean across eight task groups: 0.5546875 of generations passed at least one test, 0.2421875 passed at least two, and 0.2109375 passed all three. Training has started step 279. At 17:38:02 UTC, the supervisor check found the trainer alive and checkpoint 270 complete.
+
+W&B COVERAGE CROSS-CHECK THROUGH STEP 279
+
+The step-279 W&B point at history axis 55,269 matches the local mean across eight task groups: 0.609375 of generations passed at least one test, 0.1953125 passed at least two, and 0.1484375 passed all three. Local task-level records are present for step 280, with means 0.5390625/0.0625/0.0234375, but its W&B point is not yet published. Checkpoint 270 is complete. The supervisor's 17:38:02 UTC check found the trainer alive and checkpoint 270 complete.

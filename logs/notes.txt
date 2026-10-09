@@ -3427,3 +3427,9 @@ Commit name: Verify W&B coverage through step 278
 Matched step-278 W&B coverage against local task-group means for all thresholds. Confirmed the supervisor's 17:38:02 UTC check and training at step 279.
 
 Why: Maintain current and verifiable experiment progress.
+
+Commit name: Verify W&B coverage through step 279
+
+Matched step-279 W&B coverage against local values for all three thresholds. Recorded step-280 local coverage while its W&B publication remained pending. Checkpoint 270 is complete and the supervisor remains active.
+
+Why: Keep the per-task signal series and checkpoint recovery state current.
