@@ -2905,3 +2905,9 @@ Commit name: Cross-check rollout coverage curves through step 20
 Compared local task-level rollout records with the W&B curves at each of the first 20 optimizer steps. All eight task rows per step are present, and the per-step threshold fractions match each W&B scalar. Recorded the 160-row aggregate and threshold coverage rates in the results file.
 
 Why: Verify that the requested per-task generation coverage metrics are complete and represented correctly in W&B.
+
+Commit name: Extend rollout coverage cross-check through step 23
+
+Verified all 23 W&B scalar points against the local task coverage sidecar. Each step has eight task rows, and all three threshold metrics match the W&B values exactly. Updated the experiment results record.
+
+Why: Continue validating the per-task coverage telemetry throughout training.

@@ -16013,3 +16013,7 @@ The full 5,910-task training-set evaluation reports pass@1 0.08646 and average r
 W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 20
 
 Compared all three W&B coverage series with the per-task sidecar. For each of optimizer steps 1 through 20, all eight task rows are present in `task-coverage-trace.jsonl`; their mean candidate fractions at thresholds of at least 1, at least 2, and all 3 tests match the corresponding W&B scalar values. This gives 160 task-level rows and 20 verified W&B points per series. Across all task groups, the mean fraction of 16 candidates passing at least 1/2/3 tests was 0.39375/0.10117/0.04414. At least one candidate met each threshold on 137/160, 62/160, and 34/160 task groups, respectively. These are early rollout diagnostics, not EvalPlus results.
+
+W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 23
+
+Extended the coverage cross-check through optimizer step 23. All 23 W&B points match the mean of the corresponding eight local task records for each of the three test-pass thresholds. The sidecar now contains 184 rows across steps 1 through 23. No discrepancies were found.
