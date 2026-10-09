@@ -137,7 +137,7 @@ def evaluate(tasks: list[dict[str, Any]], generations: list[list[str]], timeout_
         "visible_test_count": visible_test_count,
         "prompt_protocol": "original MBPP Qwen EvalPlus prompt with visible assertions" if visible_test_count else "task text and reference signature only",
         "reward": {"function": "hybrid", "coefficient": 0.75, "formula": "0.75 * full_pass + 0.25 * passed_test_fraction", "scoring_workers": 8},
-        "task_selection": "first twenty rows, in file order, from mbpp_category_synthetic_tasks_harder100.jsonl",
+        "task_selection": f"first {len(task_rows)} rows from the loaded task file, in file order",
         "task_count": len(task_rows),
         "group_outcomes": {name: {"tasks": count, "fraction": count / len(task_rows) if task_rows else 0.0} for name, count in group_counts.items()},
         "full_pass_completions": full_passes,
@@ -157,7 +157,7 @@ def evaluate(tasks: list[dict[str, Any]], generations: list[list[str]], timeout_
 def main() -> None:
     """Run sampling, sandbox scoring, and save the full evaluation record."""
     # Parse reproducible input, output, sample count, seed, and timeout settings.
-    parser = argparse.ArgumentParser(description="Sample sixteen completions on the first twenty harder synthetic MBPP tasks.")
+    parser = argparse.ArgumentParser(description="Sample repeated completions on harder synthetic MBPP tasks.")
     parser.add_argument("--tasks", type=Path, default=ROOT / "analysis" / "mbpp_category_synthetic_tasks_harder100.jsonl")
     parser.add_argument("--output", type=Path, default=ROOT / "analysis" / "mbpp_category_synthetic_harder20_16gen_eval.json")
     parser.add_argument("--task-count", type=int, default=20)

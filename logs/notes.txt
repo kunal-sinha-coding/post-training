@@ -2821,3 +2821,9 @@ Commit name: Summarize saved original 100-task reward groups.
 Extracted the earliest saved sixteen-generation group for each of the first 100 original MBPP training tasks from the `c4fthzd3` reward trace. No inference was run for these original candidates. Eighty-one groups had reward variation, 84 tasks had at least one completion pass a test, 80 had a completion pass at least two, and 68 had a full pass. Saved the compact per-task summary and documented that the groups span an evolving early-training model.
 
 Why: The user requested a 100-original-task versus 100-harder-synthetic task group distribution and asked whether partial pass outcomes create useful GRPO signal.
+
+Commit name: Compare saved original and sampled harder task groups at 100 tasks.
+
+Saved sixteen-generation groups for 100 original tasks and generated sixteen completions for the first 100 harder synthetic tasks, with one visible assertion in both prompt paths and all three tests scored. Full-pass coverage occurred on 68/100 original groups and 17/100 synthetic groups. Hybrid reward varied in 81% of original groups and 83% of synthetic groups. Synthetic partial reward was common, but its mean group reward standard deviation was lower, 0.0805 versus 0.2500. Updated the evaluator's task-selection metadata to report the requested task count rather than always saying twenty.
+
+Why: The user requested a 100-task comparison and asked whether partial reward gives enough GRPO signal. The results show that most harder-task groups have reward variation, but far fewer groups have a complete solution.
