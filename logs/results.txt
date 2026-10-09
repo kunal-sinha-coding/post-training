@@ -16691,3 +16691,7 @@ Checkpoint 330 is complete. The 5,910-example training-set evaluation reports pa
 W&B COVERAGE CROSS-CHECK THROUGH STEP 331
 
 Step 331 matches local coverage at W&B history axis 65,571: 0.6015625 of generations passed at least one test, 0.1328125 passed at least two, and 0.0859375 passed all three. Each value is the mean over eight training task groups with 16 generations per task. Training is active beyond step 331. Checkpoint 330 is complete. The 19:38:10 UTC supervisor check found the trainer alive before checkpoint 330 finished saving.
+
+W&B COVERAGE CROSS-CHECK THROUGH STEP 332
+
+Step 332 matches local coverage at W&B history axis 65,769: 0.921875 of generations passed at least one test, 0.140625 passed at least two, and 0.046875 passed all three. Each value is the mean over eight task groups with 16 generations per task. Training is active beyond step 332. Checkpoint 330 is complete. The 19:38:10 UTC supervisor check found the trainer alive before checkpoint 330 finished saving.
