@@ -2989,3 +2989,9 @@ Commit name: Record step 70 training evaluation and coverage check
 Recorded the full 5,910-task evaluation at step 70. Pass@1 was 0.09086, average reward was 0.28770, and test-pass fraction was 0.29075. Compared with step 60, these measures increased. Compared with step 0, they remain above baseline. Cross-checked the W&B coverage curves against all 70 optimizer steps in the task-level trace. Every step has eight task rows, and all three thresholds match.
 
 Why: Preserve interim training results and verify the rollout signal metrics during the run.
+
+Commit name: Record step 80 training evaluation and coverage check
+
+Recorded the step-80 EvalPlus results and the full 5,910-task training-set evaluation. MBPP/MBPP+ pass@1 was 0.521/0.442. Training-set pass@1 was 0.09137, average reward was 0.28844, and test-pass fraction was 0.29085. Confirmed the W&B coverage metrics match the per-task trace through step 79. Step 80 coverage is awaiting W&B publication.
+
+Why: Preserve interim benchmark results and validate the requested rollout signal curves during training.

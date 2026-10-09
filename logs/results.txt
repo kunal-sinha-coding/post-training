@@ -16081,3 +16081,15 @@ The full 5,910-task training-set evaluation reports pass@1 0.09086, average rewa
 W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 70
 
 Compared all 70 optimizer-step points in W&B with the per-task sidecar. Each step has eight task rows, and all three threshold averages match exactly. The sidecar contains 560 rows across steps 1 through 70. No discrepancies were found.
+
+INTERIM EVALPLUS CHECK AT STEP 80
+
+The configured step-80 EvalPlus evaluation reports MBPP pass@1 0.521 and MBPP+ pass@1 0.442. At step 70 the values were 0.526/0.447. At step 0 they were 0.524/0.437. These remain interim checkpoint measurements. Results are in `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/evalplus/step-80/mbpp_results.txt`.
+
+INTERIM TRAINING-SET CHECK AT STEP 80
+
+The full 5,910-task training-set evaluation reports pass@1 0.09137, average reward 0.28844, and test-pass fraction 0.29085 at step 80. At step 70 the corresponding values were 0.09086, 0.28770, and 0.29075. At step 0 they were 0.08443, 0.27157, and 0.27431. Step-80 EvalPlus reports MBPP/MBPP+ pass@1 0.521/0.442. The training evaluation file is `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/training-step-80-metrics.json`.
+
+W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 79
+
+The per-task trace has eight rows per optimizer step. W&B coverage values through step 79 match the per-task averages for thresholds of at least one, two, and three passing tests among 16 generations. At step 79, these fractions are 0.578125, 0.109375, and 0.1015625. The trace contains 632 rows through step 79. Step 80 coverage is awaiting W&B history publication.
