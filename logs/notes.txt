@@ -3073,3 +3073,9 @@ Commit name: Record step 190 training evaluation and coverage status
 Recorded the step-190 EvalPlus results and full 5,910-task training-set evaluation. MBPP/MBPP+ pass@1 was 0.548/0.479. Training-set pass@1 was 0.10203, average reward was 0.30682, and test-pass fraction was 0.30965. The local 16-generation trace contains 1,520 rows through step 190. W&B matches the local coverage trace through step 189. Step 190 awaits W&B publication.
 
 Why: Preserve interim benchmark results and track verification of the requested rollout signal curves during training.
+
+Commit name: Record step 190 W&B coverage publication
+
+Recorded the delayed W&B coverage point for step 190. Its three threshold values match the local 16-generation trace, completing the cross-check through 190 optimizer steps and 1,520 task rows.
+
+Why: Verify the requested rollout signal metrics against the per-task trace.

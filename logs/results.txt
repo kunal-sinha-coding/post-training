@@ -16233,3 +16233,7 @@ The full 5,910-task training-set evaluation reports pass@1 0.10203, average rewa
 W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 189
 
 The local task trace has 1,520 rows through step 190. W&B and local coverage metrics match through optimizer step 189. Step 189 values are 0.5546875, 0.0703125, and 0.0625. W&B has not yet returned a coverage point for step 190, whose local values are 0.5546875, 0.1328125, and 0.0703125.
+
+W&B COVERAGE CURVE PUBLICATION THROUGH STEP 190
+
+The delayed W&B coverage point for step 190 is now published. It matches the local task trace at 0.5546875, 0.1328125, and 0.0703125 for the three thresholds. All W&B coverage values match the local trace through step 190, across 1,520 task rows.
