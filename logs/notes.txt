@@ -3373,3 +3373,9 @@ Commit name: Record step-270 EvalPlus results
 Recorded step-270 EvalPlus pass rates, which match step 250 and are below step 260. The separate training-set scoring and checkpoint save were still in progress.
 
 Why: Preserve each scheduled EvalPlus checkpoint measurement in the experiment record.
+
+Commit name: Record step-270 training and coverage results
+
+Saved the step-270 training-set metrics, exact local-to-W&B coverage match, and checkpoint reference. The separate EvalPlus scores were 0.556 MBPP and 0.476 MBPP+. Training advanced to step 271, and checkpoint 270 is complete.
+
+Why: Keep the long-run training and evaluation results auditable at each checkpoint.
