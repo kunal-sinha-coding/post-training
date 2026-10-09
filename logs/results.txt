@@ -16747,3 +16747,8 @@ W&B evaluation evalplus-step-390 reports greedy MBPP pass@1 0.553 and MBPP+ pass
 STEP 400 EVALPLUS AND TRAINING EVALUATION
 
 W&B evaluation evalplus-step-400 reports greedy MBPP pass@1 0.574 and MBPP+ pass@1 0.500. The 5,910-example training-set evaluation reports pass@1 0.1274112, average reward 0.3433728, test-pass fraction 0.3458305, partial-pass fraction 0.5421320, and partial-or-full pass fraction 0.6695431. Status counts are 753 passed, 42 syntax errors, 1,911 failed, and 3,204 partial. Local task-coverage rows match W&B at step 400: 0.46875 of generations passed at least one test, 0.15625 passed at least two, and 0.09375 passed all three. Each coverage value averages eight groups of 16 generations. Checkpoint 400 is complete. Trainer PID 34570 and attached monitor PID 946741 are active.
+
+
+STEP 410 EVALPLUS AND TRAINING EVALUATION
+
+W&B evaluation evalplus-step-410 reports greedy MBPP pass@1 0.574 and MBPP+ pass@1 0.495. The 5,910-example training-set evaluation reports pass@1 0.1289340, average reward 0.3442188, test-pass fraction 0.3463285, partial-pass fraction 0.5399323, and partial-or-full pass fraction 0.6688663. Status counts are 762 passed, 36 syntax errors, 1,921 failed, and 3,191 partial. Local task-coverage rows match W&B at step 410: 0.546875 of generations passed at least one test, 0.109375 passed at least two, and 0.09375 passed all three. Each coverage value averages eight groups of 16 generations. Checkpoint 410 is complete. Trainer PID 34570 and attached monitor PID 946741 are active; the 22:15:33 UTC monitor check found the trainer alive.

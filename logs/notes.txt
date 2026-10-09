@@ -3793,3 +3793,7 @@ Recorded step-390 EvalPlus, training-set metrics, task-generation coverage, and 
 
 Commit name: Record step-400 evaluation and coverage.
 Recorded step-400 EvalPlus, training-set metrics, task-generation coverage, and checkpoint status in logs/results.txt. W&B evaluation evalplus-step-400 and training-step-400-metrics.json provide the benchmark and training metrics. Local task-coverage-trace.jsonl matches all three W&B task-coverage values.
+
+
+Commit name: Record step-410 evaluation and coverage.
+Recorded step-410 EvalPlus, training-set metrics, task-generation coverage, and checkpoint status in logs/results.txt. W&B evalplus-step-410 and training-step-410-metrics.json provide the benchmark and training metrics. Local task-coverage-trace.jsonl matches W&B for all three coverage thresholds. The monitor heartbeat confirmed the live trainer and checkpoint.
