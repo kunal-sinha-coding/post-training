@@ -3115,3 +3115,9 @@ Commit name: Record step 210 checkpoint metrics
 Recorded step-210 EvalPlus MBPP and MBPP+ pass@1 and full training-set metrics. Checkpoint 210 was saved, and training advanced to step 210. The live trainer and ten-minute supervisor remain active.
 
 Why: Preserve interim benchmark results while the 50,000-step run continues.
+
+Commit name: Verify W&B coverage through step 209
+
+Compared W&B rollout coverage with local means for steps 206 through 209. All three thresholds match for every point. Step 210 remains pending W&B publication. Local rollout coverage has advanced through step 211.
+
+Why: Continue auditing the requested W&B rollout-signal curves during the long training run.

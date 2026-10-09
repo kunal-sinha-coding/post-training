@@ -16263,3 +16263,7 @@ The step-201 through step-205 W&B coverage points match the local means across t
 INTERIM STEP-210 CHECKPOINT
 
 EvalPlus pass@1 at step 210 is 0.561 on MBPP and 0.476 on MBPP+. Step 200 was 0.553/0.468. The full 5,910-task training-set evaluation at step 210 reports pass@1 0.10372, average reward 0.31027, and test-pass fraction 0.31249. Step 200 was 0.10457, 0.30795, and 0.31074. These are interim checkpoint metrics. The training metrics are in `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/training-step-210-metrics.json`; EvalPlus output is in `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/evalplus/step-210/mbpp_results.txt`.
+
+W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 209
+
+The step-206 through step-209 W&B points match the local per-task means across the eight groups at each optimizer step. Values for the at-least-one, at-least-two, and at-least-three-test thresholds are: step 206, 0.5546875/0.1484375/0.125; step 207, 0.5078125/0.2890625/0.1953125; step 208, 0.5/0.1171875/0.09375; and step 209, 0.4765625/0.0703125/0.0546875. The step-210 local value is waiting for publication to W&B. Local coverage is logged through step 211.
