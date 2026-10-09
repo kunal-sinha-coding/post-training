@@ -3205,3 +3205,9 @@ Commit name: Verify W&B coverage through step 234
 Verified W&B coverage at steps 233 and 234 against the local per-task aggregates. All three metrics match. Step 235 is present in the local trace and awaits W&B publication.
 
 Why: Continue validating the requested training signal graph.
+
+Commit name: Verify W&B coverage through step 236
+
+Verified the W&B rollout coverage at steps 235 and 236 against local per-task means. All three threshold values match at both steps. The trace contains 1,888 task-group rows through step 236.
+
+Why: Continue checking the signal curves during training.
