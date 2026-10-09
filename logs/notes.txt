@@ -3253,3 +3253,9 @@ Commit name: Verify W&B coverage through step 244
 Verified the step-244 W&B rollout values against local means across eight task groups. All three threshold metrics match.
 
 Why: Continue checking signal logging during the training run.
+
+Commit name: Verify W&B coverage through step 245
+
+Verified W&B rollout metrics at step 245 against the local eight-group average. All three threshold values match.
+
+Why: Continue confirming rollout signal curves during the experiment.
