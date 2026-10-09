@@ -3761,3 +3761,7 @@ Why: Preserve the current reward signal and recovery state.
 
 Commit name: Record step-339 W&B coverage and training status.
 Recorded the local and W&B-matched generation coverage for optimizer step 339 and the active supervisor, trainer, and checkpoint state in logs/results.txt. This keeps the user's training experiment record current while the supervised run continues. No training or checkpoint files were changed.
+
+
+Commit name: Record step-340 evaluation and coverage.
+Recorded step-340 EvalPlus benchmark scores, the 5,910-example training-set evaluation, task-group generation coverage, and the completed checkpoint state in logs/results.txt. The benchmark values come from W&B evaluation summary evalplus-step-340. The training-set values come from training-step-340-metrics.json. This preserves the scheduled evaluation results before the next training interval.

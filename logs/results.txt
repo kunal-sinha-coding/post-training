@@ -16712,3 +16712,8 @@ Step 338 matches local coverage at W&B history axis 66,957: 0.546875 of generati
 W&B COVERAGE CROSS-CHECK THROUGH STEP 339
 
 Step 339 matches local task-coverage rows at W&B history axis 67,155: 0.6953125 of the sampled generations passed at least one assertion, 0.140625 passed at least two, and 0.03125 passed all three. These values average the 16 generations across each of eight task groups in the rollout. W&B run mbpphard10x1009 is active. The latest complete checkpoint observed at 2026-10-09 20:00 UTC is checkpoint 330. The supervisor and trainer remain active, and its last recorded monitor check at 19:48:10 UTC found attempt 1 alive at PID 34570. No checkpoint cleanup was performed.
+
+
+STEP 340 EVALPLUS AND TRAINING EVALUATION
+
+The completed evaluation named evalplus-step-340 reports greedy MBPP pass@1 0.556 and MBPP+ pass@1 0.484 in W&B run mbpphard10x1009. The matched 5,910-example training evaluation reports pass@1 0.1126904, average reward 0.3300056, test-pass fraction 0.3330487, partial-pass fraction 0.5482234, and partial-or-full pass fraction 0.6609137. Status counts are 666 passed, 54 syntax errors, 1,950 failed, and 3,240 partial. Local task-coverage rows and the W&B summary agree at step 340: 0.78125 of generations passed at least one test, 0.359375 passed at least two, and 0.1796875 passed all three. Each coverage value averages eight groups of 16 generations. Checkpoint 340 is complete. At the last check, trainer PID 34570 and supervisor PID 34560 were active.
