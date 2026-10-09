@@ -3541,3 +3541,9 @@ Commit name: Verify W&B coverage through step 299
 Matched steps 298 and 299 W&B coverage against local task rollout records for all three thresholds. Confirmed training is active at step 299 and checkpoint 290 is complete.
 
 Why: Keep current task-level signal and checkpoint recovery state auditable.
+
+Commit name: Record step-300 EvalPlus results
+
+Recorded the step-300 EvalPlus scores, MBPP 0.556 and MBPP+ 0.481, and the local rollout coverage while W&B publication and training-set evaluation remained pending.
+
+Why: Preserve the scheduled benchmark result during the step-300 evaluation cycle.
