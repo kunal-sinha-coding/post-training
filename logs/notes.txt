@@ -3667,3 +3667,9 @@ Commit name: Record step-320 EvalPlus results
 Recorded the step-320 EvalPlus scores, MBPP 0.558 and MBPP+ 0.487, and local rollout coverage while W&B publication and training-set scoring remained pending.
 
 Why: Preserve the scheduled benchmark result during the current evaluation cycle.
+
+Commit name: Record step-320 training metrics and W&B coverage
+
+Recorded the step-320 training-set evaluation, verified coverage against W&B, and recorded EvalPlus and checkpoint 320 completion.
+
+Why: Preserve the scheduled benchmark, training signal, and recovery point.

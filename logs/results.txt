@@ -16647,3 +16647,7 @@ Step 319 matches local coverage at W&B history axis 63,193: 0.84375 of generatio
 CHECKPOINT EVALPLUS RESULTS AT STEP 320
 
 The step-320 EvalPlus output reports MBPP pass@1 0.558 and MBPP+ pass@1 0.487. This is below step 310's 0.574 and 0.497. Step-320 local rollout coverage is 0.484375/0.0625/0.046875 for generations passing at least one, two, and three tests; its W&B point is pending. The 5,910-example training-set evaluation is generating candidates. Checkpoint 310 remains the latest complete checkpoint while scoring and saving continue.
+
+STEP-320 TRAINING METRICS AND W&B COVERAGE
+
+Checkpoint 320 is complete. The 5,910-example training-set evaluation reports pass@1 0.1103215, average reward 0.3267343, test-pass fraction 0.3294660, partial-pass fraction 0.5461929, and partial-or-full-pass fraction 0.6565144. The status counts are 652 passed, 49 syntax errors, 1,981 failed, and 3,228 partial. The W&B coverage point at history axis 63,392 matches local means over eight task groups: at least one test 0.484375, at least two 0.0625, and all three 0.046875. EvalPlus reports MBPP 0.558 and MBPP+ 0.487. Training has advanced beyond step 320. The latest supervisor check at 19:08:07 UTC found the trainer alive and checkpoint 310 complete before checkpoint 320 finished saving.
