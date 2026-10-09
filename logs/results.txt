@@ -16667,3 +16667,7 @@ Step 323 matches local coverage at W&B history axis 63,986: 0.671875 of generati
 W&B COVERAGE CROSS-CHECK THROUGH STEP 324
 
 Step 324 matches local coverage at W&B history axis 64,184: 0.5546875 of generations passed at least one test, 0.15625 passed at least two, and 0.109375 passed all three. Each value is the mean over eight task groups with 16 generations per task. Training has advanced beyond step 324. Checkpoint 320 is the latest complete checkpoint.
+
+W&B COVERAGE CROSS-CHECK THROUGH STEP 326
+
+Step 325 matches local coverage at W&B history axis 64,382: 0.765625 of generations passed at least one test, 0.3125 passed at least two, and 0.109375 passed all three. Step 326 matches at history axis 64,580: 0.7890625, 0.34375, and 0.15625. Each value is the mean over eight task groups with 16 generations per task. Training is active at step 326, and checkpoint 320 is the latest complete checkpoint.
