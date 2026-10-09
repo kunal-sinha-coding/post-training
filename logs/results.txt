@@ -16283,3 +16283,11 @@ W&B points for steps 214 through 216 match local means across the eight task gro
 W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 218
 
 The step-217 and step-218 W&B coverage values match the local averages over eight task groups. At least one, two, and three tests passed are 0.59375/0.28125/0.0703125 at step 217 and 0.515625/0.2109375/0.203125 at step 218. The step-219 local point is waiting for publication. Training is at step 219, and checkpoint 210 is the latest complete checkpoint.
+
+INTERIM STEP-220 CHECKPOINT
+
+EvalPlus pass@1 at step 220 is 0.561 on MBPP and 0.471 on MBPP+. Step 210 was 0.561/0.476. The full 5,910-task training-set evaluation at step 220 reports pass@1 0.10626, average reward 0.31145, and test-pass fraction 0.31421. Step 210 was 0.10372, 0.31027, and 0.31249. The training metrics are in `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/training-step-220-metrics.json`; EvalPlus results are in `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/evalplus/step-220/mbpp_results.txt`.
+
+W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 220
+
+W&B coverage through optimizer step 220 matches the local averages over eight task groups. At step 219, at least one, two, and three tests passed are 0.546875/0.1640625/0.09375. At step 220, they are 0.578125/0.15625/0.078125. Each optimizer step stores eight per-task records with 16 generations per task.
