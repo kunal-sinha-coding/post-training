@@ -3223,3 +3223,9 @@ Commit name: Verify W&B coverage through step 238
 Verified the step-238 W&B coverage values against local means across eight task groups. All three thresholds match. Step 239 is present locally and awaits W&B publication.
 
 Why: Keep verifying the signal curves during training.
+
+Commit name: Verify W&B coverage through step 239
+
+Verified the step-239 W&B coverage values against the local mean across eight task groups. All three threshold metrics match.
+
+Why: Continue the rollout coverage audit during training.
