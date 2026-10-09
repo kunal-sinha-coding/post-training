@@ -2845,3 +2845,9 @@ Commit name: Add matched config for harder 10x GRPO run
 Added a separate training configuration that copies the linked 10x GRPO run settings and changes only the generated dataset path, output paths, and W&B run identity. It expects 5,910 combined rows and keeps the same Qwen 0.5B model, seed, LoRA, optimizer, rollout size, visible-test setting, evaluation cadence, and checkpoint cadence.
 
 Why: The user requested a controlled difficulty experiment with the original data plus a category-proportional harder synthetic set, while preserving the prior easier run and artifacts.
+
+Commit name: Add ten-minute harder-run recovery supervisor
+
+Added a dedicated supervisor for the harder-data run. It checks training every ten minutes, records the latest complete checkpoint, classifies failed attempts from their logs, and retries from the latest complete checkpoint without removing any checkpoint files. The supervisor declares success only after step 50,000 and the final EvalPlus metrics file exist.
+
+Why: The user authorized autonomous failure diagnosis and checkpoint-based recovery for the complete matched training run.
