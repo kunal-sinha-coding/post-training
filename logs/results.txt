@@ -16017,3 +16017,7 @@ Compared all three W&B coverage series with the per-task sidecar. For each of op
 W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 23
 
 Extended the coverage cross-check through optimizer step 23. All 23 W&B points match the mean of the corresponding eight local task records for each of the three test-pass thresholds. The sidecar now contains 184 rows across steps 1 through 23. No discrepancies were found.
+
+W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 25
+
+Extended the cross-check through optimizer step 25. All 25 W&B points match the mean of the corresponding eight task-level rows for all three test-pass thresholds. The sidecar contains 200 rows across steps 1 through 25. No discrepancies were found.

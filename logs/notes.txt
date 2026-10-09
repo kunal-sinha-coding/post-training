@@ -2911,3 +2911,9 @@ Commit name: Extend rollout coverage cross-check through step 23
 Verified all 23 W&B scalar points against the local task coverage sidecar. Each step has eight task rows, and all three threshold metrics match the W&B values exactly. Updated the experiment results record.
 
 Why: Continue validating the per-task coverage telemetry throughout training.
+
+Commit name: Extend rollout coverage cross-check through step 25
+
+Compared all 25 W&B coverage points with the local per-task trace. All three threshold metrics match for every step, with eight task records per step. Recorded this verification in the experiment results file.
+
+Why: Confirm the required rollout coverage curves continue to reflect the task-level data during training.
