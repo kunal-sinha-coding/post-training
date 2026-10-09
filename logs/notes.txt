@@ -3151,3 +3151,9 @@ Commit name: Record step 220 results and verify coverage
 Recorded step-220 EvalPlus and full training-set metrics. Verified the step-219 and step-220 W&B rollout coverage points against local per-task aggregates. Checkpoint 220 is saved and training continues.
 
 Why: Preserve interim experiment results and maintain the W&B logging audit.
+
+Commit name: Verify W&B coverage through step 221
+
+Verified the step-221 W&B rollout coverage metrics against the local eight-group mean. All three thresholds match. The trainer is running beyond checkpoint 220.
+
+Why: Continue the per-task signal logging audit.

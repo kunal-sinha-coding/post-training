@@ -16291,3 +16291,7 @@ EvalPlus pass@1 at step 220 is 0.561 on MBPP and 0.471 on MBPP+. Step 210 was 0.
 W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 220
 
 W&B coverage through optimizer step 220 matches the local averages over eight task groups. At step 219, at least one, two, and three tests passed are 0.546875/0.1640625/0.09375. At step 220, they are 0.578125/0.15625/0.078125. Each optimizer step stores eight per-task records with 16 generations per task.
+
+W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 221
+
+The step-221 W&B coverage values match local means across the eight task groups: 0.484375 of generations passed at least one test, 0.078125 passed at least two, and 0.0078125 passed all three. Checkpoint 220 is saved, and the trainer has advanced through step 221.
