@@ -3091,3 +3091,9 @@ Commit name: Correct step 200 local coverage values
 Corrected the step-200 local coverage averages after calculating them across all eight task groups. The values are 0.640625, 0.125, and 0.03125 for the three passing-test thresholds. W&B had not yet published the step-200 point.
 
 Why: The initial interim note contained incorrect coverage averages and needed an accurate correction.
+
+Commit name: Record step 200 training-set evaluation
+
+Recorded the completed step-200 full training-set evaluation. The trainer reached and saved checkpoint 200. The supervisor remains active. Local rollout coverage is present through step 200, while W&B history retrieval still showed coverage through step 199 at the time of this check.
+
+Why: Preserve numerical experiment results and track publication of the rollout signal curve.
