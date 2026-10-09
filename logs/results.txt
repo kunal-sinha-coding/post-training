@@ -16717,3 +16717,8 @@ Step 339 matches local task-coverage rows at W&B history axis 67,155: 0.6953125 
 STEP 340 EVALPLUS AND TRAINING EVALUATION
 
 The completed evaluation named evalplus-step-340 reports greedy MBPP pass@1 0.556 and MBPP+ pass@1 0.484 in W&B run mbpphard10x1009. The matched 5,910-example training evaluation reports pass@1 0.1126904, average reward 0.3300056, test-pass fraction 0.3330487, partial-pass fraction 0.5482234, and partial-or-full pass fraction 0.6609137. Status counts are 666 passed, 54 syntax errors, 1,950 failed, and 3,240 partial. Local task-coverage rows and the W&B summary agree at step 340: 0.78125 of generations passed at least one test, 0.359375 passed at least two, and 0.1796875 passed all three. Each coverage value averages eight groups of 16 generations. Checkpoint 340 is complete. At the last check, trainer PID 34570 and supervisor PID 34560 were active.
+
+
+STEP 350 EVALPLUS AND TRAINING EVALUATION
+
+W&B evaluation evalplus-step-350 reports greedy MBPP pass@1 0.550 and MBPP+ pass@1 0.479. The 5,910-example training-set evaluation reports pass@1 0.1160745, average reward 0.3330513, test-pass fraction 0.3353208, partial-pass fraction 0.5478849, and partial-or-full pass fraction 0.6639594. Status counts are 686 passed, 40 syntax errors, 1,946 failed, and 3,238 partial. Local task-coverage rows match W&B at step 350: 0.6875 of generations passed at least one test, 0.125 passed at least two, and 0.046875 passed all three. Each coverage value averages eight groups of 16 generations. Checkpoint 350 is complete. Trainer PID 34570 and attached ten-minute monitor PID 946741 were active at the time of recording.

@@ -3769,3 +3769,7 @@ Recorded step-340 EvalPlus benchmark scores, the 5,910-example training-set eval
 
 Commit name: Attach ten-minute recovery monitoring to the active trainer.
 Added analysis/monitor_existing_grpo_process.sh after finding that the original supervisor shell had exited while trainer PID 34570 remained active. The monitor attaches without signaling the trainer, checks the newest complete checkpoint every ten minutes, and starts the existing checkpoint-resuming supervisor if the trainer exits before step 50,000 and final EvalPlus metrics are present. This closes the monitor gap without interrupting the active run.
+
+
+Commit name: Record step-350 evaluation and coverage.
+Recorded step-350 EvalPlus, training-set results, task-group generation coverage, and complete checkpoint status in logs/results.txt. The benchmark and W&B metrics are from evaluation evalplus-step-350 in run mbpphard10x1009. Training-set details are from training-step-350-metrics.json, and coverage is independently computed from local task-coverage-trace.jsonl and matched to W&B.
