@@ -16275,3 +16275,7 @@ W&B history now includes coverage through optimizer step 212. The three values m
 W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 213
 
 The latest W&B coverage point is optimizer step 213. Its three values match the local means across eight task groups: 0.4453125 of generations passed at least one test, 0.265625 passed at least two, and 0.1640625 passed all three. The local trace is already at step 214, whose W&B point is pending publication.
+
+W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 216
+
+W&B points for steps 214 through 216 match local means across the eight task groups. For at least one, two, and three tests passed, the values are step 214: 0.5078125/0.0703125/0.0703125; step 215: 0.6328125/0.2265625/0.109375; and step 216: 0.5859375/0.1328125/0.046875. The local trace and W&B history match through step 216, or 1,728 task-group rows.
