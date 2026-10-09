@@ -21,6 +21,7 @@ sys.path.insert(0, str(ROOT))
 os.environ["HF_HOME"] = "/tmp/mbpp-qwen05-hf-home"
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "0"
 
+from data import build_qwen_evalplus_prompt
 from experiments.run_qwen_official_greedy_eval import QWEN_EVALPLUS_STOP_STRINGS, apply_stops, build_prompt
 from sandbox import score_completion, wrap_qwen_continuation
 
@@ -35,12 +36,23 @@ def load_tasks(path: Path, task_count: int) -> list[dict[str, Any]]:
         return [json.loads(line) for line in handle if line.strip()][:task_count]
 
 
-def build_task_prompt(task: dict[str, Any]) -> str:
-    """Add the reference function signature to the task description."""
-    # Use the saved reference header to preserve the exact function contract.
-    function = ast.parse(task["reference_solution"]).body[0]
-    signature = ast.unparse(function).splitlines()[0]
-    return f"{task['task_text'].strip()}\n\nImplement this function:\n{signature}"
+def build_task_prompt(task: dict[str, Any], visible_test_count: int) -> str:
+    """Build a task prompt with the requested number of visible assertions."""
+    # Reuse the prior task-only prompt when no assertions are requested.
+    if visible_test_count == 0:
+        # Use the saved reference header to preserve the exact function contract.
+        function = ast.parse(task["reference_solution"]).body[0]
+        signature = ast.unparse(function).splitlines()[0]
+        return build_prompt(f"{task['task_text'].strip()}\n\nImplement this function:\n{signature}")
+    # Match the original MBPP training prompt, which exposes the first assertions in its code docstring.
+    record = {
+        "task_id": task["prompt_id"],
+        "text": task["task_text"],
+        "code": task["reference_solution"],
+        "test_list": task["tests"],
+        "test_setup_code": "",
+    }
+    return build_qwen_evalplus_prompt(record, visible_test_count=visible_test_count)
 
 
 def generate_samples(prompts: list[str], samples_per_task: int, seed: int) -> list[list[str]]:
@@ -64,7 +76,7 @@ def generate_samples(prompts: list[str], samples_per_task: int, seed: int) -> li
     return [[apply_stops(output.text) for output in result.outputs] for result in outputs]
 
 
-def evaluate(tasks: list[dict[str, Any]], generations: list[list[str]], timeout_seconds: float) -> dict[str, Any]:
+def evaluate(tasks: list[dict[str, Any]], generations: list[list[str]], timeout_seconds: float, seed: int, visible_test_count: int) -> dict[str, Any]:
     """Score all completions and classify each task by full-pass outcomes."""
     # Score every completion against all saved assertions in the isolated sandbox.
     task_rows = []
@@ -108,7 +120,9 @@ def evaluate(tasks: list[dict[str, Any]], generations: list[list[str]], timeout_
     return {
         "model": MODEL,
         "checkpoint": "base model, no fine-tuned checkpoint or adapter",
-        "sampling": {"samples_per_task": len(generations[0]) if generations else 0, "temperature": 1.0, "top_p": 1.0, "seed": 42, "max_tokens": 2048},
+        "sampling": {"samples_per_task": len(generations[0]) if generations else 0, "temperature": 1.0, "top_p": 1.0, "seed": seed, "max_tokens": 2048},
+        "visible_test_count": visible_test_count,
+        "prompt_protocol": "original MBPP Qwen EvalPlus prompt with visible assertions" if visible_test_count else "task text and reference signature only",
         "task_selection": "first twenty rows, in file order, from mbpp_category_synthetic_tasks_harder100.jsonl",
         "task_count": len(task_rows),
         "group_outcomes": {name: {"tasks": count, "fraction": count / len(task_rows) if task_rows else 0.0} for name, count in group_counts.items()},
@@ -132,12 +146,13 @@ def main() -> None:
     parser.add_argument("--task-count", type=int, default=20)
     parser.add_argument("--samples-per-task", type=int, default=16)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--visible-test-count", type=int, default=0)
     parser.add_argument("--timeout-seconds", type=float, default=3.0)
     args = parser.parse_args()
     tasks = load_tasks(args.tasks, args.task_count)
-    prompts = [build_prompt(build_task_prompt(task)) for task in tasks]
+    prompts = [build_task_prompt(task, args.visible_test_count) for task in tasks]
     generations = generate_samples(prompts, args.samples_per_task, args.seed)
-    result = evaluate(tasks, generations, args.timeout_seconds)
+    result = evaluate(tasks, generations, args.timeout_seconds, args.seed, args.visible_test_count)
     args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({key: value for key, value in result.items() if key != "tasks"}, indent=2), flush=True)
 

@@ -2803,3 +2803,9 @@ Commit name: Summarize saved original-task generation groups.
 Used the first twenty original training tasks after the canonical EvalPlus exclusion and matched each task to its earliest sixteen-generation group in the existing `c4fthzd3` reward trace. No model inference was run. At least one generation passed exactly zero, one, two, or three tests for 19/20, 7/20, 6/20, and 11/20 tasks. Cumulative at-least-one, at-least-two, and all-three task coverage was 15/20, 15/20, and 11/20. Recorded task IDs, per-task score histograms, trace source, and caveats about visible tests and changing checkpoints in `logs/results.txt`.
 
 Why: The user asked for the same task-level distribution on original tasks and pointed out that the corresponding generations were already saved.
+
+Commit name: Resample harder tasks with one visible assertion.
+
+Updated the sixteen-sample evaluator to support the repository's original MBPP prompt format with one visible assertion and generated sixteen new completions for the same first twenty harder tasks. Two of 20 task groups had at least one full pass; 17/20 had a generation passing at least one assertion, 8/20 had one passing at least two, and 2/20 had one passing all three. Recorded the corrected comparison with the saved original-task groups and the difference in checkpoint state and task selection.
+
+Why: The prior synthetic comparison hid every assertion, while original training prompts show one assertion. The user asked to redo the comparison with one visible assertion.
