@@ -2777,3 +2777,9 @@ Commit name: Generate 100 harder Luna synthetic tasks.
 Saved 100 category-proportional harder-task specifications and their materialized assertions. All 100 generated reference functions passed sandbox execution on three literal inputs each. The API state contains 129 responses, including the two-task sanity sample, retries, and duplicate-description replacement calls. Total recorded usage was 87,074 input tokens and 79,809 output tokens, with estimated cost $0.048278. One malformed JSON response exhausted its first retry sequence; resuming reused the 99 accepted rows and generated a valid replacement.
 
 Why: The user requested 100 harder-than-example synthetic tasks and a base-model EvalPlus-style pass-rate measurement.
+
+Commit name: Count unexecuted assertions in evaluation denominators.
+
+Updated the category-task evaluator to count the test assertions supplied for each task, including assertions that cannot run because the generated completion has a syntax error. The scorer's `total_tests` remains the number it executed; `expected_tests` records the denominator for the task-level assertion fraction.
+
+Why: The harder-task evaluation had three syntax-error completions. The old aggregate omitted their nine assertions from the denominator, which overstated assertion pass fraction.

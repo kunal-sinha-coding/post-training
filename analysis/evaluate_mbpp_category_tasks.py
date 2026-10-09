@@ -59,11 +59,13 @@ def evaluate(tasks_path: Path, output_path: Path, timeout_seconds: float) -> dic
             "category": task["category"],
             "entry_point": task["entry_point"],
             "completion": completion,
+            "expected_tests": len(task["tests"]),
             **metrics,
         })
     total_tasks = len(rows)
     passed_tasks = sum(row["status"] == "passed" for row in rows)
-    total_assertions = sum(int(row["total_tests"]) for row in rows)
+    # Count every supplied assertion even when syntax errors prevent sandbox execution.
+    total_assertions = sum(int(row["expected_tests"]) for row in rows)
     passed_assertions = sum(int(row["passed_tests"]) for row in rows)
     # Report task pass@1 and assertion fraction for this 13-task preview.
     result = {
@@ -81,7 +83,7 @@ def evaluate(tasks_path: Path, output_path: Path, timeout_seconds: float) -> dic
                 "tasks": sum(row["category"] == category for row in rows),
                 "tasks_passed": sum(row["category"] == category and row["status"] == "passed" for row in rows),
                 "assertions_passed": sum(int(row["passed_tests"]) for row in rows if row["category"] == category),
-                "assertions_total": sum(int(row["total_tests"]) for row in rows if row["category"] == category),
+                "assertions_total": sum(int(row["expected_tests"]) for row in rows if row["category"] == category),
             }
             for category in dict.fromkeys(row["category"] for row in rows)
         },
