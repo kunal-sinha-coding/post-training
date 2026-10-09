@@ -2965,3 +2965,9 @@ Commit name: Record step 50 training evaluation and coverage check
 Recorded the full 5,910-task evaluation at step 50. Pass@1 was 0.08782, average reward was 0.28099, and test-pass fraction was 0.28426. Compared with step 40, each metric dipped slightly. Compared with step 0, each remains higher. Cross-checked all 50 W&B rollout coverage points against the local task-level trace. All three threshold averages match for all steps.
 
 Why: Preserve interim training results and verify the logged GRPO signal curves while the run continues.
+
+Commit name: Record step 60 EvalPlus result
+
+Recorded the configured step-60 EvalPlus metrics. MBPP pass@1 was 0.524 and MBPP+ was 0.444. These are interim results. Compared with step 50, both scores decreased. Compared with step 0, MBPP is unchanged and MBPP+ increased by 0.007.
+
+Why: Preserve periodic benchmark results while the experiment continues.
