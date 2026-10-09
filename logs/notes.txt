@@ -2765,3 +2765,9 @@ Commit name: Save 100 harder-task generation prompts.
 Saved 100 category-proportional prompts with seed 20261009. Each prompt asks for a task clearly harder than all three same-category examples through greater algorithmic or reasoning demands, not longer wording or arbitrary restrictions. The prompts preserve the existing JSON output contract and three literal test inputs.
 
 Why: These are the exact generation prompts for the requested harder synthetic-task pilot and provide a reproducible API input artifact.
+
+Commit name: Validate harder synthetic task generation with two examples.
+
+Generated the first two saved harder-task prompts through GPT-6 Luna. Both responses passed the required schema checks and reference sandbox execution. The tasks combine multiple billing or rounding rules. The API used 946 input tokens and 1,090 output tokens, at an estimated cost of $0.000640. Saved the raw task specs and materialized three-test tasks as a prompt-path sanity sample.
+
+Why: Confirm the harder prompt wording still produces valid single-function tasks and runnable test inputs before spending API calls on all 100 prompts.
