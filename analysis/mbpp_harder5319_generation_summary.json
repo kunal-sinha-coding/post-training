@@ -89,5 +89,14 @@
     "python": "3.12.3",
     "device": "NVIDIA RTX A5000",
     "repository_commit": "172fe9059e49f2732f0be0aca46d9b42e00f5e00"
+  },
+  "one_time_prelaunch_checkpoint_cleanup": {
+    "run": "outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-luna-20261007",
+    "removed_checkpoint_directories": 65,
+    "removed_steps": "10 through 650 in increments of 10",
+    "retained_latest_complete_checkpoint": "checkpoint-660",
+    "reclaimed_logical_bytes": 7940414189,
+    "reclaimed_logical_gib": 7.395,
+    "cleanup_policy": "No checkpoint cleanup will occur after the harder-data training run starts."
   }
 }

@@ -2863,3 +2863,9 @@ Commit name: Record harder 10x generation and validation
 Saved the complete 5,319-task harder dataset, task specifications, API usage summary, and a reproducibility summary. All tasks passed reference execution with three assertions, exact normalized descriptions are unique, and category counts are exactly nine times the original counts. The generation used 6,574 API responses at estimated cost $2.208581 and 48 minutes 40.7 seconds of command runtime across three attempts. Recorded the clean-cache 5,910-row preflight and the user's direction to skip the 16-sample evaluation.
 
 Why: The user requested a separate harder 10x dataset, generation cost and time accounting, prelaunch dataset validation, then immediate training.
+
+Commit name: Record one-time prelaunch checkpoint cleanup
+
+Removed the 65 older checkpoints at steps 10 through 650 from the inactive easier-data run after verifying that step 660 is complete. This reclaimed 7.395 GiB by logical file size. Updated the generation summary and results log. The new harder-data output directory remains untouched, and the recovery supervisor does not remove checkpoints.
+
+Why: The user asked for one checkpoint cleanup before launch and prohibited cleanup during later training restarts.
