@@ -2809,3 +2809,9 @@ Commit name: Resample harder tasks with one visible assertion.
 Updated the sixteen-sample evaluator to support the repository's original MBPP prompt format with one visible assertion and generated sixteen new completions for the same first twenty harder tasks. Two of 20 task groups had at least one full pass; 17/20 had a generation passing at least one assertion, 8/20 had one passing at least two, and 2/20 had one passing all three. Recorded the corrected comparison with the saved original-task groups and the difference in checkpoint state and task selection.
 
 Why: The prior synthetic comparison hid every assertion, while original training prompts show one assertion. The user asked to redo the comparison with one visible assertion.
+
+Commit name: Measure hybrid reward variation in sampled task groups.
+
+Updated the harder-task evaluator to score candidates concurrently with the configured GRPO hybrid reward, coefficient 0.75, and eight sandbox workers. It now records per-completion reward and per-task group standard deviation and flatness. This makes the evaluation useful for measuring reward variation, rather than only counting passed assertions.
+
+Why: The user asked whether partial pass outcomes provide enough within-group signal for GRPO and requested a 100-task comparison.

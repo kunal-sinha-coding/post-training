@@ -11,6 +11,7 @@ import argparse
 import ast
 import hashlib
 import json
+import math
 import os
 import sys
 from pathlib import Path
@@ -23,7 +24,7 @@ os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "0"
 
 from data import build_qwen_evalplus_prompt
 from experiments.run_qwen_official_greedy_eval import QWEN_EVALPLUS_STOP_STRINGS, apply_stops, build_prompt
-from sandbox import score_completion, wrap_qwen_continuation
+from sandbox import score_completion_batch, wrap_qwen_continuation
 
 
 MODEL = "Qwen/Qwen2.5-Coder-0.5B-Instruct"
@@ -83,17 +84,23 @@ def evaluate(tasks: list[dict[str, Any]], generations: list[list[str]], timeout_
     flat_rows = []
     for task, candidates in zip(tasks, generations, strict=True):
         candidate_rows = []
-        for candidate_index, completion in enumerate(candidates):
-            _, metrics = score_completion(
-                wrap_qwen_continuation(completion),
-                "\n".join(task["tests"]),
-                timeout_seconds=timeout_seconds,
-            )
+        test_code = "\n".join(task["tests"])
+        # Score this task's independent generations concurrently with the training reward.
+        scored = score_completion_batch(
+            [wrap_qwen_continuation(completion) for completion in candidates],
+            [test_code] * len(candidates),
+            timeout_seconds=timeout_seconds,
+            reward_function="hybrid",
+            reward_coefficient=0.75,
+            reward_scoring_workers=8,
+        )
+        for candidate_index, (completion, (reward, metrics)) in enumerate(zip(candidates, scored, strict=True)):
             row = {
                 "candidate": candidate_index,
                 "completion": completion,
                 "completion_sha256": hashlib.sha256(completion.encode()).hexdigest(),
                 "expected_tests": len(task["tests"]),
+                "training_reward": reward,
                 **metrics,
             }
             candidate_rows.append(row)
@@ -101,6 +108,9 @@ def evaluate(tasks: list[dict[str, Any]], generations: list[list[str]], timeout_
         # Label groups by the number of completions that pass every saved assertion.
         pass_count = sum(row["status"] == "passed" for row in candidate_rows)
         group = "none" if pass_count == 0 else "all" if pass_count == len(candidate_rows) else "mixed"
+        rewards = [row["training_reward"] for row in candidate_rows]
+        reward_mean = sum(rewards) / len(rewards)
+        reward_std = math.sqrt(sum((reward - reward_mean) ** 2 for reward in rewards) / len(rewards))
         task_rows.append({
             "prompt_id": task["prompt_id"],
             "category": task["category"],
@@ -108,6 +118,9 @@ def evaluate(tasks: list[dict[str, Any]], generations: list[list[str]], timeout_
             "full_pass_count": pass_count,
             "group_outcome": group,
             "mean_test_fraction": sum(row["passed_tests"] / row["expected_tests"] for row in candidate_rows) / len(candidate_rows),
+            "mean_training_reward": reward_mean,
+            "training_reward_std": reward_std,
+            "flat_training_reward": reward_std == 0.0,
             "zero_test_count": sum(row["passed_tests"] == 0 for row in candidate_rows),
             "unique_completion_count": len({row["completion_sha256"] for row in candidate_rows}),
             "generations": candidate_rows,
@@ -123,6 +136,7 @@ def evaluate(tasks: list[dict[str, Any]], generations: list[list[str]], timeout_
         "sampling": {"samples_per_task": len(generations[0]) if generations else 0, "temperature": 1.0, "top_p": 1.0, "seed": seed, "max_tokens": 2048},
         "visible_test_count": visible_test_count,
         "prompt_protocol": "original MBPP Qwen EvalPlus prompt with visible assertions" if visible_test_count else "task text and reference signature only",
+        "reward": {"function": "hybrid", "coefficient": 0.75, "formula": "0.75 * full_pass + 0.25 * passed_test_fraction", "scoring_workers": 8},
         "task_selection": "first twenty rows, in file order, from mbpp_category_synthetic_tasks_harder100.jsonl",
         "task_count": len(task_rows),
         "group_outcomes": {name: {"tasks": count, "fraction": count / len(task_rows) if task_rows else 0.0} for name, count in group_counts.items()},
@@ -133,6 +147,9 @@ def evaluate(tasks: list[dict[str, Any]], generations: list[list[str]], timeout_
         "assertion_count": assertion_total,
         "assertion_pass_fraction": assertion_passed / assertion_total if assertion_total else 0.0,
         "mean_task_test_fraction": sum(row["mean_test_fraction"] for row in task_rows) / len(task_rows) if task_rows else 0.0,
+        "mixed_reward_group_fraction": sum(not row["flat_training_reward"] for row in task_rows) / len(task_rows) if task_rows else 0.0,
+        "flat_reward_groups": sum(row["flat_training_reward"] for row in task_rows),
+        "mean_training_reward_group_std": sum(row["training_reward_std"] for row in task_rows) / len(task_rows) if task_rows else 0.0,
         "tasks": task_rows,
     }
 
