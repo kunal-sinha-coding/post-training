@@ -2797,3 +2797,9 @@ Added a reproducible evaluator and saved all 320 sampled completions with per-co
 Why: The user asked to sample sixteen generations for each of the first twenty synthetic tasks and report the task-group percentages with none, all, or mixed passing generations. The detailed completions make partial reward and group variation auditable.
 
 Follow-up detail for the sixteen-sample evaluation: 16/20 groups had variation in assertion counts, 16/20 had at least one completion pass an assertion, and only 4/20 groups had zero assertion passes across all samples. This indicates many groups without a full solution still have test-progress variation. It does not establish the reward or advantage distribution under the training configuration's hybrid reward.
+
+Commit name: Summarize saved original-task generation groups.
+
+Used the first twenty original training tasks after the canonical EvalPlus exclusion and matched each task to its earliest sixteen-generation group in the existing `c4fthzd3` reward trace. No model inference was run. At least one generation passed exactly zero, one, two, or three tests for 19/20, 7/20, 6/20, and 11/20 tasks. Cumulative at-least-one, at-least-two, and all-three task coverage was 15/20, 15/20, and 11/20. Recorded task IDs, per-task score histograms, trace source, and caveats about visible tests and changing checkpoints in `logs/results.txt`.
+
+Why: The user asked for the same task-level distribution on original tasks and pointed out that the corresponding generations were already saved.
