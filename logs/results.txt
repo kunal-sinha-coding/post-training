@@ -16703,3 +16703,7 @@ Step 334 matches local coverage at W&B history axis 66,165: 0.78125 of generatio
 W&B COVERAGE CROSS-CHECK THROUGH STEP 336
 
 Step 336 matches local coverage at W&B history axis 66,561: 0.5390625 of generations passed at least one test, 0.15625 passed at least two, and 0.0078125 passed all three. Each value is the mean over eight task groups with 16 generations per task. Training is active at step 336. Checkpoint 330 is the latest complete checkpoint. The 19:48:10 UTC supervisor check found the trainer alive and checkpoint 330 complete.
+
+W&B COVERAGE CROSS-CHECK THROUGH STEP 338
+
+Step 338 matches local coverage at W&B history axis 66,957: 0.546875 of generations passed at least one test, 0.015625 passed at least two, and none passed all three. Each value is the mean over eight task groups with 16 generations per task. Training is active at step 338, and checkpoint 330 is the latest complete checkpoint.
