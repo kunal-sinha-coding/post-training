@@ -16499,3 +16499,7 @@ The step-280 EvalPlus output reports MBPP pass@1 0.556 and MBPP+ pass@1 0.474. T
 STEP-280 TRAINING METRICS AND W&B COVERAGE
 
 Checkpoint 280 is complete. The 5,910-example training-set evaluation reports pass@1 0.1050761, average reward 0.3182741, test-pass fraction 0.3207161, partial-pass fraction 0.5402707, and partial-or-full-pass fraction 0.6453469. The status counts are 621 passed, 45 syntax errors, 2,051 failed, and 3,193 partial. The W&B coverage point at history axis 55,468 matches the local means across eight task groups: at least one test 0.5390625, at least two 0.0625, and all three 0.0234375. EvalPlus reports MBPP 0.556 and MBPP+ 0.474. Training advanced to step 281. The supervisor remains active; its latest check at 17:48:03 UTC found the trainer alive and checkpoint 270 complete, before checkpoint 280 finished saving.
+
+W&B COVERAGE CROSS-CHECK THROUGH STEP 282
+
+Step 281 matches local coverage at W&B history axis 55,666: 0.875 of generations passed at least one test, 0.25 passed at least two, and 0.046875 passed all three. Step 282 matches at history axis 55,864: 0.6875, 0.0703125, and 0.015625. Each local value is the mean over the eight training task groups, with 16 generations per task. Training is active at step 282. Checkpoint 280 is the latest complete checkpoint, and the supervisor remains active. Its last recorded health check at 17:48:03 UTC found the trainer alive and checkpoint 270 complete.

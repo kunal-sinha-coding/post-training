@@ -3445,3 +3445,9 @@ Commit name: Record step-280 training metrics and W&B coverage
 Recorded the step-280 training-set evaluation, confirmed the three rollout coverage values against W&B, and recorded checkpoint 280 completion and current training status.
 
 Why: Preserve the latest training signal and recovery point in the experiment record.
+
+Commit name: Verify W&B coverage through step 282
+
+Matched steps 281 and 282 W&B coverage values against local records for all three test thresholds. Confirmed training is active at step 282 and checkpoint 280 is complete.
+
+Why: Keep live rollout coverage and checkpoint recovery state auditable during training.
