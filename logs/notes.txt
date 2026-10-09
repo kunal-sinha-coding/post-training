@@ -3097,3 +3097,9 @@ Commit name: Record step 200 training-set evaluation
 Recorded the completed step-200 full training-set evaluation. The trainer reached and saved checkpoint 200. The supervisor remains active. Local rollout coverage is present through step 200, while W&B history retrieval still showed coverage through step 199 at the time of this check.
 
 Why: Preserve numerical experiment results and track publication of the rollout signal curve.
+
+Commit name: Verify step 200 and 201 W&B coverage curves
+
+Verified delayed W&B publication for steps 200 and 201 against the local eight-task-group means. The three threshold metrics match at both steps. W&B history now matches the local trace through step 201, covering 1,608 task-group rows.
+
+Why: Confirm the requested per-task rollout-signal metrics are visible in W&B during training.

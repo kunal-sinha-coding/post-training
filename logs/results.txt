@@ -16251,3 +16251,7 @@ INTERIM TRAINING-SET CHECK AT STEP 200
 The full 5,910-task training-set evaluation reports pass@1 0.10457, average reward 0.30795, and test-pass fraction 0.31074 at step 200. At step 190 these values were 0.10203, 0.30682, and 0.30965. The step-200 EvalPlus result is MBPP/MBPP+ 0.553/0.468. The training evaluation file is `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/training-step-200-metrics.json`.
 
 The step-200 checkpoint is saved. The trainer and ten-minute supervisor remain alive. W&B history currently shows coverage through step 199; the step-200 coverage point is still pending there, while the local task trace and trainer log include its values.
+
+W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 201
+
+After W&B publication, the step-200 values match the local trace at 0.640625, 0.125, and 0.03125. Step 201 also matches at 0.6484375, 0.265625, and 0.25. The latest W&B history query returned these points at W&B steps 39620 and 39818. Therefore the three W&B curves match local per-task aggregates through optimizer step 201, across 1,608 task-group rows.
