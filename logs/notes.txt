@@ -3739,3 +3739,9 @@ Commit name: Verify W&B coverage through step 332
 Matched step-332 W&B coverage against local rollout records for all three thresholds. Confirmed training remains active and checkpoint 330 is complete.
 
 Why: Preserve the latest rollout reward signal and recovery state.
+
+Commit name: Record step-334 coverage and supervisor check
+
+Matched step-334 W&B coverage against local records and recorded the 19:48:10 UTC supervisor heartbeat, which found training active and checkpoint 330 complete.
+
+Why: Preserve the current rollout metrics and recovery state.
