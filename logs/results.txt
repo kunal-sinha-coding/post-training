@@ -16323,3 +16323,7 @@ The W&B point for step 230 matches the local mean across eight task groups. The 
 W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 231
 
 The step-231 W&B rollout values match the local means across eight task groups: 0.625 passed at least one test, 0.2109375 passed at least two, and 0.1328125 passed all three. Local trace coverage is through step 231, or 1,848 task-group rows. Checkpoint 230 is saved and the run continues.
+
+W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 232
+
+The step-232 W&B coverage values match local means across the eight task groups: 0.6875 passed at least one test, 0.234375 passed at least two, and 0.1875 passed all three. The local trace is through step 233, whose W&B point is pending publication. Checkpoint 230 is saved and training continues.

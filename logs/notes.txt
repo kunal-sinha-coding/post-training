@@ -3193,3 +3193,9 @@ Commit name: Verify W&B coverage through step 231
 Verified the step-231 W&B coverage point against local means across eight task groups. All three threshold metrics match, and the local trace contains 1,848 task-group rows through step 231.
 
 Why: Continue auditing W&B signal curves during training.
+
+Commit name: Verify W&B coverage through step 232
+
+Verified the step-232 W&B rollout metrics against local means across eight task groups. All three thresholds match. Step 233 is local and awaiting W&B publication.
+
+Why: Continue checking the signal curves while training runs.
