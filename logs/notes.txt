@@ -3343,3 +3343,9 @@ Commit name: Verify W&B coverage through step 263
 Confirmed that all three step-263 W&B coverage values match the local means across eight task groups. Training advanced to step 264 with checkpoint 260 complete.
 
 Why: Continue auditing the live rollout signal metrics and save verified experiment results.
+
+Commit name: Verify W&B coverage through step 264
+
+Verified the step-264 W&B coverage point against local means for all three test thresholds. Training advanced to step 265 with checkpoint 260 complete.
+
+Why: Continue the running experiment with an auditable rollout signal record.
