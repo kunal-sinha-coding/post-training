@@ -16611,3 +16611,7 @@ The step-310 EvalPlus output reports MBPP pass@1 0.574 and MBPP+ pass@1 0.497. B
 STEP-310 TRAINING METRICS AND W&B COVERAGE
 
 Checkpoint 310 is complete. The 5,910-example training-set evaluation reports pass@1 0.1120135, average reward 0.3250423, test-pass fraction 0.3277598, partial-pass fraction 0.5385787, and partial-or-full-pass fraction 0.6505922. The status counts are 662 passed, 49 syntax errors, 2,016 failed, and 3,183 partial. The W&B coverage point at history axis 61,411 matches local means across eight task groups: at least one test 0.625, at least two 0.21875, and all three 0.1484375. EvalPlus reports MBPP 0.574 and MBPP+ 0.497. Training has advanced beyond step 310. The 18:48:06 UTC supervisor check found the trainer alive and checkpoint 300 complete before checkpoint 310 finished saving.
+
+W&B COVERAGE CROSS-CHECK THROUGH STEP 311
+
+Step 311 matches local coverage at W&B history axis 61,609: 0.5234375 of generations passed at least one test, 0.1171875 passed at least two, and 0.0234375 passed all three. Each value is the mean over eight training task groups with 16 generations per task. Training is active at step 311. Checkpoint 310 is the latest complete checkpoint. The supervisor's 18:48:06 UTC check found the trainer alive and checkpoint 300 complete before checkpoint 310 finished saving.
