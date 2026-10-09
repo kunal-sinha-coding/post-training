@@ -16295,3 +16295,7 @@ W&B coverage through optimizer step 220 matches the local averages over eight ta
 W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 221
 
 The step-221 W&B coverage values match local means across the eight task groups: 0.484375 of generations passed at least one test, 0.078125 passed at least two, and 0.0078125 passed all three. Checkpoint 220 is saved, and the trainer has advanced through step 221.
+
+W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 223
+
+The W&B coverage metrics match local means at steps 222 and 223. Across the eight task groups, at least one, two, and three tests passed are 0.328125/0.0859375/0.0546875 at step 222 and 0.6796875/0.359375/0.015625 at step 223. The latest local trace and W&B history now match through step 223.
