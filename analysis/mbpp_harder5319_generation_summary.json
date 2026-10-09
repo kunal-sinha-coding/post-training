@@ -1,0 +1,93 @@
+{
+  "experiment": "mbpp_harder5319_generation_and_prelaunch_validation_20261009",
+  "purpose": "Create a separate harder synthetic dataset with original category proportions for a matched 10x GRPO training run.",
+  "generation": {
+    "model": "gpt-6-luna",
+    "reasoning_effort": "none",
+    "seed": 20261009,
+    "prompt_count": 5319,
+    "accepted_and_sandbox_validated_tasks": 5319,
+    "api_responses_including_retries_and_duplicate_replacements": 6574,
+    "input_tokens": 4142031,
+    "cached_input_tokens": 73967,
+    "output_tokens": 3602069,
+    "estimated_cost_usd": 2.20858057,
+    "pricing_usd_per_million": {
+      "input": 0.1,
+      "cached_input": 0.01,
+      "output": 0.5
+    },
+    "execution_elapsed_seconds_across_three_attempts": 2920.662,
+    "execution_elapsed_display": "48 minutes 40.7 seconds",
+    "end_to_end_wall_clock_estimate": "about 54 minutes",
+    "attempts": [
+      {
+        "elapsed_seconds": 2239.02,
+        "exit_code": 1
+      },
+      {
+        "elapsed_seconds": 368.157,
+        "exit_code": 1
+      },
+      {
+        "elapsed_seconds": 313.485,
+        "exit_code": 0
+      }
+    ]
+  },
+  "category_counts": {
+    "Arithmetic and numeric formulas": 342,
+    "Number properties and number theory": 702,
+    "Lists and sequence transformations": 558,
+    "Search, sorting, and selection": 612,
+    "Counting and frequency": 450,
+    "Strings and text processing": 693,
+    "Set and membership operations": 180,
+    "Mappings, tuples, and record aggregation": 450,
+    "Recurrence, combinatorics, and dynamic programming": 468,
+    "Matrices and grids": 54,
+    "Geometry and spatial calculations": 342,
+    "Graphs, paths, intervals, and chains": 54,
+    "Predicates, validation, and classification": 414
+  },
+  "original_task_count": 591,
+  "synthetic_task_count": 5319,
+  "combined_task_count": 5910,
+  "category_allocation": "Exactly nine synthetic tasks were allocated for each original task in its category.",
+  "selection_and_validation": "All generated task descriptions were retained after exact normalized-description deduplication. Selection did not use ground-truth outputs. Each reference was sandbox-run against three literal calls; all 5,319 references passed and each task has three assertions. Prompt, reference, and assertions were generated together, so assertions are not an independent oracle.",
+  "artifacts": {
+    "prompts": "analysis/mbpp_category_api_prompts_harder5319.jsonl",
+    "task_specs": "analysis/mbpp_category_synthetic_task_specs_harder5319.jsonl",
+    "training_tasks": "analysis/mbpp_category_synthetic_tasks_harder5319.jsonl",
+    "api_usage": "analysis/mbpp_category_api_usage_harder5319.json",
+    "generation_state": "outputs/mbpp_synthetic_harder5319_api_state/ (git-ignored)",
+    "training_config": "configs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009.yaml",
+    "supervisor": "analysis/run_grpo_10x_harder_luna_supervisor.sh"
+  },
+  "artifact_hashes": {
+    "prompts_sha256": "b8473e4693a95afcbee74e2e6251ff1fb8e69c16e8ca0723d77e34a0e486652e",
+    "training_tasks_sha256": "7e120dd9b7891f3b5a057cfb438734345a73ed2b93b01d9e8239577e74350098e"
+  },
+  "preflight": {
+    "combined_training_rows": 5910,
+    "expected_training_rows": 5910,
+    "evalplus_rows": 378,
+    "visible_assertions": 1,
+    "status": "passed using HF_DATASETS_CACHE=/tmp/post-training-hf-datasets after the default cache exposed a zero-byte parquet file"
+  },
+  "sixteen_sample_evaluation": "Skipped before training at the user's direction.",
+  "training_coverage_logging": {
+    "wandb_metrics": [
+      "reward/task_mean_generations_at_least_1_test_fraction",
+      "reward/task_mean_generations_at_least_2_test_fraction",
+      "reward/task_mean_generations_at_least_3_test_fraction"
+    ],
+    "per_task_trace": "task-coverage-trace.jsonl under the training output directory, with task ID, optimizer step, generation counts, and fractions."
+  },
+  "training_selection": "No best-checkpoint selection. All checkpoints are retained after launch; the separate supervisor resumes from the latest complete checkpoint.",
+  "environment": {
+    "python": "3.12.3",
+    "device": "NVIDIA RTX A5000",
+    "repository_commit": "172fe9059e49f2732f0be0aca46d9b42e00f5e00"
+  }
+}

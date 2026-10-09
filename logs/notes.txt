@@ -2857,3 +2857,9 @@ Commit name: Log per-task rollout test coverage
 Added three per-step W&B curves for the mean fraction of task generations passing at least one, two, or three assertions. The reward path also writes each task group's generation counts and fractions to `task-coverage-trace.jsonl`, with its task ID and optimizer step. Existing batch metrics and the candidate reward trace remain available. Added tests for threshold calculations and step-linked task rows; 28 targeted training and sandbox tests passed.
 
 Why: The user asked to see whether reward signal reaches one, two, or all three tests for each task sampled during GRPO, and to graph these measures in W&B before starting the harder-data run.
+
+Commit name: Record harder 10x generation and validation
+
+Saved the complete 5,319-task harder dataset, task specifications, API usage summary, and a reproducibility summary. All tasks passed reference execution with three assertions, exact normalized descriptions are unique, and category counts are exactly nine times the original counts. The generation used 6,574 API responses at estimated cost $2.208581 and 48 minutes 40.7 seconds of command runtime across three attempts. Recorded the clean-cache 5,910-row preflight and the user's direction to skip the 16-sample evaluation.
+
+Why: The user requested a separate harder 10x dataset, generation cost and time accounting, prelaunch dataset validation, then immediate training.
