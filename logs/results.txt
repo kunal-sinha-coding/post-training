@@ -16439,3 +16439,7 @@ The step-264 W&B point at history axis 52,298 matches the local mean across eigh
 W&B COVERAGE CROSS-CHECK THROUGH STEP 267
 
 The W&B points at steps 265 through 267 match the local means across eight task groups. Their fractions passing at least one, two, and three tests are respectively 0.5/0.1640625/0.0625, 0.625/0.0703125/0.046875, and 0.5234375/0.1171875/0.1015625. Training has started step 268. At 17:18:01 UTC, the supervisor found the trainer alive and checkpoint 260 complete.
+
+W&B COVERAGE CROSS-CHECK THROUGH STEP 268
+
+The step-268 W&B point at history axis 53,090 matches the local mean across eight task groups: 0.6328125 of generations passed at least one test, 0.3203125 passed at least two, and 0.2109375 passed all three. Training has started step 269. Checkpoint 260 is the latest complete checkpoint. The supervisor remains alive; its latest health check at 17:18:01 UTC found the trainer alive and checkpoint 260 complete.
