@@ -3709,3 +3709,9 @@ Commit name: Record step-327 coverage and supervisor check
 Matched step-327 W&B coverage against local records and recorded the 19:28:09 UTC supervisor heartbeat, which found the trainer alive and checkpoint 320 complete.
 
 Why: Preserve current task-level metrics and recovery state.
+
+Commit name: Verify W&B coverage through step 328
+
+Matched step-328 W&B coverage against local rollout records for all three thresholds. Confirmed the trainer remains active and checkpoint 320 is complete.
+
+Why: Preserve current reward signal and recovery state in the experiment record.

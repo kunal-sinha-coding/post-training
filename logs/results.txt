@@ -16675,3 +16675,7 @@ Step 325 matches local coverage at W&B history axis 64,382: 0.765625 of generati
 W&B COVERAGE AND SUPERVISOR CHECK THROUGH STEP 327
 
 Step 327 matches local coverage at W&B history axis 64,778: 0.4765625 of generations passed at least one test, 0.171875 passed at least two, and 0.078125 passed all three. Each value is the mean over eight task groups with 16 generations per task. The 19:28:09 UTC supervisor check found attempt 1 alive at PID 34570 and checkpoint 320 complete. Training has reached step 327.
+
+W&B COVERAGE CROSS-CHECK THROUGH STEP 328
+
+Step 328 matches local coverage at W&B history axis 64,976: 0.6953125 of generations passed at least one test, 0.1640625 passed at least two, and 0.0859375 passed all three. Each value is the mean over eight training task groups with 16 generations per task. Training is active at step 328. Checkpoint 320 is complete. The 19:28:09 UTC supervisor check found the trainer alive and checkpoint 320 complete.
