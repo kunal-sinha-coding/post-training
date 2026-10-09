@@ -2783,3 +2783,9 @@ Commit name: Count unexecuted assertions in evaluation denominators.
 Updated the category-task evaluator to count the test assertions supplied for each task, including assertions that cannot run because the generated completion has a syntax error. The scorer's `total_tests` remains the number it executed; `expected_tests` records the denominator for the task-level assertion fraction.
 
 Why: The harder-task evaluation had three syntax-error completions. The old aggregate omitted their nine assertions from the denominator, which overstated assertion pass fraction.
+
+Commit name: Record harder synthetic task evaluation and matched control.
+
+Saved greedy base-Qwen evaluations on the 100 harder synthetic tasks and on the earlier 100-task API control using the same evaluator. The harder set passed 6/100 tasks and 67/300 assertions. The control passed 45/100 tasks and 196/300 assertions. Corrected the harder evaluation denominator to count all 300 supplied tests, including tests skipped after syntax errors. Recorded task-length and AST-size comparisons, generation usage, evaluation settings, and limitations in the results log.
+
+Why: The user asked to measure the pass rate of a category-proportional 100-task synthetic set that is harder than its source examples. A matched easy-set evaluation helps show how much the difficulty instruction changed base-model performance.

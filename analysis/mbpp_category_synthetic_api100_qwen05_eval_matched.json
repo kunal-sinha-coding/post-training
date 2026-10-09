@@ -1,0 +1,1897 @@
+{
+  "model": "Qwen/Qwen2.5-Coder-0.5B-Instruct",
+  "checkpoint": "base model, no fine-tuned checkpoint or adapter",
+  "decoding": {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "max_tokens": 2048
+  },
+  "task_count": 100,
+  "task_pass_at_1": 0.45,
+  "task_passed": 45,
+  "assertion_count": 300,
+  "assertion_pass_fraction": 0.6533333333333333,
+  "assertions_passed": 196,
+  "per_category": {
+    "Arithmetic and numeric formulas": {
+      "tasks": 6,
+      "tasks_passed": 4,
+      "assertions_passed": 15,
+      "assertions_total": 18
+    },
+    "Number properties and number theory": {
+      "tasks": 13,
+      "tasks_passed": 3,
+      "assertions_passed": 19,
+      "assertions_total": 39
+    },
+    "Lists and sequence transformations": {
+      "tasks": 11,
+      "tasks_passed": 7,
+      "assertions_passed": 23,
+      "assertions_total": 33
+    },
+    "Search, sorting, and selection": {
+      "tasks": 12,
+      "tasks_passed": 6,
+      "assertions_passed": 27,
+      "assertions_total": 36
+    },
+    "Counting and frequency": {
+      "tasks": 9,
+      "tasks_passed": 8,
+      "assertions_passed": 26,
+      "assertions_total": 27
+    },
+    "Strings and text processing": {
+      "tasks": 13,
+      "tasks_passed": 2,
+      "assertions_passed": 15,
+      "assertions_total": 39
+    },
+    "Set and membership operations": {
+      "tasks": 3,
+      "tasks_passed": 1,
+      "assertions_passed": 5,
+      "assertions_total": 9
+    },
+    "Mappings, tuples, and record aggregation": {
+      "tasks": 8,
+      "tasks_passed": 4,
+      "assertions_passed": 17,
+      "assertions_total": 24
+    },
+    "Recurrence, combinatorics, and dynamic programming": {
+      "tasks": 9,
+      "tasks_passed": 1,
+      "assertions_passed": 13,
+      "assertions_total": 27
+    },
+    "Matrices and grids": {
+      "tasks": 1,
+      "tasks_passed": 1,
+      "assertions_passed": 3,
+      "assertions_total": 3
+    },
+    "Geometry and spatial calculations": {
+      "tasks": 6,
+      "tasks_passed": 4,
+      "assertions_passed": 14,
+      "assertions_total": 18
+    },
+    "Graphs, paths, intervals, and chains": {
+      "tasks": 1,
+      "tasks_passed": 0,
+      "assertions_passed": 0,
+      "assertions_total": 3
+    },
+    "Predicates, validation, and classification": {
+      "tasks": 8,
+      "tasks_passed": 4,
+      "assertions_passed": 19,
+      "assertions_total": 24
+    }
+  },
+  "tasks": [
+    {
+      "prompt_id": "01-001",
+      "category": "Arithmetic and numeric formulas",
+      "entry_point": "final_price",
+      "completion": "def final_price(price, discount_percent, tax_percent):\n    # Validate inputs\n    if price < 0:\n        return -1\n    if discount_percent < 0 or discount_percent > 100:\n        return -1\n    if tax_percent < 0 or tax_percent > 100:\n        return -1\n\n    # Calculate the discount amount\n    discount_amount = price * (discount_percent / 100)\n\n    # Calculate the final price after discount\n    final_price = price - discount_amount\n\n    # Calculate the sales tax\n    sales_tax = final_price * (tax_percent / 100)\n\n    # Return the final price rounded to two decimal places\n    return round(final_price, 2)",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "01-002",
+      "category": "Arithmetic and numeric formulas",
+      "entry_point": "shipping_cost",
+      "completion": "def shipping_cost(weight):\n    \"\"\"\n    Calculate the delivery charge for a parcel based on the weight.\n    \n    Parameters:\n    weight (float): The weight of the parcel in kilograms.\n    \n    Returns:\n    float: The delivery charge as a number. If the weight is 0 or less, returns 0.\n    \"\"\"\n    if weight <= 0:\n        return 0\n    elif weight <= 2:\n        return 5\n    else:\n        return 5 + (weight - 2) * 1.5",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 2,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.6666666666666666,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "01-003",
+      "category": "Arithmetic and numeric formulas",
+      "entry_point": "apply_discount",
+      "completion": "def apply_discount(price, percentage):\n    \"\"\"\n    Calculate the price after applying a discount.\n\n    Parameters:\n    price (float): The original price of the item.\n    percentage (float): The discount percentage as a decimal (0-100).\n\n    Returns:\n    float: The price after applying the discount.\n    \"\"\"\n    if percentage < 0 or percentage > 100:\n        raise ValueError(\"Percentage must be between 0 and 100.\")\n    \n    discount = price * percentage / 100\n    return price - discount",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "01-004",
+      "category": "Arithmetic and numeric formulas",
+      "entry_point": "final_cost",
+      "completion": "def final_cost(price, discount_percent, delivery_fee):\n    # Calculate the discount amount\n    discount_amount = price * (discount_percent / 100)\n    \n    # Calculate the final cost after discount\n    final_cost = price - discount_amount\n    \n    # Add the fixed delivery fee\n    final_cost += delivery_fee\n    \n    # Round the final cost to two decimal places\n    final_cost_rounded = round(final_cost, 2)\n    \n    return final_cost_rounded",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "01-005",
+      "category": "Arithmetic and numeric formulas",
+      "entry_point": "discounted_total",
+      "completion": "def discounted_total(price, discount_percent, fee):\n    # Calculate the discount amount\n    discount_amount = price * (discount_percent / 100)\n    \n    # Calculate the final price after applying the discount\n    final_price = price - discount_amount\n    \n    # Add the fixed fee\n    final_price += fee\n    \n    # Return the final price rounded to two decimal places\n    return round(final_price, 2)",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "01-006",
+      "category": "Arithmetic and numeric formulas",
+      "entry_point": "price_after_discount",
+      "completion": "def price_after_discount(price, discount_percent, fee):\n    \"\"\"\n    Computes the final price after applying a percentage discount and then adding a fixed fee.\n    \n    Parameters:\n    - price (float): The original price of the item.\n    - discount_percent (float): The discount percentage as a decimal (0-100).\n    - fee (float): The fixed fee to be added to the price.\n    \n    Returns:\n    - float: The final price after applying the discount and adding the fee.\n    \"\"\"\n    # Calculate the discount amount\n    discount_amount = price * (discount_percent / 100)\n    \n    # Calculate the final price after discount\n    final_price = price - discount_amount\n    \n    # Add the fixed fee\n    final_price += fee\n    \n    # Round the final price to two decimal places\n    return round(final_price, 2)",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "02-001",
+      "category": "Number properties and number theory",
+      "entry_point": "count_positive_divisors",
+      "completion": "def count_positive_divisors(n):\n    \"\"\"\n    Return the number of positive divisors of a positive integer n.\n    \n    Parameters:\n    n (int): A positive integer greater than zero.\n    \n    Returns:\n    int: The number of positive divisors of n.\n    \"\"\"\n    if n <= 1:\n        return 0\n    count = 1\n    for i in range(2, int(n**0.5) + 1):\n        if n % i == 0:\n            count += 2\n    if n > 1:\n        count += 1\n    return count",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 2,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.6666666666666666,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "02-002",
+      "category": "Number properties and number theory",
+      "entry_point": "smallest_with_divisor_count",
+      "completion": "def smallest_with_divisor_count(n):\n    \"\"\"\n    Return the smallest positive integer that has exactly n positive divisors.\n    If no such integer exists because n is less than 1, return 0.\n    \n    :param n: Integer representing the number of divisors\n    :return: The smallest positive integer with exactly n divisors\n    \"\"\"\n    if n < 1:\n        return 0\n    \n    # Start checking from the smallest number that is a perfect square\n    for i in range(1, int(n**0.5) + 1):\n        if n % i == 0:\n            # If i is a divisor, then n/i is also a divisor\n            if i * i == n:\n                return i\n            # If i is not a divisor, then n/i is a factor of n\n            else:\n                return i + n // i\n    return 0",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "02-003",
+      "category": "Number properties and number theory",
+      "entry_point": "gcd_of_list",
+      "completion": "def gcd_of_list(numbers):\n    # Initialize the gcd to the first number in the list\n    gcd = numbers[0]\n    \n    # Iterate through the list starting from the second number\n    for num in numbers[1:]:\n        # Update the gcd with the minimum of the current gcd and the remainder of the division of num by gcd\n        gcd = min(gcd, num % gcd)\n    \n    return gcd",
+      "expected_tests": 3,
+      "status": "failed",
+      "passed_tests": 0,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.0,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "02-004",
+      "category": "Number properties and number theory",
+      "entry_point": "count_divisors",
+      "completion": "def count_divisors(n):\n    \"\"\"\n    Return the number of positive divisors of an integer greater than zero.\n    Count 1 and the integer itself as divisors.\n\n    :param n: Integer greater than zero\n    :return: Number of positive divisors\n    \"\"\"\n    if n <= 1:\n        return 0\n    count = 1\n    for i in range(2, int(n**0.5) + 1):\n        if n % i == 0:\n            count += 2\n    if n > 1:\n        count += 1\n    return count",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 2,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.6666666666666666,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "02-005",
+      "category": "Number properties and number theory",
+      "entry_point": "count_positive_divisors",
+      "completion": "def count_positive_divisors(n):\n    \"\"\"\n    Return the number of positive divisors of a given positive integer n.\n    \n    Parameters:\n    n (int): A positive integer.\n    \n    Returns:\n    int: The number of positive divisors of n.\n    \"\"\"\n    count = 0\n    for i in range(1, n + 1):\n        if n % i == 0:\n            count += 1\n    return count",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "02-006",
+      "category": "Number properties and number theory",
+      "entry_point": "smallest_common_multiple_through",
+      "completion": "def smallest_common_multiple_through(n):\n    # Initialize the smallest common multiple to 1\n    smallest_multiple = 1\n    \n    # Iterate through all numbers from 1 to n\n    for i in range(1, n + 1):\n        # Check if i is divisible by every number from 1 to n\n        if i % i == 0:\n            # If it is, update the smallest common multiple\n            smallest_multiple = i\n    \n    return smallest_multiple",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "02-007",
+      "category": "Number properties and number theory",
+      "entry_point": "count_positive_divisors",
+      "completion": "def count_positive_divisors(n):\n    \"\"\"\n    Return the number of positive divisors of a positive integer n.\n    \n    Parameters:\n    n (int): A positive integer.\n    \n    Returns:\n    int: The number of positive divisors of n.\n    \"\"\"\n    if n <= 1:\n        return 0\n    count = 1\n    for i in range(2, int(n**0.5) + 1):\n        if n % i == 0:\n            count += 2\n    if n > 1:\n        count += 1\n    return count",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "02-008",
+      "category": "Number properties and number theory",
+      "entry_point": "greatest_common_divisor",
+      "completion": "def greatest_common_divisor(a, b):\n    # Base case: if b is 0, the gcd is a\n    if b == 0:\n        return a\n    # Recursive case: gcd(a, b) = gcd(b, a % b)\n    else:\n        return greatest_common_divisor(b, a % b)",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "02-009",
+      "category": "Number properties and number theory",
+      "entry_point": "count_square_divisors",
+      "completion": "def count_square_divisors(n):\n    \"\"\"\n    Return the number of positive divisors of a positive integer n that are perfect squares.\n    \n    Treat 1 as a perfect square, so n = 1 has one such divisor.\n    \n    Parameters:\n    n (int): A positive integer.\n    \n    Returns:\n    int: The number of positive divisors of n that are perfect squares.\n    \"\"\"\n    if n <= 1:\n        return 0\n    \n    count = 0\n    for i in range(2, int(n**0.5) + 1):\n        if n % i == 0:\n            count += 2  # i and n/i are divisors\n    return count",
+      "expected_tests": 3,
+      "status": "failed",
+      "passed_tests": 0,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.0,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "02-010",
+      "category": "Number properties and number theory",
+      "entry_point": "binary_digit_sum",
+      "completion": "def binary_digit_sum(n):\n    \"\"\"\n    Calculate the sum of the digits of a nonnegative integer after expressing it in base 2.\n\n    Args:\n    n (int): A nonnegative integer.\n\n    Returns:\n    int: The sum of the digits of the number in base 2.\n    \"\"\"\n    if n == 0:\n        return 0\n    sum_digits = 0\n    while n > 0:\n        sum_digits += n % 2\n        n //= 2\n    return sum_digits",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "02-011",
+      "category": "Number properties and number theory",
+      "entry_point": "count_square_divisors",
+      "completion": "def count_square_divisors(n):\n    \"\"\"\n    Return the number of positive divisors of an integer n that are perfect squares.\n    \n    Parameters:\n    n (int): A positive integer.\n    \n    Returns:\n    int: The number of positive divisors of n that are perfect squares.\n    \"\"\"\n    count = 0\n    for i in range(1, int(n**0.5) + 1):\n        if n % i == 0:\n            count += 2  # i and n/i are divisors\n    return count",
+      "expected_tests": 3,
+      "status": "failed",
+      "passed_tests": 0,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.0,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "02-012",
+      "category": "Number properties and number theory",
+      "entry_point": "count_positive_divisors",
+      "completion": "def count_positive_divisors(n):\n    \"\"\"\n    Return the number of positive divisors of an integer n.\n    \n    Args:\n    n (int): A positive integer.\n    \n    Returns:\n    int: The number of positive divisors of n.\n    \n    Examples:\n    >>> count_positive_divisors(1)\n    1\n    >>> count_positive_divisors(2)\n    2\n    >>> count_positive_divisors(3)\n    2\n    >>> count_positive_divisors(4)\n    3\n    >>> count_positive_divisors(5)\n    4\n    >>> count_positive_divisors(6)\n    6\n    >>> count_positive_divisors(7)\n    8\n    >>> count_positive_divisors(8)\n    9\n    >>> count_positive_divisors(9)\n    10\n    >>> count_positive_divisors(10)\n    11\n    \"\"\"\n    if n <= 1:\n        return 1\n    count = 1\n    for i in range(2, int(n**0.5) + 1):\n        if n % i == 0:\n            count += 2\n    if n > 1:\n        count += 1\n    return count",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 2,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.6666666666666666,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "02-013",
+      "category": "Number properties and number theory",
+      "entry_point": "count_positive_divisors",
+      "completion": "def count_positive_divisors(n):\n    \"\"\"\n    Return the number of positive divisors of a nonnegative integer n.\n    Count each divisor once; define the result for 0 to be 0, since it has infinitely many positive divisors.\n    \n    Parameters:\n    n (int): A nonnegative integer.\n    \n    Returns:\n    int: The number of positive divisors of n.\n    \"\"\"\n    if n <= 1:\n        return 0\n    count = 1\n    for i in range(2, int(n**0.5) + 1):\n        if n % i == 0:\n            count += 2\n    if n > 1:\n        count += 1\n    return count",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "03-001",
+      "category": "Lists and sequence transformations",
+      "entry_point": "take_every",
+      "completion": "def take_every(values, step):\n    \"\"\"\n    Takes a list of integers and a positive integer step, and returns a new list containing the elements at every step-th position, starting with the first element.\n    If the list is empty, returns an empty list.\n    \n    :param values: List of integers.\n    :param step: Positive integer step.\n    :return: List of elements at every step-th position, starting with the first element.\n    \"\"\"\n    if not values:\n        return []\n    \n    result = []\n    for i in range(0, len(values), step):\n        result.append(values[i])\n    \n    return result",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "03-002",
+      "category": "Lists and sequence transformations",
+      "entry_point": "move_value_to_end",
+      "completion": "def move_value_to_end(values, target):\n    \"\"\"\n    Moves every occurrence of a specified value in a list to the end, keeping the original relative order of all other elements and of the moved values.\n    \n    Parameters:\n    values (list): The list of elements to be modified.\n    target (any): The value to be moved to the end of the list.\n    \n    Returns:\n    list: A new list with the target value moved to the end, preserving the original relative order of other elements.\n    \"\"\"\n    # Create a copy of the list to avoid modifying the original list\n    modified_values = values[:]\n    \n    # Find the index of the target value\n    target_index = modified_values.index(target)\n    \n    # Move the target value to the end of the list\n    modified_values[target_index:] = modified_values[:target_index]\n    \n    return modified_values",
+      "expected_tests": 3,
+      "status": "failed",
+      "passed_tests": 0,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.0,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "03-003",
+      "category": "Lists and sequence transformations",
+      "entry_point": "alternate_ends",
+      "completion": "def alternate_ends(values):\n    # Check if the input list is empty\n    if not values:\n        return []\n    \n    # Create a new list to store the result\n    result = []\n    \n    # Iterate over the input list, starting from the first and last elements\n    for i in range(len(values)):\n        # Append the first element\n        result.append(values[i])\n        # Append the last element\n        result.append(values[-i-1])\n    \n    return result",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "03-004",
+      "category": "Lists and sequence transformations",
+      "entry_point": "select_even_indices",
+      "completion": "def select_even_indices(values):\n    \"\"\"\n    Selects elements from the given list that are located at even indices (0, 2, 4, ...).\n    \n    Parameters:\n    values (list): A list of integers.\n    \n    Returns:\n    list: A new list containing only the elements at even indices, in their original order.\n    \"\"\"\n    # Initialize an empty list to store the result\n    result = []\n    \n    # Iterate over the list, starting from index 0\n    for index in range(0, len(values), 2):\n        # Append the element at the current index to the result list\n        result.append(values[index])\n    \n    return result",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "03-005",
+      "category": "Lists and sequence transformations",
+      "entry_point": "group_by_index_parity",
+      "completion": "def group_by_index_parity(values):\n    \"\"\"\n    Groups elements at even indices of the input list, followed by the elements at odd indices in their original order.\n    Indices are zero-based. If the input is empty, returns an empty list.\n\n    :param values: List of elements to be grouped.\n    :return: A new list with grouped elements.\n    \"\"\"\n    # Check if the input list is empty\n    if not values:\n        return []\n\n    # Initialize an empty list to store the grouped elements\n    grouped_elements = []\n\n    # Iterate over the input list, starting from the first even index\n    for i in range(0, len(values), 2):\n        # Append the element at the current even index to the grouped list\n        grouped_elements.append(values[i])\n\n    # Iterate over the input list, starting from the first odd index\n    for i in range(1, len(values), 2):\n        # Append the element at the current odd index to the grouped list\n        grouped_elements.append(values[i])\n\n    return grouped_elements",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "03-006",
+      "category": "Lists and sequence transformations",
+      "entry_point": "take_every",
+      "completion": "def take_every(values, step):\n    \"\"\"\n    Takes a list and a positive integer step, and returns a new list containing the elements at indices 0, step, 2 * step, and so on.\n    If the list is empty, returns an empty list.\n    \n    :param values: List of elements to be processed.\n    :param step: Positive integer step.\n    :return: A new list containing the elements at the specified indices.\n    \"\"\"\n    if not values:\n        return []\n    \n    result = []\n    for i in range(0, len(values), step):\n        result.append(values[i])\n    \n    return result",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "03-007",
+      "category": "Lists and sequence transformations",
+      "entry_point": "alternate_ends",
+      "completion": "def alternate_ends(items):\n    # Check if the list is empty\n    if not items:\n        return []\n    \n    # Initialize an empty list to store the result\n    result = []\n    \n    # Use two pointers to pick elements from the start and end of the list\n    left = 0\n    right = len(items) - 1\n    \n    # Alternate between picking elements from the start and end\n    while left <= right:\n        if left == right:\n            # If there's only one element left, include it\n            result.append(items[left])\n        else:\n            # Add the leftmost element\n            result.append(items[left])\n            # Add the rightmost element\n            result.append(items[right])\n        \n        # Move the pointers inward\n        left += 1\n        right -= 1\n    \n    return result",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "03-008",
+      "category": "Lists and sequence transformations",
+      "entry_point": "move_zeros_to_end",
+      "completion": "def move_zeros_to_end(values):\n    \"\"\"\n    Moves every zero in the list to the end while keeping the relative order of all nonzero elements and the relative order of the zeros.\n    \n    Parameters:\n    values (list): The input list of integers.\n    \n    Returns:\n    list: A new list with all zeros moved to the end, maintaining the relative order of non-zero elements and zeros.\n    \"\"\"\n    # Initialize pointers for the start and end of the list\n    start = 0\n    end = 0\n    \n    # Iterate through the list\n    while end < len(values):\n        # If the current element is not zero, move it to the start\n        if values[end] != 0:\n            values[start], values[end] = values[end], values[start]\n            start += 1\n        # Move the end pointer to the right to allow for the next zero\n        end += 1\n    \n    return values",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "03-009",
+      "category": "Lists and sequence transformations",
+      "entry_point": "group_by_index_parity",
+      "completion": "def group_by_index_parity(items):\n    # Check if the input list is empty\n    if not items:\n        return []\n    \n    # Initialize an empty list to store the result\n    result = []\n    \n    # Iterate over the items with their indices\n    for index, item in enumerate(items):\n        # Check if the index is even\n        if index % 2 == 0:\n            # Append the item at even index to the result list\n            result.append(item)\n        else:\n            # Append the item at odd index to the result list\n            result.append(items[index])\n    \n    return result",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "03-010",
+      "category": "Lists and sequence transformations",
+      "entry_point": "move_value_to_end",
+      "completion": "def move_value_to_end(items, value):\n    \"\"\"\n    Moves every occurrence of a specified value in a list to the end, preserving the relative order of all other elements and the moved occurrences.\n    \n    Parameters:\n    items (list): The original list of items.\n    value (any): The value to be moved to the end of the list.\n    \n    Returns:\n    list: A new list with the specified value moved to the end, preserving the relative order of other elements.\n    \"\"\"\n    # Create a copy of the list to avoid modifying the original list\n    new_list = items[:]\n    \n    # Find the index of the value to be moved\n    index = new_list.index(value)\n    \n    # Move the value to the end of the list\n    new_list[index:] = new_list[:index]\n    \n    return new_list",
+      "expected_tests": 3,
+      "status": "failed",
+      "passed_tests": 0,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.0,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "03-011",
+      "category": "Lists and sequence transformations",
+      "entry_point": "reorder_by_index_parity",
+      "completion": "def reorder_by_index_parity(values):\n    \"\"\"\n    Reorders the elements of the input list such that elements at even indices are followed by elements at odd indices in their original order.\n    Zero-based indexing is used.\n    \n    Parameters:\n    values (list): The input list of integers.\n    \n    Returns:\n    list: A new list with elements at even indices followed by elements at odd indices.\n    \"\"\"\n    # Extract elements at even indices\n    even_index_elements = [values[i] for i in range(0, len(values), 2)]\n    \n    # Extract elements at odd indices\n    odd_index_elements = [values[i] for i in range(1, len(values), 2)]\n    \n    # Combine the two lists\n    result = even_index_elements + odd_index_elements\n    \n    return result",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "04-001",
+      "category": "Search, sorting, and selection",
+      "entry_point": "first_occurrence",
+      "completion": "def first_occurrence(values, target):\n    \"\"\"\n    Return the zero-based index of the first occurrence of a target value in a sorted list of integers.\n    If the target is not present, return -1. The input list may be empty and may contain duplicate values.\n    \n    :param values: List of integers\n    :param target: Integer to search for\n    :return: Zero-based index of the first occurrence of the target, or -1 if not found\n    \"\"\"\n    if not values:\n        return -1\n    \n    left, right = 0, len(values) - 1\n    \n    while left <= right:\n        mid = (left + right) // 2\n        \n        if values[mid] == target:\n            return mid\n        elif values[mid] < target:\n            left = mid + 1\n        else:\n            right = mid - 1\n    \n    return -1",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 2,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.6666666666666666,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "04-002",
+      "category": "Search, sorting, and selection",
+      "entry_point": "index_at_sorted_rank",
+      "completion": "def index_at_sorted_rank(values, rank):\n    \"\"\"\n    Returns the zero-based index of the value that would appear at a requested rank if a list were sorted in ascending order.\n    The rank is one-based, so rank 1 selects the smallest value. If the rank is less than 1 or greater than the list length, returns -1.\n    If the selected value occurs more than once, returns the smallest original index containing that value.\n    \n    :param values: List of integers\n    :param rank: Rank of the value to find\n    :return: Zero-based index of the value, or -1 if not found\n    \"\"\"\n    if not values:\n        return -1\n    \n    # Sort the list in ascending order\n    sorted_values = sorted(values)\n    \n    # Check if the rank is within the bounds of the list\n    if rank < 1 or rank > len(sorted_values):\n        return -1\n    \n    # Find the index of the value at the given rank\n    index = sorted_values.index(sorted_values[rank - 1])\n    \n    return index",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "04-003",
+      "category": "Search, sorting, and selection",
+      "entry_point": "largest_distinct",
+      "completion": "from collections import Counter\n\ndef largest_distinct(values, k):\n    # Count the frequency of each value in the list\n    value_counts = Counter(values)\n    \n    # Filter out values that appear less than k times\n    distinct_values = [value for value, count in value_counts.items() if count >= k]\n    \n    # Sort the distinct values in descending order\n    distinct_values.sort(reverse=True)\n    \n    return distinct_values",
+      "expected_tests": 3,
+      "status": "failed",
+      "passed_tests": 0,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.0,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "04-004",
+      "category": "Search, sorting, and selection",
+      "entry_point": "first_largest_index",
+      "completion": "def first_largest_index(values):\n    if not values:\n        return -1\n    \n    largest_value = max(values)\n    largest_index = values.index(largest_value)\n    \n    return largest_index",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "04-005",
+      "category": "Search, sorting, and selection",
+      "entry_point": "insertion_position",
+      "completion": "def insertion_position(values, target):\n    \"\"\"\n    Insert a target value into a sorted list of integers and return the zero-based position\n    where the target should be inserted. If the target already appears, return the index of its first occurrence.\n    \n    :param values: List of integers to be sorted.\n    :param target: Integer to be inserted into the list.\n    :return: Zero-based index where the target should be inserted.\n    \"\"\"\n    if not values:\n        return 0\n    \n    # Find the position where the target should be inserted\n    left, right = 0, len(values) - 1\n    while left <= right:\n        mid = (left + right) // 2\n        if values[mid] < target:\n            left = mid + 1\n        else:\n            right = mid - 1\n    \n    # If the target is not found, return the index of the first occurrence\n    if values[left] != target:\n        return left\n    else:\n        # If the target is found, return the index of its first occurrence\n        return left + 1",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 2,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.6666666666666666,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "04-006",
+      "category": "Search, sorting, and selection",
+      "entry_point": "first_minimum_index",
+      "completion": "def first_minimum_index(values):\n    if not values:\n        return -1\n    \n    min_value = min(values)\n    min_index = values.index(min_value)\n    \n    return min_index",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "04-007",
+      "category": "Search, sorting, and selection",
+      "entry_point": "find_kth_largest",
+      "completion": "def find_kth_largest(numbers, k):\n    \"\"\"\n    Find the kth largest value in a list of integers, counting duplicate values as separate entries.\n    \n    Parameters:\n    numbers (list): A list of integers.\n    k (int): The kth largest value to find.\n    \n    Returns:\n    int: The kth largest value in the list.\n    \"\"\"\n    # Sort the list in descending order to easily access the kth largest\n    sorted_numbers = sorted(numbers, reverse=True)\n    \n    # Return the kth largest value\n    return sorted_numbers[k - 1]",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "04-008",
+      "category": "Search, sorting, and selection",
+      "entry_point": "first_minimum_index",
+      "completion": "def first_minimum_index(values):\n    if not values:\n        return -1\n    \n    min_value = min(values)\n    min_index = values.index(min_value)\n    \n    return min_index",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "04-009",
+      "category": "Search, sorting, and selection",
+      "entry_point": "first_occurrence",
+      "completion": "def first_occurrence(values, target):\n    \"\"\"\n    Return the zero-based index of the first occurrence of a target value in a sorted list of integers.\n    Return -1 if the target is not present.\n    \n    :param values: List of integers\n    :param target: Integer to search for\n    :return: Zero-based index of the first occurrence of the target, or -1 if not found\n    \"\"\"\n    if not values:\n        return -1\n    \n    left, right = 0, len(values) - 1\n    \n    while left <= right:\n        mid = (left + right) // 2\n        \n        if values[mid] == target:\n            return mid\n        elif values[mid] < target:\n            left = mid + 1\n        else:\n            right = mid - 1\n    \n    return -1",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 2,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.6666666666666666,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "04-010",
+      "category": "Search, sorting, and selection",
+      "entry_point": "indices_of_minimum",
+      "completion": "def indices_of_minimum(numbers):\n    \"\"\"\n    Return the zero-based indices of all occurrences of the smallest value in a list of numbers, in their original order.\n    If the list is empty, return an empty list.\n    \n    :param numbers: List of numbers\n    :return: List of zero-based indices of the smallest value\n    \"\"\"\n    if not numbers:\n        return []\n    \n    min_value = min(numbers)\n    indices = [i for i, num in enumerate(numbers) if num == min_value]\n    return indices",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "04-011",
+      "category": "Search, sorting, and selection",
+      "entry_point": "first_sorted_index",
+      "completion": "def first_sorted_index(values, target):\n    \"\"\"\n    Finds the zero-based index of the first occurrence of a target value in a sorted list of integers.\n    If the target is absent, returns -1.\n\n    :param values: List of integers\n    :param target: Integer to search for\n    :return: Zero-based index of the first occurrence of the target, or -1 if not found\n    \"\"\"\n    if not values:\n        return -1\n\n    left, right = 0, len(values) - 1\n\n    while left <= right:\n        mid = left + (right - left) // 2\n\n        if values[mid] == target:\n            return mid\n        elif values[mid] < target:\n            left = mid + 1\n        else:\n            right = mid - 1\n\n    return -1",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 2,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.6666666666666666,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "04-012",
+      "category": "Search, sorting, and selection",
+      "entry_point": "largest_values",
+      "completion": "def largest_values(values, k):\n    \"\"\"\n    Return the k largest values from a list of integers, ordered from largest to smallest.\n    If k is zero or the list is empty, return an empty list.\n    If k is greater than the number of values, return all values in descending order.\n    Preserve duplicate values.\n    \"\"\"\n    # Sort the list in descending order\n    sorted_values = sorted(values, reverse=True)\n    \n    # Return the first k elements\n    return sorted_values[:k]",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "05-001",
+      "category": "Counting and frequency",
+      "entry_point": "count_unique_words",
+      "completion": "def count_unique_words(words):\n    # Create a dictionary to count occurrences of each word\n    word_count = {}\n    \n    # Count the occurrences of each word\n    for word in words:\n        if word in word_count:\n            word_count[word] += 1\n        else:\n            word_count[word] = 1\n    \n    # Count words that occur exactly once\n    unique_count = sum(1 for count in word_count.values() if count == 1)\n    \n    return unique_count",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "05-002",
+      "category": "Counting and frequency",
+      "entry_point": "count_integer_frequencies",
+      "completion": "def count_integer_frequencies(values):\n    \"\"\"\n    Counts the frequency of each distinct integer in a list and returns a dictionary mapping each integer to its frequency.\n    \n    Parameters:\n    values (list): A list of integers.\n    \n    Returns:\n    dict: A dictionary where keys are unique integers from the list and values are their respective frequencies.\n    \"\"\"\n    frequency_dict = {}\n    for value in values:\n        if value in frequency_dict:\n            frequency_dict[value] += 1\n        else:\n            frequency_dict[value] = 1\n    return frequency_dict",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "05-003",
+      "category": "Counting and frequency",
+      "entry_point": "count_string_frequency",
+      "completion": "def count_string_frequency(items):\n    # Initialize an empty dictionary to store the frequency of each string\n    frequency_dict = {}\n    \n    # Iterate over each item in the list\n    for item in items:\n        # Check if the item is already a key in the dictionary\n        if item in frequency_dict:\n            # Increment the count for the existing key\n            frequency_dict[item] += 1\n        else:\n            # Add the item to the dictionary with a count of 1\n            frequency_dict[item] = 1\n    \n    # Return the dictionary containing the frequency of each string\n    return frequency_dict",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "05-004",
+      "category": "Counting and frequency",
+      "entry_point": "count_longer_strings",
+      "completion": "def count_longer_strings(strings, threshold):\n    \"\"\"\n    Counts how many strings in a list have a length greater than a given threshold.\n    Returns 0 when the list is empty.\n\n    Args:\n    strings (list of str): The list of strings to be checked.\n    threshold (int): The length threshold to compare against.\n\n    Returns:\n    int: The count of strings with a length greater than the threshold.\n    \"\"\"\n    if not strings:\n        return 0\n\n    count = 0\n    for string in strings:\n        if len(string) > threshold:\n            count += 1\n\n    return count",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "05-005",
+      "category": "Counting and frequency",
+      "entry_point": "count_word_frequency",
+      "completion": "def count_word_frequency(words):\n    # Initialize an empty dictionary to store word frequencies\n    frequency_dict = {}\n    \n    # Iterate over each word in the list\n    for word in words:\n        # Convert the word to lowercase to ensure case-insensitive comparison\n        word = word.lower()\n        \n        # If the word is already in the dictionary, increment its count\n        if word in frequency_dict:\n            frequency_dict[word] += 1\n        # If the word is not in the dictionary, add it with a count of 1\n        else:\n            frequency_dict[word] = 1\n    \n    # Return the dictionary containing word frequencies\n    return frequency_dict",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 2,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.6666666666666666,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "05-006",
+      "category": "Counting and frequency",
+      "entry_point": "count_values_appearing_twice",
+      "completion": "def count_values_appearing_twice(values):\n    \"\"\"\n    Counts the number of distinct values in a list that appear exactly twice.\n\n    Args:\n    values (list): A list of integers.\n\n    Returns:\n    int: The count of distinct values that appear exactly twice.\n    \"\"\"\n    # Create a dictionary to count occurrences of each value\n    count_dict = {}\n    \n    # Count occurrences of each value\n    for value in values:\n        if value in count_dict:\n            count_dict[value] += 1\n        else:\n            count_dict[value] = 1\n    \n    # Count values that appear exactly twice\n    count_twice = 0\n    for value, count in count_dict.items():\n        if count == 2:\n            count_twice += 1\n    \n    return count_twice",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "05-007",
+      "category": "Counting and frequency",
+      "entry_point": "count_values_occurring_twice",
+      "completion": "def count_values_occurring_twice(values):\n    \"\"\"\n    Counts the number of distinct values in a list that occur exactly twice.\n    Values occurring any other number of times should not be counted.\n    \n    Parameters:\n    values (list): A list of integers.\n    \n    Returns:\n    int: The count of distinct values that occur exactly twice.\n    \"\"\"\n    # Count the occurrences of each value\n    count = {}\n    for value in values:\n        if value in count:\n            count[value] += 1\n        else:\n            count[value] = 1\n    \n    # Count the values that occur exactly twice\n    double_count = 0\n    for value, count in count.items():\n        if count == 2:\n            double_count += 1\n    \n    return double_count",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "05-008",
+      "category": "Counting and frequency",
+      "entry_point": "count_words",
+      "completion": "def count_words(words):\n    \"\"\"\n    Counts the occurrences of each word in a list, treating words as case-sensitive.\n\n    Parameters:\n    words (list): A list of words to count.\n\n    Returns:\n    dict: A dictionary mapping each word to the number of times it appears.\n    \"\"\"\n    if not words:\n        return {}\n\n    word_count = {}\n    for word in words:\n        if word in word_count:\n            word_count[word] += 1\n        else:\n            word_count[word] = 1\n\n    return word_count",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "05-009",
+      "category": "Counting and frequency",
+      "entry_point": "count_values",
+      "completion": "def count_values(values):\n    \"\"\"\n    Counts the frequency of each integer in a list and returns a dictionary mapping each distinct integer to its frequency.\n    \n    Parameters:\n    values (list): A list of integers.\n    \n    Returns:\n    dict: A dictionary where keys are unique integers from the list and values are their respective frequencies.\n    \"\"\"\n    frequency_dict = {}\n    for value in values:\n        if value in frequency_dict:\n            frequency_dict[value] += 1\n        else:\n            frequency_dict[value] = 1\n    return frequency_dict",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "06-001",
+      "category": "Strings and text processing",
+      "entry_point": "compact_label",
+      "completion": "def compact_label(text):\n    \"\"\"\n    Converts a sentence to a compact label by splitting on whitespace, joining its words with single hyphens,\n    and converting all letters to lowercase. Treat any run of whitespace as a separator. If the input contains no words,\n    returns an empty string. Preserve punctuation within words.\n\n    :param text: The sentence to be converted.\n    :return: A compact label string.\n    \"\"\"\n    # Split the text by whitespace and join the words with hyphens\n    label = '-'.join(word.lower() for word in text.split())\n    return label",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "06-002",
+      "category": "Strings and text processing",
+      "entry_point": "make_slug",
+      "completion": "def make_slug(text):\n    # Convert the text to lowercase\n    text = text.lower()\n    \n    # Replace spaces and underscores with hyphens\n    text = text.replace(' ', '-').replace('_', '-')\n    \n    # Remove all non-alphanumeric characters except hyphens\n    text = re.sub(r'[^a-zA-Z0-9-]', '', text)\n    \n    # Strip leading and trailing hyphens\n    text = text.strip('-')\n    \n    # Return the resulting slug\n    return text",
+      "expected_tests": 3,
+      "status": "failed",
+      "passed_tests": 0,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.0,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "06-003",
+      "category": "Strings and text processing",
+      "entry_point": "format_title",
+      "completion": "def format_title(text):\n    \"\"\"\n    Convert a sentence to title case by capitalizing the first character of each word and making the remaining characters lowercase.\n    Words are separated by one or more whitespace characters; preserve the original whitespace exactly.\n    An empty string should return an empty string.\n    \n    :param text: The sentence to be formatted.\n    :return: The formatted sentence.\n    \"\"\"\n    if not text:\n        return \"\"\n    \n    # Split the text into words\n    words = text.split()\n    \n    # Format each word\n    formatted_words = [word.capitalize() for word in words]\n    \n    # Join the formatted words back into a sentence\n    formatted_text = ' '.join(formatted_words)\n    \n    return formatted_text",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "06-004",
+      "category": "Strings and text processing",
+      "entry_point": "replace_whitespace_runs",
+      "completion": "def replace_whitespace_runs(text):\n    \"\"\"\n    Replaces each run of consecutive whitespace characters in a string with a single hyphen.\n    Whitespace includes spaces, tabs, and line breaks. Do not add a hyphen at either end unless the input has whitespace there; in that case the run at the edge becomes a hyphen.\n    \n    Args:\n    text (str): The input string to process.\n    \n    Returns:\n    str: The modified string with consecutive whitespace replaced by a single hyphen.\n    \"\"\"\n    # Replace sequences of whitespace with a single hyphen\n    return text.replace('  ', '-')",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "06-005",
+      "category": "Strings and text processing",
+      "entry_point": "collapse_whitespace_to_hyphens",
+      "completion": "def collapse_whitespace_to_hyphens(text):\n    \"\"\"\n    Replace each run of consecutive whitespace characters in a string with a single hyphen.\n    Whitespace includes spaces, tabs, and line breaks. Do not add a hyphen where there is no whitespace,\n    and preserve all non-whitespace characters exactly. An empty string should remain empty.\n\n    :param text: The input string to be processed.\n    :return: A new string with consecutive whitespace characters replaced by hyphens.\n    \"\"\"\n    # Replace sequences of whitespace with a single hyphen\n    return text.replace(' ', '-')",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "06-006",
+      "category": "Strings and text processing",
+      "entry_point": "title_words",
+      "completion": "def title_words(text):\n    \"\"\"\n    Convert a sentence to title case by making the first character of each whitespace-separated word uppercase and all its remaining characters lowercase.\n    Preserve the exact whitespace between words, including leading and trailing whitespace. An empty string should return an empty string.\n    \n    :param text: The sentence to be converted.\n    :return: The title-cased sentence.\n    \"\"\"\n    # Split the text into words\n    words = text.split()\n    \n    # Convert each word to title case\n    title_words = [word.capitalize() for word in words]\n    \n    # Join the words back into a sentence\n    title_sentence = ' '.join(title_words)\n    \n    return title_sentence",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "06-007",
+      "category": "Strings and text processing",
+      "entry_point": "hyphenate_whitespace",
+      "completion": "def hyphenate_whitespace(text):\n    \"\"\"\n    Replaces each run of one or more whitespace characters in a string with a single hyphen,\n    while removing whitespace at the beginning and end. Preserve all non-whitespace characters.\n    If the string contains only whitespace or is empty, returns an empty string.\n\n    :param text: The input string to be processed.\n    :return: A new string with whitespace hyphened.\n    \"\"\"\n    # Remove leading and trailing whitespace\n    text = text.strip()\n    \n    # Replace runs of one or more whitespace characters with a single hyphen\n    text = re.sub(r'\\s+', '-', text)\n    \n    return text",
+      "expected_tests": 3,
+      "status": "failed",
+      "passed_tests": 0,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.0,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "06-008",
+      "category": "Strings and text processing",
+      "entry_point": "format_title",
+      "completion": "def format_title(text):\n    \"\"\"\n    Convert a sentence to title case by capitalizing the first letter of each word and lowercasing its remaining letters.\n    Words are separated by one or more whitespace characters. Preserve the original whitespace exactly, and leave non-letter characters unchanged.\n\n    :param text: The sentence to be formatted.\n    :return: The formatted sentence.\n    \"\"\"\n    # Split the text into words\n    words = text.split()\n    \n    # Capitalize the first letter of each word and convert the rest to lowercase\n    formatted_words = [word.capitalize() for word in words]\n    \n    # Join the words back into a sentence\n    formatted_text = ' '.join(formatted_words)\n    \n    return formatted_text",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "06-009",
+      "category": "Strings and text processing",
+      "entry_point": "normalize_whitespace",
+      "completion": "def normalize_whitespace(text):\n    \"\"\"\n    Normalize whitespace in a string by replacing each run of spaces, tabs, or line breaks with a single space,\n    then removes any spaces from the beginning and end. Return the resulting string. An empty string or a string containing only whitespace should return an empty string.\n\n    :param text: The input string to be normalized.\n    :return: The normalized string with spaces replaced and leading/trailing spaces removed.\n    \"\"\"\n    # Replace multiple spaces with a single space\n    text = text.replace('  ', ' ')\n    # Remove leading and trailing spaces\n    text = text.strip()\n    return text",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 2,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.6666666666666666,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "06-010",
+      "category": "Strings and text processing",
+      "entry_point": "collapse_whitespace_to_hyphens",
+      "completion": "def collapse_whitespace_to_hyphens(text):\n    \"\"\"\n    Replace each run of one or more whitespace characters in a string with a single hyphen.\n    Preserve all non-whitespace characters exactly, and do not add a hyphen at either end when the input begins or ends with whitespace.\n    \n    Args:\n    text (str): The input string to be processed.\n    \n    Returns:\n    str: The processed string with whitespace collapsed to hyphens.\n    \"\"\"\n    # Replace sequences of whitespace with a single hyphen\n    return text.replace(\" \", \"-\")",
+      "expected_tests": 3,
+      "status": "failed",
+      "passed_tests": 0,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.0,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "06-011",
+      "category": "Strings and text processing",
+      "entry_point": "hyphenate_words",
+      "completion": "def hyphenate_words(text):\n    \"\"\"\n    Convert a string containing words separated by whitespace into a hyphen-separated string.\n    Treat any run of whitespace as one separator, and remove leading and trailing whitespace.\n    Return an empty string when the input contains only whitespace or is empty.\n\n    :param text: A string containing words separated by whitespace.\n    :return: A hyphen-separated string with words separated by hyphens.\n    \"\"\"\n    # Remove leading and trailing whitespace\n    text = text.strip()\n    \n    # Split the text into words\n    words = text.split()\n    \n    # Join the words with hyphens\n    hyphenated = '-'.join(words)\n    \n    return hyphenated",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "06-012",
+      "category": "Strings and text processing",
+      "entry_point": "collapse_whitespace",
+      "completion": "def collapse_whitespace(text):\n    \"\"\"\n    Replace each run of one or more whitespace characters in a string with a single hyphen.\n    Preserve all non-whitespace characters, including any hyphens already in the string.\n    If the input is empty or contains no whitespace, return it unchanged.\n\n    :param text: The input string to be processed.\n    :return: A new string with all whitespace characters replaced by a single hyphen.\n    \"\"\"\n    # Check if the input string is empty or contains no whitespace\n    if not text or not text.strip():\n        return text\n    \n    # Replace all runs of one or more whitespace characters with a single hyphen\n    return text.replace(' ', '-')",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "06-013",
+      "category": "Strings and text processing",
+      "entry_point": "collapse_whitespace",
+      "completion": "def collapse_whitespace(text):\n    \"\"\"\n    Replace each run of one or more whitespace characters in a string with a single hyphen.\n    Do not add a hyphen at either end unless the original string begins or ends with whitespace.\n    An empty string should return an empty string.\n\n    :param text: The input string to be processed.\n    :return: A new string with whitespace collapsed.\n    \"\"\"\n    # Replace sequences of whitespace with a single hyphen\n    return text.replace(' ', '-')",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "07-001",
+      "category": "Set and membership operations",
+      "entry_point": "items_appearing_once",
+      "completion": "def items_appearing_once(values):\n    # Create a dictionary to count occurrences of each value\n    count_dict = {}\n    \n    # Count occurrences of each value in the list\n    for value in values:\n        if value in count_dict:\n            count_dict[value] += 1\n        else:\n            count_dict[value] = 1\n    \n    # Filter the list to include only values that appear exactly once\n    result = [value for value in values if count_dict[value] == 1]\n    \n    return result",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "07-002",
+      "category": "Set and membership operations",
+      "entry_point": "unique_shared_values",
+      "completion": "from typing import List\n\ndef unique_shared_values(first: List[int], second: List[int]) -> List[int]:\n    \"\"\"\n    Returns a list of distinct values that are present in both first and second lists,\n    preserving the order of their first appearance in the first list.\n    \n    Parameters:\n    first (List[int]): The first list of integers.\n    second (List[int]): The second list of integers.\n    \n    Returns:\n    List[int]: A list of unique shared values, preserving the order of their first appearance.\n    \"\"\"\n    # Use a set to store the first list for quick lookup\n    first_set = set(first)\n    \n    # Use a list to store the result, initialized with an empty list\n    result = []\n    \n    # Iterate over the second list\n    for value in second:\n        # Check if the value is in the first set\n        if value in first_set:\n            # If it is, add it to the result list\n            result.append(value)\n    \n    return result",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "07-003",
+      "category": "Set and membership operations",
+      "entry_point": "shared_items_in_order",
+      "completion": "from typing import List\n\ndef shared_items_in_order(first: List, second: List) -> List:\n    \"\"\"\n    Returns a list of the distinct items appearing in both input lists, preserving the order in which they first appear in the first list.\n    Returns an empty list if there are no shared items.\n    \n    :param first: List of hashable values\n    :param second: List of hashable values\n    :return: List of shared items in order, preserving the order of first appearance\n    \"\"\"\n    # Convert both lists to sets to remove duplicates and allow for efficient intersection\n    set1 = set(first)\n    set2 = set(second)\n    \n    # Find the intersection of the two sets\n    shared_items = set1.intersection(set2)\n    \n    # Convert the set back to a list and return\n    return list(shared_items)",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "08-001",
+      "category": "Mappings, tuples, and record aggregation",
+      "entry_point": "shop_item_totals",
+      "completion": "def shop_item_totals(records, item_name):\n    \"\"\"\n    Summarizes a sequence of purchase records. Each record is a tuple of (shop_name, item_name, quantity).\n    Returns a dictionary mapping each shop name to the total quantity of records whose item name matches the requested item, preserving no ordering requirement.\n    If there are no matching records, returns an empty dictionary.\n    A record with quantity zero contributes zero.\n    \n    :param records: List of tuples, where each tuple contains (shop_name, item_name, quantity).\n    :param item_name: The name of the item to search for.\n    :return: A dictionary mapping shop names to the total quantity of records with the specified item.\n    \"\"\"\n    total_totals = {}\n    for shop, item, quantity in records:\n        if item == item_name:\n            if shop in total_totals:\n                total_totals[shop] += quantity\n            else:\n                total_totals[shop] = quantity\n    return total_totals",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "08-002",
+      "category": "Mappings, tuples, and record aggregation",
+      "entry_point": "total_by_product",
+      "completion": "def total_by_product(records):\n    # Initialize an empty dictionary to store the total quantity of each product\n    total_quantity = {}\n    \n    # Iterate over each record in the input list\n    for product, quantity in records:\n        # If the product is already in the dictionary, add its quantity to the existing value\n        if product in total_quantity:\n            total_quantity[product] += quantity\n        # If the product is not in the dictionary, add it with a quantity of 0\n        else:\n            total_quantity[product] = 0\n    \n    # Return the dictionary containing the total quantity of each product\n    return total_quantity",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "08-003",
+      "category": "Mappings, tuples, and record aggregation",
+      "entry_point": "total_quantities",
+      "completion": "def total_quantities(records):\n    # Initialize an empty dictionary to store the total quantities\n    total_quantities = {}\n    \n    # Iterate through each record in the list\n    for record in records:\n        # Extract the product name and quantity from the record\n        product_name, quantity = record\n        \n        # If the product name is already in the dictionary, add the quantity to the existing value\n        if product_name in total_quantities:\n            total_quantities[product_name] += quantity\n        # If the product name is not in the dictionary, add it with the quantity\n        else:\n            total_quantities[product_name] = quantity\n    \n    # Return the dictionary containing the total quantities\n    return total_quantities",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "08-004",
+      "category": "Mappings, tuples, and record aggregation",
+      "entry_point": "summarize_orders",
+      "completion": "def summarize_orders(orders):\n    \"\"\"\n    Summarizes the orders by shop and returns a list of (shop, total_amount, order_count) tuples.\n    Each tuple contains the shop name, the total amount spent, and the number of orders.\n    If the input list is empty, returns an empty list.\n\n    :param orders: List of dictionaries, each containing a \"shop\" string and an \"amount\" number.\n    :return: List of (shop, total_amount, order_count) tuples.\n    \"\"\"\n    if not orders:\n        return []\n\n    summary = []\n    for shop, amount in orders:\n        total_amount += amount\n        order_count += 1\n        summary.append((shop, total_amount, order_count))\n\n    return summary",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "08-005",
+      "category": "Mappings, tuples, and record aggregation",
+      "entry_point": "sum_team_points",
+      "completion": "def sum_team_points(records):\n    # Initialize an empty dictionary to store team points\n    team_points = {}\n    \n    # Iterate over each record in the list\n    for record in records:\n        # Check if the record has a 'team' key and a 'points' key\n        if 'team' in record and 'points' in record:\n            # Extract the team name and points from the record\n            team = record['team']\n            points = record['points']\n            \n            # Check if the points are not zero\n            if points != 0:\n                # If the team is not already in the dictionary, add it with the points\n                if team not in team_points:\n                    team_points[team] = points\n                # If the team is already in the dictionary, add the points to the existing value\n                else:\n                    team_points[team] += points\n    \n    # Return the dictionary of team points\n    return team_points",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "08-006",
+      "category": "Mappings, tuples, and record aggregation",
+      "entry_point": "sum_positive_points_by_team",
+      "completion": "def sum_positive_points_by_team(records):\n    # Initialize an empty dictionary to store the sum of points for each team\n    team_points = {}\n    \n    # Iterate over each record in the input list\n    for record in records:\n        # Extract the team name and points from the record\n        team = record['team']\n        points = record['points']\n        \n        # Check if the team has any points and is not zero or negative\n        if points > 0:\n            # If the team is not in the dictionary, add it with the initial points\n            if team not in team_points:\n                team_points[team] = points\n            # Otherwise, add the points to the existing points for the team\n            else:\n                team_points[team] += points\n    \n    # Return the dictionary containing the sum of points for each team\n    return team_points",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "08-007",
+      "category": "Mappings, tuples, and record aggregation",
+      "entry_point": "sum_quantities_by_item",
+      "completion": "def sum_quantities_by_item(records):\n    # Initialize an empty dictionary to store the sum of quantities for each item\n    item_quantities = {}\n    \n    # Iterate over each record in the input list\n    for item, quantity in records:\n        # If the item is already in the dictionary, add its quantity to the existing value\n        if item in item_quantities:\n            item_quantities[item] += quantity\n        # If the item is not in the dictionary, add it with a quantity of 0\n        else:\n            item_quantities[item] = 0\n    \n    # Return the dictionary containing the sum of quantities for each item\n    return item_quantities",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "08-008",
+      "category": "Mappings, tuples, and record aggregation",
+      "entry_point": "names_by_group",
+      "completion": "def names_by_group(records, threshold):\n    # Initialize an empty dictionary to store the result\n    result = {}\n    \n    # Iterate over each record in the input list\n    for record in records:\n        # Extract the name, group, and score from the record\n        name, group, score = record\n        \n        # Check if the score is at least the given threshold\n        if score >= threshold:\n            # If the group is not already in the result dictionary, add it\n            if group not in result:\n                result[group] = []\n            # Append the name to the list of names in the group\n            result[group].append(name)\n    \n    # Return the result dictionary\n    return result",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 2,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.6666666666666666,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "09-001",
+      "category": "Recurrence, combinatorics, and dynamic programming",
+      "entry_point": "count_stair_climbs",
+      "completion": "def count_stair_climbs(n):\n    # Base case: if n is 0, there is 1 way to climb 0 steps\n    if n == 0:\n        return 1\n    \n    # Initialize the base cases\n    if n == 1:\n        return 1\n    if n == 2:\n        return 2\n    if n == 3:\n        return 4\n    \n    # Initialize the DP array\n    dp = [0] * (n + 1)\n    \n    # Fill the DP array\n    dp[1] = 1\n    dp[2] = 2\n    dp[3] = 4\n    \n    # Fill the DP array using the recurrence relation\n    for i in range(4, n + 1):\n        dp[i] = dp[i - 1] + dp[i - 3] + dp[i - 4]\n    \n    # Return the number of ways to climb n steps\n    return dp[n]",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "09-002",
+      "category": "Recurrence, combinatorics, and dynamic programming",
+      "entry_point": "count_staircase_ways",
+      "completion": "def count_staircase_ways(n):\n    # Base cases\n    if n == 0:\n        return 1\n    elif n == 1:\n        return 1\n    elif n == 2:\n        return 2\n    elif n == 3:\n        return 4\n\n    # Initialize the base cases\n    dp = [0] * (n + 1)\n    dp[0] = 1\n    dp[1] = 1\n    dp[2] = 2\n    dp[3] = 4\n\n    # Fill the dp array\n    for i in range(4, n + 1):\n        dp[i] = dp[i - 1] + dp[i - 2] + dp[i - 3] + dp[i - 4]\n\n    return dp[n]",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "09-003",
+      "category": "Recurrence, combinatorics, and dynamic programming",
+      "entry_point": "count_staircase_ways",
+      "completion": "def count_staircase_ways(n):\n    # Base cases\n    if n == 0:\n        return 1\n    elif n == 1:\n        return 1\n    elif n == 2:\n        return 2\n    elif n == 3:\n        return 4\n\n    # Initialize the count of ways to climb the staircase\n    count = 0\n\n    # Iterate through each number of steps from 4 to n\n    for i in range(4, n + 1):\n        # Calculate the number of ways to climb the staircase with the current number of steps\n        count += count_staircase_ways(i - 1) + count_staircase_ways(i - 2) + count_staircase_ways(i - 3)\n\n    return count",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 2,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.6666666666666666,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "09-004",
+      "category": "Recurrence, combinatorics, and dynamic programming",
+      "entry_point": "count_staircase_ways",
+      "completion": "def count_staircase_ways(n):\n    # Base cases\n    if n == 0:\n        return 1\n    elif n == 1:\n        return 1\n    elif n == 2:\n        return 2\n    \n    # Initialize the first three numbers of the sequence\n    a, b, c = 1, 1, 2\n    \n    # Calculate the number of ways to climb the staircase\n    for _ in range(3, n + 1):\n        a, b, c = b, c, a + b + c\n    \n    return c",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 2,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.6666666666666666,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "09-005",
+      "category": "Recurrence, combinatorics, and dynamic programming",
+      "entry_point": "count_step_sequences",
+      "completion": "def count_step_sequences(n):\n    # Base case: if n is 0, there's only one way to reach 0 steps (doing nothing)\n    if n == 0:\n        return 1\n    \n    # Initialize a list to store the number of ways to reach each step\n    ways = [0] * (n + 1)\n    \n    # Base case: if n is 1, there's only one way to reach 1 step (doing nothing)\n    ways[1] = 1\n    \n    # Fill the ways list using the recurrence relation\n    for i in range(2, n + 1):\n        ways[i] = ways[i - 1] + ways[i - 3] + ways[i - 4]\n    \n    return ways[n]",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "09-006",
+      "category": "Recurrence, combinatorics, and dynamic programming",
+      "entry_point": "count_coin_combinations",
+      "completion": "def count_coin_combinations(coins, amount):\n    \"\"\"\n    Calculate the number of ways to make a total amount using unlimited coins of the given denominations.\n    \n    Parameters:\n    coins (list): A list of positive integers representing the denominations.\n    amount (int): The total amount to be made using the coins.\n    \n    Returns:\n    int: The number of ways to make the amount, or 0 if no combination makes the amount.\n    \"\"\"\n    if amount == 0:\n        return 1\n    if not coins:\n        return 0\n    \n    # Initialize the dp array where dp[i] represents the number of ways to make amount i using the coins\n    dp = [0] * (amount + 1)\n    dp[0] = 1  # There's one way to make 0 using no coins\n    \n    # Fill the dp array\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            dp[i] += dp[i - coin]\n    \n    return dp[amount]",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "09-007",
+      "category": "Recurrence, combinatorics, and dynamic programming",
+      "entry_point": "count_staircase_ways",
+      "completion": "def count_staircase_ways(n):\n    # Base cases\n    if n == 0:\n        return 1\n    elif n == 1:\n        return 1\n    elif n == 2:\n        return 2\n    elif n == 3:\n        return 4\n\n    # Initialize the base cases\n    dp = [0] * (n + 1)\n    dp[0] = 1\n    dp[1] = 1\n    dp[2] = 2\n    dp[3] = 4\n\n    # Fill the dp array\n    for i in range(4, n + 1):\n        dp[i] = dp[i - 1] + dp[i - 2] + dp[i - 3] + dp[i - 4]\n\n    return dp[n]",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "09-008",
+      "category": "Recurrence, combinatorics, and dynamic programming",
+      "entry_point": "count_coin_combinations",
+      "completion": "from itertools import combinations\n\ndef count_coin_combinations(coins, target):\n    \"\"\"\n    Calculate the number of distinct combinations that sum to the target.\n    \n    Args:\n    coins (list of int): A list of positive integer coin values.\n    target (int): The target amount to be achieved.\n    \n    Returns:\n    int: The number of distinct combinations that sum to the target.\n    \"\"\"\n    # Sort the coins to ensure we can use the smallest coins first\n    coins.sort()\n    \n    # Initialize the count of combinations\n    count = 0\n    \n    # Iterate over all possible combinations of the coins\n    for combo in combinations(coins, len(coins)):\n        if sum(combo) == target:\n            count += 1\n    \n    return count",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "09-009",
+      "category": "Recurrence, combinatorics, and dynamic programming",
+      "entry_point": "count_stair_climbs",
+      "completion": "def count_stair_climbs(n):\n    # Base case: if n is 0, there is only one way to climb 0 steps\n    if n == 0:\n        return 1\n    \n    # Initialize the base cases\n    # There are 2 ways to climb 1 step: 1 step or 2 steps\n    # There are 3 ways to climb 2 steps: 2 steps, 3 steps, or 4 steps\n    # There are 4 ways to climb 3 steps: 3 steps, 4 steps, 5 steps, or 6 steps\n    # There are 5 ways to climb 4 steps: 4 steps, 5 steps, 6 steps, 7 steps, or 8 steps\n    # There are 6 ways to climb 5 steps: 5 steps, 6 steps, 7 steps, 8 steps, 9 steps, or 10 steps\n    # There are 7 ways to climb 6 steps: 6 steps, 7 steps, 8 steps, 9 steps, 10 steps, 11 steps, or 12 steps\n    # There are 8 ways to climb 7 steps: 7 steps, 8 steps, 9 steps, 10 steps, 11 steps, 12 steps, 13 steps, or 14 steps\n    # There are 9 ways to climb 8 steps: 8 steps, 9 steps, 10 steps, 11 steps, 12 steps, 13 steps, 14 steps, 15 steps, or 16 steps\n    # There are 10 ways to climb 9 steps: 9 steps, 10 steps, 11 steps, 12 steps, 13 steps, 14 steps, 15 steps, 16 steps, 17 steps, or 18 steps\n    # There are 11 ways to climb 10 steps: 10 steps, 11 steps, 12 steps, 13 steps, 14 steps, 15 steps, 16 steps, 17 steps, 18 steps, 19 steps, or 20 steps\n    # There are 12 ways to climb 11 steps: 11 steps, 12 steps, 13 steps, 14 steps, 15 steps, 16 steps, 17 steps, 18 steps, 19 steps, 20 steps, 21 steps, or 22 steps\n    # There are 13 ways to climb 12 steps: 12 steps, 13 steps, 14 steps, 15 steps, 16 steps, 17 steps, 18 steps, 19 steps, 20 steps, 21 steps, 22 steps, 23 steps, or 24 steps\n    # There are 14 ways to climb 13 steps: 13 steps, 14 steps, 15 steps, 16 steps, 17 steps, 18 steps, 19 steps, 20 steps, 21 steps, 22 steps, 23 steps, 24 steps, 25 steps, or 26 steps\n    # There are 15 ways to climb 14 steps: 14 steps, 15 steps, 16 steps, 17 steps, 18 steps, 19 steps, 20 steps, 21 steps, 22 steps, 23 steps, 24 steps, 25 steps, 26 steps, 27 steps, or 28 steps\n    # There are 16 ways to climb 15 steps: 15 steps, 16 steps, 17 steps, 18 steps, 19 steps, 20 steps, 21 steps, 22 steps, 23 steps, 24 steps, 25 steps, 26 steps, 27 steps, 28 steps, 29 steps, or 30 steps\n    # There are 17 ways to climb 16 steps: 16 steps, 17 steps, 18 steps, 19 steps, 20 steps, 21 steps, 22 steps, 23 steps, 24 steps, 25 steps, 26 steps, 27 steps, 28 steps, 29 steps, 30 steps, 31 steps, or 32 steps\n    # There are 18 ways to climb 17 steps: 17 steps, 18 steps, 19 steps, 20 steps, 21 steps, 22 steps, 23 steps, 24 steps, 25 steps, 26 steps, 27 steps, 28 steps, 29 steps, 30 steps, 31 steps, 32 steps, 33 steps, or 34 steps\n    # There are 19 ways to climb 18 steps: 18 steps, 19 steps, 20 steps, 21 steps, 22 steps, 23 steps, 24 steps, 25 steps, 26 steps, 27 steps, 28 steps, 29 steps, 30 steps, 31 steps, 32 steps, 33 steps, 34 steps, 35 steps, or 36 steps\n    # There are 20 ways to climb 19 steps: 19 steps, 20 steps, 21 steps, 22 steps, 23 steps, 24 steps, 25 steps, 26 steps, 27 steps, 28 steps, 29 steps, 30 steps, 31 steps, 32 steps, 33 steps, 34 steps, 35 steps, 36 steps, 37 steps, or 38 steps\n    # There are 21 ways to climb 20 steps: 20 steps, 21 steps, 22 steps, 23 steps, 24 steps, 25 steps, 26 steps, 27 steps, 28 steps, 29 steps, 30 steps, 31 steps, 32 steps, 33 steps, 34 steps, 35 steps, 36 steps, 37 steps, 38 steps, 39 steps, or 40 steps\n    # There are 22 ways to climb 21 steps: 21 steps, 22 steps, 23 steps, 24 steps, 25 steps, 26 steps, 27 steps, 28 steps, 29 steps, 30 steps, 31 steps, 32 steps, 33 steps, 34 steps, 35 steps, 36 steps, 37 steps, 38 steps, 39 steps, 40 steps, 41 steps, or 42 steps\n    # There are 23 ways to climb 22 steps: 22 steps, 23 steps, 24 steps, 25 steps, 26 steps, 27 steps, 28 steps, 29 steps, 30 steps, 31 steps, 32 steps, 33 steps, 34 steps, 35 steps, 36 steps, 37 steps, 38 steps, 39 steps, 40 steps, 41 steps, 42 steps, 43 steps, or 44 steps\n    # There are 24 ways to climb 23 steps: 23 steps, 24 steps, 25 steps, 26 steps, 27 steps, 28 steps, 29 steps, 30 steps, 31 steps, 32 steps, 33 steps, 34 steps, 35 steps, 36 steps, 37 steps, 38 steps, 39 steps, 40 steps, 41 steps, 42 steps, 43 steps, 44 steps, 45 steps, or 46 steps\n    # There are 25 ways to climb 24 steps: 24 steps, 25 steps, 26 steps, 27 steps, 28 steps, 29 steps, 30 steps, 31 steps, 32 steps, 33 steps, 34 steps, 35 steps, 36 steps, 37 steps, 38 steps, 39 steps, 40 steps, 41 steps, 42 steps, 43 steps, 44 steps, 45 steps, 46 steps, 47 steps, or 48 steps\n    # There are 26 ways to climb 25 steps: 25 steps, 26 steps, 27 steps, 28 steps, 29 steps,",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "10-001",
+      "category": "Matrices and grids",
+      "entry_point": "spiral_read",
+      "completion": "def spiral_read(grid):\n    if not grid or not grid[0]:\n        return []\n\n    rows, cols = len(grid), len(grid[0])\n    top, bottom, left, right = 0, rows - 1, 0, cols - 1\n    result = []\n\n    while top <= bottom and left <= right:\n        # Traverse from left to right\n        for i in range(left, right + 1):\n            result.append(grid[top][i])\n        top += 1\n\n        # Traverse from top to bottom\n        for i in range(top, bottom + 1):\n            result.append(grid[i][right])\n        right -= 1\n\n        # Traverse from right to left\n        if top <= bottom:\n            for i in range(right, left - 1, -1):\n                result.append(grid[bottom][i])\n            bottom -= 1\n\n        # Traverse from bottom to top\n        if left <= right:\n            for i in range(bottom, top - 1, -1):\n                result.append(grid[i][left])\n            left += 1\n\n    return result",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "11-001",
+      "category": "Geometry and spatial calculations",
+      "entry_point": "sector_area",
+      "completion": "import math\n\ndef sector_area(radius, angle_degrees):\n    \"\"\"\n    Compute the area of a circular sector given its radius and central angle in degrees.\n    \n    Parameters:\n    radius (float): The radius of the circle.\n    angle_degrees (float): The central angle in degrees.\n    \n    Returns:\n    float: The area of the sector, or 0 if the radius or angle is 0.\n    \"\"\"\n    if radius == 0 or angle_degrees == 0:\n        return 0\n    else:\n        # Convert angle from degrees to radians\n        angle_radians = math.radians(angle_degrees)\n        # Calculate the area of the sector\n        area = (angle_radians / 360) * math.pi * radius**2\n        return area",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "11-002",
+      "category": "Geometry and spatial calculations",
+      "entry_point": "triangle_area_from_sides",
+      "completion": "def triangle_area_from_sides(a, b, c):\n    # Check if the sides can form a triangle\n    if a <= 0 or b <= 0 or c <= 0:\n        return 0\n    \n    # Calculate the semi-perimeter\n    s = (a + b + c) / 2\n    \n    # Calculate the area using Heron's formula\n    area = (s * (s - a) * (s - b) * (s - c)) ** 0.5\n    \n    return area",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "11-003",
+      "category": "Geometry and spatial calculations",
+      "entry_point": "triangle_area_from_sides",
+      "completion": "def triangle_area_from_sides(a, b, c):\n    # Check if the sides can form a triangle\n    if a + b <= c or a + c <= b or b + c <= a:\n        return 0.0\n    \n    # Calculate the semi-perimeter\n    s = (a + b + c) / 2\n    \n    # Calculate the area using Heron's formula\n    area = (s * (s - a) * (s - b) * (s - c)) ** 0.5\n    \n    return area",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "11-004",
+      "category": "Geometry and spatial calculations",
+      "entry_point": "distance_between_points",
+      "completion": "import math\n\ndef distance_between_points(x1, y1, x2, y2):\n    \"\"\"\n    Calculate the Euclidean distance between two points in a 2D plane.\n\n    Parameters:\n    x1 (float): The x-coordinate of the first point.\n    y1 (float): The y-coordinate of the first point.\n    x2 (float): The x-coordinate of the second point.\n    y2 (float): The y-coordinate of the second point.\n\n    Returns:\n    float: The Euclidean distance between the two points.\n    \"\"\"\n    # Calculate the differences in x and y coordinates\n    dx = x2 - x1\n    dy = y2 - y1\n    \n    # Calculate the Euclidean distance using the distance formula\n    distance = math.sqrt(dx**2 + dy**2)\n    \n    return distance",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "11-005",
+      "category": "Geometry and spatial calculations",
+      "entry_point": "box_diagonal",
+      "completion": "def box_diagonal(length, width, height):\n    \"\"\"\n    Compute the length of the diagonal of a rectangular box from its three side lengths.\n    \n    Parameters:\n    length (float): The length of the box.\n    width (float): The width of the box.\n    height (float): The height of the box.\n    \n    Returns:\n    float: The length of the diagonal of the box.\n    \"\"\"\n    if length == 0 or width == 0 or height == 0:\n        return 0.0\n    diagonal = (length ** 2 + width ** 2 + height ** 2) ** 0.5\n    return diagonal",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "11-006",
+      "category": "Geometry and spatial calculations",
+      "entry_point": "sector_area",
+      "completion": "import math\n\ndef sector_area(radius, angle_degrees):\n    \"\"\"\n    Calculate the area of a circular sector from its radius and central angle in degrees.\n    \n    Parameters:\n    radius (float): The radius of the circle.\n    angle_degrees (float): The central angle of the sector in degrees.\n    \n    Returns:\n    float: The area of the sector, or None if the radius is negative or the angle is outside the range 0 through 360.\n    \"\"\"\n    if radius < 0:\n        return None\n    if angle_degrees < 0 or angle_degrees > 360:\n        return None\n    \n    # Convert angle from degrees to radians\n    angle_radians = math.radians(angle_degrees)\n    \n    # Calculate the area of the sector\n    sector_area = (angle_radians / 360) * math.pi * radius**2\n    \n    return sector_area",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "12-001",
+      "category": "Graphs, paths, intervals, and chains",
+      "entry_point": "shortest_path_length",
+      "completion": "def shortest_path_length(edges, start, goal):\n    # Initialize a dictionary to store the distance from each vertex to the start vertex\n    distance = {vertex: float('inf') for vertex in edges}\n    distance[start] = 0\n    \n    # Priority queue to store vertices to be processed\n    pq = [(0, start)]\n    \n    # Perform Dijkstra's algorithm\n    while pq:\n        current_distance, current_vertex = heapq.heappop(pq)\n        \n        # If the current vertex is the goal, return the distance\n        if current_vertex == goal:\n            return current_distance\n        \n        # Explore all adjacent vertices\n        for neighbor, weight in edges[current_vertex]:\n            # Calculate the new distance to the neighbor\n            new_distance = current_distance + weight\n            \n            # If the new distance is shorter, update the distance and add it to the priority queue\n            if new_distance < distance[neighbor]:\n                distance[neighbor] = new_distance\n                heapq.heappush(pq, (new_distance, neighbor))\n    \n    # If no path is found, return -1\n    return -1",
+      "expected_tests": 3,
+      "status": "failed",
+      "passed_tests": 0,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.0,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "13-001",
+      "category": "Predicates, validation, and classification",
+      "entry_point": "is_valid_identifier",
+      "completion": "def is_valid_identifier(text):\n    \"\"\"\n    Check if the given string is a valid identifier under the specified rules:\n    - It must be nonempty.\n    - It must start with an ASCII letter or underscore.\n    - It can contain only ASCII letters, digits, or underscores.\n    \n    Args:\n    text (str): The string to be checked.\n    \n    Returns:\n    bool: True if the string is a valid identifier, False otherwise.\n    \"\"\"\n    # Check if the string is empty\n    if not text:\n        return False\n    \n    # Check if the string starts with an ASCII letter or underscore\n    if not text[0].isalpha() and text[0] != '_':\n        return False\n    \n    # Check if the string contains only ASCII letters, digits, or underscores\n    for char in text:\n        if not char.isalnum() and char != '_':\n            return False\n    \n    return True",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 2,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.6666666666666666,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "13-002",
+      "category": "Predicates, validation, and classification",
+      "entry_point": "is_leap_year",
+      "completion": "def is_leap_year(year):\n    \"\"\"\n    Determine if a given four-digit year is a leap year.\n    \n    A leap year is divisible by 400, or if it is divisible by 4 but not by 100.\n    Years less than 1000 or greater than 9999 are invalid and should return False.\n    \n    Parameters:\n    year (int): The four-digit year to check.\n    \n    Returns:\n    bool: True if the year is a leap year, False otherwise.\n    \"\"\"\n    if year < 1000 or year > 9999:\n        return False\n    \n    if year % 400 == 0:\n        return True\n    elif year % 4 == 0:\n        return True\n    else:\n        return False",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 2,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.6666666666666666,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "13-003",
+      "category": "Predicates, validation, and classification",
+      "entry_point": "classify_evenness",
+      "completion": "def classify_evenness(numbers):\n    \"\"\"\n    Classify the given list of integers based on their parity:\n    - \"empty\" if the list is empty.\n    - \"all_even\" if all elements are even.\n    - \"all_odd\" if all elements are odd.\n    - \"mixed\" if the list contains both even and odd integers.\n    - Negative integers are classified by whether they are divisible by 2.\n    \"\"\"\n    if not numbers:\n        return \"empty\"\n    \n    all_even = all(num % 2 == 0 for num in numbers)\n    all_odd = all(num % 2 != 0 for num in numbers)\n    \n    if all_even:\n        return \"all_even\"\n    elif all_odd:\n        return \"all_odd\"\n    else:\n        return \"mixed\"",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "13-004",
+      "category": "Predicates, validation, and classification",
+      "entry_point": "is_valid_identifier",
+      "completion": "def is_valid_identifier(text):\n    \"\"\"\n    Determine if the given string is a valid identifier under the specified rules:\n    - It must be nonempty.\n    - It must start with an ASCII letter or underscore.\n    - It must contain only ASCII letters, digits, or underscores.\n    \n    :param text: The string to be checked.\n    :return: True if the string is a valid identifier, False otherwise.\n    \"\"\"\n    # Check if the string is empty\n    if not text:\n        return False\n    \n    # Check if the string starts with an ASCII letter or underscore\n    if not text[0].isalpha() and text[0] != '_':\n        return False\n    \n    # Check if the string contains only ASCII letters, digits, or underscores\n    for char in text:\n        if not char.isalnum() and char != '_':\n            return False\n    \n    return True",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "13-005",
+      "category": "Predicates, validation, and classification",
+      "entry_point": "is_valid_airport_code",
+      "completion": "def is_valid_airport_code(code):\n    \"\"\"\n    Check if the given string is a valid three-letter airport code.\n    \n    A valid airport code must contain exactly three uppercase English letters.\n    \n    Parameters:\n    code (str): The string to check.\n    \n    Returns:\n    bool: True if the code is valid, False otherwise.\n    \"\"\"\n    # Check if the length of the code is exactly three\n    if len(code) != 3:\n        return False\n    \n    # Check if all characters in the code are uppercase\n    if not all(char.isupper() for char in code):\n        return False\n    \n    return True",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "13-006",
+      "category": "Predicates, validation, and classification",
+      "entry_point": "is_valid_time",
+      "completion": "def is_valid_time(value):\n    # Check if the input is a string\n    if not isinstance(value, str):\n        return False\n    \n    # Check if the string contains exactly two colons\n    if len(value) != 5:\n        return False\n    \n    # Split the string by the colon\n    parts = value.split(':')\n    \n    # Check if there are exactly two parts\n    if len(parts) != 2:\n        return False\n    \n    # Try to convert the parts to integers\n    try:\n        hours, minutes = int(parts[0]), int(parts[1])\n    except ValueError:\n        return False\n    \n    # Check if hours are between 00 and 23\n    if hours < 0 or hours > 23:\n        return False\n    \n    # Check if minutes are between 00 and 59\n    if minutes < 0 or minutes > 59:\n        return False\n    \n    # If all checks pass, the string is a valid 24-hour time\n    return True",
+      "expected_tests": 3,
+      "status": "passed",
+      "passed_tests": 3,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 1.0,
+        "pass": 1.0
+      }
+    },
+    {
+      "prompt_id": "13-007",
+      "category": "Predicates, validation, and classification",
+      "entry_point": "is_lowercase_identifier",
+      "completion": "def is_lowercase_identifier(text):\n    \"\"\"\n    Check if the given string is a valid lowercase identifier.\n\n    A valid identifier is a nonempty string that starts with a lowercase English letter,\n    contains only lowercase English letters, digits, or underscores. The function returns True\n    if the string is a valid identifier, and False otherwise.\n\n    Examples:\n    >>> is_lowercase_identifier(\"hello\")\n    True\n    >>> is_lowercase_identifier(\"123abc\")\n    True\n    >>> is_lowercase_identifier(\"abc123\")\n    False\n    >>> is_lowercase_identifier(\"abc_123\")\n    False\n    >>> is_lowercase_identifier(\"abc\")\n    False\n    >>> is_lowercase_identifier(\"\")\n    False\n    \"\"\"\n    if not text:\n        return False\n    if not text[0].islower():\n        return False\n    for char in text[1:]:\n        if not char.islower() and char != '_':\n            return False\n    return True",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 2,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.6666666666666666,
+        "pass": 0.0
+      }
+    },
+    {
+      "prompt_id": "13-008",
+      "category": "Predicates, validation, and classification",
+      "entry_point": "has_letters_from_both_halves",
+      "completion": "def has_letters_from_both_halves(text):\n    # Check if the text is empty\n    if not text:\n        return False\n    \n    # Define the groups 'a' through 'm' and 'n' through 'z'\n    groups = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']\n    \n    # Initialize a set to keep track of characters from each group\n    seen_chars = set()\n    \n    # Iterate over each character in the text\n    for char in text:\n        # Check if the character is a lowercase English letter\n        if char.islower():\n            # Add the character to the set of seen characters\n            seen_chars.add(char)\n        # If the character is not a lowercase English letter, return False\n        else:\n            return False\n    \n    # Check if all characters from 'a' through 'm' and 'n' through 'z' are in the set\n    return all(char in seen_chars for char in groups)",
+      "expected_tests": 3,
+      "status": "partial",
+      "passed_tests": 1,
+      "total_tests": 3,
+      "interface_valid": true,
+      "reward_components": {
+        "format": 0.0,
+        "syntax": 0.0,
+        "interface": 0.0,
+        "tests": 0.3333333333333333,
+        "pass": 0.0
+      }
+    }
+  ]
+}
