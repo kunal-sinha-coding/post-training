@@ -3211,3 +3211,9 @@ Commit name: Verify W&B coverage through step 236
 Verified the W&B rollout coverage at steps 235 and 236 against local per-task means. All three threshold values match at both steps. The trace contains 1,888 task-group rows through step 236.
 
 Why: Continue checking the signal curves during training.
+
+Commit name: Verify W&B coverage through step 237
+
+Verified W&B rollout metrics at optimizer step 237 against the local eight-group mean. All three thresholds match.
+
+Why: Continue validating the signal curves throughout training.
