@@ -3601,3 +3601,9 @@ Commit name: Verify W&B coverage through step 309
 Matched steps 308 and 309 W&B coverage against local task rollout records for all three thresholds. Confirmed training remains active beyond step 309 and checkpoint 300 is complete.
 
 Why: Maintain auditable rollout metrics and checkpoint state.
+
+Commit name: Record step-310 EvalPlus results
+
+Recorded the step-310 EvalPlus scores, MBPP 0.574 and MBPP+ 0.497, and local rollout coverage while W&B publication and training-set scoring remained pending.
+
+Why: Preserve the scheduled benchmark result as step-310 evaluations proceed.

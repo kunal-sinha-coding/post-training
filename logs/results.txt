@@ -16603,3 +16603,7 @@ Step 307 matches local coverage at W&B history axis 60,816: 0.6171875 of generat
 W&B COVERAGE CROSS-CHECK THROUGH STEP 309
 
 Step 308 matches local coverage at W&B history axis 61,014: 0.6796875 of generations passed at least one test, 0.1796875 passed at least two, and 0.046875 passed all three. Step 309 matches at history axis 61,212: 0.4921875, 0.0234375, and 0. Training is active at step 309, with checkpoint 300 as the latest complete checkpoint.
+
+CHECKPOINT EVALPLUS RESULTS AT STEP 310
+
+The step-310 EvalPlus output reports MBPP pass@1 0.574 and MBPP+ pass@1 0.497. Both improve on step 300's 0.556 and 0.481. Step-310 local rollout coverage is 0.625/0.21875/0.1484375 for generations passing at least one, two, and three tests; its W&B point is pending. The 5,910-example training-set evaluation is beginning. Checkpoint 300 remains the latest complete checkpoint while evaluation and saving continue.
