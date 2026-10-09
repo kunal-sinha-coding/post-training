@@ -3121,3 +3121,9 @@ Commit name: Verify W&B coverage through step 209
 Compared W&B rollout coverage with local means for steps 206 through 209. All three thresholds match for every point. Step 210 remains pending W&B publication. Local rollout coverage has advanced through step 211.
 
 Why: Continue auditing the requested W&B rollout-signal curves during the long training run.
+
+Commit name: Verify W&B coverage through step 212
+
+Verified that W&B rollout coverage matches local per-task means for optimizer steps 210, 211, and 212 at all three test-pass thresholds.
+
+Why: Maintain an ongoing audit that the requested signal curves are logged correctly.
