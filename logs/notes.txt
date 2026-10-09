@@ -3283,3 +3283,9 @@ Commit name: Verify W&B coverage through step 251
 Verified the step-251 W&B rollout metrics against local per-task means. All three thresholds match. The local trace is through step 252.
 
 Why: Continue checking the requested signal curves.
+
+Commit name: Verify W&B coverage through step 252
+
+Verified W&B coverage at step 252 against local means across eight task groups. All three metrics match. Step 253 is available locally and awaits W&B publication.
+
+Why: Continue checking rollout metrics during training.

@@ -16391,3 +16391,7 @@ The step-250 W&B coverage values match local means across eight task groups: 0.6
 W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 251
 
 The step-251 W&B coverage point matches local means across eight task groups: 0.71875 passed at least one test, 0.3203125 passed at least two, and 0.2421875 passed all three. Local coverage has advanced through step 252. Checkpoint 250 remains the latest complete checkpoint.
+
+W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 252
+
+The step-252 W&B coverage point matches local means across eight task groups: 0.65625 passed at least one test, 0.2109375 passed at least two, and 0.1015625 passed all three. Local coverage has advanced through step 253, whose W&B value is pending. Checkpoint 250 remains latest complete.
