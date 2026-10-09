@@ -3673,3 +3673,9 @@ Commit name: Record step-320 training metrics and W&B coverage
 Recorded the step-320 training-set evaluation, verified coverage against W&B, and recorded EvalPlus and checkpoint 320 completion.
 
 Why: Preserve the scheduled benchmark, training signal, and recovery point.
+
+Commit name: Verify W&B coverage through step 321
+
+Matched step-321 W&B coverage against local rollout records for all three thresholds. Confirmed training remains active with checkpoint 320 complete.
+
+Why: Preserve the current task-level reward signal and recovery state.
