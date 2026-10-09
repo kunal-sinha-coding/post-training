@@ -3313,3 +3313,9 @@ Commit name: Verify W&B coverage through step 259
 Confirmed that step-259 W&B coverage at all three thresholds matches the local means across eight task groups. Training then advanced to step 260, while checkpoint 250 remained the newest complete checkpoint.
 
 Why: Continue recording and validating rollout reward coverage during the 50,000-step run.
+
+Commit name: Record step-260 EvalPlus checkpoint results
+
+Recorded step-260 EvalPlus pass@1 values of 0.571 on MBPP and 0.484 on MBPP+, compared with 0.556 and 0.476 at step 250. The separate training-set evaluation remained in progress.
+
+Why: Preserve checkpoint benchmark results as the long training experiment advances.

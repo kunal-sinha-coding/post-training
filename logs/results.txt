@@ -16411,3 +16411,7 @@ The step-258 W&B point at history axis 51,109 matches the local mean across eigh
 W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 259
 
 The step-259 W&B point at history axis 51,307 matches the local mean across eight task groups: 0.59375 of generations passed at least one test, 0.0234375 passed at least two, and 0.015625 passed all three. The trainer is active and has started step 260. The latest complete checkpoint remains 250, and the supervisor's latest 10-minute check at 16:57:57 UTC found the trainer alive.
+
+CHECKPOINT EVALPLUS RESULTS AT STEP 260
+
+The saved EvalPlus output at `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/evalplus/step-260/mbpp_results.txt` reports MBPP pass@1 0.571 and MBPP+ pass@1 0.484. Step 250 reported 0.556 and 0.476. These are intermediate checkpoint measurements on the same saved EvalPlus ground-truth cache. The 5,910-task training-set generation and scoring for step 260 is still processing; checkpoint 260 is not yet saved. The trainer and ten-minute supervisor remain active.
