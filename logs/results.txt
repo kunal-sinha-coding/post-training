@@ -16687,3 +16687,7 @@ The step-330 EvalPlus output reports MBPP pass@1 0.556 and MBPP+ pass@1 0.487. T
 STEP-330 TRAINING METRICS AND W&B COVERAGE
 
 Checkpoint 330 is complete. The 5,910-example training-set evaluation reports pass@1 0.1128596, average reward 0.3292724, test-pass fraction 0.3317988, partial-pass fraction 0.5451777, and partial-or-full-pass fraction 0.6580372. The status counts are 667 passed, 45 syntax errors, 1,976 failed, and 3,222 partial. The W&B coverage point at history axis 65,373 matches local means over eight task groups: at least one test 0.578125, at least two 0.1796875, and all three 0.0703125. EvalPlus reports MBPP 0.556 and MBPP+ 0.487. Training has advanced beyond step 330. The 19:28:09 UTC supervisor check found the trainer alive and checkpoint 320 complete before checkpoint 330 finished saving.
+
+W&B COVERAGE CROSS-CHECK THROUGH STEP 331
+
+Step 331 matches local coverage at W&B history axis 65,571: 0.6015625 of generations passed at least one test, 0.1328125 passed at least two, and 0.0859375 passed all three. Each value is the mean over eight training task groups with 16 generations per task. Training is active beyond step 331. Checkpoint 330 is complete. The 19:38:10 UTC supervisor check found the trainer alive before checkpoint 330 finished saving.
