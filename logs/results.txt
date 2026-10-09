@@ -16359,3 +16359,7 @@ The step-240 W&B point matches local means across eight task groups: 0.5078125 p
 W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 241
 
 The step-241 W&B coverage values match the local means over eight task groups: 0.578125 passed at least one test, 0.1328125 passed at least two, and 0.0703125 passed all three. The local trace is through step 242, whose W&B value is pending. Checkpoint 240 is saved and training continues.
+
+W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 243
+
+The step-242 and step-243 W&B coverage points match the local averages across eight task groups. The at-least-one, at-least-two, and at-least-three-test fractions are 0.734375/0.2890625/0.15625 at step 242 and 0.5390625/0.15625/0.015625 at step 243. Checkpoint 240 is saved, and training continues.

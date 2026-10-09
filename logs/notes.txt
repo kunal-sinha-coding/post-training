@@ -3241,3 +3241,9 @@ Commit name: Verify W&B coverage through step 241
 Verified the step-241 W&B coverage point against local means across eight task groups. All three thresholds match. Step 242 is available locally and awaits W&B publication.
 
 Why: Continue auditing rollout signal logging.
+
+Commit name: Verify W&B coverage through step 243
+
+Verified W&B coverage values at steps 242 and 243 against local means across eight task groups. All three thresholds match.
+
+Why: Continue the rollout-signal audit during the experiment.
