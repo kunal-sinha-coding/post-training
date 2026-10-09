@@ -3757,3 +3757,7 @@ Commit name: Verify W&B coverage through step 338
 Matched step-338 W&B coverage against local task rollout records for all three thresholds. Confirmed training is active and checkpoint 330 is complete.
 
 Why: Preserve the current reward signal and recovery state.
+
+
+Commit name: Record step-339 W&B coverage and training status.
+Recorded the local and W&B-matched generation coverage for optimizer step 339 and the active supervisor, trainer, and checkpoint state in logs/results.txt. This keeps the user's training experiment record current while the supervised run continues. No training or checkpoint files were changed.
