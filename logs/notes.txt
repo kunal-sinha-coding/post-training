@@ -3499,3 +3499,9 @@ Commit name: Record step-290 training metrics and W&B coverage
 Recorded the step-290 training-set evaluation, verified all rollout coverage metrics against W&B, and recorded EvalPlus and checkpoint 290 completion.
 
 Why: Preserve the latest benchmark, training signal, and recovery point in the experiment record.
+
+Commit name: Verify W&B coverage through step 291
+
+Matched step-291 W&B coverage against local task rollout records for all three thresholds. Confirmed the trainer remains active and checkpoint 290 is complete.
+
+Why: Keep current task-level reward signal and recovery state auditable during training.

@@ -16535,3 +16535,7 @@ The step-290 EvalPlus output reports MBPP pass@1 0.550 and MBPP+ pass@1 0.474. T
 STEP-290 TRAINING METRICS AND W&B COVERAGE
 
 Checkpoint 290 is complete. The 5,910-example training-set evaluation reports pass@1 0.1096447, average reward 0.3223350, test-pass fraction 0.3246975, partial-pass fraction 0.5387479, and partial-or-full-pass fraction 0.6483926. The status counts are 648 passed, 43 syntax errors, 2,035 failed, and 3,184 partial. The W&B coverage point at history axis 57,449 matches the local means across eight task groups: at least one test 0.6015625, at least two 0.1640625, and all three 0.0546875. EvalPlus reports MBPP 0.550 and MBPP+ 0.474. Training has advanced beyond step 290. The supervisor's 18:08:04 UTC check found the trainer alive and checkpoint 280 complete before checkpoint 290 finished saving.
+
+W&B COVERAGE CROSS-CHECK THROUGH STEP 291
+
+Step 291 matches local coverage at W&B history axis 57,647: 0.78125 of generations passed at least one test, 0.25 passed at least two, and 0.0546875 passed all three. Each value is the mean over eight training task groups with 16 generations per task. Training is active at step 291. Checkpoint 290 is complete. The supervisor's 18:08:04 UTC check found the trainer alive and checkpoint 280 complete before checkpoint 290 finished saving.
