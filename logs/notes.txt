@@ -2899,3 +2899,9 @@ Commit name: Record step 20 training-set evaluation
 Recorded the full training-set evaluation at step 20 and compared it with the step-0 baseline. Pass@1 moved from 0.08443 to 0.08646, average reward from 0.27157 to 0.27530, and the completion test-pass fraction from 0.2743 to 0.2780. Marked the measurement as early.
 
 Why: The training run includes a full training-set check at each configured EvalPlus interval, and its numerical results are relevant to the requested difficulty experiment.
+
+Commit name: Cross-check rollout coverage curves through step 20
+
+Compared local task-level rollout records with the W&B curves at each of the first 20 optimizer steps. All eight task rows per step are present, and the per-step threshold fractions match each W&B scalar. Recorded the 160-row aggregate and threshold coverage rates in the results file.
+
+Why: Verify that the requested per-task generation coverage metrics are complete and represented correctly in W&B.

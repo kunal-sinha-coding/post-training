@@ -16009,3 +16009,7 @@ The configured step-20 EvalPlus evaluation reports MBPP pass@1 0.516 and MBPP+ p
 INTERIM TRAINING-SET CHECK AT STEP 20
 
 The full 5,910-task training-set evaluation reports pass@1 0.08646 and average reward 0.27530 at step 20, compared with 0.08443 and 0.27157 at step 0. The fraction of generated completions passing at least one assertion is 0.2780 at step 20 versus 0.2743 at step 0. The task set is fixed, but these are still very early model updates. The metrics are in `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/training-step-20-metrics.json`. The matching official EvalPlus step-20 MBPP/MBPP+ pass@1 values are 0.516/0.431.
+
+W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 20
+
+Compared all three W&B coverage series with the per-task sidecar. For each of optimizer steps 1 through 20, all eight task rows are present in `task-coverage-trace.jsonl`; their mean candidate fractions at thresholds of at least 1, at least 2, and all 3 tests match the corresponding W&B scalar values. This gives 160 task-level rows and 20 verified W&B points per series. Across all task groups, the mean fraction of 16 candidates passing at least 1/2/3 tests was 0.39375/0.10117/0.04414. At least one candidate met each threshold on 137/160, 62/160, and 34/160 task groups, respectively. These are early rollout diagnostics, not EvalPlus results.
