@@ -2929,3 +2929,9 @@ Commit name: Record step 30 training-set evaluation
 Recorded full training-set metrics at step 30 and compared them with steps 0 and 20. Pass@1 was 0.08799, average reward was 0.27721, and test-pass fraction was 0.27987. Marked the result as interim.
 
 Why: Preserve the configured training-set evaluation results for the harder-data experiment.
+
+Commit name: Extend rollout coverage cross-check through step 32
+
+Cross-checked all 32 W&B rollout coverage points against the local task-level trace. Every step has eight records, and each of the three threshold averages matches exactly. Updated the experiment results record.
+
+Why: Verify that task-level rollout coverage remains complete and the W&B graphs stay accurate during training.
