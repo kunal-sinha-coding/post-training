@@ -16399,3 +16399,7 @@ The step-252 W&B coverage point matches local means across eight task groups: 0.
 W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 255
 
 The step-253, step-254, and step-255 W&B coverage points match local means across eight task groups per step. The fractions for at least one, two, and three passed tests were 0.375/0.03125/0.0078125, 0.53125/0.0859375/0, and 0.703125/0.15625/0.0703125. W&B history currently ends at its 50,702 axis point, which is the step-255 coverage row; local coverage has advanced through step 256 and its W&B point is not yet available.
+
+W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 257
+
+A later W&B history read returned the coverage points for optimizer steps 256 and 257 at W&B axes 50,713 and 50,911. Both points match local means across eight task groups: step 256 is 0.5390625/0.0390625/0.0078125, and step 257 is 0.234375/0.0859375/0.03125 for generations passing at least one, two, and three tests. Correction to the prior interim note: the W&B response's `total_steps` field was 50,702, but this is not the last coverage point's x-axis; step 255's coverage point was at 50,515. Training is active and step 258 has started.
