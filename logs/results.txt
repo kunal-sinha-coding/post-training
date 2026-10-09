@@ -16571,3 +16571,7 @@ The step-300 EvalPlus output reports MBPP pass@1 0.556 and MBPP+ pass@1 0.481. T
 STEP-300 TRAINING METRICS AND W&B COVERAGE
 
 Checkpoint 300 is complete. The 5,910-example training-set evaluation reports pass@1 0.1109983, average reward 0.3244783, test-pass fraction 0.3269679, partial-pass fraction 0.5377327, and partial-or-full-pass fraction 0.6487310. The status counts are 656 passed, 45 syntax errors, 2,031 failed, and 3,178 partial. The W&B coverage point at history axis 59,430 matches the local means across eight task groups: at least one test 0.7421875, at least two 0.328125, and all three 0.203125. EvalPlus reports MBPP 0.556 and MBPP+ 0.481. Training has advanced beyond step 300. The 18:28:05 UTC supervisor check found the trainer alive and checkpoint 290 complete before checkpoint 300 finished saving.
+
+W&B COVERAGE CROSS-CHECK THROUGH STEP 301
+
+Step 301 matches local coverage at W&B history axis 59,628: 0.6796875 of generations passed at least one test, 0.21875 passed at least two, and 0.0546875 passed all three. Each value is the mean over eight task groups with 16 generations per task. Training is active at step 301. Checkpoint 300 is the latest complete checkpoint. The supervisor's 18:28:05 UTC check found the trainer alive and checkpoint 290 complete before checkpoint 300 finished saving.
