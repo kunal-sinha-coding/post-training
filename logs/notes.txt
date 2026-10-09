@@ -2771,3 +2771,9 @@ Commit name: Validate harder synthetic task generation with two examples.
 Generated the first two saved harder-task prompts through GPT-6 Luna. Both responses passed the required schema checks and reference sandbox execution. The tasks combine multiple billing or rounding rules. The API used 946 input tokens and 1,090 output tokens, at an estimated cost of $0.000640. Saved the raw task specs and materialized three-test tasks as a prompt-path sanity sample.
 
 Why: Confirm the harder prompt wording still produces valid single-function tasks and runnable test inputs before spending API calls on all 100 prompts.
+
+Commit name: Generate 100 harder Luna synthetic tasks.
+
+Saved 100 category-proportional harder-task specifications and their materialized assertions. All 100 generated reference functions passed sandbox execution on three literal inputs each. The API state contains 129 responses, including the two-task sanity sample, retries, and duplicate-description replacement calls. Total recorded usage was 87,074 input tokens and 79,809 output tokens, with estimated cost $0.048278. One malformed JSON response exhausted its first retry sequence; resuming reused the 99 accepted rows and generated a valid replacement.
+
+Why: The user requested 100 harder-than-example synthetic tasks and a base-model EvalPlus-style pass-rate measurement.

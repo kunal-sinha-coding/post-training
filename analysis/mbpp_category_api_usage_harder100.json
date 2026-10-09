@@ -1,0 +1,15 @@
+{
+  "model": "gpt-6-luna",
+  "reasoning_effort": "none",
+  "prompt_count": 100,
+  "validated_task_count": 100,
+  "api_response_count": 129,
+  "input_tokens": 87074,
+  "cached_input_tokens": 3709,
+  "output_tokens": 79809,
+  "estimated_cost_usd": 0.04827809,
+  "input_rate_per_million_usd": 0.1,
+  "cached_input_rate_per_million_usd": 0.01,
+  "output_rate_per_million_usd": 0.5,
+  "semaphore_limit": 20
+}
