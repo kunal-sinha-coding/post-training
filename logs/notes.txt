@@ -3367,3 +3367,9 @@ Commit name: Verify W&B coverage through step 269
 Confirmed that step-269 W&B coverage matches local task-group means for all three thresholds. Training advanced to step 270 with checkpoint 260 complete.
 
 Why: Continue the monitored training run with validated rollout records.
+
+Commit name: Record step-270 EvalPlus results
+
+Recorded step-270 EvalPlus pass rates, which match step 250 and are below step 260. The separate training-set scoring and checkpoint save were still in progress.
+
+Why: Preserve each scheduled EvalPlus checkpoint measurement in the experiment record.
