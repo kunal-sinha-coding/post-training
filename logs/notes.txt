@@ -2833,3 +2833,9 @@ Commit name: Audit sources of difficulty in harder synthetic tasks.
 Compared task descriptions and reference solutions for the first 100 original MBPP training tasks and the first 100 harder synthetic tasks. Synthetic references were longer and had more AST structure, loops, branches, and nesting. Comparing each generated reference to its three prompt examples also showed larger AST size in 93/100 cases than the example median and in 81/100 cases than all examples. Identified multi-step arithmetic, strict parsing, subset dynamic programming, geometry and graph algorithms as concrete added demands, with repetition, verbosity, missing feasibility bounds, and at least one conflicting specification as quality risks.
 
 Why: The user asked what specifically makes the synthetic tasks harder and whether the added difficulty is substantive or superficial.
+
+Commit name: Create proportional harder-task prompt set
+
+Created 5,319 distinct prompt records for a separate harder synthetic MBPP dataset. The prompt count is nine times the 591-task original pool, with exact ninefold category allocation. Every prompt asks for a task clearly harder than the three sampled same-category examples. Existing easier synthetic artifacts were left unchanged.
+
+Why: The user authorized a 10x combined-data training experiment that changes task difficulty while preserving the original category proportions.
