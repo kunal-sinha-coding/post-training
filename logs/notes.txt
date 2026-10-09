@@ -3079,3 +3079,9 @@ Commit name: Record step 190 W&B coverage publication
 Recorded the delayed W&B coverage point for step 190. Its three threshold values match the local 16-generation trace, completing the cross-check through 190 optimizer steps and 1,520 task rows.
 
 Why: Verify the requested rollout signal metrics against the per-task trace.
+
+Commit name: Record step 200 evaluation and rollout logging status
+
+Recorded the step-200 EvalPlus result and verified that the local trace contains 1,600 task-group rows through step 200. The three requested rollout coverage curves are configured in W&B. At the time of this check, W&B coverage was available through step 199 and step 200 awaited publication. The trainer and ten-minute recovery supervisor were alive.
+
+Why: Keep the ongoing experiment reproducible and record the status of the rollout-signal metrics requested before training.

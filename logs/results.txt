@@ -16237,3 +16237,11 @@ The local task trace has 1,520 rows through step 190. W&B and local coverage met
 W&B COVERAGE CURVE PUBLICATION THROUGH STEP 190
 
 The delayed W&B coverage point for step 190 is now published. It matches the local task trace at 0.5546875, 0.1328125, and 0.0703125 for the three thresholds. All W&B coverage values match the local trace through step 190, across 1,520 task rows.
+
+INTERIM EVALPLUS CHECK AT STEP 200
+
+The step-200 EvalPlus evaluation reports MBPP pass@1 0.553 and MBPP+ pass@1 0.468. Step 190 was 0.548/0.479. The run remains in progress. Evaluation output is in `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/evalplus/step-200/mbpp_results.txt`.
+
+ROLLOUT SIGNAL INSTRUMENTATION STATUS AT STEP 200
+
+The local trace contains all 1,600 task-group rows through optimizer step 200. Each step samples 16 generations for each of eight task groups and records the fraction passing at least one, two, or three tests. W&B stores corresponding curves under `reward/task_mean_generations_at_least_1_test_fraction`, `reward/task_mean_generations_at_least_2_test_fraction`, and `reward/task_mean_generations_at_least_3_test_fraction`. At this check, W&B history returned coverage values through step 199. The step-200 local values are waiting for publication: 0.703125, 0.1796875, and 0.078125. The automatic supervisor and trainer were alive at 2026-10-09 15:07 UTC. These are interim measurements and training continues toward 50,000 steps.
