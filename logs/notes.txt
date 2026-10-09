@@ -2815,3 +2815,9 @@ Commit name: Measure hybrid reward variation in sampled task groups.
 Updated the harder-task evaluator to score candidates concurrently with the configured GRPO hybrid reward, coefficient 0.75, and eight sandbox workers. It now records per-completion reward and per-task group standard deviation and flatness. This makes the evaluation useful for measuring reward variation, rather than only counting passed assertions.
 
 Why: The user asked whether partial pass outcomes provide enough within-group signal for GRPO and requested a 100-task comparison.
+
+Commit name: Summarize saved original 100-task reward groups.
+
+Extracted the earliest saved sixteen-generation group for each of the first 100 original MBPP training tasks from the `c4fthzd3` reward trace. No inference was run for these original candidates. Eighty-one groups had reward variation, 84 tasks had at least one completion pass a test, 80 had a completion pass at least two, and 68 had a full pass. Saved the compact per-task summary and documented that the groups span an evolving early-training model.
+
+Why: The user requested a 100-original-task versus 100-harder-synthetic task group distribution and asked whether partial pass outcomes create useful GRPO signal.
