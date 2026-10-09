@@ -16455,3 +16455,7 @@ The step-270 EvalPlus output reports MBPP pass@1 0.556 and MBPP+ pass@1 0.476. T
 STEP-270 TRAINING METRICS AND W&B COVERAGE
 
 Checkpoint 270 is complete. Its 5,910-example training-set evaluation reports pass@1 0.1084602, average reward 0.3172589, test-pass fraction 0.3196931, partial-pass fraction 0.5302876, and partial-or-full-pass fraction 0.6387479. The status counts are 641 passed, 45 syntax errors, 2,090 failed, and 3,134 partial. The W&B coverage point at history axis 53,487 matches the local means across eight task groups: at least one test 0.4296875, at least two 0.2421875, and all three 0.1875. The separate EvalPlus output for this checkpoint reports MBPP 0.556 and MBPP+ 0.476. Training has started step 271. The supervisor's 17:28:02 UTC check found the trainer alive and checkpoint 260 complete, before checkpoint 270 finished saving.
+
+W&B COVERAGE CROSS-CHECK THROUGH STEP 271
+
+The step-271 W&B point at history axis 53,685 matches the local mean across eight task groups: 0.4140625 of generations passed at least one test, 0.125 passed at least two, and 0.0234375 passed all three. Training has started step 272. Checkpoint 270 is complete. The supervisor remains active; its latest check at 17:28:02 UTC found the trainer alive and checkpoint 260 complete.

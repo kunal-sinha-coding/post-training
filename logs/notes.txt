@@ -3379,3 +3379,9 @@ Commit name: Record step-270 training and coverage results
 Saved the step-270 training-set metrics, exact local-to-W&B coverage match, and checkpoint reference. The separate EvalPlus scores were 0.556 MBPP and 0.476 MBPP+. Training advanced to step 271, and checkpoint 270 is complete.
 
 Why: Keep the long-run training and evaluation results auditable at each checkpoint.
+
+Commit name: Verify W&B coverage through step 271
+
+Verified step-271 W&B coverage against local means for all three thresholds. Training advanced to step 272 with checkpoint 270 complete.
+
+Why: Keep active-run metrics and recovery progress auditable.
