@@ -2947,3 +2947,9 @@ Commit name: Record step 40 training-set evaluation
 Recorded the full step-40 training-set results and comparisons with steps 0 and 30. Pass@1 was 0.09019, average reward was 0.28336, and test-pass fraction was 0.28646. Marked the metrics as interim.
 
 Why: Preserve the configured training-set evaluations for the running harder-data experiment.
+
+Commit name: Extend rollout coverage cross-check through step 40
+
+Cross-checked all 40 W&B rollout coverage points against the local task-level trace. Every step has eight task rows, and the averages for all three thresholds match exactly. Updated the experiment results record.
+
+Why: Verify completeness and accuracy of per-task W&B coverage graphs throughout the run.
