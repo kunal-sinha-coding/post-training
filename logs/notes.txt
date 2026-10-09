@@ -3265,3 +3265,9 @@ Commit name: Verify W&B coverage through step 248
 Compared W&B coverage with local per-task means for steps 246 through 248. All three thresholds match at each step.
 
 Why: Continue auditing rollout metrics on the active training run.
+
+Commit name: Verify W&B coverage through step 249
+
+Verified the step-249 W&B rollout metrics against local means across eight task groups. All three metrics match.
+
+Why: Continue validating rollout signal logging during training.
