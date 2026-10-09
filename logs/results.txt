@@ -16567,3 +16567,7 @@ Step 298 matches local coverage at W&B history axis 59,033: 0.9375 of generation
 CHECKPOINT EVALPLUS RESULTS AT STEP 300
 
 The step-300 EvalPlus output reports MBPP pass@1 0.556 and MBPP+ pass@1 0.481. This improves on step 290's 0.550 and 0.474. Step-300 local rollout coverage is 0.7421875/0.328125/0.203125 for generations passing at least one, two, and three tests; its W&B point is pending. The 5,910-example training-set evaluation is generating candidates. Checkpoint 290 remains the latest complete checkpoint while step-300 evaluation and saving continue.
+
+STEP-300 TRAINING METRICS AND W&B COVERAGE
+
+Checkpoint 300 is complete. The 5,910-example training-set evaluation reports pass@1 0.1109983, average reward 0.3244783, test-pass fraction 0.3269679, partial-pass fraction 0.5377327, and partial-or-full-pass fraction 0.6487310. The status counts are 656 passed, 45 syntax errors, 2,031 failed, and 3,178 partial. The W&B coverage point at history axis 59,430 matches the local means across eight task groups: at least one test 0.7421875, at least two 0.328125, and all three 0.203125. EvalPlus reports MBPP 0.556 and MBPP+ 0.481. Training has advanced beyond step 300. The 18:28:05 UTC supervisor check found the trainer alive and checkpoint 290 complete before checkpoint 300 finished saving.
