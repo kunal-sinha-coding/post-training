@@ -3289,3 +3289,9 @@ Commit name: Verify W&B coverage through step 252
 Verified W&B coverage at step 252 against local means across eight task groups. All three metrics match. Step 253 is available locally and awaits W&B publication.
 
 Why: Continue checking rollout metrics during training.
+
+Commit name: Verify W&B coverage through step 255
+
+Verified W&B coverage points for optimizer steps 253 through 255 against local means across eight task groups per step. All three metrics match. Step 256 is available locally and its W&B point is pending.
+
+Why: Continue checking rollout metrics during training.
