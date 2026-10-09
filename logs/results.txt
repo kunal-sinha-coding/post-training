@@ -16005,3 +16005,7 @@ The configured EvalPlus evaluation at step 10 completed its MBPP scoring. MBPP p
 INTERIM EVALPLUS CHECK AT STEP 20
 
 The configured step-20 EvalPlus evaluation reports MBPP pass@1 0.516 and MBPP+ pass@1 0.431. The corresponding values were 0.524/0.437 at step 0 and 0.521/0.437 at step 10. This is an early measurement and does not establish a training trend. The result is in `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/evalplus/step-20/mbpp_results.txt`.
+
+INTERIM TRAINING-SET CHECK AT STEP 20
+
+The full 5,910-task training-set evaluation reports pass@1 0.08646 and average reward 0.27530 at step 20, compared with 0.08443 and 0.27157 at step 0. The fraction of generated completions passing at least one assertion is 0.2780 at step 20 versus 0.2743 at step 0. The task set is fixed, but these are still very early model updates. The metrics are in `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/training-step-20-metrics.json`. The matching official EvalPlus step-20 MBPP/MBPP+ pass@1 values are 0.516/0.431.
