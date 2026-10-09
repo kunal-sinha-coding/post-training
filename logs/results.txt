@@ -16415,3 +16415,7 @@ The step-259 W&B point at history axis 51,307 matches the local mean across eigh
 CHECKPOINT EVALPLUS RESULTS AT STEP 260
 
 The saved EvalPlus output at `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/evalplus/step-260/mbpp_results.txt` reports MBPP pass@1 0.571 and MBPP+ pass@1 0.484. Step 250 reported 0.556 and 0.476. These are intermediate checkpoint measurements on the same saved EvalPlus ground-truth cache. The 5,910-task training-set generation and scoring for step 260 is still processing; checkpoint 260 is not yet saved. The trainer and ten-minute supervisor remain active.
+
+STEP-260 TRAINING SET AND W&B COVERAGE RESULTS
+
+The step-260 training-set evaluation processed 5,910 examples and reports pass@1 0.1093063, average reward 0.3155668, and test-pass fraction 0.3178797. It counted 646 passed, 43 syntax-error, 2,116 failed, and 3,105 partial examples. The fraction with a partial or full pass was 0.6346870. The three W&B coverage values at history axis 51,506 match the eight local task groups: at least one test 0.78125, at least two 0.2265625, and all three 0.015625. The separate step-260 EvalPlus benchmark reported MBPP 0.571 and MBPP+ 0.484. Training has started step 261. At the 17:07:59 UTC supervisor check, checkpoint 250 was still the latest complete checkpoint; step-260 metrics and EvalPlus results are saved, but checkpoint 260 was not yet visible.

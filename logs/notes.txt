@@ -3319,3 +3319,9 @@ Commit name: Record step-260 EvalPlus checkpoint results
 Recorded step-260 EvalPlus pass@1 values of 0.571 on MBPP and 0.484 on MBPP+, compared with 0.556 and 0.476 at step 250. The separate training-set evaluation remained in progress.
 
 Why: Preserve checkpoint benchmark results as the long training experiment advances.
+
+Commit name: Record step-260 coverage and training-set results
+
+Recorded the completed 5,910-example training-set scores, step-260 W&B coverage cross-check, and EvalPlus pass rates. Training advanced to step 261 while the newest visible complete checkpoint was still step 250.
+
+Why: Preserve reproducible benchmark and reward measurements during training.
