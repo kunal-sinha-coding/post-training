@@ -3139,3 +3139,9 @@ Commit name: Verify W&B coverage through step 216
 Compared W&B and local coverage aggregates for steps 214 through 216. Each of the three threshold metrics matches for all three steps. The local trace includes 1,728 task-group rows through step 216.
 
 Why: Continue validation of rollout signal logging during training.
+
+Commit name: Verify W&B coverage through step 218
+
+Verified W&B rollout coverage at steps 217 and 218 against local task-level averages. The three threshold metrics match. Step 219 is logged locally and is pending W&B publication. Checkpoint 210 remains the latest complete checkpoint while step 220 approaches.
+
+Why: Keep the W&B signal audit current during training.

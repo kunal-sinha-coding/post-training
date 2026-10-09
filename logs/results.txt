@@ -16279,3 +16279,7 @@ The latest W&B coverage point is optimizer step 213. Its three values match the 
 W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 216
 
 W&B points for steps 214 through 216 match local means across the eight task groups. For at least one, two, and three tests passed, the values are step 214: 0.5078125/0.0703125/0.0703125; step 215: 0.6328125/0.2265625/0.109375; and step 216: 0.5859375/0.1328125/0.046875. The local trace and W&B history match through step 216, or 1,728 task-group rows.
+
+W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 218
+
+The step-217 and step-218 W&B coverage values match the local averages over eight task groups. At least one, two, and three tests passed are 0.59375/0.28125/0.0703125 at step 217 and 0.515625/0.2109375/0.203125 at step 218. The step-219 local point is waiting for publication. Training is at step 219, and checkpoint 210 is the latest complete checkpoint.
