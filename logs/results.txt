@@ -16407,3 +16407,7 @@ A later W&B history read returned the coverage points for optimizer steps 256 an
 W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 258
 
 The step-258 W&B point at history axis 51,109 matches the local mean across eight task groups: 0.5859375 of generations passed at least one test, 0.0625 passed at least two, and 0.0390625 passed all three. The W&B point appeared after the training step completed. At 2026-10-09 16:57:57 UTC, the ten-minute supervisor check found the trainer alive and checkpoint 250 complete. At 17:00 UTC the trainer had advanced to step 259. The output still contains 5,319 harder synthetic tasks and the run is active toward 50,000 steps.
+
+W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 259
+
+The step-259 W&B point at history axis 51,307 matches the local mean across eight task groups: 0.59375 of generations passed at least one test, 0.0234375 passed at least two, and 0.015625 passed all three. The trainer is active and has started step 260. The latest complete checkpoint remains 250, and the supervisor's latest 10-minute check at 16:57:57 UTC found the trainer alive.

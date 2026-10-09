@@ -3307,3 +3307,9 @@ Commit name: Verify W&B coverage through step 258
 Matched the step-258 W&B coverage point against local means across eight task groups and confirmed all three thresholds. Recorded the 16:57:57 UTC supervisor health check and active progress at step 259.
 
 Why: Preserve experiment progress and verify that the requested W&B rollout curves reflect the per-task 16-generation measurements.
+
+Commit name: Verify W&B coverage through step 259
+
+Confirmed that step-259 W&B coverage at all three thresholds matches the local means across eight task groups. Training then advanced to step 260, while checkpoint 250 remained the newest complete checkpoint.
+
+Why: Continue recording and validating rollout reward coverage during the 50,000-step run.
