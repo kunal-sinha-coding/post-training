@@ -3487,3 +3487,9 @@ Commit name: Verify W&B coverage through step 289
 Matched the step-289 W&B coverage values against local rollout records for all three thresholds. Confirmed the trainer and supervisor remain active and checkpoint 280 is complete.
 
 Why: Keep the training reward signal and checkpoint recovery state current and auditable.
+
+Commit name: Record step-290 EvalPlus results
+
+Recorded the step-290 EvalPlus scores, MBPP 0.550 and MBPP+ 0.474, with local rollout coverage and the pending W&B and checkpoint state.
+
+Why: Preserve the scheduled benchmark result while training-set scoring continues.
