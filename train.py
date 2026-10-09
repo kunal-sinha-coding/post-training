@@ -299,7 +299,7 @@ def _make_reward(config: dict[str, Any]):
         append_training_step_samples(config.get("log_path", "logs/logs.txt"), completions)
         task_ids = kwargs.get("task_id")
         task_id_values = task_ids if isinstance(task_ids, list) else None
-        rewards = reward_function(completions, test_code, timeout, diagnostics=diagnostics, group_size=int(config.get("num_generations", 4)), reward_function_name=reward_function_name, reward_coefficient=reward_coefficient, trace_path=config.get("reward_trace_path"), task_ids=task_id_values, synthetic_reward_probe=bool(config.get("synthetic_reward_probe", False)), reward_scoring_workers=reward_scoring_workers, **kwargs)
+        rewards = reward_function(completions, test_code, timeout, diagnostics=diagnostics, group_size=int(config.get("num_generations", 4)), reward_function_name=reward_function_name, reward_coefficient=reward_coefficient, trace_path=config.get("reward_trace_path"), task_ids=task_id_values, training_step=config.get("_current_training_step"), synthetic_reward_probe=bool(config.get("synthetic_reward_probe", False)), reward_scoring_workers=reward_scoring_workers, **kwargs)
         # Record the generated completion token lengths so truncation and length drift are visible in W&B.
         completion_ids = kwargs.get("completion_ids")
         if isinstance(completion_ids, list) and completion_ids:
@@ -545,6 +545,8 @@ def _make_callback(model: Any, tokenizer: Any, train_dataset: Any, test_dataset:
 
         def on_step_begin(self, args: Any, state: Any, control: Any, **_: Any) -> Any:
             """Write the step header before generation begins."""
+            # Attach task-level rollout coverage records to the optimizer step that produced them.
+            config["_current_training_step"] = state.global_step + 1
             append_training_step_header(config.get("log_path", "logs/logs.txt"), state.global_step + 1, state.max_steps)
             return control
 

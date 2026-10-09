@@ -2,7 +2,7 @@
 
 import pytest
 
-from sandbox import execute_code, expected_interface, extract_code, hardcoding_rate, is_hardcoded_lookup, reward_for_completion, reward_function, score_completion, split_test_cases, summarize_reward_groups, validate_interface
+from sandbox import execute_code, expected_interface, extract_code, hardcoding_rate, is_hardcoded_lookup, reward_for_completion, reward_function, score_completion, split_test_cases, summarize_reward_groups, summarize_task_coverage, validate_interface
 
 
 def test_extract_code_supports_fences():
@@ -176,6 +176,41 @@ def test_reward_group_summary_reports_variation():
     assert diagnostics["reward/flat_group_fraction"] == 0.5
     assert diagnostics["reward/mixed_group_fraction"] == 0.5
     assert diagnostics["reward/test_progress/mean"] > 0.0
+
+
+def test_task_coverage_summarizes_generation_thresholds_per_task():
+    """Report generation coverage at each assertion threshold for every task group."""
+    details = [
+        {"passed_tests": 1}, {"passed_tests": 2}, {"passed_tests": 0}, {"passed_tests": 3},
+    ]
+    metrics, rows = summarize_task_coverage(details, ["a", "a", "b", "b"], group_size=2)
+    assert metrics["reward/task_mean_generations_at_least_1_test_fraction"] == pytest.approx(0.75)
+    assert metrics["reward/task_mean_generations_at_least_2_test_fraction"] == pytest.approx(0.5)
+    assert metrics["reward/task_mean_generations_at_least_3_test_fraction"] == pytest.approx(0.25)
+    assert rows[0]["task_id"] == "a"
+    assert rows[0]["at_least_2_test_count"] == 1
+    assert rows[1]["at_least_3_test_fraction"] == pytest.approx(0.5)
+
+
+def test_reward_function_logs_task_coverage_with_training_step(monkeypatch, tmp_path):
+    """Save the per-task generation thresholds and expose W&B scalar coverage metrics."""
+    import json
+
+    outcomes = [0, 1, 2, 3]
+    def fake_score(completion, tests, timeout_seconds, reward_function, reward_coefficient):
+        """Return fixed passed-test counts for a compact coverage trace check."""
+        passed = outcomes[int(completion.splitlines()[-1])]
+        return float(passed), {"status": "passed" if passed == 3 else "partial", "passed_tests": passed, "total_tests": 3, "interface_valid": True, "reward_components": {"format": 0.0, "syntax": 0.0, "interface": 0.0, "tests": 0.0, "pass": 0.0}}
+
+    monkeypatch.setattr("sandbox.score_completion", fake_score)
+    reward_trace = tmp_path / "reward-trace.jsonl"
+    diagnostics = {}
+    reward_function(["0", "1", "2", "3"], ["tests"] * 4, diagnostics=diagnostics, group_size=2, trace_path=str(reward_trace), task_ids=["a", "a", "b", "b"], training_step=7)
+    coverage_rows = [json.loads(line) for line in (tmp_path / "task-coverage-trace.jsonl").read_text().splitlines()]
+    assert diagnostics["reward/task_mean_generations_at_least_1_test_fraction"] == pytest.approx(0.75)
+    assert diagnostics["reward/task_mean_generations_at_least_2_test_fraction"] == pytest.approx(0.5)
+    assert diagnostics["reward/task_mean_generations_at_least_3_test_fraction"] == pytest.approx(0.25)
+    assert [(row["task_id"], row["training_step"]) for row in coverage_rows] == [("a", 7), ("b", 7)]
 
 
 def test_execute_code_reports_assertion_failure():

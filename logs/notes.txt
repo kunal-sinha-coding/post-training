@@ -2851,3 +2851,9 @@ Commit name: Add ten-minute harder-run recovery supervisor
 Added a dedicated supervisor for the harder-data run. It checks training every ten minutes, records the latest complete checkpoint, classifies failed attempts from their logs, and retries from the latest complete checkpoint without removing any checkpoint files. The supervisor declares success only after step 50,000 and the final EvalPlus metrics file exist.
 
 Why: The user authorized autonomous failure diagnosis and checkpoint-based recovery for the complete matched training run.
+
+Commit name: Log per-task rollout test coverage
+
+Added three per-step W&B curves for the mean fraction of task generations passing at least one, two, or three assertions. The reward path also writes each task group's generation counts and fractions to `task-coverage-trace.jsonl`, with its task ID and optimizer step. Existing batch metrics and the candidate reward trace remain available. Added tests for threshold calculations and step-linked task rows; 28 targeted training and sandbox tests passed.
+
+Why: The user asked to see whether reward signal reaches one, two, or all three tests for each task sampled during GRPO, and to graph these measures in W&B before starting the harder-data run.

@@ -18,6 +18,7 @@ import re
 import subprocess
 import sys
 import tempfile
+import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
@@ -266,6 +267,30 @@ def summarize_reward_groups(rewards: list[float], details: list[dict[str, object
     return diagnostics
 
 
+def summarize_task_coverage(details: list[dict[str, object]], task_ids: list[object] | None, group_size: int) -> tuple[dict[str, float], list[dict[str, object]]]:
+    """Summarize per-task generation coverage at one, two, and three passed tests."""
+    # Split the ordered reward batch into the GRPO candidate groups for individual tasks.
+    task_rows = []
+    for group_index, start in enumerate(range(0, len(details), max(1, group_size))):
+        group = details[start : start + max(1, group_size)]
+        task_id = str(task_ids[start]) if task_ids is not None and start < len(task_ids) else None
+        counts = {threshold: sum(int(row.get("passed_tests", 0)) >= threshold for row in group) for threshold in (1, 2, 3)}
+        # Save each task's sample counts and fractions so the training curve can be audited by task.
+        task_rows.append({
+            "task_id": task_id,
+            "group_index": group_index,
+            "generation_count": len(group),
+            **{f"at_least_{threshold}_test_count": count for threshold, count in counts.items()},
+            **{f"at_least_{threshold}_test_fraction": count / len(group) for threshold, count in counts.items()},
+        })
+    # Log the mean per-task generation fractions as scalar W&B curves at each training step.
+    metrics = {}
+    for threshold in (1, 2, 3):
+        key = f"reward/task_mean_generations_at_least_{threshold}_test_fraction"
+        metrics[key] = sum(float(row[f"at_least_{threshold}_test_fraction"]) for row in task_rows) / len(task_rows) if task_rows else 0.0
+    return metrics, task_rows
+
+
 _NOT_LITERAL = object()
 
 
@@ -350,7 +375,7 @@ def hardcoding_rate(completions: list[str], tests: list[str]) -> float:
     return flagged / len(completions)
 
 
-def reward_function(completions: list[object], test_code: list[str], sandbox_timeout_seconds: float = 3.0, diagnostics: dict[str, Any] | None = None, group_size: int = 4, reward_function_name: str = DEFAULT_REWARD_FUNCTION, reward_coefficient: float = DEFAULT_REWARD_COEFFICIENT, trace_path: str | None = None, task_ids: list[object] | None = None, synthetic_reward_probe: bool = False, reward_scoring_workers: int = 8, **_: object) -> list[float]:
+def reward_function(completions: list[object], test_code: list[str], sandbox_timeout_seconds: float = 3.0, diagnostics: dict[str, Any] | None = None, group_size: int = 4, reward_function_name: str = DEFAULT_REWARD_FUNCTION, reward_coefficient: float = DEFAULT_REWARD_COEFFICIENT, trace_path: str | None = None, task_ids: list[object] | None = None, training_step: int | None = None, synthetic_reward_probe: bool = False, reward_scoring_workers: int = 8, **_: object) -> list[float]:
     """Score a GRPO batch with the configured test-pass or hybrid reward."""
     # Normalize every candidate while retaining its original record position.
     rewards: list[float] = []
@@ -392,6 +417,10 @@ def reward_function(completions: list[object], test_code: list[str], sandbox_tim
             trace_records[index]["execution_reward"] = trace_records[index]["reward"]
             trace_records[index]["reward"] = rewards[index]
             trace_records[index]["synthetic_reward_probe"] = True
+    # Compute task-level generation coverage for the W&B curves and audit trace.
+    coverage_metrics, task_rows = summarize_task_coverage(details, task_ids, group_size)
+    if diagnostics is not None:
+        diagnostics.update(coverage_metrics)
     if trace_path:
         # Append one auditable JSON record for every scored sampled completion.
         trace_file = Path(trace_path)
@@ -399,6 +428,12 @@ def reward_function(completions: list[object], test_code: list[str], sandbox_tim
         with trace_file.open("a", encoding="utf-8") as handle:
             for record in trace_records:
                 handle.write(json.dumps(record, sort_keys=True) + "\n")
+        # Save per-task generation coverage beside the candidate trace for later inspection.
+        coverage_file = trace_file.with_name("task-coverage-trace.jsonl")
+        timestamp = time.time_ns()
+        with coverage_file.open("a", encoding="utf-8") as handle:
+            for task_row in task_rows:
+                handle.write(json.dumps({"rollout_timestamp_ns": timestamp, "training_step": training_step, **task_row}, sort_keys=True) + "\n")
     if diagnostics is not None:
         diagnostics.update(summarize_reward_groups(rewards, details, group_size))
         diagnostics["reward/function"] = reward_function_name
