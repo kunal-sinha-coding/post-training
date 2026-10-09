@@ -3463,3 +3463,9 @@ Commit name: Verify W&B coverage through step 285
 Matched the step-285 W&B coverage point against local rollout records for all three thresholds. Confirmed the trainer remains active and checkpoint 280 is complete.
 
 Why: Keep per-task rollout signal and recovery state auditable during training.
+
+Commit name: Record 17:58 training heartbeat
+
+Recorded the supervisor check at 17:58:03 UTC, which found the trainer alive and checkpoint 280 complete. The latest local rollout record is step 285.
+
+Why: Preserve the current liveness and recovery state for the long-running experiment.
