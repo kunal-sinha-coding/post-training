@@ -3703,3 +3703,9 @@ Commit name: Verify W&B coverage through step 326
 Matched steps 325 and 326 W&B coverage against local task rollout records for all three thresholds. Confirmed training is active at step 326 and checkpoint 320 is complete.
 
 Why: Preserve current task-level reward signal and checkpoint recovery status.
+
+Commit name: Record step-327 coverage and supervisor check
+
+Matched step-327 W&B coverage against local records and recorded the 19:28:09 UTC supervisor heartbeat, which found the trainer alive and checkpoint 320 complete.
+
+Why: Preserve current task-level metrics and recovery state.
