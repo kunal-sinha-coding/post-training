@@ -16073,3 +16073,11 @@ Compared all 60 optimizer-step points in W&B with the per-task sidecar. Each ste
 INTERIM EVALPLUS CHECK AT STEP 70
 
 The configured step-70 EvalPlus evaluation reports MBPP pass@1 0.526 and MBPP+ pass@1 0.447. At step 60 the values were 0.524/0.444, and at step 0 they were 0.524/0.437. These remain interim checkpoint measurements. Results are in `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/evalplus/step-70/mbpp_results.txt`.
+
+INTERIM TRAINING-SET CHECK AT STEP 70
+
+The full 5,910-task training-set evaluation reports pass@1 0.09086, average reward 0.28770, and test-pass fraction 0.29075 at step 70. At step 60 the corresponding values were 0.08866, 0.28438, and 0.28739. At step 0 they were 0.08443, 0.27157, and 0.27431. These training-set metrics increased from step 60 and remain above step 0. Step-70 EvalPlus reports MBPP/MBPP+ pass@1 0.526/0.447. The training evaluation file is `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/training-step-70-metrics.json`.
+
+W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 70
+
+Compared all 70 optimizer-step points in W&B with the per-task sidecar. Each step has eight task rows, and all three threshold averages match exactly. The sidecar contains 560 rows across steps 1 through 70. No discrepancies were found.
