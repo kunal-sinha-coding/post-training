@@ -16387,3 +16387,7 @@ EvalPlus pass@1 at step 250 is 0.556 on MBPP and 0.476 on MBPP+. Step 240 was 0.
 W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 250
 
 The step-250 W&B coverage values match local means across eight task groups: 0.6328125 passed at least one test, 0.4765625 passed at least two, and 0.3671875 passed all three. Checkpoint 250 is saved and training continues.
+
+W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 251
+
+The step-251 W&B coverage point matches local means across eight task groups: 0.71875 passed at least one test, 0.3203125 passed at least two, and 0.2421875 passed all three. Local coverage has advanced through step 252. Checkpoint 250 remains the latest complete checkpoint.
