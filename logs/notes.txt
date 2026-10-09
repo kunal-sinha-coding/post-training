@@ -3325,3 +3325,9 @@ Commit name: Record step-260 coverage and training-set results
 Recorded the completed 5,910-example training-set scores, step-260 W&B coverage cross-check, and EvalPlus pass rates. Training advanced to step 261 while the newest visible complete checkpoint was still step 250.
 
 Why: Preserve reproducible benchmark and reward measurements during training.
+
+Commit name: Verify W&B coverage through step 261
+
+Matched all three step-261 W&B coverage values to the local task-group means. Confirmed that checkpoint 260 has since completed and training advanced to step 262.
+
+Why: Maintain verified progress and checkpoint state for the active long-run experiment.
