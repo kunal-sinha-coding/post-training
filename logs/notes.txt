@@ -3391,3 +3391,9 @@ Commit name: Verify W&B coverage through step 272
 Confirmed the step-272 W&B coverage point against local per-task means for all three thresholds. Training advanced to step 273 with checkpoint 270 complete.
 
 Why: Keep the rollout signal graph and local task records aligned during the long run.
+
+Commit name: Verify W&B coverage through step 273
+
+Matched step-273 W&B coverage to local task-group means for all three thresholds. Training advanced to step 274 with checkpoint 270 complete.
+
+Why: Continue monitoring rollout reward signals with reproducible local records.
