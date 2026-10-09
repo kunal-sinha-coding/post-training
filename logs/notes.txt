@@ -2789,3 +2789,9 @@ Commit name: Record harder synthetic task evaluation and matched control.
 Saved greedy base-Qwen evaluations on the 100 harder synthetic tasks and on the earlier 100-task API control using the same evaluator. The harder set passed 6/100 tasks and 67/300 assertions. The control passed 45/100 tasks and 196/300 assertions. Corrected the harder evaluation denominator to count all 300 supplied tests, including tests skipped after syntax errors. Recorded task-length and AST-size comparisons, generation usage, evaluation settings, and limitations in the results log.
 
 Why: The user asked to measure the pass rate of a category-proportional 100-task synthetic set that is harder than its source examples. A matched easy-set evaluation helps show how much the difficulty instruction changed base-model performance.
+
+Commit name: Measure sixteen-sample reward groups on harder synthetic tasks.
+
+Added a reproducible evaluator and saved all 320 sampled completions with per-completion sandbox scores for the first twenty harder synthetic tasks. With temperature 1.0, top-p 1.0, and seed 42, 13/20 groups had no full pass, 0/20 had all sixteen full pass, and 7/20 had mixed full-pass outcomes. The model passed 11/320 completions and 157/960 assertions. The prefix contains six arithmetic tasks, thirteen number-theory tasks, and one list task, so it does not represent all categories.
+
+Why: The user asked to sample sixteen generations for each of the first twenty synthetic tasks and report the task-group percentages with none, all, or mixed passing generations. The detailed completions make partial reward and group variation auditable.
