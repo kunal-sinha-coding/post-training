@@ -3235,3 +3235,9 @@ Commit name: Record step 240 results and verify coverage
 Recorded step-240 EvalPlus and training-set evaluation metrics. Verified the W&B coverage point against local task-group means. Checkpoint 240 is saved, and the trainer remains active.
 
 Why: Preserve interim results and confirm the requested signal curves remain accurate.
+
+Commit name: Verify W&B coverage through step 241
+
+Verified the step-241 W&B coverage point against local means across eight task groups. All three thresholds match. Step 242 is available locally and awaits W&B publication.
+
+Why: Continue auditing rollout signal logging.
