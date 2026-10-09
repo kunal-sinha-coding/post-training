@@ -3777,3 +3777,7 @@ Recorded step-350 EvalPlus, training-set results, task-group generation coverage
 
 Commit name: Record step-360 evaluation and coverage.
 Recorded step-360 EvalPlus, training-set metrics, task-generation coverage, and checkpoint status in logs/results.txt. W&B history evaluation axis 71,314 and coverage axis 71,316 were checked against evalplus-step-360 and the local training-step-360-metrics.json and task-coverage-trace.jsonl artifacts. The trainer and attached recovery monitor were active at recording time.
+
+
+Commit name: Record step-370 evaluation and coverage.
+Recorded step-370 EvalPlus, training-set metrics, task-generation coverage, and checkpoint status in logs/results.txt. W&B evaluation evalplus-step-370 and training-step-370-metrics.json provide the evaluation data. The local task-coverage-trace.jsonl means match the W&B summary for all three generation thresholds.
