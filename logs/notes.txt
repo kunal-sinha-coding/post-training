@@ -2746,3 +2746,10 @@ The first task-ID normalization used `Dataset.map`, which kept the original inte
 Added the 5,319 validated Luna task specifications, 5,319 materialized tasks, and API usage ledger. Recorded the generation duration and estimated cost in `logs/results.txt`. The GRPO loader now prepares 591 original training tasks plus 5,319 synthetic tasks for 5,910 total rows. The current supervisor is active after a third launch from the base model. The first two attempts stopped before saving a checkpoint because the original and synthetic task ID columns had different types. The loader now casts original task IDs to strings before concatenation.
 
 Why: The user requested a 10x category-balanced mixed dataset and immediate training with the specified GRPO configuration.
+
+
+Commit name: Analyze Luna synthetic-task difficulty and transfer.
+
+Added a post-hoc analysis of the 10x Luna task definitions, the original and synthetic checkpoint metrics, EvalPlus results, and the 85,632-row rollout trace. The base model passed 32.3% of original training tasks and 47.0% of synthetic tasks. At step 660 these values were 43.8% and 80.7%. The synthetic descriptions were more explicit and much longer, and the corpus repeated several task families and exact greedy completions. EvalPlus gained early and then flattened. The analysis found no direct evidence of literal lookup hardcoding or degradation on original tasks.
+
+Why: The user asked whether the EvalPlus plateau came from easier synthetic tasks, distribution shift, or overfitting. The recorded measurements support easier and more repetitive synthetic tasks with limited transfer, while leaving template over-specialization unresolved because there is no task-disjoint synthetic validation set.
