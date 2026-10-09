@@ -3439,3 +3439,9 @@ Commit name: Record step-280 EvalPlus results
 Recorded the step-280 EvalPlus scores, MBPP 0.556 and MBPP+ 0.474. Training-set scoring, W&B coverage publication, and checkpoint completion were still pending.
 
 Why: Preserve each scheduled benchmark measurement during the long training run.
+
+Commit name: Record step-280 training metrics and W&B coverage
+
+Recorded the step-280 training-set evaluation, confirmed the three rollout coverage values against W&B, and recorded checkpoint 280 completion and current training status.
+
+Why: Preserve the latest training signal and recovery point in the experiment record.
