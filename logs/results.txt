@@ -16255,3 +16255,7 @@ The step-200 checkpoint is saved. The trainer and ten-minute supervisor remain a
 W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 201
 
 After W&B publication, the step-200 values match the local trace at 0.640625, 0.125, and 0.03125. Step 201 also matches at 0.6484375, 0.265625, and 0.25. The latest W&B history query returned these points at W&B steps 39620 and 39818. Therefore the three W&B curves match local per-task aggregates through optimizer step 201, across 1,608 task-group rows.
+
+W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 205
+
+The step-201 through step-205 W&B coverage points match the local means across the eight task groups at every step. The respective values for at least one, two, and three tests passed are: step 201, 0.6484375/0.265625/0.25; step 202, 0.6796875/0.15625/0.0703125; step 203, 0.6328125/0.1328125/0.03125; step 204, 0.484375/0.109375/0.0703125; and step 205, 0.765625/0.2421875/0.140625. W&B history points were at steps 39818, 40016, 40214, 40412, and 40610. The local trace now covers 1,640 task-group rows through optimizer step 205.

@@ -3103,3 +3103,9 @@ Commit name: Verify step 200 and 201 W&B coverage curves
 Verified delayed W&B publication for steps 200 and 201 against the local eight-task-group means. The three threshold metrics match at both steps. W&B history now matches the local trace through step 201, covering 1,608 task-group rows.
 
 Why: Confirm the requested per-task rollout-signal metrics are visible in W&B during training.
+
+Commit name: Verify W&B coverage through step 205
+
+Compared the W&B coverage points for optimizer steps 201 through 205 with local means computed across eight task groups per step. All three thresholds match at every point. The local trace contains 1,640 rows through step 205.
+
+Why: Verify that rollout signal metrics continue to reach W&B during training.
