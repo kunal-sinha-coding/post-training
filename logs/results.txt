@@ -16117,3 +16117,15 @@ The full 5,910-task training-set evaluation reports pass@1 0.09340, average rewa
 W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 100
 
 Compared the per-task rollout trace with W&B through optimizer step 100. Each step has eight task rows. All three threshold averages match exactly, including step 100 values of 0.46875, 0.2421875, and 0.1796875 for at least one, two, and three passing tests among 16 generations. The sidecar contains 800 rows through step 100.
+
+INTERIM EVALPLUS CHECK AT STEP 110
+
+The configured step-110 EvalPlus evaluation reports MBPP pass@1 0.553 and MBPP+ pass@1 0.468. At step 100 the values were 0.537/0.455, and at step 0 they were 0.524/0.437. These remain interim checkpoint measurements. Results are in `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/evalplus/step-110/mbpp_results.txt`.
+
+INTERIM TRAINING-SET CHECK AT STEP 110
+
+The full 5,910-task training-set evaluation reports pass@1 0.09205, average reward 0.29109, and test-pass fraction 0.29407 at step 110. At step 100 the corresponding values were 0.09340, 0.29413, and 0.29685. At step 0 they were 0.08443, 0.27157, and 0.27431. Step-110 EvalPlus reports MBPP/MBPP+ pass@1 0.553/0.468. The training evaluation file is `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/training-step-110-metrics.json`.
+
+W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 110
+
+Compared the per-task rollout trace with W&B through optimizer step 110. Each step has eight task rows. All three threshold averages match exactly, including step 110 values of 0.5546875, 0.046875, and 0.015625 for at least one, two, and three passing tests among 16 generations. The sidecar contains 880 rows through step 110.
