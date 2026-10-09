@@ -2827,3 +2827,9 @@ Commit name: Compare saved original and sampled harder task groups at 100 tasks.
 Saved sixteen-generation groups for 100 original tasks and generated sixteen completions for the first 100 harder synthetic tasks, with one visible assertion in both prompt paths and all three tests scored. Full-pass coverage occurred on 68/100 original groups and 17/100 synthetic groups. Hybrid reward varied in 81% of original groups and 83% of synthetic groups. Synthetic partial reward was common, but its mean group reward standard deviation was lower, 0.0805 versus 0.2500. Updated the evaluator's task-selection metadata to report the requested task count rather than always saying twenty.
 
 Why: The user requested a 100-task comparison and asked whether partial reward gives enough GRPO signal. The results show that most harder-task groups have reward variation, but far fewer groups have a complete solution.
+
+Commit name: Audit sources of difficulty in harder synthetic tasks.
+
+Compared task descriptions and reference solutions for the first 100 original MBPP training tasks and the first 100 harder synthetic tasks. Synthetic references were longer and had more AST structure, loops, branches, and nesting. Comparing each generated reference to its three prompt examples also showed larger AST size in 93/100 cases than the example median and in 81/100 cases than all examples. Identified multi-step arithmetic, strict parsing, subset dynamic programming, geometry and graph algorithms as concrete added demands, with repetition, verbosity, missing feasibility bounds, and at least one conflicting specification as quality risks.
+
+Why: The user asked what specifically makes the synthetic tasks harder and whether the added difficulty is substantive or superficial.
