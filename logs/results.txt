@@ -16555,3 +16555,7 @@ Step 294 matches local coverage at W&B history axis 58,241: 0.5390625 of generat
 W&B COVERAGE AND SUPERVISOR CHECK THROUGH STEP 296
 
 Step 296 matches local coverage at W&B history axis 58,637: 0.609375 of generations passed at least one test, 0.1640625 passed at least two, and 0.0390625 passed all three. Each value is the mean over eight task groups with 16 generations per task. The 18:18:05 UTC supervisor check found attempt 1 alive at PID 34570 and checkpoint 290 complete. Training has reached step 296.
+
+W&B COVERAGE CROSS-CHECK THROUGH STEP 297
+
+Step 297 matches local coverage at W&B history axis 58,835: 0.8359375 of generations passed at least one test, 0.203125 passed at least two, and 0.0390625 passed all three. Each value is the mean over eight training task groups with 16 generations per task. Training is active at step 297. Checkpoint 290 remains the latest complete checkpoint, and GPU utilization was 97% at the latest poll.

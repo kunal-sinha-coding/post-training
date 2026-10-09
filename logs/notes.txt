@@ -3529,3 +3529,9 @@ Commit name: Record step-296 coverage and supervisor check
 Matched step-296 W&B coverage against the local records and recorded the 18:18:05 UTC supervisor heartbeat, which found training active and checkpoint 290 complete.
 
 Why: Keep current metrics and checkpoint recovery status auditable.
+
+Commit name: Verify W&B coverage through step 297
+
+Matched the step-297 W&B coverage values against local rollout records. Confirmed the trainer remains active with high GPU utilization and checkpoint 290 complete.
+
+Why: Maintain current signal and recovery state records while the run progresses.
