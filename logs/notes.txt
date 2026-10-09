@@ -3493,3 +3493,9 @@ Commit name: Record step-290 EvalPlus results
 Recorded the step-290 EvalPlus scores, MBPP 0.550 and MBPP+ 0.474, with local rollout coverage and the pending W&B and checkpoint state.
 
 Why: Preserve the scheduled benchmark result while training-set scoring continues.
+
+Commit name: Record step-290 training metrics and W&B coverage
+
+Recorded the step-290 training-set evaluation, verified all rollout coverage metrics against W&B, and recorded EvalPlus and checkpoint 290 completion.
+
+Why: Preserve the latest benchmark, training signal, and recovery point in the experiment record.

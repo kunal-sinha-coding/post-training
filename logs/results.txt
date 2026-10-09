@@ -16531,3 +16531,7 @@ Step 289 matches local coverage at W&B history axis 57,250: 0.53125 of generatio
 CHECKPOINT EVALPLUS RESULTS AT STEP 290
 
 The step-290 EvalPlus output reports MBPP pass@1 0.550 and MBPP+ pass@1 0.474. This is below step 280's MBPP 0.556, while MBPP+ is unchanged at 0.474. Step-290 local rollout coverage is 0.6015625/0.1640625/0.0546875 for generations passing at least one, two, and three tests. Its W&B point and training-set scoring are pending. Checkpoint 280 remains the latest complete checkpoint; the trainer and supervisor are active.
+
+STEP-290 TRAINING METRICS AND W&B COVERAGE
+
+Checkpoint 290 is complete. The 5,910-example training-set evaluation reports pass@1 0.1096447, average reward 0.3223350, test-pass fraction 0.3246975, partial-pass fraction 0.5387479, and partial-or-full-pass fraction 0.6483926. The status counts are 648 passed, 43 syntax errors, 2,035 failed, and 3,184 partial. The W&B coverage point at history axis 57,449 matches the local means across eight task groups: at least one test 0.6015625, at least two 0.1640625, and all three 0.0546875. EvalPlus reports MBPP 0.550 and MBPP+ 0.474. Training has advanced beyond step 290. The supervisor's 18:08:04 UTC check found the trainer alive and checkpoint 280 complete before checkpoint 290 finished saving.
