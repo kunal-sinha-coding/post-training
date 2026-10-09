@@ -3085,3 +3085,9 @@ Commit name: Record step 200 evaluation and rollout logging status
 Recorded the step-200 EvalPlus result and verified that the local trace contains 1,600 task-group rows through step 200. The three requested rollout coverage curves are configured in W&B. At the time of this check, W&B coverage was available through step 199 and step 200 awaited publication. The trainer and ten-minute recovery supervisor were alive.
 
 Why: Keep the ongoing experiment reproducible and record the status of the rollout-signal metrics requested before training.
+
+Commit name: Correct step 200 local coverage values
+
+Corrected the step-200 local coverage averages after calculating them across all eight task groups. The values are 0.640625, 0.125, and 0.03125 for the three passing-test thresholds. W&B had not yet published the step-200 point.
+
+Why: The initial interim note contained incorrect coverage averages and needed an accurate correction.
