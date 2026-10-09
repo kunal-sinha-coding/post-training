@@ -3535,3 +3535,9 @@ Commit name: Verify W&B coverage through step 297
 Matched the step-297 W&B coverage values against local rollout records. Confirmed the trainer remains active with high GPU utilization and checkpoint 290 complete.
 
 Why: Maintain current signal and recovery state records while the run progresses.
+
+Commit name: Verify W&B coverage through step 299
+
+Matched steps 298 and 299 W&B coverage against local task rollout records for all three thresholds. Confirmed training is active at step 299 and checkpoint 290 is complete.
+
+Why: Keep current task-level signal and checkpoint recovery state auditable.

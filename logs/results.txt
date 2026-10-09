@@ -16559,3 +16559,7 @@ Step 296 matches local coverage at W&B history axis 58,637: 0.609375 of generati
 W&B COVERAGE CROSS-CHECK THROUGH STEP 297
 
 Step 297 matches local coverage at W&B history axis 58,835: 0.8359375 of generations passed at least one test, 0.203125 passed at least two, and 0.0390625 passed all three. Each value is the mean over eight training task groups with 16 generations per task. Training is active at step 297. Checkpoint 290 remains the latest complete checkpoint, and GPU utilization was 97% at the latest poll.
+
+W&B COVERAGE CROSS-CHECK THROUGH STEP 299
+
+Step 298 matches local coverage at W&B history axis 59,033: 0.9375 of generations passed at least one test, 0.2265625 passed at least two, and 0.046875 passed all three. Step 299 matches at history axis 59,231: 0.5390625, 0.171875, and 0.0859375. Each value is the mean over eight training task groups with 16 generations per task. Training is active at step 299, and checkpoint 290 remains the latest complete save.
