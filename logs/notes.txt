@@ -2875,3 +2875,9 @@ Commit name: Record harder-data GRPO launch
 Recorded the 2026-10-09 07:46:46 UTC start of W&B run `mbpphard10x1009`, its matched config, output and supervisor paths, ten-minute check interval, and checkpoint recovery policy. The run starts from the base model as a separate data-difficulty experiment. Checkpoint selection remains disabled.
 
 Why: The user asked to launch training immediately after the generation accounting, one-time cleanup, and W&B coverage instrumentation were ready.
+
+Commit name: Record live W&B rollout coverage verification
+
+Verified that the harder-data run writes all three per-task rollout coverage scalars to W&B and that the local sidecar contains task-level records with 16-generation counts through optimizer step 4. Recorded the four observed W&B history points and labeled them as interim rollout diagnostics. The ten-minute supervisor still reports the trainer alive, with no restart needed.
+
+Why: The user asked for the three coverage rates to be logged as W&B graphs for tasks sampled during training, and requested uninterrupted training with automatic recovery.

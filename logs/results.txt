@@ -15982,3 +15982,18 @@ Selection and limitations. All generated tasks were kept after exact normalized-
 One-time prelaunch cleanup. Before training, removed 65 older checkpoints, steps 10 through 650, from the inactive easier-data run. Verified and retained its latest complete checkpoint at step 660. This reclaimed 7,940,414,189 logical bytes (7.395 GiB). No checkpoints will be deleted after the harder-data run starts.
 
 Training launch. Started the separate harder-data run from the base model at 2026-10-09 07:46:46 UTC with W&B run ID `mbpphard10x1009` in `kunal-personal/grpo-mbpp`. The configuration preserves the linked run's optimizer, batch sizes, GRPO reward, seed, 50,000-step target, and save/evaluation cadence; it changes the synthetic data path and run identity. The ten-minute supervisor is running as PID 34560. On failure it records a diagnosis and resumes from the latest complete checkpoint in the new output directory. No checkpoint cleanup will occur after launch. W&B URL: https://wandb.ai/kunal-personal/grpo-mbpp/runs/mbpphard10x1009.
+
+============================================================================
+
+HARDER-DATA RUN: W&B ROLLOUT-COVERAGE METRICS VERIFIED
+
+As of 2026-10-09 08:00 UTC, run `mbpphard10x1009` was active. W&B history contains all three requested coverage series: `reward/task_mean_generations_at_least_1_test_fraction`, `reward/task_mean_generations_at_least_2_test_fraction`, and `reward/task_mean_generations_at_least_3_test_fraction`. The local `task-coverage-trace.jsonl` contains per-task rows for optimizer steps 1 through 4, each row recording the task ID and counts/fractions among 16 generations. The W&B history currently exposes four logged values per series, at W&B `_step` values 198, 396, 594, and 792:
+
+| W&B `_step` | At least 1 test | At least 2 tests | All 3 tests |
+| ---: | ---: | ---: | ---: |
+| 198 | 0.3359 | 0.0859 | 0.0000 |
+| 396 | 0.2813 | 0.0078 | 0.0000 |
+| 594 | 0.6563 | 0.1406 | 0.0859 |
+| 792 | 0.5391 | 0.0781 | 0.0547 |
+
+These values are the mean fractions of candidate generations across task groups in each logged rollout batch. They are rollout diagnostics, not EvalPlus scores. W&B `_step` is the history axis; the local sidecar provides the corresponding optimizer step and task identity. The supervisor reported attempt 1 alive at its first ten-minute check, with no restart required. The latest observed local task trace contains four optimizer steps. The experiment is still running, so these are interim observations.
