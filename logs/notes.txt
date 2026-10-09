@@ -3523,3 +3523,9 @@ Commit name: Verify W&B coverage through step 295
 Matched steps 294 and 295 W&B coverage against local task rollout records for all three thresholds. Confirmed training is active at step 295 and checkpoint 290 is complete.
 
 Why: Keep training signal and recovery state current and auditable.
+
+Commit name: Record step-296 coverage and supervisor check
+
+Matched step-296 W&B coverage against the local records and recorded the 18:18:05 UTC supervisor heartbeat, which found training active and checkpoint 290 complete.
+
+Why: Keep current metrics and checkpoint recovery status auditable.
