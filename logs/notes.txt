@@ -3433,3 +3433,9 @@ Commit name: Verify W&B coverage through step 279
 Matched step-279 W&B coverage against local values for all three thresholds. Recorded step-280 local coverage while its W&B publication remained pending. Checkpoint 270 is complete and the supervisor remains active.
 
 Why: Keep the per-task signal series and checkpoint recovery state current.
+
+Commit name: Record step-280 EvalPlus results
+
+Recorded the step-280 EvalPlus scores, MBPP 0.556 and MBPP+ 0.474. Training-set scoring, W&B coverage publication, and checkpoint completion were still pending.
+
+Why: Preserve each scheduled benchmark measurement during the long training run.

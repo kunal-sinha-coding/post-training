@@ -16491,3 +16491,7 @@ The step-278 W&B point at history axis 55,071 matches the local mean across eigh
 W&B COVERAGE CROSS-CHECK THROUGH STEP 279
 
 The step-279 W&B point at history axis 55,269 matches the local mean across eight task groups: 0.609375 of generations passed at least one test, 0.1953125 passed at least two, and 0.1484375 passed all three. Local task-level records are present for step 280, with means 0.5390625/0.0625/0.0234375, but its W&B point is not yet published. Checkpoint 270 is complete. The supervisor's 17:38:02 UTC check found the trainer alive and checkpoint 270 complete.
+
+CHECKPOINT EVALPLUS RESULTS AT STEP 280
+
+The step-280 EvalPlus output reports MBPP pass@1 0.556 and MBPP+ pass@1 0.474. This is the same MBPP score as step 270 and slightly lower MBPP+ (0.476 at step 270). The separate 5,910-example training-set scoring is still running. Step-280 local rollout coverage is 0.5390625/0.0625/0.0234375 for generations passing at least one, two, and three tests; its W&B point and checkpoint are pending.
