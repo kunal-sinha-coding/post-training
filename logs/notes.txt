@@ -3773,3 +3773,7 @@ Added analysis/monitor_existing_grpo_process.sh after finding that the original 
 
 Commit name: Record step-350 evaluation and coverage.
 Recorded step-350 EvalPlus, training-set results, task-group generation coverage, and complete checkpoint status in logs/results.txt. The benchmark and W&B metrics are from evaluation evalplus-step-350 in run mbpphard10x1009. Training-set details are from training-step-350-metrics.json, and coverage is independently computed from local task-coverage-trace.jsonl and matched to W&B.
+
+
+Commit name: Record step-360 evaluation and coverage.
+Recorded step-360 EvalPlus, training-set metrics, task-generation coverage, and checkpoint status in logs/results.txt. W&B history evaluation axis 71,314 and coverage axis 71,316 were checked against evalplus-step-360 and the local training-step-360-metrics.json and task-coverage-trace.jsonl artifacts. The trainer and attached recovery monitor were active at recording time.
