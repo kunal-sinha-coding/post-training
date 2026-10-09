@@ -16001,3 +16001,7 @@ These values are the mean fractions of candidate generations across task groups 
 INTERIM EVALPLUS CHECK AT STEP 10
 
 The configured EvalPlus evaluation at step 10 completed its MBPP scoring. MBPP pass@1 is 0.521 and MBPP+ pass@1 is 0.437, compared with the step-0 values 0.524 and 0.437. This is one early evaluation point and does not establish a trend. Results are in `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/evalplus/step-10/mbpp_results.txt`. At the time of recording, the trainer and its step-10 evaluation callback were still active. The separate 16-generation diagnostic remains skipped by user direction.
+
+INTERIM EVALPLUS CHECK AT STEP 20
+
+The configured step-20 EvalPlus evaluation reports MBPP pass@1 0.516 and MBPP+ pass@1 0.431. The corresponding values were 0.524/0.437 at step 0 and 0.521/0.437 at step 10. This is an early measurement and does not establish a training trend. The result is in `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/evalplus/step-20/mbpp_results.txt`.
