@@ -16403,3 +16403,7 @@ The step-253, step-254, and step-255 W&B coverage points match local means acros
 W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 257
 
 A later W&B history read returned the coverage points for optimizer steps 256 and 257 at W&B axes 50,713 and 50,911. Both points match local means across eight task groups: step 256 is 0.5390625/0.0390625/0.0078125, and step 257 is 0.234375/0.0859375/0.03125 for generations passing at least one, two, and three tests. Correction to the prior interim note: the W&B response's `total_steps` field was 50,702, but this is not the last coverage point's x-axis; step 255's coverage point was at 50,515. Training is active and step 258 has started.
+
+W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 258
+
+The step-258 W&B point at history axis 51,109 matches the local mean across eight task groups: 0.5859375 of generations passed at least one test, 0.0625 passed at least two, and 0.0390625 passed all three. The W&B point appeared after the training step completed. At 2026-10-09 16:57:57 UTC, the ten-minute supervisor check found the trainer alive and checkpoint 250 complete. At 17:00 UTC the trainer had advanced to step 259. The output still contains 5,319 harder synthetic tasks and the run is active toward 50,000 steps.

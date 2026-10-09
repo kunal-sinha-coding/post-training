@@ -3301,3 +3301,9 @@ Commit name: Verify W&B coverage through step 257
 Cross-checked local and W&B task-coverage means through optimizer step 257. Both newly published steps 256 and 257 match across all three thresholds. Clarified that the prior W&B `total_steps` metadata value was not the coverage point's x-axis.
 
 Why: Maintain accurate rollout metric verification while training continues.
+
+Commit name: Verify W&B coverage through step 258
+
+Matched the step-258 W&B coverage point against local means across eight task groups and confirmed all three thresholds. Recorded the 16:57:57 UTC supervisor health check and active progress at step 259.
+
+Why: Preserve experiment progress and verify that the requested W&B rollout curves reflect the per-task 16-generation measurements.
