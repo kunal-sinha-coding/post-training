@@ -3361,3 +3361,9 @@ Commit name: Verify W&B coverage through step 268
 Confirmed that the step-268 W&B coverage values match the local per-task means at all three thresholds. Training advanced to step 269 with checkpoint 260 complete.
 
 Why: Preserve current experiment health and rollout signal verification.
+
+Commit name: Verify W&B coverage through step 269
+
+Confirmed that step-269 W&B coverage matches local task-group means for all three thresholds. Training advanced to step 270 with checkpoint 260 complete.
+
+Why: Continue the monitored training run with validated rollout records.
