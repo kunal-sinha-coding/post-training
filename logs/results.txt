@@ -15997,3 +15997,7 @@ As of 2026-10-09 08:00 UTC, run `mbpphard10x1009` was active. W&B history contai
 | 792 | 0.5391 | 0.0781 | 0.0547 |
 
 These values are the mean fractions of candidate generations across task groups in each logged rollout batch. They are rollout diagnostics, not EvalPlus scores. W&B `_step` is the history axis; the local sidecar provides the corresponding optimizer step and task identity. The supervisor reported attempt 1 alive at its first ten-minute check, with no restart required. The latest observed local task trace contains four optimizer steps. The experiment is still running, so these are interim observations.
+
+INTERIM EVALPLUS CHECK AT STEP 10
+
+The configured EvalPlus evaluation at step 10 completed its MBPP scoring. MBPP pass@1 is 0.521 and MBPP+ pass@1 is 0.437, compared with the step-0 values 0.524 and 0.437. This is one early evaluation point and does not establish a trend. Results are in `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/evalplus/step-10/mbpp_results.txt`. At the time of recording, the trainer and its step-10 evaluation callback were still active. The separate 16-generation diagnostic remains skipped by user direction.

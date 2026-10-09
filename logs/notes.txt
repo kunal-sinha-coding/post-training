@@ -2881,3 +2881,9 @@ Commit name: Record live W&B rollout coverage verification
 Verified that the harder-data run writes all three per-task rollout coverage scalars to W&B and that the local sidecar contains task-level records with 16-generation counts through optimizer step 4. Recorded the four observed W&B history points and labeled them as interim rollout diagnostics. The ten-minute supervisor still reports the trainer alive, with no restart needed.
 
 Why: The user asked for the three coverage rates to be logged as W&B graphs for tasks sampled during training, and requested uninterrupted training with automatic recovery.
+
+Commit name: Record interim step 10 EvalPlus result
+
+Recorded the configured step-10 EvalPlus metrics and comparison with step 0 in the experiment results file. MBPP pass@1 was 0.521 versus 0.524 at step 0, and MBPP+ pass@1 remained 0.437. Labeled the result as interim.
+
+Why: The matched training configuration includes periodic EvalPlus checks, and numerical experiment results belong in the repository results file.
