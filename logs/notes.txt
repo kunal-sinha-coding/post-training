@@ -2839,3 +2839,9 @@ Commit name: Create proportional harder-task prompt set
 Created 5,319 distinct prompt records for a separate harder synthetic MBPP dataset. The prompt count is nine times the 591-task original pool, with exact ninefold category allocation. Every prompt asks for a task clearly harder than the three sampled same-category examples. Existing easier synthetic artifacts were left unchanged.
 
 Why: The user authorized a 10x combined-data training experiment that changes task difficulty while preserving the original category proportions.
+
+Commit name: Add matched config for harder 10x GRPO run
+
+Added a separate training configuration that copies the linked 10x GRPO run settings and changes only the generated dataset path, output paths, and W&B run identity. It expects 5,910 combined rows and keeps the same Qwen 0.5B model, seed, LoRA, optimizer, rollout size, visible-test setting, evaluation cadence, and checkpoint cadence.
+
+Why: The user requested a controlled difficulty experiment with the original data plus a category-proportional harder synthetic set, while preserving the prior easier run and artifacts.
