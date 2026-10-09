@@ -16515,3 +16515,7 @@ Step 285 matches local coverage at W&B history axis 56,458: 0.6953125 of generat
 SUPERVISOR HEARTBEAT AT 17:58 UTC
 
 The 17:58:03 UTC monitor check confirms attempt 1 is alive at PID 34570 and checkpoint 280 is the latest complete checkpoint. The latest local rollout record is step 285. Training continues under the ten-minute supervisor.
+
+W&B COVERAGE CROSS-CHECK THROUGH STEP 286
+
+Step 286 matches local coverage at W&B history axis 56,656: 0.796875 of generations passed at least one test, 0.1015625 passed at least two, and 0.0390625 passed all three. Each value is the mean over eight training task groups with 16 generations per task. Training continues beyond step 286. Checkpoint 280 is the latest complete checkpoint. The 17:58:03 UTC supervisor check found the trainer alive.

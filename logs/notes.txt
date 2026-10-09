@@ -3469,3 +3469,9 @@ Commit name: Record 17:58 training heartbeat
 Recorded the supervisor check at 17:58:03 UTC, which found the trainer alive and checkpoint 280 complete. The latest local rollout record is step 285.
 
 Why: Preserve the current liveness and recovery state for the long-running experiment.
+
+Commit name: Verify W&B coverage through step 286
+
+Matched step-286 W&B coverage against local rollout records for all three test thresholds. Training remains active, and checkpoint 280 is the latest complete save.
+
+Why: Preserve the current task-level reward signal and recovery state.
