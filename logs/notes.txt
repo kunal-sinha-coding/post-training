@@ -3765,3 +3765,7 @@ Recorded the local and W&B-matched generation coverage for optimizer step 339 an
 
 Commit name: Record step-340 evaluation and coverage.
 Recorded step-340 EvalPlus benchmark scores, the 5,910-example training-set evaluation, task-group generation coverage, and the completed checkpoint state in logs/results.txt. The benchmark values come from W&B evaluation summary evalplus-step-340. The training-set values come from training-step-340-metrics.json. This preserves the scheduled evaluation results before the next training interval.
+
+
+Commit name: Attach ten-minute recovery monitoring to the active trainer.
+Added analysis/monitor_existing_grpo_process.sh after finding that the original supervisor shell had exited while trainer PID 34570 remained active. The monitor attaches without signaling the trainer, checks the newest complete checkpoint every ten minutes, and starts the existing checkpoint-resuming supervisor if the trainer exits before step 50,000 and final EvalPlus metrics are present. This closes the monitor gap without interrupting the active run.
