@@ -2953,3 +2953,9 @@ Commit name: Extend rollout coverage cross-check through step 40
 Cross-checked all 40 W&B rollout coverage points against the local task-level trace. Every step has eight task rows, and the averages for all three thresholds match exactly. Updated the experiment results record.
 
 Why: Verify completeness and accuracy of per-task W&B coverage graphs throughout the run.
+
+Commit name: Record step 50 EvalPlus result
+
+Recorded the configured step-50 EvalPlus metrics. MBPP pass@1 was 0.537 and MBPP+ was 0.450. Compared with step 40, the scores increased by 0.008 and 0.011. This remains an interim evaluation during the 50,000-step run.
+
+Why: Preserve periodic benchmark results while the experiment continues.
