@@ -16311,3 +16311,11 @@ The step-225 and step-226 W&B coverage values match the local means across the e
 W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 229
 
 W&B coverage points match the local averages for steps 227 through 229. The at-least-one, at-least-two, and at-least-three-test fractions are 0.375/0.09375/0.078125 at step 227, 0.5546875/0.328125/0.2265625 at step 228, and 0.6328125/0.09375/0.046875 at step 229. Local trace coverage is through step 229. Checkpoint 220 remains the latest complete checkpoint.
+
+INTERIM STEP-230 CHECKPOINT
+
+EvalPlus pass@1 at step 230 is 0.563 on MBPP and 0.476 on MBPP+. Step 220 was 0.561/0.476. The full 5,910-task training-set evaluation at step 230 reports pass@1 0.10457, average reward 0.31286, and test-pass fraction 0.31521. Step 220 was 0.10626, 0.31145, and 0.31421. The training metrics are in `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/training-step-230-metrics.json`; EvalPlus results are in `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/evalplus/step-230/mbpp_results.txt`.
+
+W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 230
+
+The W&B point for step 230 matches the local mean across eight task groups. The at-least-one, at-least-two, and at-least-three-test fractions are 0.625, 0.1640625, and 0.15625. Checkpoint 230 is saved and training continues.
