@@ -3409,3 +3409,9 @@ Commit name: Verify W&B coverage through step 275
 Matched step-275 W&B coverage to local per-task means at all three thresholds. Training advanced to step 276 with checkpoint 270 complete.
 
 Why: Preserve validated rollout metrics and recovery state during the ongoing run.
+
+Commit name: Verify W&B coverage through step 276
+
+Verified step-276 W&B coverage against the local task-group means for all three thresholds. Training advanced to step 277 with checkpoint 270 complete.
+
+Why: Continue recording and verifying the rollout metrics during training.
