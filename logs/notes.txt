@@ -3187,3 +3187,9 @@ Commit name: Record step 230 results and verify coverage
 Recorded step-230 EvalPlus and training-set metrics. Verified the W&B rollout coverage values against the local eight-task-group mean. Checkpoint 230 is saved and training continues.
 
 Why: Preserve the latest benchmark results and audit signal logging.
+
+Commit name: Verify W&B coverage through step 231
+
+Verified the step-231 W&B coverage point against local means across eight task groups. All three threshold metrics match, and the local trace contains 1,848 task-group rows through step 231.
+
+Why: Continue auditing W&B signal curves during training.

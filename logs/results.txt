@@ -16319,3 +16319,7 @@ EvalPlus pass@1 at step 230 is 0.563 on MBPP and 0.476 on MBPP+. Step 220 was 0.
 W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 230
 
 The W&B point for step 230 matches the local mean across eight task groups. The at-least-one, at-least-two, and at-least-three-test fractions are 0.625, 0.1640625, and 0.15625. Checkpoint 230 is saved and training continues.
+
+W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 231
+
+The step-231 W&B rollout values match the local means across eight task groups: 0.625 passed at least one test, 0.2109375 passed at least two, and 0.1328125 passed all three. Local trace coverage is through step 231, or 1,848 task-group rows. Checkpoint 230 is saved and the run continues.
