@@ -3721,3 +3721,9 @@ Commit name: Record step-330 EvalPlus results
 Recorded the step-330 EvalPlus scores, MBPP 0.556 and MBPP+ 0.487, with local rollout coverage while W&B publication and training-set scoring remained pending.
 
 Why: Preserve the scheduled benchmark result during step-330 evaluation.
+
+Commit name: Record step-330 training metrics and W&B coverage
+
+Recorded the step-330 training-set evaluation, verified all rollout coverage values against W&B, and recorded EvalPlus and checkpoint 330 completion.
+
+Why: Preserve the scheduled benchmark, training signal, and recovery point.
