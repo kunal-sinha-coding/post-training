@@ -16033,3 +16033,7 @@ The full 5,910-task training-set evaluation reports pass@1 0.08799, average rewa
 W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 32
 
 Compared all 32 optimizer-step points in W&B with the per-task sidecar. Each step has eight task rows, and the means for generations passing at least 1, at least 2, and all 3 tests match exactly between local records and W&B. The sidecar contains 256 rows across steps 1 through 32. No discrepancies were found.
+
+INTERIM EVALPLUS CHECK AT STEP 40
+
+The configured step-40 EvalPlus evaluation reports MBPP pass@1 0.529 and MBPP+ pass@1 0.439. At step 30 the values were 0.516/0.439. The step-40 MBPP score is 0.005 above step 0 (0.524), while MBPP+ is 0.002 above step 0 (0.437). This is still an early checkpoint measurement and is not enough to establish a trend. Results are in `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/evalplus/step-40/mbpp_results.txt`.
