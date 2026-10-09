@@ -98,5 +98,21 @@
     "reclaimed_logical_bytes": 7940414189,
     "reclaimed_logical_gib": 7.395,
     "cleanup_policy": "No checkpoint cleanup will occur after the harder-data training run starts."
+  },
+  "training_run": {
+    "status": "started",
+    "start_time_utc": "2026-10-09T07:46:46Z",
+    "wandb_entity": "kunal-personal",
+    "wandb_project": "grpo-mbpp",
+    "wandb_run_id": "mbpphard10x1009",
+    "wandb_url": "https://wandb.ai/kunal-personal/grpo-mbpp/runs/mbpphard10x1009",
+    "config": "configs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009.yaml",
+    "supervisor": "analysis/run_grpo_10x_harder_luna_supervisor.sh",
+    "supervisor_pid": 34560,
+    "check_interval_seconds": 600,
+    "resume_policy": "Start this distinct experiment from the base model. If an attempt fails, resume from the latest complete checkpoint in this new run directory.",
+    "checkpoint_policy": "No checkpoint deletion after launch.",
+    "latest_preexisting_easy_run_checkpoint_preserved": "checkpoint-660",
+    "selection": "Checkpoint selection disabled. The final EvalPlus benchmark is measured after training."
   }
 }
