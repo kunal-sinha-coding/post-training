@@ -3517,3 +3517,9 @@ Commit name: Verify W&B coverage through step 293
 Matched step-293 W&B coverage against local task rollout records for all three thresholds. Training remains active at step 293, with checkpoint 290 complete.
 
 Why: Preserve current rollout signal and recovery state.
+
+Commit name: Verify W&B coverage through step 295
+
+Matched steps 294 and 295 W&B coverage against local task rollout records for all three thresholds. Confirmed training is active at step 295 and checkpoint 290 is complete.
+
+Why: Keep training signal and recovery state current and auditable.
