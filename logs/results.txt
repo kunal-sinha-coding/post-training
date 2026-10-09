@@ -16339,3 +16339,7 @@ W&B coverage through steps 235 and 236 matches the local means across eight task
 W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 237
 
 The W&B values at step 237 match local means across eight task groups: 0.3203125 passed at least one test, 0.078125 passed at least two, and 0.0234375 passed all three. Local task coverage and W&B history match through step 237.
+
+W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 238
+
+The step-238 W&B values match local means across the eight task groups: 0.4921875 passed at least one test, 0.1953125 passed at least two, and 0.1484375 passed all three. Local trace coverage has advanced to step 239, whose W&B point is pending. Checkpoint 230 remains latest complete.

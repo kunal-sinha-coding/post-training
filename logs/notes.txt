@@ -3217,3 +3217,9 @@ Commit name: Verify W&B coverage through step 237
 Verified W&B rollout metrics at optimizer step 237 against the local eight-group mean. All three thresholds match.
 
 Why: Continue validating the signal curves throughout training.
+
+Commit name: Verify W&B coverage through step 238
+
+Verified the step-238 W&B coverage values against local means across eight task groups. All three thresholds match. Step 239 is present locally and awaits W&B publication.
+
+Why: Keep verifying the signal curves during training.
