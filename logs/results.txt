@@ -16371,3 +16371,7 @@ The step-244 W&B coverage point matches the local mean across eight task groups:
 W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 245
 
 The step-245 W&B coverage point matches local means across eight task groups: 0.6875 passed at least one test, 0.140625 passed at least two, and 0.0390625 passed all three. The local trace and W&B history match through step 245. Checkpoint 240 remains latest complete.
+
+W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 248
+
+W&B points for steps 246 through 248 match local means over the eight task groups. The at-least-one, at-least-two, and at-least-three-test fractions are 0.6015625/0.015625/0 at step 246, 0.453125/0.2734375/0.1484375 at step 247, and 0.5625/0.03125/0 at step 248. Checkpoint 240 remains the latest complete checkpoint.
