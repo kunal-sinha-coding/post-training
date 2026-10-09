@@ -3421,3 +3421,9 @@ Commit name: Verify W&B coverage through step 277
 Confirmed step-277 W&B coverage against the local means for all three test thresholds. Training advanced to step 278 with checkpoint 270 complete.
 
 Why: Keep live rollout coverage and checkpoint progress auditable.
+
+Commit name: Verify W&B coverage through step 278
+
+Matched step-278 W&B coverage against local task-group means for all thresholds. Confirmed the supervisor's 17:38:02 UTC check and training at step 279.
+
+Why: Maintain current and verifiable experiment progress.
