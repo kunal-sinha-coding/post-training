@@ -16181,3 +16181,15 @@ Compared the per-task rollout trace with W&B through optimizer step 149. Each st
 W&B COVERAGE CURVE PUBLICATION THROUGH STEP 151
 
 Rechecked W&B after the step-150 evaluation. The delayed step-150 point is now logged and matches the local task trace at 0.625, 0.140625, and 0.0703125 for the three thresholds. The W&B point through step 151 also matches local values of 0.4921875, 0.1875, and 0.15625. All three threshold metrics match through 151 optimizer steps, with eight tasks per step and 1,208 rows.
+
+INTERIM EVALPLUS CHECK AT STEP 160
+
+The configured step-160 EvalPlus evaluation reports MBPP pass@1 0.537 and MBPP+ pass@1 0.458. At step 150 the values were 0.542/0.466, and at step 0 they were 0.524/0.437. These remain interim checkpoint measurements. Results are in `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/evalplus/step-160/mbpp_results.txt`.
+
+INTERIM TRAINING-SET CHECK AT STEP 160
+
+The full 5,910-task training-set evaluation reports pass@1 0.09695, average reward 0.30310, and test-pass fraction 0.30538 at step 160. At step 150 the corresponding values were 0.09526, 0.29752, and 0.29965. At step 0 they were 0.08443, 0.27157, and 0.27431. Step-160 EvalPlus reports MBPP/MBPP+ pass@1 0.537/0.458. The training evaluation file is `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/training-step-160-metrics.json`.
+
+W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 160
+
+Compared the per-task rollout trace with W&B through optimizer step 160. Each step has eight task rows. All three threshold averages match exactly, including step 160 values of 0.7265625, 0.046875, and 0.0234375 for at least one, two, and three passing tests among 16 generations. The sidecar contains 1,280 rows through step 160.
