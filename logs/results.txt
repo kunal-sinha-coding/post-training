@@ -16643,3 +16643,7 @@ Step 318 matches local coverage at W&B history axis 62,995: 0.53125 of generatio
 W&B COVERAGE CROSS-CHECK THROUGH STEP 319
 
 Step 319 matches local coverage at W&B history axis 63,193: 0.84375 of generations passed at least one test, 0.0859375 passed at least two, and none passed all three. Each value is the mean over eight training task groups with 16 generations per task. Training has reached step 319. Checkpoint 310 is the latest complete checkpoint, and the 19:08:07 UTC supervisor check found the trainer alive.
+
+CHECKPOINT EVALPLUS RESULTS AT STEP 320
+
+The step-320 EvalPlus output reports MBPP pass@1 0.558 and MBPP+ pass@1 0.487. This is below step 310's 0.574 and 0.497. Step-320 local rollout coverage is 0.484375/0.0625/0.046875 for generations passing at least one, two, and three tests; its W&B point is pending. The 5,910-example training-set evaluation is generating candidates. Checkpoint 310 remains the latest complete checkpoint while scoring and saving continue.
