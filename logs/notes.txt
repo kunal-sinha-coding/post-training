@@ -2917,3 +2917,9 @@ Commit name: Extend rollout coverage cross-check through step 25
 Compared all 25 W&B coverage points with the local per-task trace. All three threshold metrics match for every step, with eight task records per step. Recorded this verification in the experiment results file.
 
 Why: Confirm the required rollout coverage curves continue to reflect the task-level data during training.
+
+Commit name: Record interim step 30 EvalPlus result
+
+Recorded step-30 EvalPlus metrics and the previous three checkpoint values in the experiment results file. MBPP pass@1 was 0.516 and MBPP+ was 0.439 at step 30. Labeled the comparison as an early result.
+
+Why: Preserve configured benchmark measurements while the matched training run continues.

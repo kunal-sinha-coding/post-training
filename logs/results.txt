@@ -16021,3 +16021,7 @@ Extended the coverage cross-check through optimizer step 23. All 23 W&B points m
 W&B COVERAGE CURVE CROSS-CHECK THROUGH STEP 25
 
 Extended the cross-check through optimizer step 25. All 25 W&B points match the mean of the corresponding eight task-level rows for all three test-pass thresholds. The sidecar contains 200 rows across steps 1 through 25. No discrepancies were found.
+
+INTERIM EVALPLUS CHECK AT STEP 30
+
+The configured step-30 EvalPlus evaluation reports MBPP pass@1 0.516 and MBPP+ pass@1 0.439. Values at steps 0, 10, and 20 were 0.524/0.437, 0.521/0.437, and 0.516/0.431. Step 30 is nearly unchanged on MBPP and slightly higher on MBPP+ than step 20. These are early checkpoints, not a settled trend. The output is in `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/evalplus/step-30/mbpp_results.txt`.
