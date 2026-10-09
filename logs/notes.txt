@@ -3331,3 +3331,9 @@ Commit name: Verify W&B coverage through step 261
 Matched all three step-261 W&B coverage values to the local task-group means. Confirmed that checkpoint 260 has since completed and training advanced to step 262.
 
 Why: Maintain verified progress and checkpoint state for the active long-run experiment.
+
+Commit name: Verify W&B coverage through step 262
+
+Confirmed that the step-262 W&B coverage point matches all three local task-group means. Training advanced to step 263 with checkpoint 260 complete.
+
+Why: Maintain a verified record of rollout signals during the run.
