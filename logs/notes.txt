@@ -3025,3 +3025,9 @@ Commit name: Record step 130 training evaluation and coverage check
 Recorded the step-130 EvalPlus results and full 5,910-task training-set evaluation. MBPP/MBPP+ pass@1 was 0.532/0.458. Training-set pass@1 was 0.09357, average reward was 0.29475, and test-pass fraction was 0.29727. Compared W&B and local 16-generation coverage values through step 130. All three threshold metrics match exactly across 1,040 task rows.
 
 Why: Preserve interim benchmark results and verify the requested rollout signal curves during training.
+
+Commit name: Record step 140 training evaluation and coverage check
+
+Recorded the step-140 EvalPlus results and full 5,910-task training-set evaluation. MBPP/MBPP+ pass@1 was 0.534/0.450. Training-set pass@1 was 0.09628, average reward was 0.29836, and test-pass fraction was 0.30076. Compared W&B and local 16-generation coverage values through step 140. All three threshold metrics match exactly across 1,120 task rows.
+
+Why: Preserve interim benchmark results and verify the requested rollout signal curves during training.
