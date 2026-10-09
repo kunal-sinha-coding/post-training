@@ -2759,3 +2759,9 @@ Commit name: Add a harder-than-examples synthetic prompt mode.
 Added an optional prompt-generation mode that asks each category task to exceed all three examples in algorithmic or reasoning demands, while rejecting superficial difficulty from longer wording or arbitrary restrictions. The default prompt mode remains unchanged.
 
 Why: The user requested a fresh 100-task synthetic set with substantially harder problems before measuring base-model pass rates.
+
+Commit name: Save 100 harder-task generation prompts.
+
+Saved 100 category-proportional prompts with seed 20261009. Each prompt asks for a task clearly harder than all three same-category examples through greater algorithmic or reasoning demands, not longer wording or arbitrary restrictions. The prompts preserve the existing JSON output contract and three literal test inputs.
+
+Why: These are the exact generation prompts for the requested harder synthetic-task pilot and provide a reproducible API input artifact.
