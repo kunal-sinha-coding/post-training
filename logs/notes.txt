@@ -3229,3 +3229,9 @@ Commit name: Verify W&B coverage through step 239
 Verified the step-239 W&B coverage values against the local mean across eight task groups. All three threshold metrics match.
 
 Why: Continue the rollout coverage audit during training.
+
+Commit name: Record step 240 results and verify coverage
+
+Recorded step-240 EvalPlus and training-set evaluation metrics. Verified the W&B coverage point against local task-group means. Checkpoint 240 is saved, and the trainer remains active.
+
+Why: Preserve interim results and confirm the requested signal curves remain accurate.
