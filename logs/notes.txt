@@ -3109,3 +3109,9 @@ Commit name: Verify W&B coverage through step 205
 Compared the W&B coverage points for optimizer steps 201 through 205 with local means computed across eight task groups per step. All three thresholds match at every point. The local trace contains 1,640 rows through step 205.
 
 Why: Verify that rollout signal metrics continue to reach W&B during training.
+
+Commit name: Record step 210 checkpoint metrics
+
+Recorded step-210 EvalPlus MBPP and MBPP+ pass@1 and full training-set metrics. Checkpoint 210 was saved, and training advanced to step 210. The live trainer and ten-minute supervisor remain active.
+
+Why: Preserve interim benchmark results while the 50,000-step run continues.
