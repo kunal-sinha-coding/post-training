@@ -2753,3 +2753,9 @@ Commit name: Analyze Luna synthetic-task difficulty and transfer.
 Added a post-hoc analysis of the 10x Luna task definitions, the original and synthetic checkpoint metrics, EvalPlus results, and the 85,632-row rollout trace. The base model passed 32.3% of original training tasks and 47.0% of synthetic tasks. At step 660 these values were 43.8% and 80.7%. The synthetic descriptions were more explicit and much longer, and the corpus repeated several task families and exact greedy completions. EvalPlus gained early and then flattened. The analysis found no direct evidence of literal lookup hardcoding or degradation on original tasks.
 
 Why: The user asked whether the EvalPlus plateau came from easier synthetic tasks, distribution shift, or overfitting. The recorded measurements support easier and more repetitive synthetic tasks with limited transfer, while leaving template over-specialization unresolved because there is no task-disjoint synthetic validation set.
+
+Commit name: Add a harder-than-examples synthetic prompt mode.
+
+Added an optional prompt-generation mode that asks each category task to exceed all three examples in algorithmic or reasoning demands, while rejecting superficial difficulty from longer wording or arbitrary restrictions. The default prompt mode remains unchanged.
+
+Why: The user requested a fresh 100-task synthetic set with substantially harder problems before measuring base-model pass rates.

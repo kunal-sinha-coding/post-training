@@ -31,11 +31,21 @@ def load_generation_records(path: Path) -> dict[int, dict[str, Any]]:
     return records
 
 
-def render_prompt(category: dict[str, Any], examples: list[dict[str, Any]], tests_by_id: dict[int, dict[str, Any]]) -> str:
+def render_prompt(category: dict[str, Any], examples: list[dict[str, Any]], tests_by_id: dict[int, dict[str, Any]], harder_than_examples: bool = False) -> str:
     """Render one task-generation prompt with three same-category examples."""
+    # Choose whether generated tasks should match or exceed the source-example difficulty.
+    difficulty_instruction = (
+        "Create a task that is clearly harder than each example in algorithmic or reasoning demands. "
+        "Do not claim greater difficulty only by adding words, test cases, or arbitrary restrictions. "
+        "Require a more demanding algorithm, multiple dependent reasoning steps, or meaningful edge-case "
+        "handling appropriate to the category. Keep the behavior precise, self-contained, and feasible "
+        "to implement as one Python function. "
+        if harder_than_examples
+        else "Match the examples in scope and difficulty. "
+    )
     instructions = (
         "Create one original, self-contained Python programming task in the requested category. "
-        "Match the examples in scope and difficulty. Do not copy their wording, function names, "
+        + difficulty_instruction + "Do not copy their wording, function names, "
         "inputs, outputs, or algorithms. State the required behavior and edge cases clearly. "
         "Return one JSON object with exactly these keys: category, task_text, entry_point, "
         "reference_solution, test_inputs. The reference_solution must define the entry_point "
@@ -76,7 +86,7 @@ def allocate_prompt_counts(categories: list[dict[str, Any]], total_prompts: int)
     return counts
 
 
-def generate_prompts(taxonomy_path: Path, generations_path: Path, output_path: Path, prompts_per_category: int | None, seed: int, total_prompts: int | None = None) -> int:
+def generate_prompts(taxonomy_path: Path, generations_path: Path, output_path: Path, prompts_per_category: int | None, seed: int, total_prompts: int | None = None, harder_than_examples: bool = False) -> int:
     """Sample examples and save the requested prompts for every category."""
     if total_prompts is not None and total_prompts < 1:
         raise ValueError("total_prompts must be at least one")
@@ -98,7 +108,8 @@ def generate_prompts(taxonomy_path: Path, generations_path: Path, output_path: P
                 raise ValueError(f"Category {category['category']!r} has fewer than three examples")
             for ordinal in range(1, prompt_count_for_category + 1):
                 examples = rng.sample(examples_pool, 3)
-                prompt = render_prompt(category, examples, tests_by_id)
+                # Apply the requested difficulty target to every category prompt.
+                prompt = render_prompt(category, examples, tests_by_id, harder_than_examples)
                 # Save provenance beside the full prompt so each draw can be audited.
                 record = {
                     "prompt_id": f"{category_index:02d}-{ordinal:03d}",
@@ -124,6 +135,8 @@ def parse_args() -> argparse.Namespace:
     # Allow proportional allocation when the desired total is known.
     parser.add_argument("--total-prompts", type=int, default=None)
     parser.add_argument("--seed", type=int, default=20261006)
+    # Offer a separate prompt mode that asks for harder tasks without changing defaults.
+    parser.add_argument("--harder-than-examples", action="store_true")
     return parser.parse_args()
 
 
@@ -131,5 +144,5 @@ if __name__ == "__main__":
     # Generate the configured prompt set and report its row count.
     args = parse_args()
     # Use per-category counts by default and proportional counts when requested.
-    count = generate_prompts(args.taxonomy, args.generations, args.output, args.prompts_per_category, args.seed, args.total_prompts)
+    count = generate_prompts(args.taxonomy, args.generations, args.output, args.prompts_per_category, args.seed, args.total_prompts, args.harder_than_examples)
     print(f"Wrote {count} prompts to {args.output}", flush=True)
