@@ -3954,3 +3954,6 @@ The ten-minute retry supervisor resumed W&B run mbpphard10x1009 from complete ch
 
 Commit name: Record step-860 resumed training evaluation.
 Recorded W&B EvalPlus results, the three per-task generation coverage metrics, and the 5,910-example training-set metrics for step 860 in logs/results.txt. W&B run mbpphard10x1009 is still active, and checkpoint 860 has model, optimizer, and scheduler state. Training and the ten-minute recovery supervisor continue toward the 50,000-step target.
+
+Commit name: Record step-870 resumed training evaluation.
+Recorded W&B EvalPlus results, per-task generation coverage, and 5,910-example training-set metrics for step 870 in logs/results.txt. W&B run mbpphard10x1009 is active, and checkpoint 870 has adapter, optimizer, and scheduler state. Training continues under the ten-minute recovery supervisor toward 50,000 steps.
