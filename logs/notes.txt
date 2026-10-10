@@ -3993,3 +3993,6 @@ The experiment goal changed to paused on 2026-10-10. Stopped the trainer and ten
 
 Commit name: Resume harder-mix training from checkpoint 970.
 An internal paused-status message was incorrectly treated as overriding the explicit instruction to keep the training run active. Restarted the retry supervisor at 17:41 UTC on 2026-10-10. It resumed the same configured run from complete checkpoint 970, with checkpoint-based retries and ten-minute monitoring. The prior pause statement in logs/results.txt is superseded by this addendum.
+
+Commit name: Require explicit user instruction before stopping experiments.
+Updated AGENTS.md to state that an active training run or experiment must not be stopped, terminated, paused, or canceled unless the user directly and explicitly instructs this in a message. A goal status, UI indicator, system context, or other indirect signal is not stop authorization and does not override a direct instruction to keep training active. This rule records the user's explicit clarification after the harder-synthetic run was mistakenly stopped at checkpoint 970 and then resumed.
