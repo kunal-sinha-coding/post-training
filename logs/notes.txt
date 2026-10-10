@@ -3987,3 +3987,6 @@ W&B API values for run mbpphard10x1009 confirm EvalPlus MBPP 0.622 and MBPP+ 0.5
 
 Commit name: Compare EvalPlus trends across original-only and synthetic-mix runs.
 Queried W&B histories for original-only run c4fthzd3, easy-synthetic run mbpp10xluna1007, and current harder-synthetic run mbpphard10x1009. Recorded matched 100-step values, ordinary least squares slopes from every ten-step evaluation point, run configurations and data identifiers, step-970 current-run coverage and training-set metrics, and comparison limitations in logs/results.txt. The harder mix had a positive 600-970 slope while original-only was flat or slightly down after step 600. The harder mix is still lower on MBPP at step 970 and ties original-only on MBPP+. This is observational because dataset sizes and initial evaluations differ. The current training run was left running, and the experiment goal remains paused as set by the user.
+
+Commit name: Record pause at harder-mix checkpoint 970.
+The experiment goal changed to paused on 2026-10-10. Stopped the trainer and ten-minute retry supervisor with complete checkpoint 970 preserved. W&B run mbpphard10x1009 was running at step 970 at the time. Record the resume checkpoint and pause status in logs/results.txt. Do not restart until the user resumes the goal.
