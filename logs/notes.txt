@@ -3918,3 +3918,6 @@ Recorded step-750 EvalPlus, training-set metrics, task-generation coverage, and 
 
 Commit name: Record step-760 evaluation and coverage.
 Recorded step-760 EvalPlus, 5,910-example training-set metrics, per-task rollout coverage, and complete checkpoint status in logs/results.txt. W&B evaluation evalplus-step-760, training-step-760-metrics.json, and task-coverage-trace.jsonl provide the supporting evidence. The trainer and ten-minute checkpoint recovery monitor remain active.
+
+Commit name: Record step-770 evaluation and coverage.
+Recorded step-770 EvalPlus, 5,910-example training-set metrics, rollout coverage, and complete checkpoint verification in logs/results.txt. W&B evaluation evalplus-step-770, training-step-770-metrics.json, and task-coverage-trace.jsonl are supporting artifacts. The active trainer and ten-minute recovery monitor are running.
