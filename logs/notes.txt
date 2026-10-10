@@ -3981,3 +3981,6 @@ Recorded W&B EvalPlus results, per-task generation coverage, and 5,910-example t
 
 Commit name: Record step-950 resumed training evaluation.
 Recorded W&B EvalPlus results, per-task generation coverage, and 5,910-example training-set metrics for step 950 in logs/results.txt. W&B run mbpphard10x1009 remains active, and checkpoint 950 has adapter, optimizer, and scheduler state. Training continues under the ten-minute recovery supervisor toward 50,000 steps.
+
+Commit name: Record step-960 resumed training evaluation.
+W&B API values for run mbpphard10x1009 confirm EvalPlus MBPP 0.622 and MBPP+ 0.537 at step 960. W&B coverage scalars match the mean of eight local task-coverage rows, each with 16 generations: 0.421875 reached at least one test, 0.296875 reached at least two, and 0.1875 passed all three. Record the 5,910-example training evaluation in logs/results.txt. Checkpoint 960 contains adapter, optimizer, and scheduler state. The W&B run remains running under the ten-minute retry supervisor.
