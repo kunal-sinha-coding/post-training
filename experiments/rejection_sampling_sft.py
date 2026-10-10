@@ -210,7 +210,7 @@ def run(args: argparse.Namespace) -> int:
         model.save_pretrained(output_dir / f"adapter-cycle-{cycle}")
         tokenizer.save_pretrained(output_dir / f"adapter-cycle-{cycle}")
         (output_dir / f"greedy-cycle-{cycle}.json").write_text(json.dumps(greedy, indent=2), encoding="utf-8")
-        if greedy["passed_all"]:
+        if greedy["passed_all"] and sample_pass_rate >= args.target_sample_pass_rate:
             break
     # Close only this pilot's W&B client and return success only for a demonstrated pass.
     run.finish()
@@ -229,6 +229,7 @@ def main() -> None:
     parser.add_argument("--samples", type=int, default=16)
     parser.add_argument("--generation-batch-size", type=int, default=2)
     parser.add_argument("--max-cycles", type=int, default=5)
+    parser.add_argument("--target-sample-pass-rate", type=float, default=1.0)
     parser.add_argument("--max-new-tokens", type=int, default=512)
     parser.add_argument("--max-prompt-tokens", type=int, default=512)
     parser.add_argument("--max-response-tokens", type=int, default=512)
@@ -239,7 +240,7 @@ def main() -> None:
     parser.add_argument("--bf16", action=argparse.BooleanOptionalAction, default=True)
     args = parser.parse_args()
     # Reject unsafe settings that could turn the tiny pilot into a full-data job.
-    if args.samples != 16 or args.max_cycles < 1 or args.max_cycles > 5 or args.generation_batch_size < 1 or args.generation_batch_size > 2:
+    if args.samples != 16 or args.max_cycles < 1 or args.max_cycles > 5 or args.generation_batch_size < 1 or args.generation_batch_size > 2 or not 0.0 <= args.target_sample_pass_rate <= 1.0:
         parser.error("The pilot is limited to exactly 16 samples, one to five cycles, and generation batches of at most two.")
     raise SystemExit(run(args))
 
