@@ -4035,3 +4035,6 @@ The first iterative task-889 run loaded the checkpoint but PEFT marked its adapt
 
 Commit name: Add a low-impact CPU path for the SFT pilot.
 The active GRPO evaluation used nearly all GPU memory, so added a CPU device option with one-thread default and saved-greedy reuse. Enabled trainable PEFT loading in the previous change. The iterative W&B run failed before optimizer construction; it had four accepted task-889 responses. The active GRPO run remains untouched. The pilot can now proceed with bounded CPU use while evaluation occupies the GPU.
+
+Commit name: Record task-889 rejection sampling reaching 100%.
+Ran the existing single-task rejection sampling and SFT pilot on the visible RTX A5000 from the saved task-889 CPU cycle-3 adapter. All 16 fresh samples passed all three original assertions, raising the batch pass rate from the preceding cycle's 9/16 (56.25%) to 16/16 (100%). The greedy solution passed before and after the update. Recorded configuration, hardware, artifact paths, W&B run `gq8fadgf`, timing, loss, selection method, and limitations in logs/results.txt. The separate GRPO job was not visible on the pilot GPU. The first CUDA launch stopped before generation because the cached model config was temporarily unreadable; the retry succeeded. Existing unrelated edits to start.sh and the 20260929 config remain outside this commit.
