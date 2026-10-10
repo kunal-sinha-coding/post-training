@@ -3861,3 +3861,6 @@ Recorded step-560 EvalPlus, training-set metrics, task-generation coverage, and 
 
 Commit name: Record step-570 evaluation and coverage.
 Recorded step-570 EvalPlus, training-set metrics, task-generation coverage, and checkpoint status in logs/results.txt. W&B evalplus-step-570 and training-step-570-metrics.json provide evaluation metrics. Local task-coverage-trace.jsonl matches W&B for all three thresholds. The ten-minute monitor confirmed the trainer is alive.
+
+Commit name: Record step-580 evaluation and coverage.
+Recorded step-580 EvalPlus, training-set metrics, task-generation coverage, and checkpoint status in logs/results.txt. W&B evalplus-step-580 and training-step-580-metrics.json provide the evaluation data. Local task-coverage-trace.jsonl matches W&B for all three thresholds. The trainer and attached recovery monitor remain active.
