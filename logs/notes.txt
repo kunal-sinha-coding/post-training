@@ -4017,3 +4017,6 @@ Joined all 593 step-1300 training greedy completions and 378 saved EvalPlus comp
 
 Commit name: Check harder-synthetic run for an emerging plateau through step 1120.
 Read the current W&B run mbpphard10x1009 history through evaluation step 1120 and measured aligned training, MBPP, and MBPP+ trends in recent windows. MBPP is nearly flat over the latest 120 steps while MBPP+ has a small positive but noisy trend. W&B still reported the run as running. Recorded the data source, slopes, and limits in logs/results.txt. Did not modify the run or its process.
+
+Commit name: Add a bounded rejection sampling plus SFT pilot.
+Added a one-task script that samples 16 candidates, accepts only full three-test passes, performs one response-only cross-entropy epoch on accepted examples, and repeats up to five cycles. It logs cycle-level acceptance, greedy pass, loss, and timing to a separate W&B run and saves all candidates and adapters. Task 621 was confirmed cached and outside EvalPlus. Syntax, CLI help, and data-loading checks passed. The GRPO job remained running; no pilot generation or update was launched in this code change. GPU utilization was 83% at the time, so resource availability must be checked before running the pilot.
