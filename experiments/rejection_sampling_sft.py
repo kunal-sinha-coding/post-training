@@ -34,6 +34,16 @@ def load_task(task_id: str) -> dict[str, Any]:
     raise ValueError(f"MBPP task {task_id} was not found in cached Arrow splits under {cache_root}.")
 
 
+def clean_completion(completion: str) -> str:
+    """Remove generated Markdown code-fence markers from the assistant response."""
+    # Strip a generated opening fence before removing any closing fence.
+    text = completion.strip()
+    if text.startswith("```"):
+        text = text.split("\n", 1)[1] if "\n" in text else ""
+    # Keep the code body when generation includes the prompt's closing fence.
+    return text.split("```", 1)[0].strip()
+
+
 def load_model(model_path: str, use_bf16: bool) -> tuple[Any, Any]:
     """Load a PEFT checkpoint or create a LoRA model from a base model."""
     # Load the tokenizer for the selected checkpoint or base model.
@@ -76,7 +86,7 @@ def generate(model: Any, tokenizer: Any, prompt: str, count: int, batch_size: in
             generated = model.generate(**encoded, **sampling, max_new_tokens=max_new_tokens, pad_token_id=tokenizer.pad_token_id, eos_token_id=tokenizer.eos_token_id)
         # Keep only tokens emitted after the prompt and decode each response.
         for sequence in generated:
-            outputs.append({"completion": tokenizer.decode(sequence[input_length:], skip_special_tokens=True), "prompt_tokens": input_length})
+            outputs.append({"completion": clean_completion(tokenizer.decode(sequence[input_length:], skip_special_tokens=True)), "prompt_tokens": input_length})
         del encoded, generated
         torch.cuda.empty_cache()
     return outputs
@@ -89,8 +99,10 @@ def score_candidates(candidates: list[dict[str, Any]], task: dict[str, Any], tim
     scored = []
     # Preserve each generation and its detailed assertion outcomes for later review.
     for index, candidate in enumerate(candidates):
-        _, details = score_completion(wrap_qwen_continuation(candidate["completion"]), task["test_code"], timeout_seconds=timeout, reward_function="test_pass", visible_test_count=1)
-        scored.append({"sample_index": index, **candidate, **details, "passed_all": bool(details.get("passed_tests") == details.get("total_tests"))})
+        completion = clean_completion(candidate["completion"])
+        wrapped = f"Code:\n```python\n{completion}\n```"
+        _, details = score_completion(wrapped, task["test_code"], timeout_seconds=timeout, reward_function="test_pass", visible_test_count=1)
+        scored.append({"sample_index": index, **candidate, "completion": completion, **details, "passed_all": bool(details.get("passed_tests") == details.get("total_tests"))})
     return scored
 
 
@@ -114,7 +126,7 @@ def fine_tune_one_epoch(model: Any, tokenizer: Any, task: dict[str, Any], accept
     # Update once per accepted response so each small batch makes one optimizer step.
     for index in indices:
         prompt_ids = tokenizer(task["prompt"], add_special_tokens=True, truncation=True, max_length=args.max_prompt_tokens, return_tensors="pt")["input_ids"].to(model.device)
-        response_ids = tokenizer(accepted[index]["completion"], add_special_tokens=False, truncation=True, max_length=args.max_response_tokens, return_tensors="pt")["input_ids"].to(model.device)
+        response_ids = tokenizer(clean_completion(accepted[index]["completion"]), add_special_tokens=False, truncation=True, max_length=args.max_response_tokens, return_tensors="pt")["input_ids"].to(model.device)
         eos = torch.tensor([[tokenizer.eos_token_id]], device=model.device) if tokenizer.eos_token_id is not None else response_ids[:, :0]
         input_ids = torch.cat([prompt_ids, response_ids, eos], dim=1)
         labels = input_ids.clone()
@@ -162,7 +174,15 @@ def run(args: argparse.Namespace) -> int:
     for cycle in range(1, args.max_cycles + 1):
         cycle_started = time.perf_counter()
         generation_started = time.perf_counter()
-        generated = generate(model, tokenizer, task["prompt"], args.samples, args.generation_batch_size, args.max_new_tokens, args.temperature)
+        if cycle == 1 and args.resume_candidates:
+            # Reuse an already sampled batch when correcting scoring or resuming a tiny pilot.
+            with Path(args.resume_candidates).open(encoding="utf-8") as handle:
+                generated = [{"completion": json.loads(line)["completion"]} for line in handle if line.strip()]
+            if len(generated) != args.samples:
+                raise ValueError(f"Expected {args.samples} saved candidates, found {len(generated)}.")
+        else:
+            # Sample a fresh batch from the policy at the start of each cycle.
+            generated = generate(model, tokenizer, task["prompt"], args.samples, args.generation_batch_size, args.max_new_tokens, args.temperature)
         generation_seconds = time.perf_counter() - generation_started
         scoring_started = time.perf_counter()
         scored = score_candidates(generated, task, args.timeout)
@@ -202,6 +222,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Run a bounded single-task rejection sampling plus SFT pilot.")
     parser.add_argument("--model", required=True)
     parser.add_argument("--task-id", default="621")
+    parser.add_argument("--resume-candidates", default=None)
     parser.add_argument("--output-dir", default="outputs/rejection-sampling-sft-task621")
     parser.add_argument("--wandb-project", default="grpo-mbpp")
     parser.add_argument("--wandb-run-name", default="mbpp-rejection-sampling-sft-task621-pilot")

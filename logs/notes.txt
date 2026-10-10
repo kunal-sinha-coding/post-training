@@ -4023,3 +4023,6 @@ Added a one-task script that samples 16 candidates, accepts only full three-test
 
 Commit name: Fix direct execution imports in the rejection sampling pilot.
 The first pilot launch stopped before model loading because running the experiment by file path did not place the repository root on Python's import path. Added the repository root to the script path and verified syntax and CLI startup. The failed launch made no generations or model updates. The GRPO process remained active.
+
+Commit name: Normalize generated code fences before rejection scoring.
+Corrected the pilot after identifying that closing code fences caused the shared extractor to see empty code. Added response normalization and support for resuming an already sampled candidate batch. Re-scored cached task-924 completions successfully in the sandbox and marked all earlier zero-acceptance pilot metrics invalid. No new model generations or SFT were run as part of this correction; the existing GRPO job remained untouched.
