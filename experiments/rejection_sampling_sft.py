@@ -44,7 +44,7 @@ def clean_completion(completion: str) -> str:
     return text.split("```", 1)[0].strip()
 
 
-def load_model(model_path: str, use_bf16: bool) -> tuple[Any, Any]:
+def load_model(model_path: str, use_bf16: bool, device: str) -> tuple[Any, Any]:
     """Load a PEFT checkpoint or create a LoRA model from a base model."""
     # Load the tokenizer for the selected checkpoint or base model.
     import torch
@@ -58,12 +58,12 @@ def load_model(model_path: str, use_bf16: bool) -> tuple[Any, Any]:
         # Load the saved adapter without changing the source checkpoint.
         from peft import AutoPeftModelForCausalLM
 
-        model = AutoPeftModelForCausalLM.from_pretrained(model_path, torch_dtype=dtype, device_map="cuda", is_trainable=True)
+        model = AutoPeftModelForCausalLM.from_pretrained(model_path, torch_dtype=dtype, device_map=device, is_trainable=True)
     else:
         # Attach a small LoRA adapter when the source is a base causal model.
         from peft import LoraConfig, get_peft_model
 
-        model = AutoModelForCausalLM.from_pretrained(model_path, torch_dtype=dtype, device_map="cuda")
+        model = AutoModelForCausalLM.from_pretrained(model_path, torch_dtype=dtype, device_map=device)
         model = get_peft_model(model, LoraConfig(task_type="CAUSAL_LM", r=8, lora_alpha=16, lora_dropout=0.0, target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]))
     # Use evaluation mode before sampling from the policy.
     model.eval()
@@ -88,7 +88,8 @@ def generate(model: Any, tokenizer: Any, prompt: str, count: int, batch_size: in
         for sequence in generated:
             outputs.append({"completion": clean_completion(tokenizer.decode(sequence[input_length:], skip_special_tokens=True)), "prompt_tokens": input_length})
         del encoded, generated
-        torch.cuda.empty_cache()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
     return outputs
 
 
@@ -142,7 +143,8 @@ def fine_tune_one_epoch(model: Any, tokenizer: Any, task: dict[str, Any], accept
     # Return the mean batch loss and release optimizer state before generation resumes.
     model.eval()
     del optimizer
-    torch.cuda.empty_cache()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
     return total_loss / max(1, len(indices))
 
 
@@ -158,16 +160,25 @@ def run(args: argparse.Namespace) -> int:
     os.environ.pop("WANDB_RESUME", None)
     random.seed(args.seed)
     torch.manual_seed(args.seed)
+    # Keep CPU pilot work to one thread when the live trainer owns the GPU.
+    if args.device == "cpu":
+        torch.set_num_threads(args.cpu_threads)
     task = load_task(args.task_id)
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     # Start a new isolated W&B run so metrics do not enter the active GRPO run.
     run = wandb.init(project=args.wandb_project, name=args.wandb_run_name, config={**vars(args), "task_text": task["task_text"], "task_tests": task["test_code"]}, job_type="rejection-sampling-sft-pilot", reinit=True)
-    model, tokenizer = load_model(args.model, args.bf16)
+    model, tokenizer = load_model(args.model, args.bf16, args.device)
     accepted: list[dict[str, Any]] = []
     trace_path = output_dir / "candidates.jsonl"
     # Measure initial greedy accuracy before any pilot updates.
-    greedy = evaluate_greedy(model, tokenizer, task, args)
+    if args.resume_greedy:
+        # Re-score a saved greedy completion without another model generation.
+        saved_greedy = json.loads(Path(args.resume_greedy).read_text(encoding="utf-8"))
+        greedy = score_candidates([{"completion": saved_greedy["completion"]}], task, args.timeout)[0]
+    else:
+        # Measure the policy's current greedy accuracy before any pilot updates.
+        greedy = evaluate_greedy(model, tokenizer, task, args)
     wandb.log({"rs/greedy_pass": int(greedy["passed_all"]), "rs/cycle": 0})
     (output_dir / "initial_greedy.json").write_text(json.dumps(greedy, indent=2), encoding="utf-8")
     # Repeat complete-task filtering followed by one epoch over all retained solutions.
@@ -223,6 +234,7 @@ def main() -> None:
     parser.add_argument("--model", required=True)
     parser.add_argument("--task-id", default="621")
     parser.add_argument("--resume-candidates", default=None)
+    parser.add_argument("--resume-greedy", default=None)
     parser.add_argument("--output-dir", default="outputs/rejection-sampling-sft-task621")
     parser.add_argument("--wandb-project", default="grpo-mbpp")
     parser.add_argument("--wandb-run-name", default="mbpp-rejection-sampling-sft-task621-pilot")
@@ -237,6 +249,8 @@ def main() -> None:
     parser.add_argument("--learning-rate", type=float, default=1e-5)
     parser.add_argument("--timeout", type=float, default=3.0)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--device", choices=["cuda", "cpu"], default="cuda")
+    parser.add_argument("--cpu-threads", type=int, default=1)
     parser.add_argument("--bf16", action=argparse.BooleanOptionalAction, default=True)
     args = parser.parse_args()
     # Reject unsafe settings that could turn the tiny pilot into a full-data job.

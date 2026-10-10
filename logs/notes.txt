@@ -4032,3 +4032,6 @@ Re-scored the saved task batches with fixed response parsing. Task 889 has 4/16 
 
 Commit name: Enable gradient updates for loaded PEFT checkpoints.
 The first iterative task-889 run loaded the checkpoint but PEFT marked its adapter frozen, so the SFT optimizer received no trainable parameters. Enabled trainable adapter loading. The W&B run `efr6mtam` records the failed attempt. Other pilot runs and their invalid zero-acceptance measurements are documented in logs/results.txt. The active GRPO run was not touched. GPU memory was nearly full during the pilot overlap, so the next retry must wait until active evaluation releases GPU memory.
+
+Commit name: Add a low-impact CPU path for the SFT pilot.
+The active GRPO evaluation used nearly all GPU memory, so added a CPU device option with one-thread default and saved-greedy reuse. Enabled trainable PEFT loading in the previous change. The iterative W&B run failed before optimizer construction; it had four accepted task-889 responses. The active GRPO run remains untouched. The pilot can now proceed with bounded CPU use while evaluation occupies the GPU.
