@@ -58,7 +58,7 @@ def run_qwen_evalplus(model_path: Path, output_dir: Path, name: str) -> dict[str
     from evalplus.evaluate import evaluate
 
     # Call the keyword-based EvalPlus 0.3.1 API with canonical evaluation options.
-    evaluator_kwargs = {"dataset": "mbpp", "samples": str(samples), "base_only": False, "parallel": None, "i_just_wanna_run": False, "test_details": True, "min_time_limit": 1, "gt_time_limit_factor": 4.0, "mini": False, "noextreme": False}
+    evaluator_kwargs = {"dataset": "mbpp", "samples": str(samples), "base_only": False, "parallel": 8, "i_just_wanna_run": False, "test_details": True, "min_time_limit": 1, "gt_time_limit_factor": 4.0, "mini": False, "noextreme": False}
     evaluator_output = StringIO()
     with redirect_stdout(evaluator_output):
         evaluate(**evaluator_kwargs)
