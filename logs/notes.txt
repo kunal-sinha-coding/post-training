@@ -3996,3 +3996,6 @@ An internal paused-status message was incorrectly treated as overriding the expl
 
 Commit name: Require explicit user instruction before stopping experiments.
 Updated AGENTS.md to state that an active training run or experiment must not be stopped, terminated, paused, or canceled unless the user directly and explicitly instructs this in a message. A goal status, UI indicator, system context, or other indirect signal is not stop authorization and does not override a direct instruction to keep training active. This rule records the user's explicit clarification after the harder-synthetic run was mistakenly stopped at checkpoint 970 and then resumed.
+
+Commit name: Record resumed-run utilization telemetry check.
+Compared local trainer CPU use, `nvidia-smi` and `nvidia-smi dmon` readings, W&B system-stream samples, and the optimizer-step log after resume from checkpoint 970. The trainer was active at step 978. Local GPU utilization varied between 82% and 94% in consecutive two-second samples, while an instantaneous sample and a W&B system sample read 0%. W&B system CPU was 13.48%. Record the measurements and sampling limitation in logs/results.txt.
