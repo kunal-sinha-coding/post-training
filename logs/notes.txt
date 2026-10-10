@@ -4014,3 +4014,6 @@ Added ordered pass, fail, and not-run results for every scored assertion. Each r
 
 Commit name: Compare saved training and EvalPlus generations by task type.
 Joined all 593 step-1300 training greedy completions and 378 saved EvalPlus completions to task prompts. Recorded category-specific train, MBPP, and complete MBPP+ success rates and representative algorithm and edge-case failures in logs/results.txt. This analysis used saved outcomes only and did not generate or execute code. It found weaker transfer on algorithmic/search/order tasks and edge-case failures, without evidence sufficient to claim memorization caused the gap. Kept existing user changes to start.sh and the run config out of the commit.
+
+Commit name: Check harder-synthetic run for an emerging plateau through step 1120.
+Read the current W&B run mbpphard10x1009 history through evaluation step 1120 and measured aligned training, MBPP, and MBPP+ trends in recent windows. MBPP is nearly flat over the latest 120 steps while MBPP+ has a small positive but noisy trend. W&B still reported the run as running. Recorded the data source, slopes, and limits in logs/results.txt. Did not modify the run or its process.
