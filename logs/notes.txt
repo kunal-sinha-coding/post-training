@@ -4020,3 +4020,6 @@ Read the current W&B run mbpphard10x1009 history through evaluation step 1120 an
 
 Commit name: Add a bounded rejection sampling plus SFT pilot.
 Added a one-task script that samples 16 candidates, accepts only full three-test passes, performs one response-only cross-entropy epoch on accepted examples, and repeats up to five cycles. It logs cycle-level acceptance, greedy pass, loss, and timing to a separate W&B run and saves all candidates and adapters. Task 621 was confirmed cached and outside EvalPlus. Syntax, CLI help, and data-loading checks passed. The GRPO job remained running; no pilot generation or update was launched in this code change. GPU utilization was 83% at the time, so resource availability must be checked before running the pilot.
+
+Commit name: Fix direct execution imports in the rejection sampling pilot.
+The first pilot launch stopped before model loading because running the experiment by file path did not place the repository root on Python's import path. Added the repository root to the script path and verified syntax and CLI startup. The failed launch made no generations or model updates. The GRPO process remained active.

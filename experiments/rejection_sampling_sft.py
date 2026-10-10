@@ -7,9 +7,13 @@ import argparse
 import json
 import os
 import random
+import sys
 import time
 from pathlib import Path
 from typing import Any
+
+# Add the repository root so direct script execution can import shared training helpers.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 
 def load_task(task_id: str) -> dict[str, Any]:
