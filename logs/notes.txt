@@ -4029,3 +4029,6 @@ Corrected the pilot after identifying that closing code fences caused the shared
 
 Commit name: Continue the pilot until sampled pass rate reaches target.
 Re-scored the saved task batches with fixed response parsing. Task 889 has 4/16 fully passing samples and a fully passing greedy completion. Changed the pilot to continue sampling and SFT after greedy correctness until the sampled pass rate reaches a configurable target, default 100%, or five cycles. This permits measuring sampled pass-rate changes despite a correct greedy baseline. Task choice was based on the prompt wording, not test outcomes. No GPU run was started by this code change.
+
+Commit name: Enable gradient updates for loaded PEFT checkpoints.
+The first iterative task-889 run loaded the checkpoint but PEFT marked its adapter frozen, so the SFT optimizer received no trainable parameters. Enabled trainable adapter loading. The W&B run `efr6mtam` records the failed attempt. Other pilot runs and their invalid zero-acceptance measurements are documented in logs/results.txt. The active GRPO run was not touched. GPU memory was nearly full during the pilot overlap, so the next retry must wait until active evaluation releases GPU memory.

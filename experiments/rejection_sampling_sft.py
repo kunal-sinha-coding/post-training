@@ -58,7 +58,7 @@ def load_model(model_path: str, use_bf16: bool) -> tuple[Any, Any]:
         # Load the saved adapter without changing the source checkpoint.
         from peft import AutoPeftModelForCausalLM
 
-        model = AutoPeftModelForCausalLM.from_pretrained(model_path, torch_dtype=dtype, device_map="cuda")
+        model = AutoPeftModelForCausalLM.from_pretrained(model_path, torch_dtype=dtype, device_map="cuda", is_trainable=True)
     else:
         # Attach a small LoRA adapter when the source is a base causal model.
         from peft import LoraConfig, get_peft_model
