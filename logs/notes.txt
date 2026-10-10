@@ -4005,3 +4005,6 @@ Queried the current harder-synthetic W&B run mbpphard10x1009 and original-only r
 
 Commit name: Record EvalPlus curve slowdowns.
 Read all returned ten-step EvalPlus histories for the current harder-synthetic run mbpphard10x1009 and the original-only run c4fthzd3. Calculated ordinary least squares slopes in successive 200-step windows and recorded the values and interpretation in logs/results.txt. Both current-run metrics slowed from steps 200 to 600, recovered from steps 600 to 900, and slowed again near step 1,000. The original-only run had a stronger plateau from steps 600 to 1,000, then a temporary rebound. Trainer PID 2644405 remained alive. No training state was changed.
+
+Commit name: Compare aligned training and evaluation slopes.
+Calculated ordinary least squares slopes for training-set greedy pass@1, held-out MBPP pass@1, and held-out MBPP+ pass@1 over identical 200-step windows for runs mbpphard10x1009 and c4fthzd3. Recorded the results and interpretation in logs/results.txt. Both runs contain intervals where training keeps rising while held-out rates slow. The original-only run has the larger divergence, especially from steps 600 to 1,000. The current run has temporary gaps around steps 200 to 600 and 800 to 1,000, followed by resumed evaluation gains. The current trainer process PID 2644405 was still alive. No training state changed.
