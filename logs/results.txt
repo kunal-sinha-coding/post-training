@@ -16980,3 +16980,7 @@ W&B run mbpphard10x1009 reports EvalPlus MBPP pass@1 0.619 and MBPP+ pass@1 0.52
 STEP 930 METRICS AFTER CHECKPOINT RECOVERY
 
 W&B run mbpphard10x1009 reports EvalPlus MBPP pass@1 0.622 and MBPP+ pass@1 0.532 at step 930. For the 16 generations per task, the W&B mean per-task fractions are 0.6875 with at least one test passed, 0.25 with at least two passed, and 0.1875 with all three passed. The 5,910-example training-set evaluation reports pass@1 0.1810491, average reward 0.4061478, test-pass fraction 0.4082200, partial-pass fraction 0.5443316, partial-or-full pass fraction 0.7253807, and repeated-completion fraction 0.0015228. Checkpoint 930 is complete with adapter, optimizer, and scheduler state. Training continues under the ten-minute checkpoint retry supervisor toward 50,000 steps.
+
+STEP 940 METRICS AFTER CHECKPOINT RECOVERY
+
+W&B run mbpphard10x1009 reports EvalPlus MBPP pass@1 0.622 and MBPP+ pass@1 0.540 at step 940. For the 16 generations per task, the W&B mean per-task fractions are 0.7578125 with at least one test passed, 0.3828125 with at least two passed, and 0.1484375 with all three passed. The 5,910-example training-set evaluation reports pass@1 0.1818951, average reward 0.4064862, test-pass fraction 0.4089078, partial-pass fraction 0.5446701, partial-or-full pass fraction 0.7265651, and repeated-completion fraction 0.0018613. Checkpoint 940 is complete with adapter, optimizer, and scheduler state. Training continues under the ten-minute checkpoint retry supervisor toward 50,000 steps.

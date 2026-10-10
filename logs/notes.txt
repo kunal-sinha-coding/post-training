@@ -3975,3 +3975,6 @@ Recorded W&B EvalPlus results, per-task generation coverage, and 5,910-example t
 
 Commit name: Record step-930 resumed training evaluation.
 Recorded W&B EvalPlus results, per-task generation coverage, and 5,910-example training-set metrics for step 930 in logs/results.txt. W&B run mbpphard10x1009 remains active, and checkpoint 930 has adapter, optimizer, and scheduler state. Training continues under the ten-minute recovery supervisor toward 50,000 steps.
+
+Commit name: Record step-940 resumed training evaluation.
+Recorded W&B EvalPlus results, per-task generation coverage, and 5,910-example training-set metrics for step 940 in logs/results.txt. W&B run mbpphard10x1009 remains active, and checkpoint 940 has adapter, optimizer, and scheduler state. Training continues under the ten-minute recovery supervisor toward 50,000 steps.
