@@ -17006,3 +17006,7 @@ Interpretation and limits. The harder-mix curve rose again after its step-600 di
 PAUSE STATUS AFTER TREND COMPARISON
 
 The experiment goal was marked paused on 2026-10-10. The harder-mix supervisor and trainer were stopped at that request. The latest complete checkpoint is step 970, with adapter, optimizer, and scheduler state. W&B run `mbpphard10x1009` was running at step 970 when queried; no additional optimizer steps are intended while the goal is paused. Resume from `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/checkpoint-970` when the user resumes the experiment.
+
+RESUMED AFTER PAUSE-MARKER MISINTERPRETATION
+
+The trainer and retry supervisor were stopped after an internal goal-status message said paused. This conflicted with the user's explicit instruction to continue training. The supervisor was restarted on 2026-10-10 at 17:41 UTC and launched a new attempt from complete checkpoint 970. The step-970 checkpoint remains intact. The run targets 50,000 steps and keeps the ten-minute monitor and checkpoint-based recovery active. This addendum supersedes the prior pause statement above.
