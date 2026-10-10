@@ -3882,3 +3882,6 @@ Recorded step-630 EvalPlus, training-set metrics, task-generation coverage, and 
 
 Commit name: Record step-640 evaluation and coverage.
 Recorded step-640 EvalPlus, training-set metrics, task-generation coverage, and checkpoint status in logs/results.txt. W&B evalplus-step-640 and training-step-640-metrics.json provide the evaluation data. Local task-coverage-trace.jsonl provides the task-group coverage rows. The trainer and attached recovery monitor remain active.
+
+Commit name: Record step-650 evaluation and coverage.
+Recorded step-650 EvalPlus, training-set metrics, task-generation coverage, and checkpoint status in logs/results.txt. W&B evalplus-step-650 and training-step-650-metrics.json provide benchmark and training metrics. Local task-coverage-trace.jsonl provides the task-group coverage rows. The trainer and attached recovery monitor remain active.
