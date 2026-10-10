@@ -119,21 +119,46 @@ def split_test_cases(tests: str) -> list[str]:
     return ["\n".join(part for part in (setup, ast.unparse(assertion)) if part) for assertion in assertions]
 
 
-def execute_test_cases(code: str, test_cases: list[str], timeout_seconds: float = 3.0) -> tuple[int, int, bool]:
+def _test_visibility(index: int, visible_test_count: int | None) -> str:
+    """Classify one zero-based assertion index using the visible prompt count."""
+    # Leave visibility unknown when the prompt protocol did not specify a count.
+    if visible_test_count is None:
+        return "unknown"
+    return "visible" if index < max(0, visible_test_count) else "hidden"
+
+
+def _unrun_test_results(test_cases: list[str], visible_test_count: int | None) -> list[dict[str, object]]:
+    """Create per-assertion records when formatting or syntax prevents execution."""
+    # Preserve each assertion and its visibility even when no test can run.
+    return [
+        {"test_index": index, "visibility": _test_visibility(index - 1, visible_test_count), "passed": False, "status": "not_run", "test_case": test_case}
+        for index, test_case in enumerate(test_cases, start=1)
+    ]
+
+
+def execute_test_cases(code: str, test_cases: list[str], timeout_seconds: float = 3.0, visible_test_count: int | None = None) -> tuple[int, int, bool, list[dict[str, object]]]:
     """Run each assertion independently and return progress and execution status."""
     # Run every assertion so partially correct candidates receive partial reward.
     passed = 0
     executed = False
-    for test_case in test_cases:
+    test_results = []
+    for index, test_case in enumerate(test_cases, start=1):
+        # Mark the leading prompt assertions as visible when their count is known.
+        visibility = _test_visibility(index - 1, visible_test_count)
         result = execute_code(code, test_case, timeout_seconds)
+        test_results.append({"test_index": index, "visibility": visibility, "passed": result.passed, "status": result.status, "test_case": test_case})
         if result.status == "syntax_error":
-            return passed, len(test_cases), executed
+            # Preserve a result row for each assertion even when syntax prevents later execution.
+            for remaining_index, remaining_case in enumerate(test_cases[index:], start=index + 1):
+                remaining_visibility = _test_visibility(remaining_index - 1, visible_test_count)
+                test_results.append({"test_index": remaining_index, "visibility": remaining_visibility, "passed": False, "status": "not_run", "test_case": remaining_case})
+            return passed, len(test_cases), executed, test_results
         if result.passed:
             passed += 1
             executed = True
         elif "AssertionError" in result.stderr:
             executed = True
-    return passed, len(test_cases), executed
+    return passed, len(test_cases), executed, test_results
 
 
 def expected_interface(tests: str) -> tuple[str | None, set[int]]:
@@ -169,7 +194,7 @@ def validate_interface(code: str, tests: str) -> bool:
     return not function.args.vararg and not function.args.kwarg and positional_count == next(iter(expected_arities))
 
 
-def score_completion(completion: str, tests: str, timeout_seconds: float = 3.0, reward_function: str = DEFAULT_REWARD_FUNCTION, reward_coefficient: float = DEFAULT_REWARD_COEFFICIENT) -> tuple[float, dict[str, object]]:
+def score_completion(completion: str, tests: str, timeout_seconds: float = 3.0, reward_function: str = DEFAULT_REWARD_FUNCTION, reward_coefficient: float = DEFAULT_REWARD_COEFFICIENT, visible_test_count: int | None = None) -> tuple[float, dict[str, object]]:
     """Return the configured reward and diagnostics for one completion."""
     # Keep partial progress and complete correctness visible before selecting the scalar reward.
     components = {"format": 0.0, "syntax": 0.0, "interface": 0.0, "tests": 0.0, "pass": 0.0}
@@ -177,40 +202,36 @@ def score_completion(completion: str, tests: str, timeout_seconds: float = 3.0, 
         raise ValueError("reward_function must be 'test_pass' or 'hybrid'.")
     if not 0.0 <= reward_coefficient <= 1.0:
         raise ValueError("reward_coefficient must be between zero and one.")
+    test_cases = split_test_cases(tests)
     try:
         code = extract_code(completion)
     except ValueError:
-        return 0.0, {"status": "format_error", "passed_tests": 0, "total_tests": 0, "interface_valid": False, "reward_components": components}
+        return 0.0, {"status": "format_error", "passed_tests": 0, "total_tests": len(test_cases), "interface_valid": False, "test_results": _unrun_test_results(test_cases, visible_test_count), "reward_components": components}
     try:
         compile(code, "<candidate>", "exec")
     except SyntaxError:
-        return sum(components.values()), {"status": "syntax_error", "passed_tests": 0, "total_tests": 0, "interface_valid": False, "reward_components": components}
+        return sum(components.values()), {"status": "syntax_error", "passed_tests": 0, "total_tests": len(test_cases), "interface_valid": False, "test_results": _unrun_test_results(test_cases, visible_test_count), "reward_components": components}
     interface_valid = validate_interface(code, tests)
-    test_cases = split_test_cases(tests)
-    passed, total, _ = execute_test_cases(code, test_cases, timeout_seconds)
+    passed, total, _, test_results = execute_test_cases(code, test_cases, timeout_seconds, visible_test_count)
     fraction = passed / total if total else 0.0
     components["tests"] = fraction
     status = "passed" if passed == total else "partial" if passed else "failed"
     components["pass"] = float(passed == total and total > 0)
     reward = fraction if reward_function == "test_pass" else reward_coefficient * components["pass"] + (1.0 - reward_coefficient) * fraction
-    return reward, {"status": status, "passed_tests": passed, "total_tests": total, "interface_valid": interface_valid, "reward_components": components}
+    return reward, {"status": status, "passed_tests": passed, "total_tests": total, "interface_valid": interface_valid, "test_results": test_results, "reward_components": components}
 
 
-def score_completion_batch(completions: list[str], tests: list[str], timeout_seconds: float = 3.0, reward_function: str = DEFAULT_REWARD_FUNCTION, reward_coefficient: float = DEFAULT_REWARD_COEFFICIENT, reward_scoring_workers: int = 8) -> list[tuple[float, dict[str, object]]]:
+def score_completion_batch(completions: list[str], tests: list[str], timeout_seconds: float = 3.0, reward_function: str = DEFAULT_REWARD_FUNCTION, reward_coefficient: float = DEFAULT_REWARD_COEFFICIENT, reward_scoring_workers: int = 8, visible_test_count: int | None = None) -> list[tuple[float, dict[str, object]]]:
     """Score independent candidates concurrently while preserving their input order."""
     # Bound worker counts so a config typo cannot create excessive subprocess concurrency.
     if not 1 <= reward_scoring_workers <= 32:
         raise ValueError("reward_scoring_workers must be between one and 32.")
     # Run each candidate in a worker and collect results in the original order.
     with ThreadPoolExecutor(max_workers=reward_scoring_workers) as executor:
-        return list(executor.map(
-            score_completion,
-            completions,
-            tests,
-            repeat(timeout_seconds),
-            repeat(reward_function),
-            repeat(reward_coefficient),
-        ))
+        arguments = [score_completion, completions, tests, repeat(timeout_seconds), repeat(reward_function), repeat(reward_coefficient)]
+        if visible_test_count is not None:
+            arguments.append(repeat(visible_test_count))
+        return list(executor.map(*arguments))
 
 
 def reward_for_completion(completion: str, tests: str, timeout_seconds: float = 3.0) -> float:
@@ -255,6 +276,19 @@ def summarize_reward_groups(rewards: list[float], details: list[dict[str, object
         "reward/min": min(rewards),
         "reward/max": max(rewards),
     }
+    # Publish separate visible and hidden assertion pass rates when the trace identifies them.
+    visibility_counts = {"visible": [0, 0], "hidden": [0, 0]}
+    for detail in details:
+        for test_result in detail.get("test_results", []):
+            visibility = test_result.get("visibility")
+            if visibility in visibility_counts:
+                visibility_counts[visibility][1] += 1
+                visibility_counts[visibility][0] += int(bool(test_result.get("passed", False)))
+    for visibility, (passed_count, total_count) in visibility_counts.items():
+        if total_count:
+            diagnostics[f"reward/{visibility}_test_pass_fraction"] = passed_count / total_count
+            diagnostics[f"reward/{visibility}_test_pass_count"] = float(passed_count)
+            diagnostics[f"reward/{visibility}_test_count"] = float(total_count)
     # Emit mean, standard deviation, minimum, and maximum for every dense reward component.
     for component in ("format", "syntax", "interface", "test_progress", "pass"):
         values = [float(detail.get("reward_components", {}).get("tests" if component == "test_progress" else component, 0.0)) for detail in details]
@@ -375,7 +409,7 @@ def hardcoding_rate(completions: list[str], tests: list[str]) -> float:
     return flagged / len(completions)
 
 
-def reward_function(completions: list[object], test_code: list[str], sandbox_timeout_seconds: float = 3.0, diagnostics: dict[str, Any] | None = None, group_size: int = 4, reward_function_name: str = DEFAULT_REWARD_FUNCTION, reward_coefficient: float = DEFAULT_REWARD_COEFFICIENT, trace_path: str | None = None, task_ids: list[object] | None = None, training_step: int | None = None, synthetic_reward_probe: bool = False, reward_scoring_workers: int = 8, **_: object) -> list[float]:
+def reward_function(completions: list[object], test_code: list[str], sandbox_timeout_seconds: float = 3.0, diagnostics: dict[str, Any] | None = None, group_size: int = 4, reward_function_name: str = DEFAULT_REWARD_FUNCTION, reward_coefficient: float = DEFAULT_REWARD_COEFFICIENT, trace_path: str | None = None, task_ids: list[object] | None = None, training_step: int | None = None, synthetic_reward_probe: bool = False, reward_scoring_workers: int = 8, visible_test_count: int | None = None, **_: object) -> list[float]:
     """Score a GRPO batch with the configured test-pass or hybrid reward."""
     # Normalize every candidate while retaining its original record position.
     rewards: list[float] = []
@@ -402,7 +436,7 @@ def reward_function(completions: list[object], test_code: list[str], sandbox_tim
             "scored_completion": scored_text,
         })
     # Reuse the ordered batch scorer for reward and evaluation paths.
-    scored_results = score_completion_batch(scored_completions, scoring_tests, sandbox_timeout_seconds, reward_function_name, reward_coefficient, reward_scoring_workers)
+    scored_results = score_completion_batch(scored_completions, scoring_tests, sandbox_timeout_seconds, reward_function_name, reward_coefficient, reward_scoring_workers, visible_test_count)
     # Attach each ordered result to the matching diagnostics and trace record.
     for trace_record, (reward, detail) in zip(trace_records, scored_results):
         rewards.append(reward)

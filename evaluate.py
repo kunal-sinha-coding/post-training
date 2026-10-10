@@ -311,7 +311,7 @@ def _interface_generation_prefix(tokenizer: Any, tests: str, include_generic_arg
     return f"Code:\n```python\ndef {name}({arguments}):\n"
 
 
-def evaluate_texts(completions: list[str], records: list[dict[str, Any]], timeout_seconds: float = 3.0, log_path: str | Path = "logs/logs.txt", evaluation_name: str = "evaluation", pass_weight: float = 0.5, diagnostics: dict[str, float] | None = None, reward_scoring_workers: int = 8) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+def evaluate_texts(completions: list[str], records: list[dict[str, Any]], timeout_seconds: float = 3.0, log_path: str | Path = "logs/logs.txt", evaluation_name: str = "evaluation", pass_weight: float = 0.5, diagnostics: dict[str, float] | None = None, reward_scoring_workers: int = 8, visible_test_count: int | None = None) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     """Execute one generated completion per record and aggregate its results."""
     # Score evaluation candidates concurrently with the same test reward used during training.
     score_results = score_completion_batch(
@@ -320,6 +320,7 @@ def evaluate_texts(completions: list[str], records: list[dict[str, Any]], timeou
         timeout_seconds,
         reward_function="test_pass",
         reward_scoring_workers=reward_scoring_workers,
+        visible_test_count=visible_test_count,
     )
     details = []
     for completion, record, (reward, score_details) in zip(completions, records, score_results):
@@ -561,6 +562,6 @@ def evaluate_model(model: Any, tokenizer: Any, dataset: Any, config: dict[str, A
             diagnostics["entropy"] = sum(entropy_values) / len(entropy_values)
         if reference_kl_values:
             diagnostics["reference_kl"] = sum(reference_kl_values) / len(reference_kl_values)
-        return evaluate_texts(completions, records, float(config.get("sandbox_timeout_seconds", 3)), config.get("log_path", "logs/logs.txt"), evaluation_name, float(config.get("pass_weight", 0.5)), diagnostics, int(config.get("reward_scoring_workers", 8)))
+        return evaluate_texts(completions, records, float(config.get("sandbox_timeout_seconds", 3)), config.get("log_path", "logs/logs.txt"), evaluation_name, float(config.get("pass_weight", 0.5)), diagnostics, int(config.get("reward_scoring_workers", 8)), config.get("visible_test_count"))
     finally:
         model.train(was_training)

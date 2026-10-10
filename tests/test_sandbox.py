@@ -47,6 +47,29 @@ def test_dense_reward_counts_partial_assertion_progress():
     assert detail["reward_components"] == {"format": 0.0, "syntax": 0.0, "interface": 0.0, "tests": 0.5, "pass": 0.0}
 
 
+def test_scoring_records_each_visible_and_hidden_assertion(tmp_path):
+    """Record the exact pass result and visibility label for every assertion."""
+    import json
+
+    completion = "```python\ndef add_one(value):\n    return value + 1\n```"
+    tests = "assert add_one(1) == 2\nassert add_one(2) == 5\nassert add_one(3) == 4"
+    trace_path = tmp_path / "reward-trace.jsonl"
+
+    reward = reward_function([completion], [tests], diagnostics={}, group_size=1, trace_path=str(trace_path), task_ids=["add-one"], visible_test_count=1, reward_scoring_workers=1)[0]
+    trace_record = json.loads(trace_path.read_text(encoding="utf-8").splitlines()[0])
+    detail = trace_record["detail"]
+    diagnostics = summarize_reward_groups([reward], [detail], group_size=1)
+
+    assert detail["passed_tests"] == 2
+    assert [(row["visibility"], row["passed"]) for row in detail["test_results"]] == [
+        ("visible", True),
+        ("hidden", False),
+        ("hidden", True),
+    ]
+    assert diagnostics["reward/visible_test_pass_fraction"] == 1.0
+    assert diagnostics["reward/hidden_test_pass_fraction"] == 0.5
+
+
 def test_hybrid_reward_weights_full_pass_and_partial_progress():
     """Blend the binary full-pass reward with partial test progress."""
     completions = [
