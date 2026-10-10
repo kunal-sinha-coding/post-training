@@ -3936,3 +3936,6 @@ Recorded step-810 EvalPlus, 5,910-example training-set metrics, rollout coverage
 
 Commit name: Record step-820 evaluation and coverage.
 Recorded step-820 EvalPlus, 5,910-example training-set metrics, rollout coverage, and complete checkpoint verification in logs/results.txt. W&B evaluation evalplus-step-820, training-step-820-metrics.json, and task-coverage-trace.jsonl are supporting artifacts. The active trainer and ten-minute recovery monitor continue running.
+
+Commit name: Record step-830 evaluation and coverage.
+Recorded step-830 EvalPlus, 5,910-example training-set metrics, rollout coverage, and complete checkpoint verification in logs/results.txt. W&B evaluation evalplus-step-830, training-step-830-metrics.json, and task-coverage-trace.jsonl are supporting artifacts. The active trainer and ten-minute recovery monitor continue running.
