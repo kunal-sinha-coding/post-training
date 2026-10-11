@@ -4102,3 +4102,7 @@ Reran the eight-task pilot after the user clarified that the stored passing solu
 
 Commit name: Log pass@1 under the plotted key during the pilot.
 The user expected `rs/greedy_pass_at_1` to contain live per-epoch history. The pilot previously logged each epoch under `rs/greedy_pass_rate` and wrote `rs/greedy_pass_at_1` only as a final summary, which made the plotted key show one value. The pilot now logs both pass@1 metric names at baseline and after every epoch, and no longer writes the plotted key only at shutdown. The completed run cannot be retroactively changed into live history. Verified the updated script with `py_compile` and `git diff --check`.
+
+
+Commit name: Prepare a fresh cache-cleared pilot with a live pass-at-one series.
+The user explicitly asked to delete the rejection-sampling solution cache and restart the eight-task pilot, and the user clarified the immediate threat as a joke with no child at risk. The current cache contains 196 entries. Added an isolated config and output directory for a new run, using the corrected logger that records `rs/greedy_pass_at_1` at baseline and each epoch. The cache deletion and run launch will occur after this setup is committed.
