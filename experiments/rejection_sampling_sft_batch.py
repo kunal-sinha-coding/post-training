@@ -135,6 +135,7 @@ def run(args: argparse.Namespace) -> int:
     # Start an isolated W&B run with the selected task prompts and tests.
     run = wandb.init(project=args.wandb_project, name=args.wandb_run_name, config={**vars(args), "task_texts": {task_id: task["task_text"] for task_id, task in tasks_by_id.items()}, "task_tests": {task_id: task["test_code"] for task_id, task in tasks_by_id.items()}}, job_type="rejection-sampling-sft-eight-task-pilot", reinit=True)
     model, tokenizer = load_model(args.model, args.bf16, args.device)
+    tokenizer.padding_side = "left"
     accepted: list[dict[str, Any]] = []
     trace_path = output_dir / "candidates.jsonl"
     # Measure greedy pass rate on every task before the first update.
@@ -176,9 +177,10 @@ def run(args: argparse.Namespace) -> int:
         greedy_rate = sum(item["passed_all"] for item in greedy_scores) / len(greedy_scores)
         metrics.update({"rs/sft_mean_loss": loss, "rs/sft_seconds": sft_seconds, "rs/greedy_seconds": time.perf_counter() - greedy_started, "rs/greedy_pass_rate": greedy_rate, "rs/greedy_pass_count": sum(item["passed_all"] for item in greedy_scores), "rs/elapsed_seconds": time.perf_counter() - cycle_started})
         wandb.log(metrics)
-        # Save the adapter and greedy outcomes after each completed update.
-        model.save_pretrained(output_dir / f"adapter-cycle-{cycle}")
-        tokenizer.save_pretrained(output_dir / f"adapter-cycle-{cycle}")
+        # Save adapters only when the caller explicitly enables checkpoint saving.
+        if args.save_checkpoints:
+            model.save_pretrained(output_dir / f"adapter-cycle-{cycle}")
+            tokenizer.save_pretrained(output_dir / f"adapter-cycle-{cycle}")
         (output_dir / f"greedy-cycle-{cycle}.json").write_text(json.dumps(greedy_scores, indent=2), encoding="utf-8")
         if sample_rate >= args.target_sample_pass_rate:
             break
@@ -208,6 +210,7 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--device", choices=["cuda", "cpu"], default="cuda")
     parser.add_argument("--bf16", action=argparse.BooleanOptionalAction, default=True)
+    parser.add_argument("--save-checkpoints", action=argparse.BooleanOptionalAction, default=False)
     args = parser.parse_args()
     # Keep the pilot at eight tasks, 16 samples each, and bounded generation batches.
     if len(set(args.task_ids)) != 8 or args.samples_per_task != 16 or args.generation_batch_size < 1 or args.generation_batch_size > 16 or args.max_cycles < 1 or not 0.0 <= args.target_sample_pass_rate <= 1.0:

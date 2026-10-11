@@ -217,9 +217,10 @@ def run(args: argparse.Namespace) -> int:
         greedy = evaluate_greedy(model, tokenizer, task, args)
         metrics.update({"rs/sft_mean_loss": loss, "rs/sft_seconds": sft_seconds, "rs/greedy_seconds": time.perf_counter() - greedy_started, "rs/greedy_pass": int(greedy["passed_all"])})
         wandb.log(metrics)
-        # Save the adapter after each cycle so every completed update is recoverable.
-        model.save_pretrained(output_dir / f"adapter-cycle-{cycle}")
-        tokenizer.save_pretrained(output_dir / f"adapter-cycle-{cycle}")
+        # Save adapters only when the caller explicitly enables checkpoint saving.
+        if args.save_checkpoints:
+            model.save_pretrained(output_dir / f"adapter-cycle-{cycle}")
+            tokenizer.save_pretrained(output_dir / f"adapter-cycle-{cycle}")
         (output_dir / f"greedy-cycle-{cycle}.json").write_text(json.dumps(greedy, indent=2), encoding="utf-8")
         if greedy["passed_all"] and sample_pass_rate >= args.target_sample_pass_rate:
             break
@@ -252,6 +253,7 @@ def main() -> None:
     parser.add_argument("--device", choices=["cuda", "cpu"], default="cuda")
     parser.add_argument("--cpu-threads", type=int, default=1)
     parser.add_argument("--bf16", action=argparse.BooleanOptionalAction, default=True)
+    parser.add_argument("--save-checkpoints", action=argparse.BooleanOptionalAction, default=False)
     args = parser.parse_args()
     # Reject unsafe settings that could turn the tiny pilot into a full-data job.
     if args.samples != 16 or args.max_cycles < 1 or args.max_cycles > 5 or args.generation_batch_size < 1 or args.generation_batch_size > 2 or not 0.0 <= args.target_sample_pass_rate <= 1.0:
