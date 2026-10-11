@@ -359,7 +359,7 @@ def evaluate_greedy(model: Any, tokenizer: Any, tasks: list[dict[str, Any]], con
     return {"pass_count": passed, "task_count": len(rows), "pass_rate": passed / len(rows) if rows else 0.0, "details": rows}
 
 
-def collect_round(tasks: list[dict[str, Any]], model: Any, tokenizer: Any, config: dict[str, Any], store_path: Path, state_path: Path, trace_path: Path) -> dict[str, int]:
+def collect_round(tasks: list[dict[str, Any]], model: Any, tokenizer: Any, config: dict[str, Any], store_path: Path, state_path: Path, trace_path: Path) -> dict[str, Any]:
     """Generate one configurable candidate batch for each unresolved task and persist progress."""
     # Load per-task generation counts and restrict work to tasks without a saved passing solution.
     state = json.loads(state_path.read_text(encoding="utf-8")) if state_path.exists() else {"attempts": {}}
@@ -390,7 +390,7 @@ def collect_round(tasks: list[dict[str, Any]], model: Any, tokenizer: Any, confi
             append_jsonl(trace_path, {"tasks_in_chunk": len(chunk), "candidates": len(scored), "full_passes": sum(item["passed_all"] for item in scored), "new_solutions": added})
         print(f"collection progress: tasks {min(chunk_start + len(chunk), len(active))}/{len(active)}, new solutions {added_total}", flush=True)
     # Return aggregate counts for the current generation batch.
-    return {"active_tasks": len(active), "generated_candidates": generated_total, "full_passes": passed_total, "new_solutions": added_total}
+    return {"active_tasks": len(active), "generated_candidates": generated_total, "full_passes": passed_total, "new_solutions": added_total, "attempts": attempts}
 
 
 def run_pilot(config: dict[str, Any], output_dir: Path, solution_store_path: Path) -> None:
@@ -433,12 +433,12 @@ def run_pilot(config: dict[str, Any], output_dir: Path, solution_store_path: Pat
         cycle += 1
         cycle_started = time.perf_counter()
         counts = collect_round(tasks, model, tokenizer, config, solution_store_path, state_path, trace_path)
+        attempts = counts.pop("attempts")
         loss = train_one_epoch(model, tokenizer, tasks, solution_store_path, config, output_dir / "pilot-no-checkpoints", cycle)
         evaluation = evaluate_greedy(model, tokenizer, tasks, config)
         history.append(evaluation["pass_rate"])
         current_pass = evaluation["pass_rate"]
         store = load_solution_store(solution_store_path)
-        attempts = json.loads(state_path.read_text(encoding="utf-8")).get("attempts", {})
         solved_count = sum(str(task["task_id"]) in store for task in tasks)
         sampling_complete = all(str(task["task_id"]) in store or int(attempts.get(str(task["task_id"]), 0)) >= max_tries for task in tasks)
         ceiling = solved_count / len(tasks)
@@ -492,6 +492,7 @@ def run_full_collection(config: dict[str, Any], output_dir: Path, solution_store
     while True:
         round_index += 1
         counts = collect_round(tasks, model, tokenizer, config, solution_store_path, state_path, trace_path)
+        counts.pop("attempts")
         store = load_solution_store(solution_store_path)
         covered = sum(str(task["task_id"]) in store for task in tasks)
         record = {**counts, "covered_tasks": covered, "total_tasks": len(tasks), "coverage_rate": covered / len(tasks)}

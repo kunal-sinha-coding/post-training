@@ -4072,3 +4072,7 @@ The user clarified that the pilot should continue until greedy pass@1 reaches th
 The user clarified that 20 is a maximum per task, not a required sample count. The pilot must sample five completions for an unresolved task, execute them, save the first full pass, and stop sampling that task. Only unresolved tasks receive another batch, up to four batches. Replaced the fixed 20-sample measurement with the existing incremental collector and define the final ceiling as the solved-task fraction after every task is solved or exhausts four batches. The pilot continues SFT epochs until greedy pass@1 reaches that ceiling. The mistaken fixed-budget implementation was stopped after its first batch of 40 candidates; passing solutions already persisted to the append-only map remain intact. No full-data phase is running.
 
 The adaptive pilot implementation is committed as 8e568d9 and pushed to main. The resumed W&B run is yuqnvobr at https://wandb.ai/kunal-personal/grpo-mbpp/runs/yuqnvobr.
+
+## 2026-10-11. Make pilot state reads independent of the state file
+
+The first adaptive pilot process reached cycle 17 and then exited while decoding pilot-state.json immediately after a sampling round. The supervisor restarted it from the persisted state. The pilot metric remained 2/8 greedy pass@1 against a 4/8 pass@20 ceiling. Changed the collector to return the attempt map directly to its caller, so the pilot no longer rereads the state file immediately after a write. Python compilation passed. The active retry continues while this fix will apply to any later retry.
