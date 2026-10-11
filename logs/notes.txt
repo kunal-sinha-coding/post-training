@@ -4209,3 +4209,7 @@ The user asked to stop the original-only run and repeat the corrected rejection-
 
 Commit name: Namespace easy synthetic task IDs in the shared solution cache
 The first collection attempts found 47 existing accepted solutions from the harder synthetic task set whose `synthetic-{prompt_id}` IDs collided with easy synthetic IDs. Prompt and test fingerprints detected the collision and stopped collection safely before any cache write. Added a configurable synthetic task ID namespace and set this run to `easy`, which creates distinct keys such as `synthetic-easy-01-008`. Validation loaded the exact 5,910-task pool and found 371 matching original cache solutions with zero fingerprint mismatches. All prior cache entries remain unchanged. The supervisor retried the collection automatically under the same W&B run. Updated `logs/results.txt` with the diagnosis and active run identifiers.
+
+
+Commit name: Record easy synthetic rejection-SFT launch
+The supervisor is active after the cache ID namespace fix. Collection W&B run `eunaaomv` is live, with supervisor PID 830332 and candidate collection PID 830985. The RTX A5000 showed 96% utilization and about 3.6 GiB allocated during generation. The first 64-task chunk is still processing, so the first live collection metric is pending. The full data pool and checkpoint path remain isolated. The run uses end-of-epoch evaluation as configured. Updated the results record with the active W&B URL, current process status, and commit IDs.
