@@ -4053,3 +4053,9 @@ Ran 16 samples on a fixed random batch of 50 EvalPlus MBPP+ tasks for the base m
 
 Commit name: Correct the MBPP and MBPP+ table columns.
 Fixed a transposition in the logged pass-at-k table for k=2 through 16. Rechecked all four metric columns against the saved candidate scores and summary JSON. The experiment outputs and metrics did not change.
+
+Commit name: Add incremental rejection sampling SFT experiment.
+Added a separate YAML configuration, an append-only correct-solution map, a seeded eight-task plateau pilot, batched candidate generation with a four-attempt limit, full original plus harder-synthetic data collection, batch-eight response-only SFT, and an isolated ten-minute checkpoint supervisor targeting one million steps. The user explicitly requested candidate filtering against task tests, so the selected solution is the first completion that passes every unchanged task assertion. The new run starts from the cached Qwen2.5-Coder-0.5B base model and uses only `outputs/rejection-sampling-sft-incremental-20261011/full-training/checkpoints`; it does not load or write any GRPO checkpoint. The script and YAML passed syntax checks before launch.
+
+Commit name: Pin the experiment to the verified base-model copy.
+The shared Hugging Face Hub cache also contains an invalid empty Qwen config file. Confirmed the earlier evaluation artifact at `outputs/evalplus-pass16-mbpphard10x1009-seed42-20261011/base-model` has a valid Qwen2 model config, a 988,097,824-byte `model.safetensors` file, and no adapter config. Updated the new YAML to load this base-only copy by absolute path at runtime. This prevents accidental loading of a GRPO checkpoint or the corrupt Hub cache. The W&B SDK works, credentials are available from the local `.env`, and separate phase runs are configured.
