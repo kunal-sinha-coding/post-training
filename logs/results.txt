@@ -17522,3 +17522,11 @@ The collection-only supervisor exited after collection because `SKIP_TRAINING=1`
 SFT launch after initial collection
 W&B run: https://wandb.ai/kunal-personal/grpo-mbpp/runs/gewyuz7o
 Training data: 4,758 matching passing solutions from the configured 5,910-task original plus easy-synthetic pool. Training uses batch size 8 and a fresh LoRA adapter on the configured base model for epoch 1. The training config targets 1,000,000 epochs as an open-ended run. After each epoch, the run evaluates canonical EvalPlus and the full configured training pool. `collection_between_epochs: none` skips post-epoch generation. The 10-minute supervisor and checkpoint restart loop are active. Initial epoch status at launch: first loss 0.2493 at 0.0168 epoch.
+
+
+SFT cycle 1 results
+W&B run: https://wandb.ai/kunal-personal/grpo-mbpp/runs/gewyuz7o
+Checkpoint: `outputs/rejection-sampling-sft-original-plus-easy-20261011/full-training/cycles/epoch-000001/checkpoints/checkpoint-595`
+Training set: 4,758 fingerprint-matched accepted solutions were available for SFT. The full in-sample evaluation covered 5,910 configured tasks. Training batch size was 8. The first epoch completed 595 optimizer steps. Trainer reported 563.02 seconds for its `train()` call, which includes the end-of-epoch evaluation callback. The callback evaluation took 336.76 seconds.
+Metrics: canonical EvalPlus MBPP pass@1 was 0.537 and MBPP+ pass@1 was 0.431. On the full configured training pool, greedy pass@1 was 0.54484, 3,220/5,910 tasks passed all tests, and test-pass fraction was 0.70530. Mean SFT loss was 0.16669.
+The supervisor is configured for checkpoint-based restart and a 10-minute monitor interval. `collection_between_epochs` is `none`, so no new candidates are sampled after this epoch.

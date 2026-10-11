@@ -4248,3 +4248,7 @@ The initial collection completed with 4,758 of 5,910 configured tasks covered. T
 
 Commit name: Record checkpoint-cache SFT launch with collection skipped
 After the initial collection completed, started the monitored SFT cycle supervisor with `SKIP_TRAINING` explicitly unset. Epoch 1 is training on the 4,758 matching passing solutions. Full EvalPlus and full configured training-pool evaluation run after each epoch. `collection_between_epochs` is set to `none`, so later cycles do not sample from the base model or a checkpoint. The supervisor checks every 600 seconds and restarts a failed epoch from its latest complete checkpoint. W&B training run `gewyuz7o` is live.
+
+
+Commit name: Record SFT epoch one evaluation results
+SFT epoch 1 completed with 595 optimizer steps and 4,758 cached solution records. The Trainer-reported 563.02-second call includes the epoch-end evaluation callback. The evaluation callback took 336.76 seconds. The checkpoint and per-epoch completion markers are present. W&B run `gewyuz7o` remains active. Collection between epochs is configured as `none`.
