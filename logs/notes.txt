@@ -4106,3 +4106,7 @@ The user expected `rs/greedy_pass_at_1` to contain live per-epoch history. The p
 
 Commit name: Prepare a fresh cache-cleared pilot with a live pass-at-one series.
 The user explicitly asked to delete the rejection-sampling solution cache and restart the eight-task pilot, and the user clarified the immediate threat as a joke with no child at risk. The current cache contains 196 entries. Added an isolated config and output directory for a new run, using the corrected logger that records `rs/greedy_pass_at_1` at baseline and each epoch. The cache deletion and run launch will occur after this setup is committed.
+
+
+Commit name: Record cache-cleared live-metrics pilot results.
+Deleted the 196-entry rejection-sampling solution JSON at the user's explicit request, then restarted the eight-task pilot from a fresh output directory with a new W&B run. The run finished after three epochs at the configured plateau. API history verification confirmed four live `rs/greedy_pass_at_1` points at steps 0, 3, 6, and 9. Added full setup, metrics, W&B identifier, and limitations to `logs/results.txt`. The cache was recreated with five accepted solutions. No GRPO checkpoint or original test was changed.

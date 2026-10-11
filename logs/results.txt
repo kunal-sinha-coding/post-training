@@ -17296,3 +17296,21 @@ Greedy pass@1 was 2/8, or 25 percent, at baseline and after all three trained ep
 W&B run: `mbpp-incremental-rs-pilot8-cache-equivalent-20261011`, ID `srt60w5k`, https://wandb.ai/kunal-personal/grpo-mbpp/runs/srt60w5k. Remote API verification reports a finished run with four evaluation rows for baseline and cycles 1 through 3. Greedy pass@1 and cache-inclusive sample pass rate are present after every epoch. The freshness fields distinguish cache responses from new model generations.
 
 The run is an eight-task fixed-batch measurement and does not estimate held-out generalization. The cache-inclusive rate describes the configured generation pipeline, not independent model sampling, because cached completions repeat. The full-data run remains stopped at the user's request. No original tests or GRPO checkpoints were changed.
+
+
+------------------------------------------------------------------------
+Experiment: cache-cleared eight-task rejection-sampling SFT pilot with live W&B pass@1
+Date: 2026-10-11 UTC
+Status: plateau reached and run finished
+
+Purpose: Restart the isolated eight-task pilot after clearing the generated-solution cache and verify that pass@1 appears as a live W&B time series with multiple points.
+
+Setup: Config `configs/rejection-sampling-sft-pilot-cache-cleared-live.yaml`; command `HF_HUB_OFFLINE=1 python experiments/incremental_rejection_sampling_sft.py --config configs/rejection-sampling-sft-pilot-cache-cleared-live.yaml --phase pilot`. The run loaded the local base-only Qwen2.5-Coder-0.5B-Instruct copy at `outputs/evalplus-pass16-mbpphard10x1009-seed42-20261011/base-model`, with a fresh LoRA adapter (rank 8, alpha 16), learning rate 0.00001, SFT batch size 8, and no pilot checkpoint writes. It ran on NVIDIA RTX A5000. Task sampling used seed 42 and the eight original MBPP IDs 823, 659, 527, 960, 938, 851, 813, and 467. Original task tests were not modified. The cache `outputs/rejection-sampling-correct-solutions.json` had 196 entries before the explicit deletion and was absent at run start. It was recreated by the run and contained five accepted task solutions at completion. No GRPO checkpoint was changed.
+
+Selection and evaluation: The pilot generated ten candidates per unresolved task per batch, with at most two batches. The configured original task tests selected passing training candidates. Greedy pass@1 was measured separately on the same eight pilot tasks after each SFT epoch, so it is an in-sample pilot metric and not a held-out benchmark estimate. Cached solutions substitute for requested candidate slots in the cache-inclusive sample pass rate.
+
+Metrics: Baseline pass@1 was 2/8 (25%). Epochs 1, 2, and 3 remained 2/8 (25%), meeting the three-evaluation plateau rule within one percentage point. The measured candidate ceiling was 5/8 (62.5%), so pass@1 did not reach the ceiling. Epoch 1 generated 80 candidates, of which 16 passed (20%); four unique tasks gained accepted solutions. Epoch 2 generated 40 candidates, of which one passed (2.5% model-only); four cached tasks added 40 passing response slots, giving 41/80 (51.25%) cache-inclusive sample pass rate. Epoch 3 generated none; five cached tasks contributed 50/50 passing slots (100% cache-only rate), while the other three tasks had exhausted their two batches.
+
+W&B: Run `mbpp-incremental-rs-pilot8-cache-cleared-live-20261011`, ID `gak5gov6`, https://wandb.ai/kunal-personal/grpo-mbpp/runs/gak5gov6. W&B API verification after completion found four `rs/greedy_pass_at_1` history points at steps 0, 3, 6, and 9, all 0.25. These are baseline plus the three epochs, logged under the same key used by the graph. `rs/sample_pass_rate` has three epoch points: 0.20, 0.5125, and 1.0. The last point is cache-only. The logger change is code commit `4439a39`; the run config is commit `108b2c5`. The local evaluation evidence is in `outputs/rejection-sampling-sft-pilot-cache-cleared-live-20261011/pilot-evaluations.jsonl`.
+
+Limitations: This is an eight-task in-sample pilot. The 100% final sample rate is based only on cached passing responses, with zero fresh generations in that cycle. The full-data run remains stopped.
