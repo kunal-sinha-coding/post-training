@@ -4150,3 +4150,7 @@ The user approved a fresh full-data supervised fine-tuning run and required a pe
 
 Commit name: Fix W&B run ID creation for the SFT supervisor
 The first monitored startup loaded the base model but stopped before Trainer initialization because the installed W&B package does not expose `wandb.util.generate_id()`. No optimizer step or checkpoint was produced. The W&B run ID generator now uses Python's standard `secrets.token_hex(4)` and persists the ID so all retries resume the same W&B run. The ten-minute supervisor remains active and will retry the run after this fix.
+
+
+Commit name: Record successful start of monitored SFT training
+The W&B ID compatibility fix succeeded. Run `mbpp-reference-sft-full-restart1-20261011`, ID `800e584d`, is live at https://wandb.ai/kunal-personal/grpo-mbpp/runs/800e584d. Remote W&B history verification found 11 live rows for both SFT loss and learning rate through optimizer step 110. The monitor and Trainer are active. No epoch evaluation is complete yet.
