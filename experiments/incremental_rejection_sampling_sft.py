@@ -1,5 +1,5 @@
 # This experiment loads configured original and synthetic MBPP tasks, samples candidates in fixed batches, and stores one passing solution per task in an append-only JSON map.
-# It runs an eight-task pilot when configured, then collects full-data solutions and trains a separate LoRA model with resumable checkpoints.
+# It runs an eight-task pilot when configured, then collects full-data solutions with the selected backend and trains a separate LoRA model with resumable checkpoints.
 
 from __future__ import annotations
 
@@ -213,26 +213,70 @@ def load_model(config: dict[str, Any]) -> tuple[Any, Any]:
     return model, tokenizer
 
 
-def generate_and_score(model: Any, tokenizer: Any, tasks: list[dict[str, Any]], config: dict[str, Any], sample_count: int) -> list[dict[str, Any]]:
+def load_vllm_engine(config: dict[str, Any]) -> tuple[Any, Any]:
+    """Load the configured local tokenizer and a vLLM engine for sampling."""
+    from transformers import AutoTokenizer
+    from vllm import LLM
+
+    # Load the tokenizer for prompt truncation and decoded completion cleanup.
+    model_path = str(config["model_name_or_path"])
+    tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=False, local_files_only=True)
+    # Configure vLLM for the requested dtype, prompt length, batch capacity, and GPU memory budget.
+    engine = LLM(
+        model=model_path,
+        tokenizer=model_path,
+        dtype="bfloat16" if bool(config.get("bf16", True)) else "float16",
+        trust_remote_code=False,
+        seed=int(config.get("seed", 42)),
+        gpu_memory_utilization=float(config.get("vllm_gpu_memory_utilization", 0.7)),
+        max_model_len=int(config.get("vllm_max_model_len", 1536)),
+        max_num_seqs=int(config.get("generation_batch_size", 128)),
+        max_num_batched_tokens=int(config.get("vllm_max_num_batched_tokens", 16384)),
+    )
+    return engine, tokenizer
+
+
+def generate_candidates_vllm(engine: Any, tokenizer: Any, tasks: list[dict[str, Any]], sample_count: int, batch_size: int, max_new_tokens: int, temperature: float) -> tuple[list[dict[str, Any]], float]:
+    """Generate task candidates in bounded vLLM batches and return generation time."""
+    from experiments.rejection_sampling_sft import clean_completion
+    from vllm import SamplingParams
+
+    # Flatten tasks into one generation request for each requested candidate.
+    requests = [(task, sample_index) for task in tasks for sample_index in range(sample_count)]
+    outputs: list[dict[str, Any]] = []
+    started = time.perf_counter()
+    sampling = SamplingParams(temperature=temperature, top_p=0.95, max_tokens=max_new_tokens, truncate_prompt_tokens=1024)
+    # Preserve the existing truncation and candidate batch size while vLLM schedules decoding.
+    for start in range(0, len(requests), batch_size):
+        current = requests[start:start + batch_size]
+        tokenized = tokenizer([task["prompt"] for task, _ in current], truncation=True, max_length=1024)
+        prompt_tokens = tokenized["input_ids"]
+        prompts = [{"prompt_token_ids": ids} for ids in prompt_tokens]
+        generated = engine.generate(prompts, sampling, use_tqdm=False)
+        for result, (task, sample_index), ids in zip(generated, current, prompt_tokens):
+            outputs.append({"task_id": str(task["task_id"]), "sample_index": sample_index, "completion": clean_completion(result.outputs[0].text), "prompt_tokens": len(ids)})
+    return outputs, time.perf_counter() - started
+
+
+def generate_and_score(model: Any, tokenizer: Any, tasks: list[dict[str, Any]], config: dict[str, Any], sample_count: int) -> tuple[list[dict[str, Any]], float, float]:
     """Generate a bounded candidate batch for each task and execute all original assertions."""
     from experiments.rejection_sampling_sft import clean_completion
-    from experiments.rejection_sampling_sft_batch import generate_candidates
     from sandbox import score_completion_batch
 
-    # Generate the configured number of candidates for each task in shared GPU batches.
-    generated = generate_candidates(
-        model,
-        tokenizer,
-        tasks,
-        sample_count,
-        int(config["generation_batch_size"]),
-        int(config["max_new_tokens"]),
-        float(config["temperature"]),
-    )
+    # Select the configured backend and time generation independently from sandbox scoring.
+    if str(config.get("generation_backend", "transformers")).lower() == "vllm":
+        generated, generation_seconds = generate_candidates_vllm(model, tokenizer, tasks, sample_count, int(config["generation_batch_size"]), int(config["max_new_tokens"]), float(config["temperature"]))
+    else:
+        from experiments.rejection_sampling_sft_batch import generate_candidates
+
+        generation_started = time.perf_counter()
+        generated = generate_candidates(model, tokenizer, tasks, sample_count, int(config["generation_batch_size"]), int(config["max_new_tokens"]), float(config["temperature"]))
+        generation_seconds = time.perf_counter() - generation_started
     # Score each generated program against its unchanged task tests with bounded CPU concurrency.
     task_by_id = {str(task["task_id"]): task for task in tasks}
     completions = [f"Code:\n```python\n{clean_completion(item['completion'])}\n```" for item in generated]
     tests = [str(task_by_id[str(item["task_id"])]["test_code"]) for item in generated]
+    scoring_started = time.perf_counter()
     scores = score_completion_batch(
         completions,
         tests,
@@ -242,14 +286,16 @@ def generate_and_score(model: Any, tokenizer: Any, tasks: list[dict[str, Any]], 
         visible_test_count=int(config["visible_test_count"]),
     )
     # Keep all task-level assertion details for the pilot and compact records for full collection.
-    return [
+    scored = [
         {
             **item,
             **details,
             "passed_all": bool(details.get("total_tests", 0) > 0 and details.get("passed_tests") == details.get("total_tests")),
+            "generation_backend": str(config.get("generation_backend", "transformers")),
         }
         for item, (_, details) in zip(generated, scores)
     ]
+    return scored, generation_seconds, time.perf_counter() - scoring_started
 
 
 def accept_first_solutions(scored: list[dict[str, Any]], tasks_by_id: dict[str, dict[str, Any]], store_path: Path) -> int:
@@ -271,6 +317,7 @@ def accept_first_solutions(scored: list[dict[str, Any]], tasks_by_id: dict[str, 
                 "task_fingerprint": fingerprint,
                 "model_name_or_path": str(task.get("model_name_or_path", "Qwen/Qwen2.5-Coder-0.5B-Instruct")),
                 "selection": "first sampled candidate passing every unchanged task assertion",
+                "generation_backend": str(item.get("generation_backend", "transformers")),
                 "passed_tests": int(item["passed_tests"]),
                 "total_tests": int(item["total_tests"]),
                 "sample_index": int(item["sample_index"]),
@@ -388,9 +435,8 @@ def collect_round(tasks: list[dict[str, Any]], model: Any, tokenizer: Any, confi
         for task in chunk:
             task_id = str(task["task_id"])
             attempts[task_id] = attempts.get(task_id, 0) + 1
-        # Save attempt counts before generation so a restart cannot exceed the configured try limit.
-        write_json(state_path, {"attempts": attempts, "max_generation_batches_per_task": max_tries})
-        scored = generate_and_score(model, tokenizer, chunk, config, int(config["candidate_batch_size"]))
+        # Generate and execute one candidate batch for every task in this chunk.
+        scored, generation_seconds, scoring_seconds = generate_and_score(model, tokenizer, chunk, config, int(config["candidate_batch_size"]))
         generated_total += len(scored)
         passed_total += sum(item["passed_all"] for item in scored)
         added = accept_first_solutions(scored, {str(task["task_id"]): task for task in chunk}, store_path)
@@ -400,11 +446,13 @@ def collect_round(tasks: list[dict[str, Any]], model: Any, tokenizer: Any, confi
             for item in scored:
                 append_jsonl(trace_path, {key: value for key, value in item.items() if key != "completion" or bool(item["passed_all"])})
         else:
-            append_jsonl(trace_path, {"tasks_in_chunk": len(chunk), "candidates": len(scored), "full_passes": sum(item["passed_all"] for item in scored), "new_solutions": added})
+            append_jsonl(trace_path, {"tasks_in_chunk": len(chunk), "candidates": len(scored), "full_passes": sum(item["passed_all"] for item in scored), "new_solutions": added, "generation_backend": str(config.get("generation_backend", "transformers")), "generation_seconds": generation_seconds, "scoring_seconds": scoring_seconds})
+        # Persist attempts only after candidate outcomes are safely in the cache and trace.
+        write_json(state_path, {"attempts": attempts, "max_generation_batches_per_task": max_tries})
         print(f"collection progress: tasks {min(chunk_start + len(chunk), len(active))}/{len(active)}, new solutions {added_total}", flush=True)
         # Publish full-data progress as each bounded task chunk finishes.
         if progress_callback is not None:
-            progress_callback({"tasks_processed": min(chunk_start + len(chunk), len(active)), "active_task_count": len(active), "chunk_candidates": len(scored), "chunk_full_passes": sum(item["passed_all"] for item in scored), "generated_candidates": generated_total, "full_passes": passed_total, "new_solutions": added_total})
+            progress_callback({"tasks_processed": min(chunk_start + len(chunk), len(active)), "active_task_count": len(active), "chunk_candidates": len(scored), "chunk_full_passes": sum(item["passed_all"] for item in scored), "generated_candidates": generated_total, "full_passes": passed_total, "new_solutions": added_total, "generation_seconds": generation_seconds, "scoring_seconds": scoring_seconds})
     # Return actual generation counts and cache-equivalent candidate counts for this round.
     return {"active_tasks": len(active), "cached_tasks": len(cached_tasks), "cached_candidates": cached_candidate_total, "cached_full_passes": cached_candidate_total, "candidate_equivalents": generated_total + cached_candidate_total, "sample_passes_with_cache": passed_total + cached_candidate_total, "generated_candidates": generated_total, "full_passes": passed_total, "new_solutions": added_total, "attempts": attempts}
 
@@ -544,7 +592,11 @@ def run_full_collection(config: dict[str, Any], output_dir: Path, solution_store
     if expected is not None and len(tasks) != int(expected):
         raise ValueError(f"Expected {expected} full training tasks, but loaded {len(tasks)}.")
     torch.set_num_threads(int(config["torch_num_threads"]))
-    model, tokenizer = load_model(config)
+    # Load the configured generation backend without creating an SFT adapter.
+    if str(config.get("generation_backend", "transformers")).lower() == "vllm":
+        model, tokenizer = load_vllm_engine(config)
+    else:
+        model, tokenizer = load_model(config)
     state_path = output_dir / "full-collection-state.json"
     trace_path = output_dir / "full-collection-progress.jsonl"
     # Retry unresolved tasks in configured batches until all tasks pass or reach the try limit.
@@ -559,7 +611,9 @@ def run_full_collection(config: dict[str, Any], output_dir: Path, solution_store
         def log_chunk_progress(progress: dict[str, Any]) -> None:
             store = load_solution_store(solution_store_path)
             covered_tasks = sum(str(task["task_id"]) in store for task in tasks)
-            metrics = {"rs/full_round": round_index, "rs/full_collection_tasks_processed": progress["tasks_processed"], "rs/full_collection_active_tasks": progress["active_task_count"], "rs/full_solution_coverage": covered_tasks / len(tasks), "rs/full_solutions_added": progress["new_solutions"], "rs/full_candidates_generated": progress["generated_candidates"], "rs/full_passes": progress["full_passes"], "rs/full_cached_candidates": cached_candidates, "rs/full_candidate_equivalents": cached_candidates + progress["generated_candidates"]}
+            metrics = {"rs/full_round": round_index, "rs/full_collection_tasks_processed": progress["tasks_processed"], "rs/full_collection_active_tasks": progress["active_task_count"], "rs/full_solution_coverage": covered_tasks / len(tasks), "rs/full_solutions_added": progress["new_solutions"], "rs/full_candidates_generated": progress["generated_candidates"], "rs/full_passes": progress["full_passes"], "rs/full_cached_candidates": cached_candidates, "rs/full_candidate_equivalents": cached_candidates + progress["generated_candidates"], "rs/full_generation_seconds": progress["generation_seconds"], "rs/full_scoring_seconds": progress["scoring_seconds"], "rs/full_generation_vllm": int(str(config.get("generation_backend", "transformers")).lower() == "vllm")}
+            if progress["generation_seconds"] > 0:
+                metrics["rs/full_generated_candidates_per_second"] = progress["chunk_candidates"] / progress["generation_seconds"]
             # Log fresh model yield separately from the cache-inclusive response-slot rate.
             if progress["chunk_candidates"]:
                 metrics["rs/full_candidate_pass_rate"] = progress["chunk_full_passes"] / progress["chunk_candidates"]

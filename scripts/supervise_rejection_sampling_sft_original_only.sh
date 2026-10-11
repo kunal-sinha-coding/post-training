@@ -81,6 +81,12 @@ run_phase_until_complete() {
 # Finish the one-time collection before starting training.
 run_phase_until_complete full-collect "$COLLECT_LOG" "$OUTPUT/full-collection-summary.json"
 
+# Stop after collection when training is explicitly disabled for this supervisor run.
+if [[ "${SKIP_TRAINING:-0}" == "1" ]]; then
+    printf '[%s] Collection completed; training is disabled by SKIP_TRAINING.\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" | tee -a "$MONITOR"
+    exit 0
+fi
+
 # Restart training indefinitely from the newest complete checkpoint until the epoch cap is reached.
 attempt=0
 while [[ ! -s "$TRAIN_DIR/training-complete.json" ]]; do
