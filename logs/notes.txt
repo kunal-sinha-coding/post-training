@@ -4268,3 +4268,7 @@ After applying the 500-task evaluation change, stopped the idle supervisor only 
 
 Commit name: Record epoch two full EvalPlus and fixed-sample results
 Epoch 2 resumed from checkpoint 595 and completed with the fixed 500-task training evaluation. The sample ID manifest has 500 unique IDs, seed 42, and SHA256 `3d5cc2f0d803d099c15109909fa35aac092a9a2cd82aa810cce5cdebf17e99dd`. Full EvalPlus still covered all 378 tasks. The monitor supervisor remains active and inter-epoch collection is skipped.
+
+
+Commit name: Audit GRPO reward variation and late evaluation plateau
+Audited W&B run `mbpphard10x1009` after the user questioned whether low training assertion pass rates explain the EvalPlus plateau. W&B returned sampled reward diagnostics and the recorded EvalPlus evaluation history. The run had reward variation in most sampled 16-candidate task groups, and both assertion pass fraction and full-candidate pass fraction rose across the run. In the late interval, training greedy pass@1 continued to rise while MBPP and MBPP+ pass@1 fell slightly. Recorded that evidence and its sampling limits in `logs/results.txt`. Recommendation is to compare a lower-learning-rate continuation from the objective-relevant best checkpoint against an unchanged continuation before investing in generic test expansion or dynamic sampling. No code, tests, model artifacts, checkpoints, or training processes were modified.
