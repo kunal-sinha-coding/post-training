@@ -603,20 +603,15 @@ def run_full_collection(config: dict[str, Any], output_dir: Path, solution_store
     # Keep each post-epoch collection state and trace separate so retries cannot exhaust later cycles.
     cycle_dir = output_dir if collection_cycle_index is None else output_dir / "full-collection-cycles" / f"epoch-{collection_cycle_index:06d}"
     rounds_path = cycle_dir / "full-collection-rounds.jsonl"
-    # Try the current SFT adapter first, then use the base model for tasks that remain unresolved.
-    configured_source = str(config.get("collection_generation_source", "base_model"))
-    if configured_source == "checkpoint_then_base" and generation_adapter_path:
-        source_plan = [("current_sft_checkpoint", generation_adapter_path), ("base_model", None)]
-    elif configured_source == "checkpoint_then_base" and not generation_adapter_path:
-        print("No completed SFT checkpoint is available, so this collection uses only the base model.", flush=True)
-        source_plan = [("base_model", None)]
-    elif configured_source == "current_sft_checkpoint" and not generation_adapter_path:
-        print("No completed SFT checkpoint is available, so this collection uses the base model.", flush=True)
-        source_plan = [("base_model", None)]
-    elif configured_source == "current_sft_checkpoint":
-        source_plan = [("current_sft_checkpoint", generation_adapter_path)]
-    else:
-        source_plan = [("base_model", None)]
+    # Use the base model for initial collection and the configured source between SFT epochs.
+    configured_source = "base_model" if collection_cycle_index is None else str(config.get("collection_between_epochs", "none"))
+    if configured_source == "none":
+        raise ValueError("Collection was requested even though collection_between_epochs is set to none.")
+    if configured_source not in {"base_model", "current_sft_checkpoint"}:
+        raise ValueError(f"Unsupported collection_between_epochs mode: {configured_source}")
+    if configured_source == "current_sft_checkpoint" and not generation_adapter_path:
+        raise ValueError("Checkpoint collection requires the current SFT adapter path.")
+    source_plan = [(configured_source, generation_adapter_path if configured_source == "current_sft_checkpoint" else None)]
     round_index = 0
     for source_name, adapter_path in source_plan:
         # Load each configured source and release its model before moving to the next source.

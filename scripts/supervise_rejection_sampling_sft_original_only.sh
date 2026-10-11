@@ -90,11 +90,11 @@ if [[ "${SKIP_TRAINING:-0}" == "1" ]]; then
     exit 0
 fi
 
-# Run one complete SFT epoch and one unresolved-task collection cycle at a time when configured.
+# Run one complete SFT epoch at a time when the collection mode is configured.
 CYCLE_ENABLED="$(python - "$CONFIG" <<'PY'
 import sys, yaml
 with open(sys.argv[1], encoding="utf-8") as handle:
-    print(int(bool((yaml.safe_load(handle) or {}).get("collection_after_each_epoch", False))))
+    print(int("collection_between_epochs" in (yaml.safe_load(handle) or {})))
 PY
 )"
 if [[ "$CYCLE_ENABLED" == "1" ]]; then
@@ -139,25 +139,23 @@ PY
             printf '[%s] SFT epoch %s exited %s. %s. Restarting from %s.\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" "$epoch" "$status" "$reason" "${checkpoint:-previous epoch adapter or base model}" | tee -a "$MONITOR"
             sleep 15
         done
-        if [[ "$(python - "$CONFIG" <<'PY'
+        COLLECTION_MODE="$(python - "$CONFIG" <<'PY'
 import sys, yaml
 with open(sys.argv[1], encoding="utf-8") as handle:
-    print(int((yaml.safe_load(handle) or {}).get("collection_after_each_epoch", False)))
+    print((yaml.safe_load(handle) or {}).get("collection_between_epochs", "none"))
 PY
-)" == "1" ]]; then
+        )"
+        if [[ "$COLLECTION_MODE" != "none" ]]; then
             collection_sentinel="$OUTPUT/full-collection-cycles/$cycle_name/full-collection-summary.json"
             adapter_for_collection=""
-            if [[ "$(python - "$CONFIG" <<'PY'
-import sys, yaml
-with open(sys.argv[1], encoding="utf-8") as handle:
-    print((yaml.safe_load(handle) or {}).get("collection_generation_source", "base_model"))
-PY
-)" == "current_sft_checkpoint" ]]; then
+            if [[ "$COLLECTION_MODE" == "current_sft_checkpoint" ]]; then
                 adapter_for_collection="$cycle_dir/final-model"
             fi
             collection_args=(--collection-cycle-index "$epoch")
             if [[ -d "$adapter_for_collection" ]]; then collection_args+=(--generation-adapter-path "$adapter_for_collection"); fi
             run_phase_until_complete full-collect "$COLLECT_LOG" "$collection_sentinel" "${collection_args[@]}"
+        else
+            printf '[%s] Skipping collection between epochs by configuration.\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" | tee -a "$MONITOR"
         fi
     done
     python - "$TRAIN_DIR/training-complete.json" "$TARGET_EPOCHS" <<'PY'

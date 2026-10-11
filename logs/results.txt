@@ -17509,3 +17509,11 @@ Evaluation estimate: The prior full evaluation over 378 canonical EvalPlus tasks
 Post-epoch collection estimate: About 1,500 tasks remained uncovered at the last collection summary. Based on about 90 to 100 tasks per minute, the first checkpoint sampling batch may take 15 to 18 minutes. A second batch for tasks still unresolved may add more time. Estimated total is 15 to 30 minutes per cycle. This estimate is provisional because no checkpoint-only generation rate has been measured.
 Cache writes are included in collection time and should add under one minute of separate overhead. The monitor interval is 10 minutes. Estimated training, evaluation, and collection time per cycle is about 35 to 50 minutes, excluding restart recovery.
 Limitations: Rates vary with generation length, task execution time, checkpoint generation yield, engine startup, and infrastructure load.
+
+
+Initial original plus easy-synthetic collection completed
+W&B run: https://wandb.ai/kunal-personal/grpo-mbpp/runs/eunaaomv
+Data pool: 5,910 configured original and easy-synthetic tasks. Candidate source: base model through vLLM. Candidate procedure: up to two batches of 10 candidates per task, accepting the first solution that passes all configured tests. Existing accepted records were reused and not overwritten.
+Results: 4,758 of 5,910 tasks have matching passing cached solutions, for 80.51% coverage. The initial matching cache had 1,343 tasks. This collection added 3,415 new accepted task solutions across the two candidate rounds. The final round processed 1,077 tasks, generated 10,770 candidates, observed 520 fully passing candidates, and added 337 task solutions.
+Workflow update: Added the YAML field `collection_between_epochs` with supported values `base_model`, `current_sft_checkpoint`, and `none`. The current setting is `none`. Initial collection still uses the base model. After each SFT epoch, the supervisor skips collection, trains the next epoch on all matching cached solutions, and runs the configured full EvalPlus and training-pool evaluations. The training loop uses separate epoch directories and the existing ten-minute restart monitor.
+The collection-only supervisor exited after collection because `SKIP_TRAINING=1`; it did not start SFT. Training has not started yet.

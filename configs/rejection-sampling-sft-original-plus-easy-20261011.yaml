@@ -23,8 +23,7 @@ candidate_batch_size: 10
 max_generation_batches_per_task: 2
 generation_batch_size: 128
 generation_backend: vllm
-collection_after_each_epoch: true
-collection_generation_source: current_sft_checkpoint
+collection_between_epochs: none
 vllm_gpu_memory_utilization: 0.7
 vllm_max_model_len: 1536
 vllm_max_num_batched_tokens: 16384
