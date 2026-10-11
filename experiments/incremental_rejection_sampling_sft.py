@@ -187,10 +187,10 @@ def append_jsonl(path: Path, value: dict[str, Any]) -> None:
         os.fsync(handle.fileno())
 
 
-def load_model(config: dict[str, Any]) -> tuple[Any, Any]:
+def load_model(config: dict[str, Any], adapter_path: str | None = None) -> tuple[Any, Any]:
     """Load the configured base model and attach the pilot's LoRA adapter."""
     import torch
-    from peft import LoraConfig, get_peft_model
+    from peft import LoraConfig, PeftModel, get_peft_model
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
     # Load the configured base model from the local cache without resolving a training checkpoint.
@@ -200,23 +200,27 @@ def load_model(config: dict[str, Any]) -> tuple[Any, Any]:
         tokenizer.pad_token = tokenizer.eos_token
     dtype = torch.bfloat16 if bool(config.get("bf16", True)) else torch.float16
     model = AutoModelForCausalLM.from_pretrained(model_path, torch_dtype=dtype, device_map=str(config.get("device", "cuda")), trust_remote_code=False, local_files_only=True)
-    # Apply only the separately configured LoRA adapter to the base model.
-    model = get_peft_model(model, LoraConfig(
-        task_type="CAUSAL_LM",
-        r=int(config["lora_r"]),
-        lora_alpha=int(config["lora_alpha"]),
-        lora_dropout=float(config["lora_dropout"]),
-        target_modules=list(config["lora_target_modules"]),
-    ))
+    # Load a prior SFT adapter or create a fresh adapter on the configured base model.
+    if adapter_path:
+        model = PeftModel.from_pretrained(model, adapter_path, is_trainable=True)
+    else:
+        model = get_peft_model(model, LoraConfig(
+            task_type="CAUSAL_LM",
+            r=int(config["lora_r"]),
+            lora_alpha=int(config["lora_alpha"]),
+            lora_dropout=float(config["lora_dropout"]),
+            target_modules=list(config["lora_target_modules"]),
+        ))
     tokenizer.padding_side = "left"
     model.eval()
     return model, tokenizer
 
 
-def load_vllm_engine(config: dict[str, Any]) -> tuple[Any, Any]:
+def load_vllm_engine(config: dict[str, Any], adapter_path: str | None = None) -> tuple[Any, Any, Any | None]:
     """Load the configured local tokenizer and a vLLM engine for sampling."""
     from transformers import AutoTokenizer
     from vllm import LLM
+    from vllm.lora.request import LoRARequest
 
     # Load the tokenizer for prompt truncation and decoded completion cleanup.
     model_path = str(config["model_name_or_path"])
@@ -232,11 +236,15 @@ def load_vllm_engine(config: dict[str, Any]) -> tuple[Any, Any]:
         max_model_len=int(config.get("vllm_max_model_len", 1536)),
         max_num_seqs=int(config.get("generation_batch_size", 128)),
         max_num_batched_tokens=int(config.get("vllm_max_num_batched_tokens", 16384)),
+        enable_lora=bool(adapter_path),
+        max_lora_rank=int(config.get("lora_r", 16)) if adapter_path else None,
     )
-    return engine, tokenizer
+    # Bind the selected SFT adapter to this collection cycle when one was configured.
+    lora_request = LoRARequest("rejection-sft", 1, str(adapter_path)) if adapter_path else None
+    return engine, tokenizer, lora_request
 
 
-def generate_candidates_vllm(engine: Any, tokenizer: Any, tasks: list[dict[str, Any]], sample_count: int, batch_size: int, max_new_tokens: int, temperature: float) -> tuple[list[dict[str, Any]], float]:
+def generate_candidates_vllm(engine: Any, tokenizer: Any, tasks: list[dict[str, Any]], sample_count: int, batch_size: int, max_new_tokens: int, temperature: float, lora_request: Any | None = None) -> tuple[list[dict[str, Any]], float]:
     """Generate task candidates in bounded vLLM batches and return generation time."""
     from experiments.rejection_sampling_sft import clean_completion
     from vllm import SamplingParams
@@ -252,7 +260,7 @@ def generate_candidates_vllm(engine: Any, tokenizer: Any, tasks: list[dict[str, 
         tokenized = tokenizer([task["prompt"] for task, _ in current], truncation=True, max_length=1024)
         prompt_tokens = tokenized["input_ids"]
         prompts = [{"prompt_token_ids": ids} for ids in prompt_tokens]
-        generated = engine.generate(prompts, sampling, use_tqdm=False)
+        generated = engine.generate(prompts, sampling, use_tqdm=False, lora_request=lora_request)
         for result, (task, sample_index), ids in zip(generated, current, prompt_tokens):
             outputs.append({"task_id": str(task["task_id"]), "sample_index": sample_index, "completion": clean_completion(result.outputs[0].text), "prompt_tokens": len(ids)})
     return outputs, time.perf_counter() - started
@@ -265,7 +273,7 @@ def generate_and_score(model: Any, tokenizer: Any, tasks: list[dict[str, Any]], 
 
     # Select the configured backend and time generation independently from sandbox scoring.
     if str(config.get("generation_backend", "transformers")).lower() == "vllm":
-        generated, generation_seconds = generate_candidates_vllm(model, tokenizer, tasks, sample_count, int(config["generation_batch_size"]), int(config["max_new_tokens"]), float(config["temperature"]))
+        generated, generation_seconds = generate_candidates_vllm(model, tokenizer, tasks, sample_count, int(config["generation_batch_size"]), int(config["max_new_tokens"]), float(config["temperature"]), config.get("_vllm_lora_request"))
     else:
         from experiments.rejection_sampling_sft_batch import generate_candidates
 
@@ -580,8 +588,8 @@ def run_pilot(config: dict[str, Any], output_dir: Path, solution_store_path: Pat
     print(f"PILOT PLATEAU REACHED after {cycle} epochs on task IDs {pilot_ids}.", flush=True)
 
 
-def run_full_collection(config: dict[str, Any], output_dir: Path, solution_store_path: Path) -> None:
-    """Collect one passing solution per task from the full original plus harder synthetic dataset."""
+def run_full_collection(config: dict[str, Any], output_dir: Path, solution_store_path: Path, collection_cycle_index: int | None = None, generation_adapter_path: str | None = None) -> None:
+    """Collect passing solutions for unresolved tasks from the configured task pool."""
     import torch
 
     # Start a phase-specific W&B run before recording full-data collection metrics.
@@ -592,64 +600,91 @@ def run_full_collection(config: dict[str, Any], output_dir: Path, solution_store
     if expected is not None and len(tasks) != int(expected):
         raise ValueError(f"Expected {expected} full training tasks, but loaded {len(tasks)}.")
     torch.set_num_threads(int(config["torch_num_threads"]))
-    # Load the configured generation backend without creating an SFT adapter.
-    if str(config.get("generation_backend", "transformers")).lower() == "vllm":
-        model, tokenizer = load_vllm_engine(config)
+    # Keep each post-epoch collection state and trace separate so retries cannot exhaust later cycles.
+    cycle_dir = output_dir if collection_cycle_index is None else output_dir / "full-collection-cycles" / f"epoch-{collection_cycle_index:06d}"
+    rounds_path = cycle_dir / "full-collection-rounds.jsonl"
+    # Try the current SFT adapter first, then use the base model for tasks that remain unresolved.
+    configured_source = str(config.get("collection_generation_source", "base_model"))
+    if configured_source == "checkpoint_then_base" and generation_adapter_path:
+        source_plan = [("current_sft_checkpoint", generation_adapter_path), ("base_model", None)]
+    elif configured_source == "checkpoint_then_base" and not generation_adapter_path:
+        print("No completed SFT checkpoint is available, so this collection uses only the base model.", flush=True)
+        source_plan = [("base_model", None)]
+    elif configured_source == "current_sft_checkpoint" and not generation_adapter_path:
+        print("No completed SFT checkpoint is available, so this collection uses the base model.", flush=True)
+        source_plan = [("base_model", None)]
+    elif configured_source == "current_sft_checkpoint":
+        source_plan = [("current_sft_checkpoint", generation_adapter_path)]
     else:
-        model, tokenizer = load_model(config)
-    state_path = output_dir / "full-collection-state.json"
-    trace_path = output_dir / "full-collection-progress.jsonl"
-    # Retry unresolved tasks in configured batches until all tasks pass or reach the try limit.
+        source_plan = [("base_model", None)]
     round_index = 0
-    while True:
-        round_index += 1
-        # Count all prior passing records as cached slots at the start of this round.
-        round_store = load_solution_store(solution_store_path)
-        cached_task_count = sum(str(task["task_id"]) in round_store for task in tasks)
-        cached_candidates = cached_task_count * int(config["candidate_batch_size"])
-        # Log solution coverage and candidate yield after every completed task chunk.
-        def log_chunk_progress(progress: dict[str, Any]) -> None:
-            store = load_solution_store(solution_store_path)
-            covered_tasks = sum(str(task["task_id"]) in store for task in tasks)
-            metrics = {"rs/full_round": round_index, "rs/full_collection_tasks_processed": progress["tasks_processed"], "rs/full_collection_active_tasks": progress["active_task_count"], "rs/full_solution_coverage": covered_tasks / len(tasks), "rs/full_solutions_added": progress["new_solutions"], "rs/full_candidates_generated": progress["generated_candidates"], "rs/full_passes": progress["full_passes"], "rs/full_cached_candidates": cached_candidates, "rs/full_candidate_equivalents": cached_candidates + progress["generated_candidates"], "rs/full_generation_seconds": progress["generation_seconds"], "rs/full_scoring_seconds": progress["scoring_seconds"], "rs/full_generation_vllm": int(str(config.get("generation_backend", "transformers")).lower() == "vllm")}
-            if progress["generation_seconds"] > 0:
-                metrics["rs/full_generated_candidates_per_second"] = progress["chunk_candidates"] / progress["generation_seconds"]
-            # Log fresh model yield separately from the cache-inclusive response-slot rate.
-            if progress["chunk_candidates"]:
-                metrics["rs/full_candidate_pass_rate"] = progress["chunk_full_passes"] / progress["chunk_candidates"]
-            progress_denominator = cached_candidates + progress["generated_candidates"]
-            if progress_denominator:
-                metrics["rs/full_sample_pass_rate"] = (cached_candidates + progress["full_passes"]) / progress_denominator
-            if wandb_run is not None:
-                wandb_run.log(metrics)
-            append_jsonl(output_dir / "full-collection-rounds.jsonl", {"event": "chunk_progress", **metrics})
+    for source_name, adapter_path in source_plan:
+        # Load each configured source and release its model before moving to the next source.
+        if str(config.get("generation_backend", "transformers")).lower() == "vllm":
+            model, tokenizer, lora_request = load_vllm_engine(config, adapter_path)
+            config["_vllm_lora_request"] = lora_request
+        else:
+            model, tokenizer = load_model(config, adapter_path)
+        state_path = cycle_dir / f"full-collection-state-{source_name}.json"
+        trace_path = cycle_dir / f"full-collection-progress-{source_name}.jsonl"
+        # Retry unresolved tasks in configured batches until this source reaches its try limit.
+        while True:
+            round_index += 1
+            # Count all prior passing records as cached slots at the start of this round.
+            round_store = load_solution_store(solution_store_path)
+            cached_task_count = sum(str(task["task_id"]) in round_store for task in tasks)
+            cached_candidates = cached_task_count * int(config["candidate_batch_size"])
+            # Log solution coverage and candidate yield after every completed task chunk.
+            def log_chunk_progress(progress: dict[str, Any]) -> None:
+                store = load_solution_store(solution_store_path)
+                covered_tasks = sum(str(task["task_id"]) in store for task in tasks)
+                metrics = {"rs/full_round": round_index, "rs/full_collection_cycle": collection_cycle_index or 0, "rs/full_collection_source": source_name, "rs/full_collection_tasks_processed": progress["tasks_processed"], "rs/full_collection_active_tasks": progress["active_task_count"], "rs/full_solution_coverage": covered_tasks / len(tasks), "rs/full_solutions_added": progress["new_solutions"], "rs/full_candidates_generated": progress["generated_candidates"], "rs/full_passes": progress["full_passes"], "rs/full_cached_candidates": cached_candidates, "rs/full_candidate_equivalents": cached_candidates + progress["generated_candidates"], "rs/full_generation_seconds": progress["generation_seconds"], "rs/full_scoring_seconds": progress["scoring_seconds"], "rs/full_generation_vllm": int(str(config.get("generation_backend", "transformers")).lower() == "vllm")}
+                if progress["generation_seconds"] > 0:
+                    metrics["rs/full_generated_candidates_per_second"] = progress["chunk_candidates"] / progress["generation_seconds"]
+                # Log fresh model yield separately from the cache-inclusive response-slot rate.
+                if progress["chunk_candidates"]:
+                    metrics["rs/full_candidate_pass_rate"] = progress["chunk_full_passes"] / progress["chunk_candidates"]
+                progress_denominator = cached_candidates + progress["generated_candidates"]
+                if progress_denominator:
+                    metrics["rs/full_sample_pass_rate"] = (cached_candidates + progress["full_passes"]) / progress_denominator
+                if wandb_run is not None:
+                    wandb_run.log(metrics)
+                append_jsonl(rounds_path, {"event": "chunk_progress", **metrics})
 
-        counts = collect_round(tasks, model, tokenizer, config, solution_store_path, state_path, trace_path, log_chunk_progress)
-        counts.pop("attempts")
-        store = load_solution_store(solution_store_path)
-        covered = sum(str(task["task_id"]) in store for task in tasks)
-        record = {**counts, "covered_tasks": covered, "total_tasks": len(tasks), "coverage_rate": covered / len(tasks)}
-        append_jsonl(output_dir / "full-collection-rounds.jsonl", record)
-        if wandb_run is not None:
-            full_metrics = {"rs/full_solution_coverage": record["coverage_rate"], "rs/full_solutions_added": counts["new_solutions"], "rs/full_round": round_index, "rs/full_candidate_equivalents": counts["candidate_equivalents"], "rs/full_cached_candidates": counts["cached_candidates"], "rs/full_generated_candidates": counts["generated_candidates"], "rs/full_cache_full_passes": counts["cached_full_passes"]}
-            # Keep model-only yield separate and include cached passing slots in the overall sample rate.
-            if counts["generated_candidates"]:
-                full_metrics["rs/full_candidate_pass_rate"] = counts["full_passes"] / counts["generated_candidates"]
-            if counts["candidate_equivalents"]:
-                full_metrics["rs/full_sample_pass_rate"] = counts["sample_passes_with_cache"] / counts["candidate_equivalents"]
-            wandb_run.log(full_metrics)
-        print(json.dumps(record), flush=True)
-        if counts["active_tasks"] == 0:
-            break
+            counts = collect_round(tasks, model, tokenizer, config, solution_store_path, state_path, trace_path, log_chunk_progress)
+            counts.pop("attempts")
+            store = load_solution_store(solution_store_path)
+            covered = sum(str(task["task_id"]) in store for task in tasks)
+            record = {**counts, "covered_tasks": covered, "total_tasks": len(tasks), "coverage_rate": covered / len(tasks), "source": source_name}
+            append_jsonl(rounds_path, record)
+            if wandb_run is not None:
+                full_metrics = {"rs/full_solution_coverage": record["coverage_rate"], "rs/full_solutions_added": counts["new_solutions"], "rs/full_round": round_index, "rs/full_collection_source": source_name, "rs/full_candidate_equivalents": counts["candidate_equivalents"], "rs/full_cached_candidates": counts["cached_candidates"], "rs/full_generated_candidates": counts["generated_candidates"], "rs/full_cache_full_passes": counts["cached_full_passes"]}
+                # Keep model-only yield separate and include cached passing slots in the overall sample rate.
+                if counts["generated_candidates"]:
+                    full_metrics["rs/full_candidate_pass_rate"] = counts["full_passes"] / counts["generated_candidates"]
+                if counts["candidate_equivalents"]:
+                    full_metrics["rs/full_sample_pass_rate"] = counts["sample_passes_with_cache"] / counts["candidate_equivalents"]
+                wandb_run.log(full_metrics)
+            print(json.dumps(record), flush=True)
+            if counts["active_tasks"] == 0:
+                break
+        # Release GPU resources so the next source can load its own weights safely.
+        del model
+        if str(config.get("generation_backend", "transformers")).lower() == "vllm":
+            del tokenizer, lora_request
+        import gc
+        gc.collect()
+        torch.cuda.empty_cache()
     # Record the final coverage and persistent solution-store path for the training stage.
-    write_json(output_dir / "full-collection-summary.json", {"total_tasks": len(tasks), "covered_tasks": covered, "coverage_rate": covered / len(tasks), "solution_store": str(solution_store_path), "attempt_limit": int(config["max_generation_batches_per_task"])})
+    summary_path = cycle_dir / "full-collection-summary.json"
+    write_json(summary_path, {"total_tasks": len(tasks), "covered_tasks": covered, "coverage_rate": covered / len(tasks), "solution_store": str(solution_store_path), "attempt_limit_per_source": int(config["max_generation_batches_per_task"]), "collection_cycle_index": collection_cycle_index, "generation_model_sources": [source for source, _ in source_plan]})
     if wandb_run is not None:
         wandb_run.summary["rs/full_solution_coverage"] = covered / len(tasks)
         wandb_run.summary["rs/full_solutions"] = covered
         wandb_run.finish()
 
 
-def run_full_training(config: dict[str, Any], output_dir: Path, solution_store_path: Path, resume_from_checkpoint: str | None) -> None:
+def run_full_training(config: dict[str, Any], output_dir: Path, solution_store_path: Path, resume_from_checkpoint: str | None, cycle_index: int | None = None, adapter_path: str | None = None) -> None:
     """Train on cached passing original-task solutions and evaluate both full sets each epoch."""
     import torch
     from data import build_sft_dataset
@@ -660,10 +695,11 @@ def run_full_training(config: dict[str, Any], output_dir: Path, solution_store_p
     wandb_run = start_wandb(config, "full_train", output_dir)
     # Bind live full-evaluation metrics to optimizer steps in the W&B history.
     if wandb_run is not None:
-        wandb_run.define_metric("optimizer_step")
-        wandb_run.define_metric("sft/*", step_metric="optimizer_step")
-        wandb_run.define_metric("evalplus/*", step_metric="optimizer_step")
-        wandb_run.define_metric("training_set/*", step_metric="optimizer_step")
+        if cycle_index is None:
+            wandb_run.define_metric("optimizer_step")
+            wandb_run.define_metric("sft/*", step_metric="optimizer_step")
+            wandb_run.define_metric("evalplus/*", step_metric="optimizer_step")
+            wandb_run.define_metric("training_set/*", step_metric="optimizer_step")
     # Load the original task pool and select its accepted solution records for SFT.
     tasks = load_training_tasks(config)
     records = build_sft_records(tasks, solution_store_path)
@@ -672,9 +708,11 @@ def run_full_training(config: dict[str, Any], output_dir: Path, solution_store_p
     if len(records) < int(config["sft_per_device_train_batch_size"]):
         print(f"The accepted set has {len(records)} rows, so the final SFT batch will be smaller than the configured batch size.", flush=True)
     torch.set_num_threads(int(config["torch_num_threads"]))
-    model, tokenizer = load_model(config)
+    model, tokenizer = load_model(config, adapter_path)
     train_dataset = build_sft_dataset(records, tokenizer, config)
     training_dir = output_dir / "full-training"
+    if cycle_index is not None:
+        training_dir = training_dir / "cycles" / f"epoch-{cycle_index:06d}"
     checkpoint_dir = training_dir / "checkpoints"
     metrics_path = training_dir / "training-metrics.jsonl"
     # Evaluate canonical EvalPlus and every original training task after each saved epoch.
@@ -683,8 +721,9 @@ def run_full_training(config: dict[str, Any], output_dir: Path, solution_store_p
 
         def evaluate_saved_epoch(self, state: Any) -> None:
             """Evaluate a saved epoch checkpoint once and persist its completion marker."""
-            epoch = int(round(float(state.epoch or 0)))
-            if epoch <= 0:
+            local_epoch = int(round(float(state.epoch or 0)))
+            epoch = cycle_index if cycle_index is not None else local_epoch
+            if local_epoch <= 0 or epoch <= 0:
                 return
             checkpoint_path = checkpoint_dir / f"checkpoint-{int(state.global_step)}"
             marker_path = training_dir / f"epoch-{epoch:06d}.complete.json"
@@ -698,9 +737,13 @@ def run_full_training(config: dict[str, Any], output_dir: Path, solution_store_p
                 evalplus = run_qwen_evalplus(checkpoint_path, training_dir, f"epoch-{epoch:06d}")
                 training_eval = evaluate_training_mbpp(checkpoint_path, tasks, config, f"training-epoch-{epoch:06d}")
                 result = {"kind": "full_epoch_evaluation", "epoch": epoch, "step": int(state.global_step), "evalplus": evalplus["metrics"], "training_set": training_eval["metrics"], "elapsed_seconds": time.perf_counter() - started, "checkpoint": str(checkpoint_path)}
+                if cycle_index is not None:
+                    result["cycle_index"] = cycle_index
                 append_jsonl(training_dir / "evaluations.jsonl", result)
                 if wandb_run is not None:
                     payload = {"optimizer_step": int(state.global_step), "sft/epoch": epoch, "evaluation/elapsed_seconds": result["elapsed_seconds"]}
+                    if cycle_index is not None:
+                        payload["sft/cycle_index"] = cycle_index
                     payload.update({f"evalplus/{key}": value for key, value in evalplus["metrics"].items() if isinstance(value, (int, float))})
                     payload.update({f"training_set/{key}": value for key, value in training_eval["metrics"].items() if isinstance(value, (int, float))})
                     wandb_run.log(payload)
@@ -718,7 +761,10 @@ def run_full_training(config: dict[str, Any], output_dir: Path, solution_store_p
             if logs:
                 append_jsonl(metrics_path, {"kind": "training", "step": int(state.global_step), "epoch": float(state.epoch or 0), **logs})
                 if wandb_run is not None:
-                    wandb_run.log({"optimizer_step": int(state.global_step), **{f"sft/{key}": value for key, value in logs.items() if isinstance(value, (int, float))}})
+                    payload = {"optimizer_step": int(state.global_step), **{f"sft/{key}": value for key, value in logs.items() if isinstance(value, (int, float))}}
+                    if cycle_index is not None:
+                        payload["sft/cycle_index"] = cycle_index
+                    wandb_run.log(payload)
             return control
 
         def on_train_begin(self, args: Any, state: Any, control: Any, **kwargs: Any) -> Any:
@@ -736,7 +782,7 @@ def run_full_training(config: dict[str, Any], output_dir: Path, solution_store_p
         output_dir=str(checkpoint_dir),
         learning_rate=float(config["learning_rate"]),
         max_steps=-1,
-        num_train_epochs=int(config["target_epochs"]),
+        num_train_epochs=1 if cycle_index is not None else int(config["target_epochs"]),
         per_device_train_batch_size=int(config["sft_per_device_train_batch_size"]),
         gradient_accumulation_steps=int(config["gradient_accumulation_steps"]),
         logging_steps=int(config["logging_steps"]),
@@ -759,11 +805,11 @@ def run_full_training(config: dict[str, Any], output_dir: Path, solution_store_p
         callbacks=[ProgressCallback()],
     )
     trainer.train(resume_from_checkpoint=resume_from_checkpoint or None)
-    # Save a completion sentinel only after the configured epoch limit has finished.
-    write_json(training_dir / "training-complete.json", {"global_step": int(trainer.state.global_step), "target_epochs": int(config["target_epochs"]), "solution_count": len(records), "checkpoint_dir": str(checkpoint_dir)})
+    # Save the latest adapter before marking the configured training phase complete.
     trainer.save_model(str(training_dir / "final-model"))
+    write_json(training_dir / "training-complete.json", {"global_step": int(trainer.state.global_step), "target_epochs": 1 if cycle_index is not None else int(config["target_epochs"]), "cycle_index": cycle_index, "solution_count": len(records), "checkpoint_dir": str(checkpoint_dir), "final_model": str(training_dir / "final-model")})
     if wandb_run is not None:
-        wandb_run.summary["rs/full_training_epochs"] = int(round(float(trainer.state.epoch or 0)))
+        wandb_run.summary["rs/full_training_epochs"] = cycle_index if cycle_index is not None else int(round(float(trainer.state.epoch or 0)))
         wandb_run.finish()
 
 
@@ -774,6 +820,10 @@ def main() -> None:
     parser.add_argument("--config", required=True)
     parser.add_argument("--phase", choices=["pilot", "full-collect", "full-train"], required=True)
     parser.add_argument("--resume-from-checkpoint")
+    parser.add_argument("--cycle-index", type=int)
+    parser.add_argument("--adapter-path")
+    parser.add_argument("--collection-cycle-index", type=int)
+    parser.add_argument("--generation-adapter-path")
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     config_path = Path(args.config)
@@ -793,9 +843,9 @@ def main() -> None:
     if args.phase == "pilot":
         run_pilot(config, output_dir, store_path)
     elif args.phase == "full-collect":
-        run_full_collection(config, output_dir, store_path)
+        run_full_collection(config, output_dir, store_path, args.collection_cycle_index, args.generation_adapter_path)
     else:
-        run_full_training(config, output_dir, store_path, args.resume_from_checkpoint)
+        run_full_training(config, output_dir, store_path, args.resume_from_checkpoint, args.cycle_index, args.adapter_path)
 
 
 if __name__ == "__main__":

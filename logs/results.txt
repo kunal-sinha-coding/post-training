@@ -17485,3 +17485,13 @@ Code identifiers: Active code changes are committed in the repository commit nam
 
 Limitations: The earlier Transformers generation process was interrupted during a timing comparison when the user asked to prioritize the full run. It produced no benchmark results that are reported here. Current throughput is a live operational estimate from two vLLM chunks, not a controlled backend-to-backend benchmark. Some task IDs in the shared cache may belong to unrelated synthetic pools and are not part of this configured data pool.
 
+
+
+Experiment workflow configuration: original plus easy synthetic rejection-SFT
+Purpose: Configure collection before and after each SFT epoch, with a base-model-only initial collection and checkpoint-first/base-fallback collection after later epochs.
+Data: Existing configured pool of 5,910 original and easy synthetic tasks. Hard synthetic tasks are excluded by the YAML loader.
+Candidate selection: For each unresolved task, accept the first candidate that passes all configured tests. Keep solution storage append-only and skip tasks with a matching accepted cache record. The base-model fallback is a second pass after checkpoint attempts reach the configured per-source attempt limit.
+Configuration change: `collection_after_each_epoch: true` and `collection_generation_source: checkpoint_then_base`. The first collection has no adapter path and therefore uses only the base model.
+Code paths: `experiments/incremental_rejection_sampling_sft.py`, `scripts/supervise_rejection_sampling_sft_original_only.sh`, and `configs/rejection-sampling-sft-original-plus-easy-20261011.yaml`.
+Validation: Python compilation, shell syntax validation, YAML policy assertions, and `git diff --check` on the three changed implementation files passed. No training was started.
+Limitations: The collection-cycle code is prepared for a future full run. The currently active vLLM job was started in collect-only mode and is unaffected.
