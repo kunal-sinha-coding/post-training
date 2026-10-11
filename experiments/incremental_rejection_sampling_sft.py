@@ -1,5 +1,5 @@
-# This experiment loads original and harder MBPP tasks, samples candidates in fixed batches, and stores one passing solution per task in an append-only JSON map.
-# It runs an eight-task pilot until greedy pass@1 reaches adaptive pass@20 coverage, then collects full-data solutions and trains a separate LoRA model with resumable checkpoints.
+# This experiment loads configured original and synthetic MBPP tasks, samples candidates in fixed batches, and stores one passing solution per task in an append-only JSON map.
+# It runs an eight-task pilot when configured, then collects full-data solutions and trains a separate LoRA model with resumable checkpoints.
 
 from __future__ import annotations
 
@@ -51,7 +51,13 @@ def load_training_tasks(config: dict[str, Any]) -> list[dict[str, Any]]:
     synthetic_path = config.get("synthetic_training_tasks_path")
     if synthetic_path:
         synthetic_tasks = load_generated_training_tasks(synthetic_path, bool(config.get("include_generic_arguments", False)), config.get("visible_test_count"))
-        tasks.extend(dict(synthetic_tasks[index]) for index in range(len(synthetic_tasks)))
+        # Copy synthetic rows before applying a configured namespace to their cache IDs.
+        synthetic_records = [dict(synthetic_tasks[index]) for index in range(len(synthetic_tasks))]
+        namespace = str(config.get("synthetic_task_id_namespace", "")).strip()
+        if namespace:
+            for synthetic_task in synthetic_records:
+                synthetic_task["task_id"] = f"synthetic-{namespace}-{str(synthetic_task['task_id']).removeprefix('synthetic-')}"
+        tasks.extend(synthetic_records)
     # Apply the canonical EvalPlus ID and task-text exclusion to both data sources.
     from evalplus.data import get_mbpp_plus
 

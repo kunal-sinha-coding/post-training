@@ -7,6 +7,7 @@ evalplus_dataset_name: evalplus/mbppplus
 evalplus_split: test
 visible_test_count: 1
 synthetic_training_tasks_path: analysis/mbpp_category_synthetic_tasks_api10x.jsonl
+synthetic_task_id_namespace: easy
 expected_train_samples: 5910
 output_dir: outputs/rejection-sampling-sft-original-plus-easy-20261011
 solution_store_path: outputs/rejection-sampling-correct-solutions.json
