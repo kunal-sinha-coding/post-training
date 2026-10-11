@@ -4260,3 +4260,7 @@ The user asked to reduce in-sample evaluation to 500 tasks while keeping the sam
 
 Commit name: Resume SFT cycles from complete checkpoint
 Updated the cycle supervisor to use the prior cycle’s newest complete Trainer checkpoint as the next cycle’s adapter source. This makes the authorized restart after epoch one load checkpoint-595, while retaining final-model fallback if no complete Trainer checkpoint exists.
+
+
+Commit name: Restart SFT from checkpoint with fixed training evaluation
+After applying the 500-task evaluation change, stopped the idle supervisor only after epoch 1 had completed and no trainer process was active. Restarted the supervisor from checkpoint-595 as epoch 2. The fixed random task-ID sample will be created for this epoch's training-pool evaluation and reused by later epochs. The monitor loop remains active at ten-minute intervals. W&B continues the existing training run `gewyuz7o`.
