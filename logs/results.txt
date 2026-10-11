@@ -17170,20 +17170,20 @@ Results. The checkpoint passed more tasks at every k. Values below are estimated
 | k | Base MBPP | Checkpoint MBPP | Base MBPP+ | Checkpoint MBPP+ |
 |---:|---:|---:|---:|---:|
 | 1 | 0.4537 | 0.6200 | 0.3675 | 0.4925 |
-| 2 | 0.4875 | 0.5760 | 0.5822 | 0.7077 |
-| 3 | 0.5439 | 0.6105 | 0.6417 | 0.7420 |
-| 4 | 0.5787 | 0.6310 | 0.6768 | 0.7601 |
-| 5 | 0.6034 | 0.6451 | 0.7003 | 0.7716 |
-| 6 | 0.6222 | 0.6560 | 0.7169 | 0.7801 |
-| 7 | 0.6372 | 0.6651 | 0.7293 | 0.7868 |
-| 8 | 0.6493 | 0.6730 | 0.7389 | 0.7925 |
-| 9 | 0.6595 | 0.6801 | 0.7467 | 0.7973 |
-| 10 | 0.6680 | 0.6868 | 0.7532 | 0.8016 |
-| 11 | 0.6754 | 0.6930 | 0.7587 | 0.8054 |
-| 12 | 0.6817 | 0.6989 | 0.7637 | 0.8088 |
-| 13 | 0.6872 | 0.7045 | 0.7682 | 0.8120 |
-| 14 | 0.6920 | 0.7098 | 0.7723 | 0.8148 |
-| 15 | 0.6963 | 0.7150 | 0.7762 | 0.8175 |
-| 16 | 0.7000 | 0.7200 | 0.7800 | 0.8200 |
+| 2 | 0.5822 | 0.7077 | 0.4875 | 0.5760 |
+| 3 | 0.6417 | 0.7420 | 0.5439 | 0.6105 |
+| 4 | 0.6768 | 0.7601 | 0.5787 | 0.6310 |
+| 5 | 0.7003 | 0.7716 | 0.6034 | 0.6451 |
+| 6 | 0.7169 | 0.7801 | 0.6222 | 0.6560 |
+| 7 | 0.7293 | 0.7868 | 0.6372 | 0.6651 |
+| 8 | 0.7389 | 0.7925 | 0.6493 | 0.6730 |
+| 9 | 0.7467 | 0.7973 | 0.6595 | 0.6801 |
+| 10 | 0.7532 | 0.8016 | 0.6680 | 0.6868 |
+| 11 | 0.7587 | 0.8054 | 0.6754 | 0.6930 |
+| 12 | 0.7637 | 0.8088 | 0.6817 | 0.6989 |
+| 13 | 0.7682 | 0.8120 | 0.6872 | 0.7045 |
+| 14 | 0.7723 | 0.8148 | 0.6920 | 0.7098 |
+| 15 | 0.7762 | 0.8175 | 0.6963 | 0.7150 |
+| 16 | 0.7800 | 0.8200 | 0.7000 | 0.7200 |
 
 At k=16, 35/50 base-model tasks and 36/50 checkpoint tasks passed all MBPP+ tests at least once. On original MBPP tests, the counts were 39/50 and 41/50. There were 294 and 394 fully passing MBPP+ completions, respectively. These are results for one seeded 50-task sample, not a full benchmark score. The base model cache initially contained empty files, so the base snapshot was downloaded into the isolated experiment directory before sampling. Base evaluation completed before checkpoint evaluation. The tokenizer vocabulary and special-token IDs matched between the downloaded base model and checkpoint tokenizer.
