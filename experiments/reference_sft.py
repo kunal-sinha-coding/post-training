@@ -1,169 +1,35 @@
-# This experiment loads MBPP and harder synthetic tasks, trains on their reference solutions, and measures greedy pass@1 on a fixed eight-task batch.
-# It first overfits that batch without checkpoints, then runs one full-data SFT epoch with isolated checkpoints after the batch reaches 100% pass@1.
+# This experiment loads the original and harder synthetic MBPP examples, trains a fresh GRPO-matched LoRA adapter on reference code, evaluates every saved epoch on full EvalPlus and the full training set, and preserves resumable checkpoints.
+# The supervisor restarts failed attempts from the newest complete Trainer checkpoint and repeats this cycle until the configured epoch limit is complete.
 
 from __future__ import annotations
 
 import argparse
 import json
+import os
 import random
 import sys
+import time
 from pathlib import Path
 from typing import Any
 
-# Add the repository root so this script can import the shared experiment helpers.
+# Add the repository root so direct execution can import shared experiment code.
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 
-def run_stage(config: dict[str, Any], stage: str) -> bool:
-    # Load the shared data, training, evaluation, and tracking libraries.
-    import torch
-    import wandb
-    from experiments.incremental_rejection_sampling_sft import evaluate_greedy, load_model, load_training_tasks, load_config
-    from transformers import DataCollatorForSeq2Seq, Trainer, TrainerCallback, TrainingArguments
-
-    # Resolve paths and create a stage-specific output directory.
-    root = Path(__file__).resolve().parents[1]
-    config_path = Path(config["_config_path"])
-    output_root = Path(config["output_dir"])
-    if not output_root.is_absolute():
-        output_root = root / output_root
-    stage_dir = output_root / ("pilot8" if stage == "pilot" else "full")
-    stage_dir.mkdir(parents=True, exist_ok=True)
-
-    # Load the same filtered original and synthetic task pool used by the prior run.
-    tasks = load_training_tasks(config)
-    if any(not str(task.get("reference_code", "")).strip() for task in tasks):
-        missing = [str(task["task_id"]) for task in tasks if not str(task.get("reference_code", "")).strip()]
-        raise ValueError(f"Reference solutions are missing for {len(missing)} tasks: {missing[:20]}")
-
-    # Reuse the fixed pilot IDs after the first random selection.
-    pilot_ids_path = output_root / "pilot-task-ids.json"
-    if pilot_ids_path.exists():
-        pilot_ids = [str(value) for value in json.loads(pilot_ids_path.read_text(encoding="utf-8"))]
-        task_map = {str(task["task_id"]): task for task in tasks}
-        pilot_tasks = [task_map[task_id] for task_id in pilot_ids]
-    else:
-        pilot_tasks = random.Random(int(config["seed"])).sample(tasks, int(config["pilot_task_count"]))
-        pilot_ids = [str(task["task_id"]) for task in pilot_tasks]
-        pilot_ids_path.write_text(json.dumps(pilot_ids, indent=2) + "\n", encoding="utf-8")
-    if len(pilot_tasks) != int(config["pilot_task_count"]):
-        raise ValueError(f"Expected {config['pilot_task_count']} fixed pilot tasks, found {len(pilot_tasks)}.")
-
-    # Select the eight-task pilot or the complete task pool as the training set.
-    train_tasks = pilot_tasks if stage == "pilot" else tasks
-    if stage == "pilot":
-        eval_tasks = pilot_tasks
-    else:
-        task_map = {str(task["task_id"]): task for task in tasks}
-        eval_tasks = [task_map[task_id] for task_id in pilot_ids]
-
-    # Seed model and data operations for repeatable training.
-    torch.set_num_threads(int(config["torch_num_threads"]))
-    torch.manual_seed(int(config["seed"]))
-    random.seed(int(config["seed"]))
-    model, tokenizer = load_model(config)
-    tokenizer.padding_side = "left"
-    train_dataset = build_reference_dataset(train_tasks, tokenizer, config)
-
-    # Start a distinct live W&B run for this SFT stage.
-    run_name = config["pilot_wandb_run_name"] if stage == "pilot" else config["full_wandb_run_name"]
-    run = wandb.init(
-        project=config["wandb_project"],
-        entity=config.get("wandb_entity"),
-        name=run_name,
-        job_type=f"reference-sft-{stage}",
-        config={**config, "stage": stage, "task_ids": [str(task["task_id"]) for task in train_tasks], "pilot_task_ids": pilot_ids},
-        reinit=True,
-    )
-    run.define_metric("ref_sft/eval_step")
-    run.define_metric("ref_sft/pass_at_1", step_metric="ref_sft/eval_step", summary="last")
-
-    # Evaluate greedy pass@1 on the fixed eight tasks before any SFT updates.
-    baseline = evaluate_greedy(model, tokenizer, eval_tasks, config)
-    eval_path = stage_dir / "evaluations.jsonl"
-    with eval_path.open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps({"step": 0, **baseline}, ensure_ascii=False) + "\n")
-    run.log({"ref_sft/eval_step": 0, "ref_sft/pass_at_1": baseline["pass_rate"], "ref_sft/pass_count": baseline["pass_count"], "ref_sft/task_count": baseline["task_count"]})
-
-    # Evaluate the fixed pilot at configured optimizer steps and stop it at full pass@1.
-    class ProgressCallback(TrainerCallback):
-        # Save all live Trainer metrics and greedy pilot evaluations for audit.
-        def on_log(self, args: Any, state: Any, control: Any, logs: dict[str, Any] | None = None, **kwargs: Any) -> Any:
-            # Append loss, learning rate, gradient norm, and other Trainer metrics locally.
-            if logs:
-                with (stage_dir / "training-metrics.jsonl").open("a", encoding="utf-8") as handle:
-                    handle.write(json.dumps({"step": int(state.global_step), **logs}, ensure_ascii=False) + "\n")
-            return control
-
-        def on_step_end(self, args: Any, state: Any, control: Any, **kwargs: Any) -> Any:
-            # Run pass@1 only at the configured interval to keep training efficient.
-            interval = int(config["pilot_eval_steps"] if stage == "pilot" else config["full_eval_steps"])
-            if state.global_step == 0 or state.global_step % interval != 0:
-                return control
-            model.eval()
-            result = evaluate_greedy(model, tokenizer, eval_tasks, config)
-            row = {"step": int(state.global_step), **result}
-            with eval_path.open("a", encoding="utf-8") as handle:
-                handle.write(json.dumps(row, ensure_ascii=False) + "\n")
-            run.log({"ref_sft/eval_step": int(state.global_step), "ref_sft/pass_at_1": result["pass_rate"], "ref_sft/pass_count": result["pass_count"], "ref_sft/task_count": result["task_count"]})
-            model.train()
-            if stage == "pilot" and result["pass_rate"] == 1.0:
-                control.should_training_stop = True
-            return control
-
-    # Configure batch-eight reference SFT with checkpoints only for full-data training.
-    is_pilot = stage == "pilot"
-    training_args = TrainingArguments(
-        output_dir=str(stage_dir / "checkpoints"),
-        learning_rate=float(config["learning_rate"]),
-        num_train_epochs=int(config["full_epochs"]) if not is_pilot else 10000,
-        max_steps=int(config["pilot_max_steps"]) if is_pilot else -1,
-        per_device_train_batch_size=int(config["sft_per_device_train_batch_size"]),
-        gradient_accumulation_steps=int(config["gradient_accumulation_steps"]),
-        logging_steps=int(config["logging_steps"]),
-        save_strategy="no" if is_pilot else "steps",
-        save_steps=int(config["save_steps"]),
-        report_to=["wandb"],
-        bf16=bool(config.get("bf16", True)) and torch.cuda.is_available(),
-        fp16=bool(config.get("fp16", False)) and torch.cuda.is_available(),
-        dataloader_num_workers=int(config["dataloader_num_workers"]),
-        seed=int(config["seed"]),
-        gradient_checkpointing=bool(config.get("gradient_checkpointing", False)),
-        gradient_checkpointing_kwargs={"use_reentrant": False},
-        disable_tqdm=True,
-        remove_unused_columns=False,
-    )
-
-    # Train only on dataset reference_code targets and keep prompts masked from the loss.
-    trainer = Trainer(
-        model=model,
-        args=training_args,
-        train_dataset=train_dataset,
-        data_collator=DataCollatorForSeq2Seq(tokenizer=tokenizer, model=model, padding=True),
-        callbacks=[ProgressCallback()],
-    )
-    trainer.train()
-
-    # Save the full-data model and record whether the pilot reached its required threshold.
-    final = evaluate_greedy(model, tokenizer, eval_tasks, config)
-    with eval_path.open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps({"step": int(trainer.state.global_step), "final": True, **final}, ensure_ascii=False) + "\n")
-    run.log({"ref_sft/eval_step": int(trainer.state.global_step), "ref_sft/pass_at_1": final["pass_rate"], "ref_sft/pass_count": final["pass_count"], "ref_sft/task_count": final["task_count"], "ref_sft/final": 1})
-    if stage == "full":
-        trainer.save_model(str(stage_dir / "final-model"))
-        tokenizer.save_pretrained(stage_dir / "final-model")
-    run.summary["ref_sft/final_pass_at_1"] = final["pass_rate"]
-    run.summary["ref_sft/optimizer_steps"] = int(trainer.state.global_step)
-    run.finish()
-    return final["pass_rate"] == 1.0 if is_pilot else True
+def append_jsonl(path: Path, record: dict[str, Any]) -> None:
+    # Append and flush one durable experiment record.
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(record, ensure_ascii=False, sort_keys=True) + "\n")
+        handle.flush()
+        os.fsync(handle.fileno())
 
 
 def build_reference_dataset(tasks: list[dict[str, Any]], tokenizer: Any, config: dict[str, Any]) -> Any:
-    # Tokenize reference code as a direct continuation of the prompt's open Python fence.
+    # Tokenize each prompt and reference while masking prompt tokens from the causal loss.
     from datasets import Dataset
 
     rows = []
-    # Mask prompt tokens so loss applies only to the reference solution and end token.
     for task in tasks:
         prompt_ids = tokenizer(str(task["prompt"]), add_special_tokens=True, truncation=True, max_length=int(config["max_prompt_length"]))["input_ids"]
         target_ids = tokenizer(str(task["reference_code"]).strip(), add_special_tokens=False, truncation=True, max_length=int(config["max_completion_length"]))["input_ids"]
@@ -173,31 +39,215 @@ def build_reference_dataset(tasks: list[dict[str, Any]], tokenizer: Any, config:
     return Dataset.from_list(rows)
 
 
-def main() -> None:
-    # Parse the dedicated YAML path and select the pilot or full-data stage.
-    parser = argparse.ArgumentParser(description="Train on MBPP reference solutions and measure greedy pass@1.")
-    parser.add_argument("--config", required=True)
-    parser.add_argument("--stage", choices=["pilot", "full"], required=True)
-    args = parser.parse_args()
+def load_model(config: dict[str, Any]) -> tuple[Any, Any]:
+    # Load only the configured original base model and attach a new GRPO-matched LoRA adapter.
+    import torch
+    from peft import LoraConfig, get_peft_model
+    from transformers import AutoModelForCausalLM, AutoTokenizer
 
-    # Load the existing rejection-sampling task definition without using its solution cache.
+    model_path = str(config["model_name_or_path"])
+    tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=False, local_files_only=True)
+    if tokenizer.pad_token_id is None:
+        tokenizer.pad_token = tokenizer.eos_token
+    tokenizer.padding_side = "left"
+    dtype = torch.bfloat16 if bool(config.get("bf16", True)) else torch.float16
+    model = AutoModelForCausalLM.from_pretrained(model_path, torch_dtype=dtype, device_map="cuda", trust_remote_code=False, local_files_only=True)
+    model = get_peft_model(model, LoraConfig(
+        task_type="CAUSAL_LM",
+        r=int(config["lora_r"]),
+        lora_alpha=int(config["lora_alpha"]),
+        lora_dropout=float(config["lora_dropout"]),
+        target_modules=list(config["lora_target_modules"]),
+    ))
+    model.config.use_cache = False
+    model.print_trainable_parameters()
+    return model, tokenizer
+
+
+def start_wandb(config: dict[str, Any], stage_dir: Path) -> Any:
+    # Resume one stable W&B run ID across supervisor restarts.
+    from dotenv import load_dotenv
+    import wandb
+
+    load_dotenv(Path(__file__).resolve().parents[1] / ".env")
+    if not os.getenv("WANDB_API_KEY"):
+        raise RuntimeError("W&B logging is enabled, but WANDB_API_KEY is unavailable.")
+    id_path = stage_dir / "wandb-run-id.json"
+    if id_path.exists():
+        run_id = str(json.loads(id_path.read_text(encoding="utf-8"))["run_id"])
+    else:
+        run_id = wandb.util.generate_id()
+        id_path.write_text(json.dumps({"run_id": run_id}) + "\n", encoding="utf-8")
+    run = wandb.init(
+        project=str(config["wandb_project"]),
+        entity=str(config["wandb_entity"]),
+        name=str(config.get("full_wandb_run_name", config.get("wandb_run_name"))),
+        id=run_id,
+        resume="allow",
+        job_type="reference-sft-full",
+        config={key: value for key, value in config.items() if not key.startswith("_")},
+    )
+    run.define_metric("optimizer_step")
+    run.define_metric("sft/*", step_metric="optimizer_step")
+    run.define_metric("evalplus/*", step_metric="optimizer_step")
+    run.define_metric("training_set/*", step_metric="optimizer_step")
+    print(f"W&B run: {run.url}", flush=True)
+    return run
+
+
+def evaluate_checkpoint(model: Any, tokenizer: Any, train_dataset: Any, config: dict[str, Any], stage_dir: Path, run: Any, epoch: int, step: int, checkpoint_dir: Path) -> None:
+    # Run canonical EvalPlus and full training-set greedy evaluation from the same saved adapter.
+    import gc
+    import torch
+    from train import evaluate_training_mbpp, run_qwen_evalplus
+
+    completion_marker = stage_dir / f"epoch-{epoch:05d}.complete.json"
+    if completion_marker.exists():
+        return
+    model.eval()
+    model.to("cpu")
+    torch.cuda.empty_cache()
+    try:
+        evalplus_result = run_qwen_evalplus(checkpoint_dir, stage_dir, f"epoch-{epoch:05d}")
+        training_result = evaluate_training_mbpp(checkpoint_dir, train_dataset, config, f"training-epoch-{epoch:05d}")
+        evaluation = {
+            "epoch": epoch,
+            "optimizer_step": step,
+            "checkpoint": str(checkpoint_dir),
+            "evalplus": evalplus_result["metrics"],
+            "training_set": training_result["metrics"],
+            "timestamp_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        }
+        append_jsonl(stage_dir / "evaluations.jsonl", evaluation)
+        payload = {"optimizer_step": step, "epoch": epoch}
+        payload.update({f"evalplus/{key}": value for key, value in evalplus_result["metrics"].items() if isinstance(value, (int, float))})
+        payload.update({f"training_set/{key}": value for key, value in training_result["metrics"].items() if isinstance(value, (int, float))})
+        run.log(payload)
+        completion_marker.write_text(json.dumps(evaluation, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
+        print(f"Completed epoch {epoch} evaluation at optimizer step {step}: MBPP={evalplus_result['metrics'].get('mbpp_pass_at_1')} MBPP+={evalplus_result['metrics'].get('mbpp_plus_pass_at_1')} training_pass@1={training_result['metrics'].get('pass_at_1')}", flush=True)
+    finally:
+        gc.collect()
+        torch.cuda.empty_cache()
+        model.to("cuda")
+        model.train()
+
+
+def run_training(config: dict[str, Any], config_path: Path, resume_from_checkpoint: str | None) -> None:
+    # Train the full reference dataset and evaluate each complete epoch from its durable checkpoint.
+    import torch
+    import wandb
+    from transformers import DataCollatorForSeq2Seq, Trainer, TrainerCallback, TrainingArguments
+    from experiments.incremental_rejection_sampling_sft import load_config, load_training_tasks
+
+    root = Path(__file__).resolve().parents[1]
+    output_root = Path(config["output_dir"])
+    if not output_root.is_absolute():
+        output_root = root / output_root
+    stage_dir = output_root / "full"
+    checkpoint_root = stage_dir / "checkpoints"
+    checkpoint_root.mkdir(parents=True, exist_ok=True)
+    config["log_path"] = os.devnull
+    config["_config_path"] = str(config_path)
+    tasks = load_training_tasks(config)
+    if len(tasks) != int(config["expected_train_samples"]):
+        raise ValueError(f"Expected {config['expected_train_samples']} tasks, loaded {len(tasks)}.")
+    missing = [str(task["task_id"]) for task in tasks if not str(task.get("reference_code", "")).strip()]
+    if missing:
+        raise ValueError(f"Reference solutions are missing for {len(missing)} tasks: {missing[:20]}.")
+    random.seed(int(config["seed"]))
+    torch.manual_seed(int(config["seed"]))
+    torch.set_num_threads(int(config["torch_num_threads"]))
+    model, tokenizer = load_model(config)
+    train_dataset = build_reference_dataset(tasks, tokenizer, config)
+    run = start_wandb(config, stage_dir)
+    run.config.update({"task_count": len(tasks), "task_ids": [str(task["task_id"]) for task in tasks], "resume_from_checkpoint": resume_from_checkpoint}, allow_val_change=True)
+
+    class ProgressCallback(TrainerCallback):
+        # Log training metrics live and evaluate each saved epoch checkpoint.
+        def on_log(self, args: Any, state: Any, control: Any, logs: dict[str, Any] | None = None, **kwargs: Any) -> Any:
+            # Send each Trainer log row to the local trace and W&B immediately.
+            if logs:
+                row = {"optimizer_step": int(state.global_step), "epoch": float(state.epoch or 0), **logs}
+                append_jsonl(stage_dir / "training-metrics.jsonl", row)
+                run.log({"optimizer_step": int(state.global_step), **{f"sft/{key}": value for key, value in logs.items() if isinstance(value, (int, float))}})
+            return control
+
+        def on_save(self, args: Any, state: Any, control: Any, **kwargs: Any) -> Any:
+            # Evaluate only after the complete epoch checkpoint has been written.
+            epoch = int(round(float(state.epoch or 0)))
+            if epoch > 0:
+                checkpoint_dir = checkpoint_root / f"checkpoint-{state.global_step}"
+                if not checkpoint_dir.is_dir():
+                    raise FileNotFoundError(f"Trainer reported a save but the checkpoint is missing: {checkpoint_dir}.")
+                evaluate_checkpoint(model, tokenizer, tasks, config, stage_dir, run, epoch, int(state.global_step), checkpoint_dir)
+            return control
+
+        def on_train_begin(self, args: Any, state: Any, control: Any, **kwargs: Any) -> Any:
+            # Finish a checkpoint evaluation interrupted by a previous process failure.
+            epoch = int(round(float(state.epoch or 0)))
+            if resume_from_checkpoint and epoch > 0:
+                checkpoint_dir = Path(resume_from_checkpoint)
+                evaluate_checkpoint(model, tokenizer, tasks, config, stage_dir, run, epoch, int(state.global_step), checkpoint_dir)
+            return control
+
+    training_args = TrainingArguments(
+        output_dir=str(checkpoint_root),
+        learning_rate=float(config["learning_rate"]),
+        num_train_epochs=int(config["full_epochs"]),
+        max_steps=-1,
+        per_device_train_batch_size=int(config["sft_per_device_train_batch_size"]),
+        gradient_accumulation_steps=int(config["gradient_accumulation_steps"]),
+        logging_steps=int(config["logging_steps"]),
+        save_strategy="epoch",
+        save_total_limit=None,
+        report_to=[],
+        bf16=bool(config.get("bf16", True)) and torch.cuda.is_available(),
+        fp16=bool(config.get("fp16", False)) and torch.cuda.is_available(),
+        dataloader_num_workers=int(config["dataloader_num_workers"]),
+        seed=int(config["seed"]),
+        gradient_checkpointing=bool(config.get("gradient_checkpointing", True)),
+        gradient_checkpointing_kwargs={"use_reentrant": False},
+        disable_tqdm=True,
+        remove_unused_columns=False,
+        save_only_model=False,
+    )
+    trainer = Trainer(
+        model=model,
+        args=training_args,
+        train_dataset=train_dataset,
+        data_collator=DataCollatorForSeq2Seq(tokenizer=tokenizer, model=model, padding=True),
+        callbacks=[ProgressCallback()],
+    )
+    trainer.train(resume_from_checkpoint=resume_from_checkpoint)
+    trainer.save_model(str(stage_dir / "final-model"))
+    tokenizer.save_pretrained(stage_dir / "final-model")
+    run.summary["sft/completed_epochs"] = int(config["full_epochs"])
+    run.summary["sft/optimizer_steps"] = int(trainer.state.global_step)
+    run.finish(exit_code=0)
+    (stage_dir / "completed.json").write_text(json.dumps({"completed_epochs": int(config["full_epochs"]), "optimizer_steps": int(trainer.state.global_step)}) + "\n", encoding="utf-8")
+
+
+def main() -> None:
+    # Parse the experiment configuration and optional checkpoint resume path.
+    parser = argparse.ArgumentParser(description="Train reference SFT with per-epoch full EvalPlus and training-set evaluation.")
+    parser.add_argument("--config", required=True)
+    parser.add_argument("--resume-from-checkpoint", default=None)
+    args = parser.parse_args()
+    from experiments.incremental_rejection_sampling_sft import load_config
+
     root = Path(__file__).resolve().parents[1]
     config_path = Path(args.config)
     if not config_path.is_absolute():
         config_path = root / config_path
-    from experiments.incremental_rejection_sampling_sft import load_config
-
     config = load_config(config_path)
-    config["_config_path"] = str(config_path)
     for key in ("model_name_or_path", "synthetic_training_tasks_path", "synthetic_tests_path"):
         if config.get(key):
             path = Path(config[key])
             if not path.is_absolute():
                 config[key] = str(root / path)
-    if not run_stage(config, args.stage):
-        raise SystemExit("The eight-task pilot reached its maximum steps before pass@1 reached 100%.")
+    run_training(config, config_path, args.resume_from_checkpoint)
 
 
 if __name__ == "__main__":
-    # Run the requested reference-SFT stage from the command line.
+    # Run the configured full-data reference-SFT experiment.
     main()
