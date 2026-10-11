@@ -445,6 +445,7 @@ def run_pilot(config: dict[str, Any], output_dir: Path, solution_store_path: Pat
         record = {
             "cycle": cycle,
             **counts,
+            "sample_pass_rate": counts["full_passes"] / counts["generated_candidates"] if counts["generated_candidates"] else None,
             "pass_at_20_ceiling": ceiling if sampling_complete else None,
             "sampling_complete": sampling_complete,
             "solution_coverage": solved_count / len(tasks),
@@ -456,7 +457,13 @@ def run_pilot(config: dict[str, Any], output_dir: Path, solution_store_path: Pat
         }
         append_jsonl(output_dir / "pilot-evaluations.jsonl", {**record, "details": evaluation["details"]})
         if wandb_run is not None:
-            wandb_run.log({"rs/sample_pass_rate": counts["full_passes"] / counts["generated_candidates"] if counts["generated_candidates"] else 0.0, "rs/pass_at_20_ceiling": ceiling if sampling_complete else 0.0, "rs/sampling_complete": int(sampling_complete), "rs/accepted_new": counts["new_solutions"], "rs/solution_coverage": record["solution_coverage"], "rs/sft_loss": loss, "rs/greedy_pass_rate": evaluation["pass_rate"], "rs/cycle": cycle, "rs/elapsed_seconds": record["elapsed_seconds"]})
+            # Omit the sample rate when this SFT cycle generated no candidates.
+            wandb_metrics = {"rs/pass_at_20_ceiling": ceiling if sampling_complete else 0.0, "rs/sampling_complete": int(sampling_complete), "rs/accepted_new": counts["new_solutions"], "rs/solution_coverage": record["solution_coverage"], "rs/sft_loss": loss, "rs/greedy_pass_rate": evaluation["pass_rate"], "rs/cycle": cycle, "rs/elapsed_seconds": record["elapsed_seconds"]}
+            if counts["generated_candidates"]:
+                wandb_metrics["rs/sample_pass_rate"] = record["sample_pass_rate"]
+                wandb_metrics["rs/generated_candidates"] = counts["generated_candidates"]
+                wandb_metrics["rs/full_passes"] = counts["full_passes"]
+            wandb_run.log(wandb_metrics)
         state = {"attempts": attempts, "evaluations": history, "cycles_completed": cycle, "pass_at_20_ceiling": ceiling if sampling_complete else None}
         write_json(state_path, state)
         print(json.dumps(record, ensure_ascii=False), flush=True)
