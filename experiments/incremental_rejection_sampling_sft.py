@@ -590,18 +590,21 @@ def run_full_collection(config: dict[str, Any], output_dir: Path, solution_store
 
 
 def run_full_training(config: dict[str, Any], output_dir: Path, solution_store_path: Path, resume_from_checkpoint: str | None) -> None:
-    """Train on stored passing solutions with batch eight and checkpoints isolated from GRPO."""
+    """Train on cached passing original-task solutions and evaluate both full sets each epoch."""
     import torch
     from data import build_sft_dataset
     from transformers import DataCollatorForSeq2Seq, Trainer, TrainerCallback, TrainingArguments
+    from train import evaluate_training_mbpp, run_qwen_evalplus
 
     # Start a phase-specific W&B run that resumes across monitor restarts.
     wandb_run = start_wandb(config, "full_train", output_dir)
-    # Bind the live greedy pass@1 series to the optimizer step used by the evaluation callback.
+    # Bind live full-evaluation metrics to optimizer steps in the W&B history.
     if wandb_run is not None:
-        wandb_run.define_metric("rs/full_training_eval_step")
-        wandb_run.define_metric("rs/full_training_greedy_pass_at_1", step_metric="rs/full_training_eval_step", summary="last")
-    # Recreate the filtered full dataset and select only its accepted solution records.
+        wandb_run.define_metric("optimizer_step")
+        wandb_run.define_metric("sft/*", step_metric="optimizer_step")
+        wandb_run.define_metric("evalplus/*", step_metric="optimizer_step")
+        wandb_run.define_metric("training_set/*", step_metric="optimizer_step")
+    # Load the original task pool and select its accepted solution records for SFT.
     tasks = load_training_tasks(config)
     records = build_sft_records(tasks, solution_store_path)
     if not records:
@@ -614,47 +617,72 @@ def run_full_training(config: dict[str, Any], output_dir: Path, solution_store_p
     training_dir = output_dir / "full-training"
     checkpoint_dir = training_dir / "checkpoints"
     metrics_path = training_dir / "training-metrics.jsonl"
-    # Load the fixed pilot tasks for low-cost pass@1 checks during full-data SFT.
-    pilot_ids = [str(value) for value in json.loads((output_dir / "pilot-task-ids.json").read_text(encoding="utf-8"))]
-    task_by_id = {str(task["task_id"]): task for task in tasks}
-    pilot_tasks = [task_by_id[task_id] for task_id in pilot_ids]
-
-    # Log Trainer metrics and greedy pilot pass rates at the configured interval.
+    # Evaluate canonical EvalPlus and every original training task after each saved epoch.
     class ProgressCallback(TrainerCallback):
-        """Write loss, learning-rate, and fixed-pilot pass metrics to local JSONL."""
+        """Write live SFT metrics and full evaluation results to JSONL and W&B."""
+
+        def evaluate_saved_epoch(self, state: Any) -> None:
+            """Evaluate a saved epoch checkpoint once and persist its completion marker."""
+            epoch = int(round(float(state.epoch or 0)))
+            if epoch <= 0:
+                return
+            checkpoint_path = checkpoint_dir / f"checkpoint-{int(state.global_step)}"
+            marker_path = training_dir / f"epoch-{epoch:06d}.complete.json"
+            if not checkpoint_path.is_dir() or marker_path.exists():
+                return
+            started = time.perf_counter()
+            model.eval()
+            model.to("cpu")
+            torch.cuda.empty_cache()
+            try:
+                evalplus = run_qwen_evalplus(checkpoint_path, training_dir, f"epoch-{epoch:06d}")
+                training_eval = evaluate_training_mbpp(checkpoint_path, tasks, config, f"training-epoch-{epoch:06d}")
+                result = {"kind": "full_epoch_evaluation", "epoch": epoch, "step": int(state.global_step), "evalplus": evalplus["metrics"], "training_set": training_eval["metrics"], "elapsed_seconds": time.perf_counter() - started, "checkpoint": str(checkpoint_path)}
+                append_jsonl(training_dir / "evaluations.jsonl", result)
+                if wandb_run is not None:
+                    payload = {"optimizer_step": int(state.global_step), "sft/epoch": epoch, "evaluation/elapsed_seconds": result["elapsed_seconds"]}
+                    payload.update({f"evalplus/{key}": value for key, value in evalplus["metrics"].items() if isinstance(value, (int, float))})
+                    payload.update({f"training_set/{key}": value for key, value in training_eval["metrics"].items() if isinstance(value, (int, float))})
+                    wandb_run.log(payload)
+                write_json(marker_path, result)
+                print(f"Completed epoch {epoch} evaluation at step {state.global_step}: EvalPlus={evalplus['metrics']} training={training_eval['metrics']}", flush=True)
+            finally:
+                import gc
+                gc.collect()
+                torch.cuda.empty_cache()
+                model.to("cuda")
+                model.train()
 
         def on_log(self, args: Any, state: Any, control: Any, logs: dict[str, Any] | None = None, **kwargs: Any) -> Any:
             """Append all available Trainer metrics with the optimizer step."""
             if logs:
-                append_jsonl(metrics_path, {"kind": "training", "step": int(state.global_step), **logs})
+                append_jsonl(metrics_path, {"kind": "training", "step": int(state.global_step), "epoch": float(state.epoch or 0), **logs})
+                if wandb_run is not None:
+                    wandb_run.log({"optimizer_step": int(state.global_step), **{f"sft/{key}": value for key, value in logs.items() if isinstance(value, (int, float))}})
             return control
 
-        def on_step_end(self, args: Any, state: Any, control: Any, **kwargs: Any) -> Any:
-            """Evaluate the same eight pilot tasks at each configured interval."""
-            if state.global_step == 0 or state.global_step % int(config["eval_steps"]) != 0:
-                return control
-            model.eval()
-            result = evaluate_greedy(model, tokenizer, pilot_tasks, config)
-            append_jsonl(metrics_path, {"kind": "pilot_eval", "step": int(state.global_step), "pass_count": result["pass_count"], "task_count": result["task_count"], "pass_rate": result["pass_rate"], "details": result["details"]})
-            # Publish each fixed-pilot pass@1 measurement to W&B at evaluation time.
-            if wandb_run is not None:
-                wandb_run.log({"rs/full_training_eval_step": int(state.global_step), "rs/full_training_greedy_pass_at_1": result["pass_rate"], "rs/full_training_pass_count": result["pass_count"], "rs/full_training_task_count": result["task_count"]})
-            model.train()
+        def on_train_begin(self, args: Any, state: Any, control: Any, **kwargs: Any) -> Any:
+            """Finish evaluation for the last checkpoint if a restart interrupted it."""
+            self.evaluate_saved_epoch(state)
             return control
 
-    # Configure one-million-step response-only SFT and retain every recovery checkpoint.
+        def on_save(self, args: Any, state: Any, control: Any, **kwargs: Any) -> Any:
+            """Evaluate the checkpoint that Trainer saved at the end of this epoch."""
+            self.evaluate_saved_epoch(state)
+            return control
+
+    # Configure one million response-only SFT epochs and retain every epoch checkpoint.
     training_args = TrainingArguments(
         output_dir=str(checkpoint_dir),
         learning_rate=float(config["learning_rate"]),
-        max_steps=int(config["target_steps"]),
-        num_train_epochs=100000,
+        max_steps=-1,
+        num_train_epochs=int(config["target_epochs"]),
         per_device_train_batch_size=int(config["sft_per_device_train_batch_size"]),
         gradient_accumulation_steps=int(config["gradient_accumulation_steps"]),
         logging_steps=int(config["logging_steps"]),
-        save_strategy="steps",
-        save_steps=int(config["save_steps"]),
+        save_strategy="epoch",
         save_total_limit=None,
-        report_to=[str(config["report_to"])],
+        report_to="none",
         bf16=bool(config.get("bf16", True)) and torch.cuda.is_available(),
         fp16=bool(config.get("fp16", False)) and torch.cuda.is_available(),
         dataloader_num_workers=int(config["dataloader_num_workers"]),
@@ -671,11 +699,11 @@ def run_full_training(config: dict[str, Any], output_dir: Path, solution_store_p
         callbacks=[ProgressCallback()],
     )
     trainer.train(resume_from_checkpoint=resume_from_checkpoint or None)
-    # Save a completion sentinel only after the configured target step has finished.
-    write_json(training_dir / "training-complete.json", {"global_step": int(trainer.state.global_step), "target_steps": int(config["target_steps"]), "solution_count": len(records), "checkpoint_dir": str(checkpoint_dir)})
+    # Save a completion sentinel only after the configured epoch limit has finished.
+    write_json(training_dir / "training-complete.json", {"global_step": int(trainer.state.global_step), "target_epochs": int(config["target_epochs"]), "solution_count": len(records), "checkpoint_dir": str(checkpoint_dir)})
     trainer.save_model(str(training_dir / "final-model"))
     if wandb_run is not None:
-        wandb_run.summary["rs/full_training_steps"] = int(trainer.state.global_step)
+        wandb_run.summary["rs/full_training_epochs"] = int(round(float(trainer.state.epoch or 0)))
         wandb_run.finish()
 
 
