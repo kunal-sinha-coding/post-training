@@ -4044,3 +4044,6 @@ Added experiments/rejection_sampling_sft_batch.py for one shared LoRA policy ove
 
 Commit name: Make rejection sampling adapter saves opt-in.
 Added a default-off --save-checkpoints option to the one-task and eight-task rejection sampling scripts. Candidate traces and greedy score JSON remain available when adapter checkpoints are disabled. Set the batch tokenizer to left padding because decoder-only generation requires left-padded prompts in mixed-length batches. The active eight-task process was launched before these changes and retains its in-memory save behavior. Existing user edits to start.sh and the GRPO config are excluded. No checkpoints were deleted.
+
+Commit name: Record the stopped eight-task rejection-sampling experiment.
+Recorded both eight-task runs, their per-cycle full-pass rates, W&B identifiers, task IDs, selection procedure, configuration, runtime, checkpoint paths, the left-padding correction, and the user's stop request in logs/results.txt. The corrected process stopped during cycle-20 SFT at the user's explicit request. The last completed saved adapter is cycle 19. Task 461's cached MBPP tests conflict with its prompt, but all original assertions remain unchanged. No GRPO or smoke-test checkpoints were modified. Existing user edits to start.sh and the GRPO YAML are excluded.
