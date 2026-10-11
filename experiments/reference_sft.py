@@ -128,6 +128,7 @@ def run_stage(config: dict[str, Any], stage: str) -> bool:
         fp16=bool(config.get("fp16", False)) and torch.cuda.is_available(),
         dataloader_num_workers=int(config["dataloader_num_workers"]),
         seed=int(config["seed"]),
+        gradient_checkpointing=bool(config.get("gradient_checkpointing", False)),
         disable_tqdm=True,
         remove_unused_columns=False,
     )

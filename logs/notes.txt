@@ -4126,3 +4126,7 @@ The first reference-SFT pilot exposed a target-format mismatch in the shared dat
 Commit: Configure a corrected reference-SFT pilot restart
 
 This config starts a separate corrected run while retaining the exact same eight seeded task IDs and all other training settings. The prior pilot was explicitly stopped by the user after step 850, at 0/8 pass@1 and loss 0.0001, because every greedy completion was the literal `Code:` wrapper and failed syntax parsing. The corrected run uses raw reference-code continuation targets from commit caed28e. It writes to a new output directory and a new W&B run name so the failed run remains auditable. No GRPO process, checkpoint, or task test was touched.
+
+Commit: Add memory-safe full reference-SFT retry
+
+The first full-data run trained at batch eight but ran out of GPU memory during backward pass 11. It had logged step-10 loss 0.7196 and had not written a complete checkpoint. The code now exposes Trainer gradient checkpointing, and the retry config enables it while preserving effective batch size eight, learning rate, base model, LoRA settings, and one-epoch full-data scope. The retry uses a separate output directory and W&B run. `logs/results.txt` now records the completed corrected pilot, the failed malformed pilot, and the first full-data OOM with their task IDs, metrics, W&B identifiers, and reproducibility details. The corrected pilot reached 8/8 pass@1 at step 190. No GRPO checkpoint or test was changed.
