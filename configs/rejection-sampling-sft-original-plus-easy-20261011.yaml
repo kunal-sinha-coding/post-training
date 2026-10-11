@@ -24,6 +24,8 @@ max_generation_batches_per_task: 2
 generation_batch_size: 128
 generation_backend: vllm
 collection_between_epochs: none
+training_eval_sample_size: 500
+training_eval_sample_seed: 42
 vllm_gpu_memory_utilization: 0.7
 vllm_max_model_len: 1536
 vllm_max_num_batched_tokens: 16384

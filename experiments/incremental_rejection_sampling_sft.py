@@ -353,6 +353,32 @@ def build_sft_records(tasks: list[dict[str, Any]], store_path: Path) -> list[dic
     return records
 
 
+def select_fixed_training_eval_sample(tasks: list[dict[str, Any]], manifest_path: Path, config: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    """Select and persist one random training-task evaluation sample for every epoch."""
+    sample_size = int(config.get("training_eval_sample_size", len(tasks)))
+    seed = int(config.get("training_eval_sample_seed", config.get("seed", 0)))
+    task_map = {str(task["task_id"]): task for task in tasks}
+    # Reuse the saved task IDs so every epoch evaluates the same random sample.
+    if manifest_path.exists():
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        task_ids = [str(task_id) for task_id in manifest["task_ids"]]
+        missing = [task_id for task_id in task_ids if task_id not in task_map]
+        if missing:
+            raise ValueError(f"Training evaluation sample contains task IDs absent from the configured pool: {missing[:5]}")
+    else:
+        if sample_size < 1 or sample_size > len(tasks):
+            raise ValueError(f"Training evaluation sample size {sample_size} is invalid for {len(tasks)} tasks.")
+        selected = random.Random(seed).sample(tasks, sample_size)
+        task_ids = [str(task["task_id"]) for task in selected]
+        task_ids_payload = "\n".join(task_ids).encode("utf-8")
+        manifest = {"seed": seed, "sample_size": sample_size, "source_task_count": len(tasks), "task_ids": task_ids, "task_ids_sha256": hashlib.sha256(task_ids_payload).hexdigest()}
+        write_json(manifest_path, manifest)
+    # Return tasks in the saved manifest order and retain its reproducibility metadata.
+    if len(task_ids) != sample_size:
+        raise ValueError(f"Saved training evaluation sample has {len(task_ids)} IDs, expected {sample_size}.")
+    return [task_map[task_id] for task_id in task_ids], manifest
+
+
 def train_one_epoch(model: Any, tokenizer: Any, tasks: list[dict[str, Any]], store_path: Path, config: dict[str, Any], output_dir: Path, cycle: int) -> float | None:
     """Train one response-only SFT epoch with the configured per-device batch size."""
     import torch
@@ -706,11 +732,16 @@ def run_full_training(config: dict[str, Any], output_dir: Path, solution_store_p
     model, tokenizer = load_model(config, adapter_path)
     train_dataset = build_sft_dataset(records, tokenizer, config)
     training_dir = output_dir / "full-training"
+    training_eval_tasks, training_eval_manifest = select_fixed_training_eval_sample(
+        tasks,
+        output_dir / "full-training" / "training-eval-task-ids.json",
+        config,
+    )
     if cycle_index is not None:
         training_dir = training_dir / "cycles" / f"epoch-{cycle_index:06d}"
     checkpoint_dir = training_dir / "checkpoints"
     metrics_path = training_dir / "training-metrics.jsonl"
-    # Evaluate canonical EvalPlus and every original training task after each saved epoch.
+    # Evaluate canonical EvalPlus and the fixed training-task sample after each saved epoch.
     class ProgressCallback(TrainerCallback):
         """Write live SFT metrics and full evaluation results to JSONL and W&B."""
 
@@ -730,13 +761,16 @@ def run_full_training(config: dict[str, Any], output_dir: Path, solution_store_p
             torch.cuda.empty_cache()
             try:
                 evalplus = run_qwen_evalplus(checkpoint_path, training_dir, f"epoch-{epoch:06d}")
-                training_eval = evaluate_training_mbpp(checkpoint_path, tasks, config, f"training-epoch-{epoch:06d}")
+                training_eval = evaluate_training_mbpp(checkpoint_path, training_eval_tasks, config, f"training-epoch-{epoch:06d}")
                 result = {"kind": "full_epoch_evaluation", "epoch": epoch, "step": int(state.global_step), "evalplus": evalplus["metrics"], "training_set": training_eval["metrics"], "elapsed_seconds": time.perf_counter() - started, "checkpoint": str(checkpoint_path)}
+                result["training_set_sample"] = {"size": len(training_eval_tasks), "source_task_count": len(tasks), "seed": training_eval_manifest["seed"], "task_ids_sha256": training_eval_manifest["task_ids_sha256"], "manifest": str(output_dir / "full-training" / "training-eval-task-ids.json")}
                 if cycle_index is not None:
                     result["cycle_index"] = cycle_index
                 append_jsonl(training_dir / "evaluations.jsonl", result)
                 if wandb_run is not None:
                     payload = {"optimizer_step": int(state.global_step), "sft/epoch": epoch, "evaluation/elapsed_seconds": result["elapsed_seconds"]}
+                    payload["training_set/sample_size"] = len(training_eval_tasks)
+                    payload["training_set/sample_task_ids_sha256"] = training_eval_manifest["task_ids_sha256"]
                     if cycle_index is not None:
                         payload["sft/cycle_index"] = cycle_index
                     payload.update({f"evalplus/{key}": value for key, value in evalplus["metrics"].items() if isinstance(value, (int, float))})
