@@ -7,6 +7,7 @@ import argparse
 import json
 import os
 import random
+import secrets
 import sys
 import time
 from pathlib import Path
@@ -76,7 +77,7 @@ def start_wandb(config: dict[str, Any], stage_dir: Path) -> Any:
     if id_path.exists():
         run_id = str(json.loads(id_path.read_text(encoding="utf-8"))["run_id"])
     else:
-        run_id = wandb.util.generate_id()
+        run_id = secrets.token_hex(4)
         id_path.write_text(json.dumps({"run_id": run_id}) + "\n", encoding="utf-8")
     run = wandb.init(
         project=str(config["wandb_project"]),
