@@ -1,4 +1,4 @@
-# This experiment loads the original and harder synthetic MBPP examples, trains a fresh GRPO-matched LoRA adapter on reference code, evaluates every saved epoch on full EvalPlus and the full training set, and preserves resumable checkpoints.
+# This experiment loads configured MBPP reference examples, trains a fresh GRPO-matched LoRA adapter, evaluates the optional base model and every saved epoch, and preserves resumable checkpoints.
 # The supervisor restarts failed attempts from the newest complete Trainer checkpoint and repeats this cycle until the configured epoch limit is complete.
 
 from __future__ import annotations
@@ -162,6 +162,10 @@ def run_training(config: dict[str, Any], config_path: Path, resume_from_checkpoi
     train_dataset = build_reference_dataset(tasks, tokenizer, config)
     run = start_wandb(config, stage_dir)
     run.config.update({"task_count": len(tasks), "task_ids": [str(task["task_id"]) for task in tasks], "resume_from_checkpoint": resume_from_checkpoint}, allow_val_change=True)
+
+    # Measure the untrained base model at optimizer step zero when the experiment requests a direct baseline.
+    if bool(config.get("run_baseline_evaluation", False)):
+        evaluate_checkpoint(model, tokenizer, tasks, config, stage_dir, run, 0, 0, Path(config["model_name_or_path"]))
 
     class ProgressCallback(TrainerCallback):
         # Log training metrics live and evaluate each saved epoch checkpoint.
