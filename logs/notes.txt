@@ -4232,3 +4232,7 @@ The user asked to use vLLM for unresolved tasks, keep accepted solutions intact,
 
 Commit name: Add checkpoint-first, base-fallback collection cycles
 The user clarified that the first collection must use only the base model because no SFT checkpoint exists yet. After each SFT epoch, collection must try the current adapter first and then use the base model for still-unresolved tasks. Added the configurable `checkpoint_then_base` policy, separate state and progress files per source, and cycle-specific train and collection outputs. Both sources add passing solutions to the existing append-only cache, and later source passes skip cached tasks. The active job remains generation-only with `SKIP_TRAINING=1`, so these code changes do not launch training.
+
+
+Commit name: Use only the current checkpoint for post-epoch collection
+The user revised the source policy. The initial collection still uses the base model because no SFT checkpoint exists. After each epoch, collection must use only the latest SFT checkpoint for unresolved tasks and must not fall back to the base model. Set the YAML source to `current_sft_checkpoint`; the existing code falls back to base only when no adapter path is available, which applies only to the initial collection. The active initial collection is unchanged.

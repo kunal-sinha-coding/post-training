@@ -17495,3 +17495,7 @@ Configuration change: `collection_after_each_epoch: true` and `collection_genera
 Code paths: `experiments/incremental_rejection_sampling_sft.py`, `scripts/supervise_rejection_sampling_sft_original_only.sh`, and `configs/rejection-sampling-sft-original-plus-easy-20261011.yaml`.
 Validation: Python compilation, shell syntax validation, YAML policy assertions, and `git diff --check` on the three changed implementation files passed. No training was started.
 Limitations: The collection-cycle code is prepared for a future full run. The currently active vLLM job was started in collect-only mode and is unaffected.
+
+
+Workflow policy update: checkpoint-only post-epoch collection
+The user changed the source policy after the checkpoint-first/base-fallback workflow was committed. The initial collection uses the base model because no checkpoint exists. After each SFT epoch, collect only from the latest SFT checkpoint for unresolved tasks, with the configured two batches of 10 candidates per task. Do not use the base model as a fallback. The YAML now selects `current_sft_checkpoint`; initial no-checkpoint behavior remains base-only. The active generation-only initial collection is unaffected.
