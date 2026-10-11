@@ -4076,3 +4076,5 @@ The adaptive pilot implementation is committed as 8e568d9 and pushed to main. Th
 ## 2026-10-11. Make pilot state reads independent of the state file
 
 The first adaptive pilot process reached cycle 17 and then exited while decoding pilot-state.json immediately after a sampling round. The supervisor restarted it from the persisted state. The pilot metric remained 2/8 greedy pass@1 against a 4/8 pass@20 ceiling. Changed the collector to return the attempt map directly to its caller, so the pilot no longer rereads the state file immediately after a write. Python compilation passed. The active retry continues while this fix will apply to any later retry.
+
+The adaptive pilot retry is active under the wrapper at cycle 23. Greedy pass@1 remains 2/8 (25 percent) against the fixed 4/8 (50 percent) pass@20 ceiling. The wrapper keeps the pilot active and has not started full-data collection.
