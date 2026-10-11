@@ -88,6 +88,16 @@ def canonical_test_pass_metrics(samples: Path) -> dict[str, float]:
     problems = get_mbpp_plus()
     base_total = plus_total = base_passed = plus_passed = 0
     base_partial = plus_partial = base_any = plus_any = 0
+
+    # Count an empty failure list as all passed only when EvalPlus marked the tests as passed.
+    def passed_test_count(status: str, failed_tests: list[Any], total_tests: int) -> int:
+        """Return observed passing tests without treating unexecuted tests as successes."""
+        if status == "pass":
+            return total_tests
+        if failed_tests:
+            return max(0, total_tests - len(failed_tests))
+        return 0
+
     for task_id, task_results in results.items():
         result = task_results[0]
         problem = problems[task_id]
@@ -95,10 +105,10 @@ def canonical_test_pass_metrics(samples: Path) -> dict[str, float]:
         plus_count = len(problem["base_input"]) + len(problem["plus_input"])
         base_total += base_count
         plus_total += plus_count
-        base_passed += base_count - len(result["base_fail_tests"])
-        plus_passed += plus_count - len(result["plus_fail_tests"])
-        base_completed = base_count - len(result["base_fail_tests"])
-        plus_completed = plus_count - len(result["plus_fail_tests"])
+        base_completed = passed_test_count(result.get("base_status", "fail"), result.get("base_fail_tests", []), base_count)
+        plus_completed = passed_test_count(result.get("plus_status", "fail"), result.get("plus_fail_tests", []), plus_count)
+        base_passed += base_completed
+        plus_passed += plus_completed
         base_partial += int(0 < base_completed < base_count)
         plus_partial += int(0 < plus_completed < plus_count)
         base_any += int(base_completed > 0)
