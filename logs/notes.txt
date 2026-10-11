@@ -4256,3 +4256,7 @@ SFT epoch 1 completed with 595 optimizer steps and 4,758 cached solution records
 
 Commit name: Use a fixed 500-task training evaluation sample
 The user asked to reduce in-sample evaluation to 500 tasks while keeping the same tasks each time. Added YAML controls `training_eval_sample_size: 500` and `training_eval_sample_seed: 42`. The code writes the selected IDs and SHA256 to `full-training/training-eval-task-ids.json`, then reuses that manifest in all later epochs and logs its fingerprint. SFT still uses all accepted cache records, and canonical EvalPlus evaluation remains full. Epoch 1 completed before this change and used all 5,910 tasks, so future 500-task in-sample metrics will start a new comparable series. The user authorized restarting from the latest complete checkpoint; epoch 1 checkpoint 595 is complete and there is no active training child process.
+
+
+Commit name: Resume SFT cycles from complete checkpoint
+Updated the cycle supervisor to use the prior cycle’s newest complete Trainer checkpoint as the next cycle’s adapter source. This makes the authorized restart after epoch one load checkpoint-595, while retaining final-model fallback if no complete Trainer checkpoint exists.
