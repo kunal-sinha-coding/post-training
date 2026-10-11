@@ -18,7 +18,6 @@ def run_stage(config: dict[str, Any], stage: str) -> bool:
     # Load the shared data, training, evaluation, and tracking libraries.
     import torch
     import wandb
-    from data import build_sft_dataset
     from experiments.incremental_rejection_sampling_sft import evaluate_greedy, load_model, load_training_tasks, load_config
     from transformers import DataCollatorForSeq2Seq, Trainer, TrainerCallback, TrainingArguments
 
@@ -64,7 +63,7 @@ def run_stage(config: dict[str, Any], stage: str) -> bool:
     random.seed(int(config["seed"]))
     model, tokenizer = load_model(config)
     tokenizer.padding_side = "left"
-    train_dataset = build_sft_dataset(train_tasks, tokenizer, config)
+    train_dataset = build_reference_dataset(train_tasks, tokenizer, config)
 
     # Start a distinct live W&B run for this SFT stage.
     run_name = config["pilot_wandb_run_name"] if stage == "pilot" else config["full_wandb_run_name"]
@@ -155,6 +154,21 @@ def run_stage(config: dict[str, Any], stage: str) -> bool:
     run.summary["ref_sft/optimizer_steps"] = int(trainer.state.global_step)
     run.finish()
     return final["pass_rate"] == 1.0 if is_pilot else True
+
+
+def build_reference_dataset(tasks: list[dict[str, Any]], tokenizer: Any, config: dict[str, Any]) -> Any:
+    # Tokenize reference code as a direct continuation of the prompt's open Python fence.
+    from datasets import Dataset
+
+    rows = []
+    # Mask prompt tokens so loss applies only to the reference solution and end token.
+    for task in tasks:
+        prompt_ids = tokenizer(str(task["prompt"]), add_special_tokens=True, truncation=True, max_length=int(config["max_prompt_length"]))["input_ids"]
+        target_ids = tokenizer(str(task["reference_code"]).strip(), add_special_tokens=False, truncation=True, max_length=int(config["max_completion_length"]))["input_ids"]
+        if tokenizer.eos_token_id is not None and len(target_ids) < int(config["max_completion_length"]):
+            target_ids.append(tokenizer.eos_token_id)
+        rows.append({"input_ids": [*prompt_ids, *target_ids], "attention_mask": [1] * (len(prompt_ids) + len(target_ids)), "labels": [-100] * len(prompt_ids) + target_ids.copy()})
+    return Dataset.from_list(rows)
 
 
 def main() -> None:
