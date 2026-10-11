@@ -4264,3 +4264,7 @@ Updated the cycle supervisor to use the prior cycle’s newest complete Trainer 
 
 Commit name: Restart SFT from checkpoint with fixed training evaluation
 After applying the 500-task evaluation change, stopped the idle supervisor only after epoch 1 had completed and no trainer process was active. Restarted the supervisor from checkpoint-595 as epoch 2. The fixed random task-ID sample will be created for this epoch's training-pool evaluation and reused by later epochs. The monitor loop remains active at ten-minute intervals. W&B continues the existing training run `gewyuz7o`.
+
+
+Commit name: Record epoch two full EvalPlus and fixed-sample results
+Epoch 2 resumed from checkpoint 595 and completed with the fixed 500-task training evaluation. The sample ID manifest has 500 unique IDs, seed 42, and SHA256 `3d5cc2f0d803d099c15109909fa35aac092a9a2cd82aa810cce5cdebf17e99dd`. Full EvalPlus still covered all 378 tasks. The monitor supervisor remains active and inter-epoch collection is skipped.

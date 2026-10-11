@@ -17538,3 +17538,12 @@ The user requested evaluating a fixed sample of 500 configured training tasks in
 
 SFT restart after training evaluation sample change
 The prior idle supervisor was replaced only after epoch 1 completed and no training child was running. The restarted supervisor loaded `outputs/rejection-sampling-sft-original-plus-easy-20261011/full-training/cycles/epoch-000001/checkpoints/checkpoint-595` as epoch 2's adapter. It resumed W&B run `gewyuz7o`. The configuration now evaluates 500 seeded task IDs, saved in `full-training/training-eval-task-ids.json`, after each epoch. The first evaluation under this policy will occur at epoch 2. Collection remains disabled between epochs.
+
+
+SFT cycle 2 results with fixed training evaluation
+W&B run: https://wandb.ai/kunal-personal/grpo-mbpp/runs/gewyuz7o
+Checkpoint: `outputs/rejection-sampling-sft-original-plus-easy-20261011/full-training/cycles/epoch-000002/checkpoints/checkpoint-595`
+Training: The run resumed from epoch 1 checkpoint 595 and completed 595 optimizer steps on all 4,758 accepted SFT records.
+Evaluation: Full canonical EvalPlus covered all 378 examples. MBPP pass@1 was 0.534 and MBPP+ pass@1 was 0.434. The fixed in-sample training evaluation covered 500 of the 5,910 configured training tasks, with pass@1 0.592, all-tests pass fraction 0.738, and average reward 0.738. Evaluation time was 210.58 seconds.
+Fixed sample manifest: `outputs/rejection-sampling-sft-original-plus-easy-20261011/full-training/training-eval-task-ids.json`. Seed 42. SHA256 of ordered task IDs: `3d5cc2f0d803d099c15109909fa35aac092a9a2cd82aa810cce5cdebf17e99dd`. The same IDs will be used in all later epochs.
+Inter-epoch collection remains disabled.
