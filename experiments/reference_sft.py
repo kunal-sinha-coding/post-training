@@ -129,6 +129,7 @@ def run_stage(config: dict[str, Any], stage: str) -> bool:
         dataloader_num_workers=int(config["dataloader_num_workers"]),
         seed=int(config["seed"]),
         gradient_checkpointing=bool(config.get("gradient_checkpointing", False)),
+        gradient_checkpointing_kwargs={"use_reentrant": False},
         disable_tqdm=True,
         remove_unused_columns=False,
     )
