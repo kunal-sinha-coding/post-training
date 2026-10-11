@@ -4180,3 +4180,6 @@ The user requested a repeat of the full reference SFT experiment with the origin
 
 Commit name: Record original-only SFT launch
 The original-only reference SFT run is active with supervisor PID 741443 and Trainer PID 741452. Its distinct W&B run is `e45d4e8e`, and the run URL and setup are in logs/results.txt. The step-zero base evaluation is running before training. The first detached launch did not persist in the execution environment, so the supervisor was relaunched in a persistent execution session before any optimizer step or checkpoint. No prior run or GRPO checkpoint was touched.
+
+Commit name: Record stopped original-only SFT comparison
+At the user's direct request, stopped the original-only reference SFT trainer and its restart supervisor. The run completed the step-zero base evaluation and EvalPlus evaluations for epochs 1 through 9. Epoch 10 checkpoint 740 was saved, but the epoch 10 evaluation was interrupted. All ten checkpoints remain. The original-only condition briefly improved above baseline on full EvalPlus before declining by epoch 9. This contrasts with the immediate small decline in epoch 1 of the earlier original-plus-synthetic condition, but one run per condition is not enough to establish a cause. No GRPO checkpoints or original tests were touched.
