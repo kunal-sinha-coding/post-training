@@ -366,6 +366,13 @@ def collect_round(tasks: list[dict[str, Any]], model: Any, tokenizer: Any, confi
     attempts = {str(key): int(value) for key, value in state.get("attempts", {}).items()}
     store = load_solution_store(store_path)
     max_tries = int(config["max_generation_batches_per_task"])
+    cached_tasks = [task for task in tasks if str(task["task_id"]) in store]
+    # Treat each requested sample for a cached task as the saved passing solution response.
+    for task in cached_tasks:
+        record = store[str(task["task_id"])]
+        if record.get("task_fingerprint") != task_fingerprint(task):
+            raise ValueError(f"Stored solution task {task['task_id']} has a different prompt or test fingerprint.")
+    cached_candidate_total = len(cached_tasks) * int(config["candidate_batch_size"])
     active = [task for task in tasks if str(task["task_id"]) not in store and attempts.get(str(task["task_id"]), 0) < max_tries]
     added_total = generated_total = passed_total = 0
     chunk_size = int(config["collection_task_batch_size"])
@@ -392,8 +399,8 @@ def collect_round(tasks: list[dict[str, Any]], model: Any, tokenizer: Any, confi
         # Publish full-data progress as each bounded task chunk finishes.
         if progress_callback is not None:
             progress_callback({"tasks_processed": min(chunk_start + len(chunk), len(active)), "active_task_count": len(active), "chunk_candidates": len(scored), "chunk_full_passes": sum(item["passed_all"] for item in scored), "generated_candidates": generated_total, "full_passes": passed_total, "new_solutions": added_total})
-    # Return aggregate counts for the current generation batch.
-    return {"active_tasks": len(active), "generated_candidates": generated_total, "full_passes": passed_total, "new_solutions": added_total, "attempts": attempts}
+    # Return actual generation counts and cache-equivalent candidate counts for this round.
+    return {"active_tasks": len(active), "cached_tasks": len(cached_tasks), "cached_candidates": cached_candidate_total, "cached_full_passes": cached_candidate_total, "candidate_equivalents": generated_total + cached_candidate_total, "sample_passes_with_cache": passed_total + cached_candidate_total, "generated_candidates": generated_total, "full_passes": passed_total, "new_solutions": added_total, "attempts": attempts}
 
 
 def run_pilot(config: dict[str, Any], output_dir: Path, solution_store_path: Path) -> None:
@@ -439,8 +446,8 @@ def run_pilot(config: dict[str, Any], output_dir: Path, solution_store_path: Pat
         cycle_started = time.perf_counter()
         counts = collect_round(tasks, model, tokenizer, config, solution_store_path, state_path, trace_path)
         attempts = counts.pop("attempts")
-        if counts["generated_candidates"]:
-            last_sample_pass_rate = counts["full_passes"] / counts["generated_candidates"]
+        if counts["candidate_equivalents"]:
+            last_sample_pass_rate = counts["sample_passes_with_cache"] / counts["candidate_equivalents"]
         loss = train_one_epoch(model, tokenizer, tasks, solution_store_path, config, output_dir / "pilot-no-checkpoints", cycle)
         evaluation = evaluate_greedy(model, tokenizer, tasks, config)
         epoch_pass_rates.append(evaluation["pass_rate"])
@@ -455,7 +462,12 @@ def run_pilot(config: dict[str, Any], output_dir: Path, solution_store_path: Pat
             "cycle": cycle,
             **counts,
             "sample_pass_rate": last_sample_pass_rate,
-            "sample_pass_rate_is_fresh": sample_is_fresh,
+            "sample_pass_rate_is_fresh": bool(counts["candidate_equivalents"]),
+            "model_sampling_is_fresh": sample_is_fresh,
+            "candidate_equivalents": counts["candidate_equivalents"],
+            "cached_candidates": counts["cached_candidates"],
+            "cached_tasks": counts["cached_tasks"],
+            "model_generated_sample_pass_rate": counts["full_passes"] / counts["generated_candidates"] if counts["generated_candidates"] else None,
             "pass_at_20_ceiling": ceiling if sampling_complete else None,
             "sampling_complete": sampling_complete,
             "solution_coverage": solved_count / len(tasks),
@@ -475,8 +487,13 @@ def run_pilot(config: dict[str, Any], output_dir: Path, solution_store_path: Pat
                 "rs/greedy_pass_rate": evaluation["pass_rate"],
                 "rs/greedy_pass_count": evaluation["pass_count"],
                 "rs/task_count": evaluation["task_count"],
-                "rs/sample_pass_rate_is_fresh": int(sample_is_fresh),
+                "rs/sample_pass_rate_is_fresh": int(bool(counts["candidate_equivalents"])),
+                "rs/model_sampling_is_fresh": int(sample_is_fresh),
                 "rs/generated_candidates": counts["generated_candidates"],
+                "rs/cached_candidates": counts["cached_candidates"],
+                "rs/cached_tasks": counts["cached_tasks"],
+                "rs/candidate_equivalents": counts["candidate_equivalents"],
+                "rs/cache_full_passes": counts["cached_full_passes"],
                 "rs/full_passes": counts["full_passes"],
                 "rs/accepted_new": counts["new_solutions"],
                 "rs/solution_coverage": record["solution_coverage"],
@@ -489,6 +506,8 @@ def run_pilot(config: dict[str, Any], output_dir: Path, solution_store_path: Pat
             }
             if last_sample_pass_rate is not None:
                 wandb_metrics["rs/sample_pass_rate"] = last_sample_pass_rate
+            if counts["generated_candidates"]:
+                wandb_metrics["rs/model_generated_sample_pass_rate"] = counts["full_passes"] / counts["generated_candidates"]
             wandb_run.log(wandb_metrics)
         history.append(evaluation["pass_rate"])
         state = {"attempts": attempts, "evaluations": history, "cycles_completed": cycle, "last_sample_pass_rate": last_sample_pass_rate, "pass_at_20_ceiling": ceiling if sampling_complete else None, "plateau_reached": plateau_reached}
