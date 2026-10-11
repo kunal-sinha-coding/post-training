@@ -4236,3 +4236,7 @@ The user clarified that the first collection must use only the base model becaus
 
 Commit name: Use only the current checkpoint for post-epoch collection
 The user revised the source policy. The initial collection still uses the base model because no SFT checkpoint exists. After each epoch, collection must use only the latest SFT checkpoint for unresolved tasks and must not fall back to the base model. Set the YAML source to `current_sft_checkpoint`; the existing code falls back to base only when no adapter path is available, which applies only to the initial collection. The active initial collection is unchanged.
+
+
+Commit name: Record per-step SFT cycle timing estimates
+The user asked for time estimates for each stage in the approved collection and SFT loop. Recorded estimates based on the live collection rate and the prior 5,910-task SFT and evaluation timing. The checkpoint-only post-epoch collection estimate remains provisional until measured in the first cycle.

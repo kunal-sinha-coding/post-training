@@ -17499,3 +17499,13 @@ Limitations: The collection-cycle code is prepared for a future full run. The cu
 
 Workflow policy update: checkpoint-only post-epoch collection
 The user changed the source policy after the checkpoint-first/base-fallback workflow was committed. The initial collection uses the base model because no checkpoint exists. After each SFT epoch, collect only from the latest SFT checkpoint for unresolved tasks, with the configured two batches of 10 candidates per task. Do not use the base model as a fallback. The YAML now selects `current_sft_checkpoint`; initial no-checkpoint behavior remains base-only. The active generation-only initial collection is unaffected.
+
+
+Timing estimate for original plus easy-synthetic rejection-SFT cycles
+Purpose: Estimate the duration of each stage in the planned initial collection, one-epoch SFT, full evaluation, checkpoint-only post-epoch collection loop.
+Live initial collection: At the latest check, the second candidate attempt had processed 832 of 1,077 eligible tasks. About 245 remained. Recent throughput was about 90 to 100 tasks per minute, so remaining time was estimated at 3 to 5 minutes including finalization.
+Training estimate: The prior full-pool SFT run used 5,910 records, batch size 8, and 739 optimizer steps. Its first epoch took 8 minutes 20 seconds to save the checkpoint. The current matching cache had about 4,400 records, or about 550 optimizer steps, giving an estimated 6 to 8 minutes including save overhead.
+Evaluation estimate: The prior full evaluation over 378 canonical EvalPlus tasks and 5,910 training tasks took about 12 minutes 13 seconds. The EvalPlus portion took about 5 minutes and the training-pool evaluation took about 7 minutes.
+Post-epoch collection estimate: About 1,500 tasks remained uncovered at the last collection summary. Based on about 90 to 100 tasks per minute, the first checkpoint sampling batch may take 15 to 18 minutes. A second batch for tasks still unresolved may add more time. Estimated total is 15 to 30 minutes per cycle. This estimate is provisional because no checkpoint-only generation rate has been measured.
+Cache writes are included in collection time and should add under one minute of separate overhead. The monitor interval is 10 minutes. Estimated training, evaluation, and collection time per cycle is about 35 to 50 minutes, excluding restart recovery.
+Limitations: Rates vary with generation length, task execution time, checkpoint generation yield, engine startup, and infrastructure load.
