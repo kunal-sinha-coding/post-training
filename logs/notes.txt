@@ -4059,3 +4059,6 @@ Added a separate YAML configuration, an append-only correct-solution map, a seed
 
 Commit name: Pin the experiment to the verified base-model copy.
 The shared Hugging Face Hub cache also contains an invalid empty Qwen config file. Confirmed the earlier evaluation artifact at `outputs/evalplus-pass16-mbpphard10x1009-seed42-20261011/base-model` has a valid Qwen2 model config, a 988,097,824-byte `model.safetensors` file, and no adapter config. Updated the new YAML to load this base-only copy by absolute path at runtime. This prevents accidental loading of a GRPO checkpoint or the corrupt Hub cache. The W&B SDK works, credentials are available from the local `.env`, and separate phase runs are configured.
+
+Commit name: Record the eight-task plateau and proceed to full collection.
+The seeded pilot completed on the base-model LoRA adapter with no checkpoint writes. It reached the defined plateau after the baseline and two SFT cycles because all three greedy pass@1 values were 25 percent. The wrapper therefore started the authorized full-data collection phase. Recorded the task IDs, candidate and acceptance counts, losses, W&B run link, cache paths, and plateau decision in `logs/results.txt` while collection continues.
