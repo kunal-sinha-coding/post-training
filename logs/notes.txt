@@ -4134,3 +4134,7 @@ The first full-data run trained at batch eight but ran out of GPU memory during 
 
 Commit name: Use non-reentrant checkpointing for full reference SFT
 The first gradient-checkpointed full-data retry failed before its first optimizer update because reentrant checkpointing received frozen input embeddings and produced a loss without gradients through the LoRA adapters. Updated Trainer settings to use non-reentrant checkpointing. The failed run is preserved as W&B run zj7mcg4p and in outputs/reference-sft-full-retry1-20261011. Added a distinct retry2 configuration and output path, retaining batch size eight, the 5,910-example scope, one epoch, and isolated checkpoint storage. Validation and retry results will be recorded before the next change.
+
+
+Commit name: Record completed non-reentrant full reference SFT
+The second retry configuration fixed the LoRA gradient failure. The full-data run completed one epoch over all 5,910 examples at batch size eight and logged training metrics live. It saved isolated checkpoints and a final adapter. W&B verification confirmed 73 loss rows and eight epoch evaluations plus baseline. The final fixed eight-task in-sample pass@1 was 0/8, after an intermediate 1/8 at steps 400 through 700. The experiment record includes this non-monotonic result, run identifiers, setup, artifacts, and limitations. No GRPO checkpoint or original test was changed.
