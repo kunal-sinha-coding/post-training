@@ -4162,3 +4162,7 @@ The supervisor now keeps an isolated runtime config for recovery and handles rec
 
 Commit name: Record interim SFT loss assessment
 At optimizer step 420 (epoch 0.568), the live W&B and local traces had 42 matching rows. The 100-step-window mean loss declined from 0.5388 at steps 10-100 to 0.4694 at 110-200, 0.4423 at 210-300, and 0.3945 at 310-400. Individual minibatch losses varied, but the window means declined steadily. The learning rate was 9.999433e-6, only 0.0057 percent below its initial 1e-5 because the linear scheduler spans 10,000 epochs. The first full epoch evaluation is still pending.
+
+
+Commit name: Extend interim SFT loss assessment through step 570
+The run reached optimizer step 570 (epoch 0.771). The 57 local training rows and remote W&B history continued to match. Mean loss over logged points was 0.5388 at steps 10-100, 0.4694 at 110-200, 0.4423 at 210-300, 0.3945 at 310-400, 0.3971 at 410-500, and 0.3747 at 510-570. Step loss remains noisy at a scale of several hundredths, while the trend continues down. The current learning rate is 9.999230e-6. No epoch evaluation is complete, so there is no pass@1 outcome yet.
