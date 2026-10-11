@@ -1,0 +1,38 @@
+# This config trains from raw reference-code continuations on eight tasks, then on the complete original plus synthetic pool.
+model_name_or_path: outputs/evalplus-pass16-mbpphard10x1009-seed42-20261011/base-model
+mbpp_splits: [train, validation, test]
+visible_test_count: 1
+synthetic_training_tasks_path: analysis/mbpp_category_synthetic_tasks_harder5319.jsonl
+expected_train_samples: 5910
+output_dir: outputs/reference-sft-pilot8-corrected-full-20261011
+seed: 42
+device: cuda
+bf16: true
+fp16: false
+lora_r: 8
+lora_alpha: 16
+lora_dropout: 0.0
+lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+pilot_task_count: 8
+sft_per_device_train_batch_size: 8
+gradient_accumulation_steps: 1
+learning_rate: 0.00001
+max_prompt_length: 512
+max_completion_length: 512
+max_new_tokens: 512
+temperature: 0.8
+generation_batch_size: 8
+sandbox_timeout_seconds: 3
+reward_scoring_workers: 8
+torch_num_threads: 8
+dataloader_num_workers: 4
+pilot_max_steps: 10000
+pilot_eval_steps: 10
+full_epochs: 1
+full_eval_steps: 100
+logging_steps: 10
+save_steps: 100
+wandb_project: grpo-mbpp
+wandb_entity: kunal-personal
+pilot_wandb_run_name: mbpp-reference-sft-pilot8-corrected-20261011
+full_wandb_run_name: mbpp-reference-sft-full-corrected-20261011

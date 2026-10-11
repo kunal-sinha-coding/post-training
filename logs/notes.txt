@@ -4122,3 +4122,7 @@ This change adds a separate reference-SFT experiment and YAML configuration. It 
 Commit: Align reference SFT targets with the generation prompt
 
 The first reference-SFT pilot exposed a target-format mismatch in the shared data builder. The Qwen prompt already ends with an open Python code fence, while the generic builder prepended a second `Code:` label and fenced block to the reference solution. This change adds a reference-specific dataset builder that masks the prompt and trains only on the raw reference code continuation. A focused tokenizer validation confirmed all eight fixed pilot targets are exact raw reference code and follow the expected open-fence prompt. The active pilot process was left running as authorized; its already-tokenized dataset is unchanged by this source fix. Any later run or full-data stage uses the corrected builder.
+
+Commit: Configure a corrected reference-SFT pilot restart
+
+This config starts a separate corrected run while retaining the exact same eight seeded task IDs and all other training settings. The prior pilot was explicitly stopped by the user after step 850, at 0/8 pass@1 and loss 0.0001, because every greedy completion was the literal `Code:` wrapper and failed syntax parsing. The corrected run uses raw reference-code continuation targets from commit caed28e. It writes to a new output directory and a new W&B run name so the failed run remains auditable. No GRPO process, checkpoint, or task test was touched.
