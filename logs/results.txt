@@ -17232,3 +17232,31 @@ Sampling-rate diagnosis and configuration update: one pilot round generated 20 c
 W&B verification at cycle 69: run https://wandb.ai/kunal-personal/grpo-mbpp/runs/yuqnvobr is active and has 71 metric rows. Its latest recorded greedy pass@1 is 37.5 percent, pass@20 ceiling is 50 percent, solution coverage is 50 percent, and SFT loss is 0.19247. The W&B sample_pass_rate summary displays zero because the current process logs zero on SFT-only cycles without candidates. The three actual candidate-producing pilot rounds had 5/40 passing (12.5 percent), 4/35 passing (11.43 percent), and 0/20 passing (0 percent). The corrected empty-cycle logger applies to later invocations; the current process predates that change.
 
 Pilot completion and W&B sample-rate count: the pilot reached its target at cycle 74. Greedy pass@1 was 4/8 (50 percent), equal to the adaptive pass@20 ceiling of 4/8. Three candidate-generating rounds measured sample pass rate: 5/40 = 12.5 percent, 4/35 = 11.43 percent, and 0/20 = 0 percent. The first two rates are in W&B run 3360s60o. The third is in run yuqnvobr. That second run also logged 71 empty SFT-only cycles as zero because the active process used the earlier logger. Therefore, 3 rounds had actual sample-rate evaluations, while 74 numeric W&B values appeared across the two runs, 71 of which were empty-cycle artifacts. The wrapper started full-data collection after the pilot target was reached. The resumed full-collection W&B run is 15347bhu.
+
+------------------------------------------------------------------------
+Experiment: single-batch generated-solution-cache timing and W&B logging check
+Date: 2026-10-11 UTC
+
+Purpose: Verify that W&B receives the pass and candidate-sampling metrics, and measure the wall-time change when the append-only generated-solution cache skips solved tasks.
+
+Setup: Used the fixed eight original MBPP tasks 823, 659, 527, 960, 938, 851, 813, and 467. This task set was selected earlier with seed 42, before candidate outcomes were used. The existing cache contained valid, fingerprint-matched passing solutions for tasks 823, 659, 527, and 813. The cache had 194 solution records before and after this test. No solution was added or removed. Original assertions were unchanged. The configured local Qwen2.5-Coder-0.5B-Instruct base model was loaded once. Model load time was 5.773 seconds and was excluded from both batch timings. No SFT was run.
+
+Procedure: The cache-disabled condition generated ten candidates for each of all eight tasks, for 80 candidates. The cache-enabled condition loaded and re-executed the four stored solutions, then generated ten candidates for each of the four cache misses, for 40 new candidates. The cache cohort was determined only after the task set was fixed. Test assertions were used only to score generated candidates and verify the saved solutions.
+
+Results: The cache-disabled batch took 25.841 seconds and found 16 full passes from 80 candidates, for a 20.0 percent candidate pass rate. The cache-enabled batch took 17.184 seconds, used four verified cache hits, generated 40 new candidates, and found four passing cached solutions plus one passing new candidate. The measured time reduction was 8.657 seconds, or 33.50 percent, and the speed ratio was 1.504 times. The 2.5 percent pass rate among the 40 new cache-enabled candidates and the 20 percent cache-disabled candidate rate are stochastic outcomes from one small pair and are not a quality comparison. The timing comparison is a single measurement and needs repeated runs for a stable estimate.
+
+W&B: Run `mbpp-single-batch-generated-cache-check-20261011`, ID `inmhd6y4`, at https://wandb.ai/kunal-personal/grpo-mbpp/runs/inmhd6y4. The remote API reports state `finished` and four history rows. Row one has the W&B smoke check and cache hit counts. Row two has model load time. Row three has the cache-disabled pass rate and batch time. Row four has the cache-enabled sample rate, hit count, pass count, and timing comparison. Local result artifact: `outputs/rejection-sampling-sft-incremental-20261011/single-batch-generated-cache-test.json`.
+
+Code and environment: Base commit `bf159f2` on branch `main`; implementation changes are pending commit. The run used Python 3.12, W&B SDK 0.30.0, and an NVIDIA RTX A5000. No GRPO checkpoint or original test was changed.
+
+------------------------------------------------------------------------
+Experiment: eight-task rejection-sampling SFT plateau pilot
+Date: 2026-10-11 UTC
+
+Purpose: Run only the fixed eight-task pilot, log pass@1 and sampling pass rate on every epoch, and stop after three consecutive trained evaluations stay within one percentage point.
+
+Setup: Reuse the fixed original MBPP tasks 823, 659, 527, 960, 938, 851, 813, and 467. Use the configured local base-only model, a fresh LoRA adapter, ten candidates per unresolved task per batch, at most two batches per task, batch size eight for SFT, unchanged original assertions, no pilot checkpoint writes, and the append-only passing-solution map `outputs/rejection-sampling-correct-solutions.json`. A new output directory keeps this pilot state and W&B run separate from the earlier ceiling pilot. The sampling pass rate is carried forward on SFT-only epochs and marked with `sample_pass_rate_is_fresh=0` and `generated_candidates=0`; this makes each W&B epoch visible without presenting a stale value as a new sampling result.
+
+Command: `HF_HUB_OFFLINE=1 python experiments/incremental_rejection_sampling_sft.py --config configs/rejection-sampling-sft-pilot-plateau.yaml --phase pilot`.
+
+W&B run name: `mbpp-incremental-rs-pilot8-plateau-20261011`. The run must show one greedy pass@1 point and one sample pass-rate point for each epoch after sampling starts. Local evaluation records include per-task execution details for every epoch. The stopping rule requires three trained evaluation rates with a range no greater than 0.01. Results and the final run identifier will be appended after the run reaches that condition.

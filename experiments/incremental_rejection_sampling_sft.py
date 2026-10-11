@@ -359,7 +359,7 @@ def evaluate_greedy(model: Any, tokenizer: Any, tasks: list[dict[str, Any]], con
     return {"pass_count": passed, "task_count": len(rows), "pass_rate": passed / len(rows) if rows else 0.0, "details": rows}
 
 
-def collect_round(tasks: list[dict[str, Any]], model: Any, tokenizer: Any, config: dict[str, Any], store_path: Path, state_path: Path, trace_path: Path) -> dict[str, Any]:
+def collect_round(tasks: list[dict[str, Any]], model: Any, tokenizer: Any, config: dict[str, Any], store_path: Path, state_path: Path, trace_path: Path, progress_callback: Any | None = None) -> dict[str, Any]:
     """Generate one configurable candidate batch for each unresolved task and persist progress."""
     # Load per-task generation counts and restrict work to tasks without a saved passing solution.
     state = json.loads(state_path.read_text(encoding="utf-8")) if state_path.exists() else {"attempts": {}}
@@ -389,15 +389,18 @@ def collect_round(tasks: list[dict[str, Any]], model: Any, tokenizer: Any, confi
         else:
             append_jsonl(trace_path, {"tasks_in_chunk": len(chunk), "candidates": len(scored), "full_passes": sum(item["passed_all"] for item in scored), "new_solutions": added})
         print(f"collection progress: tasks {min(chunk_start + len(chunk), len(active))}/{len(active)}, new solutions {added_total}", flush=True)
+        # Publish full-data progress as each bounded task chunk finishes.
+        if progress_callback is not None:
+            progress_callback({"tasks_processed": min(chunk_start + len(chunk), len(active)), "active_task_count": len(active), "chunk_candidates": len(scored), "chunk_full_passes": sum(item["passed_all"] for item in scored), "generated_candidates": generated_total, "full_passes": passed_total, "new_solutions": added_total})
     # Return aggregate counts for the current generation batch.
     return {"active_tasks": len(active), "generated_candidates": generated_total, "full_passes": passed_total, "new_solutions": added_total, "attempts": attempts}
 
 
 def run_pilot(config: dict[str, Any], output_dir: Path, solution_store_path: Path) -> None:
-    """Train the pilot until greedy pass@1 reaches adaptive pass@20 coverage."""
+    """Train the fixed eight-task pilot until three consecutive epochs plateau."""
     import torch
 
-    # Load the complete filtered dataset and persist one prompt-only random draw from original tasks.
+    # Load the filtered data and keep one prompt-only random draw from original tasks.
     all_tasks = load_training_tasks(config)
     original_tasks = [task for task in all_tasks if not str(task["task_id"]).startswith("synthetic-")]
     if len(original_tasks) < 8:
@@ -410,42 +413,49 @@ def run_pilot(config: dict[str, Any], output_dir: Path, solution_store_path: Pat
         write_json(ids_path, pilot_ids)
     tasks_by_id = {str(task["task_id"]): task for task in original_tasks}
     tasks = [tasks_by_id[task_id] for task_id in pilot_ids]
-    # Start a separate W&B run for the corrected pass@20 ceiling experiment.
+    # Start a dedicated W&B run for this eight-task plateau pilot.
     wandb_run = start_wandb(config, "pilot_ceiling", output_dir)
-    # Initialize model, tokenizer, and durable pilot state from the base model.
+    # Load the configured base model and keep pilot checkpoints disabled.
     torch.set_num_threads(int(config["torch_num_threads"]))
     model, tokenizer = load_model(config)
     state_path = output_dir / "pilot-state.json"
     trace_path = output_dir / "pilot-candidates.jsonl"
     state = json.loads(state_path.read_text(encoding="utf-8")) if state_path.exists() else {"attempts": {}, "evaluations": [], "cycles_completed": 0}
     history = list(state.get("evaluations", []))
-    # Measure the currently loaded base-plus-adapter model because pilot checkpoints are disabled.
+    plateau_window = int(config.get("pilot_plateau_evaluations", 3))
+    plateau_tolerance = float(config.get("pilot_plateau_tolerance", 0.01))
+    # Evaluate the loaded model and log the first pass-rate point.
     baseline = evaluate_greedy(model, tokenizer, tasks, config)
-    history.append(baseline["pass_rate"])
-    append_jsonl(output_dir / "pilot-evaluations.jsonl", {"cycle": int(state.get("ceiling_cycles_completed", 0)), "kind": "loaded_model_baseline", **baseline})
+    append_jsonl(output_dir / "pilot-evaluations.jsonl", {"cycle": 0, "kind": "loaded_model_baseline", **baseline})
     if wandb_run is not None:
-        wandb_run.log({"rs/greedy_pass_rate": baseline["pass_rate"], "rs/greedy_pass_count": baseline["pass_count"], "rs/task_count": baseline["task_count"], "rs/cycle": int(state.get("ceiling_cycles_completed", 0))})
-    # Continue sampling only unresolved tasks and train until greedy pass@1 reaches final pass@20 coverage.
-    cycle = int(state.get("cycles_completed", 0))
+        wandb_run.log({"rs/greedy_pass_rate": baseline["pass_rate"], "rs/greedy_pass_count": baseline["pass_count"], "rs/task_count": baseline["task_count"], "rs/cycle": 0, "rs/sample_pass_rate_is_fresh": 0})
+    cycle = 0
     max_tries = int(config["max_generation_batches_per_task"])
-    current_pass = float(baseline["pass_rate"])
+    last_sample_pass_rate = state.get("last_sample_pass_rate")
+    epoch_pass_rates: list[float] = []
+    # Sample unresolved tasks, train once, and log both requested rates after every epoch.
     while True:
         cycle += 1
         cycle_started = time.perf_counter()
         counts = collect_round(tasks, model, tokenizer, config, solution_store_path, state_path, trace_path)
         attempts = counts.pop("attempts")
+        if counts["generated_candidates"]:
+            last_sample_pass_rate = counts["full_passes"] / counts["generated_candidates"]
         loss = train_one_epoch(model, tokenizer, tasks, solution_store_path, config, output_dir / "pilot-no-checkpoints", cycle)
         evaluation = evaluate_greedy(model, tokenizer, tasks, config)
-        history.append(evaluation["pass_rate"])
-        current_pass = evaluation["pass_rate"]
+        epoch_pass_rates.append(evaluation["pass_rate"])
         store = load_solution_store(solution_store_path)
         solved_count = sum(str(task["task_id"]) in store for task in tasks)
         sampling_complete = all(str(task["task_id"]) in store or int(attempts.get(str(task["task_id"]), 0)) >= max_tries for task in tasks)
         ceiling = solved_count / len(tasks)
+        plateau_rates = epoch_pass_rates[-plateau_window:]
+        plateau_reached = len(plateau_rates) == plateau_window and max(plateau_rates) - min(plateau_rates) <= plateau_tolerance
+        sample_is_fresh = bool(counts["generated_candidates"])
         record = {
             "cycle": cycle,
             **counts,
-            "sample_pass_rate": counts["full_passes"] / counts["generated_candidates"] if counts["generated_candidates"] else None,
+            "sample_pass_rate": last_sample_pass_rate,
+            "sample_pass_rate_is_fresh": sample_is_fresh,
             "pass_at_20_ceiling": ceiling if sampling_complete else None,
             "sampling_complete": sampling_complete,
             "solution_coverage": solved_count / len(tasks),
@@ -453,30 +463,48 @@ def run_pilot(config: dict[str, Any], output_dir: Path, solution_store_path: Pat
             "greedy_pass_rate": evaluation["pass_rate"],
             "greedy_pass_count": evaluation["pass_count"],
             "greedy_task_count": evaluation["task_count"],
+            "plateau_reached": plateau_reached,
+            "plateau_evaluations": plateau_window,
+            "plateau_tolerance": plateau_tolerance,
             "elapsed_seconds": time.perf_counter() - cycle_started,
         }
         append_jsonl(output_dir / "pilot-evaluations.jsonl", {**record, "details": evaluation["details"]})
+        # Log sample rate every epoch and flag carried-forward values when no batch was sampled.
         if wandb_run is not None:
-            # Omit the sample rate when this SFT cycle generated no candidates.
-            wandb_metrics = {"rs/pass_at_20_ceiling": ceiling if sampling_complete else 0.0, "rs/sampling_complete": int(sampling_complete), "rs/accepted_new": counts["new_solutions"], "rs/solution_coverage": record["solution_coverage"], "rs/sft_loss": loss, "rs/greedy_pass_rate": evaluation["pass_rate"], "rs/cycle": cycle, "rs/elapsed_seconds": record["elapsed_seconds"]}
-            if counts["generated_candidates"]:
-                wandb_metrics["rs/sample_pass_rate"] = record["sample_pass_rate"]
-                wandb_metrics["rs/generated_candidates"] = counts["generated_candidates"]
-                wandb_metrics["rs/full_passes"] = counts["full_passes"]
+            wandb_metrics = {
+                "rs/greedy_pass_rate": evaluation["pass_rate"],
+                "rs/greedy_pass_count": evaluation["pass_count"],
+                "rs/task_count": evaluation["task_count"],
+                "rs/sample_pass_rate_is_fresh": int(sample_is_fresh),
+                "rs/generated_candidates": counts["generated_candidates"],
+                "rs/full_passes": counts["full_passes"],
+                "rs/accepted_new": counts["new_solutions"],
+                "rs/solution_coverage": record["solution_coverage"],
+                "rs/pass_at_20_ceiling": ceiling if sampling_complete else 0.0,
+                "rs/sampling_complete": int(sampling_complete),
+                "rs/sft_loss": loss,
+                "rs/plateau_reached": int(plateau_reached),
+                "rs/cycle": cycle,
+                "rs/elapsed_seconds": record["elapsed_seconds"],
+            }
+            if last_sample_pass_rate is not None:
+                wandb_metrics["rs/sample_pass_rate"] = last_sample_pass_rate
             wandb_run.log(wandb_metrics)
-        state = {"attempts": attempts, "evaluations": history, "cycles_completed": cycle, "pass_at_20_ceiling": ceiling if sampling_complete else None}
+        history.append(evaluation["pass_rate"])
+        state = {"attempts": attempts, "evaluations": history, "cycles_completed": cycle, "last_sample_pass_rate": last_sample_pass_rate, "pass_at_20_ceiling": ceiling if sampling_complete else None, "plateau_reached": plateau_reached}
         write_json(state_path, state)
         print(json.dumps(record, ensure_ascii=False), flush=True)
-        if sampling_complete and current_pass >= ceiling:
+        if plateau_reached:
             break
-    # Preserve the measured ceiling and pass@1 match before returning to the orchestrator.
-    write_json(output_dir / "pilot-ceiling.json", {"task_ids": pilot_ids, "evaluations": history, "pass_at_20_ceiling": ceiling, "greedy_pass_at_1": current_pass, "ceiling_reached": True, "max_candidates_per_task": int(config["candidate_batch_size"]) * max_tries, "adaptive_stop_on_first_pass": True})
+    # Save the fixed pilot outcomes and the requested stopping decision.
+    plateau_result = {"task_ids": pilot_ids, "evaluations": history, "pass_at_20_ceiling": ceiling, "greedy_pass_at_1": evaluation["pass_rate"], "plateau_reached": True, "plateau_evaluations": plateau_window, "plateau_tolerance": plateau_tolerance, "max_candidates_per_task": int(config["candidate_batch_size"]) * max_tries, "adaptive_stop_on_first_pass": True}
+    write_json(output_dir / "pilot-plateau.json", plateau_result)
     if wandb_run is not None:
         wandb_run.summary["rs/pass_at_20_ceiling"] = ceiling
-        wandb_run.summary["rs/greedy_pass_at_1"] = current_pass
-        wandb_run.summary["rs/ceiling_reached"] = True
+        wandb_run.summary["rs/greedy_pass_at_1"] = evaluation["pass_rate"]
+        wandb_run.summary["rs/plateau_reached"] = True
         wandb_run.finish()
-    print(f"PILOT PASS@20 CEILING REACHED after {cycle} cycles on task IDs {pilot_ids}.", flush=True)
+    print(f"PILOT PLATEAU REACHED after {cycle} epochs on task IDs {pilot_ids}.", flush=True)
 
 
 def run_full_collection(config: dict[str, Any], output_dir: Path, solution_store_path: Path) -> None:
@@ -498,7 +526,18 @@ def run_full_collection(config: dict[str, Any], output_dir: Path, solution_store
     round_index = 0
     while True:
         round_index += 1
-        counts = collect_round(tasks, model, tokenizer, config, solution_store_path, state_path, trace_path)
+        # Log solution coverage and candidate yield after every completed task chunk.
+        def log_chunk_progress(progress: dict[str, Any]) -> None:
+            store = load_solution_store(solution_store_path)
+            covered_tasks = sum(str(task["task_id"]) in store for task in tasks)
+            metrics = {"rs/full_round": round_index, "rs/full_collection_tasks_processed": progress["tasks_processed"], "rs/full_collection_active_tasks": progress["active_task_count"], "rs/full_solution_coverage": covered_tasks / len(tasks), "rs/full_solutions_added": progress["new_solutions"], "rs/full_candidates_generated": progress["generated_candidates"], "rs/full_passes": progress["full_passes"]}
+            if progress["chunk_candidates"]:
+                metrics["rs/full_candidate_pass_rate"] = progress["chunk_full_passes"] / progress["chunk_candidates"]
+            if wandb_run is not None:
+                wandb_run.log(metrics)
+            append_jsonl(output_dir / "full-collection-rounds.jsonl", {"event": "chunk_progress", **metrics})
+
+        counts = collect_round(tasks, model, tokenizer, config, solution_store_path, state_path, trace_path, log_chunk_progress)
         counts.pop("attempts")
         store = load_solution_store(solution_store_path)
         covered = sum(str(task["task_id"]) in store for task in tasks)
