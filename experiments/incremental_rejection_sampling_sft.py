@@ -1,5 +1,5 @@
 # This experiment loads original and harder MBPP tasks, samples candidates in fixed batches, and stores one passing solution per task in an append-only JSON map.
-# It runs an eight-task pilot to a three-evaluation pass-rate plateau, collects solutions for the full task set, and trains a separate LoRA model with resumable full-data checkpoints.
+# It runs an eight-task pilot until greedy pass@1 reaches the measured pass@1 ceiling from 20 samples per task, then collects full-data solutions and trains a separate LoRA model with resumable checkpoints.
 
 from __future__ import annotations
 
@@ -393,12 +393,27 @@ def collect_round(tasks: list[dict[str, Any]], model: Any, tokenizer: Any, confi
     return {"active_tasks": len(active), "generated_candidates": generated_total, "full_passes": passed_total, "new_solutions": added_total}
 
 
+def sample_pilot_budget(tasks: list[dict[str, Any]], model: Any, tokenizer: Any, config: dict[str, Any], store_path: Path, output_dir: Path, cycle: int) -> dict[str, int]:
+    """Measure pass@20 by sampling four batches of five completions for every pilot task."""
+    # Sample all tasks equally so the measured ceiling is based on exactly twenty candidates per task.
+    trace_path = output_dir / "pilot-budget-candidates.jsonl"
+    task_by_id = {str(task["task_id"]): task for task in tasks}
+    total_passes = total_candidates = new_solutions = 0
+    for batch_index in range(int(config["max_generation_batches_per_task"])):
+        scored = generate_and_score(model, tokenizer, tasks, config, int(config["candidate_batch_size"]))
+        total_candidates += len(scored)
+        total_passes += sum(bool(item["passed_all"]) for item in scored)
+        new_solutions += accept_first_solutions(scored, task_by_id, store_path)
+        for item in scored:
+            append_jsonl(trace_path, {"cycle": cycle, "batch_index": batch_index + 1, **item})
+        print(f"pilot sampling cycle {cycle}: batch {batch_index + 1}/{config['max_generation_batches_per_task']}, passing candidates {total_passes}", flush=True)
+    return {"generated_candidates": total_candidates, "full_passes": total_passes, "new_solutions": new_solutions}
+
+
 def run_pilot(config: dict[str, Any], output_dir: Path, solution_store_path: Path) -> None:
-    """Run a random eight-task pilot until three consecutive pass rates form a plateau."""
+    """Train the eight-task pilot until greedy pass@1 reaches its measured pass@20 ceiling."""
     import torch
 
-    # Start a phase-specific W&B run before recording pilot metrics.
-    wandb_run = start_wandb(config, "pilot", output_dir)
     # Load the complete filtered dataset and persist one prompt-only random draw from original tasks.
     all_tasks = load_training_tasks(config)
     original_tasks = [task for task in all_tasks if not str(task["task_id"]).startswith("synthetic-")]
@@ -412,6 +427,8 @@ def run_pilot(config: dict[str, Any], output_dir: Path, solution_store_path: Pat
         write_json(ids_path, pilot_ids)
     tasks_by_id = {str(task["task_id"]): task for task in original_tasks}
     tasks = [tasks_by_id[task_id] for task_id in pilot_ids]
+    # Start a separate W&B run for the corrected pass@20 ceiling experiment.
+    wandb_run = start_wandb(config, "pilot_ceiling", output_dir)
     # Initialize model, tokenizer, and durable pilot state from the base model.
     torch.set_num_threads(int(config["torch_num_threads"]))
     model, tokenizer = load_model(config)
@@ -419,26 +436,37 @@ def run_pilot(config: dict[str, Any], output_dir: Path, solution_store_path: Pat
     trace_path = output_dir / "pilot-candidates.jsonl"
     state = json.loads(state_path.read_text(encoding="utf-8")) if state_path.exists() else {"attempts": {}, "evaluations": [], "cycles_completed": 0}
     history = list(state.get("evaluations", []))
-    # Record a baseline greedy evaluation before any pilot update.
-    if not history:
-        baseline = evaluate_greedy(model, tokenizer, tasks, config)
-        history.append(baseline["pass_rate"])
-        append_jsonl(output_dir / "pilot-evaluations.jsonl", {"cycle": 0, "kind": "baseline", **baseline})
-        if wandb_run is not None:
-            wandb_run.log({"rs/greedy_pass_rate": baseline["pass_rate"], "rs/greedy_pass_count": baseline["pass_count"], "rs/task_count": baseline["task_count"], "rs/cycle": 0})
-        write_json(state_path, {**state, "attempts": state.get("attempts", {}), "evaluations": history, "cycles_completed": 0})
-    # Continue sampling and SFT until the last three evaluations vary by at most one percentage point.
-    cycle = int(state.get("cycles_completed", 0))
-    while len(history) < 3 or max(history[-3:]) - min(history[-3:]) > float(config["plateau_tolerance"]):
+    # Measure the currently loaded base-plus-adapter model because pilot checkpoints are disabled.
+    baseline = evaluate_greedy(model, tokenizer, tasks, config)
+    history.append(baseline["pass_rate"])
+    append_jsonl(output_dir / "pilot-evaluations.jsonl", {"cycle": int(state.get("ceiling_cycles_completed", 0)), "kind": "loaded_model_baseline", **baseline})
+    if wandb_run is not None:
+        wandb_run.log({"rs/greedy_pass_rate": baseline["pass_rate"], "rs/greedy_pass_count": baseline["pass_count"], "rs/task_count": baseline["task_count"], "rs/cycle": int(state.get("ceiling_cycles_completed", 0))})
+    # Continue complete twenty-sample measurements and SFT until greedy pass@1 reaches the best measured ceiling.
+    cycle = int(state.get("ceiling_cycles_completed", 0))
+    ceiling = float(state.get("pass_at_20_ceiling", 0.0))
+    current_pass = float(history[-1]) if history else 0.0
+    while current_pass < ceiling or cycle == 0:
         cycle += 1
         cycle_started = time.perf_counter()
-        counts = collect_round(tasks, model, tokenizer, config, solution_store_path, state_path, trace_path)
+        counts = sample_pilot_budget(tasks, model, tokenizer, config, solution_store_path, output_dir, cycle)
+        # Count each task once when any candidate in this complete budget passes.
+        cycle_hits: set[str] = set()
+        for line in (output_dir / "pilot-budget-candidates.jsonl").read_text(encoding="utf-8").splitlines():
+            item = json.loads(line)
+            if item.get("cycle") == cycle and item.get("passed_all"):
+                cycle_hits.add(str(item["task_id"]))
+        cycle_ceiling = len(cycle_hits) / len(tasks)
+        ceiling = max(ceiling, cycle_ceiling)
         loss = train_one_epoch(model, tokenizer, tasks, solution_store_path, config, output_dir / "pilot-no-checkpoints", cycle)
         evaluation = evaluate_greedy(model, tokenizer, tasks, config)
         history.append(evaluation["pass_rate"])
+        current_pass = evaluation["pass_rate"]
         record = {
             "cycle": cycle,
             **counts,
+            "pass_at_20_ceiling": ceiling,
+            "cycle_pass_at_20": cycle_ceiling,
             "solution_coverage": len([task for task in tasks if str(task["task_id"]) in load_solution_store(solution_store_path)]) / len(tasks),
             "sft_loss": loss,
             "greedy_pass_rate": evaluation["pass_rate"],
@@ -448,17 +476,18 @@ def run_pilot(config: dict[str, Any], output_dir: Path, solution_store_path: Pat
         }
         append_jsonl(output_dir / "pilot-evaluations.jsonl", {**record, "details": evaluation["details"]})
         if wandb_run is not None:
-            wandb_run.log({"rs/sample_pass_rate": counts["full_passes"] / counts["generated_candidates"] if counts["generated_candidates"] else 0.0, "rs/accepted_new": counts["new_solutions"], "rs/solution_coverage": record["solution_coverage"], "rs/sft_loss": loss, "rs/greedy_pass_rate": evaluation["pass_rate"], "rs/cycle": cycle, "rs/elapsed_seconds": record["elapsed_seconds"]})
-        state = {"attempts": json.loads(state_path.read_text(encoding="utf-8")).get("attempts", {}), "evaluations": history, "cycles_completed": cycle}
+            wandb_run.log({"rs/sample_pass_rate": counts["full_passes"] / counts["generated_candidates"] if counts["generated_candidates"] else 0.0, "rs/pass_at_20_ceiling": ceiling, "rs/cycle_pass_at_20": cycle_ceiling, "rs/accepted_new": counts["new_solutions"], "rs/solution_coverage": record["solution_coverage"], "rs/sft_loss": loss, "rs/greedy_pass_rate": evaluation["pass_rate"], "rs/cycle": cycle, "rs/elapsed_seconds": record["elapsed_seconds"]})
+        state = {"attempts": json.loads(state_path.read_text(encoding="utf-8")).get("attempts", {}), "evaluations": history, "cycles_completed": int(state.get("cycles_completed", 0)), "ceiling_cycles_completed": cycle, "pass_at_20_ceiling": ceiling}
         write_json(state_path, state)
         print(json.dumps(record, ensure_ascii=False), flush=True)
-    # Preserve the verified plateau summary before returning to the orchestrator.
-    write_json(output_dir / "pilot-plateau.json", {"task_ids": pilot_ids, "evaluations": history, "plateau_rates": history[-3:], "tolerance": float(config["plateau_tolerance"]), "plateau_verified": True})
+    # Preserve the measured ceiling and pass@1 match before returning to the orchestrator.
+    write_json(output_dir / "pilot-ceiling.json", {"task_ids": pilot_ids, "evaluations": history, "pass_at_20_ceiling": ceiling, "greedy_pass_at_1": current_pass, "ceiling_reached": True, "samples_per_task_per_cycle": int(config["candidate_batch_size"]) * int(config["max_generation_batches_per_task"])})
     if wandb_run is not None:
-        wandb_run.summary["rs/plateau_verified"] = True
-        wandb_run.summary["rs/plateau_rates"] = history[-3:]
+        wandb_run.summary["rs/pass_at_20_ceiling"] = ceiling
+        wandb_run.summary["rs/greedy_pass_at_1"] = current_pass
+        wandb_run.summary["rs/ceiling_reached"] = True
         wandb_run.finish()
-    print(f"PILOT PLATEAU VERIFIED after {cycle} cycles on task IDs {pilot_ids}.", flush=True)
+    print(f"PILOT PASS@20 CEILING REACHED after {cycle} cycles on task IDs {pilot_ids}.", flush=True)
 
 
 def run_full_collection(config: dict[str, Any], output_dir: Path, solution_store_path: Path) -> None:

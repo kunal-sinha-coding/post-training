@@ -42,5 +42,6 @@ report_to: wandb
 wandb_project: grpo-mbpp
 wandb_entity: kunal-personal
 wandb_pilot_run_name: mbpp-incremental-rs-pilot8-20261011
+wandb_pilot_ceiling_run_name: mbpp-incremental-rs-pilot8-pass20-ceiling-20261011
 wandb_full_collect_run_name: mbpp-incremental-rs-full-collection-20261011
 wandb_full_train_run_name: mbpp-incremental-rs-full-training-20261011
