@@ -141,3 +141,30 @@ def test_build_sft_dataset_masks_prompt_tokens():
     assert result[0]["input_ids"] == [1, 2, 3, 4, 99]
     assert result[0]["labels"] == [-100, -100, 3, 4, 99]
     assert result[0]["attention_mask"] == [1, 1, 1, 1, 1]
+
+
+def test_build_sft_dataset_can_target_only_the_prefilled_code_continuation():
+    """Avoid adding an instruction or code fence after an open assistant code fence."""
+    seen = []
+
+    class Tokenizer:
+        """Capture prompt and response strings while returning fixed token IDs."""
+
+        eos_token_id = 99
+
+        def __call__(self, text, add_special_tokens, truncation, max_length):
+            """Record the encoded text and return stable tokens for one path."""
+            del truncation, max_length
+            seen.append((text, add_special_tokens))
+            return {"input_ids": [1, 2] if add_special_tokens else [3, 4]}
+
+    build_sft_dataset(
+        [{"prompt": "<|im_start|>assistant\n```python\n", "reference_code": "def solve():\n    return 1"}],
+        Tokenizer(),
+        {"max_prompt_length": 16, "max_completion_length": 16, "sft_completion_prefix": "", "sft_completion_suffix": ""},
+    )
+
+    assert seen == [
+        ("<|im_start|>assistant\n```python\n", True),
+        ("def solve():\n    return 1", False),
+    ]

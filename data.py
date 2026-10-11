@@ -394,11 +394,14 @@ def build_sft_dataset(dataset: Any, tokenizer: Any, config: dict[str, Any]) -> A
     """Tokenize MBPP demonstrations with loss masked over prompt tokens."""
     max_prompt_length = int(config.get("max_prompt_length", 512))
     max_completion_length = int(config.get("max_completion_length", 512))
+    response_prefix = str(config.get("sft_completion_prefix", "Code: \n```python\n"))
+    response_suffix = str(config.get("sft_completion_suffix", "\n```"))
 
     def tokenize_record(record: dict[str, Any]) -> dict[str, list[int]]:
         """Create one response-only language-modeling example."""
         prompt_ids = tokenizer(str(record["prompt"]), add_special_tokens=True, truncation=True, max_length=max_prompt_length)["input_ids"]
-        response = f"Code: \n```python\n{record['reference_code'].strip()}\n```"
+        # Match the target continuation to any assistant prefix already present in the prompt.
+        response = f"{response_prefix}{record['reference_code'].strip()}{response_suffix}"
         response_ids = tokenizer(response, add_special_tokens=False, truncation=True, max_length=max_completion_length)["input_ids"]
         if tokenizer.eos_token_id is not None and len(response_ids) < max_completion_length:
             # End each demonstration with the model's end-of-sequence token.
