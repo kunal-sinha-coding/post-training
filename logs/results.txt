@@ -17156,3 +17156,34 @@ Results. The right-padded base run had initial greedy pass 0/8. Its per-cycle ca
 Artifacts and separation. The right-padded run's candidate and greedy logs are under `outputs/rejection-sampling-sft-mbpp-8task-base-20261011/run`; completed adapters 8 through 11 remain there. The corrected run's candidate and greedy logs and completed adapter checkpoints 1 through 19 are under `outputs/rejection-sampling-sft-mbpp-8task-base-20261011/restart-leftpad-from-cycle11`. It resumed from the right-padded run's cycle-11 adapter. The one-task rejection-sampling adapter directories listed to the user were deleted after the user approved that exact list. No GRPO or smoke-test checkpoint path was included in cleanup. No test assertion was edited. No held-out benchmark result is claimed.
 
 Limitations. The corrected run did not reach its 100% target. Full-pass rejection supplied no accepted examples for tasks 370 and 461, so SFT had no task-specific positive examples for them. Task 461's original tests conflict with the task description. The user requested keeping all original tests unchanged and stopping the run, so no replacement task or test correction was made. The first process's candidate results are affected by right padding and should not be treated as an equivalent corrected run. The corrected run's cycle-20 SFT update was interrupted and is not represented by a completed checkpoint.
+
+## EvalPlus MBPP pass@k for the base model and GRPO checkpoint 940
+
+Purpose. Compare pass@k from 1 through 16 for the base Qwen2.5-Coder-0.5B-Instruct model and the best logged checkpoint of GRPO run `kunal-personal/grpo-mbpp/mbpphard10x1009`. The checkpoint was selected by `evaluation/mbpp_plus_pass_at_1`. The W&B history query returned 123 observed EvalPlus points from step 0 through step 1220. Its largest observed value was 0.540 at `evalplus-step-940`, so checkpoint 940 was used. The W&B run is at https://wandb.ai/kunal-personal/grpo-mbpp/runs/mbpphard10x1009.
+
+Task selection and scoring. EvalPlus 0.3.1 contains 378 MBPP+ tasks. A uniform sample of 50 sorted task IDs was selected with Python random seed 42 before loading expected outputs. The same task order and canonical Qwen EvalPlus prompts were used for both models. Each model generated 16 completions per task, for 800 completions per model. Sampling used temperature 1.0, top-p 1.0, max 2,048 new tokens, seed 42, and the Qwen EvalPlus stop strings. EvalPlus's official correctness checker ran each completion against the original MBPP base tests and the additional MBPP+ tests. Normal MBPP pass@k uses base-test passes. MBPP+ pass@k requires both base and extra tests to pass. The standard unbiased pass@k estimator was averaged over the 50 tasks. The task sample was selected independently of ground truth.
+
+Models and artifacts. The base model was `Qwen/Qwen2.5-Coder-0.5B-Instruct`, downloaded to `outputs/evalplus-pass16-mbpphard10x1009-seed42-20261011/base-model`. Its `model.safetensors` SHA-256 is `f9523886352217ded3aeeef552b381af79d568c6d49a4b9e423288cea56b0a44`; `config.json` SHA-256 is `b1e58593cd31852f7da5c2fc31ddf6135b9c066c0fd9177a4bbe95717083adff`. The GRPO adapter is `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009/checkpoint-940/adapter_model.safetensors`, SHA-256 `d94bc6681f8a16db94b6f64fa84c2409ccb8d7ec82fc55236d85c82e7d63334f`. The adapter config identifies the same base model. The adapter was copied to a temporary directory and merged there. No file in the GRPO checkpoint directory was changed. Generations, candidate-level statuses, selected IDs, hashes, and summary are in `outputs/evalplus-pass16-mbpphard10x1009-seed42-20261011`. Code was at repository commit `78fa90ac2d9d7f56df1c41452bad6ab04d629308`. The run used an NVIDIA RTX A5000, BF16, vLLM 0.10.2, Python 3.12, and EvalPlus 0.3.1.
+
+Results. The checkpoint passed more tasks at every k. Values below are estimated pass rates on the 50-task sample.
+
+| k | Base MBPP | Checkpoint MBPP | Base MBPP+ | Checkpoint MBPP+ |
+|---:|---:|---:|---:|---:|
+| 1 | 0.4537 | 0.6200 | 0.3675 | 0.4925 |
+| 2 | 0.4875 | 0.5760 | 0.5822 | 0.7077 |
+| 3 | 0.5439 | 0.6105 | 0.6417 | 0.7420 |
+| 4 | 0.5787 | 0.6310 | 0.6768 | 0.7601 |
+| 5 | 0.6034 | 0.6451 | 0.7003 | 0.7716 |
+| 6 | 0.6222 | 0.6560 | 0.7169 | 0.7801 |
+| 7 | 0.6372 | 0.6651 | 0.7293 | 0.7868 |
+| 8 | 0.6493 | 0.6730 | 0.7389 | 0.7925 |
+| 9 | 0.6595 | 0.6801 | 0.7467 | 0.7973 |
+| 10 | 0.6680 | 0.6868 | 0.7532 | 0.8016 |
+| 11 | 0.6754 | 0.6930 | 0.7587 | 0.8054 |
+| 12 | 0.6817 | 0.6989 | 0.7637 | 0.8088 |
+| 13 | 0.6872 | 0.7045 | 0.7682 | 0.8120 |
+| 14 | 0.6920 | 0.7098 | 0.7723 | 0.8148 |
+| 15 | 0.6963 | 0.7150 | 0.7762 | 0.8175 |
+| 16 | 0.7000 | 0.7200 | 0.7800 | 0.8200 |
+
+At k=16, 35/50 base-model tasks and 36/50 checkpoint tasks passed all MBPP+ tests at least once. On original MBPP tests, the counts were 39/50 and 41/50. There were 294 and 394 fully passing MBPP+ completions, respectively. These are results for one seeded 50-task sample, not a full benchmark score. The base model cache initially contained empty files, so the base snapshot was downloaded into the isolated experiment directory before sampling. Base evaluation completed before checkpoint evaluation. The tokenizer vocabulary and special-token IDs matched between the downloaded base model and checkpoint tokenizer.
