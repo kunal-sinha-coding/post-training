@@ -17449,3 +17449,18 @@ Launch verification, 2026-10-11 20:28 UTC: The corrected collection attempt is a
 
 
 Solution-collection progress update, 2026-10-11 20:56 UTC: The first 10 live 64-task chunks have processed 768 of 5,539 unresolved tasks (13.9%). Candidate collection generated 7,680 completions and recorded 1,509 fully passing completions, for a cumulative model-generated candidate pass rate of 19.65%. These candidates produced 422 new accepted task solutions. Including the 371 matching original solutions already in the cache, 793 of 5,910 tasks are now covered (13.4%). The most recent chunk generated 640 candidates, 143 of which fully passed (22.34%). The W&B cache-equivalent `rs/full_sample_pass_rate` is 45.82% at this point because it counts the 371 cached solutions as 3,710 already-passing candidate slots; the 19.65% figure is the observed pass fraction among the 7,680 new generations. W&B run `eunaaomv` remains active. Local live traces: `outputs/rejection-sampling-sft-original-plus-easy-20261011/full-collection-progress.jsonl` and `full-collection-rounds.jsonl`.
+
+
+================================================================================
+Experiment: Cached-solution snapshot rejection-SFT, 2026-10-11 UTC
+Status: configured; launch pending
+
+Purpose: Start supervised fine-tuning on only the full-pass solutions that are currently cached for the 5,910-task original plus easy-synthetic pool, while the larger collector continues separately.
+
+Data snapshot: The candidate cache contained 1,253 matching accepted solutions when snapshotted: 385 original MBPP and 868 easy synthetic tasks. Each entry matched the exact task prompt and tests. The 47 harder-synthetic cache keys are excluded. Snapshot file: `outputs/rejection-sampling-sft-cached-snapshot-20261011/solution-store-snapshot.json`, SHA256 `c3143dedb25b58e1e7c3e63d0444476d46bc48952a82704c7c5b28656f26ac05`. The filtered loader was verified to return 1,253 tasks, and the new experiment reads this immutable snapshot rather than the live append-only collection cache.
+
+Setup: Config `configs/rejection-sampling-sft-cached-snapshot-20261011.yaml`. It uses the same original local Qwen2.5-Coder-0.5B-Instruct base, GRPO-matched LoRA parameters, BF16, batch size 8, gradient accumulation 1, learning rate 0.00001, raw-code SFT targets, and one-million-epoch ceiling as the active rejection-SFT run. It uses a fresh adapter and isolated output/checkpoint directory. It evaluates full canonical EvalPlus after each epoch and the 1,253 snapshot tasks with their unchanged assertions. Checkpoints are retained per epoch, and the ten-minute supervisor restarts from the newest complete checkpoint. W&B training run name: `mbpp-rs-cached-snapshot-training-20261011`.
+
+Generation backend context: The concurrently active candidate collector uses Hugging Face Transformers `AutoModelForCausalLM.generate`, not vLLM. It generates sampled candidates in batches of 128 sequences with temperature 0.8, top-p 0.95, and up to 512 new tokens. At snapshot time, the collector had completed 22 chunks, processed 1,408 unresolved tasks, generated 14,080 candidates, and added 882 accepted solutions.
+
+Execution: The cached-only trainer shares the RTX A5000 with the ongoing collector. The collector is not stopped. This may reduce throughput for both jobs. The new SFT output path and snapshot are separate from the GRPO and collector checkpoints. Launch identifiers and metrics will be recorded after startup.
