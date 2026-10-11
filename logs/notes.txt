@@ -4213,3 +4213,7 @@ The first collection attempts found 47 existing accepted solutions from the hard
 
 Commit name: Record easy synthetic rejection-SFT launch
 The supervisor is active after the cache ID namespace fix. Collection W&B run `eunaaomv` is live, with supervisor PID 830332 and candidate collection PID 830985. The RTX A5000 showed 96% utilization and about 3.6 GiB allocated during generation. The first 64-task chunk is still processing, so the first live collection metric is pending. The full data pool and checkpoint path remain isolated. The run uses end-of-epoch evaluation as configured. Updated the results record with the active W&B URL, current process status, and commit IDs.
+
+
+Commit name: Record easy synthetic candidate collection progress
+The active collection had completed 10 chunks, covering 768 of 5,539 unresolved tasks, and added 422 fully passing task solutions. It generated 7,680 candidates, with 1,509 complete-task passes (19.65%). Existing cache coverage is 371 tasks, so overall task coverage is 793/5,910 (13.4%). The cache-equivalent sample-pass metric is 45.82% because 371 cached solutions count as 3,710 passing candidate slots; it is distinct from the model-generated 19.65% pass fraction. Recorded this snapshot and the local live trace paths in `logs/results.txt`.
