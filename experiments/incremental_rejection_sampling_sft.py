@@ -545,13 +545,21 @@ def run_full_collection(config: dict[str, Any], output_dir: Path, solution_store
     round_index = 0
     while True:
         round_index += 1
+        # Count all prior passing records as cached slots at the start of this round.
+        round_store = load_solution_store(solution_store_path)
+        cached_task_count = sum(str(task["task_id"]) in round_store for task in tasks)
+        cached_candidates = cached_task_count * int(config["candidate_batch_size"])
         # Log solution coverage and candidate yield after every completed task chunk.
         def log_chunk_progress(progress: dict[str, Any]) -> None:
             store = load_solution_store(solution_store_path)
             covered_tasks = sum(str(task["task_id"]) in store for task in tasks)
-            metrics = {"rs/full_round": round_index, "rs/full_collection_tasks_processed": progress["tasks_processed"], "rs/full_collection_active_tasks": progress["active_task_count"], "rs/full_solution_coverage": covered_tasks / len(tasks), "rs/full_solutions_added": progress["new_solutions"], "rs/full_candidates_generated": progress["generated_candidates"], "rs/full_passes": progress["full_passes"]}
+            metrics = {"rs/full_round": round_index, "rs/full_collection_tasks_processed": progress["tasks_processed"], "rs/full_collection_active_tasks": progress["active_task_count"], "rs/full_solution_coverage": covered_tasks / len(tasks), "rs/full_solutions_added": progress["new_solutions"], "rs/full_candidates_generated": progress["generated_candidates"], "rs/full_passes": progress["full_passes"], "rs/full_cached_candidates": cached_candidates, "rs/full_candidate_equivalents": cached_candidates + progress["generated_candidates"]}
+            # Log fresh model yield separately from the cache-inclusive response-slot rate.
             if progress["chunk_candidates"]:
                 metrics["rs/full_candidate_pass_rate"] = progress["chunk_full_passes"] / progress["chunk_candidates"]
+            progress_denominator = cached_candidates + progress["generated_candidates"]
+            if progress_denominator:
+                metrics["rs/full_sample_pass_rate"] = (cached_candidates + progress["full_passes"]) / progress_denominator
             if wandb_run is not None:
                 wandb_run.log(metrics)
             append_jsonl(output_dir / "full-collection-rounds.jsonl", {"event": "chunk_progress", **metrics})
@@ -563,7 +571,13 @@ def run_full_collection(config: dict[str, Any], output_dir: Path, solution_store
         record = {**counts, "covered_tasks": covered, "total_tasks": len(tasks), "coverage_rate": covered / len(tasks)}
         append_jsonl(output_dir / "full-collection-rounds.jsonl", record)
         if wandb_run is not None:
-            wandb_run.log({"rs/full_candidate_pass_rate": counts["full_passes"] / counts["generated_candidates"] if counts["generated_candidates"] else 0.0, "rs/full_solution_coverage": record["coverage_rate"], "rs/full_solutions_added": counts["new_solutions"], "rs/full_round": round_index})
+            full_metrics = {"rs/full_solution_coverage": record["coverage_rate"], "rs/full_solutions_added": counts["new_solutions"], "rs/full_round": round_index, "rs/full_candidate_equivalents": counts["candidate_equivalents"], "rs/full_cached_candidates": counts["cached_candidates"], "rs/full_generated_candidates": counts["generated_candidates"], "rs/full_cache_full_passes": counts["cached_full_passes"]}
+            # Keep model-only yield separate and include cached passing slots in the overall sample rate.
+            if counts["generated_candidates"]:
+                full_metrics["rs/full_candidate_pass_rate"] = counts["full_passes"] / counts["generated_candidates"]
+            if counts["candidate_equivalents"]:
+                full_metrics["rs/full_sample_pass_rate"] = counts["sample_passes_with_cache"] / counts["candidate_equivalents"]
+            wandb_run.log(full_metrics)
         print(json.dumps(record), flush=True)
         if counts["active_tasks"] == 0:
             break
@@ -583,6 +597,10 @@ def run_full_training(config: dict[str, Any], output_dir: Path, solution_store_p
 
     # Start a phase-specific W&B run that resumes across monitor restarts.
     wandb_run = start_wandb(config, "full_train", output_dir)
+    # Bind the live greedy pass@1 series to the optimizer step used by the evaluation callback.
+    if wandb_run is not None:
+        wandb_run.define_metric("rs/full_training_eval_step")
+        wandb_run.define_metric("rs/full_training_greedy_pass_at_1", step_metric="rs/full_training_eval_step", summary="last")
     # Recreate the filtered full dataset and select only its accepted solution records.
     tasks = load_training_tasks(config)
     records = build_sft_records(tasks, solution_store_path)
@@ -618,6 +636,9 @@ def run_full_training(config: dict[str, Any], output_dir: Path, solution_store_p
             model.eval()
             result = evaluate_greedy(model, tokenizer, pilot_tasks, config)
             append_jsonl(metrics_path, {"kind": "pilot_eval", "step": int(state.global_step), "pass_count": result["pass_count"], "task_count": result["task_count"], "pass_rate": result["pass_rate"], "details": result["details"]})
+            # Publish each fixed-pilot pass@1 measurement to W&B at evaluation time.
+            if wandb_run is not None:
+                wandb_run.log({"rs/full_training_eval_step": int(state.global_step), "rs/full_training_greedy_pass_at_1": result["pass_rate"], "rs/full_training_pass_count": result["pass_count"], "rs/full_training_task_count": result["task_count"]})
             model.train()
             return control
 

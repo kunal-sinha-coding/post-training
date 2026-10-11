@@ -5,11 +5,11 @@ set -u
 # Resolve the repository and experiment paths before starting any phase.
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
-CONFIG="configs/rejection-sampling-sft-incremental.yaml"
-OUTPUT="outputs/rejection-sampling-sft-incremental-20261011"
+CONFIG="${CONFIG:-configs/rejection-sampling-sft-incremental.yaml}"
+OUTPUT="${OUTPUT:-outputs/rejection-sampling-sft-incremental-20261011}"
 MONITOR_LOG="$OUTPUT/training-monitor.log"
-TARGET_STEPS=1000000
-CHECK_INTERVAL_SECONDS=600
+TARGET_STEPS="${TARGET_STEPS:-1000000}"
+CHECK_INTERVAL_SECONDS="${CHECK_INTERVAL_SECONDS:-600}"
 
 # Create only this rejection-sampling output directory.
 mkdir -p "$OUTPUT"
@@ -105,8 +105,11 @@ run_collection_phase() {
     done
 }
 
-# Run the eight-task pilot to its measured plateau, then collect the full task pool.
-run_collection_phase pilot "$OUTPUT/pilot.log"
+# Skip the already completed pilot when the user explicitly starts full-data work.
+if [[ "${SKIP_PILOT:-0}" != "1" ]]; then
+    run_collection_phase pilot "$OUTPUT/pilot.log"
+fi
+# Collect passing solutions for the full task pool before starting resumable SFT.
 run_collection_phase full-collect "$OUTPUT/full-collection.log"
 
 # Monitor the full-data Trainer at ten-minute intervals and resume from its newest complete checkpoint.
