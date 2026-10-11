@@ -17517,3 +17517,8 @@ Data pool: 5,910 configured original and easy-synthetic tasks. Candidate source:
 Results: 4,758 of 5,910 tasks have matching passing cached solutions, for 80.51% coverage. The initial matching cache had 1,343 tasks. This collection added 3,415 new accepted task solutions across the two candidate rounds. The final round processed 1,077 tasks, generated 10,770 candidates, observed 520 fully passing candidates, and added 337 task solutions.
 Workflow update: Added the YAML field `collection_between_epochs` with supported values `base_model`, `current_sft_checkpoint`, and `none`. The current setting is `none`. Initial collection still uses the base model. After each SFT epoch, the supervisor skips collection, trains the next epoch on all matching cached solutions, and runs the configured full EvalPlus and training-pool evaluations. The training loop uses separate epoch directories and the existing ten-minute restart monitor.
 The collection-only supervisor exited after collection because `SKIP_TRAINING=1`; it did not start SFT. Training has not started yet.
+
+
+SFT launch after initial collection
+W&B run: https://wandb.ai/kunal-personal/grpo-mbpp/runs/gewyuz7o
+Training data: 4,758 matching passing solutions from the configured 5,910-task original plus easy-synthetic pool. Training uses batch size 8 and a fresh LoRA adapter on the configured base model for epoch 1. The training config targets 1,000,000 epochs as an open-ended run. After each epoch, the run evaluates canonical EvalPlus and the full configured training pool. `collection_between_epochs: none` skips post-epoch generation. The 10-minute supervisor and checkpoint restart loop are active. Initial epoch status at launch: first loss 0.2493 at 0.0168 epoch.

@@ -4244,3 +4244,7 @@ The user asked for time estimates for each stage in the approved collection and 
 
 Commit name: Configure skipped inter-epoch collection
 The initial collection completed with 4,758 of 5,910 configured tasks covered. The user requested a configuration choice between base-model collection, current-checkpoint collection, or no collection between SFT epochs, and selected none for now. Replaced the earlier source and boolean fields with `collection_between_epochs`, added supervisor handling for none/base_model/current_sft_checkpoint, and kept initial collection base-only. The first attempted supervisor launch inherited the generation-only setting and did not start training. The next supervisor launch must explicitly unset `SKIP_TRAINING`.
+
+
+Commit name: Record checkpoint-cache SFT launch with collection skipped
+After the initial collection completed, started the monitored SFT cycle supervisor with `SKIP_TRAINING` explicitly unset. Epoch 1 is training on the 4,758 matching passing solutions. Full EvalPlus and full configured training-pool evaluation run after each epoch. `collection_between_epochs` is set to `none`, so later cycles do not sample from the base model or a checkpoint. The supervisor checks every 600 seconds and restarts a failed epoch from its latest complete checkpoint. W&B training run `gewyuz7o` is live.
