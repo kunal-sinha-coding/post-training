@@ -111,7 +111,9 @@ PY
         mkdir -p "$cycle_dir/checkpoints"
         previous_adapter=""
         if (( epoch > 1 )); then
-            previous_adapter="$TRAIN_DIR/cycles/epoch-$(printf '%06d' "$((epoch - 1))")/final-model"
+            previous_cycle_dir="$TRAIN_DIR/cycles/epoch-$(printf '%06d' "$((epoch - 1))")"
+            previous_adapter="$(latest_checkpoint "$previous_cycle_dir/checkpoints")"
+            if [[ -z "$previous_adapter" ]]; then previous_adapter="$previous_cycle_dir/final-model"; fi
         fi
         attempt=0
         while [[ ! -s "$train_sentinel" ]]; do
