@@ -435,7 +435,7 @@ def run_pilot(config: dict[str, Any], output_dir: Path, solution_store_path: Pat
     baseline = evaluate_greedy(model, tokenizer, tasks, config)
     append_jsonl(output_dir / "pilot-evaluations.jsonl", {"cycle": 0, "kind": "loaded_model_baseline", **baseline})
     if wandb_run is not None:
-        wandb_run.log({"rs/greedy_pass_rate": baseline["pass_rate"], "rs/greedy_pass_count": baseline["pass_count"], "rs/task_count": baseline["task_count"], "rs/cycle": 0, "rs/sample_pass_rate_is_fresh": 0})
+        wandb_run.log({"rs/greedy_pass_rate": baseline["pass_rate"], "rs/greedy_pass_at_1": baseline["pass_rate"], "rs/greedy_pass_count": baseline["pass_count"], "rs/task_count": baseline["task_count"], "rs/cycle": 0, "rs/sample_pass_rate_is_fresh": 0})
     cycle = 0
     max_tries = int(config["max_generation_batches_per_task"])
     last_sample_pass_rate = state.get("last_sample_pass_rate")
@@ -485,6 +485,7 @@ def run_pilot(config: dict[str, Any], output_dir: Path, solution_store_path: Pat
         if wandb_run is not None:
             wandb_metrics = {
                 "rs/greedy_pass_rate": evaluation["pass_rate"],
+                "rs/greedy_pass_at_1": evaluation["pass_rate"],
                 "rs/greedy_pass_count": evaluation["pass_count"],
                 "rs/task_count": evaluation["task_count"],
                 "rs/sample_pass_rate_is_fresh": int(bool(counts["candidate_equivalents"])),
@@ -520,7 +521,6 @@ def run_pilot(config: dict[str, Any], output_dir: Path, solution_store_path: Pat
     write_json(output_dir / "pilot-plateau.json", plateau_result)
     if wandb_run is not None:
         wandb_run.summary["rs/pass_at_20_ceiling"] = ceiling
-        wandb_run.summary["rs/greedy_pass_at_1"] = evaluation["pass_rate"]
         wandb_run.summary["rs/plateau_reached"] = True
         wandb_run.finish()
     print(f"PILOT PLATEAU REACHED after {cycle} epochs on task IDs {pilot_ids}.", flush=True)

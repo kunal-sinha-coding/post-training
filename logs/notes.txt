@@ -4098,3 +4098,7 @@ The user clarified that each cache hit substitutes the stored passing answer for
 
 Commit name: Record corrected cache-equivalent pilot metrics.
 Reran the eight-task pilot after the user clarified that the stored passing solution substitutes for every requested candidate slot on a cached task. The corrected W&B run logs both cache-equivalent sample rate and model-only candidate pass rate, along with cached and generated denominators. W&B API verification confirmed baseline plus three epoch rows. Cache-inclusive rates were 60/80, 60/80, and 60/60. Greedy pass@1 remained 25 percent for three trained epochs and met the stated plateau condition. The observed candidate ceiling was 75 percent. The append-only solution map remains intact, and full-data work remains stopped. No original tests or GRPO checkpoints were changed.
+
+
+Commit name: Log pass@1 under the plotted key during the pilot.
+The user expected `rs/greedy_pass_at_1` to contain live per-epoch history. The pilot previously logged each epoch under `rs/greedy_pass_rate` and wrote `rs/greedy_pass_at_1` only as a final summary, which made the plotted key show one value. The pilot now logs both pass@1 metric names at baseline and after every epoch, and no longer writes the plotted key only at shutdown. The completed run cannot be retroactively changed into live history. Verified the updated script with `py_compile` and `git diff --check`.
