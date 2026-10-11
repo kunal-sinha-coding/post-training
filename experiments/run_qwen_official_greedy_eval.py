@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import tempfile
 from pathlib import Path
 
@@ -82,7 +83,7 @@ def generate_completions(model_name: str, prompts: list[str]) -> list[str]:
     # Import vLLM only for evaluation so GRPO training remains on Transformers and PEFT.
     from vllm import LLM, SamplingParams
 
-    llm = LLM(model=model_name, dtype="bfloat16", tensor_parallel_size=1, gpu_memory_utilization=0.90, max_model_len=4096, enforce_eager=True)
+    llm = LLM(model=model_name, dtype="bfloat16", tensor_parallel_size=1, gpu_memory_utilization=float(os.environ.get("VLLM_GPU_MEMORY_UTILIZATION", "0.90")), max_model_len=4096, enforce_eager=True)
     sampling = SamplingParams(temperature=0.0, top_p=1.0, max_tokens=2048, stop=list(QWEN_EVALPLUS_STOP_STRINGS))
     outputs = llm.generate(prompts, sampling, use_tqdm=True)
     return [apply_stops(output.outputs[0].text).split(chr(96) * 3, 1)[0].strip() for output in outputs]

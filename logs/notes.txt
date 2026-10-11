@@ -4154,3 +4154,7 @@ The first monitored startup loaded the base model but stopped before Trainer ini
 
 Commit name: Record successful start of monitored SFT training
 The W&B ID compatibility fix succeeded. Run `mbpp-reference-sft-full-restart1-20261011`, ID `800e584d`, is live at https://wandb.ai/kunal-personal/grpo-mbpp/runs/800e584d. Remote W&B history verification found 11 live rows for both SFT loss and learning rate through optimizer step 110. The monitor and Trainer are active. No epoch evaluation is complete yet.
+
+
+Commit name: Add bounded memory recovery and transfer the live monitor
+The supervisor now keeps an isolated runtime config for recovery and handles recognized CUDA OOMs without touching checkpoints. It first reduces prompt and target token limits, then lowers the per-device microbatch while preserving effective batch size eight. If a vLLM evaluation OOMs, it lowers the GPU memory reservation for the next attempt. The greedy evaluator reads this reservation from an environment variable. The active Trainer is left running while monitor ownership is transferred from the initial supervisor to the updated one.
