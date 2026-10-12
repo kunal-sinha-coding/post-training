@@ -4314,3 +4314,6 @@ EvalPlus vLLM generation still failed during CUDA memory profiling even after it
 Commit: Isolate training-sample evaluation generation
 
 Step-10 EvalPlus generation now completes in a separate vLLM process, but the subsequent fixed 500-task training evaluation still launched vLLM inside the GRPO process and failed with a CUDA CUBLAS error. Route training-sample prompts through the same isolated evaluator process and configured GPU memory limit. This allows the callback to finish both evaluations and log their metrics together to W&B.
+
+Commit name: Record live GRPO step-10 evaluation in W&B
+The latest batch-normalized GRPO process completed the configured step-10 evaluation using isolated vLLM subprocesses for both full EvalPlus and the fixed 500-task training sample. Confirmed the live W&B row is tagged `evalplus-step-10`, with `evaluation/step=10` and `training/evaluation_step=10`. It reports MBPP pass@1 0.529, MBPP+ pass@1 0.450, and training-sample pass@1 0.090 over 500 tasks. Added the intermediate metrics, artifact references, and limitation to `logs/results.txt`. Training continued to step 11; the hourly restart supervisor remains active. No code, checkpoints, original tests, or training data were changed in this record.
