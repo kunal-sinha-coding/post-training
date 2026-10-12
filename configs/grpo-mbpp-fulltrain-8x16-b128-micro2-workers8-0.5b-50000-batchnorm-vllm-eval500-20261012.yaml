@@ -20,7 +20,7 @@ run_baseline_evaluation: false
 reuse_baseline: false
 run_intermediate_evals: false
 run_qwen_evalplus_at_start: true
-evalplus_eval_steps: 10
+evalplus_eval_steps: 100
 lora_enabled: true
 lora_r: 16
 lora_alpha: 32
@@ -62,7 +62,7 @@ max_completion_length: 2048
 logging_steps: 1
 save_strategy: steps
 save_steps: 10
-eval_steps: 10
+eval_steps: 100
 best_checkpoint_metric: pass@1
 checkpoint_eval_patience: 0
 evaluation_batch_size: 8

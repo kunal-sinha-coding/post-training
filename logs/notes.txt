@@ -4329,3 +4329,6 @@ Measured the active run's progress-bar elapsed time from optimizer step 50 (1:06
 
 Commit name: Record step-60 evaluation time split
 Used the vLLM timestamps around optimizer step 60 to estimate evaluation cost. Full EvalPlus ran from 05:30:40 to the fixed training-sample evaluator start at 05:33:18 UTC, about 158 seconds. The 500-task training evaluation ran until the next rollout engine wake at 05:34:27 UTC, about 69 seconds. Compared with the 777-second step-50-to-step-60 interval, these represent about 20.3% and 8.9%, or 29.2% combined. The windows include startup, model preparation, generation, scoring, and handoff; the training evaluation endpoint is inferred from the next rollout start.
+
+Commit name: Set GRPO evaluation cadence to 100 steps
+Changed the current batch-normalized vLLM GRPO config from evaluation every 10 optimizer steps to every 100 for both the callback cadence and config metadata. This reduces the expensive full EvalPlus and fixed training-sample evaluation overhead. The active trainer loaded its configuration at startup and does not reload it dynamically, so the cadence change applies after a future supervisor restart. The active process and supervisor remain running, and permanent checkpoint saving every 10 steps is unchanged.
