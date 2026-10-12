@@ -122,10 +122,23 @@ def generate_evalplus_samples(model_name: str | Path, output_dir: Path, gpu_memo
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", required=True)
-    parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument("--output-dir", type=Path)
+    parser.add_argument("--prompts-json", type=Path)
+    parser.add_argument("--output-json", type=Path)
     parser.add_argument("--gpu-memory-utilization", type=float, default=0.90)
     args = parser.parse_args()
-    output = args.output_dir / "mbpp" / "qwen2_chat_temp_0.0"
+    # Generate arbitrary prompt lists for the fixed training evaluation when requested.
+    if args.prompts_json is not None:
+        if args.output_json is None:
+            parser.error("--output-json is required with --prompts-json.")
+        prompts = json.loads(args.prompts_json.read_text(encoding="utf-8"))
+        completions = generate_model_completions(args.model, prompts, args.gpu_memory_utilization)
+        args.output_json.write_text(json.dumps(completions), encoding="utf-8")
+        print(f"Generated {len(completions)} prompt completions.", flush=True)
+        return
+    # Generate the canonical EvalPlus task set when no prompt file is provided.
+    if args.output_dir is None:
+        parser.error("--output-dir is required for EvalPlus generation.")
     samples = generate_evalplus_samples(args.model, args.output_dir, args.gpu_memory_utilization)
     print(f"Generated EvalPlus samples at {samples}", flush=True)
 

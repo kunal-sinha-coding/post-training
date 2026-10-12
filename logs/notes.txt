@@ -4309,3 +4309,8 @@ The first runtime fix set an environment variable, but the live evaluator still 
 Commit: Isolate EvalPlus vLLM generation from the trainer process
 
 EvalPlus vLLM generation still failed during CUDA memory profiling even after it received the 0.30 GPU memory limit. The generation runner now executes in a separate Python process with distributed launcher variables removed. This isolates its CUDA context from the colocated GRPO vLLM engine while retaining the configured memory limit and the same EvalPlus sample format. The official EvalPlus scorer and training-sample evaluator still run after generation.
+
+
+Commit: Isolate training-sample evaluation generation
+
+Step-10 EvalPlus generation now completes in a separate vLLM process, but the subsequent fixed 500-task training evaluation still launched vLLM inside the GRPO process and failed with a CUDA CUBLAS error. Route training-sample prompts through the same isolated evaluator process and configured GPU memory limit. This allows the callback to finish both evaluations and log their metrics together to W&B.

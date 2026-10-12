@@ -12,6 +12,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 from collections import defaultdict, deque
 from pathlib import Path
 from pprint import pformat
@@ -88,6 +89,26 @@ def run_qwen_evalplus(model_path: Path, output_dir: Path, name: str, config: dic
     return {"evaluation_dir": str(evaluation_dir), "results": result_text, "metrics": metrics}
 
 
+def generate_vllm_prompts_isolated(model_path: Path, prompts: list[str], gpu_memory_utilization: float) -> list[str]:
+    """Generate prompts with vLLM in a clean process outside the trainer CUDA context."""
+    # Store temporary prompt and completion files outside the experiment artifacts.
+    with tempfile.TemporaryDirectory(prefix="training-eval-vllm-") as temporary_directory:
+        temporary_path = Path(temporary_directory)
+        prompt_path = temporary_path / "prompts.json"
+        completion_path = temporary_path / "completions.json"
+        prompt_path.write_text(json.dumps(prompts), encoding="utf-8")
+        evaluator_script = Path(__file__).parent / "experiments" / "run_qwen_official_greedy_eval.py"
+        evaluator_env = os.environ.copy()
+        for key in ("RANK", "WORLD_SIZE", "LOCAL_RANK", "LOCAL_WORLD_SIZE", "MASTER_ADDR", "MASTER_PORT", "GROUP_RANK", "ROLE_RANK"):
+            evaluator_env.pop(key, None)
+        subprocess.run(
+            [sys.executable, str(evaluator_script), "--model", str(model_path.resolve()), "--prompts-json", str(prompt_path), "--output-json", str(completion_path), "--gpu-memory-utilization", str(gpu_memory_utilization)],
+            check=True,
+            env=evaluator_env,
+        )
+        return json.loads(completion_path.read_text(encoding="utf-8"))
+
+
 def canonical_test_pass_metrics(samples: Path) -> dict[str, float]:
     """Calculate overall base and MBPP+ test pass fractions from EvalPlus details."""
     # Read the canonical evaluator's per-task failure lists and compare them with official test counts.
@@ -134,15 +155,12 @@ def canonical_test_pass_metrics(samples: Path) -> dict[str, float]:
 
 def evaluate_training_mbpp(model_path: Path, train_dataset: Any, config: dict[str, Any], name: str) -> dict[str, Any]:
     """Evaluate the fixed training-task sample with the batched vLLM generation path."""
-    # Generate one greedy completion per training task from the merged base or adapter checkpoint.
-    from experiments.run_qwen_official_greedy_eval import generate_model_completions
-
     # Restrict only evaluation to the task IDs persisted for this run.
     selected_ids = set(config.get("training_eval_task_ids", []))
     records = [train_dataset[index] for index in range(len(train_dataset)) if not selected_ids or str(train_dataset[index]["task_id"]) in selected_ids]
     if selected_ids and len(records) != len(selected_ids):
         raise ValueError("The fixed training evaluation sample does not match the loaded training dataset.")
-    completions = generate_model_completions(model_path, [record["prompt"] for record in records])
+    completions = generate_vllm_prompts_isolated(model_path, [record["prompt"] for record in records], float(config.get("vllm_gpu_memory_utilization", 0.3)))
     # Wrap raw vLLM code bodies so the shared scorer can extract them as Python programs.
     completions = [wrap_qwen_continuation(completion) for completion in completions]
     # Score generated solutions against only the original MBPP tests used by the reward.
