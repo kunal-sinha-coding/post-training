@@ -4323,3 +4323,6 @@ Confirmed W&B logged `evalplus-step-20` with evaluation step 20 after the full 3
 
 Commit name: Record GRPO supervisor restart history
 Audited `monitor.log` after the user asked whether training had stopped while unattended. The supervisor stayed alive, but 16 child attempts exited from 00:45 to 03:58 UTC, mostly at step-10 evaluation with CUDA CUBLAS and illegal-memory errors. Since none had a complete checkpoint, restarts used the base model and did not preserve training progress. After isolated evaluator subprocesses were in use, the 04:11 attempt passed evaluations at steps 10 and 20 and saved both permanent checkpoints. The process was active at step 24. Documented this history and its effect on W&B baseline duplicates in `logs/results.txt`. No checkpoint or process was changed.
+
+Commit name: Record current GRPO ten-step timing
+Measured the active run's progress-bar elapsed time from optimizer step 50 (1:06:33) to step 60 (1:19:30). The ten-update interval took 12 minutes 57 seconds, including the scheduled step-60 evaluation. Steps 50 through 59 advanced in 8 minutes 7 seconds, or about 54 seconds per update. Step-60 evaluation completed and step 61 began. Recorded this observed timing in `logs/results.txt`; it does not compare vLLM against Transformers generation.
