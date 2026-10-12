@@ -17612,3 +17612,22 @@ Read the active trainer's tqdm elapsed times from `outputs/grpo-mbpp-fulltrain-8
 Evaluation time breakdown around optimizer step 60: the full EvalPlus window ran from its vLLM subprocess startup at 05:30:40 UTC until the fixed training-evaluation subprocess started at 05:33:18 UTC, about 158 seconds. The 500-task training-evaluation window ran from 05:33:18 until the next rollout vLLM wake at 05:34:27 UTC, about 69 seconds. Relative to the measured 777-second step-50-to-step-60 interval, this is approximately 20.3% for EvalPlus and 8.9% for training evaluation, or 29.2% combined. These are approximate subprocess windows and include engine startup, model preparation, generation, scoring, and handoffs; the training-evaluation endpoint is inferred from the next rollout start.
 
 Evaluation cadence update requested after step-60 timing review: the run configuration now sets `evalplus_eval_steps: 100` and `eval_steps: 100`. Both full EvalPlus and fixed 500-task training evaluation are configured at every 100 optimizer steps. The active trainer loaded the previous 10-step cadence at startup, so this file change will take effect only after a supervisor restart. The trainer and supervisor were left running; the current process cadence was not changed live. Permanent checkpoints remain configured every 10 optimizer steps.
+
+Matched EvalPlus comparison: batch-normalized run versus previous successful hard-mix GRPO run, through step 110
+Runs: previous `mbpphard10x1009` at `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-10x-harder-luna-20261009`; current W&B run `c712c322d5b740ec` at `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-batchnorm-vllm-eval500-20261012`. Both use Qwen2.5-Coder-0.5B-Instruct and the same configured 5,910-row pool of 591 original plus 5,319 harder synthetic tasks. EvalPlus measured the same 378 canonical tasks at every listed checkpoint. The key method change is group reward scaling in the previous run versus batch reward scaling and vLLM rollout generation in the current run. The current run's training-set evaluation is a fixed 500-task sample; that does not affect held-out EvalPlus.
+
+Step | Previous MBPP | Current MBPP | Previous MBPP+ | Current MBPP+
+0 | 52.4% | 52.9% | 43.7% | 44.7%
+10 | 52.1% | 52.9% | 43.7% | 45.0%
+20 | 51.6% | 52.6% | 43.1% | 44.7%
+30 | 51.6% | 52.4% | 43.9% | 44.4%
+40 | 52.9% | 52.1% | 43.9% | 44.2%
+50 | 53.7% | 52.6% | 45.0% | 43.9%
+60 | 52.4% | 52.4% | 44.4% | 44.7%
+70 | 52.6% | 53.4% | 44.7% | 45.0%
+80 | 52.1% | 52.9% | 44.2% | 44.4%
+90 | 53.7% | 53.4% | 45.2% | 45.2%
+100 | 53.7% | 53.4% | 45.5% | 45.0%
+110 | 55.3% | 53.2% | 46.8% | 44.7%
+
+From each run's own step-zero baseline to step 110, previous-run MBPP rose 2.9 percentage points and MBPP+ rose 3.1 points. The current run rose 0.3 points on MBPP and 0.0 points on MBPP+. At step 110, the current run is 2.1 points below the previous run on both metrics. The step-zero baselines differ by 0.5 MBPP points and 1.0 MBPP+ points, so growth relative to each run's own baseline is the fairer comparison. This is an early 110-step comparison, not a conclusion about eventual performance. The per-task metric resolution is about 0.265 percentage points, and scores fluctuate across checkpoints. The current step-110 evaluation is the latest available in the local run artifacts.
