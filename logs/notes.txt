@@ -4288,3 +4288,6 @@ The first launch found zero-byte MBPP Parquet files in the shared Hugging Face H
 
 Commit name: Download a clean base model into the isolated cache
 The second startup confirmed that the shared base-model snapshot also contains zero-byte files. Removed the cache symlink from the supervisor so it downloads a clean model snapshot into this run's isolated Hugging Face cache. The training data loaded successfully as 5,910 rows and the fixed 500-task sample manifest was created. The process exited before model loading, so the next retry starts from the base model and does not resume a checkpoint.
+
+Commit name: Publish batch normalization settings to W&B
+The W&B run had started the 500-task baseline evaluation before Trainer initialization, so its config had no training parameters yet. Added an explicit W&B config update before baseline evaluation and set the active run's config directly so batch normalization, vLLM, fixed sample size, training-pool size, and checkpoint cadence are visible immediately. The active run remains c712c322d5b740ec.

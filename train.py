@@ -241,6 +241,14 @@ def configure_wandb(config: dict[str, Any]) -> Any | None:
         if config.get("wandb_run_id"):
             run_options.update(id=str(config["wandb_run_id"]), resume="allow")
         wandb.init(**run_options)
+    # Expose the experiment choices in W&B before baseline evaluation begins.
+    if wandb.run is not None:
+        config_keys = (
+            "scale_rewards", "use_vllm", "vllm_mode", "vllm_gpu_memory_utilization",
+            "training_eval_sample_size", "training_eval_sample_seed", "expected_train_samples",
+            "save_strategy", "save_steps", "max_steps", "synthetic_training_tasks_path",
+        )
+        wandb.config.update({key: config[key] for key in config_keys if key in config}, allow_val_change=True)
     # Use trainer steps rather than W&B history row numbers on evaluation charts.
     if hasattr(wandb, "define_metric"):
         wandb.define_metric("evaluation/step")
