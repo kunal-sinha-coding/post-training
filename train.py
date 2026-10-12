@@ -124,17 +124,47 @@ def canonical_test_pass_metrics(samples: Path) -> dict[str, float]:
 
 
 def evaluate_training_mbpp(model_path: Path, train_dataset: Any, config: dict[str, Any], name: str) -> dict[str, Any]:
-    """Evaluate all training tasks with the same batched vLLM generation path as EvalPlus."""
+    """Evaluate the fixed training-task sample with the batched vLLM generation path."""
     # Generate one greedy completion per training task from the merged base or adapter checkpoint.
     from experiments.run_qwen_official_greedy_eval import generate_model_completions
 
-    records = [train_dataset[index] for index in range(len(train_dataset))]
+    # Restrict only evaluation to the task IDs persisted for this run.
+    selected_ids = set(config.get("training_eval_task_ids", []))
+    records = [train_dataset[index] for index in range(len(train_dataset)) if not selected_ids or str(train_dataset[index]["task_id"]) in selected_ids]
+    if selected_ids and len(records) != len(selected_ids):
+        raise ValueError("The fixed training evaluation sample does not match the loaded training dataset.")
     completions = generate_model_completions(model_path, [record["prompt"] for record in records])
     # Wrap raw vLLM code bodies so the shared scorer can extract them as Python programs.
     completions = [wrap_qwen_continuation(completion) for completion in completions]
     # Score generated solutions against only the original MBPP tests used by the reward.
     metrics, details = evaluate_texts(completions, records, float(config.get("sandbox_timeout_seconds", 3)), config.get("log_path", "logs/logs.txt"), name, reward_scoring_workers=int(config.get("reward_scoring_workers", 8)))
+    # Record the exact denominator used for this fixed training evaluation.
+    metrics["evaluation_sample_size"] = len(records)
     return {"metrics": metrics, "details": details}
+
+
+def prepare_training_eval_sample(train_dataset: Any, config: dict[str, Any], output_dir: Path) -> None:
+    """Create or reload one reproducible training evaluation sample and its manifest."""
+    # Leave historical full-training evaluations unchanged when no sample size is configured.
+    sample_size = int(config.get("training_eval_sample_size", 0))
+    if sample_size <= 0:
+        return
+    manifest_path = output_dir / "training-eval-task-ids.json"
+    available_ids = [str(train_dataset[index]["task_id"]) for index in range(len(train_dataset))]
+    if manifest_path.is_file():
+        task_ids = json.loads(manifest_path.read_text(encoding="utf-8"))
+        if any(task_id not in available_ids for task_id in task_ids):
+            raise ValueError("The saved training evaluation sample contains task IDs missing from this dataset.")
+    else:
+        # Sample task IDs with a dedicated deterministic RNG so training shuffles cannot change evaluation.
+        if sample_size > len(available_ids):
+            raise ValueError(f"Requested {sample_size} training evaluation tasks from {len(available_ids)} rows.")
+        task_ids = random.Random(int(config.get("training_eval_sample_seed", config.get("seed", 42)))).sample(available_ids, sample_size)
+        manifest_path.write_text(json.dumps(task_ids, indent=2) + "\n", encoding="utf-8")
+    if len(task_ids) != sample_size or len(set(task_ids)) != sample_size:
+        raise ValueError("The saved training evaluation sample has an unexpected size or duplicate task IDs.")
+    config["training_eval_task_ids"] = task_ids
+    print(f"Training evaluation uses {sample_size} fixed task IDs from {len(available_ids)} training rows; manifest: {manifest_path}", flush=True)
 
 
 def merge_training_metrics(metrics: dict[str, Any], training_metrics: dict[str, Any]) -> dict[str, Any]:
@@ -147,6 +177,7 @@ def merge_training_metrics(metrics: dict[str, Any], training_metrics: dict[str, 
     merged["training_mbpp_tests_pass_fraction"] = float(training_metrics.get("tests_pass_fraction", 0.0))
     merged["training_mbpp_partial_pass_fraction"] = float(training_metrics.get("partial_pass_fraction", 0.0))
     merged["training_mbpp_partial_or_full_pass_fraction"] = float(training_metrics.get("partial_or_full_pass_fraction", 0.0))
+    merged["training_sample_size"] = int(training_metrics.get("evaluation_sample_size", 0))
     return merged
 
 
@@ -847,6 +878,8 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
     # Preserve every existing checkpoint directory across both fresh and resumed launches.
     # Load datasets, tokenizer, and the base model.
     train_dataset, eval_dataset = prepare_datasets(config)
+    # Persist one fixed random sample for every training-set evaluation in this run.
+    prepare_training_eval_sample(train_dataset, config, output_dir)
     tokenizer = AutoTokenizer.from_pretrained(config["model_name_or_path"], trust_remote_code=bool(config.get("trust_remote_code", False)))
     # Use the end-of-sequence token for padding when the tokenizer lacks one.
     if tokenizer.pad_token is None:
@@ -928,6 +961,12 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         max_completion_length=int(config["max_completion_length"]),
         beta=float(config.get("beta", 0.0)),
         loss_type=str(config.get("loss_type", "dapo")),
+        scale_rewards=str(config.get("scale_rewards", "group")),
+        use_vllm=bool(config.get("use_vllm", False)),
+        vllm_mode=str(config.get("vllm_mode", "colocate")),
+        vllm_gpu_memory_utilization=float(config.get("vllm_gpu_memory_utilization", 0.3)),
+        vllm_enable_sleep_mode=bool(config.get("vllm_enable_sleep_mode", False)),
+        generation_kwargs=config.get("generation_kwargs"),
         disable_dropout=bool(config.get("disable_dropout", False)),
         logging_steps=int(config["logging_steps"]),
         save_steps=int(config["save_steps"]),
@@ -1080,6 +1119,27 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
                 return generated
 
         trainer_class = ProbeGRPOTrainer
+    if config.get("use_vllm", False) and config.get("save_temporary_rollout_checkpoint", False):
+        # Save a short-lived adapter snapshot before TRL synchronizes the identical live weights to vLLM.
+        class RolloutSnapshotGRPOTrainer(trainer_class):
+            """Save and remove an adapter snapshot around every vLLM rollout batch."""
+
+            def _generate_single_turn(self, prompts: list[Any]) -> Any:
+                """Snapshot the current adapter, generate with TRL's synchronized vLLM policy, and clean up."""
+                snapshot_dir = Path(self.args.output_dir) / "rollout_temp" / "current"
+                if snapshot_dir.exists():
+                    shutil.rmtree(snapshot_dir)
+                snapshot_dir.mkdir(parents=True, exist_ok=True)
+                self.model.save_pretrained(snapshot_dir)
+                tokenizer.save_pretrained(snapshot_dir)
+                print(f"Saved temporary rollout adapter for optimizer step {self.state.global_step}: {snapshot_dir}", flush=True)
+                try:
+                    return super()._generate_single_turn(prompts)
+                finally:
+                    # Keep temporary rollout snapshots separate from permanent trainer checkpoints.
+                    shutil.rmtree(snapshot_dir, ignore_errors=True)
+
+        trainer_class = RolloutSnapshotGRPOTrainer
     evaluation_dataset = train_dataset if config.get("train_subset_evaluation_only", False) else eval_dataset
     training_callback = _make_callback(model, tokenizer, train_dataset, evaluation_dataset, config, wandb, device)
     callbacks = [training_callback]
