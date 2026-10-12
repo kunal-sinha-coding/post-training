@@ -42,8 +42,10 @@ def _fixed_rollout_replay_enabled(config: dict[str, Any]) -> bool:
     return mode == "fixed"
 
 
-def run_qwen_evalplus(model_path: Path, output_dir: Path, name: str) -> dict[str, Any]:
+def run_qwen_evalplus(model_path: Path, output_dir: Path, name: str, config: dict[str, Any]) -> dict[str, Any]:
     """Run the official Qwen EvalPlus MBPP and MBPP+ evaluation for one saved model."""
+    # Limit evaluator vLLM memory to the configured training allocation.
+    os.environ["VLLM_GPU_MEMORY_UTILIZATION"] = str(float(config.get("vllm_gpu_memory_utilization", 0.3)))
     # Generate the complete canonical MBPP task set directly inside the training process.
     evaluation_dir = output_dir / "evalplus" / name
     evaluation_dir.mkdir(parents=True, exist_ok=True)
@@ -687,6 +689,7 @@ def _make_callback(model: Any, tokenizer: Any, train_dataset: Any, test_dataset:
                 evaluation_model.to("cpu")
                 import torch
                 torch.cuda.empty_cache()
+                print(f"Starting evaluation for optimizer step {state.global_step}.", flush=True)
                 try:
                     if config.get("train_subset_evaluation_only", False):
                         # Evaluate only the fixed tiny training set for the overfit diagnostic.
@@ -696,7 +699,7 @@ def _make_callback(model: Any, tokenizer: Any, train_dataset: Any, test_dataset:
                         selection_metric = float(training_result["metrics"].get("pass_at_1", float("-inf")))
                     else:
                         # Run the canonical EvalPlus benchmark and add the disjoint training metrics.
-                        evalplus_result = run_qwen_evalplus(model_path, Path(args.output_dir), name)
+                        evalplus_result = run_qwen_evalplus(model_path, Path(args.output_dir), name, config)
                         training_result = evaluate_training_mbpp(model_path, train_dataset, config, f"training-{name}")
                         evalplus_result["metrics"] = merge_training_metrics(evalplus_result["metrics"], training_result["metrics"])
                         evaluation_log_name = f"evalplus-{name}"
@@ -728,6 +731,7 @@ def _make_callback(model: Any, tokenizer: Any, train_dataset: Any, test_dataset:
                     shutil.rmtree(model_path)
                 if wandb is not None and wandb.run is not None:
                     log_evaluation(wandb, evalplus_result["metrics"], evaluation_log_name, state.global_step)
+                    print(f"Logged evaluation metrics to W&B for optimizer step {state.global_step}: {evaluation_log_name}.", flush=True)
                 self.next_eval_step += int(config.get("evalplus_eval_steps", 10))
             return control
     return TrainingCallback()
@@ -917,7 +921,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
                 log_evaluation(wandb, training_result["metrics"], "training-step-0", 0)
             else:
                 # Run the canonical EvalPlus benchmark and merge the training baseline for normal runs.
-                step_zero_result = run_qwen_evalplus(step_zero_path, output_dir, "step-0")
+                step_zero_result = run_qwen_evalplus(step_zero_path, output_dir, "step-0", config)
                 step_zero_result["metrics"] = merge_training_metrics(step_zero_result["metrics"], training_result["metrics"])
                 config["_best_evalplus_mbpp_plus"] = step_zero_result["metrics"].get("mbpp_plus_pass_at_1", float("-inf"))
                 log_evaluation(wandb, step_zero_result["metrics"], "evalplus-step-0", 0)
@@ -1202,7 +1206,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
     log_evaluation(wandb, final_metrics, "final", trainer.state.global_step)
     # Run the canonical hidden-test benchmark after the fixed training schedule is complete.
     if config.get("run_qwen_evalplus_at_end", False):
-        final_evalplus = run_qwen_evalplus(output_dir / "final", output_dir, "final")
+        final_evalplus = run_qwen_evalplus(output_dir / "final", output_dir, "final", config)
         save_evaluation(output_dir, "evalplus-final", final_evalplus["metrics"], [], config)
         log_evaluation(wandb, final_evalplus["metrics"], "evalplus-final", trainer.state.global_step)
     saved_config = {key: value for key, value in config.items() if not key.startswith("_")}

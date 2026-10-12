@@ -4294,3 +4294,8 @@ The W&B run had started the 500-task baseline evaluation before Trainer initiali
 
 Commit name: Record the live batchnorm GRPO baseline
 The isolated run completed its fixed 500-task training baseline and full 378-task EvalPlus baseline, then started live GRPO rollouts. W&B now shows the explicit batch-normalization config, step-zero held-out and training metrics, and per-optimizer-step loss logs. Temporary adapter snapshots and colocated vLLM generation are visible in the run log. The hourly supervisor remains active.
+
+
+Commit: Fix evaluation GPU allocation and log cadence
+
+Updated EvalPlus evaluation to use the experiment's configured vLLM GPU memory fraction. The evaluator previously used its 0.90 default while colocated training vLLM retained the configured 0.30 allocation. The first step-10 evaluation failed during CUDA model restoration before W&B received evaluation metrics. Evaluation calls now use the same configured fraction, and the live log reports evaluation start and W&B logging completion for each optimizer-step evaluation. Evaluation remains scheduled every 10 optimizer steps.
