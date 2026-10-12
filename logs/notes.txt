@@ -4326,3 +4326,6 @@ Audited `monitor.log` after the user asked whether training had stopped while un
 
 Commit name: Record current GRPO ten-step timing
 Measured the active run's progress-bar elapsed time from optimizer step 50 (1:06:33) to step 60 (1:19:30). The ten-update interval took 12 minutes 57 seconds, including the scheduled step-60 evaluation. Steps 50 through 59 advanced in 8 minutes 7 seconds, or about 54 seconds per update. Step-60 evaluation completed and step 61 began. Recorded this observed timing in `logs/results.txt`; it does not compare vLLM against Transformers generation.
+
+Commit name: Record step-60 evaluation time split
+Used the vLLM timestamps around optimizer step 60 to estimate evaluation cost. Full EvalPlus ran from 05:30:40 to the fixed training-sample evaluator start at 05:33:18 UTC, about 158 seconds. The 500-task training evaluation ran until the next rollout engine wake at 05:34:27 UTC, about 69 seconds. Compared with the 777-second step-50-to-step-60 interval, these represent about 20.3% and 8.9%, or 29.2% combined. The windows include startup, model preparation, generation, scoring, and handoff; the training evaluation endpoint is inferred from the next rollout start.
