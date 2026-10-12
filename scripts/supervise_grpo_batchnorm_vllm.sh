@@ -15,6 +15,18 @@ source "$SCRIPT_DIR/.env"
 set +a
 export WANDB_RUN_ID="c712c322d5b740ec"
 export WANDB_RESUME=allow
+export HF_HOME="/tmp/post-training-grpo-batchnorm-hf"
+export HF_HUB_CACHE="$HF_HOME/hub"
+export HUGGINGFACE_HUB_CACHE="$HF_HOME/hub"
+export HF_DATASETS_CACHE="$HF_HOME/datasets"
+export HF_HUB_ENABLE_HF_TRANSFER=0
+mkdir -p "$HF_HUB_CACHE" "$HF_DATASETS_CACHE"
+
+# Reuse the existing model files while keeping the known-bad shared dataset cache isolated.
+MODEL_CACHE_SOURCE="/workspace/.cache/huggingface/hub/models--Qwen--Qwen2.5-Coder-0.5B-Instruct"
+if [[ -d "$MODEL_CACHE_SOURCE" && ! -e "$HF_HUB_CACHE/models--Qwen--Qwen2.5-Coder-0.5B-Instruct" ]]; then
+    ln -s "$MODEL_CACHE_SOURCE" "$HF_HUB_CACHE/models--Qwen--Qwen2.5-Coder-0.5B-Instruct"
+fi
 
 # Find the newest complete Trainer checkpoint without changing or removing any checkpoint.
 latest_complete_checkpoint() {
@@ -57,14 +69,21 @@ while true; do
     printf '%s Launching: %s\n' "$(date -u '+%Y-%m-%d %H:%M:%S UTC')" "${launch_args[*]}" >> "$MONITOR_LOG"
     "${launch_args[@]}" >> "$OUTPUT_DIR/run.log" 2>&1 &
     training_pid="$!"
-    while kill -0 "$training_pid" 2>/dev/null; do
-        sleep 3600
-        if kill -0 "$training_pid" 2>/dev/null; then
+    while true; do
+        sleep 3600 &
+        timer_pid="$!"
+        completed_pid=""
+        wait -n -p completed_pid "$training_pid" "$timer_pid"
+        child_status="$?"
+        if [[ "$completed_pid" == "$timer_pid" ]]; then
             log_hourly_status "$training_pid"
+            continue
         fi
+        kill "$timer_pid" 2>/dev/null || true
+        wait "$timer_pid" 2>/dev/null || true
+        exit_status="$child_status"
+        break
     done
-    wait "$training_pid"
-    exit_status="$?"
 
     # Treat the final saved adapter and run configuration as proof of normal completion.
     if [[ -f "$OUTPUT_DIR/config.json" ]] && [[ -f "$OUTPUT_DIR/final/adapter_model.safetensors" || -f "$OUTPUT_DIR/final/model.safetensors" ]]; then

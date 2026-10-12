@@ -4282,3 +4282,6 @@ The user requested a deeper audit and concrete next experiments. Inspected every
 
 Commit name: Launch batch-normalized vLLM GRPO comparison
 Added an isolated run config based on the linked original-plus-hard-synthetic GRPO setup. The new run changes reward scaling to batch normalization, enables native colocated vLLM rollouts with a temporary adapter snapshot per rollout, and evaluates one saved seeded sample of 500 training tasks while retaining full EvalPlus checks. Permanent Trainer checkpoints remain every 10 optimizer steps with no retention limit. Added an hourly supervisor that restarts failures from the newest complete checkpoint without deleting checkpoints. The run uses a new output directory and W&B run ID. The exact configuration and data artifact digest are recorded in logs/results.txt.
+
+Commit name: Isolate the batchnorm run cache and repair exit detection
+The first launch found zero-byte MBPP Parquet files in the shared Hugging Face Hub cache and exited before model loading. Updated this run's supervisor to use a dedicated Hugging Face cache, with a read-only symlink to the existing base-model cache to avoid a model download. Replaced PID polling with Bash child-exit detection so failures restart immediately and healthy runs still get hourly checks. No training checkpoint existed and no checkpoint was changed.
