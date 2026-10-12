@@ -78,18 +78,18 @@ def load_tasks() -> list[dict]:
     return tasks
 
 
-def generate_completions(model_name: str, prompts: list[str]) -> list[str]:
+def generate_completions(model_name: str, prompts: list[str], gpu_memory_utilization: float = 0.90) -> list[str]:
     """Generate all EvalPlus completions in one vLLM greedy batch."""
     # Import vLLM only for evaluation so GRPO training remains on Transformers and PEFT.
     from vllm import LLM, SamplingParams
 
-    llm = LLM(model=model_name, dtype="bfloat16", tensor_parallel_size=1, gpu_memory_utilization=float(os.environ.get("VLLM_GPU_MEMORY_UTILIZATION", "0.90")), max_model_len=4096, enforce_eager=True)
+    llm = LLM(model=model_name, dtype="bfloat16", tensor_parallel_size=1, gpu_memory_utilization=gpu_memory_utilization, max_model_len=4096, enforce_eager=True)
     sampling = SamplingParams(temperature=0.0, top_p=1.0, max_tokens=2048, stop=list(QWEN_EVALPLUS_STOP_STRINGS))
     outputs = llm.generate(prompts, sampling, use_tqdm=True)
     return [apply_stops(output.outputs[0].text).split(chr(96) * 3, 1)[0].strip() for output in outputs]
 
 
-def generate_model_completions(model_name: str | Path, prompts: list[str]) -> list[str]:
+def generate_model_completions(model_name: str | Path, prompts: list[str], gpu_memory_utilization: float = 0.90) -> list[str]:
     """Merge an adapter when needed and generate a batched greedy completion list with vLLM."""
     # Reuse the same merged checkpoint and tokenizer preparation as canonical EvalPlus.
     with tempfile.TemporaryDirectory(prefix="qwen-evalplus-") as temporary_directory:
@@ -98,10 +98,10 @@ def generate_model_completions(model_name: str | Path, prompts: list[str]) -> li
         if effective_model != model_path:
             merge_adapter(str(model_path), effective_model)
         normalize_tokenizer_metadata(effective_model)
-        return generate_completions(str(effective_model), prompts)
+        return generate_completions(str(effective_model), prompts, gpu_memory_utilization)
 
 
-def generate_evalplus_samples(model_name: str | Path, output_dir: Path) -> Path:
+def generate_evalplus_samples(model_name: str | Path, output_dir: Path, gpu_memory_utilization: float = 0.90) -> Path:
     """Generate and save the canonical EvalPlus samples for a training evaluation."""
     # Build the complete task batch and select the output layout used by EvalPlus.
     tasks = load_tasks()
@@ -109,7 +109,7 @@ def generate_evalplus_samples(model_name: str | Path, output_dir: Path) -> Path:
     samples.mkdir(parents=True, exist_ok=True)
     prompts = [build_prompt(task["prompt"]) for task in tasks]
     # Merge adapters outside the training model and remove the temporary checkpoint afterward.
-    completions = generate_model_completions(model_name, prompts)
+    completions = generate_model_completions(model_name, prompts, gpu_memory_utilization)
     # Persist complete solutions in the official per-task directory format.
     for task, code in zip(tasks, completions):
         task_dir = samples / task["task_id"].replace("/", "_")

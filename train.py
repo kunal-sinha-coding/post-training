@@ -52,7 +52,7 @@ def run_qwen_evalplus(model_path: Path, output_dir: Path, name: str, config: dic
     from experiments.run_qwen_official_greedy_eval import generate_evalplus_samples
 
     # Keep vLLM generation in the training process while using the canonical EvalPlus layout.
-    samples = generate_evalplus_samples(model_path, evaluation_dir)
+    samples = generate_evalplus_samples(model_path, evaluation_dir, float(config.get("vllm_gpu_memory_utilization", 0.3)))
     samples = evaluation_dir / "mbpp" / "qwen2_chat_temp_0.0"
     # Evaluate the generated directory through EvalPlus in the training process.
     from contextlib import redirect_stdout
