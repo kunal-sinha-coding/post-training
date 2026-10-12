@@ -22,12 +22,6 @@ export HF_DATASETS_CACHE="$HF_HOME/datasets"
 export HF_HUB_ENABLE_HF_TRANSFER=0
 mkdir -p "$HF_HUB_CACHE" "$HF_DATASETS_CACHE"
 
-# Reuse the existing model files while keeping the known-bad shared dataset cache isolated.
-MODEL_CACHE_SOURCE="/workspace/.cache/huggingface/hub/models--Qwen--Qwen2.5-Coder-0.5B-Instruct"
-if [[ -d "$MODEL_CACHE_SOURCE" && ! -e "$HF_HUB_CACHE/models--Qwen--Qwen2.5-Coder-0.5B-Instruct" ]]; then
-    ln -s "$MODEL_CACHE_SOURCE" "$HF_HUB_CACHE/models--Qwen--Qwen2.5-Coder-0.5B-Instruct"
-fi
-
 # Find the newest complete Trainer checkpoint without changing or removing any checkpoint.
 latest_complete_checkpoint() {
     python - "$OUTPUT_DIR" <<'PY'
