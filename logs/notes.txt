@@ -4291,3 +4291,6 @@ The second startup confirmed that the shared base-model snapshot also contains z
 
 Commit name: Publish batch normalization settings to W&B
 The W&B run had started the 500-task baseline evaluation before Trainer initialization, so its config had no training parameters yet. Added an explicit W&B config update before baseline evaluation and set the active run's config directly so batch normalization, vLLM, fixed sample size, training-pool size, and checkpoint cadence are visible immediately. The active run remains c712c322d5b740ec.
+
+Commit name: Record the live batchnorm GRPO baseline
+The isolated run completed its fixed 500-task training baseline and full 378-task EvalPlus baseline, then started live GRPO rollouts. W&B now shows the explicit batch-normalization config, step-zero held-out and training metrics, and per-optimizer-step loss logs. Temporary adapter snapshots and colocated vLLM generation are visible in the run log. The hourly supervisor remains active.
