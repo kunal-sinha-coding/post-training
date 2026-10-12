@@ -10,6 +10,8 @@ import os
 import random
 import re
 import shutil
+import subprocess
+import sys
 from collections import defaultdict, deque
 from pathlib import Path
 from pprint import pformat
@@ -44,15 +46,20 @@ def _fixed_rollout_replay_enabled(config: dict[str, Any]) -> bool:
 
 def run_qwen_evalplus(model_path: Path, output_dir: Path, name: str, config: dict[str, Any]) -> dict[str, Any]:
     """Run the official Qwen EvalPlus MBPP and MBPP+ evaluation for one saved model."""
-    # Limit evaluator vLLM memory to the configured training allocation.
-    os.environ["VLLM_GPU_MEMORY_UTILIZATION"] = str(float(config.get("vllm_gpu_memory_utilization", 0.3)))
-    # Generate the complete canonical MBPP task set directly inside the training process.
+    # Create the canonical EvalPlus output directory for this optimizer step.
     evaluation_dir = output_dir / "evalplus" / name
     evaluation_dir.mkdir(parents=True, exist_ok=True)
-    from experiments.run_qwen_official_greedy_eval import generate_evalplus_samples
-
-    # Keep vLLM generation in the training process while using the canonical EvalPlus layout.
-    samples = generate_evalplus_samples(model_path, evaluation_dir, float(config.get("vllm_gpu_memory_utilization", 0.3)))
+    # Run vLLM generation in a clean process so it does not inherit the trainer CUDA context.
+    evaluator_script = Path(__file__).parent / "experiments" / "run_qwen_official_greedy_eval.py"
+    evaluator_env = os.environ.copy()
+    for key in ("RANK", "WORLD_SIZE", "LOCAL_RANK", "LOCAL_WORLD_SIZE", "MASTER_ADDR", "MASTER_PORT", "GROUP_RANK", "ROLE_RANK"):
+        evaluator_env.pop(key, None)
+    subprocess.run(
+        [sys.executable, str(evaluator_script), "--model", str(model_path.resolve()), "--output-dir", str(evaluation_dir.resolve()), "--gpu-memory-utilization", str(float(config.get("vllm_gpu_memory_utilization", 0.3)))],
+        check=True,
+        env=evaluator_env,
+    )
+    # Read the canonical one-completion-per-task EvalPlus directory after generation completes.
     samples = evaluation_dir / "mbpp" / "qwen2_chat_temp_0.0"
     # Evaluate the generated directory through EvalPlus in the training process.
     from contextlib import redirect_stdout

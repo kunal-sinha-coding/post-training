@@ -123,9 +123,10 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument("--gpu-memory-utilization", type=float, default=0.90)
     args = parser.parse_args()
     output = args.output_dir / "mbpp" / "qwen2_chat_temp_0.0"
-    samples = generate_evalplus_samples(args.model, args.output_dir)
+    samples = generate_evalplus_samples(args.model, args.output_dir, args.gpu_memory_utilization)
     print(f"Generated EvalPlus samples at {samples}", flush=True)
 
 

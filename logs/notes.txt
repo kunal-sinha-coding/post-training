@@ -4304,3 +4304,8 @@ Updated EvalPlus evaluation to use the experiment's configured vLLM GPU memory f
 Commit: Pass evaluation GPU allocation directly to vLLM
 
 The first runtime fix set an environment variable, but the live evaluator still requested its 0.90 default. Pass the configured GPU memory fraction as an explicit argument through the EvalPlus generation helpers to ensure the evaluation vLLM engine uses the 0.30 allocation configured for this experiment. This avoids competing for GPU memory with the colocated training vLLM instance.
+
+
+Commit: Isolate EvalPlus vLLM generation from the trainer process
+
+EvalPlus vLLM generation still failed during CUDA memory profiling even after it received the 0.30 GPU memory limit. The generation runner now executes in a separate Python process with distributed launcher variables removed. This isolates its CUDA context from the colocated GRPO vLLM engine while retaining the configured memory limit and the same EvalPlus sample format. The official EvalPlus scorer and training-sample evaluator still run after generation.
