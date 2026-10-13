@@ -519,7 +519,7 @@ def main() -> None:
             label_artifact.add_file(str(path))
     run.log_artifact(label_artifact)
     training_summary = trainer.finish()
-    summary = {**label_summary, **training_summary, "experiment": "opencodeinstruct-online-minilm-router-eff32", "wandb_run_id": run.id, "git_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()}
+    summary = {**label_summary, **training_summary, "experiment": "opencodeinstruct-online-minilm-router-eff32", "wandb_run_id": run.id, "git_commit": subprocess.check_output(["git", "-c", f"safe.directory={root}", "rev-parse", "HEAD"], cwd=root, text=True).strip()}
     (args.output_dir / "experiment.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
     cache_artifact = wandb.Artifact("router-opencodeinstruct-label-cache-20261013", type="dataset")
     cache_artifact.add_file(str(args.cache_path))
