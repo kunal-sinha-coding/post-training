@@ -4379,3 +4379,7 @@ Context: The user clarified that training must continue to one million optimizer
 Commit: Update SFT experiment code identifiers.
 Description: Record the follow-up commit that changed the run limit to one million optimizer steps and scheduled evaluation every 100 steps.
 Context: The experiment results entry initially recorded the data-loader and base run setup commit. The user's updated step limit and evaluation cadence were implemented in commit `0f04b29`.
+
+Commit: Document periodic evaluation callback branches.
+Description: Add short comments to the new checkpoint and temporary-evaluation paths so each control-flow block explains its action.
+Context: The user asked to evaluate every 100 optimizer steps and retain only the first durable checkpoint.
