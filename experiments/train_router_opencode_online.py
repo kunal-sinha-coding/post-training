@@ -209,7 +209,7 @@ def save_model(path: Path, encoder: Any, tokenizer: Any, head: Any, metrics: dic
 # Train MiniLM on each newly labeled source batch before the dataset stream advances.
 class OnlineRouterTrainer:
     # Load one encoder and head that stay resident while Qwen labels the stream.
-    def __init__(self, args: argparse.Namespace, output_dir: Path, run: Any, eval_rows: list[dict[str, Any]], eval_mbpp_labels: list[int], eval_plus_labels: list[int]):
+    def __init__(self, args: argparse.Namespace, output_dir: Path, run: Any, eval_rows: list[dict[str, Any]], eval_mbpp_labels: list[int], eval_plus_labels: list[int], opencode_eval_rows: list[dict[str, Any]]):
         random.seed(args.seed)
         torch.manual_seed(args.seed)
         if torch.cuda.is_available():
@@ -221,6 +221,7 @@ class OnlineRouterTrainer:
         self.eval_rows = eval_rows
         self.eval_mbpp_labels = eval_mbpp_labels
         self.eval_plus_labels = eval_plus_labels
+        self.opencode_eval_rows = opencode_eval_rows
         self.tokenizer = AutoTokenizer.from_pretrained(args.encoder)
         self.encoder = AutoModel.from_pretrained(args.encoder)
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -247,22 +248,34 @@ class OnlineRouterTrainer:
         for path in (self.metrics_path, self.losses_path, self.predictions_path):
             path.unlink(missing_ok=True)
 
-    # Evaluate all labels seen to date plus separate held-out EvalPlus targets.
+    # Evaluate training labels and the separate OpenCodeInstruct and EvalPlus sets.
     def evaluate(self) -> dict[str, Any]:
         train_encoded, train_labels = encode_rows(self.tokenizer, self.rows, self.args.max_length, "label")
         eval_encoded, _ = encode_rows(self.tokenizer, self.eval_rows, self.args.max_length, "label_mbpp")
         train_metrics, train_predictions, train_probabilities = predict_rows(self.encoder, self.head, self.dropout, train_encoded, train_labels, self.device, self.args.eval_batch_size)
         mbpp_metrics, eval_predictions, eval_probabilities = predict_rows(self.encoder, self.head, self.dropout, eval_encoded, self.eval_mbpp_labels, self.device, self.args.eval_batch_size)
         plus_metrics = binary_metrics(self.eval_plus_labels, eval_predictions)
-        record = {"optimizer_step": self.step, "observed_task_count": len(self.rows), "training": train_metrics, "evalplus_mbpp": mbpp_metrics, "evalplus_mbpp_plus": plus_metrics}
+        # Score the held-out OpenCodeInstruct rows with the same binary Qwen-success target as training.
+        opencode_metrics = {}
+        opencode_predictions = []
+        opencode_probabilities = []
+        if self.opencode_eval_rows:
+            opencode_encoded, opencode_labels = encode_rows(self.tokenizer, self.opencode_eval_rows, self.args.max_length, "label")
+            opencode_metrics, opencode_predictions, opencode_probabilities = predict_rows(self.encoder, self.head, self.dropout, opencode_encoded, opencode_labels, self.device, self.args.eval_batch_size)
+        record = {"optimizer_step": self.step, "observed_task_count": len(self.rows), "training": train_metrics, "opencode_holdout": opencode_metrics, "evalplus_mbpp": mbpp_metrics, "evalplus_mbpp_plus": plus_metrics}
         with self.metrics_path.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(record) + "\n")
         with self.predictions_path.open("w", encoding="utf-8") as handle:
-            for split, rows, labels, predictions, probabilities in (("training", self.rows, train_labels, train_predictions, train_probabilities), ("evalplus", self.eval_rows, self.eval_mbpp_labels, eval_predictions, eval_probabilities)):
+            # Keep every split's labels and predictions available for later metric audits.
+            prediction_sets = [("training", self.rows, train_labels, train_predictions, train_probabilities), ("evalplus", self.eval_rows, self.eval_mbpp_labels, eval_predictions, eval_probabilities)]
+            if self.opencode_eval_rows:
+                prediction_sets.append(("opencode_holdout", self.opencode_eval_rows, opencode_labels, opencode_predictions, opencode_probabilities))
+            for split, rows, labels, predictions, probabilities in prediction_sets:
                 for row, label, prediction, probability in zip(rows, labels, predictions, probabilities, strict=True):
                     handle.write(json.dumps({"optimizer_step": self.step, "split": split, "task_id": str(row["task_id"]), "label_mbpp": label, "label_mbpp_plus": row.get("label_mbpp_plus"), "prediction": prediction, "positive_probability": probability}) + "\n")
         payload = {"optimizer_step": self.step}
         payload.update({f"train/{key}": value for key, value in train_metrics.items()})
+        payload.update({f"opencode_holdout/{key}": value for key, value in opencode_metrics.items()})
         payload.update({f"evalplus_mbpp/{key}": value for key, value in mbpp_metrics.items()})
         payload.update({f"evalplus_mbpp_plus/{key}": value for key, value in plus_metrics.items()})
         self.run.log(payload)
@@ -355,13 +368,89 @@ class OnlineRouterTrainer:
 
 
 # Stream source tasks from the dataset start, score one completion per valid task, and train each batch.
-def collect_labels(args: argparse.Namespace, output_dir: Path, run: Any, revision: str, cache: sqlite3.Connection, model_fingerprint: str, eval_rows: list[dict[str, Any]], trainer: OnlineRouterTrainer) -> dict[str, Any]:
+def collect_holdout_labels(args: argparse.Namespace, output_dir: Path, run: Any, revision: str, cache: sqlite3.Connection, model_fingerprint: str, evalplus_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    # Label the final source rows before training so every optimizer evaluation has held-out metrics.
+    eval_path = output_dir / "opencode_holdout_dataset.jsonl"
+    eval_path.unlink(missing_ok=True)
+    # Seek to the requested end of the same pinned source prefix.
+    stream = load_dataset("nvidia/OpenCodeInstruct", split="train", streaming=True, revision=revision)
+    iterator = iter(stream)
+    start = args.max_source_rows - args.holdout_source_rows
+    for _ in range(start):
+        next(iterator)
+    source_rows = [next(iterator) for _ in range(args.holdout_source_rows)]
+    evalplus_texts = {normalized_text(row["prompt"]) for row in evalplus_rows}
+    # Prepare duplicate tracking and label cache counters for this held-out slice.
+    seen_ids: set[str] = set()
+    seen_prompts: set[str] = set()
+    valid_rows = []
+    cache_hits = 0
+    cache_misses = 0
+    generation_seconds = 0.0
+    prompt_version = "opencode-coding-assistant-v1"
+    engine, sampler = load_qwen_generator(args.qwen_model, args.gpu_memory_utilization)
+    # Reuse cached completions and generate only cache misses in bounded batches.
+    for offset in range(0, len(source_rows), args.label_batch_size):
+        prepared = []
+        for row in source_rows[offset:offset + args.label_batch_size]:
+            task_id = str(row["id"])
+            prompt_text = normalized_text(str(row["input"]))
+            if task_id in seen_ids or prompt_text in seen_prompts or prompt_text in evalplus_texts:
+                continue
+            seen_ids.add(task_id)
+            seen_prompts.add(prompt_text)
+            try:
+                tests = parse_test_list(row["unit_tests"])
+                key, fingerprint = make_cache_key(row, revision, model_fingerprint, prompt_version)
+            except Exception:
+                continue
+            cached = cache.execute("SELECT completion, label, status, passed_tests, total_tests FROM labels WHERE cache_key=?", (key,)).fetchone()
+            if cached:
+                completion, label, status, passed_tests, total_tests = cached
+                result = {"label": int(label), "status": status, "passed_tests": passed_tests, "total_tests": total_tests}
+                cache_hits += 1
+            else:
+                reference = validate_reference(row, tests, args.test_timeout)
+                if not reference["valid"]:
+                    continue
+                completion = None
+                result = None
+                cache_misses += 1
+            prepared.append({"source": row, "tests": tests, "key": key, "fingerprint": fingerprint, "completion": completion, "result": result})
+        misses = [item for item in prepared if item["completion"] is None]
+        if misses:
+            started = time.time()
+            completions = generate_batch(engine, sampler, [build_coding_prompt(item["source"]["input"]) for item in misses])
+            generation_seconds += time.time() - started
+            for item, completion in zip(misses, completions, strict=True):
+                item["completion"] = completion
+                item["result"] = label_completion(completion, item["tests"], args.test_timeout)
+                cache.execute("INSERT OR REPLACE INTO labels(cache_key, task_id, fingerprint, completion, label, status, passed_tests, total_tests) VALUES(?,?,?,?,?,?,?,?)", (item["key"], str(item["source"]["id"]), item["fingerprint"], completion, item["result"]["label"], item["result"]["status"], item["result"]["passed_tests"], item["result"]["total_tests"]))
+        cache.commit()
+        for item in prepared:
+            row = item["source"]
+            record = {"task_id": str(row["id"]), "prompt": str(row["input"]), "completion": item["completion"], "label": int(item["result"]["label"]), "status": item["result"]["status"], "passed_tests": item["result"]["passed_tests"], "total_tests": item["result"]["total_tests"], "source_revision": revision, "cache_key": item["key"]}
+            valid_rows.append(record)
+            with eval_path.open("a", encoding="utf-8") as handle:
+                handle.write(json.dumps(record, ensure_ascii=False) + "\n")
+    del engine
+    gc.collect()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+    # Save source-row bounds and label counts so the holdout can be reproduced.
+    run.log({"labeling/opencode_holdout_rows": len(valid_rows), "labeling/opencode_holdout_cache_hits": cache_hits, "labeling/opencode_holdout_cache_misses": cache_misses, "labeling/opencode_holdout_generation_seconds": generation_seconds})
+    (output_dir / "opencode_holdout_summary.json").write_text(json.dumps({"source_dataset": "nvidia/OpenCodeInstruct", "source_rows": args.holdout_source_rows, "source_start_row": start, "valid_eval_tasks": len(valid_rows), "cache_hits": cache_hits, "cache_misses": cache_misses, "positive_labels": sum(row["label"] for row in valid_rows), "negative_labels": sum(1 - row["label"] for row in valid_rows), "labels_path": str(eval_path)}, indent=2) + "\n", encoding="utf-8")
+    return valid_rows
+
+
+# Stream only the non-held-out source prefix and train each newly labeled batch.
+def collect_labels(args: argparse.Namespace, output_dir: Path, run: Any, revision: str, cache: sqlite3.Connection, model_fingerprint: str, eval_rows: list[dict[str, Any]], opencode_eval_rows: list[dict[str, Any]], trainer: OnlineRouterTrainer) -> dict[str, Any]:
     # Initialize fresh run artifacts while preserving the cross-run SQLite label cache.
     dataset_path = output_dir / "router_dataset.jsonl"
     excluded_path = output_dir / "excluded_test_suites.jsonl"
     dataset_path.unlink(missing_ok=True)
     excluded_path.unlink(missing_ok=True)
-    eval_texts = {normalized_text(row["prompt"]) for row in eval_rows}
+    eval_texts = {normalized_text(row["prompt"]) for row in eval_rows + opencode_eval_rows}
     prompt_version = "opencode-coding-assistant-v1"
     stream = load_dataset("nvidia/OpenCodeInstruct", split="train", streaming=True, revision=revision)
     engine, sampler = load_qwen_generator(args.qwen_model, args.gpu_memory_utilization)
@@ -382,11 +471,12 @@ def collect_labels(args: argparse.Namespace, output_dir: Path, run: Any, revisio
 
     # Process each deterministic eight-row source batch before fetching the next batch.
     iterator = iter(stream)
-    while valid_tasks + excluded < args.max_source_rows:
+    train_source_rows = args.max_source_rows - args.holdout_source_rows
+    while valid_tasks + excluded < train_source_rows:
         batch_started = time.time()
         generation_seconds = 0.0
         source_batch = []
-        for _ in range(min(args.label_batch_size, args.max_source_rows - valid_tasks - excluded)):
+        for _ in range(min(args.label_batch_size, train_source_rows - valid_tasks - excluded)):
             try:
                 source_batch.append(next(iterator))
             except StopIteration:
@@ -487,6 +577,7 @@ def main() -> None:
     parser.add_argument("--encoder", default="microsoft/MiniLM-L12-H384-uncased")
     parser.add_argument("--revision", default="")
     parser.add_argument("--max-source-rows", type=int, default=20000)
+    parser.add_argument("--holdout-source-rows", type=int, default=300)
     parser.add_argument("--max-optimizer-steps", type=int, default=1_000_000)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--label-batch-size", type=int, default=8)
@@ -501,7 +592,7 @@ def main() -> None:
     parser.add_argument("--wandb-entity", default="kunal-personal")
     parser.add_argument("--run-name", default="router-opencode-from-start-online-minilm-eff32-1m-20261013")
     args = parser.parse_args()
-    if args.label_batch_size < 1 or args.effective_batch_size < 1 or args.max_optimizer_steps < 1:
+    if args.label_batch_size < 1 or args.effective_batch_size < 1 or args.max_optimizer_steps < 1 or args.holdout_source_rows < 1 or args.holdout_source_rows >= args.max_source_rows:
         parser.error("batch sizes and optimizer-step budget must be positive")
 
     # Resolve repository-relative paths and load credentials without exposing secret values.
@@ -521,20 +612,23 @@ def main() -> None:
     revision = args.revision or HfApi().dataset_info("nvidia/OpenCodeInstruct").sha
     normalize_tokenizer_metadata(args.qwen_model)
     model_fingerprint = checkpoint_fingerprint(args.qwen_model)
-    run = wandb.init(entity=args.wandb_entity, project=args.wandb_project, name=args.run_name, job_type="router-opencode-online-training", config={"source_dataset": "nvidia/OpenCodeInstruct", "source_revision": revision, "source_license": "CC-BY-4.0", "max_source_rows": args.max_source_rows, "max_optimizer_steps": args.max_optimizer_steps, "streaming": True, "selection": "sequential scan from the first row of the pinned training split, exact prompt deduplication, exact held-out EvalPlus prompt overlaps removed", "label_batch_size": args.label_batch_size, "label_rule": "one greedy Qwen completion passes every task test after test-suite validity is checked against the supplied reference answer", "source_status_fields_used_as_labels": False, "qwen_model": str(args.qwen_model), "qwen_config_sha256": model_fingerprint, "decode": {"temperature": 0.0, "top_p": 1.0, "max_tokens": 2048}, "label_cache": str(args.cache_path), "encoder": args.encoder, "gradient_accumulation_microbatch_size": args.label_batch_size, "effective_batch_size": args.effective_batch_size, "learning_rate": args.learning_rate, "eval_every_steps": args.eval_every_steps, "eval_dataset": str(args.eval_data), "eval_task_count": len(eval_rows), "eval_targets": ["MBPP base pass", "MBPP+ full pass"], "training_mode": "accumulate gradients from each newly labeled source batch and update after the effective batch is full before advancing, then cycle deterministically through labeled rows until the optimizer-step budget is met"})
+    run = wandb.init(entity=args.wandb_entity, project=args.wandb_project, name=args.run_name, job_type="router-opencode-online-training", config={"source_dataset": "nvidia/OpenCodeInstruct", "source_revision": revision, "source_license": "CC-BY-4.0", "max_source_rows": args.max_source_rows, "heldout_source_rows": args.holdout_source_rows, "training_source_rows": args.max_source_rows - args.holdout_source_rows, "max_optimizer_steps": args.max_optimizer_steps, "streaming": True, "selection": "first source prefix for training and final source rows for held-out evaluation, exact prompt deduplication, EvalPlus and OpenCode holdout overlaps removed from training", "label_batch_size": args.label_batch_size, "label_rule": "one greedy Qwen completion passes every task test after test-suite validity is checked against the supplied reference answer", "source_status_fields_used_as_labels": False, "qwen_model": str(args.qwen_model), "qwen_config_sha256": model_fingerprint, "decode": {"temperature": 0.0, "top_p": 1.0, "max_tokens": 2048}, "label_cache": str(args.cache_path), "encoder": args.encoder, "gradient_accumulation_microbatch_size": args.label_batch_size, "effective_batch_size": args.effective_batch_size, "learning_rate": args.learning_rate, "eval_every_steps": args.eval_every_steps, "eval_dataset": str(args.eval_data), "eval_task_count": len(eval_rows), "opencode_holdout_task_count": args.holdout_source_rows, "eval_targets": ["OpenCodeInstruct final-row holdout", "MBPP base pass", "MBPP+ full pass"], "training_mode": "label the final-row holdout first, stream and train on the preceding source prefix, then cycle deterministically through training rows until the optimizer-step budget is met"})
     run.define_metric("optimizer_step")
     run.define_metric("train/*", step_metric="optimizer_step")
+    run.define_metric("opencode_holdout/*", step_metric="optimizer_step")
     run.define_metric("evalplus_mbpp/*", step_metric="optimizer_step")
     run.define_metric("evalplus_mbpp_plus/*", step_metric="optimizer_step")
     run.log({"labeling/started": 1})
-    trainer = OnlineRouterTrainer(args, args.output_dir, run, eval_rows, eval_mbpp_labels, eval_plus_labels)
     cache = open_label_cache(args.cache_path)
-    label_summary = collect_labels(args, args.output_dir, run, revision, cache, model_fingerprint, eval_rows, trainer)
+    opencode_eval_rows = collect_holdout_labels(args, args.output_dir, run, revision, cache, model_fingerprint, eval_rows)
+    trainer = OnlineRouterTrainer(args, args.output_dir, run, eval_rows, eval_mbpp_labels, eval_plus_labels, opencode_eval_rows)
+    label_summary = collect_labels(args, args.output_dir, run, revision, cache, model_fingerprint, eval_rows, opencode_eval_rows, trainer)
     cache.close()
+    label_summary["opencode_holdout"] = json.loads((args.output_dir / "opencode_holdout_summary.json").read_text(encoding="utf-8"))
     (args.output_dir / "label_summary.json").write_text(json.dumps(label_summary, indent=2) + "\n", encoding="utf-8")
     run.log({"labeling/completed": 1, "labeling/valid_tasks": label_summary["valid_labeled_tasks"], "labeling/excluded_tasks": label_summary["excluded_tasks"], "labeling/cache_hits_total": label_summary["cache_hits"], "labeling/cache_misses_total": label_summary["cache_misses"], "labeling/positive_count": label_summary["positive_count"], "labeling/negative_count": label_summary["negative_count"], "labeling/elapsed_seconds": label_summary["elapsed_seconds"]})
-    label_artifact = wandb.Artifact("router-opencodeinstruct-online-labels-20261013", type="dataset")
-    for path in (args.output_dir / "router_dataset.jsonl", args.output_dir / "excluded_test_suites.jsonl", args.output_dir / "label_summary.json", args.eval_data):
+    label_artifact = wandb.Artifact("router-opencodeinstruct-online-labels-holdout300-20261013", type="dataset")
+    for path in (args.output_dir / "router_dataset.jsonl", args.output_dir / "excluded_test_suites.jsonl", args.output_dir / "opencode_holdout_dataset.jsonl", args.output_dir / "opencode_holdout_summary.json", args.output_dir / "label_summary.json", args.eval_data):
         if path.exists():
             label_artifact.add_file(str(path))
     run.log_artifact(label_artifact)
@@ -542,10 +636,10 @@ def main() -> None:
     training_summary = trainer.finish()
     summary = {**label_summary, **training_summary, "experiment": "opencodeinstruct-online-minilm-router-eff32", "wandb_run_id": run.id, "git_commit": subprocess.check_output(["git", "-c", f"safe.directory={root}", "rev-parse", "HEAD"], cwd=root, text=True).strip()}
     (args.output_dir / "experiment.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
-    cache_artifact = wandb.Artifact("router-opencodeinstruct-label-cache-20261013", type="dataset")
+    cache_artifact = wandb.Artifact("router-opencodeinstruct-label-cache-holdout300-20261013", type="dataset")
     cache_artifact.add_file(str(args.cache_path))
     run.log_artifact(cache_artifact)
-    model_artifact = wandb.Artifact("router-opencodeinstruct-minilm-eff32-20261013", type="model")
+    model_artifact = wandb.Artifact("router-opencodeinstruct-minilm-eff32-holdout300-20261013", type="model")
     model_artifact.add_dir(str(args.output_dir / "final"))
     run.log_artifact(model_artifact)
     run.finish()
