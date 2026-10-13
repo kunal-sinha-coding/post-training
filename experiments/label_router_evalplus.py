@@ -7,6 +7,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import time
 from contextlib import redirect_stdout
 from io import StringIO
 from pathlib import Path
@@ -28,7 +30,40 @@ def main() -> None:
     args = parser.parse_args()
 
     # Generate and save one temperature-zero completion per canonical EvalPlus task.
+    args.output_dir.mkdir(parents=True, exist_ok=True)
+    from dotenv import load_dotenv
+    import wandb
+
+    root = Path(__file__).resolve().parents[1]
+    load_dotenv(root / ".env")
+    if not os.getenv("WANDB_API_KEY"):
+        raise RuntimeError("WANDB_API_KEY is required to log router EvalPlus labeling.")
+    task_rows = load_tasks()
+    run = wandb.init(
+        entity="kunal-personal",
+        project="grpo-mbpp",
+        name="router-evalplus-dual-labels-one-shot-20261013",
+        job_type="router-label-generation",
+        config={
+            "model": "Qwen/Qwen2.5-Coder-0.5B-Instruct",
+            "checkpoint_path": str(args.model),
+            "dataset": "canonical EvalPlus MBPP",
+            "task_count": len(task_rows),
+            "candidate_policy": "one temperature-zero completion per task, scored against both test sets",
+            "targets": ["all MBPP base tests", "all MBPP+ base and extra tests"],
+            "max_tokens": 2048,
+            "output_dir": str(args.output_dir),
+        },
+    )
+    run.log({"labeling/task_count": len(task_rows), "labeling/generation_started": 1})
+    generation_started = time.time()
     samples = generate_evalplus_samples(args.model, args.output_dir / "evalplus", args.gpu_memory_utilization)
+    generation_seconds = time.time() - generation_started
+    run.log({
+        "labeling/generation_completed": 1,
+        "labeling/generation_seconds": generation_seconds,
+        "labeling/completions_per_second": len(task_rows) / max(generation_seconds, 1e-9),
+    })
     evaluator_output = StringIO()
     with redirect_stdout(evaluator_output):
         evaluate(
@@ -47,7 +82,6 @@ def main() -> None:
     (args.output_dir / "evalplus_results.txt").write_text(result_text, encoding="utf-8")
 
     # Join saved completions to the canonical base and extended test outcomes by task ID.
-    task_rows = load_tasks()
     eval_data = json.loads((samples / "eval_results.json").read_text(encoding="utf-8"))["eval"]
     problems = get_mbpp_plus()
     expected_ids = {task["task_id"] for task in task_rows}
@@ -102,6 +136,19 @@ def main() -> None:
         },
     }
     (args.output_dir / "summary.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
+    run.log({
+        "labeling/mbpp_positive_count": summary["base_solved"],
+        "labeling/mbpp_negative_count": summary["base_unsolved"],
+        "labeling/mbpp_plus_positive_count": summary["plus_solved"],
+        "labeling/mbpp_plus_negative_count": summary["plus_unsolved"],
+        "labeling/scoring_completed": 1,
+    })
+    artifact = wandb.Artifact("router-evalplus-dual-labels-one-shot-20261013", type="dataset")
+    for artifact_path in (labels_path, args.output_dir / "summary.json", args.output_dir / "evalplus_results.txt"):
+        artifact.add_file(str(artifact_path))
+    artifact.add_dir(str(samples))
+    run.log_artifact(artifact)
+    run.finish()
     print(json.dumps(summary, indent=2), flush=True)
 
 

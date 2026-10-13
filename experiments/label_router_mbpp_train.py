@@ -8,6 +8,8 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
+import time
 from pathlib import Path
 from typing import Any
 
@@ -39,7 +41,38 @@ def main() -> None:
     gpu_memory_utilization = args.gpu_memory_utilization or float(config.get("gpu_memory_utilization", 0.85))
     rows = load_training_tasks(config)
     prompts = [str(row["prompt"]) for row in rows]
+    output_dir.mkdir(parents=True, exist_ok=True)
+    from dotenv import load_dotenv
+    import wandb
+
+    load_dotenv(root / ".env")
+    if not os.getenv("WANDB_API_KEY"):
+        raise RuntimeError("WANDB_API_KEY is required to log router label generation.")
+    run = wandb.init(
+        entity="kunal-personal",
+        project="grpo-mbpp",
+        name="router-labels-original-easy-one-shot-20261013",
+        job_type="router-label-generation",
+        config={
+            "model": "Qwen/Qwen2.5-Coder-0.5B-Instruct",
+            "checkpoint_path": str(model_path),
+            "task_count": len(rows),
+            "task_sources": ["original MBPP train/validation/test", "synthetic easy"],
+            "candidate_policy": "one temperature-zero completion per task, saved before scoring",
+            "max_tokens": 2048,
+            "label": "passes all available MBPP-style assertions",
+            "output_dir": str(output_dir),
+        },
+    )
+    run.log({"labeling/task_count": len(rows), "labeling/generation_started": 1})
+    generation_started = time.time()
     completions = generate_completions(str(model_path), prompts, gpu_memory_utilization)
+    generation_seconds = time.time() - generation_started
+    run.log({
+        "labeling/generation_completed": 1,
+        "labeling/generation_seconds": generation_seconds,
+        "labeling/completions_per_second": len(completions) / max(generation_seconds, 1e-9),
+    })
 
     # Save exactly one raw completion per task before any test-based label is computed.
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -117,6 +150,16 @@ def main() -> None:
         },
     }
     (output_dir / "summary.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
+    run.log({
+        "labeling/positive_count": summary["class_counts"]["solved"],
+        "labeling/negative_count": summary["class_counts"]["unsolved"],
+        "labeling/scoring_completed": 1,
+    })
+    artifact = wandb.Artifact("router-labels-original-easy-one-shot-20261013", type="dataset")
+    for artifact_path in (completion_path, dataset_path, output_dir / "summary.json"):
+        artifact.add_file(str(artifact_path))
+    run.log_artifact(artifact)
+    run.finish()
     print(json.dumps(summary, indent=2), flush=True)
 
 

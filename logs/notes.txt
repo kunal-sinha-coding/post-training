@@ -4399,3 +4399,7 @@ Commit name: Restrict router training to original and easy tasks.
 Description: Remove the hard synthetic source from the one-shot router label configuration. Change label and model artifact names to identify the original plus easy experiment. Keep the separate held-out MBPP and MBPP+ labels.
 Discussion: The user changed the intended training source set to original MBPP plus synthetic easy only after the initial original, easy, and hard labeling process had started. That first output will be marked superseded and will not feed router training. The in-flight process is allowed to complete, then the corrected one-source-pair dataset will be regenerated.
 
+Commit name: Add W&B tracking for router label generation.
+Description: Start dedicated W&B runs for training and EvalPlus label generation. Log task counts, generation status, elapsed generation time, completion throughput, label counts, and completion status. Upload raw completions, scored per-task labels, EvalPlus samples, and summaries as artifacts.
+Discussion: The user instructed us to stop the hard-inclusive label process and run only original plus synthetic easy for training, then EvalPlus. The process stopped during scoring after generating and saving 11,229 raw completions. Those outputs are superseded and excluded from training. The corrected config includes only original and easy tasks. The corrected label passes must be logged in W&B.
+
