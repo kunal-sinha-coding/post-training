@@ -4481,3 +4481,6 @@ Discussion: The fresh effective-batch-32 W&B run `72fg9g2e` is active and target
 
 
 2026-10-13: Implemented a separate held-out split for the router experiment. The final 300 raw source rows from the first 20,000 rows of the pinned OpenCodeInstruct revision are labeled before training, and the first 19,700 rows are the only training prefix. The trainer now records OpenCode holdout binary retrieval metrics alongside MBPP and MBPP+ at each evaluation point. Holdout labels are not used for checkpoint selection. The run will reuse the exact-match Qwen label cache and retain the previous effective batch, learning rate, evaluation cadence, and million-step target.
+
+
+2026-10-13: Launched holdout-300 router run W&B `9mnzniyn`. Holdout has 139 validated examples with 84 positive and 55 negative labels, from 138 cache hits and one new Qwen completion. Step-100 training, OpenCodeInstruct holdout, MBPP, and MBPP+ F1 are 0.7182, 0.6951, 0.5642, and 0.5171. Run remains active toward 1,000,000 steps.
