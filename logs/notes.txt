@@ -4470,3 +4470,8 @@ Discussion: The effective-batch-32 restart completed the 20,000-row scan after 2
 Commit name: Record million-step router restart progress.
 Description: Record the active effective-batch-32 million-step router run, its W&B identifier, completed source scan, cache reuse, and interim retrieval metrics.
 Discussion: The user had previously directed router training to continue to one million optimizer steps. The initial effective-batch-32 run stopped after one 20,000-row scan at step 277, so a fresh run now rescans from row one, reuses the persistent cache, trains online, and cycles through the labeled rows to the one-million-step budget. At the time of this record it has reached step 300.
+
+
+Commit name: Record step-300 million-step router evaluation.
+Description: Add the step-300 metrics and active-run status to the million-step router experiment record.
+Discussion: The fresh effective-batch-32 W&B run `72fg9g2e` is active and targets one million optimizer steps. At step 300, training F1 was 0.7564 while EvalPlus MBPP and MBPP+ F1 were 0.4214 and 0.3956. The run remains active under the user's earlier instruction to continue through one million steps.
