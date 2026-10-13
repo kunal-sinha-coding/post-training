@@ -4407,3 +4407,7 @@ Commit name: Prepare one-shot original-plus-easy SFT training.
 Description: Add a converter that verifies the router label IDs against the configured original-plus-easy task pool and writes only passing completions into a fresh fingerprinted SFT solution store. Add an SFT config for one million optimizer steps, evaluation every 100 steps, one durable checkpoint at step 100, and W&B logging.
 Discussion: The user asked whether SFT can begin after the corrected label passes. The one-completion labeling runs completed for 5,910 original-plus-easy training tasks and 378 held-out EvalPlus tasks. Only the sole completion that passes all available training assertions is accepted for SFT. Separate MBPP and MBPP+ held-out labels remain unchanged. The classifier has not been started; focus is the authorized one-shot SFT run.
 
+Commit name: Record original-plus-easy one-shot SFT launch.
+Description: Record the accepted one-shot SFT dataset, filter and training setup, W&B run, environment, initial loss, and code commit in the experiment results file.
+Discussion: The user asked whether SFT could begin. The completed one-completion label pass produced 2,711 full-pass answers from original MBPP plus easy synthetic tasks. The SFT trainer is now running toward one million steps with evaluation every 100 steps and loss logging every 10 steps. No hard synthetic tasks are included.
+
