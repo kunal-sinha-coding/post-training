@@ -4460,3 +4460,8 @@ Discussion: The user explicitly asked to stop the unstable effective-batch-8 run
 Commit name: Complete the effective-batch-32 OpenCodeInstruct router record.
 Description: Make the final Git commit lookup safe for the workspace ownership setting, and record final metrics, labels, artifacts, hashes, environment, and limitations for the completed effective-batch-32 online router run.
 Discussion: The user asked to stop the effective-batch-8 run and restart from the first source row with an effective batch size of 32. The replacement scanned 20,000 rows, reused matching labels, generated one Qwen completion per cache miss, and updated MiniLM as data arrived. It completed 276 full 32-example updates and a final partial update of 24. The final step-277 evaluation completed and model files were saved, but summary finalization first exited at `git rev-parse` because Git rejected the workspace ownership. The code now passes `safe.directory` to that lookup. W&B run `51cs5aks` is being resumed to upload the final summary and artifacts.
+
+
+Commit name: Continue router training to one million updates.
+Description: Add a one-million-step optimizer budget and deterministic cycling over all labeled OpenCodeInstruct rows after the streaming label pass.
+Discussion: The effective-batch-32 restart completed the 20,000-row scan after 277 updates, which did not satisfy the user's earlier one-million-step instruction. This change preserves cache-first labeling from source row one, performs online updates as labels arrive, and then continues training over the labeled set. It keeps evaluations every 100 updates and the step-100 checkpoint policy. Python compilation and a synthetic step-budget test passed.

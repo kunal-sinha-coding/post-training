@@ -271,10 +271,11 @@ class OnlineRouterTrainer:
         return record
 
     # Accumulate gradients across labeled source batches until the effective batch is full.
-    def update(self, batch_rows: list[dict[str, Any]]) -> None:
+    def update(self, batch_rows: list[dict[str, Any]], add_to_training_rows: bool = True) -> None:
         if not batch_rows:
             return
-        self.rows.extend(batch_rows)
+        if add_to_training_rows:
+            self.rows.extend(batch_rows)
         if self.last_record is None:
             self.evaluate()
         offset = 0
@@ -322,6 +323,24 @@ class OnlineRouterTrainer:
             record = self.evaluate()
             if self.step == 100:
                 save_model(self.output_dir / "checkpoint-100", self.encoder, self.tokenizer, self.head, record)
+
+    # Cycle deterministically through labeled tasks until the configured optimizer-step budget is met.
+    def train_until_step_limit(self) -> None:
+        if not self.rows:
+            raise RuntimeError("No labeled examples are available for continued router training.")
+        epoch = 0
+        while self.step < self.args.max_optimizer_steps:
+            order = list(self.rows)
+            random.Random(self.args.seed + epoch).shuffle(order)
+            for offset in range(0, len(order), self.args.label_batch_size):
+                examples_left = (self.args.max_optimizer_steps - self.step) * self.args.effective_batch_size - self.accumulated_task_count
+                if examples_left <= 0:
+                    return
+                batch = order[offset:offset + min(self.args.label_batch_size, examples_left)]
+                self.update(batch, add_to_training_rows=False)
+                if self.step >= self.args.max_optimizer_steps:
+                    return
+            epoch += 1
 
     # Flush a final partial batch before final evaluation and model serialization.
     def finish(self) -> dict[str, Any]:
@@ -468,6 +487,7 @@ def main() -> None:
     parser.add_argument("--encoder", default="microsoft/MiniLM-L12-H384-uncased")
     parser.add_argument("--revision", default="")
     parser.add_argument("--max-source-rows", type=int, default=20000)
+    parser.add_argument("--max-optimizer-steps", type=int, default=1_000_000)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--label-batch-size", type=int, default=8)
     parser.add_argument("--effective-batch-size", type=int, default=32)
@@ -479,10 +499,10 @@ def main() -> None:
     parser.add_argument("--gpu-memory-utilization", type=float, default=0.35)
     parser.add_argument("--wandb-project", default="grpo-mbpp")
     parser.add_argument("--wandb-entity", default="kunal-personal")
-    parser.add_argument("--run-name", default="router-opencode-from-start-online-minilm-eff32-20261013")
+    parser.add_argument("--run-name", default="router-opencode-from-start-online-minilm-eff32-1m-20261013")
     args = parser.parse_args()
-    if args.label_batch_size < 1 or args.effective_batch_size < 1:
-        parser.error("label and effective batch sizes must be positive")
+    if args.label_batch_size < 1 or args.effective_batch_size < 1 or args.max_optimizer_steps < 1:
+        parser.error("batch sizes and optimizer-step budget must be positive")
 
     # Resolve repository-relative paths and load credentials without exposing secret values.
     root = Path(__file__).resolve().parents[1]
@@ -501,7 +521,7 @@ def main() -> None:
     revision = args.revision or HfApi().dataset_info("nvidia/OpenCodeInstruct").sha
     normalize_tokenizer_metadata(args.qwen_model)
     model_fingerprint = checkpoint_fingerprint(args.qwen_model)
-    run = wandb.init(entity=args.wandb_entity, project=args.wandb_project, name=args.run_name, job_type="router-opencode-online-training", config={"source_dataset": "nvidia/OpenCodeInstruct", "source_revision": revision, "source_license": "CC-BY-4.0", "max_source_rows": args.max_source_rows, "streaming": True, "selection": "sequential scan from the first row of the pinned training split, exact prompt deduplication, exact held-out EvalPlus prompt overlaps removed", "label_batch_size": args.label_batch_size, "label_rule": "one greedy Qwen completion passes every task test after test-suite validity is checked against the supplied reference answer", "source_status_fields_used_as_labels": False, "qwen_model": str(args.qwen_model), "qwen_config_sha256": model_fingerprint, "decode": {"temperature": 0.0, "top_p": 1.0, "max_tokens": 2048}, "label_cache": str(args.cache_path), "encoder": args.encoder, "gradient_accumulation_microbatch_size": args.label_batch_size, "effective_batch_size": args.effective_batch_size, "learning_rate": args.learning_rate, "eval_every_steps": args.eval_every_steps, "eval_dataset": str(args.eval_data), "eval_task_count": len(eval_rows), "eval_targets": ["MBPP base pass", "MBPP+ full pass"], "training_mode": "accumulate gradients from each newly labeled source batch and update after the effective batch is full before advancing"})
+    run = wandb.init(entity=args.wandb_entity, project=args.wandb_project, name=args.run_name, job_type="router-opencode-online-training", config={"source_dataset": "nvidia/OpenCodeInstruct", "source_revision": revision, "source_license": "CC-BY-4.0", "max_source_rows": args.max_source_rows, "max_optimizer_steps": args.max_optimizer_steps, "streaming": True, "selection": "sequential scan from the first row of the pinned training split, exact prompt deduplication, exact held-out EvalPlus prompt overlaps removed", "label_batch_size": args.label_batch_size, "label_rule": "one greedy Qwen completion passes every task test after test-suite validity is checked against the supplied reference answer", "source_status_fields_used_as_labels": False, "qwen_model": str(args.qwen_model), "qwen_config_sha256": model_fingerprint, "decode": {"temperature": 0.0, "top_p": 1.0, "max_tokens": 2048}, "label_cache": str(args.cache_path), "encoder": args.encoder, "gradient_accumulation_microbatch_size": args.label_batch_size, "effective_batch_size": args.effective_batch_size, "learning_rate": args.learning_rate, "eval_every_steps": args.eval_every_steps, "eval_dataset": str(args.eval_data), "eval_task_count": len(eval_rows), "eval_targets": ["MBPP base pass", "MBPP+ full pass"], "training_mode": "accumulate gradients from each newly labeled source batch and update after the effective batch is full before advancing, then cycle deterministically through labeled rows until the optimizer-step budget is met"})
     run.define_metric("optimizer_step")
     run.define_metric("train/*", step_metric="optimizer_step")
     run.define_metric("evalplus_mbpp/*", step_metric="optimizer_step")
@@ -518,6 +538,7 @@ def main() -> None:
         if path.exists():
             label_artifact.add_file(str(path))
     run.log_artifact(label_artifact)
+    trainer.train_until_step_limit()
     training_summary = trainer.finish()
     summary = {**label_summary, **training_summary, "experiment": "opencodeinstruct-online-minilm-router-eff32", "wandb_run_id": run.id, "git_commit": subprocess.check_output(["git", "-c", f"safe.directory={root}", "rev-parse", "HEAD"], cwd=root, text=True).strip()}
     (args.output_dir / "experiment.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
