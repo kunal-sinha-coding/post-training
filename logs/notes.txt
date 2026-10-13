@@ -4353,3 +4353,10 @@ Commit name: Record MiniLM router overfit result. The repository filtered traini
 
 
 Commit name: Log MiniLM router overfit in W&B. Logged the completed local run retrospectively to https://wandb.ai/kunal-personal/grpo-mbpp/runs/9oa5bp19. The W&B run contains all 11 training-history points, experiment and label configuration, the full labeled training data and raw completions as a dataset artifact, and the encoder and classifier head as a model artifact. Verified the finished run and both artifacts through the W&B API.
+
+
+## October 13, 2026: Prepare full-data router training and EvalPlus metrics
+
+Added a full EvalPlus label pass that generates one greedy Qwen2.5-Coder-0.5B-Instruct completion for every canonical task and saves the full MBPP+ binary outcome before router training. The router evaluation will use full MBPP+ success as its positive label and retain the base-test label for reference. Added full-data MiniLM training over all 591 repository training rows. It evaluates both complete training and EvalPlus sets at step zero, every ten optimizer steps, and the final step. W&B logging runs live and stores both datasets, per-task predictions, metrics, and the final checkpoint.
+
+Commit name: Add full-data router training and EvalPlus evaluation. Configuration uses five epochs, batch size 16, learning rate 5e-5, maximum sequence length 512, and positive-class argmax metrics.
