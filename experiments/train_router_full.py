@@ -82,9 +82,9 @@ def predict_rows(
 def main() -> None:
     # Parse paths, training settings, and the W&B project for this full-data router run.
     parser = argparse.ArgumentParser()
-    parser.add_argument("--train-data", type=Path, default=Path("outputs/router-mbpp-easy-hard-one-shot-20261013/router_dataset.jsonl"))
+    parser.add_argument("--train-data", type=Path, default=Path("outputs/router-mbpp-easy-one-shot-20261013/router_dataset.jsonl"))
     parser.add_argument("--eval-data", type=Path, default=Path("outputs/router-evalplus-greedy-dual-label-20261013/router_evalplus_labels.jsonl"))
-    parser.add_argument("--output-dir", type=Path, default=Path("outputs/router-minilm-easy-hard-dual-eval-20261013"))
+    parser.add_argument("--output-dir", type=Path, default=Path("outputs/router-minilm-easy-dual-eval-20261013"))
     parser.add_argument("--model", default="microsoft/MiniLM-L12-H384-uncased")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--epochs", type=int, default=5)
@@ -132,7 +132,7 @@ def main() -> None:
     run = wandb.init(
         entity=args.wandb_entity,
         project=args.wandb_project,
-        name="router-minilm-original-easy-hard-dual-eval-20261013",
+        name="router-minilm-original-easy-dual-eval-20261013",
         job_type="router-full-training",
         config={
             "train_data": str(args.train_data),
@@ -168,7 +168,7 @@ def main() -> None:
     run.define_metric("train/*", step_metric="optimizer_step")
     run.define_metric("evalplus_mbpp/*", step_metric="optimizer_step")
     run.define_metric("evalplus_mbpp_plus/*", step_metric="optimizer_step")
-    train_artifact = wandb.Artifact("router-mbpp-easy-hard-one-shot-labels-20261013", type="dataset")
+    train_artifact = wandb.Artifact("router-mbpp-easy-one-shot-labels-20261013", type="dataset")
     train_artifact.add_file(str(args.train_data))
     train_artifact.add_file(str(args.train_data.parent / "completions.json"))
     run.log_artifact(train_artifact)
@@ -301,7 +301,7 @@ def main() -> None:
     }
     metadata_path = args.output_dir / "experiment.json"
     metadata_path.write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
-    model_artifact = wandb.Artifact("minilm-router-fulltrain-20261013", type="model")
+    model_artifact = wandb.Artifact("minilm-router-original-easy-20261013", type="model")
     model_artifact.add_dir(str(args.output_dir))
     run.log_artifact(model_artifact)
     run.summary["optimizer_steps"] = global_step

@@ -47,7 +47,7 @@ def main() -> None:
     completion_path.write_text(json.dumps({
         "model": "Qwen/Qwen2.5-Coder-0.5B-Instruct",
         "checkpoint_path": str(model_path),
-        "split": "original MBPP training pool plus easy and hard synthetic tasks",
+        "split": "original MBPP training pool plus easy synthetic tasks",
         "decoding": {"temperature": 0.0, "top_p": 1.0, "max_tokens": 2048},
         "task_ids": [str(row["task_id"]) for row in rows],
         "completions": completions,
@@ -89,7 +89,7 @@ def main() -> None:
         "hard": sum(str(row["task_id"]).startswith("synthetic-hard-") for row in rows),
     }
     summary = {
-        "experiment": "qwen05-original-easy-hard-one-shot-router-labels",
+        "experiment": "qwen05-original-easy-one-shot-router-labels",
         "model": "Qwen/Qwen2.5-Coder-0.5B-Instruct",
         "checkpoint_path": str(model_path),
         "checkpoint_config_sha256": config_hash,
