@@ -17855,3 +17855,7 @@ At step 100, training F1 was 0.7182, held-out OpenCodeInstruct F1 was 0.6951, Ev
 
 HOLDOUT-300 ROUTER RUN UPDATE AT STEP 200
 W&B run `9mnzniyn` remains active. At step 200, training accuracy, precision, recall, and F1 were 0.6989, 0.6836, 0.8194, and 0.7454. OpenCodeInstruct holdout metrics were 0.7050, 0.7416, 0.7857, and 0.7630. EvalPlus MBPP metrics were 0.5291, 0.5378, 0.6205, and 0.5762. EvalPlus MBPP+ metrics were 0.5026, 0.4578, 0.6095, and 0.5228. The step-100 OpenCodeInstruct holdout F1 was 0.6951, and step-200 recovered to 0.7630. The step-200 evaluation saw 6,403 training examples.
+
+
+HOLDOUT-300 ROUTER RUN UPDATE AT STEP 300
+W&B run `9mnzniyn` remains active. At step 300, training accuracy, precision, recall, and F1 were 0.7455, 0.7589, 0.7766, and 0.7677. OpenCodeInstruct holdout metrics were 0.7482, 0.8101, 0.7619, and 0.7853. EvalPlus MBPP metrics were 0.5714, 0.6012, 0.5026, and 0.5475. EvalPlus MBPP+ metrics were 0.5661, 0.5153, 0.4970, and 0.5060. The source-label pass completed with 8,740 training rows and 139 separate holdout rows. Training now cycles over the training rows.
