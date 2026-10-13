@@ -4420,3 +4420,8 @@ Discussion: The SFT process was stopped during the step-200 evaluation after the
 Commit name: Record interrupted MiniLM router training.
 Description: Record the stopped router run, its last complete evaluation, full loss and metric artifact locations, W&B state, and checkpoint limitation.
 Discussion: The user explicitly asked to stop after seeing clear overfitting. The run completed 1,810 updates and its last complete evaluation was step 1,800. Training F1 rose to 90.7%, while held-out F1 fell to 37.1% on MBPP and 36.2% on MBPP+. The script had not saved a model checkpoint before interruption. This was router training, not SFT.
+
+
+Commit name: Record original-only router classifier run.
+Description: Save the setup, data identifiers, W&B run, and full results from the original-only MiniLM router experiment.
+Discussion: The user asked to redo router training with only the original MBPP dataset. We filtered the existing one-completion label artifacts to the 591 original tasks and reused the separate 378-task EvalPlus dual-label evaluation set. Training completed all 185 updates. The classifier predicted every example negative after step 10, giving zero positive-class recall and F1. The W&B run completed, and the encoder and head were saved.
