@@ -4338,10 +4338,15 @@ Read matched full 378-task EvalPlus outputs from the current batch-normalized vL
 
 ## October 13, 2026: Build a single-batch text router
 
-Added a reproducible experiment to label all 374 MBPP training tasks with one greedy Qwen2.5-Coder-0.5B-Instruct completion per task and train a small MiniLM binary router on one balanced batch. The router fine-tunes the full MiniLM-L12-H384 encoder and a two-class linear head over the CLS representation. The dropout-plus-linear head has 770 trainable parameters. The next run will report whether the seeded four-solved, four-unsolved batch reaches 100 percent accuracy.
+Added a reproducible router-labeling and single-batch fine-tuning workflow. It uses the repository training pool after EvalPlus overlap filtering, then trains MiniLM-L12-H384 with a two-class head on one balanced batch. The head has 770 trainable parameters. The final labels cover 591 tasks, and the balanced batch reached 100 percent accuracy after 11 updates.
 
 ## October 13, 2026: Correct the router label pool
 
-The first labeling pass used only the raw 374-row MBPP train split. An overlap check showed that 108 of those task IDs are in EvalPlus, so those labels are not appropriate for this experiment. The repository constructs its training pool from the MBPP train, validation, and test splits, then removes EvalPlus task IDs and matching task descriptions. That yields 591 eligible training tasks from 964 source rows. Added a reproducible labeling script that follows these filters. The 591-task pass will replace the earlier raw-split artifacts before classifier training.
+The first labeling pass used only the raw 374-row MBPP train split. An overlap check showed that 108 of those task IDs are in EvalPlus, so those labels are not appropriate for this experiment. The repository constructs its training pool from the MBPP train, validation, and test splits, then removes EvalPlus task IDs and matching task descriptions. That yields 591 eligible training tasks from 964 source rows. The reproducible labeling script follows these filters. One greedy completion passed every original assertion for 200 tasks and failed at least one for 391 tasks. The balanced MiniLM batch used task IDs 489, 825, 659, 330, 941, 902, 916, and 713, with four examples from each class. It reached 100 percent training accuracy after 11 updates.
 
 Commit name: Add filtered MBPP router labeling run. This change corrects the task pool to match the repository's training data preparation and prevents evaluation task leakage.
+
+
+## October 13, 2026: Record single-batch router overfit
+
+Commit name: Record MiniLM router overfit result. The repository filtered training pool contains 591 tasks after removing the 378 EvalPlus task IDs and matching descriptions from 964 MBPP train, validation, and test rows. Qwen2.5-Coder-0.5B-Instruct produced one greedy completion per task. All original MBPP assertions passed for 200 tasks, and at least one failed for 391 tasks. The balanced eight-task MiniLM experiment reached 100 percent training accuracy after 11 updates. This confirms the implementation can memorize one batch only.

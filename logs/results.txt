@@ -17631,3 +17631,24 @@ Step | Previous MBPP | Current MBPP | Previous MBPP+ | Current MBPP+
 110 | 55.3% | 53.2% | 46.8% | 44.7%
 
 From each run's own step-zero baseline to step 110, previous-run MBPP rose 2.9 percentage points and MBPP+ rose 3.1 points. The current run rose 0.3 points on MBPP and 0.0 points on MBPP+. At step 110, the current run is 2.1 points below the previous run on both metrics. The step-zero baselines differ by 0.5 MBPP points and 1.0 MBPP+ points, so growth relative to each run's own baseline is the fairer comparison. This is an early 110-step comparison, not a conclusion about eventual performance. The per-task metric resolution is about 0.265 percentage points, and scores fluctuate across checkpoints. The current step-110 evaluation is the latest available in the local run artifacts.
+
+
+
+Router overfit experiment: MiniLM on one balanced MBPP batch
+Purpose: Confirm that the small text encoder and binary classification head can fit a single batch of task-level cheap-model success labels.
+
+Training data: The repository training pool combines google-research-datasets/mbpp train, validation, and test splits (964 rows), then removes all 378 canonical EvalPlus task IDs and matching normalized descriptions. The resulting pool has 591 tasks. The labeling artifacts are outputs/router-mbpp-train-greedy-20261013/router_dataset.jsonl (SHA256 40d6120e0a78717fff41975fc53fae6b26e8537cab87ce886647f8e770cecad2) and completions.json (SHA256 7a6a20223e2dd9ef3804365731f1c5917e7261f315bffc1282cfd96f466638b9). These files contain all task prompts, raw outputs, and scoring results.
+
+Labels: Qwen/Qwen2.5-Coder-0.5B-Instruct, base checkpoint outputs/evalplus-pass16-mbpphard10x1009-seed42-20261011/base-model, config SHA256 b1e58593cd31852f7da5c2fc31ddf6135b9c066c0fd9177a4bbe95717083adff. One temperature-zero, top-p 1.0, max-2048-token generation per task used the repository Qwen EvalPlus prompt format. Label 1 means every original MBPP assertion passed on that single greedy attempt. Label 0 means at least one assertion failed. Counts: 200 solved and 391 unsolved.
+
+Router candidate: microsoft/MiniLM-L12-H384-uncased, Hugging Face revision 44acabbec0ef496f6dbc93adadea57f376b7c0ec. The encoder has 33,360,000 trainable parameters. The classifier head applies Dropout(0.1) to the CLS representation and then Linear(384, 2), with 770 trainable parameters. Total trainable parameters: 33,360,770. All encoder and head parameters were fine-tuned.
+
+Batch selection: Python seed 42 selected four label-1 and four label-0 tasks uniformly within their classes from the 591-row pool, then shuffled them. Ordered IDs and labels: 489:1, 825:0, 659:1, 330:1, 941:0, 902:0, 916:0, 713:1. Selection used labels derived from the separate greedy pass.
+
+Training setup: CUDA on NVIDIA RTX A5000, driver 580.178.04, CUDA runtime 12.8 through PyTorch 2.8.0+cu128. Python 3.12.3, Transformers 4.56.2, datasets 5.0.1, and vLLM 0.10.2. Seed 42. Full precision encoder fine-tuning. AdamW, learning rate 5e-5, cross-entropy loss, max input length 512, batch size 8, and maximum 1,000 updates. Training stopped at the first 100 percent batch accuracy.
+
+Result: 100 percent training accuracy (8/8) after 11 optimizer updates. Final evaluation-mode cross-entropy loss was 0.3484674. Accuracy history and full settings are saved in outputs/router-minilm-single-batch-20261013/experiment.json. The encoder checkpoint is in outputs/router-minilm-single-batch-20261013/encoder and the head weights are in classification_head.pt (SHA256 fe08e7637f44d06c796614667445d6c1389e1fef4ab589a2de43bc749576f6e0). Encoder weights SHA256: d716ef4833ee8b76ebe452196760d18b6b892eec15c7d83f404d166aaa13777c.
+
+Reproduction: Run PYTHONPATH=. HF_HOME=/tmp/router-hf-home HF_HUB_ENABLE_HF_TRANSFER=0 HF_DATASETS_CACHE=/tmp/router-datasets-cache python experiments/label_router_mbpp_train.py, then PYTHONPATH=. HF_HOME=/tmp/router-hf-home HF_HUB_ENABLE_HF_TRANSFER=0 python experiments/train_router_single_batch.py. Labeling code commit ecf3c19 and fine-tuning code commit e167259.
+
+Limitations: This is an in-sample memorization check on eight tasks. It does not measure held-out accuracy, routing cost, calibration, or whether success on one greedy attempt predicts stochastic reliability. The single greedy result is a task-level proxy for first-attempt success.
