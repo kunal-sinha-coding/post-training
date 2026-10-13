@@ -4475,3 +4475,6 @@ Discussion: The user had previously directed router training to continue to one 
 Commit name: Record step-300 million-step router evaluation.
 Description: Add the step-300 metrics and active-run status to the million-step router experiment record.
 Discussion: The fresh effective-batch-32 W&B run `72fg9g2e` is active and targets one million optimizer steps. At step 300, training F1 was 0.7564 while EvalPlus MBPP and MBPP+ F1 were 0.4214 and 0.3956. The run remains active under the user's earlier instruction to continue through one million steps.
+
+
+2026-10-13: Stopped million-step effective-batch-32 router run `72fg9g2e` at the user's explicit request after the train versus EvalPlus F1 gap widened. W&B marks the run killed. The loss log reached 2,800 updates and the last complete evaluation was step 2,700. Train F1 rose to 0.9872 while EvalPlus MBPP and MBPP+ F1 were 0.2591 and 0.2353. Record these final observed metrics and note that the 8,871-label dataset would be repeated about 3,607 times by the one-million-step target. This supports overfitting, with EvalPlus's small size and domain shift as caveats. No restart was requested.
