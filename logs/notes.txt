@@ -4367,3 +4367,7 @@ Commit name: Record full-data router retrieval results. Logged labels for all 37
 Commit: Prepare original plus easy and hard synthetic SFT run.
 Description: Extend the rejection-sampling SFT loader to accept multiple namespaced synthetic task sources. Configure original MBPP, easy synthetic, and hard synthetic data in one pre-SFT collection run. Configure one million epochs, full Trainer metric logging, and a single checkpoint plus separate MBPP and MBPP+ evaluation at optimizer step 100. The run reuses the previously collected original and easy solutions and generates solutions for unresolved tasks before training.
 Context: The user requested a long SFT run over original, synthetic easy, and synthetic hard examples. Training must continue toward one million epochs after the one-time step-100 evaluation and checkpoint.
+
+Commit: Record original, easy, and hard SFT experiment setup.
+Description: Add the new SFT run configuration, pool counts, collection status, W&B tracking link, and pending result fields to the experiment results record.
+Context: The user asked to generate solutions for the combined task pool before SFT, log all training metrics, report MBPP and MBPP+ separately, train toward one million epochs, and evaluate and checkpoint once at step 100. The live collection run began on 2026-10-13.
