@@ -4375,3 +4375,7 @@ Context: The user asked to generate solutions for the combined task pool before 
 Commit: Extend combined SFT to one million optimizer steps.
 Description: Change the SFT limit from one million epochs to one million optimizer steps. Run MBPP, MBPP+, and training-set evaluation every 100 steps while retaining only the durable optimizer-step-100 checkpoint. Later evaluations use temporary adapter snapshots and remove them after measurement.
 Context: The user clarified that training must continue to one million optimizer steps and evaluation must run after each 100 steps. The original step-100 checkpoint requirement remains in effect.
+
+Commit: Update SFT experiment code identifiers.
+Description: Record the follow-up commit that changed the run limit to one million optimizer steps and scheduled evaluation every 100 steps.
+Context: The experiment results entry initially recorded the data-loader and base run setup commit. The user's updated step limit and evaluation cadence were implemented in commit `0f04b29`.

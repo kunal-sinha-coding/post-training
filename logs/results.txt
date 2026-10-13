@@ -17684,6 +17684,6 @@ Limitations: Training metrics are in-sample. Evaluation labels measure one deter
 - Candidate selection: Keep the first sampled model completion that passes every assertion for its task. Do not use reference solutions as targets. Run the canonical EvalPlus benchmark only after the step-100 checkpoint is saved. Report MBPP and MBPP+ metrics separately.
 - Model and artifacts: Base model `outputs/evalplus-pass16-mbpphard10x1009-seed42-20261011/base-model`; persistent accepted-solution map `outputs/rejection-sampling-correct-solutions.json`; output directory `outputs/rejection-sampling-sft-original-easy-hard-20261013`.
 - Tracking: W&B collection run [mbpp-rs-original-easy-hard-collection-20261013](https://wandb.ai/kunal-personal/grpo-mbpp/runs/0yuh81vv). Training run name: `mbpp-rs-original-easy-hard-training-20261013`.
-- Code commit: `d705219` (`Configure original easy hard SFT experiment`).
+- Code commits: `d705219` (`Configure original easy hard SFT experiment`) and `0f04b29` (`Run SFT for one million steps with regular evaluation`).
 - Environment: NVIDIA RTX A5000, vLLM 0.10.2, PyTorch bfloat16.
 - Limitations: Final accepted-solution count, training loss curve, MBPP metrics, MBPP+ metrics, elapsed time, and final optimizer step are pending until collection and training advance.
