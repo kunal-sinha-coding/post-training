@@ -4465,3 +4465,8 @@ Discussion: The user asked to stop the effective-batch-8 run and restart from th
 Commit name: Continue router training to one million updates.
 Description: Add a one-million-step optimizer budget and deterministic cycling over all labeled OpenCodeInstruct rows after the streaming label pass.
 Discussion: The effective-batch-32 restart completed the 20,000-row scan after 277 updates, which did not satisfy the user's earlier one-million-step instruction. This change preserves cache-first labeling from source row one, performs online updates as labels arrive, and then continues training over the labeled set. It keeps evaluations every 100 updates and the step-100 checkpoint policy. Python compilation and a synthetic step-budget test passed.
+
+
+Commit name: Record million-step router restart progress.
+Description: Record the active effective-batch-32 million-step router run, its W&B identifier, completed source scan, cache reuse, and interim retrieval metrics.
+Discussion: The user had previously directed router training to continue to one million optimizer steps. The initial effective-batch-32 run stopped after one 20,000-row scan at step 277, so a fresh run now rescans from row one, reuses the persistent cache, trains online, and cycles through the labeled rows to the one-million-step budget. At the time of this record it has reached step 300.
