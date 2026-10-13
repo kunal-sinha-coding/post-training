@@ -4371,3 +4371,7 @@ Context: The user requested a long SFT run over original, synthetic easy, and sy
 Commit: Record original, easy, and hard SFT experiment setup.
 Description: Add the new SFT run configuration, pool counts, collection status, W&B tracking link, and pending result fields to the experiment results record.
 Context: The user asked to generate solutions for the combined task pool before SFT, log all training metrics, report MBPP and MBPP+ separately, train toward one million epochs, and evaluate and checkpoint once at step 100. The live collection run began on 2026-10-13.
+
+Commit: Extend combined SFT to one million optimizer steps.
+Description: Change the SFT limit from one million epochs to one million optimizer steps. Run MBPP, MBPP+, and training-set evaluation every 100 steps while retaining only the durable optimizer-step-100 checkpoint. Later evaluations use temporary adapter snapshots and remove them after measurement.
+Context: The user clarified that training must continue to one million optimizer steps and evaluation must run after each 100 steps. The original step-100 checkpoint requirement remains in effect.

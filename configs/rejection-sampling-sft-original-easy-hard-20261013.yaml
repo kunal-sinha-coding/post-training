@@ -39,9 +39,9 @@ learning_rate: 0.00001
 max_prompt_length: 512
 max_completion_length: 512
 dataloader_num_workers: 8
-target_epochs: 1000000
+target_steps: 1000000
 logging_steps: 10
-evaluation_step: 100
+evaluation_interval_steps: 100
 save_candidate_details: false
 report_to: wandb
 wandb_project: grpo-mbpp

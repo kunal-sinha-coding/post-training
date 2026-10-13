@@ -746,21 +746,33 @@ def run_full_training(config: dict[str, Any], output_dir: Path, solution_store_p
         training_dir = training_dir / "cycles" / f"epoch-{cycle_index:06d}"
     checkpoint_dir = training_dir / "checkpoints"
     metrics_path = training_dir / "training-metrics.jsonl"
-    # Evaluate once at the configured optimizer step after its checkpoint is saved.
+    # Evaluate every configured number of optimizer steps and retain only the first checkpoint.
     class ProgressCallback(TrainerCallback):
         """Write live SFT metrics and full evaluation results to JSONL and W&B."""
 
-        def evaluate_saved_epoch(self, state: Any) -> None:
-            """Evaluate a saved epoch checkpoint once and persist its completion marker."""
+        def evaluate_at_step(self, state: Any, saved_checkpoint: Path | None = None) -> None:
+            """Evaluate the current adapter at one scheduled step and record its metrics."""
             step = int(state.global_step)
-            eval_step = int(config.get("evaluation_step", 100))
-            if step != eval_step:
+            eval_interval = int(config.get("evaluation_interval_steps", 100))
+            if step < eval_interval or step % eval_interval != 0:
                 return
             epoch = float(state.epoch or 0)
-            checkpoint_path = checkpoint_dir / f"checkpoint-{step}"
             marker_path = training_dir / f"step-{step:06d}.complete.json"
-            if not checkpoint_path.is_dir() or marker_path.exists():
+            if marker_path.exists():
                 return
+            temporary_context = None
+            if saved_checkpoint is None:
+                from tempfile import TemporaryDirectory
+
+                temporary_context = TemporaryDirectory(prefix=f"eval-step-{step:06d}-", dir=training_dir)
+                checkpoint_path = Path(temporary_context.name)
+                model.save_pretrained(checkpoint_path)
+                tokenizer.save_pretrained(checkpoint_path)
+            else:
+                checkpoint_path = saved_checkpoint
+                if not checkpoint_path.is_dir():
+                    raise FileNotFoundError(f"The step-{step} checkpoint is missing: {checkpoint_path}.")
+                tokenizer.save_pretrained(checkpoint_path)
             started = time.perf_counter()
             model.eval()
             model.to("cpu")
@@ -768,7 +780,7 @@ def run_full_training(config: dict[str, Any], output_dir: Path, solution_store_p
             try:
                 evalplus = run_qwen_evalplus(checkpoint_path, training_dir, f"step-{step:06d}", config)
                 training_eval = evaluate_training_mbpp(checkpoint_path, training_eval_tasks, config, f"training-step-{step:06d}")
-                result = {"kind": "single_step_evaluation", "epoch": epoch, "step": step, "evalplus": evalplus["metrics"], "training_set": training_eval["metrics"], "elapsed_seconds": time.perf_counter() - started, "checkpoint": str(checkpoint_path)}
+                result = {"kind": "scheduled_step_evaluation", "epoch": epoch, "step": step, "evalplus": evalplus["metrics"], "training_set": training_eval["metrics"], "elapsed_seconds": time.perf_counter() - started, "checkpoint": str(saved_checkpoint) if saved_checkpoint else None, "temporary_adapter_used": saved_checkpoint is None}
                 result["training_set_sample"] = {"size": len(training_eval_tasks), "source_task_count": len(tasks), "seed": training_eval_manifest["seed"], "task_ids_sha256": training_eval_manifest["task_ids_sha256"], "manifest": str(output_dir / "full-training" / "training-eval-task-ids.json")}
                 if cycle_index is not None:
                     result["cycle_index"] = cycle_index
@@ -791,13 +803,15 @@ def run_full_training(config: dict[str, Any], output_dir: Path, solution_store_p
                     payload.update({f"training_set/{key}": value for key, value in training_eval["metrics"].items() if isinstance(value, (int, float))})
                     wandb_run.log(payload)
                 write_json(marker_path, result)
-                print(f"Completed one-time evaluation at step {step}: MBPP={evalplus['metrics'].get('mbpp_pass_at_1')} MBPP+={evalplus['metrics'].get('mbpp_plus_pass_at_1')} training={training_eval['metrics']}", flush=True)
+                print(f"Completed scheduled evaluation at step {step}: MBPP={evalplus['metrics'].get('mbpp_pass_at_1')} MBPP+={evalplus['metrics'].get('mbpp_plus_pass_at_1')} training={training_eval['metrics']}", flush=True)
             finally:
                 import gc
                 gc.collect()
                 torch.cuda.empty_cache()
                 model.to("cuda")
                 model.train()
+                if temporary_context is not None:
+                    temporary_context.cleanup()
 
         def on_log(self, args: Any, state: Any, control: Any, logs: dict[str, Any] | None = None, **kwargs: Any) -> Any:
             """Append all available Trainer metrics with the optimizer step."""
@@ -812,27 +826,33 @@ def run_full_training(config: dict[str, Any], output_dir: Path, solution_store_p
 
         def on_train_begin(self, args: Any, state: Any, control: Any, **kwargs: Any) -> Any:
             """Finish the step-100 evaluation if a restart interrupted it."""
-            self.evaluate_saved_epoch(state)
+            if int(state.global_step) == int(config.get("evaluation_interval_steps", 100)):
+                self.evaluate_at_step(state, checkpoint_dir / f"checkpoint-{int(state.global_step)}")
             return control
 
         def on_step_end(self, args: Any, state: Any, control: Any, **kwargs: Any) -> Any:
-            """Request the only checkpoint at the configured evaluation step."""
-            marker_path = training_dir / f"step-{int(config.get('evaluation_step', 100)):06d}.complete.json"
-            if int(state.global_step) == int(config.get("evaluation_step", 100)) and not marker_path.exists():
+            """Save the step-100 checkpoint and evaluate later interval steps temporarily."""
+            step = int(state.global_step)
+            interval = int(config.get("evaluation_interval_steps", 100))
+            marker_path = training_dir / f"step-{step:06d}.complete.json"
+            if step == 100 and not (checkpoint_dir / "checkpoint-100").is_dir():
                 control.should_save = True
+            elif step > 100 and step % interval == 0 and not marker_path.exists():
+                self.evaluate_at_step(state)
             return control
 
         def on_save(self, args: Any, state: Any, control: Any, **kwargs: Any) -> Any:
-            """Evaluate the single checkpoint saved at the configured step."""
-            self.evaluate_saved_epoch(state)
+            """Evaluate the one durable checkpoint saved at optimizer step 100."""
+            if int(state.global_step) == 100:
+                self.evaluate_at_step(state, checkpoint_dir / "checkpoint-100")
             return control
 
-    # Configure one million SFT epochs with live metric logs and one step-100 save.
+    # Configure one million SFT steps with live metric logs and one durable checkpoint.
     training_args = TrainingArguments(
         output_dir=str(checkpoint_dir),
         learning_rate=float(config["learning_rate"]),
-        max_steps=-1,
-        num_train_epochs=1 if cycle_index is not None else int(config["target_epochs"]),
+        max_steps=int(config.get("target_steps", 1000000)),
+        num_train_epochs=int(config.get("target_epochs", 1000000)),
         per_device_train_batch_size=int(config["sft_per_device_train_batch_size"]),
         gradient_accumulation_steps=int(config["gradient_accumulation_steps"]),
         logging_steps=int(config["logging_steps"]),
@@ -855,9 +875,9 @@ def run_full_training(config: dict[str, Any], output_dir: Path, solution_store_p
     )
     trainer.train(resume_from_checkpoint=resume_from_checkpoint or None)
     # Record natural completion without writing a second model checkpoint.
-    write_json(training_dir / "training-complete.json", {"global_step": int(trainer.state.global_step), "target_epochs": 1 if cycle_index is not None else int(config["target_epochs"]), "cycle_index": cycle_index, "solution_count": len(records), "checkpoint_dir": str(checkpoint_dir), "saved_checkpoint": str(checkpoint_dir / f"checkpoint-{int(config.get('evaluation_step', 100))}")})
+    write_json(training_dir / "training-complete.json", {"global_step": int(trainer.state.global_step), "target_steps": int(config.get("target_steps", 1000000)), "evaluation_interval_steps": int(config.get("evaluation_interval_steps", 100)), "cycle_index": cycle_index, "solution_count": len(records), "checkpoint_dir": str(checkpoint_dir), "saved_checkpoint": str(checkpoint_dir / "checkpoint-100")})
     if wandb_run is not None:
-        wandb_run.summary["rs/full_training_epochs"] = cycle_index if cycle_index is not None else int(round(float(trainer.state.epoch or 0)))
+        wandb_run.summary["rs/full_training_steps"] = int(trainer.state.global_step)
         wandb_run.finish()
 
 
