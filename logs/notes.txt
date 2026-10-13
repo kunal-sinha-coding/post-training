@@ -4450,3 +4450,8 @@ Discussion: The user explicitly rejected the prior run and asked for code that b
 Commit name: Accumulate online router gradients over 32 tasks.
 Description: Keep sequential OpenCodeInstruct labeling in source microbatches of eight, but accumulate weighted MiniLM gradients across exactly 32 newly labeled tasks before each optimizer update. Split source batches at accumulation boundaries, log the example and microbatch counts, and flush a final partial group after the stream ends. Clear stale checkpoint and final-model paths before each restarted experiment.
 Discussion: The user observed that the effective batch of eight produced unstable predictions and explicitly asked to stop it and restart from the beginning with an effective batch of 32. The interrupted run generated 1,976 new completions and used 69 prior cache hits across 4,596 source rows. Its cache is retained. A smoke test verified that four microbatches of eight create one 32-example optimizer update and that a final single example is flushed as a partial update.
+
+
+Commit name: Record interim effective-batch-32 router metrics.
+Description: Record the replacement OpenCodeInstruct router run at step 200, including effective-batch configuration, cache and scan counts, interim metrics, W&B tracking, and artifact locations.
+Discussion: The user explicitly asked to stop the unstable effective-batch-8 run and restart from the beginning with an effective batch of 32. The replacement scans in source order, reuses matching labels, generates a single Qwen completion only for cache misses, and updates MiniLM during labeling. The run remains active. EvalPlus F1 declined from step 100 to step 200, so these results are interim and must be updated after the full scan completes.
