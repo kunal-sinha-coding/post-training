@@ -4411,3 +4411,7 @@ Commit name: Record original-plus-easy one-shot SFT launch.
 Description: Record the accepted one-shot SFT dataset, filter and training setup, W&B run, environment, initial loss, and code commit in the experiment results file.
 Discussion: The user asked whether SFT could begin. The completed one-completion label pass produced 2,711 full-pass answers from original MBPP plus easy synthetic tasks. The SFT trainer is now running toward one million steps with evaluation every 100 steps and loss logging every 10 steps. No hard synthetic tasks are included.
 
+Commit name: Switch from the mistaken SFT launch to router training.
+Description: Record that the user clarified the requested training target is the router, remove the unused one-shot SFT config and converter that were created from the misinterpretation, and document the active MiniLM router run and its step-zero metrics.
+Discussion: The SFT process was stopped during the step-200 evaluation after the user clarified the objective. It did not complete the step-200 evaluation. The corrected MiniLM training run uses the original-plus-easy labels, evaluates separate MBPP and MBPP+ ground truth on the same EvalPlus predictions, and logs to W&B run `bhl4c2kr`.
+
