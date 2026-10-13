@@ -4335,3 +4335,7 @@ Changed the current batch-normalized vLLM GRPO config from evaluation every 10 o
 
 Commit name: Compare batch-normalized and prior hard-mix GRPO through step 110
 Read matched full 378-task EvalPlus outputs from the current batch-normalized vLLM run and previous successful `mbpphard10x1009` run. Both use the same Qwen2.5-Coder-0.5B base and 5,910-row original-plus-hard-synthetic training pool. Recorded MBPP and MBPP+ pass@1 at steps 0 through 110 in `logs/results.txt`. By step 110, the prior run gained 2.9 percentage points on MBPP and 3.1 on MBPP+ from its baseline; the current run gained 0.3 and 0.0. Absolute starting scores differ by 0.5 and 1.0 points, respectively, so the comparison emphasizes per-run growth. The current run is still early, and metric resolution/noise is roughly one task per 0.265 percentage points. No training process or checkpoint was changed.
+
+## October 13, 2026: Build a single-batch text router
+
+Added a reproducible experiment to label all 374 MBPP training tasks with one greedy Qwen2.5-Coder-0.5B-Instruct completion per task and train a small MiniLM binary router on one balanced batch. The router fine-tunes the full MiniLM-L12-H384 encoder and a two-class linear head over the CLS representation. The dropout-plus-linear head has 770 trainable parameters. The next run will report whether the seeded four-solved, four-unsolved batch reaches 100 percent accuracy.
