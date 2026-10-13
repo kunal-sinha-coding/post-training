@@ -17851,3 +17851,7 @@ Tracking and artifacts: W&B project `kunal-personal/grpo-mbpp`; run name `router
 HOLDOUT-300 ROUTER RUN UPDATE AT STEP 100
 W&B run `9mnzniyn`: https://wandb.ai/kunal-personal/grpo-mbpp/runs/9mnzniyn. The run is active. The final 300 raw source rows yielded 139 valid held-out tasks after duplicate, EvalPlus overlap, and source-test validity filters. The holdout contains 84 positive and 55 negative labels. Labeling reused 138 cached completions and generated one missing completion.
 At step 100, training F1 was 0.7182, held-out OpenCodeInstruct F1 was 0.6951, EvalPlus MBPP F1 was 0.5642, and EvalPlus MBPP+ F1 was 0.5171. The step-zero baseline F1 values were 0.6667, 0.7534, 0.6806, and 0.6179, respectively. Step-zero train metrics use only the first four observed training examples. The run continues toward 1,000,000 optimizer steps with evaluation every 100 steps. Output directory: `outputs/router-opencode-online-eff32-holdout300-20261013/`.
+
+
+HOLDOUT-300 ROUTER RUN UPDATE AT STEP 200
+W&B run `9mnzniyn` remains active. At step 200, training accuracy, precision, recall, and F1 were 0.6989, 0.6836, 0.8194, and 0.7454. OpenCodeInstruct holdout metrics were 0.7050, 0.7416, 0.7857, and 0.7630. EvalPlus MBPP metrics were 0.5291, 0.5378, 0.6205, and 0.5762. EvalPlus MBPP+ metrics were 0.5026, 0.4578, 0.6095, and 0.5228. The step-100 OpenCodeInstruct holdout F1 was 0.6951, and step-200 recovered to 0.7630. The step-200 evaluation saw 6,403 training examples.

@@ -4484,3 +4484,6 @@ Discussion: The fresh effective-batch-32 W&B run `72fg9g2e` is active and target
 
 
 2026-10-13: Launched holdout-300 router run W&B `9mnzniyn`. Holdout has 139 validated examples with 84 positive and 55 negative labels, from 138 cache hits and one new Qwen completion. Step-100 training, OpenCodeInstruct holdout, MBPP, and MBPP+ F1 are 0.7182, 0.6951, 0.5642, and 0.5171. Run remains active toward 1,000,000 steps.
+
+
+2026-10-13: Holdout-300 run `9mnzniyn` reached step 200. OpenCode holdout F1 recovered from 0.6951 at step 100 to 0.7630 at step 200. MBPP and MBPP+ F1 at step 200 were 0.5762 and 0.5228. Train F1 was 0.7454. The run remains active.
