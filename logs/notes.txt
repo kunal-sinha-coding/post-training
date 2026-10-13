@@ -4490,3 +4490,6 @@ Discussion: The fresh effective-batch-32 W&B run `72fg9g2e` is active and target
 
 
 2026-10-13: Holdout-300 router run `9mnzniyn` reached step 300 and completed online collection. There are 8,740 training examples and 139 held-out OpenCodeInstruct examples. F1 at step 300 is 0.7677 on train, 0.7853 on the OpenCodeInstruct holdout, 0.5475 on MBPP, and 0.5060 on MBPP+. Run remains active toward the one-million-step target.
+
+
+2026-10-13: Holdout-300 run `9mnzniyn` reached step 500; the last evaluation is step 400. Train F1 is 0.7871 and OpenCodeInstruct holdout F1 is 0.7953. EvalPlus MBPP and MBPP+ F1 are 0.5322 and 0.4873. Loss at step 500 is 0.61638. Run remains active.
