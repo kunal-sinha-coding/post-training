@@ -4502,3 +4502,6 @@ Discussion: The fresh effective-batch-32 W&B run `72fg9g2e` is active and target
 
 
 2026-10-13: Holdout-300 run `9mnzniyn` reached step 900. Step-700 and step-800 source-holdout F1 were 0.7742 and 0.8000. EvalPlus MBPP F1 was 0.4071 and 0.4745. EvalPlus MBPP+ F1 was 0.3780 and 0.4365. Train F1 rose from 0.8349 to 0.8460. Run remains active.
+
+
+2026-10-13: Holdout-300 run `9mnzniyn` reached step 1,100; its latest evaluation is step 1,000. Train F1 is 0.8814, OpenCode holdout F1 is 0.8000, MBPP F1 is 0.3843, and MBPP+ F1 is 0.3765. The source-versus-EvalPlus generalization gap remains visible. Run remains active.
