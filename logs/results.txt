@@ -17687,3 +17687,17 @@ Limitations: Training metrics are in-sample. Evaluation labels measure one deter
 - Code commits: `d705219` (`Configure original easy hard SFT experiment`) and `0f04b29` (`Run SFT for one million steps with regular evaluation`).
 - Environment: NVIDIA RTX A5000, vLLM 0.10.2, PyTorch bfloat16.
 - Limitations: Final accepted-solution count, training loss curve, MBPP metrics, MBPP+ metrics, elapsed time, and final optimizer step are pending until collection and training advance.
+## One-completion router labels with separate MBPP and MBPP+ targets (2026-10-13)
+
+Status: The earlier labels used for the first router run are superseded. The user's correction requires one generated completion per task collection. No router training has started on this replacement dataset yet.
+
+Purpose: Build binary labels for a MiniLM router from one deterministic Qwen2.5-Coder-0.5B-Instruct answer per task. Label 1 means the saved answer passes every relevant test. Label 0 means it does not.
+
+Data: Use all configured original MBPP train, validation, and test rows plus the easy and hard synthetic task collections. The loader removes canonical EvalPlus overlap and matching task descriptions. Each training task receives one MBPP-style label. The separate `label_mbpp_plus` is null for training rows because these rows do not have EvalPlus extension tests. For all 378 held-out canonical EvalPlus tasks, the same one generated answer is scored separately against all MBPP base tests and all MBPP+ base plus extra tests. Eval labels are saved as `label_mbpp` and `label_mbpp_plus`.
+
+Generation and scoring: Temperature 0, top-p 1, maximum 2,048 tokens, exactly one completion per task. Save raw completions before test scoring. Do not use reference solutions to choose or label candidates. Training labels use the full task assertion list, even though only one test may appear in each model prompt.
+
+Configuration: `configs/router-one-shot-labels-20261013.yaml`. Training labels: `outputs/router-mbpp-easy-hard-one-shot-20261013/router_dataset.jsonl`. Eval labels: `outputs/router-evalplus-greedy-dual-label-20261013/router_evalplus_labels.jsonl`. Router output: `outputs/router-minilm-easy-hard-dual-eval-20261013`. The classifier reports training retrieval metrics and separate EvalPlus MBPP and MBPP+ accuracy, precision, recall, F1, and confusion counts. It logs every training loss and sends metrics to W&B project `kunal-personal/grpo-mbpp`.
+
+Code and status: Code changes are prepared in the current working tree. Syntax compilation passed. Generated task counts, class balance, runtime, W&B run ID, and trained-router metrics will be recorded after the runs complete. Candidate selection is independent of ground truth because every task receives exactly one greedy completion before labels are scored.
+

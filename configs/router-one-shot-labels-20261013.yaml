@@ -1,0 +1,11 @@
+# This config builds one greedy completion for every original and synthetic MBPP training task.
+model_name_or_path: outputs/evalplus-pass16-mbpphard10x1009-seed42-20261011/base-model
+mbpp_splits: [train, validation, test]
+visible_test_count: 1
+synthetic_training_tasks:
+  - path: analysis/mbpp_category_synthetic_tasks_api10x.jsonl
+    namespace: easy
+  - path: analysis/mbpp_category_synthetic_tasks_harder5319.jsonl
+    namespace: hard
+output_dir: outputs/router-mbpp-easy-hard-one-shot-20261013
+gpu_memory_utilization: 0.75

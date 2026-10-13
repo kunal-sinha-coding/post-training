@@ -39,8 +39,8 @@ def binary_metrics(labels: list[int], predictions: list[int]) -> dict[str, Any]:
 
 
 # Tokenize all prompts once and keep tensors on the host until each batch is evaluated.
-def encode_rows(tokenizer: Any, rows: list[dict[str, Any]], max_length: int) -> tuple[dict[str, torch.Tensor], list[int]]:
-    # Apply the same maximum input length to every task and keep the binary labels in row order.
+def encode_rows(tokenizer: Any, rows: list[dict[str, Any]], max_length: int, label_key: str = "label") -> tuple[dict[str, torch.Tensor], list[int]]:
+    # Apply the same maximum input length to every task and read the requested binary target.
     encoded = tokenizer(
         [row["prompt"] for row in rows],
         padding=True,
@@ -48,7 +48,7 @@ def encode_rows(tokenizer: Any, rows: list[dict[str, Any]], max_length: int) -> 
         max_length=max_length,
         return_tensors="pt",
     )
-    labels = [int(row["label"]) for row in rows]
+    labels = [int(row[label_key]) for row in rows]
     return dict(encoded), labels
 
 
@@ -82,9 +82,9 @@ def predict_rows(
 def main() -> None:
     # Parse paths, training settings, and the W&B project for this full-data router run.
     parser = argparse.ArgumentParser()
-    parser.add_argument("--train-data", type=Path, default=Path("outputs/router-mbpp-train-greedy-20261013/router_dataset.jsonl"))
-    parser.add_argument("--eval-data", type=Path, default=Path("outputs/router-evalplus-greedy-20261013/router_evalplus_labels.jsonl"))
-    parser.add_argument("--output-dir", type=Path, default=Path("outputs/router-minilm-fulltrain-20261013"))
+    parser.add_argument("--train-data", type=Path, default=Path("outputs/router-mbpp-easy-hard-one-shot-20261013/router_dataset.jsonl"))
+    parser.add_argument("--eval-data", type=Path, default=Path("outputs/router-evalplus-greedy-dual-label-20261013/router_evalplus_labels.jsonl"))
+    parser.add_argument("--output-dir", type=Path, default=Path("outputs/router-minilm-easy-hard-dual-eval-20261013"))
     parser.add_argument("--model", default="microsoft/MiniLM-L12-H384-uncased")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--epochs", type=int, default=5)
@@ -106,14 +106,17 @@ def main() -> None:
     # Load all training and canonical EvalPlus label rows and validate their binary targets.
     train_rows = [json.loads(line) for line in args.train_data.read_text(encoding="utf-8").splitlines() if line.strip()]
     eval_rows = [json.loads(line) for line in args.eval_data.read_text(encoding="utf-8").splitlines() if line.strip()]
-    if any(int(row["label"]) not in (0, 1) for row in train_rows + eval_rows):
-        raise ValueError("Every router label must be zero or one.")
+    train_labels = [int(row["label_mbpp"]) for row in train_rows]
+    eval_mbpp_labels = [int(row["label_mbpp"]) for row in eval_rows]
+    eval_mbpp_plus_labels = [int(row["label_mbpp_plus"]) for row in eval_rows]
+    if any(label not in (0, 1) for label in train_labels + eval_mbpp_labels + eval_mbpp_plus_labels):
+        raise ValueError("Every MBPP and MBPP+ router label must be zero or one.")
 
     # Load MiniLM, initialize the CLS classification head, and tokenize both full datasets.
     tokenizer = AutoTokenizer.from_pretrained(args.model)
     encoder = AutoModel.from_pretrained(args.model)
-    train_encoded, train_labels = encode_rows(tokenizer, train_rows, args.max_length)
-    eval_encoded, eval_labels = encode_rows(tokenizer, eval_rows, args.max_length)
+    train_encoded, train_labels = encode_rows(tokenizer, train_rows, args.max_length, "label_mbpp")
+    eval_encoded, _ = encode_rows(tokenizer, eval_rows, args.max_length, "label_mbpp")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     encoder.to(device)
     dropout = torch.nn.Dropout(0.1).to(device)
@@ -129,7 +132,7 @@ def main() -> None:
     run = wandb.init(
         entity=args.wandb_entity,
         project=args.wandb_project,
-        name="router-minilm-fulltrain-eval-20261013",
+        name="router-minilm-original-easy-hard-dual-eval-20261013",
         job_type="router-full-training",
         config={
             "train_data": str(args.train_data),
@@ -150,7 +153,8 @@ def main() -> None:
             "head_architecture": f"Dropout(0.1) then Linear({encoder.config.hidden_size}, 2)",
             "positive_class": 1,
             "metric_prediction_rule": "argmax over two logits",
-            "eval_primary_target": "passes every canonical MBPP+ base and extra test",
+            "train_target": "passes every available MBPP-style task assertion on one greedy completion",
+            "eval_targets": ["passes all MBPP base tests", "passes all MBPP+ base and extra tests"],
             "train_task_count": len(train_rows),
             "train_label_counts": train_summary["class_counts"],
             "eval_task_count": len(eval_rows),
@@ -162,12 +166,13 @@ def main() -> None:
     )
     run.define_metric("optimizer_step")
     run.define_metric("train/*", step_metric="optimizer_step")
-    run.define_metric("evalplus/*", step_metric="optimizer_step")
-    train_artifact = wandb.Artifact("router-mbpp-training-labels-full-20261013", type="dataset")
+    run.define_metric("evalplus_mbpp/*", step_metric="optimizer_step")
+    run.define_metric("evalplus_mbpp_plus/*", step_metric="optimizer_step")
+    train_artifact = wandb.Artifact("router-mbpp-easy-hard-one-shot-labels-20261013", type="dataset")
     train_artifact.add_file(str(args.train_data))
     train_artifact.add_file(str(args.train_data.parent / "completions.json"))
     run.log_artifact(train_artifact)
-    eval_artifact = wandb.Artifact("router-evalplus-labels-full-20261013", type="dataset")
+    eval_artifact = wandb.Artifact("router-evalplus-dual-labels-20261013", type="dataset")
     eval_artifact.add_file(str(args.eval_data))
     eval_artifact.add_file(str(args.eval_data.parent / "summary.json"))
     run.log_artifact(eval_artifact)
@@ -186,13 +191,15 @@ def main() -> None:
         train_metrics, train_predictions, train_probabilities = predict_rows(
             encoder, head, dropout, train_encoded, train_labels, device, args.eval_batch_size
         )
-        eval_metrics, eval_predictions, eval_probabilities = predict_rows(
-            encoder, head, dropout, eval_encoded, eval_labels, device, args.eval_batch_size
+        eval_mbpp_metrics, eval_predictions, eval_probabilities = predict_rows(
+            encoder, head, dropout, eval_encoded, eval_mbpp_labels, device, args.eval_batch_size
         )
+        eval_mbpp_plus_metrics = binary_metrics(eval_mbpp_plus_labels, eval_predictions)
         record = {
             "optimizer_step": step,
             "training": train_metrics,
-            "evalplus": eval_metrics,
+            "evalplus_mbpp": eval_mbpp_metrics,
+            "evalplus_mbpp_plus": eval_mbpp_plus_metrics,
         }
         history.append(record)
         with metrics_path.open("a", encoding="utf-8") as handle:
@@ -200,20 +207,22 @@ def main() -> None:
         with predictions_path.open("a", encoding="utf-8") as handle:
             for split, rows, labels, predictions, probabilities in (
                 ("training", train_rows, train_labels, train_predictions, train_probabilities),
-                ("evalplus", eval_rows, eval_labels, eval_predictions, eval_probabilities),
+                ("evalplus", eval_rows, eval_mbpp_labels, eval_predictions, eval_probabilities),
             ):
                 for row, label, prediction, probability in zip(rows, labels, predictions, probabilities, strict=True):
                     handle.write(json.dumps({
                         "optimizer_step": step,
                         "split": split,
                         "task_id": str(row["task_id"]),
-                        "label": label,
+                        "label_mbpp": label,
+                        "label_mbpp_plus": row.get("label_mbpp_plus"),
                         "prediction": prediction,
                         "positive_probability": probability,
                     }) + "\n")
         payload = {"optimizer_step": step}
         payload.update({f"train/{key}": value for key, value in train_metrics.items()})
-        payload.update({f"evalplus/{key}": value for key, value in eval_metrics.items()})
+        payload.update({f"evalplus_mbpp/{key}": value for key, value in eval_mbpp_metrics.items()})
+        payload.update({f"evalplus_mbpp_plus/{key}": value for key, value in eval_mbpp_plus_metrics.items()})
         run.log(payload, step=step)
         print(json.dumps(record), flush=True)
 
@@ -224,6 +233,8 @@ def main() -> None:
     global_step = 0
     started = time.time()
     labels_tensor = torch.tensor(train_labels, dtype=torch.long)
+    loss_history_path = args.output_dir / "training_loss.jsonl"
+    loss_history_path.unlink(missing_ok=True)
     for epoch in range(args.epochs):
         order = torch.randperm(len(train_rows))
         for start in range(0, len(train_rows), args.batch_size):
@@ -239,6 +250,10 @@ def main() -> None:
             loss.backward()
             optimizer.step()
             global_step += 1
+            loss_value = float(loss.detach().cpu())
+            with loss_history_path.open("a", encoding="utf-8") as handle:
+                handle.write(json.dumps({"optimizer_step": global_step, "loss": loss_value}) + "\n")
+            run.log({"train/loss": loss_value}, step=global_step)
             if global_step % args.eval_every_steps == 0:
                 evaluate_and_log(global_step)
     if history[-1]["optimizer_step"] != global_step:
@@ -252,7 +267,7 @@ def main() -> None:
     tokenizer.save_pretrained(encoder_dir)
     torch.save(head.state_dict(), args.output_dir / "classification_head.pt")
     metadata = {
-        "experiment": "MiniLM full-data router training with EvalPlus retrieval evaluation",
+        "experiment": "MiniLM full-data router training with separate MBPP and MBPP+ retrieval evaluation",
         "model": args.model,
         "architecture": {
             "encoder": "fully fine-tuned MiniLM",
@@ -282,6 +297,7 @@ def main() -> None:
         "final_metrics": history[-1],
         "evaluation_history": str(metrics_path),
         "predictions": str(predictions_path),
+        "training_loss": str(loss_history_path),
     }
     metadata_path = args.output_dir / "experiment.json"
     metadata_path.write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
@@ -290,7 +306,8 @@ def main() -> None:
     run.log_artifact(model_artifact)
     run.summary["optimizer_steps"] = global_step
     run.summary["final_train_metrics"] = history[-1]["training"]
-    run.summary["final_evalplus_metrics"] = history[-1]["evalplus"]
+    run.summary["final_evalplus_mbpp_metrics"] = history[-1]["evalplus_mbpp"]
+    run.summary["final_evalplus_mbpp_plus_metrics"] = history[-1]["evalplus_mbpp_plus"]
     run.summary["elapsed_seconds"] = metadata["elapsed_seconds"]
     run_url = run.url
     run.finish()
