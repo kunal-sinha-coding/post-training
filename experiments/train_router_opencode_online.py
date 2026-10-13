@@ -12,6 +12,7 @@ import json
 import gc
 import os
 import random
+import shutil
 import sqlite3
 import subprocess
 import sys
@@ -228,10 +229,18 @@ class OnlineRouterTrainer:
         self.head = torch.nn.Linear(int(self.encoder.config.hidden_size), 2).to(self.device)
         self.optimizer = torch.optim.AdamW(list(self.encoder.parameters()) + list(self.head.parameters()), lr=args.learning_rate)
         self.loss_function = torch.nn.CrossEntropyLoss()
+        self.accumulated_task_count = 0
+        self.accumulated_loss = 0.0
+        self.accumulated_microbatches = 0
+        self.optimizer.zero_grad(set_to_none=True)
         self.rows: list[dict[str, Any]] = []
         self.step = 0
         self.last_record: dict[str, Any] | None = None
         self.started = time.time()
+        for stale_dir in (output_dir / "checkpoint-100", output_dir / "final"):
+            shutil.rmtree(stale_dir, ignore_errors=True)
+        for stale_file in (output_dir / "label_summary.json", output_dir / "experiment.json"):
+            stale_file.unlink(missing_ok=True)
         self.metrics_path = output_dir / "evaluation_history.jsonl"
         self.losses_path = output_dir / "training_loss.jsonl"
         self.predictions_path = output_dir / "predictions.jsonl"
@@ -261,42 +270,69 @@ class OnlineRouterTrainer:
         print(json.dumps(record), flush=True)
         return record
 
-    # Consume one saved label batch and immediately perform one optimizer update.
+    # Accumulate gradients across labeled source batches until the effective batch is full.
     def update(self, batch_rows: list[dict[str, Any]]) -> None:
         if not batch_rows:
             return
         self.rows.extend(batch_rows)
-        if self.step == 0:
+        if self.last_record is None:
             self.evaluate()
-        encoded, labels = encode_rows(self.tokenizer, batch_rows, self.args.max_length, "label")
-        batch = {key: value.to(self.device) for key, value in encoded.items()}
-        batch_labels = torch.tensor(labels, dtype=torch.long, device=self.device)
-        self.encoder.train()
-        self.head.train()
-        self.dropout.train()
-        self.optimizer.zero_grad(set_to_none=True)
-        logits = self.head(self.dropout(self.encoder(**batch).last_hidden_state[:, 0]))
-        loss = self.loss_function(logits, batch_labels)
-        loss.backward()
+        offset = 0
+        while offset < len(batch_rows):
+            remaining = self.args.effective_batch_size - self.accumulated_task_count
+            microbatch_rows = batch_rows[offset:offset + remaining]
+            encoded, labels = encode_rows(self.tokenizer, microbatch_rows, self.args.max_length, "label")
+            microbatch = {key: value.to(self.device) for key, value in encoded.items()}
+            batch_labels = torch.tensor(labels, dtype=torch.long, device=self.device)
+            self.encoder.train()
+            self.head.train()
+            self.dropout.train()
+            logits = self.head(self.dropout(self.encoder(**microbatch).last_hidden_state[:, 0]))
+            loss = self.loss_function(logits, batch_labels)
+            (loss * len(microbatch_rows) / self.args.effective_batch_size).backward()
+            self.accumulated_task_count += len(microbatch_rows)
+            self.accumulated_loss += float(loss.detach().cpu()) * len(microbatch_rows) / self.args.effective_batch_size
+            self.accumulated_microbatches += 1
+            offset += len(microbatch_rows)
+            if self.accumulated_task_count == self.args.effective_batch_size:
+                self._apply_accumulated_update(partial=False)
+
+    # Apply one completed or final partial effective batch and log its weighted loss.
+    def _apply_accumulated_update(self, partial: bool) -> None:
+        if not self.accumulated_task_count:
+            return
+        if partial:
+            scale = self.args.effective_batch_size / self.accumulated_task_count
+            for parameter in list(self.encoder.parameters()) + list(self.head.parameters()):
+                if parameter.grad is not None:
+                    parameter.grad.mul_(scale)
         self.optimizer.step()
         self.step += 1
-        loss_value = float(loss.detach().cpu())
+        loss_value = self.accumulated_loss * self.args.effective_batch_size / self.accumulated_task_count
+        batch_task_count = self.accumulated_task_count
+        microbatch_count = self.accumulated_microbatches
+        self.optimizer.zero_grad(set_to_none=True)
+        self.accumulated_task_count = 0
+        self.accumulated_loss = 0.0
+        self.accumulated_microbatches = 0
         with self.losses_path.open("a", encoding="utf-8") as handle:
-            handle.write(json.dumps({"optimizer_step": self.step, "observed_task_count": len(self.rows), "loss": loss_value}) + "\n")
-        self.run.log({"optimizer_step": self.step, "train/loss": loss_value, "train/observed_task_count": len(self.rows)})
+            handle.write(json.dumps({"optimizer_step": self.step, "observed_task_count": len(self.rows), "examples_in_batch": batch_task_count, "accumulation_microbatches": microbatch_count, "partial_effective_batch": partial, "loss": loss_value}) + "\n")
+        self.run.log({"optimizer_step": self.step, "train/loss": loss_value, "train/observed_task_count": len(self.rows), "train/examples_in_batch": batch_task_count, "train/accumulation_microbatches": microbatch_count})
         if self.step % self.args.eval_every_steps == 0:
             record = self.evaluate()
             if self.step == 100:
                 save_model(self.output_dir / "checkpoint-100", self.encoder, self.tokenizer, self.head, record)
 
-    # Evaluate the final observed prefix and save the completed online router.
+    # Flush a final partial batch before final evaluation and model serialization.
     def finish(self) -> dict[str, Any]:
+        if self.accumulated_task_count:
+            self._apply_accumulated_update(partial=True)
         if not self.step:
             raise RuntimeError("No labeled examples were available for online router training.")
         if self.last_record is None or self.last_record["optimizer_step"] != self.step:
             self.evaluate()
         save_model(self.output_dir / "final", self.encoder, self.tokenizer, self.head, self.last_record)
-        return {"optimizer_steps": self.step, "training_seconds": time.time() - self.started, "final_metrics": self.last_record}
+        return {"optimizer_steps": self.step, "training_seconds": time.time() - self.started, "effective_batch_size": self.args.effective_batch_size, "final_metrics": self.last_record}
 
 
 # Stream source tasks from the dataset start, score one completion per valid task, and train each batch.
@@ -408,7 +444,7 @@ def collect_labels(args: argparse.Namespace, output_dir: Path, run: Any, revisio
                 algorithm_counts[str(row.get("generation_algorithm", "unknown"))] += 1
         trainer.update(newly_labeled)
         batch_rows.append({"source_rows": len(source_batch), "valid_tasks": len(prepared), "cache_hits": cache_hits, "cache_misses": cache_misses, "positive_labels": sum(item["result"]["label"] for item in prepared), "batch_seconds": time.time() - batch_started, "generation_seconds": generation_seconds})
-        run.log({"labeling/source_rows_seen": valid_tasks + excluded, "labeling/valid_tasks": valid_tasks, "labeling/excluded_tasks": excluded, "labeling/cache_hits": cache_hits, "labeling/cache_misses": cache_misses, "labeling/batch_size": len(source_batch), "labeling/batch_index": len(batch_rows), "labeling/cache_hits_in_batch": cache_hits_batch, "labeling/cache_misses_in_batch": cache_misses_batch, "labeling/optimizer_step": trainer.step, "labeling/positive_total": positive_count, "labeling/generation_seconds": generation_seconds, "labeling/completions_generated": len(misses)})
+        run.log({"labeling/source_rows_seen": valid_tasks + excluded, "labeling/valid_tasks": valid_tasks, "labeling/excluded_tasks": excluded, "labeling/cache_hits": cache_hits, "labeling/cache_misses": cache_misses, "labeling/batch_size": len(source_batch), "labeling/batch_index": len(batch_rows), "labeling/cache_hits_in_batch": cache_hits_batch, "labeling/cache_misses_in_batch": cache_misses_batch, "labeling/optimizer_step": trainer.step, "labeling/accumulated_task_count": trainer.accumulated_task_count, "labeling/positive_total": positive_count, "labeling/generation_seconds": generation_seconds, "labeling/completions_generated": len(misses)})
         print(json.dumps(batch_rows[-1]), flush=True)
         if len(source_batch) < args.label_batch_size:
             break
@@ -434,6 +470,7 @@ def main() -> None:
     parser.add_argument("--max-source-rows", type=int, default=20000)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--label-batch-size", type=int, default=8)
+    parser.add_argument("--effective-batch-size", type=int, default=32)
     parser.add_argument("--eval-batch-size", type=int, default=32)
     parser.add_argument("--eval-every-steps", type=int, default=100)
     parser.add_argument("--max-length", type=int, default=512)
@@ -442,8 +479,10 @@ def main() -> None:
     parser.add_argument("--gpu-memory-utilization", type=float, default=0.35)
     parser.add_argument("--wandb-project", default="grpo-mbpp")
     parser.add_argument("--wandb-entity", default="kunal-personal")
-    parser.add_argument("--run-name", default="router-opencode-from-start-online-minilm-20261013")
+    parser.add_argument("--run-name", default="router-opencode-from-start-online-minilm-eff32-20261013")
     args = parser.parse_args()
+    if args.label_batch_size < 1 or args.effective_batch_size < 1:
+        parser.error("label and effective batch sizes must be positive")
 
     # Resolve repository-relative paths and load credentials without exposing secret values.
     root = Path(__file__).resolve().parents[1]
@@ -462,7 +501,7 @@ def main() -> None:
     revision = args.revision or HfApi().dataset_info("nvidia/OpenCodeInstruct").sha
     normalize_tokenizer_metadata(args.qwen_model)
     model_fingerprint = checkpoint_fingerprint(args.qwen_model)
-    run = wandb.init(entity=args.wandb_entity, project=args.wandb_project, name=args.run_name, job_type="router-opencode-online-training", config={"source_dataset": "nvidia/OpenCodeInstruct", "source_revision": revision, "source_license": "CC-BY-4.0", "max_source_rows": args.max_source_rows, "streaming": True, "selection": "sequential scan from the first row of the pinned training split, exact prompt deduplication, exact held-out EvalPlus prompt overlaps removed", "label_batch_size": args.label_batch_size, "label_rule": "one greedy Qwen completion passes every task test after test-suite validity is checked against the supplied reference answer", "source_status_fields_used_as_labels": False, "qwen_model": str(args.qwen_model), "qwen_config_sha256": model_fingerprint, "decode": {"temperature": 0.0, "top_p": 1.0, "max_tokens": 2048}, "label_cache": str(args.cache_path), "encoder": args.encoder, "optimizer_batch_size": args.label_batch_size, "learning_rate": args.learning_rate, "eval_every_steps": args.eval_every_steps, "eval_dataset": str(args.eval_data), "eval_task_count": len(eval_rows), "eval_targets": ["MBPP base pass", "MBPP+ full pass"], "training_mode": "update MiniLM from each newly labeled source batch before advancing the stream"})
+    run = wandb.init(entity=args.wandb_entity, project=args.wandb_project, name=args.run_name, job_type="router-opencode-online-training", config={"source_dataset": "nvidia/OpenCodeInstruct", "source_revision": revision, "source_license": "CC-BY-4.0", "max_source_rows": args.max_source_rows, "streaming": True, "selection": "sequential scan from the first row of the pinned training split, exact prompt deduplication, exact held-out EvalPlus prompt overlaps removed", "label_batch_size": args.label_batch_size, "label_rule": "one greedy Qwen completion passes every task test after test-suite validity is checked against the supplied reference answer", "source_status_fields_used_as_labels": False, "qwen_model": str(args.qwen_model), "qwen_config_sha256": model_fingerprint, "decode": {"temperature": 0.0, "top_p": 1.0, "max_tokens": 2048}, "label_cache": str(args.cache_path), "encoder": args.encoder, "gradient_accumulation_microbatch_size": args.label_batch_size, "effective_batch_size": args.effective_batch_size, "learning_rate": args.learning_rate, "eval_every_steps": args.eval_every_steps, "eval_dataset": str(args.eval_data), "eval_task_count": len(eval_rows), "eval_targets": ["MBPP base pass", "MBPP+ full pass"], "training_mode": "accumulate gradients from each newly labeled source batch and update after the effective batch is full before advancing"})
     run.define_metric("optimizer_step")
     run.define_metric("train/*", step_metric="optimizer_step")
     run.define_metric("evalplus_mbpp/*", step_metric="optimizer_step")
@@ -480,12 +519,12 @@ def main() -> None:
             label_artifact.add_file(str(path))
     run.log_artifact(label_artifact)
     training_summary = trainer.finish()
-    summary = {**label_summary, **training_summary, "experiment": "opencodeinstruct-online-minilm-router", "wandb_run_id": run.id, "git_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()}
+    summary = {**label_summary, **training_summary, "experiment": "opencodeinstruct-online-minilm-router-eff32", "wandb_run_id": run.id, "git_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()}
     (args.output_dir / "experiment.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
     cache_artifact = wandb.Artifact("router-opencodeinstruct-label-cache-20261013", type="dataset")
     cache_artifact.add_file(str(args.cache_path))
     run.log_artifact(cache_artifact)
-    model_artifact = wandb.Artifact("router-opencodeinstruct-minilm-20261013", type="model")
+    model_artifact = wandb.Artifact("router-opencodeinstruct-minilm-eff32-20261013", type="model")
     model_artifact.add_dir(str(args.output_dir / "final"))
     run.log_artifact(model_artifact)
     run.finish()
