@@ -4383,3 +4383,7 @@ Context: The experiment results entry initially recorded the data-loader and bas
 Commit: Document periodic evaluation callback branches.
 Description: Add short comments to the new checkpoint and temporary-evaluation paths so each control-flow block explains its action.
 Context: The user asked to evaluate every 100 optimizer steps and retain only the first durable checkpoint.
+
+Commit: Comment periodic SFT evaluation paths.
+Description: Add one-line comments for interval checks, the step-100 checkpoint, temporary evaluation adapters, and cleanup.
+Context: The user requested evaluation every 100 optimizer steps and only one durable checkpoint at step 100.
