@@ -754,13 +754,16 @@ def run_full_training(config: dict[str, Any], output_dir: Path, solution_store_p
             """Evaluate the current adapter at one scheduled step and record its metrics."""
             step = int(state.global_step)
             eval_interval = int(config.get("evaluation_interval_steps", 100))
+            # Skip steps that are not on the configured evaluation interval.
             if step < eval_interval or step % eval_interval != 0:
                 return
             epoch = float(state.epoch or 0)
             marker_path = training_dir / f"step-{step:06d}.complete.json"
+            # Skip an evaluation that already has a completion marker.
             if marker_path.exists():
                 return
             temporary_context = None
+            # Export the current adapter temporarily when this is not step 100.
             if saved_checkpoint is None:
                 from tempfile import TemporaryDirectory
 
@@ -769,7 +772,9 @@ def run_full_training(config: dict[str, Any], output_dir: Path, solution_store_p
                 model.save_pretrained(checkpoint_path)
                 tokenizer.save_pretrained(checkpoint_path)
             else:
+                # Verify the retained checkpoint before loading it for evaluation.
                 checkpoint_path = saved_checkpoint
+                # Fail clearly if the only retained checkpoint is absent.
                 if not checkpoint_path.is_dir():
                     raise FileNotFoundError(f"The step-{step} checkpoint is missing: {checkpoint_path}.")
                 tokenizer.save_pretrained(checkpoint_path)
@@ -810,6 +815,7 @@ def run_full_training(config: dict[str, Any], output_dir: Path, solution_store_p
                 torch.cuda.empty_cache()
                 model.to("cuda")
                 model.train()
+                # Delete the temporary adapter after its metrics are saved.
                 if temporary_context is not None:
                     temporary_context.cleanup()
 
@@ -826,6 +832,7 @@ def run_full_training(config: dict[str, Any], output_dir: Path, solution_store_p
 
         def on_train_begin(self, args: Any, state: Any, control: Any, **kwargs: Any) -> Any:
             """Finish the step-100 evaluation if a restart interrupted it."""
+            # Resume an interrupted evaluation only for the retained checkpoint.
             if int(state.global_step) == int(config.get("evaluation_interval_steps", 100)):
                 self.evaluate_at_step(state, checkpoint_dir / f"checkpoint-{int(state.global_step)}")
             return control
@@ -835,8 +842,10 @@ def run_full_training(config: dict[str, Any], output_dir: Path, solution_store_p
             step = int(state.global_step)
             interval = int(config.get("evaluation_interval_steps", 100))
             marker_path = training_dir / f"step-{step:06d}.complete.json"
+            # Save the only durable checkpoint at optimizer step 100.
             if step == 100 and not (checkpoint_dir / "checkpoint-100").is_dir():
                 control.should_save = True
+            # Evaluate later scheduled steps from temporary adapter snapshots.
             elif step > 100 and step % interval == 0 and not marker_path.exists():
                 self.evaluate_at_step(state)
             return control
