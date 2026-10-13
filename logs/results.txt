@@ -17896,3 +17896,7 @@ W&B run `9mnzniyn` remains active. At step 1,500, training accuracy, precision, 
 
 HOLDOUT-300 ROUTER RUN UPDATE AT STEP 1600
 W&B run `9mnzniyn` remains active. At step 1,600, training accuracy, precision, recall, and F1 were 0.9433, 0.9409, 0.9712, and 0.9558. OpenCode holdout metrics were 0.7194, 0.7975, 0.7976, and 0.7975. EvalPlus MBPP metrics were 0.4497, 0.5385, 0.0882, and 0.1511. EvalPlus MBPP+ metrics were 0.4788, 0.4941, 0.0899, and 0.1508. The growing train-to-source-holdout gap and very low EvalPlus recall show a clear generalization problem at this point, despite source-holdout performance remaining much higher than EvalPlus.
+
+
+HOLDOUT-300 ROUTER RUN UPDATES AT STEPS 1700 TO 1900
+W&B run `9mnzniyn` remains active. At step 1,700, training, OpenCode holdout, MBPP, and MBPP+ F1 were 0.9519, 0.7898, 0.3420, and 0.3128. At step 1,800, the values were 0.9620, 0.7901, 0.3060, and 0.2810. At step 1,900, training accuracy, precision, recall, and F1 were 0.9681, 0.9541, 0.9886, and 0.9710. OpenCode holdout metrics were 0.7914, 0.8090, 0.8571, and 0.8324. EvalPlus MBPP metrics were 0.5423, 0.5797, 0.4103, and 0.4805. EvalPlus MBPP+ metrics were 0.5582, 0.5072, 0.4142, and 0.4560. The source holdout remains closer to training while EvalPlus metrics are lower and fluctuate.
