@@ -4430,3 +4430,8 @@ Discussion: The user asked to redo router training with only the original MBPP d
 Commit name: Add exact-step router training budget.
 Description: Add a maximum optimizer-step budget, configure one step-100 checkpoint, keep only the latest full task predictions, and prepare the original-only one-million-step W&B run.
 Discussion: The user clarified that the router must train for one million optimizer steps. The prior original-only run used the old five-epoch default and completed only 185 steps. The replacement run uses the original-only labels, evaluates every 100 steps, and logs every update's loss.
+
+
+Commit name: Record stopped million-step router run.
+Description: Record that the original-only router run was explicitly stopped at step 11,803 during an update, along with its last complete metrics, W&B state, and saved checkpoint.
+Discussion: The user stopped the run after observing training F1 reach 1.0 while EvalPlus performance remained lower and unstable. The run logged losses through step 11,802, completed evaluation at step 11,800, and retained the step-100 checkpoint. It did not save final model weights. The user also asked how to reduce overfitting. The results record recommends a stratified validation split for early stopping and checkpoint selection, reserving EvalPlus for a final benchmark, reducing the number of trainable parameters, and tuning the decision threshold on validation data.
