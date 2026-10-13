@@ -4493,3 +4493,6 @@ Discussion: The fresh effective-batch-32 W&B run `72fg9g2e` is active and target
 
 
 2026-10-13: Holdout-300 run `9mnzniyn` reached step 500; the last evaluation is step 400. Train F1 is 0.7871 and OpenCodeInstruct holdout F1 is 0.7953. EvalPlus MBPP and MBPP+ F1 are 0.5322 and 0.4873. Loss at step 500 is 0.61638. Run remains active.
+
+
+2026-10-13: Holdout-300 run `9mnzniyn` reached step 500. OpenCode holdout F1 rose to 0.8293, while MBPP and MBPP+ F1 fell to 0.2955 and 0.2857 with recall near 0.20. Train F1 was 0.8107. The model is fitting the source-domain holdout while losing EvalPlus recall. Continue run unless user stops it.

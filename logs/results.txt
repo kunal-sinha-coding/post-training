@@ -17863,3 +17863,7 @@ W&B run `9mnzniyn` remains active. At step 300, training accuracy, precision, re
 
 HOLDOUT-300 ROUTER RUN UPDATE AT STEP 400
 W&B run `9mnzniyn` remains active. At step 400, training accuracy, precision, recall, and F1 were 0.7554, 0.7441, 0.8353, and 0.7871. OpenCodeInstruct holdout metrics were 0.7482, 0.7816, 0.8095, and 0.7953. EvalPlus MBPP metrics were 0.5767, 0.6190, 0.4667, and 0.5322. EvalPlus MBPP+ metrics were 0.5714, 0.5238, 0.4556, and 0.4873. Training loss at update 500 was 0.61638.
+
+
+HOLDOUT-300 ROUTER RUN UPDATE AT STEP 500
+W&B run `9mnzniyn` remains active. At step 500, training accuracy, precision, recall, and F1 were 0.7950, 0.8105, 0.8108, and 0.8107. OpenCodeInstruct holdout metrics were 0.7986, 0.8500, 0.8095, and 0.8293. EvalPlus MBPP metrics were 0.5079, 0.5652, 0.2000, and 0.2955. EvalPlus MBPP+ metrics were 0.5503, 0.4928, 0.2012, and 0.2857. The source holdout has 68 true positives, 12 false positives, 43 true negatives, and 16 false negatives. MBPP has 39 true positives, 30 false positives, 153 true negatives, and 156 false negatives. MBPP+ has 34 true positives, 35 false positives, 174 true negatives, and 135 false negatives. The source holdout F1 increased while EvalPlus recall and F1 fell sharply, consistent with a domain generalization gap.
