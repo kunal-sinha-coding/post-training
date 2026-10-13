@@ -4387,3 +4387,7 @@ Context: The user asked to evaluate every 100 optimizer steps and retain only th
 Commit: Comment periodic SFT evaluation paths.
 Description: Add one-line comments for interval checks, the step-100 checkpoint, temporary evaluation adapters, and cleanup.
 Context: The user requested evaluation every 100 optimizer steps and only one durable checkpoint at step 100.
+
+Commit: Require one generated completion per SFT task.
+Description: Add a fresh run config with one candidate and one generation batch per task. Update the results record to mark the currently running multi-candidate collection as superseded for training.
+Context: The user clarified that the experiment must generate only one solution for each task. The already-running collection remains active, but the SFT launcher will wait for it, then run the new one-candidate collection before starting SFT.
