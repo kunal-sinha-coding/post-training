@@ -4339,3 +4339,9 @@ Read matched full 378-task EvalPlus outputs from the current batch-normalized vL
 ## October 13, 2026: Build a single-batch text router
 
 Added a reproducible experiment to label all 374 MBPP training tasks with one greedy Qwen2.5-Coder-0.5B-Instruct completion per task and train a small MiniLM binary router on one balanced batch. The router fine-tunes the full MiniLM-L12-H384 encoder and a two-class linear head over the CLS representation. The dropout-plus-linear head has 770 trainable parameters. The next run will report whether the seeded four-solved, four-unsolved batch reaches 100 percent accuracy.
+
+## October 13, 2026: Correct the router label pool
+
+The first labeling pass used only the raw 374-row MBPP train split. An overlap check showed that 108 of those task IDs are in EvalPlus, so those labels are not appropriate for this experiment. The repository constructs its training pool from the MBPP train, validation, and test splits, then removes EvalPlus task IDs and matching task descriptions. That yields 591 eligible training tasks from 964 source rows. Added a reproducible labeling script that follows these filters. The 591-task pass will replace the earlier raw-split artifacts before classifier training.
+
+Commit name: Add filtered MBPP router labeling run. This change corrects the task pool to match the repository's training data preparation and prevents evaluation task leakage.
