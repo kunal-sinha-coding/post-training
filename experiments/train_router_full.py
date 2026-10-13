@@ -1,7 +1,7 @@
-# This script trains MiniLM on the full filtered MBPP router dataset and evaluates both train and EvalPlus data.
+# This script trains MiniLM on the selected MBPP router dataset and evaluates both training and EvalPlus data.
 # It uses the saved one-greedy-attempt labels and a binary CLS classification head.
-# It reports accuracy, positive-class precision, recall, and F1 every ten optimizer updates.
-# It saves the final checkpoint, per-task predictions, metric history, and W&B artifacts.
+# It reports retrieval metrics at a configurable optimizer-step interval.
+# It saves one step-100 checkpoint, the final model, latest predictions, metric history, and W&B artifacts.
 
 from __future__ import annotations
 
@@ -88,6 +88,8 @@ def main() -> None:
     parser.add_argument("--model", default="microsoft/MiniLM-L12-H384-uncased")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--epochs", type=int, default=5)
+    parser.add_argument("--max-steps", type=int)
+    parser.add_argument("--run-name", default="router-minilm-original-only-1m-20261013")
     parser.add_argument("--batch-size", type=int, default=16)
     parser.add_argument("--eval-batch-size", type=int, default=32)
     parser.add_argument("--eval-every-steps", type=int, default=10)
@@ -132,7 +134,7 @@ def main() -> None:
     run = wandb.init(
         entity=args.wandb_entity,
         project=args.wandb_project,
-        name="router-minilm-original-easy-dual-eval-20261013",
+        name=args.run_name,
         job_type="router-full-training",
         config={
             "train_data": str(args.train_data),
@@ -140,6 +142,7 @@ def main() -> None:
             "output_dir": str(args.output_dir),
             "seed": args.seed,
             "epochs": args.epochs,
+            "max_steps": args.max_steps,
             "batch_size": args.batch_size,
             "eval_batch_size": args.eval_batch_size,
             "eval_every_steps": args.eval_every_steps,
@@ -168,7 +171,7 @@ def main() -> None:
     run.define_metric("train/*", step_metric="optimizer_step")
     run.define_metric("evalplus_mbpp/*", step_metric="optimizer_step")
     run.define_metric("evalplus_mbpp_plus/*", step_metric="optimizer_step")
-    train_artifact = wandb.Artifact("router-mbpp-easy-one-shot-labels-20261013", type="dataset")
+    train_artifact = wandb.Artifact("router-mbpp-original-only-one-shot-labels-20261013", type="dataset")
     train_artifact.add_file(str(args.train_data))
     train_artifact.add_file(str(args.train_data.parent / "completions.json"))
     run.log_artifact(train_artifact)
@@ -204,7 +207,7 @@ def main() -> None:
         history.append(record)
         with metrics_path.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(record) + "\n")
-        with predictions_path.open("a", encoding="utf-8") as handle:
+        with predictions_path.open("w", encoding="utf-8") as handle:
             for split, rows, labels, predictions, probabilities in (
                 ("training", train_rows, train_labels, train_predictions, train_probabilities),
                 ("evalplus", eval_rows, eval_mbpp_labels, eval_predictions, eval_probabilities),
@@ -229,15 +232,23 @@ def main() -> None:
     # Report the untrained baseline before the first optimizer update.
     evaluate_and_log(0)
 
-    # Shuffle and train across every labeled training example for the configured number of epochs.
+    # Shuffle the labeled training set until the exact configured update budget is reached.
     global_step = 0
+    # Use an exact update budget when supplied, or derive the legacy budget from epochs.
+    target_steps = args.max_steps if args.max_steps is not None else args.epochs * ((len(train_rows) + args.batch_size - 1) // args.batch_size)
+    if target_steps <= 0:
+        parser.error("The training budget must be greater than zero.")
     started = time.time()
     labels_tensor = torch.tensor(train_labels, dtype=torch.long)
     loss_history_path = args.output_dir / "training_loss.jsonl"
     loss_history_path.unlink(missing_ok=True)
-    for epoch in range(args.epochs):
+    while global_step < target_steps:
+        # Shuffle one new pass through the selected training tasks.
         order = torch.randperm(len(train_rows))
         for start in range(0, len(train_rows), args.batch_size):
+            # Stop at the exact optimizer-step budget, including a partial final epoch.
+            if global_step >= target_steps:
+                break
             indexes = order[start:start + args.batch_size]
             batch = {key: value[indexes].to(device) for key, value in train_encoded.items()}
             batch_labels = labels_tensor[indexes].to(device)
@@ -254,6 +265,12 @@ def main() -> None:
             with loss_history_path.open("a", encoding="utf-8") as handle:
                 handle.write(json.dumps({"optimizer_step": global_step, "loss": loss_value}) + "\n")
             run.log({"train/loss": loss_value}, step=global_step)
+            if global_step == 100:
+                # Save one durable model checkpoint after the first 100 optimizer updates.
+                checkpoint_dir = args.output_dir / "checkpoint-100" / "encoder"
+                encoder.save_pretrained(checkpoint_dir, safe_serialization=True)
+                tokenizer.save_pretrained(checkpoint_dir)
+                torch.save(head.state_dict(), args.output_dir / "checkpoint-100" / "classification_head.pt")
             if global_step % args.eval_every_steps == 0:
                 evaluate_and_log(global_step)
     if history[-1]["optimizer_step"] != global_step:
@@ -283,6 +300,7 @@ def main() -> None:
         "configuration": {
             "seed": args.seed,
             "epochs": args.epochs,
+            "max_steps": args.max_steps,
             "batch_size": args.batch_size,
             "eval_batch_size": args.eval_batch_size,
             "eval_every_steps": args.eval_every_steps,
@@ -301,7 +319,7 @@ def main() -> None:
     }
     metadata_path = args.output_dir / "experiment.json"
     metadata_path.write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
-    model_artifact = wandb.Artifact("minilm-router-original-easy-20261013", type="model")
+    model_artifact = wandb.Artifact("minilm-router-original-only-1m-20261013", type="model")
     model_artifact.add_dir(str(args.output_dir))
     run.log_artifact(model_artifact)
     run.summary["optimizer_steps"] = global_step
