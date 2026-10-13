@@ -4350,3 +4350,6 @@ Commit name: Add filtered MBPP router labeling run. This change corrects the tas
 ## October 13, 2026: Record single-batch router overfit
 
 Commit name: Record MiniLM router overfit result. The repository filtered training pool contains 591 tasks after removing the 378 EvalPlus task IDs and matching descriptions from 964 MBPP train, validation, and test rows. Qwen2.5-Coder-0.5B-Instruct produced one greedy completion per task. All original MBPP assertions passed for 200 tasks, and at least one failed for 391 tasks. The balanced eight-task MiniLM experiment reached 100 percent training accuracy after 11 updates. This confirms the implementation can memorize one batch only.
+
+
+Commit name: Log MiniLM router overfit in W&B. Logged the completed local run retrospectively to https://wandb.ai/kunal-personal/grpo-mbpp/runs/9oa5bp19. The W&B run contains all 11 training-history points, experiment and label configuration, the full labeled training data and raw completions as a dataset artifact, and the encoder and classifier head as a model artifact. Verified the finished run and both artifacts through the W&B API.
