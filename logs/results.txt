@@ -17991,3 +17991,6 @@ Configuration: `configs/grpo-mbpp-original-opencode-8x16-b128-micro2-workers8-0.
 Data: Original MBPP `train`, `validation`, and `test` splits plus `outputs/router-opencode-online-eff32-holdout300-20261013/opencode_grpo_training_tasks.jsonl`. No synthetic task path is configured. The loader smoke test returned 9,470 rows after canonical EvalPlus overlap filtering: 591 original MBPP rows and 8,879 OpenCodeInstruct rows. It found zero missing references and zero missing test code. The EvalPlus test evaluation set contains 378 tasks and remains separate from training. The OpenCode artifact has source revision `8f3ba5bafe4d6e8db46082cf7ae6741bc370604d` and SHA-256 `183ca6fbb43f9e84d582efb866415b1d28b7d0ab138a07ed8a35abb34c29954d`.
 
 Selection and measurement: Training rows are combined from the two allowed sources and filtered by canonical EvalPlus task IDs and normalized prompts. EvalPlus is used only for held-out evaluation. No synthetic data or ground-truth-based candidate selection is used. Metrics and environment details will be recorded after launch.
+
+
+Launch update: Corrected run W&B ID `1pdxokty`, URL https://wandb.ai/kunal-personal/grpo-mbpp/runs/1pdxokty. Code commit `eee2977`. The process started on CUDA and W&B synchronization is active. Step-zero baseline metrics are pending.
