@@ -4681,3 +4681,8 @@ Discussion: The first detached launch did not persist beyond its shell despite w
 Commit name: Recreate batch-normalized GRPO with MBPP and OpenCode.
 Description: Add a fresh experiment config that copies the recorded batch-normalized vLLM GRPO setup and replaces the harder synthetic pool with the full OpenCode task pool. Set the requested full and training-sample evaluation cadence to every 100 optimizer steps.
 Discussion: The user asked to stop the checkpoint-830 mixed run and reproduce the earlier W&B batch-normalization experiment with an MBPP plus OpenCode data mix. The source is W&B run c712c322d5b740ec. The replacement starts from the same base model, uses batch reward scaling, colocated vLLM, the same LoRA and optimization settings, and a new W&B run ID 55902398. Dataset smoke testing found an invalid zero-byte default HF cache, so validation and launch use the populated /tmp/router-hf-home and /tmp/router-datasets-cache caches. Existing unrelated dirty files are left unchanged.
+
+
+Commit name: Launch batch-normalized MBPP and OpenCode GRPO.
+Description: Validate the configured data mix with the populated Hugging Face caches and launch the fresh W&B experiment under the 30-minute retry supervisor.
+Discussion: The loader returned 9,470 training rows and 378 EvalPlus tasks. W&B run 55902398 is online. The supervisor is PID 2648540 and the active Accelerate process is PID 2648570. Step-zero evaluation and model startup have begun. Evaluation is scheduled every 100 optimizer steps for both the fixed training sample and EvalPlus. The default shared Hugging Face cache had a zero-byte MBPP Parquet file, so launch uses HF_HOME=/tmp/router-hf-home, HF_DATASETS_CACHE=/tmp/router-datasets-cache, and HF_HUB_ENABLE_HF_TRANSFER=0.
