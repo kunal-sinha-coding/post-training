@@ -1,4 +1,4 @@
-# This module loads every official MBPP split, partitions tasks against the EvalPlus benchmark IDs, and prepares GRPO and SFT records.
+# This module loads MBPP, OpenCodeInstruct, and synthetic rows, partitions tasks against EvalPlus, and prepares GRPO and SFT records.
 # Training excludes every task in the installed canonical EvalPlus runner.
 # When configured, only the first `visible_test_count` training assertions appear in the prompt while reward still grades every assertion.
 # When configured, `train_task_ids` restricts training to an explicit task-ID allowlist instead of the full filtered pool.
@@ -227,6 +227,29 @@ def load_generated_training_tasks(path: str | Path, include_generic_arguments: b
     return _to_dataset(records)
 
 
+def load_opencode_training_tasks(path: str | Path, include_generic_arguments: bool = False, visible_test_count: int | None = None) -> Any:
+    """Load materialized OpenCodeInstruct tasks with their source tests and references."""
+    records = []
+    # Require unique namespaced IDs and complete text, solution, and assertion fields.
+    with Path(path).open(encoding="utf-8") as handle:
+        for line_number, line in enumerate(handle, start=1):
+            if not line.strip():
+                continue
+            task = json.loads(line)
+            tests = task.get("test_list")
+            if not isinstance(tests, list) or not tests or not all(isinstance(test, str) for test in tests):
+                raise ValueError(f"OpenCode task on line {line_number} has invalid tests.")
+            if not task.get("task_id") or not task.get("text") or not task.get("code"):
+                raise ValueError(f"OpenCode task on line {line_number} is missing required fields.")
+            raw_record = {"task_id": f"opencode-{task['task_id']}", "text": task["text"], "code": task["code"], "test_list": tests}
+            records.append(normalize_record(raw_record, include_generic_arguments, visible_test_count))
+    if not records:
+        raise ValueError("The configured OpenCode training file contains no tasks.")
+    if len({str(record["task_id"]) for record in records}) != len(records):
+        raise ValueError("The configured OpenCode training file contains duplicate task IDs.")
+    return _to_dataset(records)
+
+
 def load_evalplus(
     dataset_name: str = DEFAULT_EVALPLUS_DATASET,
     split: str = DEFAULT_EVALPLUS_SPLIT,
@@ -297,7 +320,19 @@ def prepare_datasets(config: dict[str, Any]) -> tuple[Any, Any]:
             load_mbpp(config["dataset_name"], config.get("dataset_config"), split, include_generic_arguments, visible_test_count)
             for split in split_names
         ]
-        # Append validated synthetic tasks while retaining the original MBPP rows.
+        # Append optional OpenCode and synthetic task pools to the configured MBPP rows.
+        opencode_training_tasks_path = config.get("opencode_training_tasks_path")
+        if opencode_training_tasks_path:
+            from datasets import Value
+
+            all_datasets = [
+                dataset.cast_column("task_id", Value("string"))
+                if hasattr(dataset, "cast_column")
+                else [{**record, "task_id": str(record["task_id"])} for record in dataset]
+                for dataset in all_datasets
+            ]
+            all_datasets.append(load_opencode_training_tasks(opencode_training_tasks_path, include_generic_arguments, visible_test_count))
+        # Append validated synthetic tasks while retaining the configured source rows.
         synthetic_training_tasks_path = config.get("synthetic_training_tasks_path")
         if synthetic_training_tasks_path:
             # Cast original task IDs so Arrow can concatenate them with generated string IDs.

@@ -4565,3 +4565,5 @@ Discussion: The fresh effective-batch-32 W&B run `72fg9g2e` is active and target
 
 
 2026-10-14: Holdout-300 run `9mnzniyn` reached step 5,800; latest evaluation at 5,700 shows train F1 0.9958, source holdout F1 0.7778, MBPP F1 0.4371, and MBPP+ F1 0.3696. Strong point-to-point volatility persists. Run remains active.
+
+2026-10-14: Added OpenCodeInstruct materialized task loading to the GRPO data pipeline and configured a fresh GRPO experiment with the same optimizer, reward, generation, evaluation, and checkpoint settings as the harder synthetic run. The validated pool has 8,879 OpenCode tasks plus 5,319 hard synthetic tasks. The GRPO loader smoke test returned all 14,198 tasks and the 378-task EvalPlus evaluation set with no empty references or tests. The OpenCode data uses pinned raw tasks only; router labels and completions are excluded.
