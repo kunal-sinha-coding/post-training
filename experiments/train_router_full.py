@@ -195,7 +195,7 @@ def main() -> None:
     parser.add_argument("--unfreeze-last-layer", action="store_true", help="Train MiniLM's final transformer layer and the classification head.")
     parser.add_argument("--validation-fraction", type=float, default=0.2)
     parser.add_argument("--encoder-learning-rate", type=float, default=5e-6)
-    parser.add_argument("--early-stopping-patience", type=int, default=5)
+    parser.add_argument("--early-stopping-patience", type=int, default=5, help="Use zero to complete the full epoch budget without early stopping.")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--epochs", type=int, default=5)
     parser.add_argument("--max-steps", type=int)
@@ -212,6 +212,8 @@ def main() -> None:
         parser.error("Choose either --freeze-encoder or --unfreeze-last-layer.")
     if not 0 < args.validation_fraction < 1:
         parser.error("The validation fraction must be between zero and one.")
+    if args.early_stopping_patience < 0:
+        parser.error("Early-stopping patience cannot be negative.")
 
     # Set all random seeds before shuffling training examples and initializing the classifier head.
     random.seed(args.seed)
@@ -429,7 +431,7 @@ def main() -> None:
     # Keep the initial checkpoint in case validation AP never improves.
     torch.save(encoder.state_dict(), args.output_dir / "best_encoder_state.pt")
     torch.save(head.state_dict(), args.output_dir / "best_classification_head.pt")
-    while global_step < target_steps and stale_evaluations < args.early_stopping_patience:
+    while global_step < target_steps and (args.early_stopping_patience == 0 or stale_evaluations < args.early_stopping_patience):
         # Shuffle one new pass through the selected training tasks.
         order = torch.randperm(len(train_rows))
         for start in range(0, len(train_rows), args.batch_size):
@@ -472,7 +474,7 @@ def main() -> None:
                     torch.save(head.state_dict(), args.output_dir / "best_classification_head.pt")
                 else:
                     stale_evaluations += 1
-                if stale_evaluations >= args.early_stopping_patience:
+                if args.early_stopping_patience > 0 and stale_evaluations >= args.early_stopping_patience:
                     print(json.dumps({"early_stopping_step": global_step, "best_step": best_step, "best_validation_average_precision": best_validation_ap}), flush=True)
                     break
 
