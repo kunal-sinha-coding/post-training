@@ -17994,3 +17994,10 @@ Selection and measurement: Training rows are combined from the two allowed sourc
 
 
 Launch update: Corrected run W&B ID `1pdxokty`, URL https://wandb.ai/kunal-personal/grpo-mbpp/runs/1pdxokty. Code commit `eee2977`. The process started on CUDA and W&B synchronization is active. Step-zero baseline metrics are pending.
+
+
+2026-10-14 pause and cadence update: Run 1pdxokty was stopped at the user request during the step-100 evaluation. The latest complete saved state is checkpoint-90, including adapter weights, optimizer.pt, scheduler.pt, rng_state.pth, and trainer_state.json with global_step 90. Evaluation and checkpoint saving are now configured every 100 optimizer steps. The next evaluation after resuming checkpoint-90 will be at step 100 and then step 200. W&B run ID 1pdxokty is retained. No training process is active. The user will request resumption at night.
+
+Observed timing before pause: W&B optimizer log timestamps for steps 1 through 98 show average training step duration 57.58 seconds when evaluation boundaries are excluded. Recent steps averaged 55.17 seconds. Complete ten-step cycles from steps 20 through 90 took 19.84 to 25.21 minutes, including full training-pool and EvalPlus evaluation. These are timing observations, not model-quality measurements.
+
+Resume command: HF_HOME=/tmp/post-training-hf-home HF_HUB_CACHE=/tmp/post-training-hf-home/hub HF_HUB_ENABLE_HF_TRANSFER=0 HF_DATASETS_CACHE=/tmp/post-training-hf-home/datasets accelerate launch --num_processes 1 train.py --config configs/grpo-mbpp-original-opencode-8x16-b128-micro2-workers8-0.5b-50000-20261014.yaml --resume-from-checkpoint outputs/grpo-mbpp-original-opencode-8x16-b128-micro2-workers8-0.5b-50000-20261014/checkpoint-90

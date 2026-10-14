@@ -489,6 +489,12 @@ def _make_callback(model: Any, tokenizer: Any, train_dataset: Any, test_dataset:
                 if parameter.requires_grad
             }
 
+        def on_train_begin(self, args: Any, state: Any, control: Any, **_: Any) -> Any:
+            """Apply the current logging and checkpoint intervals after restoring trainer state."""
+            # Replace saved intervals with the current configuration before training resumes.
+            state.compute_steps(args, state.max_steps)
+            return control
+
         def on_pre_optimizer_step(self, args: Any, state: Any, control: Any, **_: Any) -> Any:
             """Snapshot trainable parameters immediately before each optimizer update."""
             # Capture CPU copies so the measured delta covers only one optimizer step.

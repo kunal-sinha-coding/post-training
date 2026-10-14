@@ -18,7 +18,7 @@ run_baseline_evaluation: false
 reuse_baseline: false
 run_intermediate_evals: false
 run_qwen_evalplus_at_start: true
-evalplus_eval_steps: 10
+evalplus_eval_steps: 100
 lora_enabled: true
 lora_r: 16
 lora_alpha: 32
@@ -56,8 +56,8 @@ max_prompt_length: 512
 max_completion_length: 2048
 logging_steps: 1
 save_strategy: steps
-save_steps: 10
-eval_steps: 10
+save_steps: 100
+eval_steps: 100
 best_checkpoint_metric: pass@1
 checkpoint_eval_patience: 0
 evaluation_batch_size: 8
@@ -75,3 +75,4 @@ reward_rolling_window: 10
 reward_scoring_workers: 8
 expected_train_samples: 9470
 opencode_training_tasks_path: outputs/router-opencode-online-eff32-holdout300-20261013/opencode_grpo_training_tasks.jsonl
+wandb_run_id: 1pdxokty
