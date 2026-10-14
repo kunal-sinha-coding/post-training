@@ -19,7 +19,7 @@ from dotenv import load_dotenv
 
 
 # Ask Jev for the probability that the small Qwen model passes every test on one greedy completion.
-def query_jev(prompt: str, model: str, api_key: str, timeout: float, retries: int) -> dict[str, Any]:
+def query_jev(prompt: Any, model: str, api_key: str, timeout: float, retries: int, instructions: str | None = None) -> dict[str, Any]:
     # Send one typed yes-or-no decision and retry temporary HTTP or network failures.
     payload = {
         "model": model,
@@ -27,7 +27,7 @@ def query_jev(prompt: str, model: str, api_key: str, timeout: float, retries: in
         "questions": {
             "qwen_pass": {
                 "type": "noul",
-                "instructions": "Assume exactly one first-try, greedy generation by Qwen/Qwen2.5-Coder-0.5B-Instruct for this programming task, with its completion checked against all task tests. Is the model likely to pass every test?",
+                "instructions": instructions or "Assume exactly one first-try, greedy generation by Qwen/Qwen2.5-Coder-0.5B-Instruct for this programming task, with its completion checked against all task tests. Is the model likely to pass every test?",
                 "criteria": {
                     "true": "The model passes every test on its first completion.",
                     "false": "The model does not pass every test on its first completion.",
