@@ -18027,3 +18027,20 @@ Initial OpenCode baseline for k4z1lm6f: 8,879 tasks evaluated with one greedy co
 
 
 Completed step-zero baseline: Run k4z1lm6f logs evaluation/mbpp_pass_at_1=0.638 and evaluation/mbpp_plus_pass_at_1=0.532. Verified these values in the remote W&B summary at history row0. Optimizer training then started. Startup and sequential full OpenCode plus EvalPlus baseline evaluation took about12 minutes. Reproducibility limitation: Historical checkpoint-830 MBPP was0.651, while the fresh measurement is0.638 despite exact loaded adapter tensor equality. MBPP+ remains0.532. The source-to-current MBPP difference is unexplained and must not be attributed to new training, because it occurred before the first update. Compare later new-run metrics to this newly measured baseline.
+
+
+## 2026-10-14: Reward distribution of early OpenCode continuation batches
+
+Purpose: Quantify within-task candidate reward diversity in the active continuation run k4z1lm6f. Setup and initialization use config configs/grpo-opencode-from-mbpp-best830-8x16-b128-micro2-workers8-0.5b-50000-20261014.yaml and code commit1751f00, source checkpoint830 and the previously recorded pinned OpenCode artifact. Hybrid reward coefficient0.75 is unchanged.
+
+Selection: Use all first nine complete training reward calls at2026-10-14T06:26:30.234021+00:00, independent of outcomes. Each call has8 tasks and16 candidates per task,128 ordered trace rows. The analysis excludes any incomplete tail and excludes baseline greedy evaluation. Verified sequential indices0..127 and identical task IDs within each16-candidate group, aligned with the first72 task-coverage rows. This measures72 distinct tasks and1,152 sampled training completions for optimizer steps1..9, not held-out performance.
+
+Definitions: All zero and all one require all16 actual rewards equal0 or1. Constant partial means max-minus-min below1e-12 at an intermediate reward. Mixed means max-minus-min exceeds1e-12. Binary full pass uses candidate detail.status=passed.
+
+Results: Actual rewards were mixed in48/72 groups=66.6667percent, all one in20/72=27.7778percent, all zero in2/72=2.7778percent, and constant partial in2/72=2.7778percent. The two constant partial values were0.15 and0.20. Mean mixed groups per8-task batch was5.3333 with range3..8. Binary full-pass outcomes were mixed33/72=45.8333percent, all pass20/72=27.7778percent and all fail19/72=26.3889percent. Across individual candidates there were642 reward-one candidates,127 reward-zero candidates and383 partial-reward candidates.
+
+Per-batch actual categories in order, listed as all-zero/all-one/constant-partial/mixed: [(0, 1, 0, 7), (0, 2, 0, 6), (1, 3, 0, 4), (1, 2, 0, 5), (0, 3, 1, 4), (0, 1, 1, 6), (0, 3, 0, 5), (0, 0, 0, 8), (0, 5, 0, 3)]
+
+Artifacts: outputs/grpo-opencode-from-mbpp-best830-8x16-b128-micro2-workers8-0.5b-50000-20261014/reward-distribution-snapshot.jsonl is the frozen reward trace prefix, SHA-256 0528cec3b33d0120986cdd119a714cc32bfa1635a71e27f339680a4117716623. The detailed report is outputs/grpo-opencode-from-mbpp-best830-8x16-b128-micro2-workers8-0.5b-50000-20261014/reward-distribution-report.json. The active trace continues growing, so these counts refer only to the frozen prefix. An independent agent verified the snapshot counts and coverage alignment.
+
+Interpretation and limitations:48groups provide within-task relative reward variation.24groups have identical rewards and no relative-reward policy-gradient signal, although the KL term can still contribute. This is an early nine-batch snapshot, not an estimate of the eventual training distribution. Partial rewards allow variation even when all16 candidates fail full correctness.
