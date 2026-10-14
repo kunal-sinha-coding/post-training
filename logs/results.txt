@@ -18184,3 +18184,365 @@ Metrics: Train, EvalPlus MBPP and EvalPlus MBPP+ each record accuracy, precision
 Verification: Exact frozen tensor equality after five optimizer updates; head changes; encoder gradients absent;770 optimizer parameters; cached versus uncached probability difference below1e-6. AP and ROC checks passed perfect, reversed and tied-score examples. Pretrained model downloads use HF_HOME=/tmp/router-head-only-hf and HF_HUB_CACHE=/tmp/router-head-only-hf/hub with HF_HUB_ENABLE_HF_TRANSFER=0 to avoid corrupt shared caches. Code commitad0acf3. W&B run identifier and initial metrics will be appended after launch.
 
 Launch command: HF_HOME=/tmp/router-head-only-hf HF_HUB_CACHE=/tmp/router-head-only-hf/hub HF_HUB_ENABLE_HF_TRANSFER=0 python -u -m experiments.train_router_full --train-data outputs/router-mbpp-original-one-shot-20261013/router_dataset.jsonl --eval-data outputs/router-evalplus-greedy-dual-label-20261013/router_evalplus_labels.jsonl --output-dir outputs/router-minilm-original-head-only-1m-20261014 --freeze-encoder --max-steps 1000000 --batch-size 16 --eval-every-steps 100 --run-name router-minilm-original-head-only-1m-20261014
+
+
+Launch: W&B run90yjinyb at https://wandb.ai/kunal-personal/grpo-mbpp/runs/90yjinyb. Launch code commit2747e1c. Remote W&B configuration independently confirms frozen encoder with0 trainable parameters and770 trainable head parameters, one-million-step target and100-step evaluation cadence. Threshold keys such as evalplus_mbpp/threshold_0.1/precision and evalplus_mbpp/threshold_0.1/recall are present in remote history. Step100 checkpoint is saved under outputs/router-minilm-original-head-only-1m-20261014/checkpoint-100.
+
+Initial ranking baseline at step0: Train AUPRC0.3329083636 and ROC-AUC0.5040080290; MBPP AUPRC0.5807907418 and ROC-AUC0.5645229088; MBPP+ AUPRC0.5252267140 and ROC-AUC0.5675094137. These reflect a randomly initialized linear head and are not training gains. Positive prevalence baselines are train0.3299492386, MBPP0.5158730159 and MBPP+0.4470899471.
+
+Latest local evaluation snapshot, not selected for performance:
+{
+  "optimizer_step": 4700,
+  "training": {
+    "accuracy": 0.6700507614213198,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "true_positive": 0,
+    "false_positive": 0,
+    "true_negative": 396,
+    "false_negative": 195,
+    "auprc": 0.41514903638897643,
+    "average_precision": 0.41514903638897643,
+    "pr_auc_trapezoidal": 0.4126567782464922,
+    "roc_auc": 0.5880212380212374,
+    "positive_prevalence": 0.3299492385786802
+  },
+  "evalplus_mbpp": {
+    "accuracy": 0.48412698412698413,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "true_positive": 0,
+    "false_positive": 0,
+    "true_negative": 183,
+    "false_negative": 195,
+    "auprc": 0.589482018102612,
+    "average_precision": 0.589482018102612,
+    "pr_auc_trapezoidal": 0.5869473523317145,
+    "roc_auc": 0.5996917472327313,
+    "positive_prevalence": 0.5158730158730159
+  },
+  "evalplus_mbpp_plus": {
+    "accuracy": 0.5529100529100529,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "true_positive": 0,
+    "false_positive": 0,
+    "true_negative": 209,
+    "false_negative": 169,
+    "auprc": 0.5468259553465089,
+    "average_precision": 0.5468259553465089,
+    "pr_auc_trapezoidal": 0.5439256626689333,
+    "roc_auc": 0.6261997112199537,
+    "positive_prevalence": 0.4470899470899471
+  },
+  "threshold_metrics": {
+    "training": {
+      "threshold_0.1": {
+        "accuracy": 0.3299492385786802,
+        "precision": 0.3299492385786802,
+        "recall": 1.0,
+        "f1": 0.4961832061068702,
+        "true_positive": 195,
+        "false_positive": 396,
+        "true_negative": 0,
+        "false_negative": 0,
+        "positive_prediction_fraction": 1.0
+      },
+      "threshold_0.2": {
+        "accuracy": 0.3299492385786802,
+        "precision": 0.3299492385786802,
+        "recall": 1.0,
+        "f1": 0.4961832061068702,
+        "true_positive": 195,
+        "false_positive": 396,
+        "true_negative": 0,
+        "false_negative": 0,
+        "positive_prediction_fraction": 1.0
+      },
+      "threshold_0.3": {
+        "accuracy": 0.3299492385786802,
+        "precision": 0.3299492385786802,
+        "recall": 1.0,
+        "f1": 0.4961832061068702,
+        "true_positive": 195,
+        "false_positive": 396,
+        "true_negative": 0,
+        "false_negative": 0,
+        "positive_prediction_fraction": 1.0
+      },
+      "threshold_0.4": {
+        "accuracy": 0.6700507614213198,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 396,
+        "false_negative": 195,
+        "positive_prediction_fraction": 0.0
+      },
+      "threshold_0.5": {
+        "accuracy": 0.6700507614213198,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 396,
+        "false_negative": 195,
+        "positive_prediction_fraction": 0.0
+      },
+      "threshold_0.6": {
+        "accuracy": 0.6700507614213198,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 396,
+        "false_negative": 195,
+        "positive_prediction_fraction": 0.0
+      },
+      "threshold_0.7": {
+        "accuracy": 0.6700507614213198,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 396,
+        "false_negative": 195,
+        "positive_prediction_fraction": 0.0
+      },
+      "threshold_0.8": {
+        "accuracy": 0.6700507614213198,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 396,
+        "false_negative": 195,
+        "positive_prediction_fraction": 0.0
+      },
+      "threshold_0.9": {
+        "accuracy": 0.6700507614213198,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 396,
+        "false_negative": 195,
+        "positive_prediction_fraction": 0.0
+      }
+    },
+    "evalplus_mbpp": {
+      "threshold_0.1": {
+        "accuracy": 0.5158730158730159,
+        "precision": 0.5158730158730159,
+        "recall": 1.0,
+        "f1": 0.680628272251309,
+        "true_positive": 195,
+        "false_positive": 183,
+        "true_negative": 0,
+        "false_negative": 0,
+        "positive_prediction_fraction": 1.0
+      },
+      "threshold_0.2": {
+        "accuracy": 0.5158730158730159,
+        "precision": 0.5158730158730159,
+        "recall": 1.0,
+        "f1": 0.680628272251309,
+        "true_positive": 195,
+        "false_positive": 183,
+        "true_negative": 0,
+        "false_negative": 0,
+        "positive_prediction_fraction": 1.0
+      },
+      "threshold_0.3": {
+        "accuracy": 0.5158730158730159,
+        "precision": 0.5158730158730159,
+        "recall": 1.0,
+        "f1": 0.680628272251309,
+        "true_positive": 195,
+        "false_positive": 183,
+        "true_negative": 0,
+        "false_negative": 0,
+        "positive_prediction_fraction": 1.0
+      },
+      "threshold_0.4": {
+        "accuracy": 0.48412698412698413,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 183,
+        "false_negative": 195,
+        "positive_prediction_fraction": 0.0
+      },
+      "threshold_0.5": {
+        "accuracy": 0.48412698412698413,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 183,
+        "false_negative": 195,
+        "positive_prediction_fraction": 0.0
+      },
+      "threshold_0.6": {
+        "accuracy": 0.48412698412698413,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 183,
+        "false_negative": 195,
+        "positive_prediction_fraction": 0.0
+      },
+      "threshold_0.7": {
+        "accuracy": 0.48412698412698413,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 183,
+        "false_negative": 195,
+        "positive_prediction_fraction": 0.0
+      },
+      "threshold_0.8": {
+        "accuracy": 0.48412698412698413,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 183,
+        "false_negative": 195,
+        "positive_prediction_fraction": 0.0
+      },
+      "threshold_0.9": {
+        "accuracy": 0.48412698412698413,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 183,
+        "false_negative": 195,
+        "positive_prediction_fraction": 0.0
+      }
+    },
+    "evalplus_mbpp_plus": {
+      "threshold_0.1": {
+        "accuracy": 0.4470899470899471,
+        "precision": 0.4470899470899471,
+        "recall": 1.0,
+        "f1": 0.6179159049360147,
+        "true_positive": 169,
+        "false_positive": 209,
+        "true_negative": 0,
+        "false_negative": 0,
+        "positive_prediction_fraction": 1.0
+      },
+      "threshold_0.2": {
+        "accuracy": 0.4470899470899471,
+        "precision": 0.4470899470899471,
+        "recall": 1.0,
+        "f1": 0.6179159049360147,
+        "true_positive": 169,
+        "false_positive": 209,
+        "true_negative": 0,
+        "false_negative": 0,
+        "positive_prediction_fraction": 1.0
+      },
+      "threshold_0.3": {
+        "accuracy": 0.4470899470899471,
+        "precision": 0.4470899470899471,
+        "recall": 1.0,
+        "f1": 0.6179159049360147,
+        "true_positive": 169,
+        "false_positive": 209,
+        "true_negative": 0,
+        "false_negative": 0,
+        "positive_prediction_fraction": 1.0
+      },
+      "threshold_0.4": {
+        "accuracy": 0.5529100529100529,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 209,
+        "false_negative": 169,
+        "positive_prediction_fraction": 0.0
+      },
+      "threshold_0.5": {
+        "accuracy": 0.5529100529100529,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 209,
+        "false_negative": 169,
+        "positive_prediction_fraction": 0.0
+      },
+      "threshold_0.6": {
+        "accuracy": 0.5529100529100529,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 209,
+        "false_negative": 169,
+        "positive_prediction_fraction": 0.0
+      },
+      "threshold_0.7": {
+        "accuracy": 0.5529100529100529,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 209,
+        "false_negative": 169,
+        "positive_prediction_fraction": 0.0
+      },
+      "threshold_0.8": {
+        "accuracy": 0.5529100529100529,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 209,
+        "false_negative": 169,
+        "positive_prediction_fraction": 0.0
+      },
+      "threshold_0.9": {
+        "accuracy": 0.5529100529100529,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 209,
+        "false_negative": 169,
+        "positive_prediction_fraction": 0.0
+      }
+    }
+  }
+}
+
+Artifacts: evaluation_history.jsonl stores all metrics and threshold sweeps. predictions.jsonl stores the latest task probabilities and both labels. training_loss.jsonl stores per-update loss. These files continue changing as the authorized run trains. W&B state is running. No early stopping or benchmark-based checkpoint selection is used. The previous GRPO runs remain stopped.
