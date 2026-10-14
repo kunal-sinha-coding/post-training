@@ -193,6 +193,7 @@ def main() -> None:
     parser.add_argument("--eval-data", type=Path, default=Path("outputs/router-evalplus-greedy-dual-label-20261013/router_evalplus_labels.jsonl"))
     parser.add_argument("--output-dir", type=Path, default=Path("outputs/router-minilm-easy-dual-eval-20261013"))
     parser.add_argument("--model", default="microsoft/MiniLM-L12-H384-uncased")
+    parser.add_argument("--model-revision", help="Pin the pretrained model revision used for reproducible runs.")
     parser.add_argument("--freeze-encoder", action="store_true", help="Train only the linear head on cached pretrained CLS features.")
     parser.add_argument("--unfreeze-last-layer", action="store_true", help="Train MiniLM's final transformer layer and the classification head.")
     parser.add_argument("--unfreeze-last-n-layers", type=int, help="Train the requested number of final MiniLM transformer blocks and the classification head.")
@@ -240,8 +241,9 @@ def main() -> None:
     train_rows = [source_train_rows[index] for index in train_indexes]
     validation_rows = [source_train_rows[index] for index in validation_indexes]
     # Load MiniLM, initialize the CLS classification head, and tokenize all selected rows.
-    tokenizer = AutoTokenizer.from_pretrained(args.model)
-    encoder = AutoModel.from_pretrained(args.model)
+    model_kwargs = {"revision": args.model_revision} if args.model_revision else {}
+    tokenizer = AutoTokenizer.from_pretrained(args.model, **model_kwargs)
+    encoder = AutoModel.from_pretrained(args.model, **model_kwargs)
     train_encoded, train_labels = encode_rows(tokenizer, train_rows, args.max_length, "label_mbpp")
     validation_encoded, validation_labels = encode_rows(tokenizer, validation_rows, args.max_length, "label_mbpp")
     eval_encoded, _ = encode_rows(tokenizer, eval_rows, args.max_length, "label_mbpp")
@@ -305,6 +307,7 @@ def main() -> None:
             "wandb_project": args.wandb_project,
             "wandb_entity": args.wandb_entity,
             "model": args.model,
+            "model_revision": args.model_revision,
             "freeze_encoder": args.freeze_encoder,
             "unfreeze_last_layer": args.unfreeze_last_layer,
             "unfreeze_last_n_layers": unfreeze_count,
@@ -513,6 +516,7 @@ def main() -> None:
     metadata = {
         "experiment": "MiniLM router capacity comparison with grouped training validation and separate MBPP and MBPP+ retrieval evaluation",
         "model": args.model,
+        "model_revision": args.model_revision,
         "architecture": {
             "encoder": "frozen pretrained MiniLM" if args.freeze_encoder else (f"pretrained MiniLM with final {unfreeze_count} transformer blocks fine-tuned" if unfreeze_count else "fully fine-tuned MiniLM"),
             "pooling": "last hidden state at CLS position",
