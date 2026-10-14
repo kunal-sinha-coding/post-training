@@ -2,6 +2,7 @@
 # It uses the saved one-greedy-attempt labels and a binary CLS classification head.
 # It reports retrieval metrics at a configurable optimizer-step interval.
 # It saves one step-100 checkpoint, the final model, latest predictions, metric history, and W&B artifacts.
+# It can freeze MiniLM and cache its deterministic CLS features to train only the linear head.
 
 from __future__ import annotations
 
@@ -53,6 +54,18 @@ def encode_rows(tokenizer: Any, rows: list[dict[str, Any]], max_length: int, lab
 
 
 # Predict labels and positive probabilities in bounded batches without dropout.
+def encoder_features(encoder: Any, encoded: dict[str, torch.Tensor], device: torch.device, batch_size: int) -> torch.Tensor:
+    # Cache deterministic CLS features without building encoder gradients.
+    encoder.eval()
+    features = []
+    with torch.no_grad():
+        for start in range(0, len(encoded["input_ids"]), batch_size):
+            batch = {key: value[start:start + batch_size].to(device) for key, value in encoded.items()}
+            features.append(encoder(**batch).last_hidden_state[:, 0].cpu())
+    return torch.cat(features)
+
+
+# Predict labels using encoder outputs or previously cached frozen features.
 def predict_rows(
     encoder: Any,
     head: torch.nn.Module,
@@ -61,6 +74,7 @@ def predict_rows(
     labels: list[int],
     device: torch.device,
     batch_size: int,
+    cached_features: torch.Tensor | None = None,
 ) -> tuple[dict[str, Any], list[int], list[float]]:
     # Run batched inference, then calculate the four retrieval metrics from argmax labels.
     encoder.eval()
@@ -70,15 +84,20 @@ def predict_rows(
     probabilities: list[float] = []
     with torch.no_grad():
         for start in range(0, len(labels), batch_size):
-            batch = {key: value[start:start + batch_size].to(device) for key, value in encoded.items()}
-            logits = head(dropout(encoder(**batch).last_hidden_state[:, 0]))
+            # Reuse fixed features when the encoder is frozen.
+            if cached_features is not None:
+                features = cached_features[start:start + batch_size].to(device)
+            else:
+                batch = {key: value[start:start + batch_size].to(device) for key, value in encoded.items()}
+                features = encoder(**batch).last_hidden_state[:, 0]
+            logits = head(dropout(features))
             positive_probability = logits.softmax(dim=-1)[:, 1]
             probabilities.extend(float(value) for value in positive_probability.cpu())
             predictions.extend(int(value) for value in logits.argmax(dim=-1).cpu())
     return binary_metrics(labels, predictions), predictions, probabilities
 
 
-# Train all MiniLM parameters on all training labels and evaluate both splits every ten steps.
+# Train the requested encoder and head parameters and evaluate both label sets at fixed intervals.
 def main() -> None:
     # Parse paths, training settings, and the W&B project for this full-data router run.
     parser = argparse.ArgumentParser()
@@ -86,6 +105,7 @@ def main() -> None:
     parser.add_argument("--eval-data", type=Path, default=Path("outputs/router-evalplus-greedy-dual-label-20261013/router_evalplus_labels.jsonl"))
     parser.add_argument("--output-dir", type=Path, default=Path("outputs/router-minilm-easy-dual-eval-20261013"))
     parser.add_argument("--model", default="microsoft/MiniLM-L12-H384-uncased")
+    parser.add_argument("--freeze-encoder", action="store_true", help="Train only the linear head on cached pretrained CLS features.")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--epochs", type=int, default=5)
     parser.add_argument("--max-steps", type=int)
@@ -123,7 +143,15 @@ def main() -> None:
     encoder.to(device)
     dropout = torch.nn.Dropout(0.1).to(device)
     head = torch.nn.Linear(int(encoder.config.hidden_size), 2).to(device)
-    optimizer = torch.optim.AdamW(list(encoder.parameters()) + list(head.parameters()), lr=args.learning_rate)
+    # Freeze the encoder and cache its outputs before creating the head-only optimizer.
+    train_features = eval_features = None
+    if args.freeze_encoder:
+        encoder.requires_grad_(False)
+        encoder.eval()
+        train_features = encoder_features(encoder, train_encoded, device, args.eval_batch_size)
+        eval_features = encoder_features(encoder, eval_encoded, device, args.eval_batch_size)
+    parameters = list(head.parameters()) if args.freeze_encoder else list(encoder.parameters()) + list(head.parameters())
+    optimizer = torch.optim.AdamW(parameters, lr=args.learning_rate)
     loss_function = torch.nn.CrossEntropyLoss()
 
     # Create the W&B run before training and track all configuration and source artifacts.
@@ -151,7 +179,8 @@ def main() -> None:
             "wandb_project": args.wandb_project,
             "wandb_entity": args.wandb_entity,
             "model": args.model,
-            "encoder_trainable_parameters": sum(parameter.numel() for parameter in encoder.parameters()),
+            "freeze_encoder": args.freeze_encoder,
+            "encoder_trainable_parameters": sum(parameter.numel() for parameter in encoder.parameters() if parameter.requires_grad),
             "head_trainable_parameters": sum(parameter.numel() for parameter in head.parameters()),
             "head_architecture": f"Dropout(0.1) then Linear({encoder.config.hidden_size}, 2)",
             "positive_class": 1,
@@ -192,10 +221,10 @@ def main() -> None:
     def evaluate_and_log(step: int) -> None:
         # Compute metrics on both complete datasets and publish the same values to W&B.
         train_metrics, train_predictions, train_probabilities = predict_rows(
-            encoder, head, dropout, train_encoded, train_labels, device, args.eval_batch_size
+            encoder, head, dropout, train_encoded, train_labels, device, args.eval_batch_size, train_features
         )
         eval_mbpp_metrics, eval_predictions, eval_probabilities = predict_rows(
-            encoder, head, dropout, eval_encoded, eval_mbpp_labels, device, args.eval_batch_size
+            encoder, head, dropout, eval_encoded, eval_mbpp_labels, device, args.eval_batch_size, eval_features
         )
         eval_mbpp_plus_metrics = binary_metrics(eval_mbpp_plus_labels, eval_predictions)
         record = {
@@ -252,11 +281,13 @@ def main() -> None:
             indexes = order[start:start + args.batch_size]
             batch = {key: value[indexes].to(device) for key, value in train_encoded.items()}
             batch_labels = labels_tensor[indexes].to(device)
-            encoder.train()
+            encoder.train(not args.freeze_encoder)
             head.train()
             dropout.train()
             optimizer.zero_grad(set_to_none=True)
-            logits = head(dropout(encoder(**batch).last_hidden_state[:, 0]))
+            # Update only the head from cached features when MiniLM is frozen.
+            features = train_features[indexes].to(device) if train_features is not None else encoder(**batch).last_hidden_state[:, 0]
+            logits = head(dropout(features))
             loss = loss_function(logits, batch_labels)
             loss.backward()
             optimizer.step()
@@ -287,7 +318,7 @@ def main() -> None:
         "experiment": "MiniLM full-data router training with separate MBPP and MBPP+ retrieval evaluation",
         "model": args.model,
         "architecture": {
-            "encoder": "fully fine-tuned MiniLM",
+            "encoder": "frozen pretrained MiniLM" if args.freeze_encoder else "fully fine-tuned MiniLM",
             "pooling": "last hidden state at CLS position",
             "head": f"Dropout(0.1) then Linear({encoder.config.hidden_size}, 2)",
             "encoder_parameters": sum(parameter.numel() for parameter in encoder.parameters()),
