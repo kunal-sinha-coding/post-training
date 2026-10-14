@@ -4676,3 +4676,8 @@ Discussion: The user explicitly requested repeated progress checks and automatic
 Commit name: Record persistent retry monitor session.
 Description: Correct the monitor startup record after the detached launch exited, and document the persistent supervisor session verified alongside the active trainer.
 Discussion: The first detached launch did not persist beyond its shell despite writing a status report. The supervisor now runs in a persistent exec session, PID `1981711`, attached to the live training process. It was verified after 26 seconds and recorded optimizer step 16. The user requested repeated monitoring and recovery, so this process remains active.
+
+
+Commit name: Recreate batch-normalized GRPO with MBPP and OpenCode.
+Description: Add a fresh experiment config that copies the recorded batch-normalized vLLM GRPO setup and replaces the harder synthetic pool with the full OpenCode task pool. Set the requested full and training-sample evaluation cadence to every 100 optimizer steps.
+Discussion: The user asked to stop the checkpoint-830 mixed run and reproduce the earlier W&B batch-normalization experiment with an MBPP plus OpenCode data mix. The source is W&B run c712c322d5b740ec. The replacement starts from the same base model, uses batch reward scaling, colocated vLLM, the same LoRA and optimization settings, and a new W&B run ID 55902398. Dataset smoke testing found an invalid zero-byte default HF cache, so validation and launch use the populated /tmp/router-hf-home and /tmp/router-datasets-cache caches. Existing unrelated dirty files are left unchanged.
