@@ -179,9 +179,7 @@ def main() -> None:
             "api_key_source": "repository .env JEV_API_KEY",
         },
     )
-    run.define_metric("variant_step")
-    run.define_metric("*/*", step_metric="variant_step")
-    payload: dict[str, Any] = {"variant_step": 0}
+    payload: dict[str, Any] = {}
     full_result: dict[str, Any] = {"stage": args.stage, "metrics": metrics, "variants": args.variants}
     all_predictions = []
     for variant in args.variants:
