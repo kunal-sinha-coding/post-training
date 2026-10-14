@@ -18930,3 +18930,36 @@ Results at optimizer step900, before restoring the selected checkpoint. Frozen h
 Final EvalPlus metrics on each selected step-zero checkpoint are identical. MBPP AUPRC0.5808, ROC-AUC0.5645, F1 0.6806. MBPP+ AUPRC0.5252, ROC-AUC0.5675, F1 0.6179. At threshold0.5 the selected model predicts every task positive. Its F1 equals the all-positive baseline for each benchmark. Threshold sweeps are recorded in W&B and evaluation_history.jsonl; no benchmark threshold is selected.
 
 Interpretation and limits. The last-block model does not reproduce near-perfect training memorization seen in prior full-encoder runs, but its train-validation ranking gap is consistent with overfitting on this small split. Both models' cross-entropy losses fall sharply as predictions move toward the class prior, while ranking quality does not improve. Loss reduction alone is therefore not evidence that the router learned useful task discrimination. This is one fixed split with39 validation positives and one-completion labels, so metric uncertainty is high. The identical final EvalPlus result is expected because checkpoint selection chose step0. These metrics do not show that the trained last-layer model improves generalization.
+
+ROUTER REPRODUCTION: LAST THREE MINILM BLOCKS, 1,000 STEPS, 2026-10-14
+
+Purpose. Reproduce the original-only overfit router experiment while limiting training to the final three MiniLM transformer blocks and the binary head. This isolates the effect of reducing trainable capacity. The requested budget was1,000 optimizer steps.
+
+Data and labels. Training used all591 original MBPP training task labels from outputs/router-mbpp-original-one-shot-20261013/router_dataset.jsonl. Labels came from one greedy Qwen0.5B completion per task. The file SHA-256 is3f53ff270d4a6b1900baa308e17a9d9d8e7e328f0717bee23d2da2f21a8115f9. Evaluation used378 EvalPlus task rows from outputs/router-evalplus-greedy-dual-label-20261013/router_evalplus_labels.jsonl. This file contains separate MBPP and MBPP+ labels and has SHA-25639b40772576bcdcdf858c71f9b1774d9dca1e30215d6eb99c85c89d2a0ab6531. Training and evaluation IDs are separate. Each label is based on one model completion.
+
+Model and training setup. The encoder is microsoft/MiniLM-L12-H384-uncased at pinned revision44acabbec0ef496f6dbc93adadea57f376b7c0ec, with CLS pooling. The classifier head is Dropout(0.1) followed by Linear(384,2), with770 parameters. The final three of twelve transformer blocks are trainable. The embedding layer, first nine blocks and pooler are frozen. Trainable encoder parameters total5,323,392, for5,324,162 parameters overall. The baseline run acamdajj trained all33,360,000 encoder parameters plus770 head parameters.
+
+The run used seed42, batch size16, evaluation batch size32, maximum sequence length512, AdamW with default weight decay, cross entropy, and learning rate5e-5 for the head and unfrozen blocks. It ran1,000 optimizer steps and evaluated the full training and EvalPlus sets every100 steps. There was no validation split and no early stopping. Checkpoint evaluation was not used to select a step. The final step is reported. W&B logged every-step training loss, scheduled train and benchmark metrics, ranking metrics, and precision/recall/F1 threshold sweeps from0.1 to0.9. The run took153.96 seconds on an NVIDIA RTX A5000 with Python3.12.3, PyTorch2.8.0+cu128 and Transformers4.56.2.
+
+Code and artifacts. Training code commit57feef7. W&B run p5q0z5en: https://wandb.ai/kunal-personal/grpo-mbpp/runs/p5q0z5en. Local output directory: outputs/router-minilm-original-last3-1000-20261014. The root model files represent the final model; checkpoint-100 is also saved. Full stepwise metrics are in evaluation_history.jsonl, every-step loss is in training_loss.jsonl, and final predictions are in predictions.jsonl. experiment.json includes the complete final metrics and threshold sweeps. Model files were uploaded with the W&B run.
+
+Metric progression. Columns are step, train loss, train F1, train average precision, train ROC-AUC, EvalPlus MBPP F1, MBPP average precision, MBPP ROC-AUC, MBPP+ F1, MBPP+ average precision, and MBPP+ ROC-AUC.
+
+step | loss | train F1 | train AP | train ROC-AUC | MBPP F1 | MBPP AP | MBPP ROC-AUC | MBPP+ F1 | MBPP+ AP | MBPP+ ROC-AUC
+0 | 0.8038 | 0.4962 | 0.3329 | 0.5040 | 0.6806 | 0.5808 | 0.5645 | 0.6179 | 0.5252 | 0.5675
+100 | 0.6329 | 0.0000 | 0.5060 | 0.6732 | 0.0000 | 0.5893 | 0.6056 | 0.0000 | 0.5526 | 0.6384
+200 | 0.5998 | 0.0203 | 0.5714 | 0.7240 | 0.0000 | 0.5610 | 0.5660 | 0.0000 | 0.5401 | 0.6114
+300 | 0.4880 | 0.7194 | 0.7756 | 0.8669 | 0.4085 | 0.6027 | 0.6116 | 0.4341 | 0.5787 | 0.6554
+400 | 0.4549 | 0.7379 | 0.9283 | 0.9586 | 0.5753 | 0.6114 | 0.6152 | 0.5664 | 0.5749 | 0.6484
+500 | 0.1404 | 0.9346 | 0.9826 | 0.9919 | 0.4808 | 0.6115 | 0.6039 | 0.4965 | 0.5682 | 0.6338
+600 | 0.0718 | 0.9697 | 0.9966 | 0.9982 | 0.4120 | 0.6067 | 0.6073 | 0.4436 | 0.5731 | 0.6417
+700 | 0.0413 | 0.9797 | 0.9983 | 0.9992 | 0.3706 | 0.5993 | 0.6037 | 0.3923 | 0.5562 | 0.6401
+800 | 0.0529 | 0.9774 | 0.9997 | 0.9999 | 0.5000 | 0.6052 | 0.6094 | 0.5172 | 0.5529 | 0.6323
+900 | 0.0128 | 0.9949 | 0.9999 | 1.0000 | 0.4459 | 0.6062 | 0.6122 | 0.4588 | 0.5565 | 0.6310
+1000 | 0.0115 | 0.9974 | 1.0000 | 1.0000 | 0.4877 | 0.6031 | 0.6049 | 0.5034 | 0.5594 | 0.6307
+
+At step1000, training accuracy is0.9983, precision0.9949, recall1.0000, F1 0.9974, average precision1.0000, and ROC-AUC1.0000. EvalPlus MBPP accuracy is0.5608, precision0.6124, recall0.4051, F1 0.4877, average precision0.6031, and ROC-AUC0.6049. MBPP+ accuracy is0.6085, precision0.5814, recall0.4438, F1 0.5034, average precision0.5594, and ROC-AUC0.6307. At threshold0.5, the MBPP+ confusion counts are75 true positives,54 false positives,155 true negatives and94 false negatives; MBPP has79,50,133 and116, respectively.
+
+At step1000 the MBPP precision/recall/F1 at thresholds0.1..0.9 are respectively: (0.610,0.538,0.572), (0.611,0.508,0.555), (0.609,0.472,0.532), (0.613,0.431,0.506), (0.612,0.405,0.488), (0.613,0.390,0.476), (0.622,0.379,0.471), (0.611,0.338,0.436), and (0.602,0.272,0.375). For MBPP+, the same sequence is (0.564,0.574,0.569), (0.562,0.538,0.550), (0.563,0.503,0.531), (0.569,0.462,0.510), (0.581,0.444,0.503), (0.581,0.426,0.491), (0.597,0.420,0.493), (0.583,0.373,0.455), and (0.568,0.296,0.389). Full accuracy, counts and positive prediction fractions for every threshold are in experiment.json and W&B history.
+
+Comparison and interpretation. This reproduced the main overfitting pattern: after1,000 steps, training F1 and ranking areas are near1.0 while EvalPlus threshold0.5 F1 is0.4877 on MBPP and0.5034 on MBPP+. The full-encoder run acamdajj reached training F1 1.0 and latest recorded EvalPlus F1 0.5842/0.5819 at step11,800. The current benchmark F1 is lower, but its step budget is also much shorter, so this is not a matched endpoint comparison. Ranking improves from step zero to step1000 on both benchmarks, while threshold0.5 F1 falls below the step-zero all-positive baseline. This shows that the reduced-capacity model can still memorize the591 original labels. It does not establish whether a different training duration, regularization, or data split would generalize better. EvalPlus labels were used only to report scheduled benchmark metrics and not to select a checkpoint or threshold.
