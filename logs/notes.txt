@@ -4666,3 +4666,8 @@ Discussion: W&B run `2zdfg0b1` started from the checkpoint-830 adapter with fres
 Commit name: Improve GRPO retry supervisor for the checkpoint-830 run.
 Description: Update the training supervisor to report status every 30 minutes, diagnose common error signatures after failure, resume from the newest complete optimizer checkpoint, and retry from the configured initial adapter when no complete checkpoint exists.
 Discussion: The user asked for repeated monitoring and automatic diagnosis and restart of the mixed MBPP and OpenCode run. The former supervisor selected the best scored MBPP+ checkpoint and waited without retrying if no scored checkpoint existed. The new behavior preserves latest progress and retries even before step 100 creates the first full trainer checkpoint. Bash syntax and helper smoke tests passed. The active trainer remains untouched while the monitor is attached.
+
+
+Commit name: Record mixed GRPO retry monitor startup.
+Description: Record the active 30-minute progress monitor, attached training PID, W&B run, first observed optimizer step, GPU status, and durable monitor log path.
+Discussion: The user explicitly requested repeated progress checks and automatic diagnosis and restart after each run failure. The supervisor is running independently and watches the existing training process without interrupting it.
