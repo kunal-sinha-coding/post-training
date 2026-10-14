@@ -211,7 +211,7 @@ def merge_training_metrics(metrics: dict[str, Any], training_metrics: dict[str, 
 def build_peft_config(config: dict[str, Any]) -> Any | None:
     """Build the optional LoRA adapter configuration used to fit GRPO in GPU memory."""
     # Keep full fine tuning available while defaulting to the memory-safe adapter path for the 3B model.
-    if not config.get("lora_enabled", False):
+    if not config.get("lora_enabled", False) or config.get("initial_adapter_path"):
         return None
     from peft import LoraConfig
 
@@ -274,6 +274,7 @@ def configure_wandb(config: dict[str, Any]) -> Any | None:
             "scale_rewards", "use_vllm", "vllm_mode", "vllm_gpu_memory_utilization",
             "training_eval_sample_size", "training_eval_sample_seed", "expected_train_samples",
             "save_strategy", "save_steps", "max_steps", "synthetic_training_tasks_path",
+            "model_name_or_path", "initial_adapter_path", "opencode_training_tasks_path", "mbpp_splits",
         )
         wandb.config.update({key: config[key] for key in config_keys if key in config}, allow_val_change=True)
     # Use trainer steps rather than W&B history row numbers on evaluation charts.
@@ -929,6 +930,12 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         tokenizer.pad_token = tokenizer.eos_token
     model_dtype = torch.bfloat16 if bool(config.get("bf16", True)) else None
     model = AutoModelForCausalLM.from_pretrained(config["model_name_or_path"], torch_dtype=model_dtype, trust_remote_code=bool(config.get("trust_remote_code", False)))
+    # Load trained adapter weights without restoring optimizer state or adding a replacement adapter.
+    if config.get("initial_adapter_path"):
+        from peft import PeftModel
+
+        model = PeftModel.from_pretrained(model, config["initial_adapter_path"], is_trainable=True)
+        model.peft_config["default"].base_model_name_or_path = str(Path(config["model_name_or_path"]).resolve())
     _enable_generation_stop(model, tokenizer)
     model.to(device)
     print(f"Model device: {model.device}", flush=True)
