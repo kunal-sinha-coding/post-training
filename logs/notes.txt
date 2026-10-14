@@ -4661,3 +4661,8 @@ Discussion: The user explicitly replaced the interrupted Jev prompt experiment w
 Commit name: Record mixed checkpoint-830 GRPO launch baseline.
 Description: Record the new W&B run, full training-pool baseline, separate EvalPlus baseline, and baseline evaluation time for the mixed MBPP and OpenCode continuation.
 Discussion: W&B run `2zdfg0b1` started from the checkpoint-830 adapter with fresh optimizer state and the full 591-row original MBPP plus 8,879-row OpenCode training pool. The baseline completed and GRPO is active at optimizer step 1. Evaluation and checkpoint saving are set to every 100 optimizer steps.
+
+
+Commit name: Improve GRPO retry supervisor for the checkpoint-830 run.
+Description: Update the training supervisor to report status every 30 minutes, diagnose common error signatures after failure, resume from the newest complete optimizer checkpoint, and retry from the configured initial adapter when no complete checkpoint exists.
+Discussion: The user asked for repeated monitoring and automatic diagnosis and restart of the mixed MBPP and OpenCode run. The former supervisor selected the best scored MBPP+ checkpoint and waited without retrying if no scored checkpoint existed. The new behavior preserves latest progress and retries even before step 100 creates the first full trainer checkpoint. Bash syntax and helper smoke tests passed. The active trainer remains untouched while the monitor is attached.
