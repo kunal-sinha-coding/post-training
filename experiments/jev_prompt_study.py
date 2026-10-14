@@ -65,6 +65,12 @@ def variant_input(row: dict[str, Any], variant: str) -> tuple[Any, str]:
         return str(row["prompt"]), question
     if variant == "normalized_prompt":
         return normalized_state(row), base_question
+    if variant == "structured_state":
+        text = normalized_state(row)
+        lines = [line.strip() for line in text.splitlines() if line.strip()]
+        description = str(row.get("task_text") or " ".join(line for line in lines if not line.startswith("assert ")))
+        examples = [line for line in lines if line.startswith("assert ")]
+        return {"task_description": description, "visible_examples": examples}, base_question
     raise ValueError(f"Unknown prompt variant: {variant}")
 
 
@@ -114,7 +120,7 @@ def main() -> None:
     # Parse the experiment stage and the controlled prompt variants.
     parser = argparse.ArgumentParser()
     parser.add_argument("--stage", choices=("pilot", "development", "benchmark"), default="development")
-    parser.add_argument("--variants", nargs="+", choices=("baseline", "baseline_repeat", "precise_question", "direct_outcome", "direct_normalized", "normalized_prompt"), default=("baseline", "normalized_prompt"))
+    parser.add_argument("--variants", nargs="+", choices=("baseline", "baseline_repeat", "precise_question", "direct_outcome", "direct_normalized", "normalized_prompt", "structured_state"), default=("baseline", "normalized_prompt"))
     parser.add_argument("--workers", type=int, default=8)
     parser.add_argument("--model", default="jev-latest")
     parser.add_argument("--seed", type=int, default=42)
