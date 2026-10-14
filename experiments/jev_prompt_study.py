@@ -56,9 +56,10 @@ def variant_input(row: dict[str, Any], variant: str) -> tuple[Any, str]:
     base_question = "Assume exactly one first-try, greedy generation by Qwen/Qwen2.5-Coder-0.5B-Instruct for this programming task, with its completion checked against all task tests. Is the model likely to pass every test?"
     if variant in ("baseline", "baseline_repeat"):
         return str(row["prompt"]), base_question
-    if variant == "direct_outcome":
+    if variant in ("direct_outcome", "direct_normalized"):
         question = "Will one greedy, no-retry completion from Qwen/Qwen2.5-Coder-0.5B-Instruct, generated from exactly this task prompt, pass every test? Predict the outcome of the actual single run, not whether a correct solution exists in principle."
-        return str(row["prompt"]), question
+        state = normalized_state(row) if variant == "direct_normalized" else str(row["prompt"])
+        return state, question
     if variant == "precise_question":
         question = "Using only this task prompt, estimate the probability that one greedy, no-retry completion from Qwen/Qwen2.5-Coder-0.5B-Instruct will pass every test. A task counts as success only if all tests pass."
         return str(row["prompt"]), question
@@ -113,7 +114,7 @@ def main() -> None:
     # Parse the experiment stage and the controlled prompt variants.
     parser = argparse.ArgumentParser()
     parser.add_argument("--stage", choices=("pilot", "development", "benchmark"), default="development")
-    parser.add_argument("--variants", nargs="+", choices=("baseline", "baseline_repeat", "precise_question", "direct_outcome", "normalized_prompt"), default=("baseline", "normalized_prompt"))
+    parser.add_argument("--variants", nargs="+", choices=("baseline", "baseline_repeat", "precise_question", "direct_outcome", "direct_normalized", "normalized_prompt"), default=("baseline", "normalized_prompt"))
     parser.add_argument("--workers", type=int, default=8)
     parser.add_argument("--model", default="jev-latest")
     parser.add_argument("--seed", type=int, default=42)
@@ -162,7 +163,8 @@ def main() -> None:
     # Log all metrics and threshold sweeps for every prompt variant to one W&B run.
     import wandb
 
-    run_name = f"jev-prompt-{args.stage}-20261014"
+    variant_tag = "-".join(args.variants)
+    run_name = f"jev-prompt-{args.stage}-{variant_tag}-20261014"
     run = wandb.init(
         entity="kunal-personal",
         project="grpo-mbpp",
@@ -209,11 +211,11 @@ def main() -> None:
     run.log(payload, step=0)
 
     # Save per-task scores and complete metrics locally and as a W&B artifact.
-    predictions_path = output_dir / f"{args.stage}-predictions.jsonl"
-    metrics_path = output_dir / f"{args.stage}-metrics.json"
+    predictions_path = output_dir / f"{args.stage}-{variant_tag}-predictions.jsonl"
+    metrics_path = output_dir / f"{args.stage}-{variant_tag}-metrics.json"
     predictions_path.write_text("".join(json.dumps(row) + "\n" for row in all_predictions), encoding="utf-8")
     metrics_path.write_text(json.dumps(full_result, indent=2) + "\n", encoding="utf-8")
-    artifact = wandb.Artifact(f"jev-prompt-{args.stage}-20261014", type="evaluation")
+    artifact = wandb.Artifact(f"jev-prompt-{args.stage}-{variant_tag}-20261014", type="evaluation")
     artifact.add_file(str(predictions_path))
     artifact.add_file(str(metrics_path))
     for variant in args.variants:
