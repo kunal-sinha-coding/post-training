@@ -18546,3 +18546,371 @@ Latest local evaluation snapshot, not selected for performance:
 }
 
 Artifacts: evaluation_history.jsonl stores all metrics and threshold sweeps. predictions.jsonl stores the latest task probabilities and both labels. training_loss.jsonl stores per-update loss. These files continue changing as the authorized run trains. W&B state is running. No early stopping or benchmark-based checkpoint selection is used. The previous GRPO runs remain stopped.
+
+
+## 2026-10-14: Stopped head-only router and diagnosed default-threshold failure
+
+Run90yjinyb is stopped at the explicit user request; all descendants are gone. Latest complete evaluation step69600. This snapshot uses fixed0.5 argmax decisions and the already configured0.1..0.9 descriptive sweep. No threshold is selected for deployment and no new training is started.
+
+Latest complete metrics:
+{
+  "optimizer_step": 69600,
+  "training": {
+    "accuracy": 0.6700507614213198,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "true_positive": 0,
+    "false_positive": 0,
+    "true_negative": 396,
+    "false_negative": 195,
+    "auprc": 0.48536629063101505,
+    "average_precision": 0.48536629063101505,
+    "pr_auc_trapezoidal": 0.48278792595573294,
+    "roc_auc": 0.6585729085729104,
+    "positive_prevalence": 0.3299492385786802
+  },
+  "evalplus_mbpp": {
+    "accuracy": 0.5,
+    "precision": 0.6153846153846154,
+    "recall": 0.08205128205128205,
+    "f1": 0.14479638009049775,
+    "true_positive": 16,
+    "false_positive": 10,
+    "true_negative": 173,
+    "false_negative": 179,
+    "auprc": 0.603507069894757,
+    "average_precision": 0.603507069894757,
+    "pr_auc_trapezoidal": 0.6010572470755449,
+    "roc_auc": 0.6067255149222363,
+    "positive_prevalence": 0.5158730158730159
+  },
+  "evalplus_mbpp_plus": {
+    "accuracy": 0.5634920634920635,
+    "precision": 0.5769230769230769,
+    "recall": 0.08875739644970414,
+    "f1": 0.15384615384615383,
+    "true_positive": 15,
+    "false_positive": 11,
+    "true_negative": 198,
+    "false_negative": 154,
+    "auprc": 0.5694859842930912,
+    "average_precision": 0.5694859842930912,
+    "pr_auc_trapezoidal": 0.5671064520173068,
+    "roc_auc": 0.6372413012089126,
+    "positive_prevalence": 0.4470899470899471
+  },
+  "threshold_metrics": {
+    "training": {
+      "threshold_0.1": {
+        "accuracy": 0.3299492385786802,
+        "precision": 0.3299492385786802,
+        "recall": 1.0,
+        "f1": 0.4961832061068702,
+        "true_positive": 195,
+        "false_positive": 396,
+        "true_negative": 0,
+        "false_negative": 0,
+        "positive_prediction_fraction": 1.0
+      },
+      "threshold_0.2": {
+        "accuracy": 0.3316412859560068,
+        "precision": 0.3305084745762712,
+        "recall": 1.0,
+        "f1": 0.4968152866242038,
+        "true_positive": 195,
+        "false_positive": 395,
+        "true_negative": 1,
+        "false_negative": 0,
+        "positive_prediction_fraction": 0.9983079526226735
+      },
+      "threshold_0.3": {
+        "accuracy": 0.4602368866328257,
+        "precision": 0.3724279835390947,
+        "recall": 0.9282051282051282,
+        "f1": 0.5315712187958884,
+        "true_positive": 181,
+        "false_positive": 305,
+        "true_negative": 91,
+        "false_negative": 14,
+        "positive_prediction_fraction": 0.8223350253807107
+      },
+      "threshold_0.4": {
+        "accuracy": 0.6818950930626058,
+        "precision": 0.7692307692307693,
+        "recall": 0.05128205128205128,
+        "f1": 0.09615384615384615,
+        "true_positive": 10,
+        "false_positive": 3,
+        "true_negative": 393,
+        "false_negative": 185,
+        "positive_prediction_fraction": 0.021996615905245348
+      },
+      "threshold_0.5": {
+        "accuracy": 0.6700507614213198,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 396,
+        "false_negative": 195,
+        "positive_prediction_fraction": 0.0
+      },
+      "threshold_0.6": {
+        "accuracy": 0.6700507614213198,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 396,
+        "false_negative": 195,
+        "positive_prediction_fraction": 0.0
+      },
+      "threshold_0.7": {
+        "accuracy": 0.6700507614213198,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 396,
+        "false_negative": 195,
+        "positive_prediction_fraction": 0.0
+      },
+      "threshold_0.8": {
+        "accuracy": 0.6700507614213198,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 396,
+        "false_negative": 195,
+        "positive_prediction_fraction": 0.0
+      },
+      "threshold_0.9": {
+        "accuracy": 0.6700507614213198,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 396,
+        "false_negative": 195,
+        "positive_prediction_fraction": 0.0
+      }
+    },
+    "evalplus_mbpp": {
+      "threshold_0.1": {
+        "accuracy": 0.5158730158730159,
+        "precision": 0.5158730158730159,
+        "recall": 1.0,
+        "f1": 0.680628272251309,
+        "true_positive": 195,
+        "false_positive": 183,
+        "true_negative": 0,
+        "false_negative": 0,
+        "positive_prediction_fraction": 1.0
+      },
+      "threshold_0.2": {
+        "accuracy": 0.5211640211640212,
+        "precision": 0.5186170212765957,
+        "recall": 1.0,
+        "f1": 0.6830122591943958,
+        "true_positive": 195,
+        "false_positive": 181,
+        "true_negative": 2,
+        "false_negative": 0,
+        "positive_prediction_fraction": 0.9947089947089947
+      },
+      "threshold_0.3": {
+        "accuracy": 0.5740740740740741,
+        "precision": 0.5524691358024691,
+        "recall": 0.9179487179487179,
+        "f1": 0.6897880539499037,
+        "true_positive": 179,
+        "false_positive": 145,
+        "true_negative": 38,
+        "false_negative": 16,
+        "positive_prediction_fraction": 0.8571428571428571
+      },
+      "threshold_0.4": {
+        "accuracy": 0.5661375661375662,
+        "precision": 0.5962732919254659,
+        "recall": 0.49230769230769234,
+        "f1": 0.5393258426966293,
+        "true_positive": 96,
+        "false_positive": 65,
+        "true_negative": 118,
+        "false_negative": 99,
+        "positive_prediction_fraction": 0.42592592592592593
+      },
+      "threshold_0.5": {
+        "accuracy": 0.5,
+        "precision": 0.6153846153846154,
+        "recall": 0.08205128205128205,
+        "f1": 0.14479638009049775,
+        "true_positive": 16,
+        "false_positive": 10,
+        "true_negative": 173,
+        "false_negative": 179,
+        "positive_prediction_fraction": 0.06878306878306878
+      },
+      "threshold_0.6": {
+        "accuracy": 0.48412698412698413,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 183,
+        "false_negative": 195,
+        "positive_prediction_fraction": 0.0
+      },
+      "threshold_0.7": {
+        "accuracy": 0.48412698412698413,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 183,
+        "false_negative": 195,
+        "positive_prediction_fraction": 0.0
+      },
+      "threshold_0.8": {
+        "accuracy": 0.48412698412698413,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 183,
+        "false_negative": 195,
+        "positive_prediction_fraction": 0.0
+      },
+      "threshold_0.9": {
+        "accuracy": 0.48412698412698413,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 183,
+        "false_negative": 195,
+        "positive_prediction_fraction": 0.0
+      }
+    },
+    "evalplus_mbpp_plus": {
+      "threshold_0.1": {
+        "accuracy": 0.4470899470899471,
+        "precision": 0.4470899470899471,
+        "recall": 1.0,
+        "f1": 0.6179159049360147,
+        "true_positive": 169,
+        "false_positive": 209,
+        "true_negative": 0,
+        "false_negative": 0,
+        "positive_prediction_fraction": 1.0
+      },
+      "threshold_0.2": {
+        "accuracy": 0.4523809523809524,
+        "precision": 0.449468085106383,
+        "recall": 1.0,
+        "f1": 0.620183486238532,
+        "true_positive": 169,
+        "false_positive": 207,
+        "true_negative": 2,
+        "false_negative": 0,
+        "positive_prediction_fraction": 0.9947089947089947
+      },
+      "threshold_0.3": {
+        "accuracy": 0.5317460317460317,
+        "precision": 0.4876543209876543,
+        "recall": 0.9349112426035503,
+        "f1": 0.6409736308316429,
+        "true_positive": 158,
+        "false_positive": 166,
+        "true_negative": 43,
+        "false_negative": 11,
+        "positive_prediction_fraction": 0.8571428571428571
+      },
+      "threshold_0.4": {
+        "accuracy": 0.5978835978835979,
+        "precision": 0.5527950310559007,
+        "recall": 0.5266272189349113,
+        "f1": 0.5393939393939394,
+        "true_positive": 89,
+        "false_positive": 72,
+        "true_negative": 137,
+        "false_negative": 80,
+        "positive_prediction_fraction": 0.42592592592592593
+      },
+      "threshold_0.5": {
+        "accuracy": 0.5634920634920635,
+        "precision": 0.5769230769230769,
+        "recall": 0.08875739644970414,
+        "f1": 0.15384615384615383,
+        "true_positive": 15,
+        "false_positive": 11,
+        "true_negative": 198,
+        "false_negative": 154,
+        "positive_prediction_fraction": 0.06878306878306878
+      },
+      "threshold_0.6": {
+        "accuracy": 0.5529100529100529,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 209,
+        "false_negative": 169,
+        "positive_prediction_fraction": 0.0
+      },
+      "threshold_0.7": {
+        "accuracy": 0.5529100529100529,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 209,
+        "false_negative": 169,
+        "positive_prediction_fraction": 0.0
+      },
+      "threshold_0.8": {
+        "accuracy": 0.5529100529100529,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 209,
+        "false_negative": 169,
+        "positive_prediction_fraction": 0.0
+      },
+      "threshold_0.9": {
+        "accuracy": 0.5529100529100529,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 209,
+        "false_negative": 169,
+        "positive_prediction_fraction": 0.0
+      }
+    }
+  }
+}
+
+Score distribution snapshot:
+training min,p25,median,p75,max=[0.19592605531215668, 0.30802108347415924, 0.3284221589565277, 0.3529491424560547, 0.44998180866241455]
+evalplus min,p25,median,p75,max=[0.1828305423259735, 0.33203523606061935, 0.3800012767314911, 0.43486181646585464, 0.5738198757171631]
+
+Diagnosis: Training class prevalence is195/591=0.329949. Unweighted cross entropy on fixed features can favor scores near the majority-negative prior when the features separate labels weakly. At0.5 the training classifier returns all negatives and has zero positive recall/F1. The latest evaluation classifier has a small number of positive predictions, so its F1 is low rather than zero. The first zero training F1 occurred atstep200. Training AUPRC above prevalence and ROC-AUC above0.5 show some ranking discrimination; neither establishes useful selective routing at high precision. Lower threshold F1 can be close to a trivial all-positive baseline. This is consistent with limited linear separability of the frozen CLS representation, not demonstrated full-encoder overfitting. No numerical NaN or training crash is observed in the latest losses.
+
+Definitions: ROC-AUC integrates true-positive rate against false-positive rate across score thresholds and has random-ranking baseline0.5. AUPRC is reported here as average precision, the step-integral of precision against recall with equal scores grouped. Its no-skill baseline is positive prevalence: train0.329949, MBPP0.515873, MBPP+0.447090. F1 is evaluated at a particular threshold, so nonzero ranking areas can coexist with zero F1 at0.5.
