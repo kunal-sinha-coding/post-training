@@ -245,7 +245,10 @@ def main() -> None:
     tokenizer = AutoTokenizer.from_pretrained(args.model, **model_kwargs)
     encoder = AutoModel.from_pretrained(args.model, **model_kwargs)
     train_encoded, train_labels = encode_rows(tokenizer, train_rows, args.max_length, "label_mbpp")
-    validation_encoded, validation_labels = encode_rows(tokenizer, validation_rows, args.max_length, "label_mbpp")
+    if validation_rows:
+        validation_encoded, validation_labels = encode_rows(tokenizer, validation_rows, args.max_length, "label_mbpp")
+    else:
+        validation_encoded, validation_labels = {}, []
     eval_encoded, _ = encode_rows(tokenizer, eval_rows, args.max_length, "label_mbpp")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     encoder.to(device)
