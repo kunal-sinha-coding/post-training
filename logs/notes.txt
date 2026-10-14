@@ -4656,3 +4656,8 @@ Agentic Coding: Applied the take-meeting-notes skill to record this experiment c
 Commit name: Configure mixed MBPP and OpenCode GRPO from checkpoint 830.
 Description: Add a fresh continuation config that loads the highest-MBPP original-only checkpoint 830, trains on all filtered original MBPP rows plus the complete OpenCodeInstruct pool, and evaluates and saves every 100 optimizer steps. Record its data scope, source checkpoint, setup, and selection limitation in the experiment results file.
 Discussion: The user explicitly replaced the interrupted Jev prompt experiment with this GRPO experiment and corrected the training pool to include both original MBPP and OpenCodeInstruct. The earlier mixed-data run did not start from checkpoint 830, and the checkpoint-830 continuation used only OpenCode, so this config starts a new run with the requested adapter and combined data. It uses a fresh optimizer and a new W&B run.
+
+
+Commit name: Record mixed checkpoint-830 GRPO launch baseline.
+Description: Record the new W&B run, full training-pool baseline, separate EvalPlus baseline, and baseline evaluation time for the mixed MBPP and OpenCode continuation.
+Discussion: W&B run `2zdfg0b1` started from the checkpoint-830 adapter with fresh optimizer state and the full 591-row original MBPP plus 8,879-row OpenCode training pool. The baseline completed and GRPO is active at optimizer step 1. Evaluation and checkpoint saving are set to every 100 optimizer steps.
