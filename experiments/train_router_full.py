@@ -3,6 +3,7 @@
 # It reports retrieval metrics at a configurable optimizer-step interval.
 # It saves one step-100 checkpoint, the final model, latest predictions, metric history, and W&B artifacts.
 # It can freeze MiniLM and cache its deterministic CLS features to train only the linear head.
+# It logs ranking areas and retrieval metrics at thresholds from 0.1 through 0.9.
 
 from __future__ import annotations
 
@@ -40,6 +41,45 @@ def binary_metrics(labels: list[int], predictions: list[int]) -> dict[str, Any]:
 
 
 # Tokenize all prompts once and keep tensors on the host until each batch is evaluated.
+def ranking_metrics(labels: list[int], probabilities: list[float]) -> dict[str, Any]:
+    # Integrate precision and recall at distinct scores so tied predictions remain one group.
+    ordered = sorted(zip(probabilities, labels, strict=True), reverse=True)
+    positives = sum(labels)
+    negatives = len(labels) - positives
+    tp = fp = 0
+    previous_recall = previous_fpr = 0.0
+    previous_precision = 1.0
+    average_precision = pr_area = roc_area = 0.0
+    index = 0
+    while index < len(ordered):
+        score = ordered[index][0]
+        while index < len(ordered) and ordered[index][0] == score:
+            label = ordered[index][1]
+            tp += label
+            fp += 1 - label
+            index += 1
+        precision = tp / (tp + fp)
+        recall = tp / positives if positives else 0.0
+        fpr = fp / negatives if negatives else 0.0
+        average_precision += (recall - previous_recall) * precision
+        pr_area += (recall - previous_recall) * (precision + previous_precision) / 2
+        roc_area += (fpr - previous_fpr) * (recall + previous_recall) / 2
+        previous_recall, previous_fpr, previous_precision = recall, fpr, precision
+    return {"auprc": average_precision, "average_precision": average_precision, "pr_auc_trapezoidal": pr_area, "roc_auc": roc_area if positives and negatives else None, "positive_prevalence": positives / len(labels) if labels else 0.0}
+
+
+# Measure retrieval at each requested probability threshold.
+def threshold_metrics(labels: list[int], probabilities: list[float]) -> dict[str, Any]:
+    # Apply the positive decision rule at thresholds from 0.1 through 0.9.
+    result = {}
+    for value in range(1, 10):
+        threshold = value / 10
+        predictions = [int(probability >= threshold) for probability in probabilities]
+        result[f"threshold_{threshold:.1f}"] = {**binary_metrics(labels, predictions), "positive_prediction_fraction": sum(predictions) / len(predictions)}
+    return result
+
+
+# Tokenize task prompts and read the requested binary target.
 def encode_rows(tokenizer: Any, rows: list[dict[str, Any]], max_length: int, label_key: str = "label") -> tuple[dict[str, torch.Tensor], list[int]]:
     # Apply the same maximum input length to every task and read the requested binary target.
     encoded = tokenizer(
@@ -185,6 +225,8 @@ def main() -> None:
             "head_architecture": f"Dropout(0.1) then Linear({encoder.config.hidden_size}, 2)",
             "positive_class": 1,
             "metric_prediction_rule": "argmax over two logits",
+            "thresholds": [value / 10 for value in range(1, 10)],
+            "auprc_definition": "average precision with exact score ties grouped",
             "train_target": "passes every available MBPP-style task assertion on one greedy completion",
             "eval_targets": ["passes all MBPP base tests", "passes all MBPP+ base and extra tests"],
             "train_task_count": len(train_rows),
@@ -227,11 +269,21 @@ def main() -> None:
             encoder, head, dropout, eval_encoded, eval_mbpp_labels, device, args.eval_batch_size, eval_features
         )
         eval_mbpp_plus_metrics = binary_metrics(eval_mbpp_plus_labels, eval_predictions)
+        # Calculate ranking areas and threshold sweeps separately for each label set.
+        threshold_results = {}
+        for name, metrics, labels, probabilities in [
+            ("training", train_metrics, train_labels, train_probabilities),
+            ("evalplus_mbpp", eval_mbpp_metrics, eval_mbpp_labels, eval_probabilities),
+            ("evalplus_mbpp_plus", eval_mbpp_plus_metrics, eval_mbpp_plus_labels, eval_probabilities),
+        ]:
+            metrics.update(ranking_metrics(labels, probabilities))
+            threshold_results[name] = threshold_metrics(labels, probabilities)
         record = {
             "optimizer_step": step,
             "training": train_metrics,
             "evalplus_mbpp": eval_mbpp_metrics,
             "evalplus_mbpp_plus": eval_mbpp_plus_metrics,
+            "threshold_metrics": threshold_results,
         }
         history.append(record)
         with metrics_path.open("a", encoding="utf-8") as handle:
@@ -255,6 +307,11 @@ def main() -> None:
         payload.update({f"train/{key}": value for key, value in train_metrics.items()})
         payload.update({f"evalplus_mbpp/{key}": value for key, value in eval_mbpp_metrics.items()})
         payload.update({f"evalplus_mbpp_plus/{key}": value for key, value in eval_mbpp_plus_metrics.items()})
+        # Publish every threshold as its own metric series indexed by optimizer step.
+        for name, thresholds in threshold_results.items():
+            prefix = "train" if name == "training" else name
+            for threshold_name, metrics in thresholds.items():
+                payload.update({f"{prefix}/{threshold_name}/{key}": value for key, value in metrics.items()})
         run.log(payload, step=step)
         print(json.dumps(record), flush=True)
 
