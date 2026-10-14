@@ -56,10 +56,17 @@ def variant_input(row: dict[str, Any], variant: str) -> tuple[Any, str]:
     base_question = "Assume exactly one first-try, greedy generation by Qwen/Qwen2.5-Coder-0.5B-Instruct for this programming task, with its completion checked against all task tests. Is the model likely to pass every test?"
     if variant in ("baseline", "baseline_repeat"):
         return str(row["prompt"]), base_question
-    if variant in ("direct_outcome", "direct_normalized"):
+    if variant in ("direct_outcome", "direct_normalized", "direct_structured"):
         question = "Will one greedy, no-retry completion from Qwen/Qwen2.5-Coder-0.5B-Instruct, generated from exactly this task prompt, pass every test? Predict the outcome of the actual single run, not whether a correct solution exists in principle."
-        state = normalized_state(row) if variant == "direct_normalized" else str(row["prompt"])
-        return state, question
+        if variant == "direct_normalized":
+            return normalized_state(row), question
+        if variant == "direct_structured":
+            text = normalized_state(row)
+            lines = [line.strip() for line in text.splitlines() if line.strip()]
+            description = str(row.get("task_text") or " ".join(line for line in lines if not line.startswith("assert ")))
+            examples = [line for line in lines if line.startswith("assert ")]
+            return {"task_description": description, "visible_examples": examples}, question
+        return str(row["prompt"]), question
     if variant == "precise_question":
         question = "Using only this task prompt, estimate the probability that one greedy, no-retry completion from Qwen/Qwen2.5-Coder-0.5B-Instruct will pass every test. A task counts as success only if all tests pass."
         return str(row["prompt"]), question
@@ -120,7 +127,7 @@ def main() -> None:
     # Parse the experiment stage and the controlled prompt variants.
     parser = argparse.ArgumentParser()
     parser.add_argument("--stage", choices=("pilot", "development", "benchmark"), default="development")
-    parser.add_argument("--variants", nargs="+", choices=("baseline", "baseline_repeat", "precise_question", "direct_outcome", "direct_normalized", "normalized_prompt", "structured_state"), default=("baseline", "normalized_prompt"))
+    parser.add_argument("--variants", nargs="+", choices=("baseline", "baseline_repeat", "precise_question", "direct_outcome", "direct_normalized", "normalized_prompt", "structured_state", "direct_structured"), default=("baseline", "normalized_prompt"))
     parser.add_argument("--workers", type=int, default=8)
     parser.add_argument("--model", default="jev-latest")
     parser.add_argument("--seed", type=int, default=42)
