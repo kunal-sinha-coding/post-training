@@ -44,20 +44,22 @@ def correlations(rows: list[dict]) -> dict:
     # Compute descriptive correlations without treating intervals as independent experiments.
     output = {}
     steps = np.asarray([row["end_step"] for row in rows], dtype=float)
-    design = np.column_stack([np.ones(len(rows)), steps])
     for predictor in ["mixed_group_fraction", "mean_within_task_reward_std"]:
-        x = np.asarray([row[predictor] for row in rows])
-        for metric in ["delta_train_dense_reward", "delta_train_reconstructed_hybrid_reward", "delta_train_pass_at_1", "delta_evalplus_mbpp_pass_at_1"]:
-            y = np.asarray([row[metric] for row in rows])
+        x_all = np.asarray([row[predictor] for row in rows])
+        for metric in ["delta_mean_rollout_hybrid_reward", "delta_train_dense_reward", "delta_train_reconstructed_hybrid_reward", "delta_train_pass_at_1", "delta_evalplus_mbpp_pass_at_1"]:
+            y_all = np.asarray([row[metric] for row in rows], dtype=float)
+            valid = np.isfinite(y_all)
+            x, y = x_all[valid], y_all[valid]
+            design = np.column_stack([np.ones(len(y)), steps[valid]])
             # Remove a linear step trend for an additional sensitivity check.
             residual_x = x - design @ np.linalg.lstsq(design, x, rcond=None)[0]
             residual_y = y - design @ np.linalg.lstsq(design, y, rcond=None)[0]
             output[f"{predictor} versus {metric}"] = {
-                "intervals": len(rows),
+                "intervals": len(y),
                 "pearson": float(np.corrcoef(x, y)[0, 1]),
                 "spearman": float(spearmanr(x, y).statistic),
                 "pearson_after_linear_step_adjustment": float(np.corrcoef(residual_x, residual_y)[0, 1]),
-                "pearson_predicting_next_interval": float(np.corrcoef(x[:-1], y[1:])[0, 1]),
+                "pearson_predicting_next_interval": float(np.corrcoef(x_all[:-1], y_all[1:])[0, 1]),
             }
     return output
 
