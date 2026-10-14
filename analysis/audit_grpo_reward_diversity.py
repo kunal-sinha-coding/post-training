@@ -1,7 +1,7 @@
 # This file audits a completed GRPO run without loading models or changing training.
 # It reads step-indexed trainer history and greedy training and EvalPlus evaluations.
 # It groups updates into fixed intervals and compares reward variation with metric changes.
-# It saves a CSV table, provenance, correlations, and a figure for reproduction.
+# It saves a CSV table, provenance, and correlations for reproduction.
 
 from __future__ import annotations
 
@@ -60,35 +60,6 @@ def correlations(rows: list[dict]) -> dict:
                 "pearson_predicting_next_interval": float(np.corrcoef(x[:-1], y[1:])[0, 1]),
             }
     return output
-
-
-def plot(rows: list[dict], path: Path) -> None:
-    """Save the progression of reward diversity and measured performance."""
-    # Use a standalone plotting backend for a reproducible image.
-    import matplotlib
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-
-    steps = [row["end_step"] for row in rows]
-    figure, axes = plt.subplots(3, 1, figsize=(10, 10), sharex=True, constrained_layout=True)
-    axes[0].plot(steps, [100 * row["mixed_group_fraction"] for row in rows], marker="o")
-    axes[0].set_ylabel("Varied task groups (%)")
-    axes[0].set_title("Original MBPP GRPO: reward diversity and performance")
-    # Show checkpoint metrics separately from stochastic rollout rewards.
-    for key, label in [("train_pass_at_1", "Training pass@1"), ("evalplus_mbpp_pass_at_1", "EvalPlus MBPP pass@1")]:
-        axes[1].plot(steps, [100 * row[key] for row in rows], marker="o", label=label)
-        axes[2].plot(steps, [100 * row[f"delta_{key}"] for row in rows], marker="o", label=label)
-    axes[1].set_ylabel("Checkpoint pass@1 (%)")
-    axes[2].set_ylabel("Gain per interval (pp)")
-    axes[2].set_xlabel("Optimizer steps")
-    axes[2].axhline(0, color="black", linewidth=0.8)
-    # Add labels and grids before writing the figure.
-    for axis in axes:
-        axis.grid(alpha=0.25)
-    axes[1].legend()
-    axes[2].legend()
-    figure.savefig(path, dpi=160)
-    plt.close(figure)
 
 
 def main() -> None:
@@ -160,7 +131,6 @@ def main() -> None:
         "limitations": "13 serially dependent intervals from one run. Correlation is not causation. Time and task mastery confound both diversity and improvement. Reward normalization means nonzero standard deviation magnitude is not a direct measure of gradient strength. The unindexed candidate trace has1320 calls and cannot be mapped to steps by ordinal position alone.",
     }
     (args.output_dir / "report.json").write_text(json.dumps(report, indent=2) + "\n")
-    plot(rows, args.output_dir / "progression.png")
     # Print the requested compact interval table with percentage-point changes.
     print("Steps | Varied groups % | Rollout reward | Training reward delta | Train pass@1 delta pp | MBPP pass@1 delta pp")
     for row in rows:
