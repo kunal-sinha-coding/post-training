@@ -4550,3 +4550,6 @@ Discussion: The fresh effective-batch-32 W&B run `72fg9g2e` is active and target
 
 
 2026-10-14: Holdout-300 run `9mnzniyn` reached step 4,600; latest evaluation at 4,500 shows train F1 0.9940, source holdout F1 0.8415, MBPP F1 0.1333, and MBPP+ F1 0.1307. This is another EvalPlus collapse despite strong source holdout. Run remains active.
+
+
+2026-10-14: Holdout-300 run `9mnzniyn` reached step 4,881; latest evaluation at 4,800 shows train F1 0.9966, source holdout F1 0.8302, MBPP F1 0.3655, and MBPP+ F1 0.3485. EvalPlus rebounded after the step-4,500 collapse. Run remains active.
