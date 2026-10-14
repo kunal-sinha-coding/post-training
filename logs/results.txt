@@ -18057,3 +18057,110 @@ Original first9 recorded batches:60 mixed groups=83.3333percent;12 all-zero=16.6
 Interpretation: The OpenCode sample has24 flat task groups and48 varied task groups. Flatness is measured across16 candidates for the same task, not across different tasks. All nine complete OpenCode batches contain at least3 varied task groups. The later original sample has50 flat groups and22 varied groups. OpenCode currently has more within-task reward signal than that later original sample. The original first recorded sample has more within-task variation than either other sample.
 
 Limitations: Each sample is small. The policy state and data distributions differ, so this is descriptive rather than a matched-policy causal comparison. Exact old optimizer steps are unknown from these traces. Reference test counts differ between original MBPP and OpenCode. The KL term can act even on flat reward groups. Current training is still active. Artifact: outputs/grpo-opencode-from-mbpp-best830-8x16-b128-micro2-workers8-0.5b-50000-20261014/original-last9-reward-comparison.json.
+
+
+## 2026-10-14: Original GRPO within-task diversity progression audit
+
+Purpose: Test whether decreasing within-task reward diversity accompanies slower training and EvalPlus MBPP improvement. The user requested100-epoch intervals; the audit interprets these as100 optimizer steps because the experiment is logged and evaluated by optimizer step. This is a read-only audit of the original-only20260929 restart run. Current OpenCode continuation k4z1lm6f remains active and unchanged.
+
+Complete setup: Source run and config are outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-restart-20260929 and configs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-restart-20260929.yaml. Original Qwen2.5-Coder-0.5B-Instruct, LoRA rank16 alpha32 dropout0.05, seed42, DAPO, learning rate1e-5, beta0.01, hybrid reward0.75*full_pass+0.25*test_fraction,16 candidates per task,8 tasks and128 candidates per optimizer step, microbatch2, accumulation64, reward workers8, BF16, visible_test_count1 and evaluation and save interval10. The historical greedy training evaluations contain593 tasks, and canonical EvalPlus contains378 tasks.
+
+Selection and data: Use every unique history record for optimizer steps1..1300 from checkpoint-1300/trainer_state.json. No missing or duplicate steps. Each interval contains100 updates and800 sampled task-group occurrences, with16 candidates each. No tasks or candidates are selected by outcomes. Ground truth is used only to score training rewards and, separately, to measure the fixed canonical benchmark at endpoints0,100,...1300. No new checkpoint selection is performed. The old raw reward trace has1320 calls without step identifiers, so it is not assumed to map ordinal positions to optimizer steps.
+
+Metrics: Within-task diversity is1-frac_reward_zero_std, aggregated over100 steps. Reward_std is the logged mean within-task reward standard deviation. Actual GRPO reward is the mean of stochastic hybrid candidate rewards over each interval. Its delta compares adjacent interval means, with no delta for the first interval. Greedy training average_reward is the dense test-pass fraction and differs from hybrid GRPO reward. Greedy metric and pass@1 deltas compare interval endpoint to its starting checkpoint. Reconstructed greedy hybrid reward uses the configured0.75 weighting. Canonical MBPP pass@1 is counted from base_status; MBPP+ requires both base_status and plus_status pass.
+
+| Steps | Mixed groups /800 | Mixed % | Mean group std | Mean GRPO reward | Delta GRPO mean | Delta greedy dense reward | Train pass@1 | Delta train pass pp | MBPP pass@1 | Delta MBPP pp |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1 to 100 | 642 | 80.2500 | 0.236888 | 0.292474 | N/A | +0.022485 | 0.35750422 | +3.2040 | 0.55026455 | +3.1746 |
+| 101 to 200 | 582 | 72.7500 | 0.209777 | 0.367897 | +0.075423 | +0.048904 | 0.40640809 | +4.8904 | 0.59259259 | +4.2328 |
+| 201 to 300 | 580 | 72.5000 | 0.206144 | 0.400566 | +0.032669 | +0.056211 | 0.45531197 | +4.8904 | 0.60052910 | +0.7937 |
+| 301 to 400 | 556 | 69.5000 | 0.202371 | 0.447988 | +0.047422 | +0.055087 | 0.50927487 | +5.3963 | 0.59788360 | -0.2646 |
+| 401 to 500 | 540 | 67.5000 | 0.187889 | 0.473229 | +0.025241 | +0.032603 | 0.53288364 | +2.3609 | 0.62433862 | +2.6455 |
+| 501 to 600 | 513 | 64.1250 | 0.178696 | 0.501732 | +0.028503 | +0.039348 | 0.58010118 | +4.7218 | 0.62962963 | +0.5291 |
+| 601 to 700 | 464 | 58.0000 | 0.159163 | 0.557747 | +0.056016 | +0.025295 | 0.60539629 | +2.5295 | 0.63756614 | +0.7937 |
+| 701 to 800 | 463 | 57.8750 | 0.159436 | 0.553392 | -0.004355 | +0.019112 | 0.62057336 | +1.5177 | 0.63492063 | -0.2646 |
+| 801 to 900 | 444 | 55.5000 | 0.147437 | 0.587754 | +0.034362 | +0.017426 | 0.63406408 | +1.3491 | 0.63492063 | +0.0000 |
+| 901 to 1000 | 412 | 51.5000 | 0.131662 | 0.634701 | +0.046947 | +0.016863 | 0.65767285 | +2.3609 | 0.63492063 | +0.0000 |
+| 1001 to 1100 | 368 | 46.0000 | 0.120441 | 0.621074 | -0.013626 | +0.019674 | 0.67959528 | +2.1922 | 0.63756614 | +0.2646 |
+| 1101 to 1200 | 371 | 46.3750 | 0.120968 | 0.656048 | +0.034974 | +0.010680 | 0.69139966 | +1.1804 | 0.63756614 | +0.0000 |
+| 1201 to 1300 | 328 | 41.0000 | 0.103364 | 0.667715 | +0.011667 | +0.014053 | 0.70320405 | +1.1804 | 0.63227513 | -0.5291 |
+
+All correlations, including lagged and linear-step-adjusted sensitivity checks:
+{
+  "mixed_group_fraction versus delta_mean_rollout_hybrid_reward": {
+    "intervals": 12,
+    "pearson": 0.506390388195202,
+    "spearman": 0.4755244755244756,
+    "pearson_after_linear_step_adjustment": -0.1503893043285174,
+    "pearson_predicting_next_interval": 0.5734847174299785
+  },
+  "mixed_group_fraction versus delta_train_dense_reward": {
+    "intervals": 13,
+    "pearson": 0.7109624794683918,
+    "spearman": 0.7967032967032966,
+    "pearson_after_linear_step_adjustment": -0.3557793744459719,
+    "pearson_predicting_next_interval": 0.9025639579633798
+  },
+  "mixed_group_fraction versus delta_train_reconstructed_hybrid_reward": {
+    "intervals": 13,
+    "pearson": 0.737492629020523,
+    "spearman": 0.8406593406593407,
+    "pearson_after_linear_step_adjustment": -0.35866488876477043,
+    "pearson_predicting_next_interval": 0.8684033413706459
+  },
+  "mixed_group_fraction versus delta_train_pass_at_1": {
+    "intervals": 13,
+    "pearson": 0.7345695421268131,
+    "spearman": 0.8236945855859433,
+    "pearson_after_linear_step_adjustment": -0.3456644226910478,
+    "pearson_predicting_next_interval": 0.8464452883612427
+  },
+  "mixed_group_fraction versus delta_evalplus_mbpp_pass_at_1": {
+    "intervals": 13,
+    "pearson": 0.6943562824104261,
+    "spearman": 0.6971121059009809,
+    "pearson_after_linear_step_adjustment": -0.27546793537041303,
+    "pearson_predicting_next_interval": 0.6838967454458786
+  },
+  "mean_within_task_reward_std versus delta_mean_rollout_hybrid_reward": {
+    "intervals": 12,
+    "pearson": 0.4969362974422085,
+    "spearman": 0.4125874125874127,
+    "pearson_after_linear_step_adjustment": -0.2564959898843876,
+    "pearson_predicting_next_interval": 0.5838229495764913
+  },
+  "mean_within_task_reward_std versus delta_train_dense_reward": {
+    "intervals": 13,
+    "pearson": 0.7139545436283496,
+    "spearman": 0.7802197802197801,
+    "pearson_after_linear_step_adjustment": -0.3199400549430726,
+    "pearson_predicting_next_interval": 0.8913739941550163
+  },
+  "mean_within_task_reward_std versus delta_train_reconstructed_hybrid_reward": {
+    "intervals": 13,
+    "pearson": 0.7434461982927028,
+    "spearman": 0.8241758241758241,
+    "pearson_after_linear_step_adjustment": -0.28371150568250103,
+    "pearson_predicting_next_interval": 0.8457140532431895
+  },
+  "mean_within_task_reward_std versus delta_train_pass_at_1": {
+    "intervals": 13,
+    "pearson": 0.7414335598524475,
+    "spearman": 0.8016559344665871,
+    "pearson_after_linear_step_adjustment": -0.2598167324642829,
+    "pearson_predicting_next_interval": 0.8201425183358075
+  },
+  "mean_within_task_reward_std versus delta_evalplus_mbpp_pass_at_1": {
+    "intervals": 13,
+    "pearson": 0.6893418368485231,
+    "spearman": 0.6611499734537081,
+    "pearson_after_linear_step_adjustment": -0.33406136326989727,
+    "pearson_predicting_next_interval": 0.7078836456481616
+  }
+}
+
+Observed progression: Mixed-task-group fraction falls from0.8025 to0.41 and mean within-task reward standard deviation from0.2369 to0.1034. Training pass@1 rises from0.605396 at step700 to0.703204 at step1300, while MBPP changes from0.637566 to0.632275. This supports reduced task-level signal as a plausible contributor to slowdown, but training continues to improve and41percent of final-interval groups remain varied. The benchmark plateau therefore cannot be attributed to complete loss of training signal. Limited transfer to unseen tasks can coexist with declining diversity.
+
+Limitations:13 serially dependent intervals from one run, with12 rollout mean changes. Raw correlations share a strong training-time trend; after linear step adjustment their signs reverse. This does not identify a causal effect of diversity. Lower nonzero reward standard deviation is not automatically weaker normalized GRPO advantage. Stochastic rollout means also change with sampled tasks. The original endpoint and initialization benchmarks are fixed historical measurements. Independent agent verification confirms all1300-step coverage,800 groups per interval, metric counts and key correlations.
+
+Reproduction: Code commitf00369c, script analysis/audit_grpo_reward_diversity.py, SHA-256 0a178e6baf0678463219f4a4ec2c8e1b34f34dc3117da1fc22f8f0f1c1c4220b. Python3.12.3, NumPy2.1.2, SciPy1.18.1. The full CSV is outputs/audit-original-grpo-diversity-20261014/intervals.csv and the source-hashed report is outputs/audit-original-grpo-diversity-20261014/report.json. Command: python analysis/audit_grpo_reward_diversity.py --run-dir outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-restart-20260929 --config configs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-restart-20260929.yaml --checkpoint-step1300 --interval100 --output-dir outputs/audit-original-grpo-diversity-20261014. Use spaces between option names and values. Source checkpoint trainer-state SHA-256 707cf855cf1de58e49e81349c65315f79e09c440efb42e00c6070cfd10330e84.
