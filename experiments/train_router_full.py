@@ -1,8 +1,8 @@
 # This script trains MiniLM on the selected MBPP router dataset and evaluates both training and EvalPlus data.
 # It uses the saved one-greedy-attempt labels and a binary CLS classification head.
 # It reports retrieval metrics at a configurable optimizer-step interval.
-# It selects a checkpoint on a grouped validation split and uses EvalPlus only for final measurement.
-# It can freeze MiniLM and cache its deterministic CLS features to train only the linear head.
+# It can select checkpoints on validation or measure EvalPlus on schedule for full-data runs.
+# It can freeze MiniLM, train selected final blocks, or fine-tune the full encoder.
 # It logs ranking areas and retrieval metrics at thresholds from 0.1 through 0.9.
 
 from __future__ import annotations
@@ -83,6 +83,8 @@ def threshold_metrics(labels: list[int], probabilities: list[float]) -> dict[str
 # Split normalized task-text groups into fixed stratified training and validation folds.
 def split_rows(rows: list[dict[str, Any]], validation_fraction: float, seed: int) -> tuple[list[int], list[int]]:
     # Keep duplicate task descriptions together so they cannot leak across the split.
+    if validation_fraction == 0:
+        return list(range(len(rows))), []
     groups: dict[tuple[int, str], list[int]] = {}
     for index, row in enumerate(rows):
         normalized = re.sub(r"\s+", " ", str(row.get("task_text", row["prompt"]))).strip().casefold()
@@ -193,7 +195,8 @@ def main() -> None:
     parser.add_argument("--model", default="microsoft/MiniLM-L12-H384-uncased")
     parser.add_argument("--freeze-encoder", action="store_true", help="Train only the linear head on cached pretrained CLS features.")
     parser.add_argument("--unfreeze-last-layer", action="store_true", help="Train MiniLM's final transformer layer and the classification head.")
-    parser.add_argument("--validation-fraction", type=float, default=0.2)
+    parser.add_argument("--unfreeze-last-n-layers", type=int, help="Train the requested number of final MiniLM transformer blocks and the classification head.")
+    parser.add_argument("--validation-fraction", type=float, default=0.2, help="Use zero to train on all original tasks and evaluate EvalPlus at each interval.")
     parser.add_argument("--encoder-learning-rate", type=float, default=5e-6)
     parser.add_argument("--early-stopping-patience", type=int, default=5, help="Use zero to complete the full epoch budget without early stopping.")
     parser.add_argument("--seed", type=int, default=42)
@@ -208,10 +211,11 @@ def main() -> None:
     parser.add_argument("--wandb-project", default="grpo-mbpp")
     parser.add_argument("--wandb-entity", default="kunal-personal")
     args = parser.parse_args()
-    if args.freeze_encoder and args.unfreeze_last_layer:
-        parser.error("Choose either --freeze-encoder or --unfreeze-last-layer.")
-    if not 0 < args.validation_fraction < 1:
-        parser.error("The validation fraction must be between zero and one.")
+    selected_modes = int(args.freeze_encoder) + int(args.unfreeze_last_layer) + int(args.unfreeze_last_n_layers is not None)
+    if selected_modes > 1:
+        parser.error("Choose only one encoder training mode.")
+    if not 0 <= args.validation_fraction < 1:
+        parser.error("The validation fraction must be zero or between zero and one.")
     if args.early_stopping_patience < 0:
         parser.error("Early-stopping patience cannot be negative.")
 
@@ -245,21 +249,28 @@ def main() -> None:
     encoder.to(device)
     dropout = torch.nn.Dropout(0.1).to(device)
     head = torch.nn.Linear(int(encoder.config.hidden_size), 2).to(device)
-    # Freeze all encoder weights, then optionally enable only the final transformer layer.
+    layer_count = len(encoder.encoder.layer)
+    unfreeze_count = 1 if args.unfreeze_last_layer else (args.unfreeze_last_n_layers or 0)
+    if unfreeze_count < 0 or unfreeze_count > layer_count:
+        parser.error(f"The number of unfrozen layers must be between one and {layer_count}.")
+    if args.unfreeze_last_n_layers == 0:
+        parser.error("--unfreeze-last-n-layers must be at least one.")
+    # Freeze all encoder weights, then optionally enable the selected final transformer blocks.
     train_features = validation_features = eval_features = None
-    if args.freeze_encoder or args.unfreeze_last_layer:
+    if args.freeze_encoder or unfreeze_count:
         encoder.requires_grad_(False)
-    if args.unfreeze_last_layer:
-        encoder.encoder.layer[-1].requires_grad_(True)
+    if unfreeze_count:
+        for layer in encoder.encoder.layer[-unfreeze_count:]:
+            layer.requires_grad_(True)
     if args.freeze_encoder:
         encoder.eval()
         train_features = encoder_features(encoder, train_encoded, device, args.eval_batch_size)
         validation_features = encoder_features(encoder, validation_encoded, device, args.eval_batch_size)
         eval_features = encoder_features(encoder, eval_encoded, device, args.eval_batch_size)
     # Use separate learning rates so the pretrained encoder receives smaller updates.
-    if args.unfreeze_last_layer:
+    if unfreeze_count:
         optimizer = torch.optim.AdamW([
-            {"params": encoder.encoder.layer[-1].parameters(), "lr": args.encoder_learning_rate},
+            {"params": [parameter for layer in encoder.encoder.layer[-unfreeze_count:] for parameter in layer.parameters()], "lr": args.encoder_learning_rate},
             {"params": head.parameters(), "lr": args.learning_rate},
         ])
     else:
@@ -296,6 +307,7 @@ def main() -> None:
             "model": args.model,
             "freeze_encoder": args.freeze_encoder,
             "unfreeze_last_layer": args.unfreeze_last_layer,
+            "unfreeze_last_n_layers": unfreeze_count,
             "encoder_trainable_parameters": sum(parameter.numel() for parameter in encoder.parameters() if parameter.requires_grad),
             "head_trainable_parameters": sum(parameter.numel() for parameter in head.parameters()),
             "head_architecture": f"Dropout(0.1) then Linear({encoder.config.hidden_size}, 2)",
@@ -319,7 +331,8 @@ def main() -> None:
     )
     run.define_metric("optimizer_step")
     run.define_metric("train/*", step_metric="optimizer_step")
-    run.define_metric("validation/*", step_metric="optimizer_step")
+    if validation_rows:
+        run.define_metric("validation/*", step_metric="optimizer_step")
     run.define_metric("evalplus_mbpp/*", step_metric="optimizer_step")
     run.define_metric("evalplus_mbpp_plus/*", step_metric="optimizer_step")
     train_artifact = wandb.Artifact("router-mbpp-original-only-one-shot-labels-20261013", type="dataset")
@@ -341,30 +354,30 @@ def main() -> None:
 
     # Measure training and validation metrics, and optionally the final EvalPlus benchmark.
     def evaluate_and_log(step: int, include_evalplus: bool = False) -> dict[str, Any]:
-        # Compute metrics and cross entropy for the training and validation folds.
+        # Compute metrics and cross entropy for the training fold.
         train_metrics, train_predictions, train_probabilities = predict_rows(
             encoder, head, dropout, train_encoded, train_labels, device, args.eval_batch_size, train_features
         )
-        validation_metrics, validation_predictions, validation_probabilities = predict_rows(
-            encoder, head, dropout, validation_encoded, validation_labels, device, args.eval_batch_size, validation_features
-        )
-        # Calculate ranking areas and threshold sweeps separately for both training folds.
-        threshold_results = {}
-        for name, metrics, labels, probabilities in [
-            ("training", train_metrics, train_labels, train_probabilities),
-            ("validation", validation_metrics, validation_labels, validation_probabilities),
-        ]:
-            metrics.update(ranking_metrics(labels, probabilities))
-            threshold_results[name] = threshold_metrics(labels, probabilities)
+        # Calculate ranking metrics and thresholds for training and optional validation rows.
+        threshold_results = {"training": threshold_metrics(train_labels, train_probabilities)}
+        train_metrics.update(ranking_metrics(train_labels, train_probabilities))
         record = {
             "optimizer_step": step,
             "training": train_metrics,
-            "validation": validation_metrics,
             "threshold_metrics": threshold_results,
         }
-        record["training"]["loss"] = dataset_loss(encoder, head, dropout, train_encoded, train_labels, device, args.eval_batch_size, train_features)
-        record["validation"]["loss"] = dataset_loss(encoder, head, dropout, validation_encoded, validation_labels, device, args.eval_batch_size, validation_features)
-        # Evaluate EvalPlus only at the selected checkpoint after training is complete.
+        record["training"]["evaluation_loss"] = dataset_loss(encoder, head, dropout, train_encoded, train_labels, device, args.eval_batch_size, train_features)
+        validation_predictions = validation_probabilities = None
+        if validation_rows:
+            # Measure validation metrics without using the EvalPlus benchmark for selection.
+            validation_metrics, validation_predictions, validation_probabilities = predict_rows(
+                encoder, head, dropout, validation_encoded, validation_labels, device, args.eval_batch_size, validation_features
+            )
+            validation_metrics.update(ranking_metrics(validation_labels, validation_probabilities))
+            validation_metrics["loss"] = dataset_loss(encoder, head, dropout, validation_encoded, validation_labels, device, args.eval_batch_size, validation_features)
+            threshold_results["validation"] = threshold_metrics(validation_labels, validation_probabilities)
+            record["validation"] = validation_metrics
+        # Evaluate EvalPlus on schedule for full-data reproduction runs or at final selection.
         if include_evalplus:
             eval_mbpp_metrics, eval_predictions, eval_probabilities = predict_rows(
                 encoder, head, dropout, eval_encoded, eval_mbpp_labels, device, args.eval_batch_size, eval_features
@@ -379,10 +392,9 @@ def main() -> None:
         history.append(record)
         with metrics_path.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(record) + "\n")
-        prediction_sets = [
-            ("training", train_rows, train_labels, train_predictions, train_probabilities),
-            ("validation", validation_rows, validation_labels, validation_predictions, validation_probabilities),
-        ]
+        prediction_sets = [("training", train_rows, train_labels, train_predictions, train_probabilities)]
+        if validation_rows:
+            prediction_sets.append(("validation", validation_rows, validation_labels, validation_predictions, validation_probabilities))
         if include_evalplus:
             prediction_sets.append(("evalplus", eval_rows, eval_mbpp_labels, eval_predictions, eval_probabilities))
         with predictions_path.open("w", encoding="utf-8") as handle:
@@ -399,7 +411,8 @@ def main() -> None:
                     }) + "\n")
         payload = {"optimizer_step": step}
         payload.update({f"train/{key}": value for key, value in train_metrics.items()})
-        payload.update({f"validation/{key}": value for key, value in validation_metrics.items()})
+        if validation_rows:
+            payload.update({f"validation/{key}": value for key, value in validation_metrics.items()})
         if include_evalplus:
             payload.update({f"evalplus_mbpp/{key}": value for key, value in eval_mbpp_metrics.items()})
             payload.update({f"evalplus_mbpp_plus/{key}": value for key, value in eval_mbpp_plus_metrics.items()})
@@ -413,7 +426,7 @@ def main() -> None:
         return record
 
     # Report the untrained baseline before the first optimizer update.
-    initial_record = evaluate_and_log(0)
+    initial_record = evaluate_and_log(0, include_evalplus=not validation_rows)
 
     # Shuffle the labeled training set until the configured update budget or early stop.
     global_step = 0
@@ -425,12 +438,13 @@ def main() -> None:
     labels_tensor = torch.tensor(train_labels, dtype=torch.long)
     loss_history_path = args.output_dir / "training_loss.jsonl"
     loss_history_path.unlink(missing_ok=True)
-    best_validation_ap = float(initial_record["validation"]["average_precision"])
-    best_step = 0
+    best_validation_ap = float(initial_record["validation"]["average_precision"]) if validation_rows else None
+    best_step = 0 if validation_rows else None
     stale_evaluations = 0
-    # Keep the initial checkpoint in case validation AP never improves.
-    torch.save(encoder.state_dict(), args.output_dir / "best_encoder_state.pt")
-    torch.save(head.state_dict(), args.output_dir / "best_classification_head.pt")
+    if validation_rows:
+        # Keep the initial checkpoint in case validation AP never improves.
+        torch.save(encoder.state_dict(), args.output_dir / "best_encoder_state.pt")
+        torch.save(head.state_dict(), args.output_dir / "best_classification_head.pt")
     while global_step < target_steps and (args.early_stopping_patience == 0 or stale_evaluations < args.early_stopping_patience):
         # Shuffle one new pass through the selected training tasks.
         order = torch.randperm(len(train_rows))
@@ -463,25 +477,31 @@ def main() -> None:
                 tokenizer.save_pretrained(checkpoint_dir)
                 torch.save(head.state_dict(), args.output_dir / "checkpoint-100" / "classification_head.pt")
             if global_step % args.eval_every_steps == 0:
-                current_record = evaluate_and_log(global_step)
-                current_ap = float(current_record["validation"]["average_precision"])
-                if current_ap > best_validation_ap:
-                    # Save the checkpoint that has the best validation average precision.
-                    best_validation_ap = current_ap
-                    best_step = global_step
-                    stale_evaluations = 0
-                    torch.save(encoder.state_dict(), args.output_dir / "best_encoder_state.pt")
-                    torch.save(head.state_dict(), args.output_dir / "best_classification_head.pt")
-                else:
-                    stale_evaluations += 1
-                if args.early_stopping_patience > 0 and stale_evaluations >= args.early_stopping_patience:
-                    print(json.dumps({"early_stopping_step": global_step, "best_step": best_step, "best_validation_average_precision": best_validation_ap}), flush=True)
-                    break
+                current_record = evaluate_and_log(global_step, include_evalplus=not validation_rows)
+                if validation_rows:
+                    current_ap = float(current_record["validation"]["average_precision"])
+                    if current_ap > best_validation_ap:
+                        # Save the checkpoint that has the best validation average precision.
+                        best_validation_ap = current_ap
+                        best_step = global_step
+                        stale_evaluations = 0
+                        torch.save(encoder.state_dict(), args.output_dir / "best_encoder_state.pt")
+                        torch.save(head.state_dict(), args.output_dir / "best_classification_head.pt")
+                    else:
+                        stale_evaluations += 1
+                    if args.early_stopping_patience > 0 and stale_evaluations >= args.early_stopping_patience:
+                        print(json.dumps({"early_stopping_step": global_step, "best_step": best_step, "best_validation_average_precision": best_validation_ap}), flush=True)
+                        break
 
     # Restore the validation-selected weights before measuring EvalPlus once.
-    encoder.load_state_dict(torch.load(args.output_dir / "best_encoder_state.pt", map_location=device, weights_only=True))
-    head.load_state_dict(torch.load(args.output_dir / "best_classification_head.pt", map_location=device, weights_only=True))
-    final_record = evaluate_and_log(global_step, include_evalplus=True)
+    if validation_rows:
+        # Restore the validation-selected weights before the one final EvalPlus measurement.
+        encoder.load_state_dict(torch.load(args.output_dir / "best_encoder_state.pt", map_location=device, weights_only=True))
+        head.load_state_dict(torch.load(args.output_dir / "best_classification_head.pt", map_location=device, weights_only=True))
+    if history[-1]["optimizer_step"] == global_step and "evalplus_mbpp" in history[-1]:
+        final_record = history[-1]
+    else:
+        final_record = evaluate_and_log(global_step, include_evalplus=True)
 
     # Save the final encoder, classification head, metrics, and complete run configuration.
     encoder.eval()
@@ -494,11 +514,13 @@ def main() -> None:
         "experiment": "MiniLM router capacity comparison with grouped training validation and separate MBPP and MBPP+ retrieval evaluation",
         "model": args.model,
         "architecture": {
-            "encoder": "frozen pretrained MiniLM" if args.freeze_encoder else ("pretrained MiniLM with final transformer layer fine-tuned" if args.unfreeze_last_layer else "fully fine-tuned MiniLM"),
+            "encoder": "frozen pretrained MiniLM" if args.freeze_encoder else (f"pretrained MiniLM with final {unfreeze_count} transformer blocks fine-tuned" if unfreeze_count else "fully fine-tuned MiniLM"),
             "pooling": "last hidden state at CLS position",
             "head": f"Dropout(0.1) then Linear({encoder.config.hidden_size}, 2)",
             "encoder_parameters": sum(parameter.numel() for parameter in encoder.parameters()),
             "head_parameters": sum(parameter.numel() for parameter in head.parameters()),
+            "trainable_encoder_parameters": sum(parameter.numel() for parameter in encoder.parameters() if parameter.requires_grad),
+            "unfrozen_transformer_blocks": unfreeze_count,
         },
         "train_data": str(args.train_data),
         "eval_data": str(args.eval_data),
@@ -537,10 +559,11 @@ def main() -> None:
     model_artifact.add_dir(str(args.output_dir))
     run.log_artifact(model_artifact)
     run.summary["optimizer_steps"] = global_step
-    run.summary["best_validation_step"] = best_step
-    run.summary["best_validation_average_precision"] = best_validation_ap
     run.summary["final_train_metrics"] = final_record["training"]
-    run.summary["final_validation_metrics"] = final_record["validation"]
+    if validation_rows:
+        run.summary["best_validation_step"] = best_step
+        run.summary["best_validation_average_precision"] = best_validation_ap
+        run.summary["final_validation_metrics"] = final_record["validation"]
     run.summary["final_evalplus_mbpp_metrics"] = final_record["evalplus_mbpp"]
     run.summary["final_evalplus_mbpp_plus_metrics"] = final_record["evalplus_mbpp_plus"]
     run.summary["elapsed_seconds"] = metadata["elapsed_seconds"]
