@@ -54,8 +54,11 @@ def normalized_state(row: dict[str, Any]) -> str:
 def variant_input(row: dict[str, Any], variant: str) -> tuple[Any, str]:
     # Change only the question wording or state formatting defined by the selected condition.
     base_question = "Assume exactly one first-try, greedy generation by Qwen/Qwen2.5-Coder-0.5B-Instruct for this programming task, with its completion checked against all task tests. Is the model likely to pass every test?"
-    if variant == "baseline":
+    if variant in ("baseline", "baseline_repeat"):
         return str(row["prompt"]), base_question
+    if variant == "direct_outcome":
+        question = "Will one greedy, no-retry completion from Qwen/Qwen2.5-Coder-0.5B-Instruct, generated from exactly this task prompt, pass every test? Predict the outcome of the actual single run, not whether a correct solution exists in principle."
+        return str(row["prompt"]), question
     if variant == "precise_question":
         question = "Using only this task prompt, estimate the probability that one greedy, no-retry completion from Qwen/Qwen2.5-Coder-0.5B-Instruct will pass every test. A task counts as success only if all tests pass."
         return str(row["prompt"]), question
@@ -110,7 +113,7 @@ def main() -> None:
     # Parse the experiment stage and the controlled prompt variants.
     parser = argparse.ArgumentParser()
     parser.add_argument("--stage", choices=("pilot", "development", "benchmark"), default="development")
-    parser.add_argument("--variants", nargs="+", choices=("baseline", "precise_question", "normalized_prompt"), default=("baseline", "normalized_prompt"))
+    parser.add_argument("--variants", nargs="+", choices=("baseline", "baseline_repeat", "precise_question", "direct_outcome", "normalized_prompt"), default=("baseline", "normalized_prompt"))
     parser.add_argument("--workers", type=int, default=8)
     parser.add_argument("--model", default="jev-latest")
     parser.add_argument("--seed", type=int, default=42)
