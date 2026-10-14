@@ -4577,3 +4577,5 @@ Discussion: The fresh effective-batch-32 W&B run `72fg9g2e` is active and target
 2026-10-14: Completed the step-zero baseline for active GRPO run hx4ghcgp. It scored all 14,198 training tasks at pass@1 0.3722, average reward 0.5494, and test pass fraction 0.6557. The 378-task EvalPlus run scored MBPP pass@1 0.519 and MBPP+ pass@1 0.442. The baseline took about 14 minutes; optimizer training then began.
 
 2026-10-14: The active OpenCode plus hard-synthetic GRPO run completed optimizer step 1. Loss was 0.0395, mean reward was 0.3154, all reward groups were mixed, and 27.34 percent of rollout candidates passed every task test. Step time was about 57 seconds. At this rate, 50,000 steps would take roughly 32 days before evaluation overhead. This early estimate will change with more observations.
+
+2026-10-14: The OpenCode plus hard-synthetic GRPO run reached step 10. EvalPlus pass@1 was 0.529 on MBPP and 0.444 on MBPP+, versus step-zero values 0.519 and 0.442. The scheduled full training-pool evaluation is still running before the combined metrics are logged to W&B.
