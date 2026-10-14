@@ -4526,3 +4526,6 @@ Discussion: The fresh effective-batch-32 W&B run `72fg9g2e` is active and target
 
 
 2026-10-13: Holdout-300 run `9mnzniyn` reached step 2,539; latest evaluation at 2,500 shows train F1 0.9843, OpenCode holdout F1 0.7904, MBPP F1 0.2791, and MBPP+ F1 0.2500. Source holdout remains higher than EvalPlus, with substantial checkpoint volatility. Run remains active.
+
+
+2026-10-13: Holdout-300 run `9mnzniyn` reached step 2,900; latest evaluation at 2,800 has train F1 0.9885, source holdout F1 0.7799, MBPP F1 0.3435, and MBPP+ F1 0.3220. Run remains active.
