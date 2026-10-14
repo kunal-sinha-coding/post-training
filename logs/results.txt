@@ -17936,3 +17936,7 @@ W&B run `9mnzniyn` remains active. At step 3,700, train, OpenCode holdout, MBPP,
 
 HOLDOUT-300 ROUTER RUN UPDATES AT STEPS 3900 AND 4000
 W&B run `9mnzniyn` remains active. At step 3,900, train, OpenCode holdout, MBPP, and MBPP+ F1 were 0.9955, 0.8024, 0.3538, and 0.3028. At step 4,000, training accuracy, precision, recall, and F1 were 0.9952, 0.9962, 0.9949, and 0.9956. OpenCode holdout metrics were 0.7986, 0.8684, 0.7857, and 0.8250. EvalPlus MBPP metrics were 0.5079, 0.5957, 0.1436, and 0.2314. EvalPlus MBPP+ metrics were 0.5450, 0.4681, 0.1302, and 0.2037.
+
+
+HOLDOUT-300 ROUTER RUN UPDATES AT STEPS 4200 AND 4300
+W&B run `9mnzniyn` remains active. At step 4,200, train, OpenCode holdout, MBPP, and MBPP+ F1 were 0.9770, 0.8249, 0.4629, and 0.4244. At step 4,300, the values were 0.9945, 0.7771, 0.3906, and 0.3690. EvalPlus metrics continue to shift substantially between nearby evaluations.
