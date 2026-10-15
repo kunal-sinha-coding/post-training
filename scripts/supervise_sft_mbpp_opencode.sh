@@ -44,7 +44,15 @@ PY
 # Retry unexpected exits while retaining one W&B identity and the one-epoch Trainer stop condition.
 while [[ ! -f "$OUTPUT_DIR/completed.json" ]]; do
     resume="$(latest_checkpoint)"
-    launch=(python -u experiments/sft_mbpp_opencode.py --config "$CONFIG_PATH")
+    # Mirror committed Python source locally so imports do not wait on workspace directory reads.
+    runtime_dir="/tmp/sft-runtime-$$"
+    mkdir -p "$runtime_dir"
+    if ! git -c safe.directory="$REPO_DIR" archive HEAD -- '*.py' | tar -x -C "$runtime_dir"; then
+        printf '%s Local code staging failed; retrying.\n' "$(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> "$OUTPUT_DIR/retry-monitor.log"
+        sleep 15
+        continue
+    fi
+    launch=(python -u "$runtime_dir/experiments/sft_mbpp_opencode.py" --config "$CONFIG_PATH")
     if [[ -n "$resume" ]]; then
         launch+=(--resume-from-checkpoint "$resume")
     fi

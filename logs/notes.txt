@@ -4811,3 +4811,7 @@ Discussion: The cadence restart stopped before model loading while reading exper
 Commit name: Decouple streaming startup from obsolete preparation imports.
 Description: Import the full disk preparation module only for legacy nonstreaming runs. Keep the same atomic JSON artifact writer and ChatML prompt locally in the active streaming modules.
 Discussion: The workspace is blocking reads of both the old preparation bytecode and source. The streaming run does not use that preparation code, so remove the unnecessary startup dependency while preserving prompts, labels, metrics, and recovery state. Local interpreter cache remains enabled.
+
+Commit name: Stage SFT Python imports on local storage.
+Description: Mirror committed Python sources into a local/tmp runtime before each supervisor attempt. Keep cwd, immutable configuration, model weights, optimizer checkpoints, W&B files and evaluation artifacts in their existing locations.
+Discussion: Workspace filesystem waits also affect directory scans for the experiments package, beyond bytecode. Local source staging avoids these import waits without caching training data. All committed Python dependencies are mirrored together and subprocess evaluation uses the same snapshot.
