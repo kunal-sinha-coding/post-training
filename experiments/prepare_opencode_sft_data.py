@@ -192,7 +192,7 @@ def prepare_data(config: dict[str, Any], run: Any = None) -> tuple[Any, list[dic
     # Write tokenized Arrow shards in bounded batches and preserve per-row exclusion reasons in the reusable cache.
     encoded = raw.map(tokenize_batch, batched=True, with_indices=True, batch_size=int(config.get('data_tokenize_batch_size', 256)),
                       num_proc=int(config.get('data_num_proc', 4)), remove_columns=raw.column_names,
-                      cache_file_name=str(root / 'encoded.arrow'), new_fingerprint=fingerprint,
+                      cache_file_name=str(root / 'encoded.arrow'), new_fingerprint=fingerprint[:32],
                       desc='Tokenize every OpenCode source row')
     counts: Counter[str] = Counter()
     for batch in encoded.select_columns(['exclusion_reason']).iter(batch_size=100000):
