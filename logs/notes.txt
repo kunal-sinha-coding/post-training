@@ -4707,3 +4707,7 @@ Discussion: The user clarified three distinct vote rules for ten Jev calls per t
 Commit name: Correct the mean single-call MBPP+ count.
 Description: Correct the reported MBPP+ mean single-call correct count from 206.9 to 206.7 in logs/results.txt.
 Discussion: Recalculation from the ten saved call accuracies gives a mean of 206.7 correct tasks per call. The displayed accuracy remains 54.7%. No predictions or metrics changed.
+
+Commit name: Add Jev model-size framing evaluator.
+Description: Add a one-call-per-task Jev evaluator that asks whether the 0.5B Qwen model is suitable or a larger model is needed, then measures the mapped yes/no decision on separate MBPP and MBPP+ labels.
+Discussion: The user requested a new question framing and one call per EvalPlus task. Jev receives only task prompts. A probability at least 0.5 means the 0.5B model is suitable and predicts pass; a lower probability means a larger model is needed and predicts failure. The evaluator uses 48 concurrent requests, writes a resumable response cache, and does not upload artifacts to W&B.
