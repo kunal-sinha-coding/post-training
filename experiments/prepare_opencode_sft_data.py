@@ -1,4 +1,4 @@
-# This module pins and downloads every OpenCodeInstruct shard, reserves the final 500 source rows, removes exact evaluation overlaps, and builds a disk-backed tokenized SFT dataset with original MBPP tasks.
+# This module pins and downloads every OpenCodeInstruct shard, optionally filters by recorded test success and reserves the final 500 eligible rows, removes exact evaluation overlaps, and builds a disk-backed tokenized SFT dataset with original MBPP tasks.
 # It preserves supplied OpenCode answers, records every exclusion and invalid holdout test suite, masks prompt loss, and resumes completed preparation from an immutable manifest.
 from __future__ import annotations
 
@@ -85,6 +85,11 @@ def prepare_data(config: dict[str, Any], run: Any = None) -> tuple[Any, list[dic
               'visible_test_count': config.get('visible_test_count'), 'mbpp_splits': config.get('mbpp_splits', ['train', 'validation', 'test']),
               'prompt_policy': 'generic-chatml-raw-input-full-output-v1', 'target_policy': 'supplied output stripped; no generation or test-success filtering',
               'overlap_policy': 'exclude holdout source rows, exact heldout IDs and normalized descriptions, and canonical EvalPlus descriptions'}
+    # Pin optional score filtering and filtered holdout selection without changing legacy manifest fingerprints.
+    score_filter = config.get('opencode_average_test_score')
+    if score_filter is not None:
+        policy.update(average_test_score=float(score_filter), holdout_selection='last eligible rows in original source order',
+                      target_policy='supplied output stripped; retain only recorded average_test_score equal to the configured value')
     fingerprint = hashlib.sha256(json.dumps(policy, sort_keys=True).encode()).hexdigest()
     if previous and previous.get('policy_fingerprint') != fingerprint:
         raise ValueError('Existing preparation manifest does not match the requested immutable data policy.')
@@ -113,8 +118,9 @@ def prepare_data(config: dict[str, Any], run: Any = None) -> tuple[Any, list[dic
 
     # Download all source shards at a pinned revision and retain a reusable memory-mapped raw dataset.
     progress('downloading', mbpp_training_rows=len(mbpp_tasks))
-    snapshot = snapshot_download('nvidia/OpenCodeInstruct', repo_type='dataset', revision=revision,
-                                 allow_patterns=['data/*.parquet', 'README.md'], max_workers=int(config.get('data_download_workers', 8)))
+    snapshot = config.get('opencode_source_snapshot') or snapshot_download(
+        'nvidia/OpenCodeInstruct', repo_type='dataset', revision=revision,
+        allow_patterns=['data/*.parquet', 'README.md'], max_workers=int(config.get('data_download_workers', 8)))
     shards = sorted(Path(snapshot).glob('data/*.parquet'))
     if len(shards) != 50:
         raise ValueError(f'Expected 50 OpenCode parquet shards, found {len(shards)}.')
@@ -138,12 +144,28 @@ def prepare_data(config: dict[str, Any], run: Any = None) -> tuple[Any, list[dic
     if validated_rows != policy['expected_source_rows']:
         raise ValueError(f'Parquet footers contain {validated_rows} rows, expected {policy["expected_source_rows"]}.')
     progress('source_validated', source_validated_rows=validated_rows, source_repaired_shards=repaired_shards)
-    raw = load_dataset('parquet', data_files={'train': [str(path) for path in shards]}, split='train', cache_dir=str(root / 'raw_cache'))
+    raw = load_dataset('parquet', data_files={'train': [str(path) for path in shards]}, split='train', cache_dir=str(config.get('opencode_raw_cache_dir') or root / 'raw_cache'))
     if len(raw) != policy['expected_source_rows']:
         raise ValueError(f'Expected {policy["expected_source_rows"]} source rows, found {len(raw)}.')
-    boundary = len(raw) - policy['holdout_rows']
-    heldout_raw = [dict(raw[index]) for index in range(boundary, len(raw))]
-    holdout = [parse_holdout(row, boundary + index) for index, row in enumerate(heldout_raw)]
+    # Select eligible source indices before tokenization and take the holdout from the end of that ordered selection.
+    if score_filter is None:
+        eligible_indices = range(len(raw))
+    else:
+        eligible_indices = []
+        source_offset = 0
+        for score_batch in raw.select_columns(['average_test_score']).iter(batch_size=100000):
+            scores = score_batch['average_test_score']
+            eligible_indices.extend(source_offset + offset for offset, score in enumerate(scores) if score == policy['average_test_score'])
+            source_offset += len(scores)
+    if not 0 < policy['holdout_rows'] < len(eligible_indices):
+        raise ValueError('The holdout must contain positive rows and leave eligible training data.')
+    heldout_indices = list(eligible_indices[-policy['holdout_rows']:])
+    heldout_index_set = set(heldout_indices)
+    heldout_raw = [dict(raw[index]) for index in heldout_indices]
+    holdout = [parse_holdout(row, index) for index, row in zip(heldout_indices, heldout_raw)]
+    manifest.update(score_filter_excluded=len(raw) - len(eligible_indices), eligible_source_rows=len(eligible_indices),
+                    holdout_source_indices=heldout_indices)
+    eligible_raw = raw if score_filter is None else raw.select(eligible_indices)
     write_json(root / 'holdout_tasks.json', holdout)
     heldout_ids = {str(row.get('id')) for row in heldout_raw if row.get('id') is not None}
     heldout_texts = {_normalize_task_text(row.get('input', '')) for row in heldout_raw}
@@ -164,13 +186,14 @@ def prepare_data(config: dict[str, Any], run: Any = None) -> tuple[Any, list[dic
         # Classify exact evaluation overlaps and tokenize all remaining nonempty supplied prompt and answer pairs.
         size = len(indices)
         result: dict[str, Any] = {'input_ids': [[] for _ in indices], 'attention_mask': [[] for _ in indices],
-                                  'labels': [[] for _ in indices], 'exclusion_reason': [''] * size, 'source_index': indices}
+                                  'labels': [[] for _ in indices], 'exclusion_reason': [''] * size,
+                                  'source_index': [eligible_indices[index] for index in indices]}
         retained, prompts, targets = [], [], []
-        for offset, index in enumerate(indices):
+        for offset, index in enumerate(result['source_index']):
             text, answer = str(batch['input'][offset] or ''), str(batch['output'][offset] or '').strip()
             normalized = _normalize_task_text(text)
             task_id = str(batch.get('id', [None] * size)[offset])
-            reason = ('holdout_source_row' if index >= boundary else 'holdout_id_overlap' if task_id in heldout_ids
+            reason = ('holdout_source_row' if index in heldout_index_set else 'holdout_id_overlap' if task_id in heldout_ids
                       else 'holdout_prompt_overlap' if normalized in heldout_texts else 'evalplus_prompt_overlap' if normalized in benchmark_texts
                       else 'empty_input' if not text.strip() else 'empty_output' if not answer else '')
             result['exclusion_reason'][offset] = reason
@@ -195,7 +218,7 @@ def prepare_data(config: dict[str, Any], run: Any = None) -> tuple[Any, list[dic
         multiprocess.set_start_method('spawn', force=True)
 
     # Write tokenized Arrow shards in bounded batches and preserve per-row exclusion reasons in the reusable cache.
-    encoded = raw.map(tokenize_batch, batched=True, with_indices=True, batch_size=int(config.get('data_tokenize_batch_size', 256)),
+    encoded = eligible_raw.map(tokenize_batch, batched=True, with_indices=True, batch_size=int(config.get('data_tokenize_batch_size', 256)),
                       num_proc=int(config.get('data_num_proc', 4)), remove_columns=raw.column_names,
                       cache_file_name=str(root / 'encoded.arrow'), new_fingerprint=fingerprint[:32],
                       desc='Tokenize every OpenCode source row')
