@@ -19065,3 +19065,25 @@ Vote stability. All ten binary votes agreed on 358 of 378 tasks: 316 tasks had t
 Artifacts and reproducibility. The resumable raw calls are in outputs/router-jev-vote-ensemble-evalplus-20261015/jev_calls.jsonl. Per-task decisions are in predictions.jsonl, and aggregate metrics and token usage are in metrics.json in the same directory. The evaluator is experiments/evaluate_jev_vote_ensemble.py, code commit 363139f. The artifact contains all ten probabilities per task, binary votes, separate MBPP and MBPP+ labels, and each aggregation result.
 
 Limitations. This evaluation measures agreement with the fixed greedy Qwen completion labels, not whether a new Qwen generation will pass. The API does not expose a random seed, and repeated calls gave identical binary decisions for most tasks. The decision question's wording is slightly different from the earlier single-call Jev run, so these single-call scores are not a strict replication of that prior Jev accuracy. Accuracy is measured on one 378-task benchmark set; vote thresholds were specified before labels were joined.
+
+JEV MODEL-SIZE QUESTION FRAMING FOR EVALPLUS MBPP, 2026-10-15
+
+Purpose. Test whether a model-size choice framing improves Jev's accuracy when deciding whether Qwen/Qwen2.5-Coder-0.5B-Instruct will solve an EvalPlus task. Make one Jev call per task and measure the mapped yes/no decision against separate MBPP and MBPP+ labels.
+
+Data and selection. The evaluation set contains 378 prompts from outputs/router-evalplus-greedy-dual-label-20261013/router_evalplus_labels.jsonl, SHA-256 39b40772576bcdcdf858c71f9b1774d9dca1e30215d6eb99c85c89d2a0ab6531. Jev received only each task prompt and the question below. It did not receive Qwen completions or benchmark labels. The labels were joined only after all 378 responses were saved. No task or threshold was selected using evaluation labels.
+
+Model and question. The Typesafe System One API endpoint was https://api.typesafe.ai/v1/systemone. Requested alias jev-latest resolved to jev-1.13.0. The exact question was: “Imagine choosing either Qwen/Qwen2.5-Coder-0.5B-Instruct or a larger code model for this task. Is the task suitable for the 0.5B model, meaning one first-try greedy completion is likely to pass every test? Answer yes only when the 0.5B model is likely to pass all tests; otherwise answer no because a larger model is the safer choice.” One call was made per task using 48 concurrent workers. Jev probability >=0.5 maps to yes, meaning the 0.5B model is suitable and is predicted to pass; lower probability maps to no. Total reported usage was 166,795 input tokens and 8,316 output tokens.
+
+Results. Accuracy is measured against one fixed greedy Qwen 0.5B completion per task. The previous direct-question result is the completed one-call Jev run from 2026-10-14. The all-yes row is the label prevalence and serves as a simple comparison, not a trained or calibrated router.
+
+| Router condition | MBPP accuracy | MBPP+ accuracy | Predicted yes fraction |
+| --- | ---: | ---: | ---: |
+| Always predict yes | 51.6% (195/378) | 44.7% (169/378) | 100.0% |
+| Previous direct Jev question, one call per task | 62.7% (237/378) | 57.9% (219/378) | 82.0% |
+| Model-size framing, one call per task | 65.3% (247/378) | 59.5% (225/378) | 76.7% (290/378) |
+
+The model-size prompt is 2.6 percentage points higher on MBPP and 1.6 points higher on MBPP+ than the earlier direct-question run. Its yes prediction fraction is 5.3 points lower. This is an exploratory comparison on the same evaluation tasks, but Jev was called once per task for each condition and the wording changed. It does not establish that this question framing reliably improves accuracy across repeated runs.
+
+Artifacts and reproducibility. Raw Jev probabilities are in outputs/router-jev-model-size-evalplus-20261015/jev_predictions.jsonl. Per-task labels and predictions are in predictions.jsonl, and full metrics and token usage are in metrics.json in the same directory. The evaluator is experiments/evaluate_jev_model_size_router.py, code commit 6020f51. The previous direct-question result is in outputs/router-jev-original-evalplus-20261014/metrics.json.
+
+Limitations. A single API call per task gives no estimate of Jev's run-to-run variation. The earlier direct-question run used a different question wording. Accuracy reflects agreement with the fixed greedy Qwen labels, not whether another stochastic generation will pass. Jev still predicted that 0.5B was suitable on 76.7% of tasks, so the yes bias remains.

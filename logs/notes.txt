@@ -4711,3 +4711,7 @@ Discussion: Recalculation from the ten saved call accuracies gives a mean of 206
 Commit name: Add Jev model-size framing evaluator.
 Description: Add a one-call-per-task Jev evaluator that asks whether the 0.5B Qwen model is suitable or a larger model is needed, then measures the mapped yes/no decision on separate MBPP and MBPP+ labels.
 Discussion: The user requested a new question framing and one call per EvalPlus task. Jev receives only task prompts. A probability at least 0.5 means the 0.5B model is suitable and predicts pass; a lower probability means a larger model is needed and predicts failure. The evaluator uses 48 concurrent requests, writes a resumable response cache, and does not upload artifacts to W&B.
+
+Commit name: Record Jev model-size framing accuracy.
+Description: Record one-call-per-task Jev accuracy, positive prediction fraction, token usage, prompt text, and comparison with the earlier direct question and always-yes prevalence in logs/results.txt.
+Discussion: The user asked whether asking Jev to choose 0.5B versus a larger model would improve router accuracy. The experiment used the same 378 EvalPlus prompts and fixed labels, one Jev call per task, and 48 concurrent requests. The new framing scored 65.3% on MBPP and 59.5% on MBPP+. The earlier direct-question scores were 62.7% and 57.9%, but the wording changed and there was only one call per task in each condition. Existing unrelated modifications remain unstaged.
