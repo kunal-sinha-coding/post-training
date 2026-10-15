@@ -4755,3 +4755,7 @@ Discussion: The live four-worker map lost a subprocess before emitting rows, wit
 Commit name: Record verified full-source SFT preparation progress.
 Description: Record the active supervised W&B run after full-source validation, cache repair, and successful production tokenization startup. Preserve the exact holdout boundaries and evaluation coverage limitation.
 Discussion: Run83e7614a has50validated parquet shards and5000000source rows pinned to revision8f3ba5bafe4d6e8db46082cf7ae6741bc370604d. Final500source rows are indices4999500through4999999. SupervisorPID182130 remains active; workerPID187843 uses four spawned tokenizer workers and is making measurable progress through the full dataset. SFT starts automatically after preparation and stops after one epoch. The fixed500-task uniform training evaluation sample uses seed42. Old checkpoints were deleted only by the one-time manual cleanup.
+
+Commit name: Record score-one OpenCode training selection.
+Description: Count all pinned OpenCode source rows with average_test_score equal to 1.0 and save reusable eligible source indices under the ignored output directory. Record exact counts, exclusions, source revision, artifacts, and limitations in logs/results.txt.
+Discussion: The user requested the amount of training data remaining after trusting the supplied test scores. There are 1641202 eligible OpenCode training rows and 591 MBPP tasks, for 1641793 total. The existing run remains unchanged because the user has not instructed it to stop.
