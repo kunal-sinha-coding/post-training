@@ -4827,3 +4827,7 @@ Discussion: The previous append unexpectedly replaced the recent result tail on 
 Commit name: Record streaming loss spike root cause.
 Description: Record source algorithm boundaries, before/during/after loss and gradient statistics, and a fixedcheckpoint CPU diagnostic that reproduces the roughlythreefold loss difference from data alone. Preserve rawtaskIDs and sourceindices for reproduction without saving training examples.
 Discussion: The user requested diagnosis of the loss spike around2500to3000 and explanation of Self-Instruct versusEvol-Instruct. Sourceorder withshufflebuffer8 preserves blocks. No LRjump or restart occurs at the spike. Training and monitoring continue unchanged. Existing filesystem Gitobject read failures required a verified temporary localobject mirror for recording; no experiment setting changed.
+
+Commit name: Record exhaustive filtered dataset composition.
+Description: Record all50shard counts of passing Self-Instruct andEvol-Instruct examples and the holdoutadjusted training percentages.
+Discussion: The user asked the share of Evol-Instruct tasks. It is28.63percent ofthe1641395trainingexamples. Sourceonlycount has a one-rowclassificationuncertainty fromtheexistingextra promptoverlap exclusion, farbelowroundingprecision. No training data wascached andtheactive training run wasnotchanged.
