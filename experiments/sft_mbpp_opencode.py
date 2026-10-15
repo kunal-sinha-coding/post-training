@@ -1,4 +1,4 @@
-# This script prepares the complete pinned OpenCode and original MBPP mixture, trains a fresh base-model LoRA adapter for one epoch, and logs resumable training to W&B.
+# This script streams the pinned filtered OpenCode and original MBPP mixture, tokenizes each example on demand, and trains a fresh base-model LoRA adapter for one epoch.
 # Every 100 optimizer steps it evaluates canonical MBPP and MBPP+, the final 500 OpenCode rows, and one seed-fixed 500-task training sample, then saves predictions and metrics.
 # A separate invocation generates evaluation responses with source-specific stop rules, while invalid evaluation test suites remain explicitly counted in the fixed source denominators.
 from __future__ import annotations
@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import gc
 import json
+import math
 import os
 import subprocess
 import sys
@@ -157,7 +158,7 @@ def evaluate_checkpoint(model: Any, tokenizer: Any, checkpoint: Path, step: int,
 
 
 def run_training(config: dict[str, Any], config_path: Path, resume: str | None) -> None:
-    # Log full data preparation before training exactly one epoch with a fresh rank-16 LoRA adapter.
+    # Prepare fixed evaluation fixtures and stream one training epoch with a fresh rank-16 LoRA adapter.
     import torch
     from transformers import Trainer, TrainerCallback, TrainingArguments, DataCollatorForSeq2Seq
     from transformers import set_seed
@@ -172,7 +173,20 @@ def run_training(config: dict[str, Any], config_path: Path, resume: str | None) 
         # Keep held-out evaluation metrics on optimizer steps and collection progress on wall-clock history.
         if namespace == 'opencode_holdout':
             run.define_metric(namespace+'/*', step_metric='optimizer_step')
-    train_data, _, holdout, training_sample = prepare_data(config, run)
+    # Use bounded streaming for the filtered experiment and retain the existing preparation path for older runs.
+    if config.get('streaming_train_data', False):
+        from experiments.streaming_opencode_sft_data import prepare_streaming_data
+        train_data, _, holdout, training_sample = prepare_streaming_data(config, run)
+    else:
+        train_data, _, holdout, training_sample = prepare_data(config, run)
+
+    # Count finite streamed examples without reading or tokenizing the complete training set.
+    streaming = isinstance(train_data, torch.utils.data.IterableDataset)
+    training_rows = int(config['stream_training_rows']) if streaming and 'stream_training_rows' in config else len(train_data)
+    effective_batch_size = int(config['sft_per_device_train_batch_size']) * int(config['gradient_accumulation_steps']) * int(os.environ.get('WORLD_SIZE', '1'))
+    optimizer_steps = math.ceil(training_rows / effective_batch_size) if streaming else -1
+    if training_rows <= 0:
+        raise ValueError('The filtered training dataset must contain at least one example.')
     if len(holdout) != 500 or len(training_sample) != 500:
         raise ValueError('Both fixed evaluation selections must contain exactly 500 source tasks.')
     holdout = validate_evaluation_tasks(holdout, output / 'holdout-reference-validation.json', config)
@@ -181,7 +195,7 @@ def run_training(config: dict[str, Any], config_path: Path, resume: str | None) 
         # Report evaluation eligibility separately from the immutable 500-row selection.
         run.summary[f'{namespace}/selected_tasks'] = len(rows)
         run.summary[f'{namespace}/scorable_tasks'] = sum(row['evaluation_valid'] for row in rows)
-    run.config.update({'training_rows': len(train_data), 'num_train_epochs': 1, 'evaluation_steps': int(config['eval_steps']),
+    run.config.update({'training_rows': training_rows, 'num_train_epochs': 1, 'evaluation_steps': int(config['eval_steps']),
                        'training_eval_task_ids': [row['task_id'] for row in training_sample],
                        'opencode_holdout_task_ids': [row['task_id'] for row in holdout]}, allow_val_change=True)
     model, tokenizer = load_model(config)
@@ -210,11 +224,11 @@ def run_training(config: dict[str, Any], config_path: Path, resume: str | None) 
             return control
 
     # Use the reference run's optimizer, batch, LoRA, precision, and token settings with a one-epoch stop condition.
-    arguments = TrainingArguments(output_dir=str(output / 'checkpoints'), num_train_epochs=1, max_steps=-1,
+    arguments = TrainingArguments(output_dir=str(output / 'checkpoints'), num_train_epochs=1, max_steps=optimizer_steps,
         per_device_train_batch_size=int(config['sft_per_device_train_batch_size']), gradient_accumulation_steps=int(config['gradient_accumulation_steps']),
         learning_rate=float(config['learning_rate']), logging_steps=int(config['logging_steps']), save_strategy='steps', save_steps=int(config['eval_steps']),
         save_total_limit=None, report_to=[], bf16=bool(config['bf16']), fp16=bool(config['fp16']),
-        dataloader_num_workers=int(config['dataloader_num_workers']), seed=int(config['seed']),
+        dataloader_num_workers=0 if streaming else int(config['dataloader_num_workers']), seed=int(config['seed']),
         gradient_checkpointing=bool(config['gradient_checkpointing']), gradient_checkpointing_kwargs={'use_reentrant': False},
         disable_tqdm=True, remove_unused_columns=True, save_only_model=False)
     trainer = Trainer(model=model, args=arguments, train_dataset=train_data,
@@ -224,7 +238,7 @@ def run_training(config: dict[str, Any], config_path: Path, resume: str | None) 
     trainer.save_model(str(final))
     tokenizer.save_pretrained(final)
     evaluate_checkpoint(model, tokenizer, final, trainer.state.global_step, float(trainer.state.epoch or 0), holdout, training_sample, config, run)
-    write_json(output / 'completed.json', {'epochs': trainer.state.epoch, 'optimizer_steps': trainer.state.global_step, 'training_rows': len(train_data)})
+    write_json(output / 'completed.json', {'epochs': trainer.state.epoch, 'optimizer_steps': trainer.state.global_step, 'training_rows': training_rows})
     run.summary['sft/completed_epochs'] = trainer.state.epoch
     run.summary['sft/optimizer_steps'] = trainer.state.global_step
     run.finish(exit_code=0)
