@@ -19168,8 +19168,8 @@ Step budget: 146,431 steps for the filtered one-epoch dataset at effective batch
 Evaluation selection: Reuse the exact saved 500-task OpenCode holdout and fixed seed-42 500-task MBPP training sample from outputs/sft-mbpp-opencode-score1-streaming-one-epoch-20261015/evaluation-fixtures. Evaluate canonical MBPP and MBPP+, the OpenCode holdout, and the same fixed training sample. Keep their existing test validation, scorable denominators, greedy decoding, and reported pass@1 metrics.
 Candidate artifact identifiers: Source checkpoint checkpoint-2000 above; OpenCode source revision above; output directory outputs/sft-mbpp-opencode-score1-selfinstruct-streaming-resume2000-20261015; configuration configs/sft-mbpp-opencode-score1-selfinstruct-streaming-resume2000-20261015.yaml.
 Selection procedure: No candidate selection is used. The held-out set remains the previously selected final 500 score-one source rows and is excluded from training.
-W&B: Project kunal-personal/grpo-mbpp. The new run uses a fresh run ID saved under the output directory. Record the resulting URL and metrics after startup.
-Environment: Python 3.12 in the existing GPU workspace. Record GPU and package details from the active run log after startup.
-Code: Base commit 576c0a82eb439f3b83335c7029c50f432cb994f5. Record the implementation commit ID after it is created.
-Results: Pending. Report stepwise loss, canonical MBPP and MBPP+ pass@1, fixed training-sample pass@1, and OpenCode holdout pass@1 on the configured evaluation cadence.
-Limitations: The resumed Trainer state skips examples corresponding to its first 2,000 steps in the new deterministic stream, as in a normal checkpoint resume. Results test the requested resume procedure and are not a clean first-pass comparison from the base model.
+W&B: Project kunal-personal/grpo-mbpp. The new run uses a fresh run ID saved under the output directory. W&B run ID 22aa5547, URL https://wandb.ai/kunal-personal/grpo-mbpp/runs/22aa5547. W&B initialization and streaming readiness were confirmed at 2026-10-15 19:21:24 UTC.
+Environment: Python 3.12 GPU workspace, NVIDIA RTX A5000, driver 580.178.04, W&B 0.30.0.
+Code: Base commit 576c0a82eb439f3b83335c7029c50f432cb994f5. Implementation commit ad95713cbf7ec28be6a475771d8165817f3d8fb9.
+Results: Training process initialized W&B and reported a ready 1,171,443-example stream with no saved training data cache. Awaiting the first optimizer update. Report stepwise loss, canonical MBPP and MBPP+ pass@1, fixed training-sample pass@1, and OpenCode holdout pass@1 on the configured evaluation cadence.
+Limitations: The resumed Trainer state 
