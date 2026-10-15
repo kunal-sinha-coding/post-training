@@ -19038,3 +19038,30 @@ Environment and artifacts. Result JSON files are outputs/dynamic-few-shot-origin
 Limitations. The comparison uses different checkpoints and historical baseline conditions, so the deltas are descriptive and do not isolate retrieval as the only changed factor. Results are discrete estimates over 378 tasks. The k=8 CPU generation took substantially longer because prompts were larger. The saved embedding charge is calculated from recorded token usage and the published standard input price, rather than an invoice record.
 
 Stop update: At the user's request, stopped W&B run 55902398 and disabled its retry supervisor so it cannot restart. The run stopped at optimizer step 1,207. The latest complete checkpoint directory is outputs/grpo-mbpp-opencode-batchnorm-vllm-eval100-20261014/checkpoint-1200. Process verification found no active supervisor, trainer, Accelerate, or W&B core processes for this run.
+
+JEV TEN-CALL VOTE AGGREGATION FOR EVALPLUS MBPP, 2026-10-15
+
+Purpose. Measure Jev as a yes/no router for whether one greedy Qwen/Qwen2.5-Coder-0.5B-Instruct completion can pass all tests. Make ten independent Jev calls per task and compare single-call accuracy with three vote rules on the same 378 EvalPlus MBPP tasks.
+
+Data and selection. Jev received each task prompt only. It did not receive Qwen completions or benchmark labels. Ten calls were made for every one of the 378 prompts, for 3,780 decisions total. After all calls were complete, each probability was converted to a vote at threshold 0.5. The MBPP and MBPP+ labels were then joined separately to measure accuracy. No task or vote rule was selected using labels. The EvalPlus prompt and label data is outputs/router-evalplus-greedy-dual-label-20261013/router_evalplus_labels.jsonl, SHA-256 39b40772576bcdcdf858c71f9b1774d9dca1e30215d6eb99c85c89d2a0ab6531.
+
+Model and calls. The Typesafe System One API endpoint was https://api.typesafe.ai/v1/systemone. Requested alias was jev-latest, and all 3,780 responses identified jev-1.13.0. Each call asked whether one first-try greedy Qwen/Qwen2.5-Coder-0.5B-Instruct completion for the task could pass every task test. The same task prompt and question were sent ten times; the API does not expose seed control. Calls ran with 48 concurrent workers and used the existing repository .env JEV_API_KEY. Total reported usage was 1,524,310 input tokens and 83,160 output tokens.
+
+Decision rules. A single-call vote predicts yes when that call's probability is at least 0.5. The single-call summary below is the mean accuracy across the ten call positions; the individual accuracies are also listed. Strict majority predicts yes only when at least six of ten votes are yes, so a 5-5 tie is no. Any-yes predicts yes if at least one vote is yes. The no-if-any-no rule predicts yes only when all ten calls vote yes.
+
+Accuracy results:
+
+| Vote rule | EvalPlus MBPP | EvalPlus MBPP+ |
+| --- | ---: | ---: |
+| Single call, mean across 10 calls | 60.4% (228.5/378 mean) | 54.7% (206.9/378 mean) |
+| Strict majority yes | 60.6% (229/378) | 54.8% (207/378) |
+| Yes if any call says yes | 59.0% (223/378) | 53.2% (201/378) |
+| Yes only if all calls say yes | 62.2% (235/378) | 56.9% (215/378) |
+
+The ten single-call accuracies by call index were MBPP: 59.5%, 60.8%, 59.8%, 60.3%, 60.8%, 61.1%, 60.1%, 61.1%, 59.8%, and 61.1%. MBPP+ was 53.7%, 55.0%, 54.0%, 54.5%, 55.0%, 55.3%, 54.2%, 55.8%, 54.0%, and 55.3%. The standard deviation across call positions was 0.6 percentage points on MBPP and 0.7 points on MBPP+.
+
+Vote stability. All ten binary votes agreed on 358 of 378 tasks: 316 tasks had ten yes votes and 42 had ten no votes. The remaining 20 tasks had mixed votes. This limits the effect of voting on this set. The unanimous-yes rule had the highest accuracy among the three aggregation rules, but its result is descriptive on this evaluation set and was not selected for deployment.
+
+Artifacts and reproducibility. The resumable raw calls are in outputs/router-jev-vote-ensemble-evalplus-20261015/jev_calls.jsonl. Per-task decisions are in predictions.jsonl, and aggregate metrics and token usage are in metrics.json in the same directory. The evaluator is experiments/evaluate_jev_vote_ensemble.py, code commit 363139f. The artifact contains all ten probabilities per task, binary votes, separate MBPP and MBPP+ labels, and each aggregation result.
+
+Limitations. This evaluation measures agreement with the fixed greedy Qwen completion labels, not whether a new Qwen generation will pass. The API does not expose a random seed, and repeated calls gave identical binary decisions for most tasks. The decision question's wording is slightly different from the earlier single-call Jev run, so these single-call scores are not a strict replication of that prior Jev accuracy. Accuracy is measured on one 378-task benchmark set; vote thresholds were specified before labels were joined.

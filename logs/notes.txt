@@ -4699,3 +4699,7 @@ Discussion: W&B run 55902398 stopped during optimizer step 1,207. The latest com
 Commit name: Add ten-call Jev vote ensemble evaluator.
 Description: Add a resumable evaluator that makes ten Jev yes/no calls per EvalPlus prompt and compares strict majority, any-yes, unanimous-yes, and individual-call accuracy on separate MBPP and MBPP+ labels.
 Discussion: The user requested three aggregation experiments after clarifying that each task receives ten Jev calls. Jev receives only task prompts. The script stores each call as it finishes, maps returned probabilities to votes at 0.5, treats a 5-5 majority tie as no, and joins benchmark labels only for final accuracy measurement. The default concurrency is 48 to use the API-call parallelism requested by the user. It does not train a model or use GPU resources.
+
+Commit name: Record ten-call Jev vote aggregation results.
+Description: Record per-call accuracy and the strict-majority, any-yes, and unanimous-yes accuracy results for MBPP and MBPP+ in logs/results.txt.
+Discussion: The user clarified three distinct vote rules for ten Jev calls per task. The experiment made all 3,780 calls with 48 concurrent workers, sent prompts without labels, and evaluated against the two EvalPlus label sets after inference. All calls resolved to jev-1.13.0. A strict majority tie predicts no. The earlier one-call Jev experiment used slightly different question wording, so the current single-call scores are not an exact replication. Existing unrelated working tree changes remain unstaged.
