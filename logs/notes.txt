@@ -4703,3 +4703,7 @@ Discussion: The user requested three aggregation experiments after clarifying th
 Commit name: Record ten-call Jev vote aggregation results.
 Description: Record per-call accuracy and the strict-majority, any-yes, and unanimous-yes accuracy results for MBPP and MBPP+ in logs/results.txt.
 Discussion: The user clarified three distinct vote rules for ten Jev calls per task. The experiment made all 3,780 calls with 48 concurrent workers, sent prompts without labels, and evaluated against the two EvalPlus label sets after inference. All calls resolved to jev-1.13.0. A strict majority tie predicts no. The earlier one-call Jev experiment used slightly different question wording, so the current single-call scores are not an exact replication. Existing unrelated working tree changes remain unstaged.
+
+Commit name: Correct the mean single-call MBPP+ count.
+Description: Correct the reported MBPP+ mean single-call correct count from 206.9 to 206.7 in logs/results.txt.
+Discussion: Recalculation from the ten saved call accuracies gives a mean of 206.7 correct tasks per call. The displayed accuracy remains 54.7%. No predictions or metrics changed.

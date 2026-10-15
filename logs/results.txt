@@ -19053,7 +19053,7 @@ Accuracy results:
 
 | Vote rule | EvalPlus MBPP | EvalPlus MBPP+ |
 | --- | ---: | ---: |
-| Single call, mean across 10 calls | 60.4% (228.5/378 mean) | 54.7% (206.9/378 mean) |
+| Single call, mean across 10 calls | 60.4% (228.5/378 mean) | 54.7% (206.7/378 mean) |
 | Strict majority yes | 60.6% (229/378) | 54.8% (207/378) |
 | Yes if any call says yes | 59.0% (223/378) | 53.2% (201/378) |
 | Yes only if all calls say yes | 62.2% (235/378) | 56.9% (215/378) |
