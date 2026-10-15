@@ -4763,3 +4763,7 @@ Discussion: The user requested the amount of training data remaining after trust
 Commit name: Train on passing OpenCode references with a filtered holdout.
 Description: Add optional source score filtering before tokenization and reserve the final 500 eligible source rows for evaluation. Preserve original source indices, holdout leakage exclusions, canonical benchmark exclusions, and legacy policy fingerprints. Add a separate fresh one-epoch configuration with unchanged LoRA and optimizer settings, evaluation and checkpoints every 100 optimizer steps, and fixed seed42 training sample of500. Reuse pinned local parquet and raw Arrow cache.
 Discussion: The user approved replacing the unfiltered run. Its supervisor182130 and training process tree were terminated before launching the fresh adapter. Source scores are trusted as requested. Evaluation continues to report runner coverage rather than silently substituting unsupported tasks. Focused real-Dataset selection smoke and Python compilation passed.
+
+Commit name: Record filtered SFT launch.
+Description: Record the live supervised filtered SFT run, online W&B identity, command, process IDs, code commit, and validated source count.
+Discussion: The previous unfiltered run is stopped. New run d1920ac1 starts from the base model and uses source score1 filtering with the final500filtered rows held out. Training starts automatically after preparation. Evaluation and checkpoint cadence is100optimizersteps.
