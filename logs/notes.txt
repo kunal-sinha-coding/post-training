@@ -4690,3 +4690,8 @@ Discussion: The loader returned 9,470 training rows and 378 EvalPlus tasks. W&B 
 Commit name: Record dynamic few-shot MBPP retrieval results.
 Description: Add the completed pass@1 table for k=1, 2, 3, 4, and 8, compare it with the user's historical step-40 baseline, and record embedding cost, data scope, model setup, selection procedure, hashes, artifacts, and limitations in logs/results.txt.
 Discussion: The user clarified that the requested conditions are k=1, 2, 3, 4, and 8, and explicitly rejected rerunning k=0. Training embeddings contain only the 591 original MBPP tasks, with no OpenCode tasks. Evaluation uses 378 EvalPlus tasks. The 52.9% baseline is historical step-40 MBPP pass@1, paired with 43.9% MBPP+; it is not a fresh k=0 run. The requested GRPO training process remained active and was not interrupted. Existing unrelated modifications in the config, logs/logs.txt, and start.sh were not staged.
+
+
+Commit name: Record stop of batch-normalized OpenCode GRPO.
+Description: Record that the user explicitly stopped the active batch-normalized MBPP and OpenCode GRPO run and its retry monitor.
+Discussion: W&B run 55902398 stopped during optimizer step 1,207. The latest complete saved Trainer checkpoint is checkpoint-1200. The retry supervisor and training processes have exited, and the GPU has returned to 1 MiB used. The run can be resumed later from checkpoint-1200 if requested.
