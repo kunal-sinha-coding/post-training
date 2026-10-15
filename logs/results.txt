@@ -19011,3 +19011,28 @@ Data and artifacts: The configured training pool is all original MBPP train, val
 Limitations: An initial dataset check hit a zero-byte file in the default shared HF cache. Dataset validation is being rerun with the populated router cache.
 
 Launch update: Data validation passed with 9,470 combined training rows and 378 EvalPlus tasks. Run started on 2026-10-14 at 15:12 UTC with code commit a4f6de6. W&B run: https://wandb.ai/kunal-personal/grpo-mbpp/runs/55902398. The trainer completed dataset preparation, created the fixed 500-task training evaluation manifest, loaded the model on CUDA, and began its step-zero greedy baseline. Retry monitor PID 2648540 supervises the run and checks status every 30 minutes, diagnoses unexpected exits, and resumes from the newest complete optimizer checkpoint. No optimizer-step metrics are available yet.
+
+DYNAMIC FEW-SHOT RETRIEVAL FOR MBPP, 2026-10-15
+
+Purpose. Measure greedy MBPP and MBPP+ pass@1 when each evaluation task receives its top-k nearest original MBPP training examples, for k=1, 2, 3, 4, and 8. Compare the results with the requested historical no-retrieval reference. No new k=0 evaluation is included.
+
+Data and embeddings. The retrieval pool contains 591 original MBPP training tasks only. It excludes OpenCode tasks. The evaluation pool contains 378 EvalPlus MBPP tasks. Each task description was embedded once with OpenAI text-embedding-3-large at 3,072 dimensions. The saved embedding artifact is outputs/dynamic-few-shot-original-mbpp-20261014/embeddings.npz. Its input total was 16,560 tokens: 591 training tasks and 378 evaluation tasks. Training task data SHA-256 is d969fda2822cad2f83726f58d4a1a7adb228fd0ee43fc7c2702834313bab506e. Embeddings SHA-256 is 5df46ae7d52840e1a504568da950e0b4de684f7a7e74ba364a59342c12e6ed06.
+
+Method and configuration. For each evaluation task, cosine similarity ranks the 591 training task description embeddings. The top k original tasks are added to the prompt with their descriptions, assertions, and reference code. Retrieval does not use evaluation labels or ground-truth solutions. Candidate selection is therefore independent of benchmark ground truth. Ground truth was used only by the separate EvalPlus scoring step. The generated answer came from Qwen/Qwen2.5-Coder-0.5B-Instruct with the original MBPP-only GRPO adapter at checkpoint 830. Decoding was greedy with temperature 0, top_p 1, and at most 2,048 new tokens. EvalPlus scored all 378 tasks on base MBPP and MBPP+ tests. The evaluation ran on CPU with one Torch thread and low process priority while the separate GRPO job continued on GPU.
+
+Results. The historical reference is the user's requested 52.9% MBPP pass@1 at step 40, paired with 43.9% MBPP+ pass@1 from the existing step-40 EvalPlus record. This is a prior checkpoint measurement, not a newly run k=0 condition, and it is not a controlled same-checkpoint comparison with checkpoint 830.
+
+| Condition | MBPP pass@1 | Change vs. reference | MBPP+ pass@1 | Change vs. reference |
+| --- | ---: | ---: | ---: | ---: |
+| Historical no-retrieval reference, step 40 | 52.9% | — | 43.9% | — |
+| k=1 | 50.0% | -2.9 pp | 40.5% | -3.4 pp |
+| k=2 | 52.1% | -0.8 pp | 43.4% | -0.5 pp |
+| k=3 | 51.6% | -1.3 pp | 43.9% | 0.0 pp |
+| k=4 | 51.1% | -1.8 pp | 44.2% | +0.3 pp |
+| k=8 | 48.4% | -4.5 pp | 40.2% | -3.7 pp |
+
+Embedding cost. The recorded 16,560 input tokens at the listed text-embedding-3-large price of $0.13 per million input tokens imply $0.0021528 total, about $0.0022. This is the estimated embedding API charge for the 591 training and 378 evaluation descriptions. It excludes generation and local CPU scoring costs.
+
+Environment and artifacts. Result JSON files are outputs/dynamic-few-shot-original-mbpp-20261014/metrics-k1.json, metrics-k2.json, metrics-k3.json, metrics-k4.json, and metrics-k8.json. Prompts, completions, and per-setting EvalPlus outputs are in the same directory. The source working-tree code revision was eb1ee4b. The adapter SHA-256 is dfca01d30d9367f4e773d1385253c63e3625dd5232fce04bb4fb06838baf9eee. The full embedding and experiment summaries are in embedding_summary.json and experiment_summary.json.
+
+Limitations. The comparison uses different checkpoints and historical baseline conditions, so the deltas are descriptive and do not isolate retrieval as the only changed factor. Results are discrete estimates over 378 tasks. The k=8 CPU generation took substantially longer because prompts were larger. The saved embedding charge is calculated from recorded token usage and the published standard input price, rather than an invoice record.
