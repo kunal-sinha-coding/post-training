@@ -4750,3 +4750,8 @@ Discussion: After the fingerprint fix, four-worker preparation reached the real 
 Commit name: Spawn clean full-data tokenization workers.
 Description: Use the spawn multiprocessing start method for the parallel disk-backed tokenizer map so workers do not inherit the native thread state of the Torch and W&B training process.
 Discussion: The live four-worker map lost a subprocess before emitting rows, with no cgroup OOM or OOM-kill event. The isolated data-only multiprocessing smoke passed, but production had already initialized Torch threads and services. Clean spawned workers address that process-state difference without changing model, data, optimizer, batch size, or epoch budget. The retry supervisor remains active. A real-source spawn smoke with production Torch initialization is being checked.
+
+
+Commit name: Record verified full-source SFT preparation progress.
+Description: Record the active supervised W&B run after full-source validation, cache repair, and successful production tokenization startup. Preserve the exact holdout boundaries and evaluation coverage limitation.
+Discussion: Run83e7614a has50validated parquet shards and5000000source rows pinned to revision8f3ba5bafe4d6e8db46082cf7ae6741bc370604d. Final500source rows are indices4999500through4999999. SupervisorPID182130 remains active; workerPID187843 uses four spawned tokenizer workers and is making measurable progress through the full dataset. SFT starts automatically after preparation and stops after one epoch. The fixed500-task uniform training evaluation sample uses seed42. Old checkpoints were deleted only by the one-time manual cleanup.
