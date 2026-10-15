@@ -4819,3 +4819,7 @@ Discussion: Workspace filesystem waits also affect directory scans for the exper
 Commit name: Record resumed SFT with 1000-step evaluations.
 Description: Record cancellation of the incomplete100evaluation, preserved checkpoint100, unchanged W&B identity, and verified new optimizer steps110through130 under the1000step evaluation cadence.
 Discussion: The user explicitly allowed killing the current evaluation. Workspace filesystem import waits required local code and bytecode staging. The advancing worker is365735 under supervisor365724 and monitor362157 remainsactive. Training dataset streaming and all statistical metrics remain unchanged.
+
+Commit name: Preserve prior streaming experiment records.
+Description: Restore the previous results file from its Git blob and append the cadence recovery entry without removing earlier experiment records.
+Discussion: The previous append unexpectedly replaced the recent result tail on the permission-restricted workspace. Git history preserved all data. This correction uses committed bytes to preserve the complete record. Training continues unchanged.
