@@ -4725,3 +4725,8 @@ Discussion: The user asked why MBPP remains near60 to65 percent across mixtures 
 Commit name: Add full OpenCode and MBPP one-epoch SFT experiment.
 Description: Add full-data disk-backed preparation and a fresh base-model rank16 LoRA SFT runner matching W&B800e584d optimization settings, with one epoch, evaluations and checkpoints every100 steps, and fixed seeded500-task training and final500 OpenCode source selections.
 Discussion: The user explicitly authorized deleting old SFT and rejection-sampling checkpoints once before training. The one-time cleanup removed92 checkpoint/final-adapter directories and freed7.81GiB, preserving GRPO/router/base weights and all logs/data. No deletion logic was added to training code. All5million OpenCode rows are considered without Qwen labeling or test-success filtering; exact evaluation overlaps and empty pairs are counted. OpenCode retains supplied full responses and matching ChatML prompts. Evaluation test eligibility is reported separately from the fixed500-source denominators.
+
+
+Commit name: Add durable supervision for full OpenCode SFT.
+Description: Start one-epoch SFT under a supervisor that uses workspace-backed full-data download caches, records progress every30minutes, and resumes the newest complete optimizer checkpoint after failures.
+Discussion: No checkpoint deletion or automatic hyperparameter adjustment exists in this supervisor. It loads credentials from ignored.env, preserves the validated originalMBPP Arrow cache, and leaves the same one-epoch limit active on every restart. The data preparation smoke test verified50source shards, heldout row/ID/text exclusions, canonical overlap removal, deterministic training evaluation selection, loss masking, EOS, and cache reload.
