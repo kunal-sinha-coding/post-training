@@ -4779,3 +4779,7 @@ Discussion: A live smoke exposed a shell command containing script names in its 
 Commit name: Record active recurring SFT recovery monitor.
 Description: Record diagnostic monitorPID357727 and persistentexecsession31822, with checks every1800seconds and next scheduled check2026-10-15T16:35:29Z. Duplicate monitor launch was rejected by the file lock.
 Discussion: Worker356165 and supervisor356157 remain alive. Tokenizer workers are progressing through raw Arrow file opens, most recently shard23of25. Optimizer steps have not started. The monitor diagnoses new failures or stale progress, invokes authenticated Codex repair, records evidence and recovery, and preserves settings, checkpoints, and W&B d1920ac1.
+
+Commit name: Reuse completed caches on permission-restricted workspace.
+Description: The dataset library completed all1641305tokenized rows and moved four cache shards, then failed at os.chmod with EPERM on the workspace. Add a dataset-module-only permission fallback that accepts an already regular readable writable output cache with all requested mode bits. All other permission failures still raise. Install in preparation and spawned tokenization workers.
+Discussion: The supervisor automatically restarted W&Bd1920ac1. Preserve all cache shards and unchanged experiment settings. The next retry can reuse completed tokenization rather than regenerate answers or tokens.

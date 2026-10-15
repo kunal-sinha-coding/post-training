@@ -17,6 +17,32 @@ from typing import Any
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 
+
+def configure_cache_permissions() -> None:
+    # Keep dataset cache writes usable when the workspace rejects redundant permission changes.
+    import stat
+    from types import SimpleNamespace
+    import datasets.arrow_dataset as arrow_dataset
+    if getattr(arrow_dataset.os, '_workspace_cache_permissions', False):
+        return
+
+    def chmod(path: Any, mode: int, *args: Any, **kwargs: Any) -> None:
+        # Ignore only a denied mode change when an ordinary cache already has all requested access bits.
+        try:
+            os.chmod(path, mode, *args, **kwargs)
+        except PermissionError:
+            cache = Path(path).resolve()
+            metadata = cache.stat()
+            outputs = Path(__file__).resolve().parents[1] / 'outputs'
+            if not cache.is_relative_to(outputs) or not stat.S_ISREG(metadata.st_mode) or stat.S_IMODE(metadata.st_mode) & mode != mode or not os.access(cache, os.R_OK | os.W_OK):
+                raise
+
+    # Replace only the dataset module's OS reference and preserve normal permission errors elsewhere.
+    values = {name: getattr(os, name) for name in dir(os)}
+    values.update(chmod=chmod, _workspace_cache_permissions=True)
+    arrow_dataset.os = SimpleNamespace(**values)
+
+
 def opencode_prompt(text: str) -> str:
     # Match the raw OpenCode response with a generic assistant prefix without a seeded code fence.
     return ('<|im_start|>system\nYou are an intelligent programming assistant to produce Python algorithmic solutions<|im_end|>\n\n'
@@ -73,6 +99,7 @@ def prepare_data(config: dict[str, Any], run: Any = None) -> tuple[Any, list[dic
     from experiments.incremental_rejection_sampling_sft import load_training_tasks
     from experiments.reference_sft import build_reference_dataset
 
+    configure_cache_permissions()
     root = Path(config.get('data_output_dir', str(Path(config['output_dir']) / 'data'))).resolve()
     root.mkdir(parents=True, exist_ok=True)
     manifest_path = root / 'manifest.json'
@@ -184,6 +211,7 @@ def prepare_data(config: dict[str, Any], run: Any = None) -> tuple[Any, list[dic
 
     def tokenize_batch(batch: dict[str, list[Any]], indices: list[int]) -> dict[str, Any]:
         # Classify exact evaluation overlaps and tokenize all remaining nonempty supplied prompt and answer pairs.
+        configure_cache_permissions()
         size = len(indices)
         result: dict[str, Any] = {'input_ids': [[] for _ in indices], 'attention_mask': [[] for _ in indices],
                                   'labels': [[] for _ in indices], 'exclusion_reason': [''] * size,
