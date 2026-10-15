@@ -4775,3 +4775,7 @@ Discussion: The user explicitly requested repeated diagnosis, fixes, and restart
 Commit name: Tighten monitor process matching and repair retries.
 Description: Restrict worker script detection to the executable prefix so shell wrappers containing source code cannot count as live training. Retry unsuccessful diagnostic sessions on the next scheduled check.
 Discussion: A live smoke exposed a shell command containing script names in its body. Prefix matching excludes that false positive. User confirmed training should continue and monitor setup should finish.
+
+Commit name: Record active recurring SFT recovery monitor.
+Description: Record diagnostic monitorPID357727 and persistentexecsession31822, with checks every1800seconds and next scheduled check2026-10-15T16:35:29Z. Duplicate monitor launch was rejected by the file lock.
+Discussion: Worker356165 and supervisor356157 remain alive. Tokenizer workers are progressing through raw Arrow file opens, most recently shard23of25. Optimizer steps have not started. The monitor diagnoses new failures or stale progress, invokes authenticated Codex repair, records evidence and recovery, and preserves settings, checkpoints, and W&B d1920ac1.
