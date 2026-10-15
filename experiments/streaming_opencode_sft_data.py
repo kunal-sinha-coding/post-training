@@ -1,4 +1,4 @@
-# This module streams pinned OpenCode parquet files through bounded HTTP range reads, filters recorded passing solutions and evaluation overlaps, and mixes original MBPP tasks in one deterministic pass.
+# This module streams pinned OpenCode parquet files through bounded HTTP range reads, filters recorded passing solutions, configured generation families, and evaluation overlaps, and mixes original MBPP tasks in one deterministic pass.
 # It tokenizes only current records, keeps at most eight eligible records for local shuffling, and saves no source shards, Arrow tables, or training token files.
 from __future__ import annotations
 
@@ -27,6 +27,7 @@ class StreamingOpenCodeSFTDataset(IterableDataset):
         from data import _normalize_task_text
         self.holdout_texts = {_normalize_task_text(task.get('task_text', '')) for task in holdout} - {''}
         self.benchmark_texts = benchmark_texts
+        self.excluded_generation_algorithms = {str(value).strip().lower() for value in config.get('excluded_generation_algorithms', [])}
         self.length = int(config.get('stream_training_rows', 1641395))
 
     def __len__(self) -> int:
@@ -47,7 +48,7 @@ class StreamingOpenCodeSFTDataset(IterableDataset):
             url = hf_hub_url('nvidia/OpenCodeInstruct', path, repo_type='dataset', revision=revision)
             with fsspec.open(url, mode='rb', cache_type='none', block_size=8 * 1024 * 1024) as handle:
                 parquet = pq.ParquetFile(handle)
-                for batch in parquet.iter_batches(batch_size=8, columns=['id', 'input', 'output', 'average_test_score'], use_threads=False):
+                for batch in parquet.iter_batches(batch_size=8, columns=['id', 'input', 'output', 'average_test_score', 'generation_algorithm'], use_threads=False):
                     rows = batch.to_pylist()
                     for row in rows:
                         yield source_index, row
@@ -57,9 +58,12 @@ class StreamingOpenCodeSFTDataset(IterableDataset):
             raise ValueError(f'Unexpected complete source row count: {source_index}.')
 
     def eligible_rows(self) -> Iterator[dict[str, Any]]:
-        # Exclude nonpassing answers and every preserved evaluation overlap before tokenization.
+        # Exclude configured generation families, nonpassing answers, and every preserved evaluation overlap before tokenization.
         from data import _normalize_task_text
         for source_index, row in self.source_rows():
+            algorithm = str(row.get('generation_algorithm') or '').strip().lower()
+            if algorithm in self.excluded_generation_algorithms:
+                continue
             if row.get('average_test_score') != 1.0 or source_index in self.holdout_indices:
                 continue
             text, answer = str(row.get('input') or ''), str(row.get('output') or '').strip()

@@ -7,8 +7,13 @@ set -uo pipefail
 REPO_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 CONFIG_PATH="${1:?Pass the SFT configuration path.}"
 OUTPUT_DIR="${2:?Pass the experiment output directory.}"
+INITIAL_RESUME_CHECKPOINT="${3:-}"
 cd "$REPO_DIR"
 mkdir -p "$OUTPUT_DIR" "$OUTPUT_DIR/tmp"
+if [[ -n "$INITIAL_RESUME_CHECKPOINT" ]]; then
+    # Preserve the approved initial checkpoint for monitor-triggered supervisor restarts.
+    printf '%s\n' "$INITIAL_RESUME_CHECKPOINT" > "$OUTPUT_DIR/initial-resume-checkpoint.txt"
+fi
 
 # Load existing credentials without changing or publishing the local environment file.
 set -a
@@ -30,7 +35,7 @@ mkdir -p "$HF_HUB_CACHE" "$TMPDIR"
 
 latest_checkpoint() {
     # Select only a checkpoint with all required adapter and optimizer recovery files.
-    python - "$OUTPUT_DIR/checkpoints" <<'PY'
+    python - "$OUTPUT_DIR/checkpoints" "$OUTPUT_DIR/initial-resume-checkpoint.txt" <<'PY'
 from pathlib import Path
 import sys
 # Inspect saved Trainer states without changing any training artifact.
@@ -38,6 +43,10 @@ required = ('adapter_model.safetensors', 'trainer_state.json', 'optimizer.pt', '
 paths = [p for p in Path(sys.argv[1]).glob('checkpoint-*') if p.name.split('-')[-1].isdigit() and all((p / name).is_file() for name in required)]
 if paths:
     print(max(paths, key=lambda p: int(p.name.split('-')[-1])))
+else:
+    initial = Path(sys.argv[2]).read_text().strip() if Path(sys.argv[2]).is_file() else ''
+    if initial and all((Path(initial) / name).is_file() for name in required):
+        print(initial)
 PY
 }
 

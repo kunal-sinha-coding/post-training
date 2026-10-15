@@ -4831,3 +4831,7 @@ Discussion: The user requested diagnosis of the loss spike around2500to3000 and 
 Commit name: Record exhaustive filtered dataset composition.
 Description: Record all50shard counts of passing Self-Instruct andEvol-Instruct examples and the holdoutadjusted training percentages.
 Discussion: The user asked the share of Evol-Instruct tasks. It is28.63percent ofthe1641395trainingexamples. Sourceonlycount has a one-rowclassificationuncertainty fromtheexistingextra promptoverlap exclusion, farbelowroundingprecision. No training data wascached andtheactive training run wasnotchanged.
+
+Commit name: Resume SFT with Evol-Instruct excluded.
+Description: Add a generation-algorithm exclusion to the streaming OpenCode dataset, configure a score-one Self-Instruct plus MBPP run from checkpoint 2000, and preserve that initial checkpoint across supervisor and monitor restarts.
+Discussion: The user asked to stop the prior SFT run and restart an otherwise identical run from optimizer step 2000 with Evol-Instruct removed from training. The filtered set has 1,170,852 passing Self-Instruct rows plus 591 original MBPP tasks. Reuse the prior fixed evaluation fixtures, keep evaluation and checkpoint cadence at 1,000 steps, and continue recurring failure monitoring.
