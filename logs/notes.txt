@@ -4799,3 +4799,7 @@ Discussion: The user asked about time per step. This early measurement includes 
 Commit name: Record evaluation timing context.
 Description: Record prior measured full evaluation durations and distinguish them from the in-flight first evaluation of the streaming run.
 Discussion: Previous full cycles took9.8to13.1minutes. New canonical generation took20seconds, while complete evaluation is still running. No settings or processes were changed.
+
+Commit name: Evaluate streaming SFT every 1000 optimizer steps.
+Description: Set evaluation and checkpoint cadence1000 in the active streaming configuration and retain loss logging10. Apply configured checkpoint cadence after loading a saved Trainer state so the former100step schedule does not persist.
+Discussion: The user changed the evaluation interval during the firststep100evaluation. A complete checkpoint100 contains adapter, optimizer, scheduler, and RNG state. Resume it under the same W&B identity rather than reset optimization. The incomplete100evaluation is superseded by the newcadence and is not rerun on resume. Oneepoch budget205175steps and alltrainingdata/optimizer/evaluation definitions remain unchanged.

@@ -1,5 +1,5 @@
 # This script streams the pinned filtered OpenCode and original MBPP mixture, tokenizes each example on demand, and trains a fresh base-model LoRA adapter for one epoch.
-# Every 100 optimizer steps it evaluates canonical MBPP and MBPP+, the final 500 OpenCode rows, and one seed-fixed 500-task training sample, then saves predictions and metrics.
+# At the configured optimizer cadence it evaluates canonical MBPP and MBPP+, the held-out OpenCode rows, and one seed-fixed training sample, then saves predictions and metrics.
 # A separate invocation generates evaluation responses with source-specific stop rules, while invalid evaluation test suites remain explicitly counted in the fixed source denominators.
 from __future__ import annotations
 
@@ -211,13 +211,16 @@ def run_training(config: dict[str, Any], config_path: Path, resume: str | None) 
             return control
 
         def on_save(self, args: Any, state: Any, control: Any, **kwargs: Any) -> Any:
-            # Evaluate only complete checkpoint saves at each 100-step boundary.
+            # Evaluate only complete checkpoint saves at the configured evaluation boundary.
             if state.global_step % int(config['eval_steps']) == 0:
                 evaluate_checkpoint(model, tokenizer, output / 'checkpoints' / f'checkpoint-{state.global_step}', state.global_step,
                                     float(state.epoch or 0), holdout, training_sample, config, run)
             return control
 
         def on_train_begin(self, args: Any, state: Any, control: Any, **kwargs: Any) -> Any:
+            # Apply the current save cadence after loading any older Trainer state.
+            state.save_steps = int(config.get('save_steps', config['eval_steps']))
+
             # Complete an evaluation interrupted after its optimizer checkpoint was saved.
             if resume and state.global_step and state.global_step % int(config['eval_steps']) == 0:
                 evaluate_checkpoint(model, tokenizer, Path(resume), state.global_step, float(state.epoch or 0), holdout, training_sample, config, run)
@@ -226,7 +229,7 @@ def run_training(config: dict[str, Any], config_path: Path, resume: str | None) 
     # Use the reference run's optimizer, batch, LoRA, precision, and token settings with a one-epoch stop condition.
     arguments = TrainingArguments(output_dir=str(output / 'checkpoints'), num_train_epochs=1, max_steps=optimizer_steps,
         per_device_train_batch_size=int(config['sft_per_device_train_batch_size']), gradient_accumulation_steps=int(config['gradient_accumulation_steps']),
-        learning_rate=float(config['learning_rate']), logging_steps=int(config['logging_steps']), save_strategy='steps', save_steps=int(config['eval_steps']),
+        learning_rate=float(config['learning_rate']), logging_steps=int(config['logging_steps']), save_strategy='steps', save_steps=int(config.get('save_steps', config['eval_steps'])),
         save_total_limit=None, report_to=[], bf16=bool(config['bf16']), fp16=bool(config['fp16']),
         dataloader_num_workers=0 if streaming else int(config['dataloader_num_workers']), seed=int(config['seed']),
         gradient_checkpointing=bool(config['gradient_checkpointing']), gradient_checkpointing_kwargs={'use_reentrant': False},
