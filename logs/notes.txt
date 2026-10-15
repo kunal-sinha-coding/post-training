@@ -4730,3 +4730,8 @@ Discussion: The user explicitly authorized deleting old SFT and rejection-sampli
 Commit name: Add durable supervision for full OpenCode SFT.
 Description: Start one-epoch SFT under a supervisor that uses workspace-backed full-data download caches, records progress every30minutes, and resumes the newest complete optimizer checkpoint after failures.
 Discussion: No checkpoint deletion or automatic hyperparameter adjustment exists in this supervisor. It loads credentials from ignored.env, preserves the validated originalMBPP Arrow cache, and leaves the same one-epoch limit active on every restart. The data preparation smoke test verified50source shards, heldout row/ID/text exclusions, canonical overlap removal, deterministic training evaluation selection, loss masking, EOS, and cache reload.
+
+
+Commit name: Validate full OpenCode shards and record SFT launch.
+Description: Validate every downloaded parquet footer and total source row count before conversion, with one forced pinned download retry for an invalid shard. Record the new live W&B run and one-time cleanup completion.
+Discussion: The live run83e7614a started under supervisorPID182130 and trainerPID182138 from commite813968. Dataset revision8f3ba5bafe4d6e8db46082cf7ae6741bc370604d is pinned. A zero-byte shard20 appeared despite snapshot completion; a one-time forced download repaired it to153999706bytes and100000rows while the uninterrupted worker converted earlier shards. The code now detects this condition before conversion on future attempts. Small end-to-end preparation tests and GPU generation tests passed for both full OpenCode responses and MBPP code continuations. W&B remote history verified591original training rows during preparation.

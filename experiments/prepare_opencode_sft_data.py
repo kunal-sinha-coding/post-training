@@ -64,7 +64,9 @@ def parse_holdout(row: dict[str, Any], index: int) -> dict[str, Any]:
 def prepare_data(config: dict[str, Any], run: Any = None) -> tuple[Any, list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
     # Download the pinned full dataset and construct the training tensor records without loading all rows into memory.
     from datasets import Dataset, concatenate_datasets, load_dataset, load_from_disk
-    from huggingface_hub import HfApi, snapshot_download
+    from huggingface_hub import HfApi, hf_hub_download, snapshot_download
+    import pyarrow as pa
+    import pyarrow.parquet as pq
     from transformers import AutoTokenizer
     from data import _normalize_task_text, _task_description_from_prompt
     from evalplus.data import get_mbpp_plus
@@ -116,6 +118,26 @@ def prepare_data(config: dict[str, Any], run: Any = None) -> tuple[Any, list[dic
     shards = sorted(Path(snapshot).glob('data/*.parquet'))
     if len(shards) != 50:
         raise ValueError(f'Expected 50 OpenCode parquet shards, found {len(shards)}.')
+    # Validate every downloaded footer and repair a corrupt cache object before Arrow conversion begins.
+    validated_rows = 0
+    repaired_shards = 0
+    for shard_index, shard in enumerate(shards):
+        try:
+            shard_rows = pq.ParquetFile(shard).metadata.num_rows
+            if shard_rows <= 0:
+                raise ValueError(f'Empty source parquet shard: {shard.name}.')
+        except (OSError, ValueError, pa.ArrowInvalid):
+            repaired_path = hf_hub_download('nvidia/OpenCodeInstruct', filename=f'data/{shard.name}',
+                                             repo_type='dataset', revision=revision, force_download=True)
+            shard_rows = pq.ParquetFile(repaired_path).metadata.num_rows
+            if shard_rows <= 0:
+                raise ValueError(f'Source parquet shard is still empty after repair: {shard.name}.')
+            shards[shard_index] = Path(repaired_path)
+            repaired_shards += 1
+        validated_rows += shard_rows
+    if validated_rows != policy['expected_source_rows']:
+        raise ValueError(f'Parquet footers contain {validated_rows} rows, expected {policy["expected_source_rows"]}.')
+    progress('source_validated', source_validated_rows=validated_rows, source_repaired_shards=repaired_shards)
     raw = load_dataset('parquet', data_files={'train': [str(path) for path in shards]}, split='train', cache_dir=str(root / 'raw_cache'))
     if len(raw) != policy['expected_source_rows']:
         raise ValueError(f'Expected {policy["expected_source_rows"]} source rows, found {len(raw)}.')
