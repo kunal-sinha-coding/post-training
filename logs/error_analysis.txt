@@ -1429,3 +1429,493 @@ No training data or model changes were applied during this report. The proposed 
 - W&B curve retrieval was sampled. Reward diagnostics used 50 points across internal steps 13,074 to 250,199 of 262,085. The evaluation query returned a 100-row sample across internal steps 0 to 260,697. Exact target-step retrieval was unavailable through the MCP. Local checkpoint metrics are exact.
 - This analysis did not run a new training experiment or establish that any proposed data change improves EvalPlus.
 ------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------
+ERROR ANALYSIS
+Timestamp: 2026-10-15T06:32:39.883638+00:00
+------------------------------------------------------------------------
+Command and batch mode: Retrospective analysis of saved canonical EvalPlus outputs. No training or generation was run. All 378 benchmark tasks were compared across four latest snapshots. All 146 latest OpenCode MBPP failures were inspected. Saved candidates were replayed with sandbox.execute_code, a three-second limit, isolated Python, and a minimal environment.
+
+0. Run summary
+
+The approximately 60 to 65 percent greedy MBPP region is reproducible, but these artifacts do not establish a hard 0.5B capacity ceiling. There are 107 common failures across the four latest data-mix snapshots, but 80 tasks change outcome. Forty-two common failures have a correct candidate in existing sampling artifacts. Most reviewed failures are concrete semantic and implementation errors, and 126 of 146 fail the assertion already displayed in their prompt. The next useful tests are visible-example verification and repair at inference, plus independently sourced verified-solution SFT for single-generation improvement. Training remains stopped.
+
+1. Iteration comparison
+
+This is the first exhaustive latest-snapshot failure audit. Earlier reports, including logs/grpo_plateau_audit_20261012.md and logs/mbpp_eval_checkpoint_comparison_20261003.md, covered reward signals or selected regressions and sampled checkpoints. Their hand-picked error counts are not comparable prevalence estimates. No fix or new model was tested in this audit.
+
+2. Run context and data coverage
+
+Late snapshots were selected by the latest completed canonical evaluation, without looking for the highest score. All use the same 378 tasks and dataset hash ee43ecabebf20deef4bb776a405ac5b1. MBPP means base_status is pass. MBPP+ requires both base_status and plus_status to be pass. There is one greedy candidate per task per selected snapshot. The current classification denominator is 146 failed base-test candidates at OpenCode step 1200. The persistent subset denominator is 107.
+
+| Training data | Run | Step | MBPP | MBPP+ |
+|---|---|---:|---:|---:|
+| original | c4fthzd3 | 1300 | 239/378 (63.23%) | 197/378 (52.12%) |
+| easy | mbpp10xluna1007 | 660 | 231/378 (61.11%) | 188/378 (49.74%) |
+| hard | mbpphard10x1009 | 1340 | 229/378 (60.58%) | 191/378 (50.53%) |
+| opencode | 55902398 | 1200 | 232/378 (61.38%) | 193/378 (51.06%) |
+
+The additional hard-synthetic batch-normalized run at step 1400 scored 228/378 MBPP and 189/378 MBPP+. It is a secondary control, not part of the four-mix intersection. Source paths, file hashes, configurations, the complete 378-task status matrix, code, prompts, references, failed inputs, and annotations are preserved in analysis/mbpp_plateau_audit_20261015.json.
+
+Across the main four snapshots, 191 tasks pass all four, 107 fail all four, and 80 change outcome. The union contains 271 successful tasks, or 71.69 percent. This is an oracle union, not an ensemble score available without a selector. Of the latest 146 failures, 39 pass in another snapshot. Original-only and OpenCode disagree on 45 tasks: OpenCode gains 19 and loses 26 relative to original. Thus a similar aggregate score hides task turnover.
+
+Current-run training and evaluation progression:
+
+| Optimizer step | Fixed training sample | MBPP | MBPP+ |
+|---:|---:|---:|---:|
+| 0 | 257/500 (51.40%) | 197/378 (52.12%) | 167/378 (44.18%) |
+| 600 | 316/500 (63.20%) | 225/378 (59.52%) | 189/378 (50.00%) |
+| 1200 | 340/500 (68.00%) | 232/378 (61.38%) | 193/378 (51.06%) |
+
+W&B was inspected through the connected get_run_history tool for run 55902398. The first request outer-unioned 60 sampled rows for evaluation/mbpp_pass_at_1, evaluation/mbpp_plus_pass_at_1, training/greedy_pass_at_1, train/reward, reward/mixed_group_fraction, reward/mean_group_std, and training/average_reward. A second request sampled 40 rows for within-group standard deviation, train/reward_std, format/syntax/interface/test-progress/pass components, train/entropy, and train/kl. These are sampled remote curves. Exact checkpoint counts above use local result files. W&B _step is an internal history axis and must not be read as an optimizer-step number.
+
+Local logs contain 1207 optimizer records. Mean rollout reward rises from 0.5384 over steps 1 to 200 to 0.6759 over steps 1001 to 1200. Full-success fraction rises from 0.4997 to 0.6438. Mixed-task fraction falls from 0.8000 to 0.5425 and mean within-task standard deviation falls from 0.2203 to 0.1338. Entropy decreases from 0.1879 to 0.1413 and KL rises from 0.0172 to 0.0329. These changes are consistent with concentration and continued training improvement, but do not by themselves prove destructive collapse. Format, syntax, and interface reward-component values are zero because hybrid reward uses full success and assertion-pass fraction, not those bonus components.
+
+3. Error-pattern distribution
+
+Each failure has one primary category. Runtime or syntax defects take precedence over additional semantic defects. The ambiguous-contract label is reserved for visible prose versus expected behavior conflicts or unspecified absent-answer behavior. Other categories distinguish wrong core computation, wrong requested operation, output contract, and local boundaries. The distinction between algorithm and interpretation is an auditable manual judgment. Secondary_tags in the JSON retain qualitative overlaps. They are not additional primary counts. Exact all-candidate secondary-tag occurrences are listed below.
+
+| Primary pattern | All 146 failures | Percent of failures | Persistent 107 failures | Percent of persistent failures |
+|---|---:|---:|---:|---:|
+| Wrong algorithm or formula | 68 | 46.58% | 50 | 46.73% |
+| Wrong interpretation of the task | 33 | 22.60% | 29 | 27.10% |
+| Runtime, API, or termination error | 27 | 18.49% | 18 | 16.82% |
+| Wrong output type, shape, or order | 8 | 5.48% | 3 | 2.80% |
+| Boundary or character-case handling | 5 | 3.42% | 3 | 2.80% |
+| Ambiguous or conflicting benchmark contract | 4 | 2.74% | 3 | 2.80% |
+| Invalid Python syntax | 1 | 0.68% | 1 | 0.93% |
+
+Secondary-tag occurrences, with overlap allowed: {"AttributeError": 2, "IndexError": 2, "NameError": 2, "TypeError": 4, "ValueError": 3, "ZeroDivisionError": 1, "additional_return_shape_error_after_case_fix": 1, "alignment": 1, "also_wrong_return": 1, "append_vs_extend": 1, "argument_binding": 1, "arity": 1, "benchmark_wording": 1, "bit_manipulation": 1, "boundary": 1, "branch_constant": 1, "combinations": 1, "combinatorics": 1, "comparison": 1, "comparison_direction": 1, "componentwise_operation": 1, "constraint_ignored": 1, "container_api": 2, "delimiter": 1, "duplicate_output": 1, "dynamic_programming": 1, "edge_case": 2, "exponential_runtime": 1, "extra_element": 1, "extra_operation": 1, "formula": 6, "frequency": 2, "geometry": 1, "heap": 1, "height_wording": 1, "ignored_constraint": 2, "ignored_example": 9, "incomplete_algorithm": 1, "incomplete_enumeration": 1, "indexing": 3, "length": 1, "logical_inversion": 1, "merge": 1, "missing_predicate": 2, "missing_reduction": 1, "multi_digit": 1, "named_math_or_sequence": 9, "nested_structure": 3, "nontermination": 1, "normalization": 1, "number_theory": 1, "off_by_one": 3, "operation_order": 1, "operator_confusion": 1, "ordering": 1, "parsing": 2, "potential_IndexError": 1, "predicate": 2, "prompt_reference_conflict": 2, "prose_reference_contract_conflict": 1, "prose_underspecified_but_example_disambiguates": 4, "quantifier_error": 2, "recurrence": 2, "reference_formula_incorrect": 1, "regex": 1, "return_delimiters": 1, "return_shape": 3, "return_type": 2, "reversed_comparison": 1, "selection": 2, "sequence_knowledge": 4, "sequential_replacement": 1, "set_operation": 2, "sign": 1, "signature": 1, "slice_order": 1, "spatial_neighborhood": 1, "spec_misread": 4, "state_management": 1, "template_substitution": 1, "term_confusion": 2, "timeout": 1, "underspecified_sentinel": 1, "units": 1, "unrelated_predicate": 1, "word_boundary": 1, "wording_ambiguity": 1, "wrong_entry_point": 2}.
+
+4. Observed error patterns
+
+4.1. Wrong algorithm or formula
+
+Mbpp/6: Tests only that XOR is nonzero, which means unequal numbers, not exactly one differing bit.
+Prompt: """ Write a python function to check whether the two numbers differ at one bit position only or not. assert differ_At_One_Bit_Pos(13,9) == True """
+Generated excerpt: 'return num1 ^ num2 != 0'
+Expected behavior: Require a nonzero XOR with exactly one set bit.
+Visible assertion: assert differ_At_One_Bit_Pos(13,9) == True
+Observed visible result: passed
+First saved failing input: [15, 8]
+Candidate output: {"value_repr": "True", "type": "bool"}
+Reference output: {"value_repr": "False", "type": "bool"}
+
+Mbpp/67: Uses Fibonacci recurrence for Bell numbers, and naive recursion makes the n=56 case infeasible.
+Prompt: """ Write a function to find the number of ways to partition a set of Bell numbers. assert bell_number(2)==2 """
+Generated excerpt: 'bell_number(n-1) + bell_number(n-2)'
+Expected behavior: Compute Bell set-partition counts.
+Visible assertion: assert bell_number(2)==2
+Observed visible result: passed
+First saved failing input: [10]
+Candidate output: {"value_repr": "89", "type": "int"}
+Reference output: {"value_repr": "115975", "type": "int"}
+
+Mbpp/641: Uses the pentagonal-number formula rather than the nonagonal-number formula.
+Prompt: """ Write a function to find the nth nonagonal number. assert is_nonagonal(10) == 325 """
+Generated excerpt: 'return n * (3 * n - 1) // 2'
+Expected behavior: Return n*(7*n-5)//2.
+Visible assertion: assert is_nonagonal(10) == 325
+Observed visible result: failed with AssertionError
+First saved failing input: [10]
+Candidate output: {"value_repr": "145", "type": "int"}
+Reference output: {"value_repr": "325", "type": "int"}
+
+4.2. Wrong interpretation of the task
+
+Mbpp/63: Computes gaps between first coordinates of adjacent sorted tuples rather than differences within each pair.
+Prompt: """ Write a function to find the maximum difference between available pairs in the given tuple list. assert max_difference([(3, 5), (1, 7), (10, 3), (1, 2)]) == 7 """
+Generated excerpt: 'sorted_tup_list[i + 1][0] - sorted_tup_list[i][0]'
+Expected behavior: Maximize abs(a-b) over supplied pairs.
+Visible assertion: assert max_difference([(3, 5), (1, 7), (10, 3), (1, 2)]) == 7
+Observed visible result: passed
+First saved failing input: [[(4, 6), (2, 17), (9, 13), (11, 12)]]
+Candidate output: {"value_repr": "5", "type": "int"}
+Reference output: {"value_repr": "15", "type": "int"}
+
+Mbpp/72: Checks a sum of squares instead of a difference of squares.
+Prompt: """ Write a python function to check whether the given number can be represented as the difference of two squares or not. assert dif_Square(5) == True """
+Generated excerpt: 'if i**2 + j**2 == n:'
+Expected behavior: Determine whether n equals a*a-b*b.
+Visible assertion: assert dif_Square(5) == True
+Observed visible result: passed
+First saved failing input: [10]
+Candidate output: {"value_repr": "True", "type": "bool"}
+Reference output: {"value_repr": "False", "type": "bool"}
+
+Mbpp/754: Checks membership anywhere in the other lists instead of equality at the same index.
+Prompt: """ We say that an element is common for lists l1, l2, l3 if it appears in all three lists under the same index. Write a function to find common elements from three lists. The function should return a list. assert extract_index_list([1, 1, 3, 4, 5, 6, 7],[0, 1, 2, 3, 4, 5, 7],[0, 1, 2, 3, 4, 5, 7])==[1, 7] """
+Generated excerpt: 'if l1[i] in l2 and l1[i] in l3:'
+Expected behavior: Keep values only where corresponding positions in all three lists are equal.
+Visible assertion: assert extract_index_list([1, 1, 3, 4, 5, 6, 7],[0, 1, 2, 3, 4, 5, 7],[0, 1, 2, 3, 4, 5, 7])==[1, 7]
+Observed visible result: failed with AssertionError
+First saved failing input: [[1, 1, 3, 4, 5, 6, 7], [0, 1, 2, 3, 4, 5, 7], [0, 1, 2, 3, 4, 5, 7]]
+Candidate output: {"value_repr": "[1, 1, 3, 4, 5, 7]", "type": "list"}
+Reference output: {"value_repr": "[1, 7]", "type": "list"}
+
+4.3. Runtime, API, or termination error
+
+Mbpp/106: Concatenates a tuple and a list directly, which raises TypeError on the example.
+Prompt: """ Write a function to append the given list to the given tuples. assert add_lists([5, 6, 7], (9, 10)) == (9, 10, 5, 6, 7) """
+Generated excerpt: 'return tup + lst'
+Expected behavior: Return a tuple containing tuple elements followed by list elements.
+Visible assertion: assert add_lists([5, 6, 7], (9, 10)) == (9, 10, 5, 6, 7)
+Observed visible result: failed with TypeError: can only concatenate tuple (not "list") to tuple
+First saved failing input: [[5, 6, 7], (9, 10)]
+Candidate output: {"exception": "TypeError", "message": "can only concatenate tuple (not \"list\") to tuple"}
+Reference output: {"value_repr": "(9, 10, 5, 6, 7)", "type": "tuple"}
+
+Mbpp/126: Defines the correct calculation under the wrong entry-point name; required sum is absent.
+Prompt: """ Write a python function to find the sum of common divisors of two given numbers. assert sum(10,15) == 6 """
+Generated excerpt: 'def sum_of_common_divisors(x, y):'
+Expected behavior: Expose sum(a,b) as specified by the visible assertion.
+Visible assertion: assert sum(10,15) == 6
+Observed visible result: failed with TypeError: 'int' object is not iterable
+First saved failing input: None
+Candidate output: null
+Reference output: null
+
+Mbpp/725: The loop never advances start when the current character is not a quote, so the visible inputs never terminate.
+Prompt: """ Write a function to extract values between quotation marks " " of the given string. assert extract_quotation('Cortex "A53" Based "multi" tasking "Processor"') == ['A53', 'multi', 'Processor'] """
+Generated excerpt: 'while start < len(input_string):\n        if input_string[start] == \'"\':'
+Expected behavior: Return only the text between paired double quotes.
+Visible assertion: assert extract_quotation('Cortex "A53" Based "multi" tasking "Processor"') == ['A53', 'multi', 'Processor']
+Observed visible result: timeout
+First saved failing input: ['Cortex "A53" Based "multi" tasking "Processor"']
+Candidate output: {"passed": false, "status": "timeout", "stdout": "", "stderr": "", "returncode": null}
+Reference output: {"value_repr": "['A53', 'multi', 'Processor']", "type": "list"}
+
+4.4. Wrong output type, shape, or order
+
+Mbpp/240: Replaces the last element with one nested list instead of splicing all elements into the outer list.
+Prompt: """ Write a function that takes in two lists and replaces the last element of the first list with the elements of the second list. assert replace_list([1, 3, 5, 7, 9, 10],[2, 4, 6, 8])==[1, 3, 5, 7, 9, 2, 4, 6, 8] """
+Generated excerpt: 'list1[-1] = list2'
+Expected behavior: Return a flat list with list2 appended after list1[:-1].
+Visible assertion: assert replace_list([1, 3, 5, 7, 9, 10],[2, 4, 6, 8])==[1, 3, 5, 7, 9, 2, 4, 6, 8]
+Observed visible result: failed with AssertionError
+First saved failing input: [[1, 3, 5, 7, 9, 10], [2, 4, 6, 8]]
+Candidate output: {"value_repr": "[1, 3, 5, 7, 9, [2, 4, 6, 8]]", "type": "list"}
+Reference output: {"value_repr": "[1, 3, 5, 7, 9, 2, 4, 6, 8]", "type": "list"}
+
+Mbpp/749: Sorts numerically correctly but converts values back to strings, contrary to the assertion.
+Prompt: """ Write a function to sort a given list of strings of numbers numerically.  assert sort_numeric_strings( ['4','12','45','7','0','100','200','-12','-500'])==[-500, -12, 0, 4, 7, 12, 45, 100, 200] """
+Generated excerpt: 'sorted_strings = [str(num) for num in numbers]'
+Expected behavior: Return a list of integers in numeric order.
+Visible assertion: assert sort_numeric_strings( ['4','12','45','7','0','100','200','-12','-500'])==[-500, -12, 0, 4, 7, 12, 45, 100, 200]
+Observed visible result: failed with AssertionError
+First saved failing input: [['4', '12', '45', '7', '0', '100', '200', '-12', '-500']]
+Candidate output: {"value_repr": "['-500', '-12', '0', '4', '7', '12', '45', '100', '200']", "type": "list"}
+Reference output: {"value_repr": "[-500, -12, 0, 4, 7, 12, 45, 100, 200]", "type": "list"}
+
+4.5. Boundary or character-case handling
+
+Mbpp/9: Search includes the identity rotation at zero despite the explicit greater-than-zero condition.
+Prompt: """ Write a python function to find the minimum number of rotations (greater than 0) required to get the same string. assert find_Rotations("aaaa") == 1 """
+Generated excerpt: 'for i in range(n):'
+Expected behavior: Return the smallest positive matching rotation.
+Visible assertion: assert find_Rotations("aaaa") == 1
+Observed visible result: failed with AssertionError
+First saved failing input: ['aaaa']
+Candidate output: {"value_repr": "0", "type": "int"}
+Reference output: {"value_repr": "1", "type": "int"}
+
+Mbpp/722: Uses strict comparisons although the provided assertion includes weight exactly at the minimum.
+Prompt: """ The input is given as - a dictionary with a student name as a key and a tuple of float (student_height, student_weight) as a value, - minimal height, - minimal weight. Write a function to filter students that have height and weight above the minimum. assert filter_data({'Cierra Vega': (6.2, 70), 'Alden Cantrell': (5.9, 65), 'Kierra Gentry': (6.0, 68), 'Pierre Cox': (5.8, 66)},6.0,70)=={'Cierra Vega': (6.2, 70)} """
+Generated excerpt: 'if value[0] > min_height and value[1] > min_weight'
+Expected behavior: Include students meeting both minimum thresholds with >=.
+Visible assertion: assert filter_data({'Cierra Vega': (6.2, 70), 'Alden Cantrell': (5.9, 65), 'Kierra Gentry': (6.0, 68), 'Pierre Cox': (5.8, 66)},6.0,70)=={'Cierra Vega': (6.2, 70)}
+Observed visible result: failed with AssertionError
+First saved failing input: [{'Cierra Vega': (6.2, 70), 'Alden Cantrell': (5.9, 65), 'Kierra Gentry': (6.0, 68), 'Pierre Cox': (5.8, 66)}, 6.0, 70]
+Candidate output: {"value_repr": "{}", "type": "dict"}
+Reference output: {"value_repr": "{'Cierra Vega': (6.2, 70)}", "type": "dict"}
+
+4.6. Ambiguous or conflicting benchmark contract
+
+Mbpp/237: Counts exact tuple occurrences as the prose requests, but the expected answer treats each tuple as unordered.
+Prompt: """ Write a function that takes in a list of tuples and returns a dictionary mapping each unique tuple to the number of times it occurs in the list. assert check_occurences([(3, 1), (1, 3), (2, 5), (5, 2), (6, 3)] ) == {(1, 3): 2, (2, 5): 2, (3, 6): 1} """
+Generated excerpt: 'tuple_count[tup] = 1'
+Expected behavior: The benchmark groups (3,1) and (1,3) under sorted key (1,3).
+Visible assertion: assert check_occurences([(3, 1), (1, 3), (2, 5), (5, 2), (6, 3)] ) == {(1, 3): 2, (2, 5): 2, (3, 6): 1}
+Observed visible result: failed with AssertionError
+First saved failing input: [[(3, 1), (1, 3), (2, 5), (5, 2), (6, 3)]]
+Candidate output: {"value_repr": "{(3, 1): 1, (1, 3): 1, (2, 5): 1, (5, 2): 1, (6, 3): 1}", "type": "dict"}
+Reference output: {"value_repr": "{(1, 3): 2, (2, 5): 2, (3, 6): 1}", "type": "dict"}
+
+Mbpp/590: The prose requests polar-to-rectangular conversion, but the assertion and reference compute rectangular-to-polar plus a constant unrelated conversion.
+Prompt: """ Write a function to convert polar coordinates to rectangular coordinates. assert polar_rect(3,4)==((5.0, 0.9272952180016122), (-2+2.4492935982947064e-16j)) """
+Generated excerpt: 'return (x, y), (0, 1)'
+Expected behavior: The benchmark expects (cmath.polar(complex(x,y)), cmath.rect(2,pi)), which the prose does not describe.
+Visible assertion: assert polar_rect(3,4)==((5.0, 0.9272952180016122), (-2+2.4492935982947064e-16j))
+Observed visible result: failed with AssertionError
+First saved failing input: [3, 4]
+Candidate output: {"value_repr": "((-1.960930862590836, -2.2704074859237844), (0, 1))", "type": "tuple"}
+Reference output: {"value_repr": "((5.0, 0.9272952180016122), (-2+2.4492935982947064e-16j))", "type": "tuple"}
+
+Mbpp/615: The prose says average each tuple, which the generated program does, but the assertion and reference average across corresponding positions.
+Prompt: """ Write a function which takes a tuple of tuples and returns the average value for each tuple as a list. assert average_tuple(((10, 10, 10, 12), (30, 45, 56, 45), (81, 80, 39, 32), (1, 2, 3, 4)))==[30.5, 34.25, 27.0, 23.25] """
+Generated excerpt: 'for tup in tup_list:\n        total_sum = sum(tup)'
+Expected behavior: Benchmark output averages columns, not each input tuple.
+Visible assertion: assert average_tuple(((10, 10, 10, 12), (30, 45, 56, 45), (81, 80, 39, 32), (1, 2, 3, 4)))==[30.5, 34.25, 27.0, 23.25]
+Observed visible result: failed with AssertionError
+First saved failing input: (((10, 10, 10, 12), (30, 45, 56, 45), (81, 80, 39, 32), (1, 2, 3, 4)),)
+Candidate output: {"value_repr": "[10.5, 44.0, 58.0, 2.5]", "type": "list"}
+Reference output: {"value_repr": "[30.5, 34.25, 27.0, 23.25]", "type": "list"}
+
+Mbpp/755: The only listed failures have fewer than two distinct values, and the prompt specifies no absent-answer return value.
+Prompt: """ Write a function to find the second smallest number in a list. assert second_smallest([1, 2, -8, -2, 0, -2])==-2 """
+Generated excerpt: 'if len(unique_numbers) < 2:\n        return -1'
+Expected behavior: The reference requires None when no second distinct value exists, but that contract is absent from the visible prompt and example.
+Visible assertion: assert second_smallest([1, 2, -8, -2, 0, -2])==-2
+Observed visible result: passed
+First saved failing input: [[2, 2]]
+Candidate output: {"value_repr": "-1", "type": "int"}
+Reference output: {"value_repr": "None", "type": "NoneType"}
+
+4.7. Invalid Python syntax
+
+Mbpp/129: Contains an unparenthesized generator expression in assignment, which is invalid Python.
+Prompt: """ Write a function to calculate whether the matrix is a magic square. assert magic_square_test([[7, 12, 1, 14], [2, 13, 8, 11], [16, 3, 10, 5], [9, 6, 15, 4]])==True """
+Generated excerpt: 'row_sums = sum(row) for row in matrix'
+Expected behavior: Provide an executable magic-square predicate.
+Visible assertion: assert magic_square_test([[7, 12, 1, 14], [2, 13, 8, 11], [16, 3, 10, 5], [9, 6, 15, 4]])==True
+Observed visible result: syntax_error with SyntaxError: invalid syntax
+First saved failing input: None
+Candidate output: null
+Reference output: null
+
+5. Success patterns and controls
+
+All 232 latest MBPP successes passed the same evaluator and input protocol, so there is no universal inability to load or execute the model. Of the 146 failures, 145 parse as Python and one is invalid syntax. The visible assertion replay passes only 20 failures and rejects 126. For the persistent subset it rejects 93 of 107. The visible rejections comprise 101 assertion mismatches, 23 other runtime errors, one syntax error, and one timeout. They demonstrate that many failures are detectable with information already in the prompt. They do not show that repair will succeed.
+
+There are 143 saved failing-input records. Replays restore tuple and complex argument types from canonical base inputs before calling each function. All 143 references return normally. Candidate calls yield 118 different representations, 24 exceptions, and one timeout. No saved failing arguments exist for tasks 126, 129, and 233; their visible-assertion failures are still retained. Direct reference comparison is diagnostic only and does not replace special EvalPlus oracle rules.
+
+6. Deep triage
+
+Wrong algorithm or formula:
+Observed evidence: Evidence includes XOR != 0 for exactly one differing bit, Fibonacci recurrence for Bell numbers, and a pentagonal formula for a nonagonal number. Most programs are fluent, short, and executable but encode the wrong invariant or formula.
+Likely causes and alternatives: The leading explanation is missing or poorly ranked algorithmic knowledge that generic test-reward updates do not reliably correct on unseen tasks. A plausible alternative is that the correct program remains in the model distribution but is not greedy. Existing samples support that alternative for part of the failure set.
+Targeted intervention and confirmation: Use verified teacher solutions on independently sourced training problems for the same algorithm families, then test single-generation accuracy on a development split and an untouched benchmark. For inference, use visible-example rejection plus repair. Do not train directly on these benchmark solutions.
+
+Wrong interpretation of the task:
+Observed evidence: The code performs a different requested operation, such as adjacent tuple-coordinate gaps instead of within-tuple differences or a sum of squares instead of a difference.
+Likely causes and alternatives: The leading explanation is weak specification-to-operation grounding, rather than a Python parser defect. Terse prompts and ambiguous language can contribute, but explicit examples often already contradict the code.
+Targeted intervention and confirmation: Train on contrastive task pairs that differ in one requirement, with verified implementations and output contracts. A prompt-paraphrase ablation can test prompt sensitivity without changing the reference task.
+
+Runtime, API, or termination error:
+Observed evidence: The code contains tuple/list concatenation, wrong entry-point names, out-of-range indexing, undefined variables, illegal conversions, and a nonadvancing loop. These defects were checked against actual source and replay results.
+Likely causes and alternatives: The leading explanation is insufficient execution-aware checking. API conventions and function-name copying contribute. A global environment problem is unlikely because the same sandbox executes the reference implementations and most benchmark tasks pass.
+Targeted intervention and confirmation: At inference, compile, validate the named entry point and call signature, execute only the provided example, and feed a bounded error message into a repair attempt. Measure selected-solution accuracy at a declared inference budget separately from raw greedy pass@1.
+
+Wrong output type, shape, or order:
+Observed evidence: Core work can be close, but the output is nested rather than flattened, strings rather than integers, or sorted in the wrong direction.
+Likely causes and alternatives: The leading explanation is weak type, shape, and ordering contract enforcement. It can overlap with specification errors; the primary label identifies the most local observable defect.
+Targeted intervention and confirmation: Use training tests that distinguish output type, shape, ordering, and boundary cases, with paired corrected examples. A visible-test repair should remove directly exposed contract failures when a correct repair is available.
+
+Boundary or character-case handling:
+Observed evidence: Programs mishandle positive-only rotation, inclusive bounds, case conversion, uppercase prefixes, or equality at a threshold.
+Likely causes and alternatives: The leading explanation is overgeneralization from a narrow pattern or one example. Some cases fail the displayed example, so they are not all obscure hidden-test failures.
+Targeted intervention and confirmation: Add boundary-focused independent training problems and tests around zero, equality, terminal indices, and letter case. Compare gains on unseen boundary cases rather than training reward alone.
+
+Ambiguous or conflicting benchmark contract:
+Observed evidence: Four cases have conflicts or missing conventions: tuple member equivalence, polar versus rectangular conversion, row versus column averaging, and a missing-second-value sentinel. The visible assertion disambiguates several even where prose is poor.
+Likely causes and alternatives: Benchmark-contract ambiguity is real but small. It cannot explain 142 other failures. A separate task 430 also has a questionable reference formula, but its generated formula is independently wrong and remains classified as an algorithm error.
+Targeted intervention and confirmation: Report canonical scores unchanged, maintain a separately flagged ambiguity slice, and test prompt clarification only as a distinct diagnostic. Do not silently edit official tests or subtract these tasks from the headline score.
+
+Invalid Python syntax:
+Observed evidence: Task 129 assigns row_sums = sum(row) for row in matrix without the required comprehension brackets or generator parentheses. This is invalid Python.
+Likely causes and alternatives: There is only one syntax failure. This does not support a universal format, stopping, or truncation explanation for the plateau. The classification is syntax, with no claim that the generation was truncated.
+Targeted intervention and confirmation: Use a compile check followed by one repair attempt. Keep the original greedy score separate from repaired accuracy.
+
+7. Shared causes and interactions
+
+All four main runs share the 0.5B base model, rank-16 LoRA adaptation, test-based GRPO supervision, and the greedy evaluation protocol. Changing the task pool does not separately test model size, learning objective, teacher knowledge transfer, or inference-time checking. Equal aggregate scores are therefore evidence of a shared bottleneck in this setup, not proof of a universal model-size limit.
+
+The current saved trace contains 9632 complete task groups of 16. Exact category counts are: 4658 groups with both full successes and failures, 1549 varying groups with no full success, 2746 all-correct groups, 298 all-zero groups, and 381 equal partial-reward groups. No group contains mixed task IDs. Thus 64.44 percent vary, but only 48.36 percent contrast a correct solution with an incorrect solution. Among the final 1632 recorded groups, 889 vary (54.47 percent), including 659 correct-versus-incorrect groups (40.38 percent). Variation declines but has not disappeared. Of 61,389 candidates strictly above their own group mean, 14,262 (23.23 percent) remain incomplete. These are candidate counts, not measured gradient contribution.
+
+Batch reward scaling changes the denominator, but TRL 0.25.0 still subtracts the per-task group mean. All-equal task groups therefore have zero reward-derived relative advantage even when other tasks in the batch vary. KL can still contribute. This is confirmed in the installed grpo_trainer.py lines 1600 to 1620 and the official versioned documentation: https://huggingface.co/docs/trl/v0.25.0/grpo_trainer. The local log frac_reward_zero_std should not substitute for the custom within-task metric when scale_rewards is batch.
+
+The training pool has 591 original tasks and 8879 OpenCode tasks. Uniform sampling allocates 6.24 percent of task draws to originals. Saved rollout coverage contains 597 original groups from 590 unique original IDs, and 9035 OpenCode groups from 8852 unique OpenCode IDs. This is about one pass over the original pool. Original-only training at a similar optimizer-step count has far more original-task exposure. Therefore the four mixtures are not matched ablations of original-domain exposure. In the earlier hard-synthetic setup, about 90 percent of task draws were synthetic, and the prior audit found many partial-only comparisons.
+
+8. Underlying root-cause synthesis
+
+A. Semantic and knowledge-transfer limits explain the largest observed error slice: 68 algorithm errors, 33 interpretation errors, and 5 local boundary errors, totaling 106/146 or 72.60 percent. In the persistent subset these categories total 82/107 or 76.64 percent. The causal hypothesis is that shared base-model priors and test-based on-policy updates improve common training behaviors without supplying enough correct solutions or contrastive specifications for these unseen patterns. The matching task failures and repeated formula confusions support this hypothesis. Correct sampled candidates are a competing explanation for some tasks, so this is not proof of absent knowledge. The discriminator is independently verified teacher-solution SFT versus compute-matched additional GRPO.
+
+B. Lack of execution-aware selection explains a separate practical weakness. Runtime and output-contract categories total 35/146 or 23.97 percent. More broadly, 126/146 fail the prompt-visible assertion. These sets overlap, so the 126 must not be added to the primary category counts. Correct programs are sometimes sampled but not greedy, and simple rejection can identify many current wrong programs. The discriminator is a fixed candidate budget with selection based only on the supplied assertion and observable execution, followed by hidden-test scoring after selection. Passing the visible example alone will not resolve the remaining semantic and edge failures.
+
+C. Training-signal allocation is a plausible upstream contributor, not an assigned per-example cause. Thirty-five point five six percent of saved groups have equal rewards and 16.08 percent vary without a full success. OpenCode dominates the data draws. This combination can improve the training objective without adding enough signal for the persistent MBPP slice. The discriminator is a compute-matched curriculum or mixture-weight ablation with original exposure recorded, while preserving independent evaluation. The current audit does not establish that changing normalization alone will help.
+
+D. Residual benchmark conventions explain four primary cases, or 2.74 percent, and invalid syntax explains one, or 0.68 percent. These residuals are too small to account for the shared plateau. Model capacity remains a possible contributor to semantic failures, but existing sampled successes rule out a hard 60-percent solvability ceiling. Absence of success in the finite sample is not evidence of impossibility.
+
+Existing original-only checkpoint samples quantify this distinction. Checkpoint 630 has 304/378 MBPP tasks with at least one successful candidate among 16 (80.42 percent), and checkpoint 830 has 291/378 (76.98 percent). Of the 107 common greedy failures, 37 are recovered in the 630 sample and 26 in the 830 sample, with 42 distinct tasks recovered across both sets. Twenty-seven have a full base-plus-extra success across those sets. These are oracle availability measurements, not deployment scores. The historical checkpoints were selected using benchmark performance.
+
+9. Proposed solutions and confirmation tests
+
+Priority 1, immediate inference mitigation: add a separate evaluation harness for generation, compile/API validation, execution of the assertion supplied in the prompt, and a bounded repair attempt from that observable error. Use no hidden expected outputs during selection or repair. Predeclare the candidate and token budget and report selected-solution accuracy and cost separately from greedy pass@1. Start on an independent development batch. The predicted benefit is removal of directly exposed runtime, contract, and algorithm failures when a valid correction is generated. The risk is overfitting the visible example, which must be checked with hidden tests only after candidate selection. No such fix was implemented here.
+
+Priority 2, improve true single-generation behavior: teacher-solution SFT on independently sourced, verified training tasks for observed weak algorithm, specification, and contract families, then compare SFT alone, GRPO alone, and SFT followed by GRPO with matched budgets. Include contract-preserving function names, exact types and ordering, and multiple independent tests. Evaluate raw greedy MBPP and MBPP+ separately. Do not use the benchmark task solutions as training demonstrations. This aims to supply corrections rather than only relative scores on existing candidates. Successful sampled solutions can supply rejection-sampling SFT data on training tasks. Teacher quality and in-domain memorization remain risks. STaR is a related demonstration-bootstrapping method, not evidence that it will solve this coding setup: https://arxiv.org/abs/2203.14465.
+
+Priority 3, improve training signal: compare the current uniform mix against an explicit original-domain sampling weight and a training-only curriculum favoring tasks with some full successes and some failures. Record both optimizer compute and original-task draws so gains cannot be explained by exposure alone. Consider a full-pass-focused reward ablation, but retain a comparison to partial shaping because discarding partial-only tasks can remove hard learning opportunities. Measure held-out task-type transfer and counts of correct-versus-incorrect groups, not mixed fraction alone.
+
+Priority 4, test capacity and adapter limits with controlled comparisons: use the same verified data, prompt, compute accounting, and decoding protocol for a larger base model or a separate adapter-capacity ablation. A substantial persistent-slice improvement under these controls would support a capacity or adaptation hypothesis. A similar plateau would shift attention to supervision and evaluation design. The current data-mix experiments cannot separate these causes.
+
+An untouched benchmark or fresh held-out set is needed for a new generalization claim because repeated inspection makes this MBPP set a development resource. The 107 failures may guide a taxonomy, but should not become a memorized training set.
+
+10. Limitations
+
+All counts are retrospective observations from one latest snapshot per mix. Latest steps differ (660 to 1340), and rollout implementations and reward scaling differ. The comparison is not randomized or compute matched. Primary causes are manual interpretations of current code, with per-task evidence and confidence preserved. The same task may have a different error in another run. One greedy output cannot establish the model distribution, and the older 16-sample checkpoints are not the current OpenCode checkpoint. Oracle unions and any-of-16 use hidden labels only for post-selection measurement. Direct reference repr checks are not full special-oracle rescoring. Training sample metrics are in-sample. Saved trace coverage is 9632 groups, while optimizer logs contain 1207 steps, so three batches worth of candidate trace rows are absent relative to 1207 times eight and no exact step mapping is asserted. No new training, generation, model repair, or official test changes were performed.
+
+Appendix A. Persistent failure task IDs
+
+Mbpp/6, Mbpp/9, Mbpp/20, Mbpp/59, Mbpp/63, Mbpp/67, Mbpp/71, Mbpp/72, Mbpp/74, Mbpp/84, Mbpp/86, Mbpp/100, Mbpp/103, Mbpp/106, Mbpp/109, Mbpp/111, Mbpp/120, Mbpp/123, Mbpp/124, Mbpp/125, Mbpp/126, Mbpp/128, Mbpp/129, Mbpp/131, Mbpp/138, Mbpp/160, Mbpp/233, Mbpp/235, Mbpp/237, Mbpp/239, Mbpp/240, Mbpp/245, Mbpp/247, Mbpp/255, Mbpp/259, Mbpp/260, Mbpp/264, Mbpp/265, Mbpp/266, Mbpp/268, Mbpp/274, Mbpp/279, Mbpp/283, Mbpp/286, Mbpp/294, Mbpp/299, Mbpp/300, Mbpp/301, Mbpp/305, Mbpp/306, Mbpp/308, Mbpp/310, Mbpp/311, Mbpp/391, Mbpp/398, Mbpp/410, Mbpp/429, Mbpp/430, Mbpp/432, Mbpp/433, Mbpp/437, Mbpp/440, Mbpp/448, Mbpp/450, Mbpp/462, Mbpp/468, Mbpp/473, Mbpp/475, Mbpp/572, Mbpp/579, Mbpp/580, Mbpp/581, Mbpp/586, Mbpp/590, Mbpp/592, Mbpp/593, Mbpp/597, Mbpp/603, Mbpp/608, Mbpp/610, Mbpp/612, Mbpp/615, Mbpp/622, Mbpp/626, Mbpp/630, Mbpp/631, Mbpp/637, Mbpp/638, Mbpp/641, Mbpp/643, Mbpp/721, Mbpp/722, Mbpp/724, Mbpp/731, Mbpp/735, Mbpp/745, Mbpp/748, Mbpp/750, Mbpp/754, Mbpp/763, Mbpp/765, Mbpp/769, Mbpp/777, Mbpp/780, Mbpp/784, Mbpp/785, Mbpp/801
+
+Appendix B. Exhaustive task-level primary diagnoses
+
+The complete raw code, prompts, exact errors, expected outputs, and confidence values are in the companion JSON. Each of the 146 failures appears exactly once below. An asterisk means failure in all four main late snapshots.
+
+Mbpp/6* [wrong_algorithm]. Tests only that XOR is nonzero, which means unequal numbers, not exactly one differing bit. Evidence: 'return num1 ^ num2 != 0'.
+Mbpp/9* [edge_case]. Search includes the identity rotation at zero despite the explicit greater-than-zero condition. Evidence: 'for i in range(n):'.
+Mbpp/16 [wrong_algorithm]. Accepts any lowercase character rather than validating all lowercase underscore-separated segments. Evidence: 'any(char.islower()'.
+Mbpp/20* [wrong_algorithm]. Invents a digit-square definition for Woodall numbers. Evidence: 'total = sum(int(digit) ** 2'.
+Mbpp/59* [wrong_algorithm]. Uses a different polygonal formula, which already contradicts the visible example. Evidence: 'return n * (n + 1) * 2'.
+Mbpp/63* [spec_misread]. Computes gaps between first coordinates of adjacent sorted tuples rather than differences within each pair. Evidence: 'sorted_tup_list[i + 1][0] - sorted_tup_list[i][0]'.
+Mbpp/67* [wrong_algorithm]. Uses Fibonacci recurrence for Bell numbers, and naive recursion makes the n=56 case infeasible. Evidence: 'bell_number(n-1) + bell_number(n-2)'.
+Mbpp/71* [wrong_algorithm]. Makes one sparse pass for increasing gaps and never ensures sorted order. Evidence: 'gap *= 2'.
+Mbpp/72* [spec_misread]. Checks a sum of squares instead of a difference of squares. Evidence: 'if i**2 + j**2 == n:'.
+Mbpp/74* [spec_misread]. Compares the raw color and symbol strings rather than their correspondence pattern. Evidence: 'if patterns[i] != patterns2[i]:'.
+Mbpp/84* [wrong_algorithm]. Implements Fibonacci-like addition with second term 2 instead of the Newman-Conway recurrence. Evidence: 'a, b = b, a + b'.
+Mbpp/86* [wrong_algorithm]. Uses n*(2*n-1), an uncentered hexagonal formula. Evidence: 'return n * (2 * n - 1)'.
+Mbpp/91 [spec_misread]. Requires whole-string equality instead of substring containment. Evidence: 'if string == substring:'.
+Mbpp/92 [wrong_algorithm]. Checks repeated square and cube conditions unrelated to alternating decimal digits. Evidence: 'if int(n**0.5)**2 != n:'.
+Mbpp/100* [wrong_algorithm]. Manipulates only the last digit and prefix without constructing or checking a next palindrome. Evidence: 'int(str_last_digit + str_n[:-1])'.
+Mbpp/101 [spec_misread]. Sorts the array before retrieving its kth original element. Evidence: 'arr.sort()'.
+Mbpp/103* [wrong_algorithm]. Uses a Pascal-like recurrence and wrong m=1 base instead of Eulerian coefficients. Evidence: 'return n'.
+Mbpp/106* [runtime_error]. Concatenates a tuple and a list directly, which raises TypeError on the example. Evidence: 'return tup + lst'.
+Mbpp/109* [spec_misread]. Counts parity of the number of one bits instead of parity of each rotated integer. Evidence: "rotated.count('1') % 2".
+Mbpp/111* [wrong_algorithm]. Adds every element because each element equals itself within the same sublist. Evidence: 'if subelement == element:'.
+Mbpp/119 [runtime_error]. Reads arr[i+1] even when the unique item is the final element. Evidence: 'if arr[i] == arr[i+1]:'.
+Mbpp/120* [runtime_error]. Unpacks scalar integers from a pair and then subscripts each integer. Evidence: 'product1 = abs(tup1[0] * tup1[1])'.
+Mbpp/123* [wrong_algorithm]. Includes the number itself among divisors and then checks a perfect-number-like condition rather than amicability. Evidence: 'range(1, num + 1)'.
+Mbpp/124* [runtime_error]. Passes a complex imaginary argument to real-valued math.atan2. Evidence: 'math.atan2(imag, real)'.
+Mbpp/125* [wrong_algorithm]. Tracks only prefix balance and never discards a negative prefix. Evidence: 'current_diff -= 1'.
+Mbpp/126* [runtime_error]. Defines the correct calculation under the wrong entry-point name; required sum is absent. Evidence: 'def sum_of_common_divisors(x, y):'.
+Mbpp/128* [spec_misread]. Treats the supplied sentence string as a sequence of single-character words. Evidence: 'for word in words if len(word) > n'.
+Mbpp/129* [syntax_or_truncation]. Contains an unparenthesized generator expression in assignment, which is invalid Python. Evidence: 'row_sums = sum(row) for row in matrix'.
+Mbpp/131* [wrong_algorithm]. Deletes consonants and keeps vowels in original order. Evidence: "result.append('')".
+Mbpp/138* [wrong_algorithm]. Eventually returns true for every positive integer rather than excluding odd integers. Evidence: 'if n % 2 == 1:'.
+Mbpp/141 [return_contract]. Selection-sort logic places largest values first while the example requires ascending order. Evidence: 'if arr[j] > arr[max_index]:'.
+Mbpp/160* [spec_misread]. Applies the quadratic discriminant to a linear Diophantine equation. Evidence: 'discriminant = b**2 - 4*a*n'.
+Mbpp/162 [edge_case]. Omits the inclusive terminal term when n is odd. Evidence: 'for i in range(n // 2):'.
+Mbpp/165 [edge_case]. Lowercases an already lowercase alphabet character instead of the input character. Evidence: 'if s[i] == alphabet[i].lower():'.
+Mbpp/172 [wrong_algorithm]. Compares each single character to a three-character substring and therefore always counts zero. Evidence: "if char == 'std':".
+Mbpp/233* [runtime_error]. Defines a mathematically correct function under a different name from the required misspelled entry point. Evidence: 'def lateral_surface_area_cylinder(radius, height):'.
+Mbpp/235* [wrong_algorithm]. Sets zero-based even bits across all 32 positions instead of the finite one-based even positions used by the task example. Evidence: 'for i in range(32):'.
+Mbpp/237* [benchmark_ambiguity]. Counts exact tuple occurrences as the prose requests, but the expected answer treats each tuple as unordered. Evidence: 'tuple_count[tup] = 1'.
+Mbpp/239* [wrong_algorithm]. Uses a Fibonacci recurrence independent of m, even though m bounds the allowed sequence values. Evidence: 'get_total_number_of_sequences(m, n - 1) +'.
+Mbpp/240* [return_contract]. Replaces the last element with one nested list instead of splicing all elements into the outer list. Evidence: 'list1[-1] = list2'.
+Mbpp/244 [wrong_algorithm]. Initializes the candidate root to n+1 instead of a square-root estimate, making the loop ineffective. Evidence: 'i = n + 1'.
+Mbpp/245* [wrong_algorithm]. Selects a large local peak rather than summing an increasing-then-decreasing subsequence. Evidence: 'max_sum = max(max_sum, arr[i])'.
+Mbpp/247* [wrong_algorithm]. Computes longest common subsequence of the string with itself, always giving the entire length. Evidence: 'elif s[i - 1] == s[j - 1]:'.
+Mbpp/255* [spec_misread]. Uses combinations without replacement despite the explicit with-repetition requirement. Evidence: 'combinations(colors, n)'.
+Mbpp/259* [spec_misread]. Selects one lexicographic maximum pair from each outer tuple instead of coordinatewise maxima across matching pairs. Evidence: 'tuple(max(tup) for tup in (tup1, tup2))'.
+Mbpp/260* [wrong_algorithm]. Generates ordinary primes, not Newman-Shanks-Williams sequence values. Evidence: 'if num % i == 0:'.
+Mbpp/264* [spec_misread]. Applies the generic times-seven heuristic despite the explicit example requiring the benchmark piecewise age rule. Evidence: 'return dog_years * 7'.
+Mbpp/265* [spec_misread]. Splits into contiguous chunks instead of distributing every nth element to a sublist. Evidence: 'result.append(lst[i:i+n])'.
+Mbpp/266* [spec_misread]. Returns the total area of six cube faces instead of the four lateral faces. Evidence: '6 * side_length ** 2'.
+Mbpp/268* [wrong_algorithm]. Invents a subtractive recurrence with the wrong second term for star numbers. Evidence: 'n + find_star_num(n - 1) - find_star_num(n - 2)'.
+Mbpp/274* [wrong_algorithm]. Adds an unexplained 2**i weighting and excludes the endpoint coefficient. Evidence: 'comb(n, i) * (2 ** i)'.
+Mbpp/278 [wrong_algorithm]. Counts only the first index and never inspects whether an element is a tuple. Evidence: 'if i == 0:'.
+Mbpp/279* [wrong_algorithm]. Uses the pentagonal-number formula instead of the decagonal-number formula. Evidence: 'n * (3 * n - 1) // 2'.
+Mbpp/283* [runtime_error]. Compares an integer frequency to a string digit, raising TypeError. Evidence: 'if freq > digit:'.
+Mbpp/286* [wrong_algorithm]. Multiplies a one-copy subarray maximum by a misbound length argument and does not handle cross-copy boundaries or negative totals. Evidence: 'return max_sum * k'.
+Mbpp/294* [runtime_error]. Directly compares numeric values and strings from a heterogeneous list. Evidence: 'if item > max_value:'.
+Mbpp/299* [spec_misread]. Finds the largest individual score instead of aggregating repeated names. Evidence: 'if score > max_score:'.
+Mbpp/300* [wrong_algorithm]. Has n=1 base value 1 instead of 2 and compares one half to powers-of-two bit expressions rather than enumerating both halves. Evidence: 'if n == 1:\n        return 1'.
+Mbpp/301* [runtime_error]. Calls max on an empty dictionary value generator. Evidence: 'max(dict_depth(v) for v in d.values())'.
+Mbpp/305* [edge_case]. Uses lowercase p despite uppercase-P words in all visible examples, so returns None. Evidence: "if word.startswith('p'):".
+Mbpp/306* [wrong_algorithm]. Ignores increasing-order constraints and the required prefix, and merely sums a suffix from the misnamed index. Evidence: 'include = arr[i] + max_sum_increasing_subseq'.
+Mbpp/308* [spec_misread]. Returns large factors directly and never multiplies one value from each input. Evidence: 'result.append(list1[i])'.
+Mbpp/310* [spec_misread]. Includes whitespace even though the visible example omits the space. Evidence: 'return tuple(s)'.
+Mbpp/311* [wrong_algorithm]. Uses the value of the least significant set bit as a shift count rather than locating the highest zero bit. Evidence: '1 << (n & -n)'.
+Mbpp/391* [spec_misread]. Builds repeated flat score-to-name maps and discards the outer ID key instead of zipping three aligned lists. Evidence: 'nested_dict[list_of_keys[j]] = list_of_values[j]'.
+Mbpp/392 [runtime_error]. True division creates fractional recursive inputs with no general fractional base case, leading to runaway recursion. Evidence: 'get_max_sum(n/2)'.
+Mbpp/398* [runtime_error]. Converts every character to int, including minus signs and nonnumeric characters in the failed inputs. Evidence: 'sum(int(digit) for digit in str(num))'.
+Mbpp/410* [runtime_error]. Directly compares strings with integers from a heterogeneous list. Evidence: 'if item < min_val:'.
+Mbpp/415 [return_contract]. Returns two candidate products rather than the actual pair of source integers. Evidence: 'return (max1 * max2, min1 * min2)'.
+Mbpp/420 [spec_misread]. Iterates over odd natural numbers rather than even ones. Evidence: 'range(1, 2 * n + 1, 2)'.
+Mbpp/421 [return_contract]. Joins without the hyphen delimiter required by the example. Evidence: "return ''.join(str(x) for x in tup)".
+Mbpp/429* [spec_misread]. Multiplies values and returns an additional tuple instead of applying bitwise AND. Evidence: 'tuple(a * b for a, b in zip(tup1, tup2))'.
+Mbpp/430* [wrong_algorithm]. Uses the vertex x coordinate as the directrix and ignores c; the reference itself also uses a nonstandard directrix formula. Evidence: 'directrix = -b / (2 * a)'.
+Mbpp/432* [wrong_algorithm]. Averages the first and third arguments instead of the first two bases. Evidence: 'median = (a + c) / 2'.
+Mbpp/433* [runtime_error]. Uses the numeric threshold as an array bound and reads beyond the list on the failing larger thresholds. Evidence: 'for i in range(n):\n        if arr[i] > n:'.
+Mbpp/437* [runtime_error]. Attempts to parse alphabetic letters as integers. Evidence: 'if int(char) % 2 != 0:'.
+Mbpp/439 [wrong_algorithm]. Shifts the accumulator by one digit regardless of the number of digits in each integer. Evidence: 'result = result * 10 + number'.
+Mbpp/440* [wrong_algorithm]. The regex does not identify ly-ending words and the selection predicate searches for articles. Evidence: "re.findall(r'\\b\\w+\\b\\w+\\b', sentence)".
+Mbpp/445 [runtime_error]. Multiplies nested tuples directly rather than their numeric coordinates. Evidence: 'tuple(a * b for a, b in zip(tup1, tup2))'.
+Mbpp/448* [wrong_algorithm]. Uses seeds 3,5,8 and a three-term recurrence instead of the Perrin recurrence and correct prefix sum. Evidence: 'a, b, c = 3, 5, 8'.
+Mbpp/450* [spec_misread]. Interprets size as the number of items to take rather than the required string length. Evidence: 'return string_list[:size]'.
+Mbpp/453 [wrong_algorithm]. Only sums small even divisors and omits corresponding large divisors and n itself. Evidence: 'for i in range(2, int(n**0.5) + 1, 2):'.
+Mbpp/462* [spec_misread]. Returns only combinations of full length instead of the power set. Evidence: 'return list(combinations(lst, len(lst)))'.
+Mbpp/468* [spec_misread]. Implements ordinary maximum-product subarray without enforcing increasing elements. Evidence: 'max_product = max(num, max_product * num)'.
+Mbpp/472 [wrong_algorithm]. Returns True as soon as any adjacent pair is consecutive rather than checking the complete collection. Evidence: 'if lst[i] + 1 == lst[i + 1]:\n            return True'.
+Mbpp/473* [wrong_algorithm]. Intersects raw tuples without canonicalizing internal order. Evidence: 'set1 = set(tuple_list)'.
+Mbpp/475* [return_contract]. Sorts the correct dictionary entries in ascending order rather than the descending order in the assertion. Evidence: 'sorted(counter.items(), key=lambda item: item[1])'.
+Mbpp/560 [runtime_error]. Calls the list-only sort method on a tuple. Evidence: 'result.sort()'.
+Mbpp/563 [wrong_algorithm]. Searches for single quotes and slices from the beginning instead of extracting text inside double-quote pairs. Evidence: 'end = s.find("\'", start)'.
+Mbpp/572* [runtime_error]. Treats a flat list of integers as a list of iterable sublists. Evidence: 'unique_sublist = list(set(sublist))'.
+Mbpp/579* [spec_misread]. Computes only the first tuple minus the second, omitting elements unique to the second. Evidence: 'element for element in tuple1 if element not in tuple2'.
+Mbpp/580* [wrong_algorithm]. Keeps every integer without parity filtering and flattens nested tuples. Evidence: 'even_elements.append(element)\n        elif isinstance(element, tuple):\n            even_elements.extend(extract_even(element))'.
+Mbpp/581* [wrong_algorithm]. Adds the square base twice rather than once. Evidence: 'surface_area = 2 * base_edge * height + 2 * base_edge ** 2'.
+Mbpp/586* [wrong_algorithm]. Concatenates the two slices in their original order, leaving the list unchanged. Evidence: 'result = arr[:n] + arr[n:]'.
+Mbpp/590* [benchmark_ambiguity]. The prose requests polar-to-rectangular conversion, but the assertion and reference compute rectangular-to-polar plus a constant unrelated conversion. Evidence: 'return (x, y), (0, 1)'.
+Mbpp/592* [wrong_algorithm]. Raises one binomial coefficient to repeated powers rather than multiplying adjacent coefficients and summing. Evidence: 'product *= binomial_coefficient'.
+Mbpp/593* [wrong_algorithm]. Strips zeros only from the start of the whole address, not from each component. Evidence: "return ip_address.lstrip('0')".
+Mbpp/594 [wrong_algorithm]. Selects maximum even and minimum odd instead of first occurrences, then subtracts in reverse. Evidence: 'return first_odd - first_even'.
+Mbpp/597* [wrong_algorithm]. Consumes both arrays without stopping at the kth merged element and returns a slice rather than one value. Evidence: 'while i < m and j < n:'.
+Mbpp/603* [spec_misread]. Defines lucid/ludic numbers as decimal palindromes rather than the ludic sieve sequence. Evidence: 'if int(str_num[i]) != int(str_num[-(i + 1)]):'.
+Mbpp/608* [wrong_algorithm]. Uses a Fibonacci recurrence for Bell numbers. Evidence: 'return bell_Number(n-1) + bell_Number(n-2)'.
+Mbpp/610* [wrong_algorithm]. Uses zero-based k despite the assertion specifying one-based kth removal. Evidence: 'return lst[:k] + lst[k+1:]'.
+Mbpp/612* [spec_misread]. Copies the input pairs rather than transposing them into two output lists. Evidence: 'merged_list.append(sublist[:2])'.
+Mbpp/615* [benchmark_ambiguity]. The prose says average each tuple, which the generated program does, but the assertion and reference average across corresponding positions. Evidence: 'for tup in tup_list:\n        total_sum = sum(tup)'.
+Mbpp/619 [runtime_error]. Appends nonnumeric words to an undefined result variable. Evidence: 'result.append(word)'.
+Mbpp/622* [wrong_algorithm]. Uses one list size rather than the total merged length to locate the median. Evidence: 'mid = size // 2'.
+Mbpp/626* [runtime_error]. The invented Heron expression is negative for positive radius and raises a math domain error. Evidence: 'area = math.sqrt(s * (s - radius) * (s - radius) * (s - radius))'.
+Mbpp/630* [spec_misread]. Returns adjacent entries from the coordinate tuple rather than neighboring spatial coordinates. Evidence: 'coordinates.append((coord[i], coord[i + 1]))'.
+Mbpp/631* [wrong_algorithm]. The second replacement reverses every space-to-underscore replacement. Evidence: 'result = result.replace("_", " ")'.
+Mbpp/632 [wrong_algorithm]. Compacts nonzero values but never fills the trailing positions with zeros. Evidence: 'lst[i - zero_count] = lst[i]'.
+Mbpp/633 [wrong_algorithm]. XORs pair results together rather than adding them. Evidence: 'total_sum ^= arr[i] ^ arr[j]'.
+Mbpp/635 [runtime_error]. Starts the outer loop at len(arr), then immediately accesses that out-of-range index. Evidence: 'for i in range(n, -1, -1):'.
+Mbpp/637* [wrong_algorithm]. Treats losses as no-profit/no-loss because it only rejects amount greater than cost. Evidence: 'if amount > cost:\n        return False\n    return True'.
+Mbpp/638* [wrong_algorithm]. Uses an incomplete formula with Fahrenheit coefficients for Celsius input and omits the temperature-velocity interaction. Evidence: '35.74 + 0.6215 * temperature - 35.75 * (wind_velocity ** 0.16)'.
+Mbpp/639 [wrong_algorithm]. Filters only names beginning with literal a, not names with lowercase initials. Evidence: "if not name.startswith('a', 0)".
+Mbpp/641* [wrong_algorithm]. Uses the pentagonal-number formula rather than the nonagonal-number formula. Evidence: 'return n * (3 * n - 1) // 2'.
+Mbpp/643* [wrong_algorithm]. Returns True for almost everything without requiring a z or testing word-internal position. Evidence: "if text.startswith('z') and text.endswith('z'):".
+Mbpp/644 [wrong_algorithm]. Reverses the suffix as well as the requested prefix. Evidence: 'arr[k:] = arr[k:][::-1]'.
+Mbpp/721* [wrong_algorithm]. Accumulates a traversal over multiple paths and starts at every cell, dividing by N squared rather than path length. Evidence: 'max_avg = max(max_avg, current_avg / (N * N))'.
+Mbpp/722* [edge_case]. Uses strict comparisons although the provided assertion includes weight exactly at the minimum. Evidence: 'if value[0] > min_height and value[1] > min_weight'.
+Mbpp/724* [wrong_algorithm]. Sums base digits first and raises that sum, reversing the requested operation order. Evidence: 'return sum_of_digits ** power'.
+Mbpp/725 [runtime_error]. The loop never advances start when the current character is not a quote, so the visible inputs never terminate. Evidence: 'while start < len(input_string):\n        if input_string[start] == \'"\':'.
+Mbpp/726 [runtime_error]. Defines five positional arguments while the required API passes one tuple. Evidence: 'def multiply_elements(t_1, t_2, t_3, t_4, t_5):'.
+Mbpp/731* [wrong_algorithm]. Uses cylinder-like lateral area rather than the cone slant-height formula. Evidence: 'lateral_surface_area = 2 * math.pi * radius * height'.
+Mbpp/735* [wrong_algorithm]. Extracts and toggles only two low bits instead of preserving the end bits and flipping interior bits. Evidence: 'result = (toggled_first_bit << 1) | (toggled_last_bit)'.
+Mbpp/739 [wrong_algorithm]. Finds the globally smallest triangular number, ignoring the required digit count. Evidence: 'if triangular < min_triangular:'.
+Mbpp/745* [runtime_error]. Computes modulo zero when a candidate contains digit 0. Evidence: 'if all(num % int(digit) == 0 for digit in str(num)):'.
+Mbpp/748* [runtime_error]. References undefined variable capital for every nonempty input. Evidence: 'if word.startswith(capital):'.
+Mbpp/749 [return_contract]. Sorts numerically correctly but converts values back to strings, contrary to the assertion. Evidence: 'sorted_strings = [str(num) for num in numbers]'.
+Mbpp/750* [return_contract]. Appends the tuple as one nested item instead of extending with its entries. Evidence: 'lst.append(tup)'.
+Mbpp/751 [wrong_algorithm]. Checks adjacent positions with reversed inequalities rather than parent-child heap indices. Evidence: 'if i > 1 and arr[i] < arr[i - 1] or arr[i] < arr[i + 1]:'.
+Mbpp/754* [spec_misread]. Checks membership anywhere in the other lists instead of equality at the same index. Evidence: 'if l1[i] in l2 and l1[i] in l3:'.
+Mbpp/755 [benchmark_ambiguity]. The only listed failures have fewer than two distinct values, and the prompt specifies no absent-answer return value. Evidence: 'if len(unique_numbers) < 2:\n        return -1'.
+Mbpp/760 [spec_misread]. Checks whether every element is distinct, the opposite property from only one distinct element. Evidence: 'if num in seen:\n            return False'.
+Mbpp/763* [runtime_error]. Calls mutable list sorting on the tuple input visible in the prompt. Evidence: 'arr.sort()'.
+Mbpp/765* [spec_misread]. The helper tests primality and counting starts at 11, neither of which defines polite numbers. Evidence: 'for i in range(2, int(num**0.5) + 1):'.
+Mbpp/769* [spec_misread]. Returns a one-sided difference and omits elements unique to the second input. Evidence: 'return [x for x in list1 if x not in list2]'.
+Mbpp/777* [spec_misread]. Interprets non-repeated as frequency exactly one despite the assertion showing deduplication before summation. Evidence: 'sum(num for num, freq in count.items() if freq == 1)'.
+Mbpp/778 [wrong_algorithm]. Counts the initial element twice and also adds a singleton after every duplicate run. Evidence: 'count = 1\n\n    for element in lst:'.
+Mbpp/780* [spec_misread]. Enumerates groups of four tuples and adds only first coordinates rather than componentwise pair sums. Evidence: 'for k in range(j + 1, len(tuples_list)):'.
+Mbpp/781 [return_contract]. Computes the divisor count but returns that integer instead of the requested boolean evenness. Evidence: 'return count'.
+Mbpp/782 [runtime_error]. Adds a list slice to an integer accumulator. Evidence: 'total_sum += arr[i:j+1]'.
+Mbpp/784* [spec_misread]. Multiplies every list element rather than the first even and first odd elements. Evidence: 'product *= num'.
+Mbpp/785* [runtime_error]. Parses string fragments containing parentheses as integers. Evidence: "tuple(map(int, tup_str.split(',')))".
+Mbpp/801* [wrong_algorithm]. The all-equal branch returns one instead of the three equal numbers. Evidence: 'if a == b == c:\n        count = 1'.
+Mbpp/809 [wrong_algorithm]. The comparison is reversed and accepts second elements that are larger. Evidence: 'if tuple1[i] >= tuple2[i]:\n            return False'.

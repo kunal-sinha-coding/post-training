@@ -4715,3 +4715,8 @@ Discussion: The user requested a new question framing and one call per EvalPlus 
 Commit name: Record Jev model-size framing accuracy.
 Description: Record one-call-per-task Jev accuracy, positive prediction fraction, token usage, prompt text, and comparison with the earlier direct question and always-yes prevalence in logs/results.txt.
 Discussion: The user asked whether asking Jev to choose 0.5B versus a larger model would improve router accuracy. The experiment used the same 378 EvalPlus prompts and fixed labels, one Jev call per task, and 48 concurrent requests. The new framing scored 65.3% on MBPP and 59.5% on MBPP+. The earlier direct-question scores were 62.7% and 57.9%, but the wording changed and there was only one call per task in each condition. Existing unrelated modifications remain unstaged.
+
+
+Commit name: Audit recurring MBPP plateau failures across data mixes.
+Description: Compare latest complete canonical evaluations for four data mixes, inspect all146 current failures, replay prompt-visible assertions and saved failing inputs, and preserve the exhaustive evidence and root-cause report.
+Discussion: The user asked why MBPP remains near60 to65 percent across mixtures and whether the same tasks fail. There are107 common failures, but older sampled completions recover42 of them, so the artifacts do not establish a hard capacity ceiling. Most failures are semantic, runtime, or contract errors, and126 current failures reject on the shown example. Original-domain exposure is also unmatched: the OpenCode trace includes597 original task draws. This commit changes only analysis artifacts and records. Training and its retry supervisor remain stopped. No inference or training fixes were applied.
