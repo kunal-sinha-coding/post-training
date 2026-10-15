@@ -25,7 +25,18 @@ tempfile.tempdir = str(IPC_TEMP_DIRECTORY)
 # Import shared experiment helpers when the script is launched directly.
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from experiments.reference_sft import append_jsonl, load_model, start_wandb
-from experiments.prepare_opencode_sft_data import prepare_data, write_json
+
+
+
+def write_json(path: Path, value: Any) -> None:
+    # Persist a complete evaluation or state artifact through an atomic replacement.
+    temporary = path.with_suffix(path.suffix + '.tmp')
+    with temporary.open('w', encoding='utf-8') as handle:
+        json.dump(value, handle, indent=2, ensure_ascii=False, sort_keys=True)
+        handle.write('\n')
+        handle.flush()
+        os.fsync(handle.fileno())
+    temporary.replace(path)
 
 
 def extract_response(text: str) -> str:
@@ -178,6 +189,7 @@ def run_training(config: dict[str, Any], config_path: Path, resume: str | None) 
         from experiments.streaming_opencode_sft_data import prepare_streaming_data
         train_data, _, holdout, training_sample = prepare_streaming_data(config, run)
     else:
+        from experiments.prepare_opencode_sft_data import prepare_data
         train_data, _, holdout, training_sample = prepare_data(config, run)
 
     # Count finite streamed examples without reading or tokenizing the complete training set.

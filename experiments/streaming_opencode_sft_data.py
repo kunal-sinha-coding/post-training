@@ -9,7 +9,10 @@ from typing import Any, Iterator
 
 from torch.utils.data import IterableDataset, get_worker_info
 
-from experiments.prepare_opencode_sft_data import opencode_prompt
+def opencode_prompt(text: str) -> str:
+    # Preserve the established full-response ChatML prompt without importing disk preparation code.
+    return ('<|im_start|>system\nYou are an intelligent programming assistant to produce Python algorithmic solutions<|im_end|>\n\n'
+            '<|im_start|>user\n' + text.strip() + '\n<|im_end|>\n<|im_start|>assistant\n')
 
 
 class StreamingOpenCodeSFTDataset(IterableDataset):

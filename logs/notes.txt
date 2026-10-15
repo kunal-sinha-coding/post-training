@@ -4807,3 +4807,7 @@ Discussion: The user changed the evaluation interval during the firststep100eval
 Commit name: Keep SFT Python bytecode on local storage.
 Description: Point PYTHONPYCACHEPREFIX to local/tmp in the supervisor so worker imports avoid blocked workspace __pycache__ reads.
 Discussion: The cadence restart stopped before model loading while reading experiments/__pycache__/prepare_opencode_sft_data.cpython-312.pyc. Its I/O counters did not advance. An independent read of the same cache also blocked, while the Python source remained readable. This changes only disposable interpreter caches, not training data, model settings, or checkpoints. The active restart will be relaunched with the local bytecode path and checkpoint100.
+
+Commit name: Decouple streaming startup from obsolete preparation imports.
+Description: Import the full disk preparation module only for legacy nonstreaming runs. Keep the same atomic JSON artifact writer and ChatML prompt locally in the active streaming modules.
+Discussion: The workspace is blocking reads of both the old preparation bytecode and source. The streaming run does not use that preparation code, so remove the unnecessary startup dependency while preserving prompts, labels, metrics, and recovery state. Local interpreter cache remains enabled.
