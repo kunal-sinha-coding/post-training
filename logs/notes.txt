@@ -4795,3 +4795,7 @@ Discussion: The user requested temporary batch loading and deletion of the full 
 Commit name: Record measured streaming SFT step timing.
 Description: Record server-side W&B timestamps for steps10through100 and the measured0.7221secondsperoptimizerstep.
 Discussion: The user asked about time per step. This early measurement includes batch streaming but excludes startup and evaluation overhead. The live training and monitor remain active.
+
+Commit name: Record evaluation timing context.
+Description: Record prior measured full evaluation durations and distinguish them from the in-flight first evaluation of the streaming run.
+Discussion: Previous full cycles took9.8to13.1minutes. New canonical generation took20seconds, while complete evaluation is still running. No settings or processes were changed.
