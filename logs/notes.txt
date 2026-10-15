@@ -4740,3 +4740,8 @@ Discussion: The live run83e7614a started under supervisorPID182130 and trainerPI
 Commit name: Fix multiprocess SFT data fingerprint length.
 Description: Shorten the Arrow map cache fingerprint to32hex characters while retaining the complete64character policy hash in the immutable data manifest.
 Discussion: Fullsource conversion completed5million rows, but real4worker tokenization failed before any optimizer update because datasets appends a15character worker suffix to the map fingerprint and enforces64characters. The data-only one-worker smoke did not expose this constraint. The supervisor remains active and retries the same W&B run and data policy; no process was stopped and no training settings changed. Multiprocess validation is being added to the smoke check.
+
+
+Commit name: Use a short IPC temporary path for SFT workers.
+Description: Set a short /tmp/mbpp-sft-ipc temporary directory before training and evaluation worker imports to keep multiprocessing Unix socket paths below the108byte operating-system limit.
+Discussion: After the fingerprint fix, four-worker preparation reached the real multiprocessing path and failed with AF_UNIX path too long because the workspace run directory made TMPDIR too long. Data caches remain in the workspace; only temporary IPC and small transient files move to/tmp. The same supervisor retries automatically without any manual process stop or hyperparameter change. The separate two-worker data smoke passed; this fix covers the production environment path difference.

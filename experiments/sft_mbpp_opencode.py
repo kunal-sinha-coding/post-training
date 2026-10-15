@@ -10,9 +10,16 @@ import os
 import subprocess
 import sys
 import time
+import tempfile
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any
+
+# Keep multiprocessing socket names below the Unix path limit while large data caches remain on the workspace.
+IPC_TEMP_DIRECTORY = Path('/tmp/mbpp-sft-ipc')
+IPC_TEMP_DIRECTORY.mkdir(parents=True, exist_ok=True)
+os.environ['TMPDIR'] = str(IPC_TEMP_DIRECTORY)
+tempfile.tempdir = str(IPC_TEMP_DIRECTORY)
 
 # Import shared experiment helpers when the script is launched directly.
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
