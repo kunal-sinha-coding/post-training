@@ -25,6 +25,7 @@ export TMPDIR="$REPO_DIR/$OUTPUT_DIR/tmp"
 export HF_HUB_DOWNLOAD_TIMEOUT=120
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 export TOKENIZERS_PARALLELISM=false
+export PYTHONPYCACHEPREFIX=/tmp/sft-python-bytecode-cache
 mkdir -p "$HF_HUB_CACHE" "$TMPDIR"
 
 latest_checkpoint() {

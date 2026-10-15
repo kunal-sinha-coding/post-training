@@ -4803,3 +4803,7 @@ Discussion: Previous full cycles took9.8to13.1minutes. New canonical generation 
 Commit name: Evaluate streaming SFT every 1000 optimizer steps.
 Description: Set evaluation and checkpoint cadence1000 in the active streaming configuration and retain loss logging10. Apply configured checkpoint cadence after loading a saved Trainer state so the former100step schedule does not persist.
 Discussion: The user changed the evaluation interval during the firststep100evaluation. A complete checkpoint100 contains adapter, optimizer, scheduler, and RNG state. Resume it under the same W&B identity rather than reset optimization. The incomplete100evaluation is superseded by the newcadence and is not rerun on resume. Oneepoch budget205175steps and alltrainingdata/optimizer/evaluation definitions remain unchanged.
+
+Commit name: Keep SFT Python bytecode on local storage.
+Description: Point PYTHONPYCACHEPREFIX to local/tmp in the supervisor so worker imports avoid blocked workspace __pycache__ reads.
+Discussion: The cadence restart stopped before model loading while reading experiments/__pycache__/prepare_opencode_sft_data.cpython-312.pyc. Its I/O counters did not advance. An independent read of the same cache also blocked, while the Python source remained readable. This changes only disposable interpreter caches, not training data, model settings, or checkpoints. The active restart will be relaunched with the local bytecode path and checkpoint100.
