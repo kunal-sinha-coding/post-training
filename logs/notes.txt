@@ -4771,3 +4771,7 @@ Discussion: The previous unfiltered run is stopped. New run d1920ac1 starts from
 Commit name: Add recurring SFT diagnosis and recovery monitor.
 Description: Add a locked per-run monitor that checks exact worker and supervisor processes, recent failure events, completion, and progress every1800seconds. On failures or stale progress it invokes an authenticated unattended Codex diagnosis and repair session. It preserves experiment settings, W&B identity, complete checkpoints, and live processes. Record each check and each repair in ignored run artifacts.
 Discussion: The user explicitly requested repeated diagnosis, fixes, and restart after each failure. The existing supervisor only retried unchanged commands. CLI authentication smoke returned MONITOR_READY. Python compilation and a live read-only single-check smoke passed. Completion or a monitor-disabled marker ends monitoring. Host shutdown or unavailable model access remain external limitations.
+
+Commit name: Tighten monitor process matching and repair retries.
+Description: Restrict worker script detection to the executable prefix so shell wrappers containing source code cannot count as live training. Retry unsuccessful diagnostic sessions on the next scheduled check.
+Discussion: A live smoke exposed a shell command containing script names in its body. Prefix matching excludes that false positive. User confirmed training should continue and monitor setup should finish.

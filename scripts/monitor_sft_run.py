@@ -21,7 +21,7 @@ def snapshot(config: Path, output: Path) -> dict:
         if len(fields) != 3 or fields[1].startswith('Z'):
             continue
         tokens = fields[2].split()
-        if str(config) in tokens and any(token.endswith(('sft_mbpp_opencode.py', 'supervise_sft_mbpp_opencode.sh')) for token in tokens):
+        if str(config) in tokens and any(token.endswith(('sft_mbpp_opencode.py', 'supervise_sft_mbpp_opencode.sh')) for token in tokens[:3]):
             processes.append({'pid': int(fields[0]), 'command': fields[2]})
 
     # Keep a stable failure identity even when several retries occur between scheduled checks.
@@ -90,7 +90,7 @@ def main() -> None:
         state['monitor_pid'] = os.getpid()
         state['next_check_utc'] = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime(time.time() + 1800))
         new_failure = state['last_failure'] is not None and state['last_failure'] != previous.get('last_failure')
-        state['needs_diagnosis'] = not state['completed'] and (not state['processes'] or new_failure or state['progress_age_seconds'] >= 1800)
+        state['needs_diagnosis'] = not state['completed'] and (not state['processes'] or new_failure or previous.get('repair_exit_code', 0) != 0 or state['progress_age_seconds'] >= 1800)
         state_path.write_text(json.dumps(state, indent=2) + '\n')
         print(json.dumps(state), flush=True)
         if state['completed']:
