@@ -4745,3 +4745,8 @@ Discussion: Fullsource conversion completed5million rows, but real4worker tokeni
 Commit name: Use a short IPC temporary path for SFT workers.
 Description: Set a short /tmp/mbpp-sft-ipc temporary directory before training and evaluation worker imports to keep multiprocessing Unix socket paths below the108byte operating-system limit.
 Discussion: After the fingerprint fix, four-worker preparation reached the real multiprocessing path and failed with AF_UNIX path too long because the workspace run directory made TMPDIR too long. Data caches remain in the workspace; only temporary IPC and small transient files move to/tmp. The same supervisor retries automatically without any manual process stop or hyperparameter change. The separate two-worker data smoke passed; this fix covers the production environment path difference.
+
+
+Commit name: Spawn clean full-data tokenization workers.
+Description: Use the spawn multiprocessing start method for the parallel disk-backed tokenizer map so workers do not inherit the native thread state of the Torch and W&B training process.
+Discussion: The live four-worker map lost a subprocess before emitting rows, with no cgroup OOM or OOM-kill event. The isolated data-only multiprocessing smoke passed, but production had already initialized Torch threads and services. Clean spawned workers address that process-state difference without changing model, data, optimizer, batch size, or epoch budget. The retry supervisor remains active. A real-source spawn smoke with production Torch initialization is being checked.

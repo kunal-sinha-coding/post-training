@@ -189,6 +189,11 @@ def prepare_data(config: dict[str, Any], run: Any = None) -> tuple[Any, list[dic
                 result['labels'][offset] = [-100] * len(prompt_ids) + target_ids
         return result
 
+    # Spawn clean tokenizer workers instead of inheriting initialized native thread pools from the training process.
+    if int(config.get('data_num_proc', 4)) > 1:
+        import multiprocess
+        multiprocess.set_start_method('spawn', force=True)
+
     # Write tokenized Arrow shards in bounded batches and preserve per-row exclusion reasons in the reusable cache.
     encoded = raw.map(tokenize_batch, batched=True, with_indices=True, batch_size=int(config.get('data_tokenize_batch_size', 256)),
                       num_proc=int(config.get('data_num_proc', 4)), remove_columns=raw.column_names,
