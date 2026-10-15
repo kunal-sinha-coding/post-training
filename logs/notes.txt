@@ -4815,3 +4815,7 @@ Discussion: The workspace is blocking reads of both the old preparation bytecode
 Commit name: Stage SFT Python imports on local storage.
 Description: Mirror committed Python sources into a local/tmp runtime before each supervisor attempt. Keep cwd, immutable configuration, model weights, optimizer checkpoints, W&B files and evaluation artifacts in their existing locations.
 Discussion: Workspace filesystem waits also affect directory scans for the experiments package, beyond bytecode. Local source staging avoids these import waits without caching training data. All committed Python dependencies are mirrored together and subprocess evaluation uses the same snapshot.
+
+Commit name: Record resumed SFT with 1000-step evaluations.
+Description: Record cancellation of the incomplete100evaluation, preserved checkpoint100, unchanged W&B identity, and verified new optimizer steps110through130 under the1000step evaluation cadence.
+Discussion: The user explicitly allowed killing the current evaluation. Workspace filesystem import waits required local code and bytecode staging. The advancing worker is365735 under supervisor365724 and monitor362157 remainsactive. Training dataset streaming and all statistical metrics remain unchanged.
