@@ -109,19 +109,21 @@ def main() -> None:
         state['healthy_for_seconds'] = int(healthy_for)
         state['next_check_utc'] = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime(now + interval))
         state['needs_diagnosis'] = not state['completed'] and (not state['processes'] or new_failure or previous.get('repair_exit_code', 0) != 0 or state['progress_age_seconds'] >= 1800)
+        active_repair_pid = previous.get('repair_pid')
+        repair_running = False
+        if active_repair_pid:
+            try:
+                os.kill(int(active_repair_pid), 0)
+                repair_running = True
+            except (ProcessLookupError, PermissionError, ValueError):
+                active_repair_pid = None
+        state['repair_pid'] = active_repair_pid
+        state['repair_in_progress'] = repair_running
         state_path.write_text(json.dumps(state, indent=2) + '\n')
         print(json.dumps(state), flush=True)
         if state['completed']:
             break
         if state['needs_diagnosis'] and not args.no_repair:
-            active_repair_pid = previous.get('repair_pid')
-            repair_running = False
-            if active_repair_pid:
-                try:
-                    os.kill(int(active_repair_pid), 0)
-                    repair_running = True
-                except (ProcessLookupError, PermissionError, ValueError):
-                    repair_running = False
             if repair_running:
                 state['repair_pid'] = active_repair_pid
                 state['repair_in_progress'] = True

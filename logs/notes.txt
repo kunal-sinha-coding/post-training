@@ -4898,3 +4898,8 @@ Discussion: The monitor first detected the 17:02:49 dataloader crash but blocked
 Commit name: Preserve the streaming GRPO trainer when masking rewards.
 Description: Make the reward masked GRPO trainer inherit the selected trainer class, so streamed runs retain the custom tensor batch marker and metadata handling.
 Discussion: The streamed batch compatibility class was selected correctly, but the optional reward masking subclass inherited directly from GRPOTrainer and replaced it. This caused the same Accelerate batch-size exception after step-zero evaluation. The inheritance chain now retains the streaming dataloader behavior and its reward metadata.
+
+
+Commit name: Retain the active GRPO diagnosis PID.
+Description: Preserve a live background diagnosis process ID across monitor polls to prevent repeated failure alerts from starting duplicate repair jobs.
+Discussion: The diagnostic agent runs asynchronously so minute checks continue. Before this change, a poll with no new diagnosis need removed the agent PID from saved state. A later failure could start another diagnosis while the first was still active. The monitor now carries a live PID forward and clears it when that process exits.
