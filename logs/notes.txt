@@ -4903,3 +4903,7 @@ Discussion: The streamed batch compatibility class was selected correctly, but t
 Commit name: Retain the active GRPO diagnosis PID.
 Description: Preserve a live background diagnosis process ID across monitor polls to prevent repeated failure alerts from starting duplicate repair jobs.
 Discussion: The diagnostic agent runs asynchronously so minute checks continue. Before this change, a poll with no new diagnosis need removed the agent PID from saved state. A later failure could start another diagnosis while the first was still active. The monitor now carries a live PID forward and clears it when that process exits.
+
+Commit name: Evaluate GRPO every ten steps.
+Description: Set both the Trainer evaluation interval and the EvalPlus callback interval to ten steps for the active GRPO run. Keep the W&B run ID, training data, evaluation fixtures, initial SFT step-3000 adapter, checkpoint interval, and other training settings unchanged.
+Discussion: The user requested a restart after observing that the existing run evaluated every 100 steps. Resume from the newest complete GRPO checkpoint so completed training steps are retained, and use the same W&B identity.
