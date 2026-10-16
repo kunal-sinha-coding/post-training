@@ -1,6 +1,6 @@
 model_name_or_path: outputs/evalplus-pass16-mbpphard10x1009-seed42-20261011/base-model
 dataset_name: google-research-datasets/mbpp
-dataset_config: null
+dataset_config: full
 mbpp_splits:
 - train
 - validation
