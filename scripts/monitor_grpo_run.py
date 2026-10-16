@@ -61,10 +61,10 @@ Exit after verifying recovery or recording a concrete external blocker. Do not w
     # Save each unattended diagnosis in a separate durable log and result file.
     stamp = time.strftime('%Y%m%dT%H%M%SZ', time.gmtime())
     with (output / f'repair-agent-{stamp}.log').open('a') as log:
-        result = subprocess.run(['codex', 'exec', '-C', str(Path.cwd()), '--ephemeral',
-                                 '--dangerously-bypass-approvals-and-sandbox', '-o', str(output / f'repair-result-{stamp}.txt'), prompt],
-                                stdout=log, stderr=subprocess.STDOUT)
-    return result.returncode
+        process = subprocess.Popen(['codex', 'exec', '-C', str(Path.cwd()), '--ephemeral',
+                                    '--dangerously-bypass-approvals-and-sandbox', '-o', str(output / f'repair-result-{stamp}.txt'), prompt],
+                                   stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
+    return process.pid
 
 
 def main() -> None:
@@ -114,7 +114,20 @@ def main() -> None:
         if state['completed']:
             break
         if state['needs_diagnosis'] and not args.no_repair:
-            state['repair_exit_code'] = repair(args.config, args.output, state)
+            active_repair_pid = previous.get('repair_pid')
+            repair_running = False
+            if active_repair_pid:
+                try:
+                    os.kill(int(active_repair_pid), 0)
+                    repair_running = True
+                except (ProcessLookupError, PermissionError, ValueError):
+                    repair_running = False
+            if repair_running:
+                state['repair_pid'] = active_repair_pid
+                state['repair_in_progress'] = True
+            else:
+                state['repair_pid'] = repair(args.config, args.output, state)
+                state['repair_in_progress'] = True
             state_path.write_text(json.dumps(state, indent=2) + '\n')
         previous = state
         if args.once:

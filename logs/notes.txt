@@ -4888,3 +4888,8 @@ Discussion: Repeated retries completed startup and step zero evaluation but cras
 Commit name: Preserve reward metadata in streamed GRPO batches.
 Description: Disable unused-column removal while building the streamed GRPO dataloader, then restore the setting after the loader captures its collator. This keeps task identifiers and test code available to reward functions.
 Discussion: The streamed dataset is an IterableDataset, so TRL removes columns through its collator when remove_unused_columns is enabled. GRPO reward functions require the metadata fields as well as the prompt. The tensor marker solves Accelerate batch inspection, and this follow-up preserves all streamed fields for reward scoring.
+
+
+Commit name: Keep the GRPO monitor polling during diagnosis.
+Description: Launch unattended failure diagnosis in a separate session and record its PID, so the monitor continues its one minute checks while diagnosis runs.
+Discussion: The monitor first detected the 17:02:49 dataloader crash but blocked while waiting for its Codex diagnosis process. That prevented the requested recurring failure checks. The updated monitor avoids duplicate diagnostics while one is active and keeps observing the supervisor and worker.
