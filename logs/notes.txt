@@ -4911,3 +4911,7 @@ Discussion: The user requested a restart after observing that the existing run e
 Commit name: Handle parser stack overflow in generated completions.
 Description: Treat SyntaxError and parser MemoryError during candidate compilation as invalid syntax with zero reward, so an unusually complex model completion cannot abort GRPO training.
 Discussion: The 2026-10-16 20:04:46 UTC failure traceback showed Python raising `MemoryError: Parser stack overflowed` from `compile(code, "<candidate>", "exec")` in `sandbox.score_completion`. The active retry is resuming from complete checkpoint 40 with the same W&B run identity and configuration. This narrow guard preserves all reward settings and training data.
+
+Commit name: Align streamed OpenCode metadata with MBPP rows.
+Description: Add the GRPO OpenCode streaming dataset implementation and remove the unused task_text helper field from each normalized OpenCode row before yielding it. The shared dataset loader already removes this field from MBPP rows, so matching schemas prevents TRL from raising KeyError when a mixed batch starts with an OpenCode row.
+Discussion: The 2026-10-16 20:29:33 UTC retry log showed KeyError: 'task_text' in TRL reward argument assembly. The active worker remains live and is not stopped. The change applies to the next retry and preserves prompts, source filters, training examples, evaluation data, reward settings, checkpoint policy, SFT adapter, and W&B identity.
