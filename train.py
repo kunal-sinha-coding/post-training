@@ -20,6 +20,9 @@ from pprint import pformat
 import copy
 from typing import Any
 
+# Keep Arrow cache writes out of the shared Hub cache before dependencies load datasets.
+os.environ["HF_DATASETS_CACHE"] = os.environ.get("TRAINING_HF_DATASETS_CACHE", "/tmp/post-training-hf-datasets")
+
 import yaml
 from dotenv import load_dotenv
 

@@ -4876,3 +4876,5 @@ The Hugging Face repository uses `full/` as a parquet directory, not as a `datas
 Commit name: Keep normalized MBPP rows in memory.
 Description: Keep the small normalized MBPP splits in memory during mapping so dataset startup does not write Arrow cache files to the shared read only cache.
 Discussion: The next retry reached full MBPP loading but failed when datasets called chmod on its shared Arrow cache. The change affects only the three small MBPP source splits and does not change examples or training settings.
+
+The cache error persisted because TRL imported `datasets` before `load_mbpp` set the cache path. `train.py` now sets `HF_DATASETS_CACHE` before importing dependencies, and the supervisor overrides any shared-cache value unless `TRAINING_HF_DATASETS_CACHE` is set. The repaired MBPP split loader and cache path both passed local checks. The supervisor has started another retry under W&B run ID `85ae19bd`.
