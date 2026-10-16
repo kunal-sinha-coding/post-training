@@ -1123,16 +1123,19 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         def get_train_dataloader(self):
             """Add a tensor batch marker while preserving the streamed GRPO records."""
             original_collator = self.data_collator
+            original_remove_unused_columns = self.args.remove_unused_columns
 
             def collate_streamed_records(records):
                 """Provide a tensor for Accelerate and keep source records available for GRPO."""
                 return {"_batch_marker": torch.arange(len(records)), "_records": records}
 
             self.data_collator = collate_streamed_records
+            self.args.remove_unused_columns = False
             try:
                 return super().get_train_dataloader()
             finally:
                 self.data_collator = original_collator
+                self.args.remove_unused_columns = original_remove_unused_columns
 
         def _prepare_inputs(self, generation_batch):
             """Unwrap streamed source records before GRPO prompt generation."""

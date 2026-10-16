@@ -4883,3 +4883,8 @@ The cache error persisted because TRL imported `datasets` before `load_mbpp` set
 Commit name: Fix streamed GRPO batch handoff and monitor recovery cadence.
 Description: Wrap streamed GRPO text records with a tensor batch marker so Accelerate can measure and dispatch the batch, then unwrap the records before TRL prompt generation. Change the diagnostic monitor to poll every minute after failures and return to 30 minute checks only after ten continuous failure free minutes.
 Discussion: Repeated retries completed startup and step zero evaluation but crashed at the first dataloader batch because Accelerate cannot infer batch size from raw string records. The supervisor remains active and will use this fix on its next retry. The monitor process was restarted with the new cadence.
+
+
+Commit name: Preserve reward metadata in streamed GRPO batches.
+Description: Disable unused-column removal while building the streamed GRPO dataloader, then restore the setting after the loader captures its collator. This keeps task identifiers and test code available to reward functions.
+Discussion: The streamed dataset is an IterableDataset, so TRL removes columns through its collator when remove_unused_columns is enabled. GRPO reward functions require the metadata fields as well as the prompt. The tensor marker solves Accelerate batch inspection, and this follow-up preserves all streamed fields for reward scoring.
