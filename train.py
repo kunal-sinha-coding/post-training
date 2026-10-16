@@ -1148,7 +1148,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         # Align completion-token loss masks with the per-completion stop boundary used by reward scoring.
         stop_ids = stop_token_id_sequences(tokenizer, QWEN_EVALPLUS_STOP_STRINGS)
 
-        class RewardMaskedGRPOTrainer(GRPOTrainer):
+        class RewardMaskedGRPOTrainer(trainer_class):
             """Mask unscored suffix tokens after every completion's reward stop marker."""
 
             def _generate_and_score_completions(self, inputs: list[dict[str, Any]]) -> dict[str, Any]:

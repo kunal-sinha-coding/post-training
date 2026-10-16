@@ -4893,3 +4893,8 @@ Discussion: The streamed dataset is an IterableDataset, so TRL removes columns t
 Commit name: Keep the GRPO monitor polling during diagnosis.
 Description: Launch unattended failure diagnosis in a separate session and record its PID, so the monitor continues its one minute checks while diagnosis runs.
 Discussion: The monitor first detected the 17:02:49 dataloader crash but blocked while waiting for its Codex diagnosis process. That prevented the requested recurring failure checks. The updated monitor avoids duplicate diagnostics while one is active and keeps observing the supervisor and worker.
+
+
+Commit name: Preserve the streaming GRPO trainer when masking rewards.
+Description: Make the reward masked GRPO trainer inherit the selected trainer class, so streamed runs retain the custom tensor batch marker and metadata handling.
+Discussion: The streamed batch compatibility class was selected correctly, but the optional reward masking subclass inherited directly from GRPOTrainer and replaced it. This caused the same Accelerate batch-size exception after step-zero evaluation. The inheritance chain now retains the streaming dataloader behavior and its reward metadata.
