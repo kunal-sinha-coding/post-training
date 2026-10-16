@@ -1,4 +1,4 @@
-# This monitor checks one GRPO run every 30 minutes and records process health, failures, and progress.
+# This monitor checks a GRPO run every minute after failures, then every 30 minutes after ten healthy minutes.
 # It starts an unattended Codex diagnosis only when the run has a new failure or no live worker.
 from __future__ import annotations
 
@@ -86,13 +86,28 @@ def main() -> None:
     lease.flush()
     state_path = args.output / 'diagnostic-monitor-state.json'
     previous = json.loads(state_path.read_text()) if state_path.exists() else {}
-    # Check every 30 minutes until training completes or the user disables this monitor.
+    # Check each minute until ten continuous minutes pass without a new failure.
     while not (args.output / 'monitor-disabled').exists():
         started = time.monotonic()
         state = snapshot(args.config, args.output)
         state['monitor_pid'] = os.getpid()
-        state['next_check_utc'] = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime(time.time() + 1800))
         new_failure = state['last_failure'] is not None and state['last_failure'] != previous.get('last_failure')
+        now = state['time']
+        if new_failure:
+            state['healthy_since'] = None
+        else:
+            healthy_since = previous.get('healthy_since')
+            if healthy_since is None and state['last_failure'] is not None:
+                try:
+                    healthy_since = time.mktime(time.strptime(state['last_failure'][:20], '%Y-%m-%d %H:%M:%S'))
+                except ValueError:
+                    healthy_since = now
+            state['healthy_since'] = healthy_since or now
+        healthy_for = now - state['healthy_since'] if state['healthy_since'] is not None else 0
+        interval = 1800 if healthy_for >= 600 else 60
+        state['check_interval_seconds'] = interval
+        state['healthy_for_seconds'] = int(healthy_for)
+        state['next_check_utc'] = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime(now + interval))
         state['needs_diagnosis'] = not state['completed'] and (not state['processes'] or new_failure or previous.get('repair_exit_code', 0) != 0 or state['progress_age_seconds'] >= 1800)
         state_path.write_text(json.dumps(state, indent=2) + '\n')
         print(json.dumps(state), flush=True)
@@ -104,7 +119,7 @@ def main() -> None:
         previous = state
         if args.once:
             break
-        time.sleep(max(0, 1800 - (time.monotonic() - started)))
+        time.sleep(max(0, interval - (time.monotonic() - started)))
 
 
 if __name__ == '__main__':

@@ -1117,7 +1117,30 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         use_cpu=not torch.cuda.is_available(),
         seed=int(config.get("seed", 42)),
     )
-    trainer_class = GRPOTrainer
+    class StreamingBatchGRPOTrainer(GRPOTrainer):
+        """Carry streamed text records through Accelerate batch-size inspection."""
+
+        def get_train_dataloader(self):
+            """Add a tensor batch marker while preserving the streamed GRPO records."""
+            original_collator = self.data_collator
+
+            def collate_streamed_records(records):
+                """Provide a tensor for Accelerate and keep source records available for GRPO."""
+                return {"_batch_marker": torch.arange(len(records)), "_records": records}
+
+            self.data_collator = collate_streamed_records
+            try:
+                return super().get_train_dataloader()
+            finally:
+                self.data_collator = original_collator
+
+        def _prepare_inputs(self, generation_batch):
+            """Unwrap streamed source records before GRPO prompt generation."""
+            if isinstance(generation_batch, dict) and "_records" in generation_batch:
+                generation_batch = generation_batch["_records"]
+            return super()._prepare_inputs(generation_batch)
+
+    trainer_class = StreamingBatchGRPOTrainer if config.get("streaming_opencode_grpo", False) else GRPOTrainer
     if config.get("mask_reward_stops", True):
         # Align completion-token loss masks with the per-completion stop boundary used by reward scoring.
         stop_ids = stop_token_id_sequences(tokenizer, QWEN_EVALPLUS_STOP_STRINGS)
