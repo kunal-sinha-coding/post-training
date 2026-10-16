@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 import ast
+import os
 import re
 from pathlib import Path
 from typing import Any
@@ -192,11 +193,24 @@ def load_mbpp(
     visible_test_count: int | None = None,
 ) -> Any:
     """Load the requested MBPP split from the Hugging Face Hub."""
+    # Use writable temporary storage for generated Arrow files and normalized MBPP rows.
+    os.environ["HF_DATASETS_CACHE"] = os.environ.get("TRAINING_HF_DATASETS_CACHE", "/tmp/post-training-hf-datasets")
     try:
         from datasets import load_dataset
     except ImportError as exc:
         raise RuntimeError("Install the 'datasets' package to load MBPP.") from exc
-    loaded = load_dataset(dataset_name, dataset_config, split=split) if dataset_config else load_dataset(dataset_name, split=split)
+    # Read the full MBPP parquet shard directly so the sanitized schema is not mixed into this split.
+    if dataset_name == "google-research-datasets/mbpp" and dataset_config is None:
+        from huggingface_hub import hf_hub_download
+
+        parquet_path = hf_hub_download(
+            repo_id=dataset_name,
+            filename=f"full/{split}-00000-of-00001.parquet",
+            repo_type="dataset",
+        )
+        loaded = load_dataset("parquet", data_files={split: parquet_path}, split=split)
+    else:
+        loaded = load_dataset(dataset_name, dataset_config, split=split) if dataset_config else load_dataset(dataset_name, split=split)
     # Rebuild normalized prompts so prompt-template edits cannot be hidden by a stale datasets cache.
     return loaded.map(lambda record: normalize_record(record, include_generic_arguments, visible_test_count), load_from_cache_file=False)
 

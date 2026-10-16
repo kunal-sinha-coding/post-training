@@ -21,7 +21,8 @@ export WANDB_RUN_ID="$WANDB_RUN_ID_VALUE"
 export WANDB_RESUME=allow
 export HF_HOME="${HF_HOME:-/tmp/post-training-hf-home}"
 export HF_HUB_CACHE="${HF_HUB_CACHE:-$HF_HOME/hub}"
-export HF_DATASETS_CACHE="${HF_DATASETS_CACHE:-$HF_HOME/datasets}"
+# Keep generated Arrow data in writable temporary storage when the shared Hub cache is mounted read-only.
+export HF_DATASETS_CACHE="${HF_DATASETS_CACHE:-/tmp/post-training-hf-datasets}"
 export HF_HUB_ENABLE_HF_TRANSFER=0
 mkdir -p "$OUTPUT_DIR" "$(dirname -- "$MONITOR_LOG")"
 

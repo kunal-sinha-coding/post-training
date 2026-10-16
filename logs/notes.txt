@@ -4860,3 +4860,9 @@ Discussion: The user corrected the data-loading approach and asked for the prior
 Commit name: Select the full MBPP dataset configuration for GRPO.
 Description: Set the MBPP dataset configuration to full so the loader uses the pinned task, prompt, and test schema required by the configured 591 MBPP rows. Keep the filtered OpenCode stream, holdout, sampled evaluation, reward settings, checkpoint policy, and W&B run unchanged.
 Discussion: The default Hub configuration selected sanitized parquet files with columns that do not match the training loader. The full configuration uses the same pinned repository revision and matches the expected MBPP source rows.
+
+## 2026-10-16: Repair GRPO MBPP startup
+
+The GRPO run `grpo-mbpp-opencode-selfinstruct-from-sft3000-eval100-20261016` uses W&B run ID `85ae19bd`. It failed before training because the cached MBPP sanitized Parquet shards were incomplete and the dataset loader mixed incompatible full and sanitized schemas. A retry then failed because normalized Arrow cache files were written under a shared cache that rejected `chmod`.
+
+`data.py` now loads the full MBPP parquet shard for each requested split and sets the generated datasets cache to writable temporary storage before importing `datasets`. The supervisor also defaults the datasets cache to temporary storage. A local check loaded and normalized 374 train, 90 validation, and 500 test records. Python compilation passed. A supervised retry is active under the same W&B run ID. The run has not yet reached its first training step, so no training metrics are available.
