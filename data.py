@@ -212,7 +212,11 @@ def load_mbpp(
     else:
         loaded = load_dataset(dataset_name, dataset_config, split=split) if dataset_config else load_dataset(dataset_name, split=split)
     # Rebuild normalized prompts so prompt-template edits cannot be hidden by a stale datasets cache.
-    return loaded.map(lambda record: normalize_record(record, include_generic_arguments, visible_test_count), load_from_cache_file=False)
+    return loaded.map(
+        lambda record: normalize_record(record, include_generic_arguments, visible_test_count),
+        load_from_cache_file=False,
+        keep_in_memory=True,
+    )
 
 
 def load_generated_training_tasks(path: str | Path, include_generic_arguments: bool = False, visible_test_count: int | None = None) -> Any:

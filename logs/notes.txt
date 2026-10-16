@@ -4872,3 +4872,7 @@ Description: Restore the original null dataset_config so the repaired loader rea
 Discussion: The shared cached dataset metadata only exposes a default builder config. The explicit full config failed before data loading. The loader fix selects the full split shard when dataset_config is null and keeps the run data and training settings unchanged.
 
 The Hugging Face repository uses `full/` as a parquet directory, not as a `datasets` builder configuration. `load_mbpp` now treats `dataset_config: full` as that directory and loads the requested shard directly. A local check passed for all three splits. The supervisor is retrying with this fix under run ID `85ae19bd`.
+
+Commit name: Keep normalized MBPP rows in memory.
+Description: Keep the small normalized MBPP splits in memory during mapping so dataset startup does not write Arrow cache files to the shared read only cache.
+Discussion: The next retry reached full MBPP loading but failed when datasets called chmod on its shared Arrow cache. The change affects only the three small MBPP source splits and does not change examples or training settings.
