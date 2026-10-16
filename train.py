@@ -167,9 +167,13 @@ def canonical_test_pass_metrics(samples: Path) -> dict[str, float]:
 
 def evaluate_training_mbpp(model_path: Path, train_dataset: Any, config: dict[str, Any], name: str) -> dict[str, Any]:
     """Evaluate the fixed training-task sample with the batched vLLM generation path."""
-    # Restrict only evaluation to the task IDs persisted for this run.
+    # Load only the persisted sample rows when their deterministic indices are available.
     selected_ids = set(config.get("training_eval_task_ids", []))
-    records = [train_dataset[index] for index in range(len(train_dataset)) if not selected_ids or str(train_dataset[index]["task_id"]) in selected_ids]
+    selected_indices = config.get("training_eval_indices")
+    if selected_indices is not None:
+        records = [train_dataset[index] for index in selected_indices]
+    else:
+        records = [train_dataset[index] for index in range(len(train_dataset)) if not selected_ids or str(train_dataset[index]["task_id"]) in selected_ids]
     if selected_ids and len(records) != len(selected_ids):
         raise ValueError("The fixed training evaluation sample does not match the loaded training dataset.")
     # Score only tasks with usable tests while retaining the selected sample denominator.
@@ -226,6 +230,8 @@ def prepare_training_eval_sample(train_dataset: Any, config: dict[str, Any], out
         return
     manifest_path = output_dir / "training-eval-task-ids.json"
     available_ids = [str(train_dataset[index]["task_id"]) for index in range(len(train_dataset))]
+    # Build a stable task-to-row map once so repeated evaluations avoid scanning the full dataset.
+    id_to_index = {task_id: index for index, task_id in enumerate(available_ids)}
     if manifest_path.is_file():
         task_ids = json.loads(manifest_path.read_text(encoding="utf-8"))
         if any(task_id not in available_ids for task_id in task_ids):
@@ -239,6 +245,7 @@ def prepare_training_eval_sample(train_dataset: Any, config: dict[str, Any], out
     if len(task_ids) != sample_size or len(set(task_ids)) != sample_size:
         raise ValueError("The saved training evaluation sample has an unexpected size or duplicate task IDs.")
     config["training_eval_task_ids"] = task_ids
+    config["training_eval_indices"] = [id_to_index[task_id] for task_id in task_ids]
     print(f"Training evaluation uses {sample_size} fixed task IDs from {len(available_ids)} training rows; manifest: {manifest_path}", flush=True)
 
 

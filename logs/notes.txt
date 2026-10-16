@@ -4848,3 +4848,7 @@ Discussion: The user authorized starting this run. W&B run ID is 85ae19bd. The p
 Commit name: Add recurring GRPO run diagnosis monitor.
 Description: Add a locked 30-minute monitor for GRPO runs. It tracks the configured trainer and supervisor, records progress and failures, and invokes an unattended diagnosis only when the run has no live worker, a new failure, a failed prior diagnosis, or stale progress.
 Discussion: The SFT monitor is specific to a different launcher and could restart the wrong experiment. This GRPO monitor uses the new run configuration and preserves live processes and complete checkpoints. The monitor will start with the GRPO supervisor after the filtered task artifact passes its count checks.
+
+Commit name: Load only sampled training tasks during recurring evaluation.
+Description: Persist the fixed training evaluation sample as dataset row indices after validating its IDs. Reuse those indices at each evaluation so the 500-task sample does not trigger a scan across the full 1.17-million-row training set every 100 steps.
+Discussion: This avoids repeated full-dataset reads while keeping the same deterministic sample IDs and all training data unchanged. The data materializer remains active and does not import the training module.
