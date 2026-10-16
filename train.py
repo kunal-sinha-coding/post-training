@@ -20,9 +20,6 @@ from pprint import pformat
 import copy
 from typing import Any
 
-# Keep Arrow cache writes out of the shared Hub cache before dependencies load datasets.
-os.environ["HF_DATASETS_CACHE"] = os.environ.get("TRAINING_HF_DATASETS_CACHE", "/tmp/post-training-hf-datasets")
-
 import yaml
 from dotenv import load_dotenv
 
@@ -170,16 +167,9 @@ def canonical_test_pass_metrics(samples: Path) -> dict[str, float]:
 
 def evaluate_training_mbpp(model_path: Path, train_dataset: Any, config: dict[str, Any], name: str) -> dict[str, Any]:
     """Evaluate the fixed training-task sample with the batched vLLM generation path."""
-    # Load only the persisted fixed sample for online training datasets.
+    # Restrict only evaluation to the task IDs persisted for this run.
     selected_ids = set(config.get("training_eval_task_ids", []))
-    sample_records = config.get("_training_eval_records")
-    selected_indices = config.get("training_eval_indices")
-    if sample_records is not None:
-        records = sample_records
-    elif selected_indices is not None:
-        records = [train_dataset[index] for index in selected_indices]
-    else:
-        records = [train_dataset[index] for index in range(len(train_dataset)) if not selected_ids or str(train_dataset[index]["task_id"]) in selected_ids]
+    records = [train_dataset[index] for index in range(len(train_dataset)) if not selected_ids or str(train_dataset[index]["task_id"]) in selected_ids]
     if selected_ids and len(records) != len(selected_ids):
         raise ValueError("The fixed training evaluation sample does not match the loaded training dataset.")
     # Score only tasks with usable tests while retaining the selected sample denominator.
@@ -234,23 +224,8 @@ def prepare_training_eval_sample(train_dataset: Any, config: dict[str, Any], out
     sample_size = int(config.get("training_eval_sample_size", 0))
     if sample_size <= 0:
         return
-    sample_path = config.get("training_eval_tasks_path")
-    if sample_path:
-        # Reuse the saved 500-task SFT training sample without traversing the online stream.
-        task_records = json.loads(Path(sample_path).read_text(encoding="utf-8"))
-        task_ids = [str(record["task_id"]) for record in task_records]
-        if len(task_records) != sample_size or len(set(task_ids)) != sample_size:
-            raise ValueError("The saved training evaluation sample has an unexpected size or duplicate task IDs.")
-        if any(not record.get("prompt") or not record.get("test_code") for record in task_records):
-            raise ValueError("The saved training evaluation sample has missing prompts or tests.")
-        config["training_eval_task_ids"] = task_ids
-        config["_training_eval_records"] = task_records
-        print(f"Training evaluation reuses {sample_size} fixed task records from {sample_path}.", flush=True)
-        return
     manifest_path = output_dir / "training-eval-task-ids.json"
     available_ids = [str(train_dataset[index]["task_id"]) for index in range(len(train_dataset))]
-    # Build a stable task-to-row map once so repeated evaluations avoid scanning the full dataset.
-    id_to_index = {task_id: index for index, task_id in enumerate(available_ids)}
     if manifest_path.is_file():
         task_ids = json.loads(manifest_path.read_text(encoding="utf-8"))
         if any(task_id not in available_ids for task_id in task_ids):
@@ -264,7 +239,6 @@ def prepare_training_eval_sample(train_dataset: Any, config: dict[str, Any], out
     if len(task_ids) != sample_size or len(set(task_ids)) != sample_size:
         raise ValueError("The saved training evaluation sample has an unexpected size or duplicate task IDs.")
     config["training_eval_task_ids"] = task_ids
-    config["training_eval_indices"] = [id_to_index[task_id] for task_id in task_ids]
     print(f"Training evaluation uses {sample_size} fixed task IDs from {len(available_ids)} training rows; manifest: {manifest_path}", flush=True)
 
 
@@ -346,10 +320,9 @@ def configure_wandb(config: dict[str, Any]) -> Any | None:
     if wandb.run is not None:
         config_keys = (
             "scale_rewards", "use_vllm", "vllm_mode", "vllm_gpu_memory_utilization",
-        "training_eval_sample_size", "training_eval_sample_seed", "expected_train_samples",
+            "training_eval_sample_size", "training_eval_sample_seed", "expected_train_samples",
             "save_strategy", "save_steps", "max_steps", "synthetic_training_tasks_path",
-        "model_name_or_path", "initial_adapter_path", "opencode_training_tasks_path", "opencode_revision",
-        "opencode_average_test_score", "excluded_generation_algorithms", "streaming_opencode_grpo", "mbpp_splits",
+            "model_name_or_path", "initial_adapter_path", "opencode_training_tasks_path", "mbpp_splits",
         )
         wandb.config.update({key: config[key] for key in config_keys if key in config}, allow_val_change=True)
     # Use trainer steps rather than W&B history row numbers on evaluation charts.
@@ -999,15 +972,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     # Preserve every existing checkpoint directory across both fresh and resumed launches.
     # Load datasets, tokenizer, and the base model.
-    # Build the small MBPP set first, then stream OpenCode records directly from the pinned source.
-    dataset_config = dict(config)
-    if config.get("streaming_opencode_grpo"):
-        dataset_config["expected_train_samples"] = int(config["expected_mbpp_train_samples"])
-    train_dataset, eval_dataset = prepare_datasets(dataset_config)
-    if config.get("streaming_opencode_grpo"):
-        from experiments.streaming_opencode_grpo_data import StreamingOpenCodeGRPODataset
-
-        train_dataset = StreamingOpenCodeGRPODataset(config, list(train_dataset))
+    train_dataset, eval_dataset = prepare_datasets(config)
     # Persist one fixed random sample for every training-set evaluation in this run.
     prepare_training_eval_sample(train_dataset, config, output_dir)
     tokenizer = AutoTokenizer.from_pretrained(config["model_name_or_path"], trust_remote_code=bool(config.get("trust_remote_code", False)))
@@ -1117,38 +1082,12 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         use_cpu=not torch.cuda.is_available(),
         seed=int(config.get("seed", 42)),
     )
-    class StreamingBatchGRPOTrainer(GRPOTrainer):
-        """Carry streamed text records through Accelerate batch-size inspection."""
-
-        def get_train_dataloader(self):
-            """Add a tensor batch marker while preserving the streamed GRPO records."""
-            original_collator = self.data_collator
-            original_remove_unused_columns = self.args.remove_unused_columns
-
-            def collate_streamed_records(records):
-                """Provide a tensor for Accelerate and keep source records available for GRPO."""
-                return {"_batch_marker": torch.arange(len(records)), "_records": records}
-
-            self.data_collator = collate_streamed_records
-            self.args.remove_unused_columns = False
-            try:
-                return super().get_train_dataloader()
-            finally:
-                self.data_collator = original_collator
-                self.args.remove_unused_columns = original_remove_unused_columns
-
-        def _prepare_inputs(self, generation_batch):
-            """Unwrap streamed source records before GRPO prompt generation."""
-            if isinstance(generation_batch, dict) and "_records" in generation_batch:
-                generation_batch = generation_batch["_records"]
-            return super()._prepare_inputs(generation_batch)
-
-    trainer_class = StreamingBatchGRPOTrainer if config.get("streaming_opencode_grpo", False) else GRPOTrainer
+    trainer_class = GRPOTrainer
     if config.get("mask_reward_stops", True):
         # Align completion-token loss masks with the per-completion stop boundary used by reward scoring.
         stop_ids = stop_token_id_sequences(tokenizer, QWEN_EVALPLUS_STOP_STRINGS)
 
-        class RewardMaskedGRPOTrainer(trainer_class):
+        class RewardMaskedGRPOTrainer(GRPOTrainer):
             """Mask unscored suffix tokens after every completion's reward stop marker."""
 
             def _generate_and_score_completions(self, inputs: list[dict[str, Any]]) -> dict[str, Any]:

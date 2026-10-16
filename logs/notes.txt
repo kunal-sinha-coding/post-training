@@ -4907,3 +4907,7 @@ Discussion: The diagnostic agent runs asynchronously so minute checks continue. 
 Commit name: Evaluate GRPO every ten steps.
 Description: Set both the Trainer evaluation interval and the EvalPlus callback interval to ten steps for the active GRPO run. Keep the W&B run ID, training data, evaluation fixtures, initial SFT step-3000 adapter, checkpoint interval, and other training settings unchanged.
 Discussion: The user requested a restart after observing that the existing run evaluated every 100 steps. Resume from the newest complete GRPO checkpoint so completed training steps are retained, and use the same W&B identity.
+
+Commit name: Handle parser stack overflow in generated completions.
+Description: Treat SyntaxError and parser MemoryError during candidate compilation as invalid syntax with zero reward, so an unusually complex model completion cannot abort GRPO training.
+Discussion: The 2026-10-16 20:04:46 UTC failure traceback showed Python raising `MemoryError: Parser stack overflowed` from `compile(code, "<candidate>", "exec")` in `sandbox.score_completion`. The active retry is resuming from complete checkpoint 40 with the same W&B run identity and configuration. This narrow guard preserves all reward settings and training data.

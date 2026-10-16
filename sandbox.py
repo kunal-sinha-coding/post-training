@@ -217,7 +217,7 @@ def score_completion(completion: str, tests: str, timeout_seconds: float = 3.0, 
         return 0.0, {"status": "format_error", "passed_tests": 0, "total_tests": len(test_cases), "interface_valid": False, "test_results": _unrun_test_results(test_cases, visible_test_count), "reward_components": components}
     try:
         compile(code, "<candidate>", "exec")
-    except SyntaxError:
+    except (SyntaxError, MemoryError):
         return sum(components.values()), {"status": "syntax_error", "passed_tests": 0, "total_tests": len(test_cases), "interface_valid": False, "test_results": _unrun_test_results(test_cases, visible_test_count), "reward_components": components}
     interface_valid = validate_interface(code, tests)
     passed, total, _, test_results = execute_test_cases(code, test_cases, timeout_seconds, visible_test_count)
