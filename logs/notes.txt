@@ -4870,3 +4870,5 @@ The GRPO run `grpo-mbpp-opencode-selfinstruct-from-sft3000-eval100-20261016` use
 Commit name: Restore the MBPP loader configuration after direct shard recovery.
 Description: Restore the original null dataset_config so the repaired loader reads the pinned full MBPP parquet shards directly.
 Discussion: The shared cached dataset metadata only exposes a default builder config. The explicit full config failed before data loading. The loader fix selects the full split shard when dataset_config is null and keeps the run data and training settings unchanged.
+
+The Hugging Face repository uses `full/` as a parquet directory, not as a `datasets` builder configuration. `load_mbpp` now treats `dataset_config: full` as that directory and loads the requested shard directly. A local check passed for all three splits. The supervisor is retrying with this fix under run ID `85ae19bd`.

@@ -199,8 +199,8 @@ def load_mbpp(
         from datasets import load_dataset
     except ImportError as exc:
         raise RuntimeError("Install the 'datasets' package to load MBPP.") from exc
-    # Read the full MBPP parquet shard directly so the sanitized schema is not mixed into this split.
-    if dataset_name == "google-research-datasets/mbpp" and dataset_config is None:
+    # Treat `full` as this repository's parquet folder, not as a datasets BuilderConfig.
+    if dataset_name == "google-research-datasets/mbpp" and dataset_config in (None, "full"):
         from huggingface_hub import hf_hub_download
 
         parquet_path = hf_hub_download(
