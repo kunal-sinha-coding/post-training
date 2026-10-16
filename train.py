@@ -167,10 +167,13 @@ def canonical_test_pass_metrics(samples: Path) -> dict[str, float]:
 
 def evaluate_training_mbpp(model_path: Path, train_dataset: Any, config: dict[str, Any], name: str) -> dict[str, Any]:
     """Evaluate the fixed training-task sample with the batched vLLM generation path."""
-    # Load only the persisted sample rows when their deterministic indices are available.
+    # Load only the persisted fixed sample for online training datasets.
     selected_ids = set(config.get("training_eval_task_ids", []))
+    sample_records = config.get("_training_eval_records")
     selected_indices = config.get("training_eval_indices")
-    if selected_indices is not None:
+    if sample_records is not None:
+        records = sample_records
+    elif selected_indices is not None:
         records = [train_dataset[index] for index in selected_indices]
     else:
         records = [train_dataset[index] for index in range(len(train_dataset)) if not selected_ids or str(train_dataset[index]["task_id"]) in selected_ids]
@@ -227,6 +230,19 @@ def prepare_training_eval_sample(train_dataset: Any, config: dict[str, Any], out
     # Leave historical full-training evaluations unchanged when no sample size is configured.
     sample_size = int(config.get("training_eval_sample_size", 0))
     if sample_size <= 0:
+        return
+    sample_path = config.get("training_eval_tasks_path")
+    if sample_path:
+        # Reuse the saved 500-task SFT training sample without traversing the online stream.
+        task_records = json.loads(Path(sample_path).read_text(encoding="utf-8"))
+        task_ids = [str(record["task_id"]) for record in task_records]
+        if len(task_records) != sample_size or len(set(task_ids)) != sample_size:
+            raise ValueError("The saved training evaluation sample has an unexpected size or duplicate task IDs.")
+        if any(not record.get("prompt") or not record.get("test_code") for record in task_records):
+            raise ValueError("The saved training evaluation sample has missing prompts or tests.")
+        config["training_eval_task_ids"] = task_ids
+        config["_training_eval_records"] = task_records
+        print(f"Training evaluation reuses {sample_size} fixed task records from {sample_path}.", flush=True)
         return
     manifest_path = output_dir / "training-eval-task-ids.json"
     available_ids = [str(train_dataset[index]["task_id"]) for index in range(len(train_dataset))]
@@ -327,9 +343,10 @@ def configure_wandb(config: dict[str, Any]) -> Any | None:
     if wandb.run is not None:
         config_keys = (
             "scale_rewards", "use_vllm", "vllm_mode", "vllm_gpu_memory_utilization",
-            "training_eval_sample_size", "training_eval_sample_seed", "expected_train_samples",
+        "training_eval_sample_size", "training_eval_sample_seed", "expected_train_samples",
             "save_strategy", "save_steps", "max_steps", "synthetic_training_tasks_path",
-            "model_name_or_path", "initial_adapter_path", "opencode_training_tasks_path", "mbpp_splits",
+        "model_name_or_path", "initial_adapter_path", "opencode_training_tasks_path", "opencode_revision",
+        "opencode_average_test_score", "excluded_generation_algorithms", "streaming_opencode_grpo", "mbpp_splits",
         )
         wandb.config.update({key: config[key] for key in config_keys if key in config}, allow_val_change=True)
     # Use trainer steps rather than W&B history row numbers on evaluation charts.
@@ -979,7 +996,15 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     # Preserve every existing checkpoint directory across both fresh and resumed launches.
     # Load datasets, tokenizer, and the base model.
-    train_dataset, eval_dataset = prepare_datasets(config)
+    # Build the small MBPP set first, then stream OpenCode records directly from the pinned source.
+    dataset_config = dict(config)
+    if config.get("streaming_opencode_grpo"):
+        dataset_config["expected_train_samples"] = int(config["expected_mbpp_train_samples"])
+    train_dataset, eval_dataset = prepare_datasets(dataset_config)
+    if config.get("streaming_opencode_grpo"):
+        from experiments.streaming_opencode_grpo_data import StreamingOpenCodeGRPODataset
+
+        train_dataset = StreamingOpenCodeGRPODataset(config, list(train_dataset))
     # Persist one fixed random sample for every training-set evaluation in this run.
     prepare_training_eval_sample(train_dataset, config, output_dir)
     tokenizer = AutoTokenizer.from_pretrained(config["model_name_or_path"], trust_remote_code=bool(config.get("trust_remote_code", False)))

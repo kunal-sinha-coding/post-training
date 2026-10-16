@@ -15,6 +15,7 @@ max_eval_samples: null
 train_subset_evaluation_only: false
 training_eval_sample_size: 500
 training_eval_sample_seed: 42
+training_eval_tasks_path: outputs/sft-mbpp-opencode-score1-streaming-one-epoch-20261015/evaluation-fixtures/training_eval_tasks.json
 select_best_checkpoint: false
 run_baseline_evaluation: false
 reuse_baseline: false
@@ -35,8 +36,10 @@ lora_target_modules:
 - down_proj
 sft_enabled: false
 initial_adapter_path: outputs/sft-mbpp-opencode-score1-selfinstruct-streaming-resume2000-20261015/checkpoints/checkpoint-3000
-opencode_training_tasks_path: outputs/grpo-mbpp-opencode-selfinstruct-from-sft3000-eval100-20261016/opencode_grpo_training_tasks.jsonl
 opencode_holdout_tasks_path: outputs/sft-mbpp-opencode-score1-streaming-one-epoch-20261015/evaluation-fixtures/holdout_tasks.json
+streaming_opencode_grpo: true
+opencode_source_batch_size: 8
+dataloader_num_workers: 0
 opencode_revision: 8f3ba5bafe4d6e8db46082cf7ae6741bc370604d
 opencode_expected_rows: 5000000
 opencode_average_test_score: 1.0
@@ -45,7 +48,6 @@ excluded_generation_algorithms:
 expected_opencode_train_samples: 1170852
 expected_train_samples: 1171443
 expected_mbpp_train_samples: 591
-allow_unscorable_opencode_tasks: true
 log_path: outputs/grpo-mbpp-opencode-selfinstruct-from-sft3000-eval100-20261016/run.log
 results_log_path: outputs/grpo-mbpp-opencode-selfinstruct-from-sft3000-eval100-20261016/run-results.txt
 output_dir: outputs/grpo-mbpp-opencode-selfinstruct-from-sft3000-eval100-20261016
