@@ -227,7 +227,12 @@ def load_generated_training_tasks(path: str | Path, include_generic_arguments: b
     return _to_dataset(records)
 
 
-def load_opencode_training_tasks(path: str | Path, include_generic_arguments: bool = False, visible_test_count: int | None = None) -> Any:
+def load_opencode_training_tasks(
+    path: str | Path,
+    include_generic_arguments: bool = False,
+    visible_test_count: int | None = None,
+    allow_unscorable: bool = False,
+) -> Any:
     """Load materialized OpenCodeInstruct tasks with their source tests and references."""
     records = []
     # Require unique namespaced IDs and complete text, solution, and assertion fields.
@@ -237,7 +242,7 @@ def load_opencode_training_tasks(path: str | Path, include_generic_arguments: bo
                 continue
             task = json.loads(line)
             tests = task.get("test_list")
-            if not isinstance(tests, list) or not tests or not all(isinstance(test, str) for test in tests):
+            if not isinstance(tests, list) or (not tests and not allow_unscorable) or not all(isinstance(test, str) for test in tests):
                 raise ValueError(f"OpenCode task on line {line_number} has invalid tests.")
             if not task.get("task_id") or not task.get("text") or not task.get("code"):
                 raise ValueError(f"OpenCode task on line {line_number} is missing required fields.")
@@ -331,7 +336,12 @@ def prepare_datasets(config: dict[str, Any]) -> tuple[Any, Any]:
                 else [{**record, "task_id": str(record["task_id"])} for record in dataset]
                 for dataset in all_datasets
             ]
-            all_datasets.append(load_opencode_training_tasks(opencode_training_tasks_path, include_generic_arguments, visible_test_count))
+            all_datasets.append(load_opencode_training_tasks(
+                opencode_training_tasks_path,
+                include_generic_arguments,
+                visible_test_count,
+                allow_unscorable=bool(config.get("allow_unscorable_opencode_tasks", False)),
+            ))
         # Append validated synthetic tasks while retaining the configured source rows.
         synthetic_training_tasks_path = config.get("synthetic_training_tasks_path")
         if synthetic_training_tasks_path:
@@ -369,6 +379,17 @@ def prepare_datasets(config: dict[str, Any]) -> tuple[Any, Any]:
         lambda record: str(record["task_id"]) not in {str(task_id) for task_id in evalplus_task_ids}
         and _normalize_task_text(record.get("task_text", "")) not in evalplus_task_texts,
     )
+    # Exclude the preserved OpenCode holdout by both ID and normalized prompt text.
+    holdout_path = config.get("opencode_holdout_tasks_path")
+    if holdout_path:
+        holdout_tasks = json.loads(Path(holdout_path).read_text(encoding="utf-8"))
+        holdout_ids = {str(task["task_id"]) for task in holdout_tasks}
+        holdout_texts = {_normalize_task_text(task.get("task_text", "")) for task in holdout_tasks}
+        train_dataset = _filter_dataset(
+            train_dataset,
+            lambda record: str(record["task_id"]) not in holdout_ids
+            and _normalize_task_text(record.get("task_text", "")) not in holdout_texts,
+        )
     # Remove the helper text column before passing records to the trainer and evaluator.
     if hasattr(train_dataset, "remove_columns") and "task_text" in train_dataset.column_names:
         train_dataset = train_dataset.remove_columns(["task_text"])

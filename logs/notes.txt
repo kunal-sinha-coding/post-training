@@ -4840,3 +4840,7 @@ Discussion: The user asked to stop the prior SFT run and restart an otherwise id
 Commit name: Record Self-Instruct-only SFT launch.
 Description: Record the implementation commit, new W&B run identity, confirmed stream size, and GPU environment for the filtered SFT continuation.
 Discussion: W&B run 22aa5547 initialized in kunal-personal/grpo-mbpp. The stream reports 1,171,443 training examples and confirms that it saves no training dataset cache. The supervisor resumes from the complete step-2000 checkpoint and the recurring monitor is active.
+
+Commit name: Prepare MBPP plus OpenCode GRPO from SFT step 3000.
+Description: Add the run configuration and data materializer for GRPO from the completed SFT checkpoint at step 3000. Include all score-one OpenCodeInstruct examples after excluding Evol-Instruct, the 500 fixed holdout examples, and EvalPlus overlaps. Evaluate every 100 steps on EvalPlus, a fixed 500 task training sample, and the 500 selected holdout examples. Mark tasks without valid assertion tests as unscorable rather than dropping them from training.
+Discussion: The user authorized starting this run. W&B run ID is 85ae19bd. The pinned source scan is in progress. The source data manifest and metrics will be recorded after materialization and training startup.

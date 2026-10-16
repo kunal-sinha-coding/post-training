@@ -202,6 +202,14 @@ def score_completion(completion: str, tests: str, timeout_seconds: float = 3.0, 
         raise ValueError("reward_function must be 'test_pass' or 'hybrid'.")
     if not 0.0 <= reward_coefficient <= 1.0:
         raise ValueError("reward_coefficient must be between zero and one.")
+    # Mark missing, malformed, or assertion-free source tests as unscorable.
+    try:
+        test_tree = ast.parse(tests)
+    except SyntaxError:
+        test_tree = None
+    if test_tree is None or not any(isinstance(node, ast.Assert) for node in ast.walk(test_tree)):
+        return 0.0, {"status": "unscorable", "passed_tests": 0, "total_tests": 0, "interface_valid": False, "test_results": [], "reward_components": components}
+    # Split valid source tests so each assertion receives a separate reward result.
     test_cases = split_test_cases(tests)
     try:
         code = extract_code(completion)
@@ -444,6 +452,9 @@ def reward_function(completions: list[object], test_code: list[str], sandbox_tim
         trace_record["test_code"] = scoring_tests[trace_record["index"]]
         trace_record["reward"] = reward
         trace_record["detail"] = detail
+    # Publish the fraction of rollouts that had no usable source tests.
+    if diagnostics is not None:
+        diagnostics["reward/unscorable_fraction"] = sum(detail["status"] == "unscorable" for detail in details) / len(details) if details else 0.0
     if synthetic_reward_probe:
         # Replace execution rewards with a known within-group ranking for the optimizer control test.
         for index in range(len(rewards)):

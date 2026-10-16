@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import argparse
+import ast
 import json
 import os
 import random
@@ -109,6 +110,17 @@ def generate_vllm_prompts_isolated(model_path: Path, prompts: list[str], gpu_mem
         return json.loads(completion_path.read_text(encoding="utf-8"))
 
 
+def _has_scorable_tests(record: dict[str, Any]) -> bool:
+    """Return whether one task has a parseable suite with at least one assertion."""
+    # Exclude missing and malformed source tests from pass-rate denominators.
+    test_code = str(record.get("test_code", ""))
+    try:
+        tree = ast.parse(test_code)
+    except SyntaxError:
+        return False
+    return any(isinstance(node, ast.Assert) for node in ast.walk(tree))
+
+
 def canonical_test_pass_metrics(samples: Path) -> dict[str, float]:
     """Calculate overall base and MBPP+ test pass fractions from EvalPlus details."""
     # Read the canonical evaluator's per-task failure lists and compare them with official test counts.
@@ -160,14 +172,50 @@ def evaluate_training_mbpp(model_path: Path, train_dataset: Any, config: dict[st
     records = [train_dataset[index] for index in range(len(train_dataset)) if not selected_ids or str(train_dataset[index]["task_id"]) in selected_ids]
     if selected_ids and len(records) != len(selected_ids):
         raise ValueError("The fixed training evaluation sample does not match the loaded training dataset.")
-    completions = generate_vllm_prompts_isolated(model_path, [record["prompt"] for record in records], float(config.get("vllm_gpu_memory_utilization", 0.3)))
+    # Score only tasks with usable tests while retaining the selected sample denominator.
+    scorable_records = [record for record in records if _has_scorable_tests(record)]
+    completions = generate_vllm_prompts_isolated(model_path, [record["prompt"] for record in scorable_records], float(config.get("vllm_gpu_memory_utilization", 0.3)))
     # Wrap raw vLLM code bodies so the shared scorer can extract them as Python programs.
     completions = [wrap_qwen_continuation(completion) for completion in completions]
-    # Score generated solutions against only the original MBPP tests used by the reward.
-    metrics, details = evaluate_texts(completions, records, float(config.get("sandbox_timeout_seconds", 3)), config.get("log_path", "logs/logs.txt"), name, reward_scoring_workers=int(config.get("reward_scoring_workers", 8)))
-    # Record the exact denominator used for this fixed training evaluation.
+    # Score generated solutions against the selected task tests.
+    metrics, details = evaluate_texts(completions, scorable_records, float(config.get("sandbox_timeout_seconds", 3)), config.get("log_path", "logs/logs.txt"), name, reward_scoring_workers=int(config.get("reward_scoring_workers", 8))) if scorable_records else ({"examples": 0, "pass_at_1": 0.0}, [])
+    # Record selected and scorable counts for this fixed training evaluation.
     metrics["evaluation_sample_size"] = len(records)
+    metrics["scorable_tasks"] = len(scorable_records)
+    metrics["unscorable_examples"] = len(records) - len(scorable_records)
     return {"metrics": metrics, "details": details}
+
+
+def evaluate_opencode_holdout(model_path: Path, output_dir: Path, config: dict[str, Any], name: str) -> dict[str, Any] | None:
+    """Evaluate one completion for each scorable task in the fixed OpenCode holdout."""
+    # Skip the additional evaluation when the run has no preserved OpenCode holdout.
+    holdout_path = config.get("opencode_holdout_tasks_path")
+    if not holdout_path:
+        return None
+    records = json.loads(Path(holdout_path).read_text(encoding="utf-8"))
+    scorable_records = [record for record in records if record.get("evaluation_valid") and _has_scorable_tests(record)]
+    # Generate and score only tasks with valid source test suites.
+    completions = generate_vllm_prompts_isolated(model_path, [record["prompt"] for record in scorable_records], float(config.get("vllm_gpu_memory_utilization", 0.3)))
+    metrics, details = evaluate_texts(completions, scorable_records, float(config.get("sandbox_timeout_seconds", 3)), config.get("log_path", "logs/logs.txt"), name, reward_scoring_workers=int(config.get("reward_scoring_workers", 8))) if scorable_records else ({"examples": 0, "pass_at_1": 0.0, "successful_examples": 0}, [])
+    # Preserve the original 500-task denominator beside the scorable pass rate.
+    metrics["source_examples"] = len(records)
+    metrics["selected_tasks"] = len(records)
+    metrics["scorable_tasks"] = len(scorable_records)
+    metrics["unscorable_examples"] = len(records) - len(scorable_records)
+    metrics["test_coverage_fraction"] = len(scorable_records) / len(records) if records else 0.0
+    metrics["confirmed_success_fraction_of_all_selected"] = float(metrics.get("successful_examples", 0)) / len(records) if records else 0.0
+    # Save the held-out predictions and metrics with the run's other evaluation artifacts.
+    save_evaluation(output_dir, name, metrics, details, config)
+    return metrics
+
+
+def merge_opencode_holdout_metrics(metrics: dict[str, Any], holdout_metrics: dict[str, Any] | None) -> dict[str, Any]:
+    """Add OpenCode holdout metrics under their own namespace."""
+    # Keep the canonical EvalPlus metric names separate from OpenCode metrics.
+    merged = dict(metrics)
+    if holdout_metrics:
+        merged.update({f"opencode_holdout_{key}": value for key, value in holdout_metrics.items()})
+    return merged
 
 
 def prepare_training_eval_sample(train_dataset: Any, config: dict[str, Any], output_dir: Path) -> None:
@@ -736,6 +784,9 @@ def _make_callback(model: Any, tokenizer: Any, train_dataset: Any, test_dataset:
                         evalplus_result["metrics"] = merge_training_metrics(evalplus_result["metrics"], training_result["metrics"])
                         evaluation_log_name = f"evalplus-{name}"
                         selection_metric = float(evalplus_result["metrics"].get("mbpp_plus_pass_at_1", float("-inf")))
+                    if not config.get("train_subset_evaluation_only", False):
+                        holdout_metrics = evaluate_opencode_holdout(model_path, Path(args.output_dir), config, f"opencode-holdout-{name}")
+                        evalplus_result["metrics"] = merge_opencode_holdout_metrics(evalplus_result["metrics"], holdout_metrics)
                     save_evaluation(args.output_dir, f"training-{name}", training_result["metrics"], training_result["details"], config)
                     # Use evaluation labels for checkpoint selection only when the config permits it.
                     if config.get("select_best_checkpoint", True):
@@ -961,6 +1012,8 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
                 # Run the canonical EvalPlus benchmark and merge the training baseline for normal runs.
                 step_zero_result = run_qwen_evalplus(step_zero_path, output_dir, "step-0", config)
                 step_zero_result["metrics"] = merge_training_metrics(step_zero_result["metrics"], training_result["metrics"])
+                holdout_metrics = evaluate_opencode_holdout(step_zero_path, output_dir, config, "opencode-holdout-step-0")
+                step_zero_result["metrics"] = merge_opencode_holdout_metrics(step_zero_result["metrics"], holdout_metrics)
                 config["_best_evalplus_mbpp_plus"] = step_zero_result["metrics"].get("mbpp_plus_pass_at_1", float("-inf"))
                 log_evaluation(wandb, step_zero_result["metrics"], "evalplus-step-0", 0)
         finally:
