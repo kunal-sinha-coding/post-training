@@ -4915,3 +4915,7 @@ Discussion: The 2026-10-16 20:04:46 UTC failure traceback showed Python raising 
 Commit name: Align streamed OpenCode metadata with MBPP rows.
 Description: Add the GRPO OpenCode streaming dataset implementation and remove the unused task_text helper field from each normalized OpenCode row before yielding it. The shared dataset loader already removes this field from MBPP rows, so matching schemas prevents TRL from raising KeyError when a mixed batch starts with an OpenCode row.
 Discussion: The 2026-10-16 20:29:33 UTC retry log showed KeyError: 'task_text' in TRL reward argument assembly. The active worker remains live and is not stopped. The change applies to the next retry and preserves prompts, source filters, training examples, evaluation data, reward settings, checkpoint policy, SFT adapter, and W&B identity.
+
+Commit name: Audit active OpenCode GRPO transfer to MBPP.
+Description: Add a read-only audit of W&B run 85ae19bd, its EvalPlus trajectory, and sampled rollout failures through optimizer step 126.
+Discussion: Training reward increased, but the EvalPlus gain was modest and faded after the step-60 peak. The fixed OpenCode evaluation artifacts contain blank completions and cannot establish held-out OpenCode generalization. The per-task audit found semantic regressions such as a missing sum over a list slice, but no consistent evidence of an OpenCode-specific output style. The 50,000-step target projects to about 150 days at observed throughput. No training process was stopped and no checkpoint was selected.
