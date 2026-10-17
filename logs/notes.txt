@@ -4946,3 +4946,8 @@ Discussion: The new run resumed from checkpoint 300 with `ignore_data_skip: true
 Commit name: Record binary reward run's first optimizer metrics.
 Description: Add the first observed training-step metrics to the experiment record and confirm that mean binary reward equals the full-pass fraction.
 Discussion: At step 305, reward mean and full-pass fraction were both 0.6015625. Partial-pass fraction was 0.1796875 and all-zero fraction was 0.3984375. The next EvalPlus checkpoint evaluation is configured for step 350.
+
+
+Commit name: Detect GRPO runs without optimizer step progress for ten minutes.
+Description: Update the active-run monitor to parse the newest logged optimizer step, track time since that step changes, check once per minute, and launch one diagnosis when a step remains unchanged for ten minutes.
+Discussion: At 2026-10-17 23:37 UTC, the restarted run was active and the local log had reached step 377, so no ten-minute stall was present. The previous monitor checked log-file freshness on a 30-minute cadence and did not track optimizer-step changes. The monitor restarted with the step-based threshold at PID 639956 and checks every minute. Its initial state showed step 378 with no stall. No trainer or supervisor process was stopped.
