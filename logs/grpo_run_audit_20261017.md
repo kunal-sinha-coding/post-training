@@ -57,6 +57,29 @@ At the early peak, changed solutions that fixed base-test failures were 122 char
 
 The run advanced from step 1 to step 126 over roughly nine hours after startup, about 4.4 minutes per optimizer step on average. At the configured pace, 50,000 steps would take about 150 days. The current supervisor remains active, but the configured maximum is not a realistic near-term target without a major throughput change. A 300-step diagnostic endpoint would be roughly another 13 hours at the observed pace.
 
+## Evaluation-to-evaluation regression and reward alignment
+
+At the later W&B snapshot, training had advanced to optimizer step 128. EvalPlus still had a complete result only through step 120. The adjacent MBPP pass changes below compare the same 378 saved tasks at each checkpoint. “Lost” means a task passed at the earlier checkpoint and failed at the later checkpoint. “Gained” is the reverse.
+
+| Checkpoints | Lost | Gained | Net change in passing tasks | MBPP score change |
+| --- | ---: | ---: | ---: | ---: |
+| 0 to 30 | 10 | 15 | +5 | +1.3 points |
+| 30 to 40 | 7 | 7 | 0 | 0.0 points |
+| 40 to 50 | 1 | 6 | +5 | +1.3 points |
+| 50 to 60 | 4 | 7 | +3 | +0.8 points |
+| 60 to 70 | 8 | 2 | -6 | -1.6 points |
+| 70 to 80 | 4 | 4 | 0 | 0.0 points |
+| 80 to 90 | 5 | 2 | -3 | -0.8 points |
+| 90 to 100 | 4 | 4 | 0 | 0.0 points |
+| 100 to 110 | 6 | 5 | -1 | -0.3 points |
+| 110 to 120 | 5 | 5 | 0 | 0.0 points |
+
+The largest adjacent regression was step 60 to 70: 8 previously passing tasks failed, 2 previously failing tasks passed, and the net score dropped 1.6 points. Even a flat score hides task churn: 7 tasks were lost and 7 gained from step 30 to 40. Since evaluation uses greedy decoding on the same saved task set, these flips are checkpoint behavior changes rather than sampling noise in the evaluation prompts.
+
+The reward objective explains why better training rewards can coexist with these regressions. The data mix contains 1,170,852 OpenCode rows and 591 MBPP rows, so MBPP is about 0.05% of the examples. The stream interleaves the two sources according to their row counts. The configured hybrid scalar is 0.75 times full test pass plus 0.25 times the fraction of tests passed. It optimizes tests on the sampled task and has no term that preserves each prior MBPP solution or directly rewards MBPP evaluation. The interface validator is reported as a diagnostic, but its boolean is not included in that scalar reward. The trainer uses 16 completions per prompt and the 128-completion generation batch produces 8 prompt groups per update, so the update direction also depends on a small batch of task groups. KL regularization is configured with beta 0.01, which limits policy movement but does not guarantee per-task retention.
+
+Thus semantic drift is expected under this objective: updates improve expected reward for the sampled, OpenCode-dominated distribution, while shared model parameters can change greedy outputs on other tasks. The finite test suites are also proxies for the full task contract. They can award a solution that matches their assertions while missing an untested edge case. The measured churn is real, but it does not by itself prove catastrophic forgetting or an OpenCode-specific style bias.
+
 ## Limitations
 
 - Training reward is not a held-out OpenCode score. The current OpenCode holdout evaluator is unusable until its blank-output behavior is fixed.

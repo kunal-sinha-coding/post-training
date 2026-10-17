@@ -4919,3 +4919,7 @@ Discussion: The 2026-10-16 20:29:33 UTC retry log showed KeyError: 'task_text' i
 Commit name: Audit active OpenCode GRPO transfer to MBPP.
 Description: Add a read-only audit of W&B run 85ae19bd, its EvalPlus trajectory, and sampled rollout failures through optimizer step 126.
 Discussion: Training reward increased, but the EvalPlus gain was modest and faded after the step-60 peak. The fixed OpenCode evaluation artifacts contain blank completions and cannot establish held-out OpenCode generalization. The per-task audit found semantic regressions such as a missing sum over a list slice, but no consistent evidence of an OpenCode-specific output style. The 50,000-step target projects to about 150 days at observed throughput. No training process was stopped and no checkpoint was selected.
+
+Commit name: Quantify GRPO evaluation task churn and reward alignment.
+Description: Extend the active GRPO audit with adjacent EvalPlus task regressions, gains, score changes, and the configured scalar reward and data mix.
+Discussion: The largest adjacent MBPP drop was step 60 to 70, with eight prior passes lost and two gained, for a net loss of six among 378 saved tasks. Flat aggregate scores still had task churn. The run optimizes a 99.95 percent OpenCode stream with per-task test reward and no explicit MBPP retention or interface-validity reward term. The process remains active.
