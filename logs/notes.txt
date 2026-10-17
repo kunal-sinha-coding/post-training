@@ -4923,3 +4923,7 @@ Discussion: Training reward increased, but the EvalPlus gain was modest and fade
 Commit name: Quantify GRPO evaluation task churn and reward alignment.
 Description: Extend the active GRPO audit with adjacent EvalPlus task regressions, gains, score changes, and the configured scalar reward and data mix.
 Discussion: The largest adjacent MBPP drop was step 60 to 70, with eight prior passes lost and two gained, for a net loss of six among 378 saved tasks. Flat aggregate scores still had task churn. The run optimizes a 99.95 percent OpenCode stream with per-task test reward and no explicit MBPP retention or interface-validity reward term. The process remains active.
+
+Commit name: Record actual MBPP exposure during early GRPO updates.
+Description: Add task-coverage evidence showing that all recorded prompt groups through step 130 came from OpenCode, with expected MBPP exposure under the configured stream ratio.
+Discussion: The 591 MBPP rows are 0.05 percent of the 1,171,443-row stream. At eight prompts per update, the first 130 steps would include only about 0.52 MBPP prompts in expectation, and zero MBPP prompts is likely. This explains why the early GRPO updates have no MBPP-specific reward signal. The OpenCode holdout result remains unavailable because its evaluator emits blank completions.

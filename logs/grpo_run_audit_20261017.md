@@ -80,6 +80,10 @@ The reward objective explains why better training rewards can coexist with these
 
 Thus semantic drift is expected under this objective: updates improve expected reward for the sampled, OpenCode-dominated distribution, while shared model parameters can change greedy outputs on other tasks. The finite test suites are also proxies for the full task contract. They can award a solution that matches their assertions while missing an untested edge case. The measured churn is real, but it does not by itself prove catastrophic forgetting or an OpenCode-specific style bias.
 
+## Observed MBPP training exposure
+
+A later read of `task-coverage-trace.jsonl` found 1,176 rollout-group records spanning logged steps 1 to 130, and every record had an `opencode-` task ID. No MBPP task ID appeared in that trace. W&B reports 8 prompt groups per optimizer update. At the configured mixture ratio, 1,040 prompt draws over 130 steps would contain about 0.52 MBPP examples on average, so observing none is expected about 59% of the time under uniform interleaving. The expected interval is about one MBPP prompt per 1,981 training examples, or one per 248 optimizer steps at 8 prompts per step. This directly explains why the early GRPO updates have no MBPP-specific reward signal. It does not establish performance on held-out OpenCode tasks, because the OpenCode holdout evaluator remains broken.
+
 ## Limitations
 
 - Training reward is not a held-out OpenCode score. The current OpenCode holdout evaluator is unusable until its blank-output behavior is fixed.
