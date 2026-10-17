@@ -1071,6 +1071,8 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         vllm_enable_sleep_mode=bool(config.get("vllm_enable_sleep_mode", False)),
         generation_kwargs=config.get("generation_kwargs"),
         disable_dropout=bool(config.get("disable_dropout", False)),
+        # Start from the beginning of the data stream when resuming if configured.
+        ignore_data_skip=bool(config.get("ignore_data_skip", False)),
         logging_steps=int(config["logging_steps"]),
         save_steps=int(config["save_steps"]),
         save_strategy=str(config.get("save_strategy", "no")),

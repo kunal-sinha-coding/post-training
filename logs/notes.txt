@@ -4931,3 +4931,7 @@ Discussion: The 591 MBPP rows are 0.05 percent of the 1,171,443-row stream. At e
 Commit name: Set active GRPO evaluation interval to 50 steps.
 Description: Change the run configuration so the GRPO callback schedules EvalPlus and associated evaluations every 50 optimizer steps.
 Discussion: The active process loaded the previous 10-step interval at startup. After the current step 230 evaluation completes and checkpoint 230 is complete, the trainer will restart from that checkpoint with the new cadence. The next scheduled evaluation should be step 250.
+
+Commit name: Resume GRPO from checkpoint without replaying stream position.
+Description: Add a configurable ignore_data_skip setting to GRPO arguments and enable it for this run. This resumes model and optimizer state from checkpoint 230 while restarting the data stream from its beginning.
+Discussion: This avoids replaying the remote stream to reconstruct the prior data position. It can repeat records seen before the checkpoint. The configured evaluation interval remains 50 optimizer steps.

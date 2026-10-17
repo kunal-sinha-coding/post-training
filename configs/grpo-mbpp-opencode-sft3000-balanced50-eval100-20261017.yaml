@@ -23,6 +23,7 @@ reuse_baseline: false
 run_intermediate_evals: false
 run_qwen_evalplus_at_start: false
 evalplus_eval_steps: 50
+ignore_data_skip: true
 lora_enabled: true
 lora_r: 16
 lora_alpha: 32
