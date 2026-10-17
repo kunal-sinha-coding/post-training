@@ -225,7 +225,11 @@ def prepare_training_eval_sample(train_dataset: Any, config: dict[str, Any], out
     if sample_size <= 0:
         return
     manifest_path = output_dir / "training-eval-task-ids.json"
-    available_ids = [str(train_dataset[index]["task_id"]) for index in range(len(train_dataset))]
+    # Use the actual MBPP rows when the training dataset streams a mixed MBPP and OpenCode pool.
+    evaluation_dataset = getattr(train_dataset, "mbpp_records", train_dataset)
+    available_ids = [str(evaluation_dataset[index]["task_id"]) for index in range(len(evaluation_dataset))]
+    # Build a stable task-to-row map once so repeated evaluations avoid scanning the full dataset.
+    id_to_index = {task_id: index for index, task_id in enumerate(available_ids)}
     if manifest_path.is_file():
         task_ids = json.loads(manifest_path.read_text(encoding="utf-8"))
         if any(task_id not in available_ids for task_id in task_ids):
@@ -239,7 +243,8 @@ def prepare_training_eval_sample(train_dataset: Any, config: dict[str, Any], out
     if len(task_ids) != sample_size or len(set(task_ids)) != sample_size:
         raise ValueError("The saved training evaluation sample has an unexpected size or duplicate task IDs.")
     config["training_eval_task_ids"] = task_ids
-    print(f"Training evaluation uses {sample_size} fixed task IDs from {len(available_ids)} training rows; manifest: {manifest_path}", flush=True)
+    config["_training_eval_records"] = [evaluation_dataset[id_to_index[task_id]] for task_id in task_ids]
+    print(f"Training evaluation uses {sample_size} fixed MBPP task records from {len(available_ids)} MBPP training rows; manifest: {manifest_path}", flush=True)
 
 
 def merge_training_metrics(metrics: dict[str, Any], training_metrics: dict[str, Any]) -> dict[str, Any]:

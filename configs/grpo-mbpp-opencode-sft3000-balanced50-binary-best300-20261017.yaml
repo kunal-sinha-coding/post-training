@@ -16,7 +16,8 @@ max_eval_samples: null
 train_subset_evaluation_only: false
 training_eval_sample_size: 500
 training_eval_sample_seed: 42
-training_eval_tasks_path: outputs/sft-mbpp-opencode-score1-streaming-one-epoch-20261015/evaluation-fixtures/training_eval_tasks.json
+training_eval_sample_dataset: mbpp_train_split
+training_eval_tasks_path: null
 select_best_checkpoint: false
 run_baseline_evaluation: false
 reuse_baseline: false
