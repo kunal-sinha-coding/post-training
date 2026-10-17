@@ -198,8 +198,8 @@ def score_completion(completion: str, tests: str, timeout_seconds: float = 3.0, 
     """Return the configured reward and diagnostics for one completion."""
     # Keep partial progress and complete correctness visible before selecting the scalar reward.
     components = {"format": 0.0, "syntax": 0.0, "interface": 0.0, "tests": 0.0, "pass": 0.0}
-    if reward_function not in {"test_pass", "hybrid"}:
-        raise ValueError("reward_function must be 'test_pass' or 'hybrid'.")
+    if reward_function not in {"test_pass", "hybrid", "binary"}:
+        raise ValueError("reward_function must be 'test_pass', 'hybrid', or 'binary'.")
     if not 0.0 <= reward_coefficient <= 1.0:
         raise ValueError("reward_coefficient must be between zero and one.")
     # Mark missing, malformed, or assertion-free source tests as unscorable.
@@ -225,7 +225,11 @@ def score_completion(completion: str, tests: str, timeout_seconds: float = 3.0, 
     components["tests"] = fraction
     status = "passed" if passed == total else "partial" if passed else "failed"
     components["pass"] = float(passed == total and total > 0)
-    reward = fraction if reward_function == "test_pass" else reward_coefficient * components["pass"] + (1.0 - reward_coefficient) * fraction
+    # Give binary mode credit only when every assertion passes.
+    if reward_function == "binary":
+        reward = components["pass"]
+    else:
+        reward = fraction if reward_function == "test_pass" else reward_coefficient * components["pass"] + (1.0 - reward_coefficient) * fraction
     return reward, {"status": status, "passed_tests": passed, "total_tests": total, "interface_valid": interface_valid, "test_results": test_results, "reward_components": components}
 
 

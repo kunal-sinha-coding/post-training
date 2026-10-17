@@ -320,6 +320,7 @@ def configure_wandb(config: dict[str, Any]) -> Any | None:
     if wandb.run is not None:
         config_keys = (
             "scale_rewards", "use_vllm", "vllm_mode", "vllm_gpu_memory_utilization",
+            "reward_function", "reward_coefficient",
             "training_eval_sample_size", "training_eval_sample_seed", "expected_train_samples",
             "save_strategy", "save_steps", "max_steps", "synthetic_training_tasks_path",
             "model_name_or_path", "initial_adapter_path", "opencode_training_tasks_path", "mbpp_splits",

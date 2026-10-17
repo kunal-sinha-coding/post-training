@@ -85,6 +85,18 @@ def test_hybrid_reward_weights_full_pass_and_partial_progress():
     assert diagnostics["reward/pass/mean"] == pytest.approx(0.5)
 
 
+def test_binary_reward_gives_credit_only_for_full_passes():
+    """Reward fully correct completions and assign zero to partial and failed completions."""
+    completion = "```python\ndef add(a, b):\n    return a + b\n```"
+    incorrect_completion = "```python\ndef add(a, b):\n    return 0\n```"
+    rewards = [
+        score_completion(completion, "assert add(1, 2) == 3\nassert add(1, 2) == 4", reward_function="binary")[0],
+        score_completion(completion, "assert add(1, 2) == 3", reward_function="binary")[0],
+        score_completion(incorrect_completion, "assert add(1, 2) == 3", reward_function="binary")[0],
+    ]
+    assert rewards == [0.0, 1.0, 0.0]
+
+
 def test_is_hardcoded_lookup_detects_literal_branches():
     """Flag a function that special-cases the exact literal arguments used in the tests."""
     tests = "assert floor_Min(10,20,30) == 15\nassert floor_Min(1,2,1) == 0\nassert floor_Min(11,10,9) == 9"
