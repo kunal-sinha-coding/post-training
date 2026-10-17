@@ -202,17 +202,22 @@ def test_reward_group_summary_reports_variation():
 
 
 def test_task_coverage_summarizes_generation_thresholds_per_task():
-    """Report generation coverage at each assertion threshold for every task group."""
+    """Report per-task generation coverage and full-pass discovery for interleaved rollouts."""
     details = [
-        {"passed_tests": 1}, {"passed_tests": 2}, {"passed_tests": 0}, {"passed_tests": 3},
+        {"passed_tests": 1, "status": "partial"}, {"passed_tests": 2, "status": "partial"},
+        {"passed_tests": 0, "status": "failed"}, {"passed_tests": 3, "status": "passed"},
     ]
-    metrics, rows = summarize_task_coverage(details, ["a", "a", "b", "b"], group_size=2)
+    metrics, rows = summarize_task_coverage(details, ["a", "b", "a", "b"], group_size=2)
     assert metrics["reward/task_mean_generations_at_least_1_test_fraction"] == pytest.approx(0.75)
     assert metrics["reward/task_mean_generations_at_least_2_test_fraction"] == pytest.approx(0.5)
     assert metrics["reward/task_mean_generations_at_least_3_test_fraction"] == pytest.approx(0.25)
+    assert metrics["reward/task_fraction_with_at_least_one_full_pass"] == pytest.approx(0.5)
+    assert metrics["reward/task_full_pass_complete_group_count"] == 2
     assert rows[0]["task_id"] == "a"
-    assert rows[0]["at_least_2_test_count"] == 1
+    assert rows[0]["at_least_2_test_count"] == 0
+    assert rows[0]["full_pass_count"] == 0
     assert rows[1]["at_least_3_test_fraction"] == pytest.approx(0.5)
+    assert rows[1]["full_pass_count"] == 1
 
 
 def test_reward_function_logs_task_coverage_with_training_step(monkeypatch, tmp_path):
@@ -233,6 +238,7 @@ def test_reward_function_logs_task_coverage_with_training_step(monkeypatch, tmp_
     assert diagnostics["reward/task_mean_generations_at_least_1_test_fraction"] == pytest.approx(0.75)
     assert diagnostics["reward/task_mean_generations_at_least_2_test_fraction"] == pytest.approx(0.5)
     assert diagnostics["reward/task_mean_generations_at_least_3_test_fraction"] == pytest.approx(0.25)
+    assert diagnostics["reward/task_fraction_with_at_least_one_full_pass"] == pytest.approx(0.5)
     assert [(row["task_id"], row["training_step"]) for row in coverage_rows] == [("a", 7), ("b", 7)]
 
 

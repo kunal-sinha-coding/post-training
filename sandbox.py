@@ -310,18 +310,24 @@ def summarize_reward_groups(rewards: list[float], details: list[dict[str, object
 
 
 def summarize_task_coverage(details: list[dict[str, object]], task_ids: list[object] | None, group_size: int) -> tuple[dict[str, float], list[dict[str, object]]]:
-    """Summarize per-task generation coverage at one, two, and three passed tests."""
-    # Split the ordered reward batch into the GRPO candidate groups for individual tasks.
+    """Summarize per-task generation coverage and full-pass discovery rates."""
+    # Group completions by task ID because rollout order can interleave task generations.
     task_rows = []
-    for group_index, start in enumerate(range(0, len(details), max(1, group_size))):
-        group = details[start : start + max(1, group_size)]
-        task_id = str(task_ids[start]) if task_ids is not None and start < len(task_ids) else None
+    groups = {}
+    for index, detail in enumerate(details):
+        task_id = str(task_ids[index]) if task_ids is not None and index < len(task_ids) else f"__group_{index // max(1, group_size)}"
+        groups.setdefault(task_id, []).append(detail)
+    for group_index, (task_id, group) in enumerate(groups.items()):
         counts = {threshold: sum(int(row.get("passed_tests", 0)) >= threshold for row in group) for threshold in (1, 2, 3)}
-        # Save each task's sample counts and fractions so the training curve can be audited by task.
+        full_pass_count = sum(row.get("status") == "passed" for row in group)
+        # Save task sample counts so the training curve can be audited by task.
         task_rows.append({
             "task_id": task_id,
             "group_index": group_index,
             "generation_count": len(group),
+            "complete_generation_group": len(group) == max(1, group_size),
+            "full_pass_count": full_pass_count,
+            "has_full_pass": full_pass_count > 0,
             **{f"at_least_{threshold}_test_count": count for threshold, count in counts.items()},
             **{f"at_least_{threshold}_test_fraction": count / len(group) for threshold, count in counts.items()},
         })
@@ -330,6 +336,11 @@ def summarize_task_coverage(details: list[dict[str, object]], task_ids: list[obj
     for threshold in (1, 2, 3):
         key = f"reward/task_mean_generations_at_least_{threshold}_test_fraction"
         metrics[key] = sum(float(row[f"at_least_{threshold}_test_fraction"]) for row in task_rows) / len(task_rows) if task_rows else 0.0
+    # Count complete 16-generation prompt groups with at least one fully passing completion.
+    complete_groups = [row for row in task_rows if row["complete_generation_group"]]
+    if complete_groups:
+        metrics["reward/task_fraction_with_at_least_one_full_pass"] = sum(bool(row["has_full_pass"]) for row in complete_groups) / len(complete_groups)
+        metrics["reward/task_full_pass_complete_group_count"] = float(len(complete_groups))
     return metrics, task_rows
 
 
