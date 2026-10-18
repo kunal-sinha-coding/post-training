@@ -19347,3 +19347,12 @@ Implementation: Set `sampled_training_eval_epoch_interval: 5` in `configs/refere
 Setup: W&B run `88d20d61`. The run resumed from `checkpoints/checkpoint-518` at epoch 14, so the next evaluation is at epoch 15. Epochs five and ten already hold records from the earlier cadences.
 Cost: Each interval evaluation remains about twelve minutes, so the steady-state evaluation fraction is about one part in three of a five-epoch span at roughly forty-five seconds per epoch.
 Limitations: This change raises the evaluation fraction relative to the ten-epoch cadence. The coverage stop check can now overshoot by at most four epochs.
+
+Fix: Relaunch the full-pool reference SFT with micro-batch four and accumulation four after a CUDA out-of-memory crash, 2026-10-18.
+Purpose: Stop the second CUDA out-of-memory crash and give the run a safe memory margin for the remaining epochs.
+Cause: The peak memory is the fp32 vocabulary logits of the loss step. With a micro-batch of eight and 1024 tokens the logits tensor is about 5 GiB, and the run sat close to the 15.58 GiB device limit.
+Implementation: Set `sft_per_device_train_batch_size: 4` and `gradient_accumulation_steps: 4` in `configs/reference-sft-fullpool-perepoch-eval-20261018.yaml`, and launch with `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True`.
+Setup: W&B run `88d20d61`, resumed from `checkpoints/checkpoint-555` at epoch 15. The effective batch stays at 16 samples per optimizer step, so the update count per epoch remains 37 and the learning-rate schedule is unchanged.
+Observation: The peak device memory fell from about 15.8 GiB to about 7.8 GiB, which leaves roughly half the device free.
+Cost: The training forward and backward passes run about twice as often per optimizer step, so one epoch costs about 95 seconds instead of about 48 seconds.
+Limitations: Accumulation changes the order in which samples contribute to a step, so the gradient is not bit-identical to the earlier micro-batch-eight runs. The effective batch size and the number of updates are unchanged.
