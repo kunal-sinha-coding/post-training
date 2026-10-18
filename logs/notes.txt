@@ -4981,3 +4981,8 @@ Discussion: Attempt 013 plateaued after five updates at 6/8 pass@1. Task 609 had
 Commit name: Add a fixed-batch pass@1 plateau stopper for GRPO.
 Description: Add a monitor that reads step-zero and scheduled fixed-batch evaluation metrics, tracks the best pass@1 and consecutive evaluation ties or regressions, and stops the isolated trainer process group after the configured patience.
 Discussion: The user restarted the initial eight-task MBPP overfit attempt with evaluation every ten optimizer updates and a stop rule after three scheduled evaluations without a new pass@1 best. The trainer's existing EvalPlus callback already evaluates at the configured interval, but it does not stop on that metric when best-checkpoint copying is disabled. This monitor provides the requested stop rule without changing the trainer or unrelated pre-existing worktree changes.
+
+
+Commit name: Record the ten-step fixed-eight MBPP GRPO restart.
+Description: Record the source checkpoint, task IDs, reward and optimizer setup, evaluation cadence, plateau stop rule, W&B identity, and experiment output path.
+Discussion: The user asked to repeat the initial valid eight-task MBPP attempt, with pass@1 evaluation every ten updates and a stop after three consecutive evaluations without a new best. Attempt 015 was stopped before optimizer step 1 after this cadence change. Attempt 016 starts from the original step-390 adapter.
