@@ -19327,3 +19327,16 @@ Setup: Config `configs/reference-sft-fullpool-perepoch-eval-20261018.yaml` with 
 Evaluation content: The sampled histogram over all 591 training tasks with 16 completions at temperature 1.0, plus canonical EvalPlus MBPP and MBPP+ greedy pass@1 and the greedy training-set pass@1.
 Cost: Each interval evaluation performs three generation passes, which are the sampled histogram, the greedy training-set evaluation, and the EvalPlus generation.
 Limitations: The EvalPlus measurement is greedy at temperature zero, so it is not directly comparable to the sampled histogram. The interval means a coverage stop can overshoot by up to nine epochs.
+
+Result: Interval evaluation at epoch ten of the full-pool reference SFT, 2026-10-18.
+Purpose: Report the sampled training-pool histogram and the canonical EvalPlus pass@1 at the first evaluation of the reduced cadence.
+Setup: W&B run `88d20d61`, config `configs/reference-sft-fullpool-perepoch-eval-20261018.yaml`, resumed from `checkpoint-259`. Evaluation at optimizer step 370, epoch 10, 2026-10-18T23:13:22Z, candidate adapter `outputs/reference-sft-fullpool-perepoch-eval-20261018/full/sampled-adapters/step-00370`.
+Selection: None. This entry reports one checkpoint on a fixed cadence, so no candidate selection is involved and ground truth is not used to choose anything.
+Metrics:
+- Sampled histogram over 591 training tasks with 16 completions at temperature 1.0: coverage 0.6447, mean pass count 3.834, sampled pass@1 0.2396, zero-pass fraction 0.3553, mixed fraction 0.6396, saturated fraction 0.0051.
+- Canonical EvalPlus greedy pass@1 at temperature zero: MBPP 0.516, MBPP+ 0.426.
+- Greedy training-set pass@1: 0.411, with 243 passed, 101 partial, 243 failed, and 4 syntax errors.
+Reference: The base model at step zero reached sampled coverage 0.5804, mean pass count 4.003, and sampled pass@1 0.2502.
+Observation: Training coverage recovered above the base model by epoch ten after the epoch-two dip of 0.4975, while the sampled pass@1 stayed below the base value. The greedy EvalPlus pass@1 is well above the sampled pass@1 because the sampled figure is a single low-temperature-relative draw at temperature 1.0.
+Cost: The complete interval evaluation is about twelve minutes, which covers the sampled histogram, the greedy training-set evaluation, and the EvalPlus generation and test pass.
+Limitations: The EvalPlus measurement is greedy and is not comparable to the temperature-1.0 histogram. One checkpoint on one cadence is not a trend.
