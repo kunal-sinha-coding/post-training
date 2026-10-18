@@ -19251,3 +19251,15 @@ W&B run https://wandb.ai/kunal-personal/grpo-mbpp/runs/b84f2c7a. Metrics report 
 Setup: Tasks 609 and 617; 3 assertions and 5 additional examples per prompt; temperature 1.3; hybrid 90/10 reward; 16 generations/task; fresh optimizer from previous checkpoint-50; evaluation/save every 10 updates.
 Results: pass@1 0/2 and tests fraction 0.50 at evaluations 0,10,20,30,40,50. Plateau after 50 updates. In first 50 updates task 609 had 792/800 samples pass only test 3, 8 fail all, none pass tests 1/2 or all 3. Task 617 had 751/800 pass tests 2+3, 19 only test2, 2 only test3, 28 fail all; none pass test1 or all tests. Logged step-40 prompts confirm all five additional examples were present.
 Conclusion: More examples and higher temperature have not altered the missing assertions. The candidate generations anchor to familiar interpretations despite visible tests and examples, while the reference behavior is idiosyncratic. Next, add explicit reference-derived behavioral rules to task prompts, hold all other training settings fixed, and start from checkpoint-50.
+
+
+Experiment: Run A canonical plateau checkpoint versus base model, coverage x greedy 2x2, 2026-10-18.
+Purpose: Partition the 50-task MBPP+ sample into base-coverage and Run A greedy-correctness cells to separate coverage loss from conversion loss.
+Sources: Base coverage from `outputs/evalplus-pass16-mbpphard10x1009-seed42-20261011/base_scores.json` (base Qwen2.5-Coder-0.5B-Instruct, no adapter, 16 samples, temperature 1.0, EvalPlus 0.3.1 check_correctness). Trained greedy from `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-restart-20260929/evalplus/step-1300/mbpp/qwen2_chat_temp_0.0/eval_results.json`, W&B run `c4fthzd3`.
+Join: task_id, 50 tasks common to both. Coverage means at least one of 16 base completions passes.
+Results on base tests: covered and correct 33 (0.660), covered and wrong 6 (0.120), uncovered and correct 1 (0.020), uncovered and wrong 10 (0.200). Coverage 0.780. Trained greedy pass@1 0.680. Conversion loss 0.120. Coverage loss 0.200. Lucky gain 0.020.
+Results on MBPP+ plus tests: covered and correct 25 (0.500), covered and wrong 10 (0.200), uncovered and correct 0 (0.000), uncovered and wrong 15 (0.300). Coverage 0.700. Trained greedy pass@1 0.500. Conversion loss 0.200. Coverage loss 0.300. Lucky gain 0.000.
+Interpretation: On base tests the gap to the coverage ceiling is 0.100, and 0.120 of tasks are conversion failures offset by 0.020 of lucky gain. On plus tests the whole 0.200 gap is conversion failure with no lucky gain. Conversion targets: Mbpp/773, 301, 120, 781, 581, 409 on base tests, plus Mbpp/227, 116, 89, 598, 69 on plus tests.
+Limitations: The sample is 50 tasks, so each task is two percentage points. Base coverage is measured at temperature 1.0 while the trained metric is greedy. Base coverage and the Run A eval use different generation harnesses. Plus tests require base and extra tests, so the two rows differ.
+Artifact: `analysis/mbpp_runA_vs_base_greedy_2x2.json`.
+Code and environment: Repository HEAD `9ad01993` at analysis.

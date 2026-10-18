@@ -1,0 +1,632 @@
+{
+ "experiment": "Run A canonical plateau checkpoint versus base model, coverage x greedy 2x2",
+ "purpose": "Partition the 50-task MBPP+ sample into base-coverage and Run A greedy-correctness cells to separate coverage loss from conversion loss.",
+ "timestamp_utc": "2026-10-18T20:00:20.947189Z",
+ "trained_run": {
+  "output_dir": "outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-restart-20260929",
+  "wandb_run_id": "c4fthzd3",
+  "eval_step": 1300,
+  "eval_path": "outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-restart-20260929/evalplus/step-1300/mbpp/qwen2_chat_temp_0.0/eval_results.json",
+  "eval_sha256": "9a3f0215c3ce7a6809740bdf837a917c5cbb0188efd598898bf876223f18c6ac"
+ },
+ "base_coverage_source": {
+  "path": "outputs/evalplus-pass16-mbpphard10x1009-seed42-20261011/base_scores.json",
+  "sha256": "d1e2ec9dd72985948addd4099cbc1fba0316c8330d93c3d8e0d3e80e2ab0f0bc",
+  "model": "Qwen/Qwen2.5-Coder-0.5B-Instruct (base, no adapter)",
+  "tasks": 50,
+  "samples_per_task": 16,
+  "temperature": 1.0,
+  "scoring": "EvalPlus 0.3.1 check_correctness",
+  "coverage_definition": "at least one of 16 completions passes"
+ },
+ "join": "task_id (Mbpp/<n>); 50 tasks common to both",
+ "counts": {
+  "base_status": {
+   "covered_wrong": 6,
+   "covered_correct": 33,
+   "uncovered_correct": 1,
+   "uncovered_wrong": 10
+  },
+  "plus_status": {
+   "covered_wrong": 10,
+   "uncovered_wrong": 15,
+   "covered_correct": 25
+  }
+ },
+ "cells": {
+  "base_status": {
+   "covered_wrong": [
+    "Mbpp/773",
+    "Mbpp/301",
+    "Mbpp/120",
+    "Mbpp/781",
+    "Mbpp/581",
+    "Mbpp/409"
+   ],
+   "covered_correct": [
+    "Mbpp/227",
+    "Mbpp/116",
+    "Mbpp/250",
+    "Mbpp/99",
+    "Mbpp/797",
+    "Mbpp/720",
+    "Mbpp/168",
+    "Mbpp/585",
+    "Mbpp/12",
+    "Mbpp/171",
+    "Mbpp/752",
+    "Mbpp/118",
+    "Mbpp/730",
+    "Mbpp/284",
+    "Mbpp/89",
+    "Mbpp/809",
+    "Mbpp/3",
+    "Mbpp/598",
+    "Mbpp/744",
+    "Mbpp/419",
+    "Mbpp/262",
+    "Mbpp/807",
+    "Mbpp/460",
+    "Mbpp/297",
+    "Mbpp/458",
+    "Mbpp/559",
+    "Mbpp/18",
+    "Mbpp/474",
+    "Mbpp/463",
+    "Mbpp/753",
+    "Mbpp/95",
+    "Mbpp/604",
+    "Mbpp/69"
+   ],
+   "uncovered_correct": [
+    "Mbpp/415"
+   ],
+   "uncovered_wrong": [
+    "Mbpp/391",
+    "Mbpp/20",
+    "Mbpp/745",
+    "Mbpp/299",
+    "Mbpp/310",
+    "Mbpp/630",
+    "Mbpp/103",
+    "Mbpp/260",
+    "Mbpp/128",
+    "Mbpp/237"
+   ]
+  },
+  "plus_status": {
+   "covered_wrong": [
+    "Mbpp/773",
+    "Mbpp/227",
+    "Mbpp/116",
+    "Mbpp/301",
+    "Mbpp/120",
+    "Mbpp/89",
+    "Mbpp/581",
+    "Mbpp/598",
+    "Mbpp/409",
+    "Mbpp/69"
+   ],
+   "uncovered_wrong": [
+    "Mbpp/415",
+    "Mbpp/391",
+    "Mbpp/99",
+    "Mbpp/20",
+    "Mbpp/745",
+    "Mbpp/299",
+    "Mbpp/310",
+    "Mbpp/630",
+    "Mbpp/752",
+    "Mbpp/781",
+    "Mbpp/103",
+    "Mbpp/260",
+    "Mbpp/559",
+    "Mbpp/128",
+    "Mbpp/237"
+   ],
+   "covered_correct": [
+    "Mbpp/250",
+    "Mbpp/797",
+    "Mbpp/720",
+    "Mbpp/168",
+    "Mbpp/585",
+    "Mbpp/12",
+    "Mbpp/171",
+    "Mbpp/118",
+    "Mbpp/730",
+    "Mbpp/284",
+    "Mbpp/809",
+    "Mbpp/3",
+    "Mbpp/744",
+    "Mbpp/419",
+    "Mbpp/262",
+    "Mbpp/807",
+    "Mbpp/460",
+    "Mbpp/297",
+    "Mbpp/458",
+    "Mbpp/18",
+    "Mbpp/474",
+    "Mbpp/463",
+    "Mbpp/753",
+    "Mbpp/95",
+    "Mbpp/604"
+   ]
+  }
+ },
+ "per_task": [
+  {
+   "task_id": "Mbpp/773",
+   "base_passes_of_16": 2,
+   "plus_passes_of_16": 1,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "fail",
+   "runA_step1300_plus": "fail"
+  },
+  {
+   "task_id": "Mbpp/227",
+   "base_passes_of_16": 13,
+   "plus_passes_of_16": 13,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "fail"
+  },
+  {
+   "task_id": "Mbpp/116",
+   "base_passes_of_16": 4,
+   "plus_passes_of_16": 3,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "fail"
+  },
+  {
+   "task_id": "Mbpp/415",
+   "base_passes_of_16": 0,
+   "plus_passes_of_16": 0,
+   "base_covered": false,
+   "plus_covered": false,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "fail"
+  },
+  {
+   "task_id": "Mbpp/391",
+   "base_passes_of_16": 0,
+   "plus_passes_of_16": 0,
+   "base_covered": false,
+   "plus_covered": false,
+   "runA_step1300_base": "fail",
+   "runA_step1300_plus": "fail"
+  },
+  {
+   "task_id": "Mbpp/301",
+   "base_passes_of_16": 1,
+   "plus_passes_of_16": 1,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "fail",
+   "runA_step1300_plus": "fail"
+  },
+  {
+   "task_id": "Mbpp/250",
+   "base_passes_of_16": 15,
+   "plus_passes_of_16": 12,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "pass"
+  },
+  {
+   "task_id": "Mbpp/99",
+   "base_passes_of_16": 14,
+   "plus_passes_of_16": 0,
+   "base_covered": true,
+   "plus_covered": false,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "fail"
+  },
+  {
+   "task_id": "Mbpp/20",
+   "base_passes_of_16": 0,
+   "plus_passes_of_16": 0,
+   "base_covered": false,
+   "plus_covered": false,
+   "runA_step1300_base": "fail",
+   "runA_step1300_plus": "fail"
+  },
+  {
+   "task_id": "Mbpp/797",
+   "base_passes_of_16": 14,
+   "plus_passes_of_16": 14,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "pass"
+  },
+  {
+   "task_id": "Mbpp/720",
+   "base_passes_of_16": 7,
+   "plus_passes_of_16": 7,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "pass"
+  },
+  {
+   "task_id": "Mbpp/168",
+   "base_passes_of_16": 16,
+   "plus_passes_of_16": 14,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "pass"
+  },
+  {
+   "task_id": "Mbpp/745",
+   "base_passes_of_16": 0,
+   "plus_passes_of_16": 0,
+   "base_covered": false,
+   "plus_covered": false,
+   "runA_step1300_base": "fail",
+   "runA_step1300_plus": "fail"
+  },
+  {
+   "task_id": "Mbpp/585",
+   "base_passes_of_16": 13,
+   "plus_passes_of_16": 13,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "pass"
+  },
+  {
+   "task_id": "Mbpp/120",
+   "base_passes_of_16": 9,
+   "plus_passes_of_16": 4,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "fail",
+   "runA_step1300_plus": "fail"
+  },
+  {
+   "task_id": "Mbpp/12",
+   "base_passes_of_16": 5,
+   "plus_passes_of_16": 5,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "pass"
+  },
+  {
+   "task_id": "Mbpp/171",
+   "base_passes_of_16": 14,
+   "plus_passes_of_16": 14,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "pass"
+  },
+  {
+   "task_id": "Mbpp/299",
+   "base_passes_of_16": 0,
+   "plus_passes_of_16": 0,
+   "base_covered": false,
+   "plus_covered": false,
+   "runA_step1300_base": "fail",
+   "runA_step1300_plus": "fail"
+  },
+  {
+   "task_id": "Mbpp/310",
+   "base_passes_of_16": 0,
+   "plus_passes_of_16": 0,
+   "base_covered": false,
+   "plus_covered": false,
+   "runA_step1300_base": "fail",
+   "runA_step1300_plus": "fail"
+  },
+  {
+   "task_id": "Mbpp/630",
+   "base_passes_of_16": 0,
+   "plus_passes_of_16": 0,
+   "base_covered": false,
+   "plus_covered": false,
+   "runA_step1300_base": "fail",
+   "runA_step1300_plus": "fail"
+  },
+  {
+   "task_id": "Mbpp/752",
+   "base_passes_of_16": 1,
+   "plus_passes_of_16": 0,
+   "base_covered": true,
+   "plus_covered": false,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "fail"
+  },
+  {
+   "task_id": "Mbpp/118",
+   "base_passes_of_16": 16,
+   "plus_passes_of_16": 9,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "pass"
+  },
+  {
+   "task_id": "Mbpp/730",
+   "base_passes_of_16": 4,
+   "plus_passes_of_16": 4,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "pass"
+  },
+  {
+   "task_id": "Mbpp/284",
+   "base_passes_of_16": 16,
+   "plus_passes_of_16": 14,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "pass"
+  },
+  {
+   "task_id": "Mbpp/89",
+   "base_passes_of_16": 5,
+   "plus_passes_of_16": 2,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "fail"
+  },
+  {
+   "task_id": "Mbpp/781",
+   "base_passes_of_16": 3,
+   "plus_passes_of_16": 0,
+   "base_covered": true,
+   "plus_covered": false,
+   "runA_step1300_base": "fail",
+   "runA_step1300_plus": "fail"
+  },
+  {
+   "task_id": "Mbpp/809",
+   "base_passes_of_16": 7,
+   "plus_passes_of_16": 2,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "pass"
+  },
+  {
+   "task_id": "Mbpp/581",
+   "base_passes_of_16": 1,
+   "plus_passes_of_16": 1,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "fail",
+   "runA_step1300_plus": "fail"
+  },
+  {
+   "task_id": "Mbpp/3",
+   "base_passes_of_16": 7,
+   "plus_passes_of_16": 7,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "pass"
+  },
+  {
+   "task_id": "Mbpp/598",
+   "base_passes_of_16": 7,
+   "plus_passes_of_16": 4,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "fail"
+  },
+  {
+   "task_id": "Mbpp/744",
+   "base_passes_of_16": 9,
+   "plus_passes_of_16": 9,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "pass"
+  },
+  {
+   "task_id": "Mbpp/419",
+   "base_passes_of_16": 10,
+   "plus_passes_of_16": 10,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "pass"
+  },
+  {
+   "task_id": "Mbpp/103",
+   "base_passes_of_16": 0,
+   "plus_passes_of_16": 0,
+   "base_covered": false,
+   "plus_covered": false,
+   "runA_step1300_base": "fail",
+   "runA_step1300_plus": "fail"
+  },
+  {
+   "task_id": "Mbpp/262",
+   "base_passes_of_16": 12,
+   "plus_passes_of_16": 12,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "pass"
+  },
+  {
+   "task_id": "Mbpp/807",
+   "base_passes_of_16": 13,
+   "plus_passes_of_16": 13,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "pass"
+  },
+  {
+   "task_id": "Mbpp/460",
+   "base_passes_of_16": 12,
+   "plus_passes_of_16": 12,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "pass"
+  },
+  {
+   "task_id": "Mbpp/260",
+   "base_passes_of_16": 0,
+   "plus_passes_of_16": 0,
+   "base_covered": false,
+   "plus_covered": false,
+   "runA_step1300_base": "fail",
+   "runA_step1300_plus": "fail"
+  },
+  {
+   "task_id": "Mbpp/297",
+   "base_passes_of_16": 13,
+   "plus_passes_of_16": 13,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "pass"
+  },
+  {
+   "task_id": "Mbpp/458",
+   "base_passes_of_16": 16,
+   "plus_passes_of_16": 16,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "pass"
+  },
+  {
+   "task_id": "Mbpp/559",
+   "base_passes_of_16": 11,
+   "plus_passes_of_16": 0,
+   "base_covered": true,
+   "plus_covered": false,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "fail"
+  },
+  {
+   "task_id": "Mbpp/18",
+   "base_passes_of_16": 11,
+   "plus_passes_of_16": 11,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "pass"
+  },
+  {
+   "task_id": "Mbpp/474",
+   "base_passes_of_16": 14,
+   "plus_passes_of_16": 14,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "pass"
+  },
+  {
+   "task_id": "Mbpp/463",
+   "base_passes_of_16": 3,
+   "plus_passes_of_16": 3,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "pass"
+  },
+  {
+   "task_id": "Mbpp/753",
+   "base_passes_of_16": 8,
+   "plus_passes_of_16": 8,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "pass"
+  },
+  {
+   "task_id": "Mbpp/409",
+   "base_passes_of_16": 6,
+   "plus_passes_of_16": 6,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "fail",
+   "runA_step1300_plus": "fail"
+  },
+  {
+   "task_id": "Mbpp/128",
+   "base_passes_of_16": 0,
+   "plus_passes_of_16": 0,
+   "base_covered": false,
+   "plus_covered": false,
+   "runA_step1300_base": "fail",
+   "runA_step1300_plus": "fail"
+  },
+  {
+   "task_id": "Mbpp/95",
+   "base_passes_of_16": 13,
+   "plus_passes_of_16": 13,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "pass"
+  },
+  {
+   "task_id": "Mbpp/604",
+   "base_passes_of_16": 13,
+   "plus_passes_of_16": 8,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "pass"
+  },
+  {
+   "task_id": "Mbpp/69",
+   "base_passes_of_16": 5,
+   "plus_passes_of_16": 2,
+   "base_covered": true,
+   "plus_covered": true,
+   "runA_step1300_base": "pass",
+   "runA_step1300_plus": "fail"
+  },
+  {
+   "task_id": "Mbpp/237",
+   "base_passes_of_16": 0,
+   "plus_passes_of_16": 0,
+   "base_covered": false,
+   "plus_covered": false,
+   "runA_step1300_base": "fail",
+   "runA_step1300_plus": "fail"
+  }
+ ],
+ "derived": {
+  "base_status": {
+   "n": 50,
+   "coverage": 0.78,
+   "trained_greedy_pass_at_1": 0.68,
+   "conversion_loss": 0.12,
+   "coverage_loss": 0.2,
+   "lucky_gain": 0.02
+  },
+  "plus_status": {
+   "n": 50,
+   "coverage": 0.7,
+   "trained_greedy_pass_at_1": 0.5,
+   "conversion_loss": 0.2,
+   "coverage_loss": 0.3,
+   "lucky_gain": 0.0
+  }
+ },
+ "limitations": [
+  "Sample size is 50 tasks, so each task is 2 percentage points.",
+  "Base coverage uses temperature 1.0 sampling while Run A greedy uses temperature 0.",
+  "The base coverage and the Run A eval use the same base model family but were generated by different harnesses and prompt builders.",
+  "MBPP+ requires base and extra tests, so base and plus cells differ."
+ ]
+}
