@@ -5050,3 +5050,7 @@ Discussion: The user asked for the sampled histogram evaluation every ten epochs
 Commit name: Record the epoch-ten interval evaluation of the full-pool reference SFT.
 Description: Append the measured epoch-ten evaluation to `logs/results.txt`. The entry reports the sampled coverage 0.6447, mean pass count 3.834, sampled pass@1 0.2396, canonical EvalPlus MBPP pass@1 0.516 and MBPP+ pass@1 0.426, and the greedy training-set pass@1 0.411 from `sampled-adapters/step-00370`.
 Discussion: The run resumed from `checkpoint-259` after the cadence change and the first interval evaluation fired at epoch ten. Epochs eight and nine were correctly skipped. The sampled coverage recovered above the base model value of 0.5804 after the epoch-two dip of 0.4975. No candidate selection occurs in this entry, so the independence of selection from ground truth is preserved.
+
+Commit name: Shorten the full-pool reference SFT evaluation interval to five epochs.
+Description: Change `sampled_training_eval_epoch_interval` from 10 to 5 in `configs/reference-sft-fullpool-perepoch-eval-20261018.yaml` and append the record to `logs/results.txt`. The interval is configuration driven, so no code change was required.
+Discussion: The user asked for evaluation every five epochs instead of every ten. The run resumed from `checkpoints/checkpoint-518` at epoch 14 on W&B run `88d20d61`, so the next evaluation is at epoch 15. Epochs five and ten already hold records, so the curve stays continuous.

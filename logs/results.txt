@@ -19340,3 +19340,10 @@ Reference: The base model at step zero reached sampled coverage 0.5804, mean pas
 Observation: Training coverage recovered above the base model by epoch ten after the epoch-two dip of 0.4975, while the sampled pass@1 stayed below the base value. The greedy EvalPlus pass@1 is well above the sampled pass@1 because the sampled figure is a single low-temperature-relative draw at temperature 1.0.
 Cost: The complete interval evaluation is about twelve minutes, which covers the sampled histogram, the greedy training-set evaluation, and the EvalPlus generation and test pass.
 Limitations: The EvalPlus measurement is greedy and is not comparable to the temperature-1.0 histogram. One checkpoint on one cadence is not a trend.
+
+Change: Shorten the full-pool reference SFT evaluation interval from ten epochs to five epochs, 2026-10-18.
+Purpose: Increase the resolution of the sampled and EvalPlus evaluation curve while keeping the evaluation overhead well below the every-epoch cadence.
+Implementation: Set `sampled_training_eval_epoch_interval: 5` in `configs/reference-sft-fullpool-perepoch-eval-20261018.yaml`. No code change is needed because the interval is read from the configuration.
+Setup: W&B run `88d20d61`. The run resumed from `checkpoints/checkpoint-518` at epoch 14, so the next evaluation is at epoch 15. Epochs five and ten already hold records from the earlier cadences.
+Cost: Each interval evaluation remains about twelve minutes, so the steady-state evaluation fraction is about one part in three of a five-epoch span at roughly forty-five seconds per epoch.
+Limitations: This change raises the evaluation fraction relative to the ten-epoch cadence. The coverage stop check can now overshoot by at most four epochs.
