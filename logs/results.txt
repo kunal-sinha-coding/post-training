@@ -19307,3 +19307,10 @@ Selection: The stopping epoch and the previous-epoch checkpoint come from traini
 Records: `outputs/reference-sft-fullpool-perepoch-eval-20261018/full/sampled-evaluations.jsonl` and `outputs/reference-sft-fullpool-resume-step10-eval-20261018/full/sampled-evaluations.jsonl`. The supervisor decision is written to `logs/supervise-perepoch-then-step10.json`.
 Environment: NVIDIA RTX 2000 Ada Generation GPU with 16 GB, repository HEAD `76536107`.
 Limitations: The sampled metric uses the base test suite only. Each full-pool evaluation generates 9456 completions.
+
+Experiment: Full-pool reference-solution SFT per-optimizer-step timing, 2026-10-18.
+Purpose: Measure the wall-clock cost of one optimizer step for the full 591-task MBPP pool on one 16 GB GPU.
+Setup: Config `configs/reference-sft-fullpool-perepoch-eval-20261018.yaml`. W&B run `88d20d61` (`mbpp-reference-sft-fullpool-perepoch-eval-20261018`). Base model `outputs/evalplus-pass16-mbpphard10x1009-seed42-20261011/base-model`, LoRA r=16 alpha=32, per-device batch 8 with gradient accumulation 2 for an effective batch of 16, maximum prompt and completion length 512, gradient checkpointing, bf16, learning rate 1e-5, logging at every optimizer step.
+Method: Read `_runtime` and `optimizer_step` from the run history with the W&B API and divide each runtime delta by the optimizer-step delta between consecutive logged rows.
+Results: One epoch covers 37 optimizer steps, which is 591 divided by 16 rounded up. The median time per optimizer step is 1.15 seconds, the mean is 1.30 seconds, the minimum is 0.83 seconds, and the maximum is 3.46 seconds. One epoch therefore needs about 48 seconds of training. The full-pool sampled evaluation after each epoch takes about 6 to 7 minutes, so the wall clock per epoch is about 7.5 minutes.
+Limitations: The measurement covers the first epoch only. The first step includes warmup. The deltas come from W&B history rows, so they include a small logging overhead.

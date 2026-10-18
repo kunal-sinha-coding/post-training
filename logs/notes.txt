@@ -5034,3 +5034,7 @@ Discussion: The batch-16 variant allocated about 10 GB for float32 logits and fa
 Commit name: Add per-epoch sampled evaluation with an automatic ten-step follow-up run.
 Description: Add `sampled_training_eval_every_epoch` to `experiments/reference_sft.py`, run the sampled histogram evaluation from `on_epoch_end`, use `save_strategy="epoch"` in that mode so each epoch end keeps a Trainer checkpoint, log the loss at every optimizer step, and add the configs `configs/reference-sft-fullpool-perepoch-eval-20261018.yaml` and `configs/reference-sft-fullpool-resume-step10-eval-20261018.yaml`. Add `scripts/supervise_perepoch_then_step10.py` to detect the stopping epoch and resume the ten-step run from the previous epoch checkpoint.
 Discussion: The user asked to stop at full coverage, evaluate only after each complete pass over the training data, and log the loss every step. The user then asked for an automatic follow-up that finds the stopping epoch and restarts from the previous epoch with evaluation every ten optimizer steps. The supervisor performs that handoff without human intervention.
+
+Commit name: Record full-pool per-optimizer-step timing.
+Description: Append the per-optimizer-step timing measurement for W&B run `88d20d61` to `logs/results.txt`.
+Discussion: The user asked how long one optimizer step takes on the current full-pool run. The first epoch gives a median of 1.15 seconds and a mean of 1.30 seconds per optimizer step across 37 steps.
