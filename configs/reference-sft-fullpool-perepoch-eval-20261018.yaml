@@ -33,6 +33,8 @@ save_steps: 100
 run_baseline_evaluation: false
 sampled_training_eval_enabled: true
 sampled_training_eval_every_epoch: true
+sampled_training_eval_epoch_interval: 10
+sampled_training_eval_run_evalplus: true
 sampled_training_eval_steps: 10
 sampled_training_eval_num_samples: 16
 sampled_training_eval_temperature: 1.0

@@ -19319,3 +19319,11 @@ Update: The ten-step follow-up run was cancelled on 2026-10-18 at repository HEA
 Replacement: The per-epoch run still stops when training coverage reaches one. Every epoch checkpoint is then reported with its coverage and diversity so that the user can choose a checkpoint for GRPO.
 Table command: `python3 scripts/summarize_epoch_checkpoints.py`.
 Sources: `outputs/reference-sft-fullpool-perepoch-eval-20261018/full/sampled-evaluations.jsonl` and `outputs/reference-sft-fullpool-perepoch-eval-20261018/full/checkpoints/`.
+
+Change: Full-pool reference SFT now evaluates every ten epochs and reports canonical EvalPlus pass@1, 2026-10-18.
+Purpose: Reduce the evaluation overhead from one full-pool pass per epoch to one per ten epochs, and add the standard EvalPlus MBPP and MBPP+ greedy pass@1 at each evaluation point.
+Implementation: `experiments/reference_sft.py` gains the `sampled_training_eval_epoch_interval` configuration key, which gates `on_epoch_end`, and the `sampled_training_eval_run_evalplus` key, which calls `evaluate_checkpoint` from the adapter just saved under `sampled-adapters/step-XXXXX`. The `run_qwen_evalplus` call was repaired to pass the configuration argument, because that function had gained a required `config` parameter and the call site had not been updated.
+Setup: Config `configs/reference-sft-fullpool-perepoch-eval-20261018.yaml` with `sampled_training_eval_epoch_interval: 10` and `sampled_training_eval_run_evalplus: true`. W&B run `88d20d61`. The run resumed from `outputs/reference-sft-fullpool-perepoch-eval-20261018/full/checkpoints/checkpoint-259` at epoch 7, so the first interval evaluation is at epoch 10.
+Evaluation content: The sampled histogram over all 591 training tasks with 16 completions at temperature 1.0, plus canonical EvalPlus MBPP and MBPP+ greedy pass@1 and the greedy training-set pass@1.
+Cost: Each interval evaluation performs three generation passes, which are the sampled histogram, the greedy training-set evaluation, and the EvalPlus generation.
+Limitations: The EvalPlus measurement is greedy at temperature zero, so it is not directly comparable to the sampled histogram. The interval means a coverage stop can overshoot by up to nine epochs.

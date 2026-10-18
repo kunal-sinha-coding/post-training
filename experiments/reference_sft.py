@@ -110,7 +110,7 @@ def evaluate_checkpoint(model: Any, tokenizer: Any, train_dataset: Any, config: 
     model.to("cpu")
     torch.cuda.empty_cache()
     try:
-        evalplus_result = run_qwen_evalplus(checkpoint_dir, stage_dir, f"epoch-{epoch:05d}")
+        evalplus_result = run_qwen_evalplus(checkpoint_dir, stage_dir, f"epoch-{epoch:05d}", config)
         training_result = evaluate_training_mbpp(checkpoint_dir, train_dataset, config, f"training-epoch-{epoch:05d}")
         evaluation = {
             "epoch": epoch,
@@ -214,10 +214,16 @@ def run_training(config: dict[str, Any], config_path: Path, resume_from_checkpoi
     sampled_eval_enabled = bool(config.get("sampled_training_eval_enabled", False))
     sampled_eval_steps = max(1, int(config.get("sampled_training_eval_steps", 10)))
     sampled_eval_every_epoch = bool(config.get("sampled_training_eval_every_epoch", False))
+    sampled_eval_epoch_interval = max(1, int(config.get("sampled_training_eval_epoch_interval", 1)))
 
     def run_sampled_evaluation(state: Any, control: Any) -> Any:
         # Sample every training task and stop the run once each task has at least one passing sample.
-        metrics = evaluate_sampled_training(model, tokenizer, tasks, config, stage_dir, run, int(state.global_step))
+        step = int(state.global_step)
+        metrics = evaluate_sampled_training(model, tokenizer, tasks, config, stage_dir, run, step)
+        # Measure the canonical EvalPlus MBPP and MBPP+ pass@1 from the same saved adapter when requested.
+        if bool(config.get("sampled_training_eval_run_evalplus", False)):
+            adapter_dir = stage_dir / "sampled-adapters" / f"step-{step:05d}"
+            evaluate_checkpoint(model, tokenizer, tasks, config, stage_dir, run, int(round(float(state.epoch or 0))), step, adapter_dir)
         if metrics and bool(config.get("sampled_training_eval_stop_on_full_coverage", False)) and float(metrics.get("coverage", 0.0)) >= 1.0:
             run.summary["sampled_eval/stopped_at_step"] = int(state.global_step)
             run.summary["sampled_eval/stopped_at_epoch"] = float(state.epoch or 0)
@@ -264,9 +270,11 @@ def run_training(config: dict[str, Any], config_path: Path, resume_from_checkpoi
             return control
 
         def on_epoch_end(self, args: Any, state: Any, control: Any, **kwargs: Any) -> Any:
-            # Run the sampled evaluation after each complete pass over the training data.
+            # Run the sampled evaluation after complete passes on the configured epoch interval.
             if sampled_eval_enabled and sampled_eval_every_epoch:
-                control = run_sampled_evaluation(state, control)
+                epoch = int(round(float(state.epoch or 0)))
+                if epoch > 0 and epoch % sampled_eval_epoch_interval == 0:
+                    control = run_sampled_evaluation(state, control)
             return control
 
         def on_train_begin(self, args: Any, state: Any, control: Any, **kwargs: Any) -> Any:

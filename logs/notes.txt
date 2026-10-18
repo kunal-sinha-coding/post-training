@@ -5042,3 +5042,7 @@ Discussion: The user asked how long one optimizer step takes on the current full
 Commit name: Replace the follow-up run with a per-epoch checkpoint summary table.
 Description: Delete `scripts/supervise_perepoch_then_step10.py`, `configs/reference-sft-fullpool-resume-step10-eval-20261018.yaml`, and the supervisor logs. Add `scripts/summarize_epoch_checkpoints.py` to print coverage and diversity for every evaluated epoch checkpoint.
 Discussion: The user cancelled the plan to restart from the previous epoch with a ten-step evaluation. The per-epoch run still stops at full coverage, and the epoch records now serve as the checkpoint table.
+
+Commit name: Add a ten-epoch sampled-eval interval and canonical EvalPlus pass@1 to the full-pool SFT run.
+Description: Add the `sampled_training_eval_epoch_interval` gate to `experiments/reference_sft.py`, add the `sampled_training_eval_run_evalplus` hook that runs `evaluate_checkpoint` from the saved sampled adapter, repair the `run_qwen_evalplus` call to pass the configuration, and set both new keys in `configs/reference-sft-fullpool-perepoch-eval-20261018.yaml`. Append the change record to `logs/results.txt`.
+Discussion: The user asked for the sampled histogram evaluation every ten epochs instead of every epoch, and for standard EvalPlus MBPP and MBPP+ greedy pass@1 at the same points. The change replaces the every-epoch cadence, which dominated wall clock at about 90 percent. The run resumed from `checkpoint-259` on W&B run `88d20d61` so no training progress was lost.
