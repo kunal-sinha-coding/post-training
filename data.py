@@ -497,6 +497,7 @@ def prepare_datasets(config: dict[str, Any]) -> tuple[Any, Any]:
                 synthetic_path,
                 tests_per_task=int(config.get("synthetic_tests_per_task", 20)),
                 timeout_seconds=float(config.get("synthetic_tests_validation_timeout_seconds", 5)),
+                validate=bool(config.get("synthetic_tests_validate", True)),
             ),
             require_all=bool(config.get("synthetic_tests_require_all", True)),
         )
