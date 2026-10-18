@@ -14,3 +14,7 @@ Discussion: The 50-update plateau threshold was reached at step 80. During audit
 Commit name: Record visible-assertion retry plateau and temperature exploration change.
 Description: Append attempt-2 metrics and exact rollout failure masks, document the unchanged result after showing all assertions, and wire configured temperature into GRPOConfig for the next retry.
 Discussion: The 50-step retry remained at 0/2 greedy pass@1 and 0.5 tests pass fraction. Most groups had zero within-group reward variance and no full-pass reward samples. The next controlled retry uses temperature 1.3 from checkpoint-50 adapter weights while holding prompts, reward, and optimizer settings fixed.
+
+Commit name: Record temperature retry plateau and behavioral-example intervention.
+Description: Document exact W&B pass history, rollout pass masks, task-reference semantics, and next prompt-only experiment.
+Discussion: Temperature 1.3 reduced flat rollout groups from 72% to 50%, but test fraction remained 0.50 and no sample passed all tests. The highest-value next change is adding five reference-validated examples per task to resolve semantic ambiguity while holding reward and optimizer fixed.
