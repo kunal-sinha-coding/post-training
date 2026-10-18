@@ -92,6 +92,7 @@ def start_wandb(config: dict[str, Any], stage_dir: Path) -> Any:
     run.define_metric("sft/*", step_metric="optimizer_step")
     run.define_metric("evalplus/*", step_metric="optimizer_step")
     run.define_metric("training_set/*", step_metric="optimizer_step")
+    run.define_metric("sampled_eval/*", step_metric="optimizer_step")
     print(f"W&B run: {run.url}", flush=True)
     return run
 
@@ -133,6 +134,52 @@ def evaluate_checkpoint(model: Any, tokenizer: Any, train_dataset: Any, config: 
         model.train()
 
 
+def evaluate_sampled_training(model: Any, tokenizer: Any, tasks: list[dict[str, Any]], config: dict[str, Any], stage_dir: Path, run: Any, step: int) -> None:
+    # Persist one adapter, sample many completions per task, and log the per-task pass histogram.
+    import gc
+    import torch
+    from train import evaluate_training_mbpp_sampled
+
+    marker = stage_dir / f"sampled-eval-step-{step:05d}.json"
+    if marker.exists():
+        return
+    num_samples = int(config.get("sampled_training_eval_num_samples", 16))
+    temperature = float(config.get("sampled_training_eval_temperature", 1.0))
+    # Save the current adapter so the isolated vLLM process can merge and load it.
+    adapter_dir = stage_dir / "sampled-adapters" / f"step-{step:05d}"
+    model.eval()
+    model.save_pretrained(str(adapter_dir))
+    tokenizer.save_pretrained(str(adapter_dir))
+    # Free the training GPU memory before the isolated generation process starts.
+    model.to("cpu")
+    torch.cuda.empty_cache()
+    try:
+        sampled_config = dict(config)
+        sampled_config["training_eval_num_samples"] = num_samples
+        sampled_config["training_eval_temperature"] = temperature
+        result = evaluate_training_mbpp_sampled(adapter_dir, tasks, sampled_config, f"sampled-step-{step:05d}")
+        record = {
+            "optimizer_step": step,
+            "num_samples": num_samples,
+            "temperature": temperature,
+            "metrics": result["metrics"],
+            "pass_counts": result["pass_counts"],
+            "timestamp_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        }
+        append_jsonl(stage_dir / "sampled-evaluations.jsonl", record)
+        # Publish every scalar sampled metric to W&B on the optimizer-step axis.
+        payload = {"optimizer_step": step}
+        payload.update({f"sampled_eval/{key}": value for key, value in result["metrics"].items() if isinstance(value, (int, float))})
+        run.log(payload)
+        marker.write_text(json.dumps(record, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
+        print(f"Sampled evaluation at optimizer step {step}: coverage={result['metrics'].get('coverage')} mean_pass_count={result['metrics'].get('mean_pass_count')} exact0={result['metrics'].get('exact_pass_count_0')}", flush=True)
+    finally:
+        gc.collect()
+        torch.cuda.empty_cache()
+        model.to("cuda")
+        model.train()
+
+
 def run_training(config: dict[str, Any], config_path: Path, resume_from_checkpoint: str | None) -> None:
     # Train the full reference dataset and evaluate each complete epoch from its durable checkpoint.
     import torch
@@ -162,10 +209,16 @@ def run_training(config: dict[str, Any], config_path: Path, resume_from_checkpoi
     train_dataset = build_reference_dataset(tasks, tokenizer, config)
     run = start_wandb(config, stage_dir)
     run.config.update({"task_count": len(tasks), "task_ids": [str(task["task_id"]) for task in tasks], "resume_from_checkpoint": resume_from_checkpoint}, allow_val_change=True)
+    # Resolve the sampled training evaluation mode and its cadence from the configuration.
+    sampled_eval_enabled = bool(config.get("sampled_training_eval_enabled", False))
+    sampled_eval_steps = max(1, int(config.get("sampled_training_eval_steps", 10)))
 
     # Measure the untrained base model at optimizer step zero when the experiment requests a direct baseline.
     if bool(config.get("run_baseline_evaluation", False)):
         evaluate_checkpoint(model, tokenizer, tasks, config, stage_dir, run, 0, 0, Path(config["model_name_or_path"]))
+    # Record the untrained model histogram at optimizer step zero when sampled evaluation is enabled.
+    if sampled_eval_enabled:
+        evaluate_sampled_training(model, tokenizer, tasks, config, stage_dir, run, 0)
 
     class ProgressCallback(TrainerCallback):
         # Log training metrics live and evaluate each saved epoch checkpoint.
@@ -180,6 +233,8 @@ def run_training(config: dict[str, Any], config_path: Path, resume_from_checkpoi
         def on_save(self, args: Any, state: Any, control: Any, **kwargs: Any) -> Any:
             # Evaluate only after the complete epoch checkpoint has been written.
             epoch = int(round(float(state.epoch or 0)))
+            if sampled_eval_enabled:
+                return control
             if epoch > 0:
                 checkpoint_dir = checkpoint_root / f"checkpoint-{state.global_step}"
                 if not checkpoint_dir.is_dir():
@@ -187,10 +242,18 @@ def run_training(config: dict[str, Any], config_path: Path, resume_from_checkpoi
                 evaluate_checkpoint(model, tokenizer, tasks, config, stage_dir, run, epoch, int(state.global_step), checkpoint_dir)
             return control
 
+        def on_step_end(self, args: Any, state: Any, control: Any, **kwargs: Any) -> Any:
+            # Run the sampled training evaluation on the configured optimizer-step cadence.
+            if sampled_eval_enabled:
+                step = int(state.global_step)
+                if step > 0 and step % sampled_eval_steps == 0:
+                    evaluate_sampled_training(model, tokenizer, tasks, config, stage_dir, run, step)
+            return control
+
         def on_train_begin(self, args: Any, state: Any, control: Any, **kwargs: Any) -> Any:
             # Finish a checkpoint evaluation interrupted by a previous process failure.
             epoch = int(round(float(state.epoch or 0)))
-            if resume_from_checkpoint and epoch > 0:
+            if resume_from_checkpoint and epoch > 0 and not sampled_eval_enabled:
                 checkpoint_dir = Path(resume_from_checkpoint)
                 evaluate_checkpoint(model, tokenizer, tasks, config, stage_dir, run, epoch, int(state.global_step), checkpoint_dir)
             return control
@@ -203,7 +266,8 @@ def run_training(config: dict[str, Any], config_path: Path, resume_from_checkpoi
         per_device_train_batch_size=int(config["sft_per_device_train_batch_size"]),
         gradient_accumulation_steps=int(config["gradient_accumulation_steps"]),
         logging_steps=int(config["logging_steps"]),
-        save_strategy="epoch",
+        save_strategy="steps" if sampled_eval_enabled else "epoch",
+        save_steps=int(config.get("save_steps", 10)),
         save_total_limit=None,
         report_to=[],
         bf16=bool(config.get("bf16", True)) and torch.cuda.is_available(),

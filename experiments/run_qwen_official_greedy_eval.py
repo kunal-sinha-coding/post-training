@@ -78,19 +78,30 @@ def load_tasks() -> list[dict]:
     return tasks
 
 
-def generate_completions(model_name: str, prompts: list[str], gpu_memory_utilization: float = 0.90) -> list[str]:
-    """Generate all EvalPlus completions in one vLLM greedy batch."""
+def generate_completions(model_name: str, prompts: list[str], gpu_memory_utilization: float = 0.90, full_responses: bool = False, num_samples: int = 1, temperature: float = 0.0) -> list[str] | list[list[str]]:
+    """Generate one or more completions for each prompt with one vLLM batch."""
     # Import vLLM only for evaluation so GRPO training remains on Transformers and PEFT.
     from vllm import LLM, SamplingParams
 
     llm = LLM(model=model_name, dtype="bfloat16", tensor_parallel_size=1, gpu_memory_utilization=gpu_memory_utilization, max_model_len=4096, enforce_eager=True)
-    sampling = SamplingParams(temperature=0.0, top_p=1.0, max_tokens=2048, stop=list(QWEN_EVALPLUS_STOP_STRINGS))
+    # EvalPlus prompts supply an opening code fence and need the legacy continuation cleanup.
+    # Full-response prompts (such as OpenCodeInstruct) must retain a leading fence and prose.
+    stops = ["<|im_end|>", "<|endoftext|>", "</s>"] if full_responses else list(QWEN_EVALPLUS_STOP_STRINGS)
+    sampling = SamplingParams(n=int(num_samples), temperature=float(temperature), top_p=1.0, max_tokens=2048, stop=stops)
     outputs = llm.generate(prompts, sampling, use_tqdm=True)
-    return [apply_stops(output.outputs[0].text).split(chr(96) * 3, 1)[0].strip() for output in outputs]
+
+    # Clean one raw vLLM candidate into the stored completion format.
+    def clean(text: str) -> str:
+        return text.strip() if full_responses else apply_stops(text).split(chr(96) * 3, 1)[0].strip()
+
+    # Keep the historical flat list for a single greedy sample and nest independent samples otherwise.
+    if int(num_samples) == 1:
+        return [clean(output.outputs[0].text) for output in outputs]
+    return [[clean(candidate.text) for candidate in output.outputs] for output in outputs]
 
 
-def generate_model_completions(model_name: str | Path, prompts: list[str], gpu_memory_utilization: float = 0.90) -> list[str]:
-    """Merge an adapter when needed and generate a batched greedy completion list with vLLM."""
+def generate_model_completions(model_name: str | Path, prompts: list[str], gpu_memory_utilization: float = 0.90, full_responses: bool = False, num_samples: int = 1, temperature: float = 0.0) -> list[str] | list[list[str]]:
+    """Merge an adapter when needed and generate the requested completions with vLLM."""
     # Reuse the same merged checkpoint and tokenizer preparation as canonical EvalPlus.
     with tempfile.TemporaryDirectory(prefix="qwen-evalplus-") as temporary_directory:
         model_path = Path(model_name)
@@ -98,7 +109,7 @@ def generate_model_completions(model_name: str | Path, prompts: list[str], gpu_m
         if effective_model != model_path:
             merge_adapter(str(model_path), effective_model)
         normalize_tokenizer_metadata(effective_model)
-        return generate_completions(str(effective_model), prompts, gpu_memory_utilization)
+        return generate_completions(str(effective_model), prompts, gpu_memory_utilization, full_responses, num_samples, temperature)
 
 
 def generate_evalplus_samples(model_name: str | Path, output_dir: Path, gpu_memory_utilization: float = 0.90) -> Path:
@@ -126,15 +137,18 @@ def main() -> None:
     parser.add_argument("--prompts-json", type=Path)
     parser.add_argument("--output-json", type=Path)
     parser.add_argument("--gpu-memory-utilization", type=float, default=0.90)
+    parser.add_argument("--full-responses", action="store_true", help="Preserve complete assistant responses instead of applying EvalPlus code-continuation cleanup.")
+    parser.add_argument("--num-samples", type=int, default=1, help="Number of independent samples to generate for each prompt.")
+    parser.add_argument("--temperature", type=float, default=0.0, help="Sampling temperature used when more than one sample is requested.")
     args = parser.parse_args()
     # Generate arbitrary prompt lists for the fixed training evaluation when requested.
     if args.prompts_json is not None:
         if args.output_json is None:
             parser.error("--output-json is required with --prompts-json.")
         prompts = json.loads(args.prompts_json.read_text(encoding="utf-8"))
-        completions = generate_model_completions(args.model, prompts, args.gpu_memory_utilization)
+        completions = generate_model_completions(args.model, prompts, args.gpu_memory_utilization, args.full_responses, args.num_samples, args.temperature)
         args.output_json.write_text(json.dumps(completions), encoding="utf-8")
-        print(f"Generated {len(completions)} prompt completions.", flush=True)
+        print(f"Generated {len(completions)} prompt completion groups.", flush=True)
         return
     # Generate the canonical EvalPlus task set when no prompt file is provided.
     if args.output_dir is None:

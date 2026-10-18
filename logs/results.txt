@@ -19273,3 +19273,14 @@ Results: Greedy pass@1 rose from 0.325 at step 0 to 0.703 at step 1300, at about
 Interpretation: On the training pool the greedy pass@1 plateau equals the policy coverage. Gradient needs within-group reward variance, and 58 percent of groups have none by the end. Coverage does move with training, but pass@1 moves faster and merges with it. On the EvalPlus evaluation pool the merge is less complete, with greedy pass@1 0.632 against base coverage 0.780, which is where the six conversion tasks live.
 Limitations: The training pool coverage is the trained policy measured from its own late rollouts, while the EvalPlus coverage is the base policy on a different task pool, so the two coverage values are not directly comparable.
 Code, data, and environment: Repository HEAD `5aed6cc1`. Analysis is an inline Python pass over the run metrics and reward trace.
+
+
+Experiment: Reference-solution SFT pilot on eight MBPP tasks with a per-step 16-sample pass histogram, 2026-10-18.
+Purpose: Measure how reference-solution SFT moves the per-task pass-count distribution before any large-scale run.
+Setup: Config `configs/reference-sft-pilot8-sampled-eval-20261018.yaml`. Base model `outputs/evalplus-pass16-mbpphard10x1009-seed42-20261011/base-model`. Fixed MBPP tasks 601, 609, 613, 617, 621, 625, 627, and 634. LoRA r=16 alpha=32 dropout 0.05, learning rate 1e-5, batch 8, no gradient accumulation, 200 epochs with one optimizer step per epoch, seed 42, bf16. Each training target is the task reference solution with prompt tokens masked from the loss.
+Selection procedure: The eight tasks are the fixed original-MBPP tasks used by the earlier eight-task GRPO overfit runs, so the two experiments share a task set. No evaluation task is used, so candidate selection cannot depend on ground truth.
+Evaluation: Every 10 optimizer steps the covered code saves the current adapter, samples 16 completions per task with temperature 1.0 through vLLM, scores every sample with the training test reward, and records the fraction of tasks with exactly M passing samples for M from 0 to 16. The pipeline also records coverage, mean pass count, and the estimated per-sample pass probability. The EvalPlus and MBPP+ evaluations are disabled for this pilot.
+W&B: project `kunal-personal/grpo-mbpp`, run ID `f56a104a`, URL https://wandb.ai/kunal-personal/grpo-mbpp/runs/f56a104a. Output directory `outputs/reference-sft-pilot8-sampled-eval-20261018`.
+Base-model smoke measurement: At step zero the eight tasks give pass counts [0, 0, 0, 0, 2, 12, 1, 5], coverage 0.5, mean pass count 2.5, and estimated per-sample pass probability 0.156.
+Code and environment: Repository HEAD `6323a0d4`. One NVIDIA RTX 2000 Ada Generation GPU with 16 GB. vLLM 0.10.2 with bfloat16 and eager mode.
+Limitations: The pilot uses eight tasks, so each task is 12.5 percentage points. The reference solution is the MBPP canonical solution, and the sampled metric uses the base test suite only.

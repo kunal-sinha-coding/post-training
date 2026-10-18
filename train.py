@@ -20,6 +20,9 @@ from pprint import pformat
 import copy
 from typing import Any
 
+# Keep Arrow cache writes out of the shared Hub cache before dependencies load datasets.
+os.environ["HF_DATASETS_CACHE"] = os.environ.get("TRAINING_HF_DATASETS_CACHE", "/tmp/post-training-hf-datasets")
+
 import yaml
 from dotenv import load_dotenv
 
@@ -90,7 +93,7 @@ def run_qwen_evalplus(model_path: Path, output_dir: Path, name: str, config: dic
     return {"evaluation_dir": str(evaluation_dir), "results": result_text, "metrics": metrics}
 
 
-def generate_vllm_prompts_isolated(model_path: Path, prompts: list[str], gpu_memory_utilization: float) -> list[str]:
+def generate_vllm_prompts_isolated(model_path: Path, prompts: list[str], gpu_memory_utilization: float, full_responses: bool = False, num_samples: int = 1, temperature: float = 0.0) -> list[str] | list[list[str]]:
     """Generate prompts with vLLM in a clean process outside the trainer CUDA context."""
     # Store temporary prompt and completion files outside the experiment artifacts.
     with tempfile.TemporaryDirectory(prefix="training-eval-vllm-") as temporary_directory:
@@ -102,8 +105,10 @@ def generate_vllm_prompts_isolated(model_path: Path, prompts: list[str], gpu_mem
         evaluator_env = os.environ.copy()
         for key in ("RANK", "WORLD_SIZE", "LOCAL_RANK", "LOCAL_WORLD_SIZE", "MASTER_ADDR", "MASTER_PORT", "GROUP_RANK", "ROLE_RANK"):
             evaluator_env.pop(key, None)
+        # Forward the sampling settings so the isolated process can request independent samples.
+        sampling_args = ["--num-samples", str(int(num_samples)), "--temperature", str(float(temperature))]
         subprocess.run(
-            [sys.executable, str(evaluator_script), "--model", str(model_path.resolve()), "--prompts-json", str(prompt_path), "--output-json", str(completion_path), "--gpu-memory-utilization", str(gpu_memory_utilization)],
+            [sys.executable, str(evaluator_script), "--model", str(model_path.resolve()), "--prompts-json", str(prompt_path), "--output-json", str(completion_path), "--gpu-memory-utilization", str(gpu_memory_utilization)] + (["--full-responses"] if full_responses else []) + sampling_args,
             check=True,
             env=evaluator_env,
         )
@@ -165,13 +170,27 @@ def canonical_test_pass_metrics(samples: Path) -> dict[str, float]:
     }
 
 
-def evaluate_training_mbpp(model_path: Path, train_dataset: Any, config: dict[str, Any], name: str) -> dict[str, Any]:
-    """Evaluate the fixed training-task sample with the batched vLLM generation path."""
-    # Restrict only evaluation to the task IDs persisted for this run.
+def select_training_eval_records(train_dataset: Any, config: dict[str, Any]) -> list[dict[str, Any]]:
+    """Resolve the fixed training evaluation records from the configured sample or the full dataset."""
+    # Load only the persisted fixed sample for online training datasets.
     selected_ids = set(config.get("training_eval_task_ids", []))
-    records = [train_dataset[index] for index in range(len(train_dataset)) if not selected_ids or str(train_dataset[index]["task_id"]) in selected_ids]
+    sample_records = config.get("_training_eval_records")
+    selected_indices = config.get("training_eval_indices")
+    if sample_records is not None:
+        records = sample_records
+    elif selected_indices is not None:
+        records = [train_dataset[index] for index in selected_indices]
+    else:
+        records = [train_dataset[index] for index in range(len(train_dataset)) if not selected_ids or str(train_dataset[index]["task_id"]) in selected_ids]
     if selected_ids and len(records) != len(selected_ids):
         raise ValueError("The fixed training evaluation sample does not match the loaded training dataset.")
+    return records
+
+
+def evaluate_training_mbpp(model_path: Path, train_dataset: Any, config: dict[str, Any], name: str) -> dict[str, Any]:
+    """Evaluate the fixed training-task sample with the batched vLLM generation path."""
+    # Resolve the shared training evaluation records before scoring.
+    records = select_training_eval_records(train_dataset, config)
     # Score only tasks with usable tests while retaining the selected sample denominator.
     scorable_records = [record for record in records if _has_scorable_tests(record)]
     completions = generate_vllm_prompts_isolated(model_path, [record["prompt"] for record in scorable_records], float(config.get("vllm_gpu_memory_utilization", 0.3)))
@@ -186,6 +205,40 @@ def evaluate_training_mbpp(model_path: Path, train_dataset: Any, config: dict[st
     return {"metrics": metrics, "details": details}
 
 
+def evaluate_training_mbpp_sampled(model_path: Path, train_dataset: Any, config: dict[str, Any], name: str) -> dict[str, Any]:
+    """Evaluate every fixed training task with several sampled completions and report the pass histogram."""
+    # Resolve the shared training evaluation records before sampling.
+    records = select_training_eval_records(train_dataset, config)
+    scorable_records = [record for record in records if _has_scorable_tests(record)]
+    num_samples = max(1, int(config.get("training_eval_num_samples", 16)))
+    temperature = float(config.get("training_eval_temperature", 1.0))
+    # Generate one independent sample group for each scorable task.
+    grouped_completions = generate_vllm_prompts_isolated(model_path, [record["prompt"] for record in scorable_records], float(config.get("vllm_gpu_memory_utilization", 0.3)), num_samples=num_samples, temperature=temperature) if scorable_records else []
+    # Flatten each sample group while keeping one matching record for every completion.
+    completions = [wrap_qwen_continuation(completion) for group in grouped_completions for completion in group]
+    flat_records = [record for record in scorable_records for _ in range(num_samples)]
+    # Score all sampled completions with the same test reward used during training.
+    metrics, details = evaluate_texts(completions, flat_records, float(config.get("sandbox_timeout_seconds", 3)), config.get("log_path", "logs/logs.txt"), name, reward_scoring_workers=int(config.get("reward_scoring_workers", 8))) if scorable_records else ({"examples": 0, "pass_at_1": 0.0}, [])
+    # Count the passing samples within each task group.
+    pass_counts = [sum(1 for detail in details[index:index + num_samples] if detail["passed"]) for index in range(0, len(details), num_samples)]
+    task_count = len(pass_counts)
+    # Report the fraction of tasks with exactly M of the samples passing for every M.
+    histogram = {f"exact_pass_count_{count}": (sum(1 for observed in pass_counts if observed == count) / task_count if task_count else 0.0) for count in range(num_samples + 1)}
+    metrics.update(histogram)
+    # Report the aggregate sampling statistics that summarize the histogram.
+    metrics.update({
+        "sampled_tasks": task_count,
+        "samples_per_task": num_samples,
+        "sampling_temperature": temperature,
+        "coverage": (sum(1 for observed in pass_counts if observed >= 1) / task_count if task_count else 0.0),
+        "mean_pass_count": (sum(pass_counts) / task_count if task_count else 0.0),
+        "estimated_pass_probability": (sum(pass_counts) / (task_count * num_samples) if task_count else 0.0),
+        "evaluation_sample_size": len(records),
+        "scorable_tasks": len(scorable_records),
+    })
+    return {"metrics": metrics, "details": details, "pass_counts": pass_counts}
+
+
 def evaluate_opencode_holdout(model_path: Path, output_dir: Path, config: dict[str, Any], name: str) -> dict[str, Any] | None:
     """Evaluate one completion for each scorable task in the fixed OpenCode holdout."""
     # Skip the additional evaluation when the run has no preserved OpenCode holdout.
@@ -195,7 +248,8 @@ def evaluate_opencode_holdout(model_path: Path, output_dir: Path, config: dict[s
     records = json.loads(Path(holdout_path).read_text(encoding="utf-8"))
     scorable_records = [record for record in records if record.get("evaluation_valid") and _has_scorable_tests(record)]
     # Generate and score only tasks with valid source test suites.
-    completions = generate_vllm_prompts_isolated(model_path, [record["prompt"] for record in scorable_records], float(config.get("vllm_gpu_memory_utilization", 0.3)))
+    # OpenCode prompts ask for complete answers; preserve an opening Markdown fence for extract_code.
+    completions = generate_vllm_prompts_isolated(model_path, [record["prompt"] for record in scorable_records], float(config.get("vllm_gpu_memory_utilization", 0.3)), full_responses=True)
     metrics, details = evaluate_texts(completions, scorable_records, float(config.get("sandbox_timeout_seconds", 3)), config.get("log_path", "logs/logs.txt"), name, reward_scoring_workers=int(config.get("reward_scoring_workers", 8))) if scorable_records else ({"examples": 0, "pass_at_1": 0.0, "successful_examples": 0}, [])
     # Preserve the original 500-task denominator beside the scorable pass rate.
     metrics["source_examples"] = len(records)
@@ -223,6 +277,19 @@ def prepare_training_eval_sample(train_dataset: Any, config: dict[str, Any], out
     # Leave historical full-training evaluations unchanged when no sample size is configured.
     sample_size = int(config.get("training_eval_sample_size", 0))
     if sample_size <= 0:
+        return
+    sample_path = config.get("training_eval_tasks_path")
+    if sample_path:
+        # Reuse the saved 500-task SFT training sample without traversing the online stream.
+        task_records = json.loads(Path(sample_path).read_text(encoding="utf-8"))
+        task_ids = [str(record["task_id"]) for record in task_records]
+        if len(task_records) != sample_size or len(set(task_ids)) != sample_size:
+            raise ValueError("The saved training evaluation sample has an unexpected size or duplicate task IDs.")
+        if any(not record.get("prompt") or not record.get("test_code") for record in task_records):
+            raise ValueError("The saved training evaluation sample has missing prompts or tests.")
+        config["training_eval_task_ids"] = task_ids
+        config["_training_eval_records"] = task_records
+        print(f"Training evaluation reuses {sample_size} fixed task records from {sample_path}.", flush=True)
         return
     manifest_path = output_dir / "training-eval-task-ids.json"
     # Use the actual MBPP rows when the training dataset streams a mixed MBPP and OpenCode pool.
@@ -328,7 +395,9 @@ def configure_wandb(config: dict[str, Any]) -> Any | None:
             "reward_function", "reward_coefficient",
             "training_eval_sample_size", "training_eval_sample_seed", "training_eval_sample_dataset", "training_eval_tasks_path", "expected_train_samples",
             "save_strategy", "save_steps", "max_steps", "synthetic_training_tasks_path",
-            "model_name_or_path", "initial_adapter_path", "opencode_training_tasks_path", "mbpp_splits",
+            "expected_mbpp_prompt_samples", "expected_opencode_train_samples", "mbpp_prompt_ratio",
+        "model_name_or_path", "initial_adapter_path", "opencode_training_tasks_path", "opencode_revision",
+        "opencode_average_test_score", "excluded_generation_algorithms", "streaming_opencode_grpo", "mbpp_splits",
         )
         wandb.config.update({key: config[key] for key in config_keys if key in config}, allow_val_change=True)
     # Use trainer steps rather than W&B history row numbers on evaluation charts.
@@ -819,7 +888,9 @@ def _make_callback(model: Any, tokenizer: Any, train_dataset: Any, test_dataset:
                     evaluation_model.train()
                     shutil.rmtree(model_path)
                 if wandb is not None and wandb.run is not None:
-                    log_evaluation(wandb, evalplus_result["metrics"], evaluation_log_name, state.global_step)
+                    # Route fixed-subset greedy results to the training metric axis.
+                    dataset_namespace = "training" if config.get("train_subset_evaluation_only", False) else "evaluation"
+                    log_evaluation(wandb, evalplus_result["metrics"], evaluation_log_name, state.global_step, dataset_namespace=dataset_namespace)
                     print(f"Logged evaluation metrics to W&B for optimizer step {state.global_step}: {evaluation_log_name}.", flush=True)
                 self.next_eval_step += int(config.get("evalplus_eval_steps", 10))
             return control
@@ -978,7 +1049,15 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     # Preserve every existing checkpoint directory across both fresh and resumed launches.
     # Load datasets, tokenizer, and the base model.
-    train_dataset, eval_dataset = prepare_datasets(config)
+    # Build the small MBPP set first, then stream OpenCode records directly from the pinned source.
+    dataset_config = dict(config)
+    if config.get("streaming_opencode_grpo"):
+        dataset_config["expected_train_samples"] = int(config["expected_mbpp_train_samples"])
+    train_dataset, eval_dataset = prepare_datasets(dataset_config)
+    if config.get("streaming_opencode_grpo"):
+        from experiments.streaming_opencode_grpo_data import StreamingOpenCodeGRPODataset
+
+        train_dataset = StreamingOpenCodeGRPODataset(config, list(train_dataset))
     # Persist one fixed random sample for every training-set evaluation in this run.
     prepare_training_eval_sample(train_dataset, config, output_dir)
     tokenizer = AutoTokenizer.from_pretrained(config["model_name_or_path"], trust_remote_code=bool(config.get("trust_remote_code", False)))
@@ -1013,7 +1092,8 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
             if config.get("train_subset_evaluation_only", False):
                 # Use the tiny training pass rate as the checkpoint selection baseline.
                 config["_best_train_pass_at_1"] = training_result["metrics"].get("pass_at_1", float("-inf"))
-                log_evaluation(wandb, training_result["metrics"], "training-step-0", 0)
+                # Keep the fixed-task baseline beside later training-subset evaluations.
+                log_evaluation(wandb, training_result["metrics"], "training-step-0", 0, dataset_namespace="training")
             else:
                 # Run the canonical EvalPlus benchmark and merge the training baseline for normal runs.
                 step_zero_result = run_qwen_evalplus(step_zero_path, output_dir, "step-0", config)
@@ -1025,6 +1105,23 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         finally:
             model.to(device)
         shutil.rmtree(step_zero_path)
+    elif config.get("initial_evaluation_json"):
+        # Reuse a complete evaluation for the exact starting adapter instead of regenerating it.
+        initial_path = Path(config["initial_evaluation_json"])
+        initial_record = json.loads(initial_path.read_text(encoding="utf-8"))
+        recorded_checkpoint = Path(initial_record["checkpoint"]).resolve()
+        configured_adapter = Path(config["initial_adapter_path"]).resolve()
+        if recorded_checkpoint != configured_adapter:
+            raise ValueError(f"Initial evaluation checkpoint {recorded_checkpoint} does not match adapter {configured_adapter}.")
+        initial_metrics = dict(initial_record["evalplus"])
+        initial_metrics = merge_training_metrics(initial_metrics, initial_record["training_set"])
+        initial_metrics = merge_opencode_holdout_metrics(initial_metrics, initial_record["opencode_holdout"])
+        config["_best_evalplus_mbpp_plus"] = initial_metrics.get("mbpp_plus_pass_at_1", float("-inf"))
+        copied_record = dict(initial_record)
+        copied_record["baseline_source"] = str(initial_path.resolve())
+        (output_dir / "initial-baseline-evaluation.json").write_text(json.dumps(copied_record, indent=2) + "\n", encoding="utf-8")
+        log_evaluation(wandb, initial_metrics, "sft-checkpoint-3000", 0)
+        print(f"Reused saved step-{initial_record['optimizer_step']} evaluation for {configured_adapter}; no step-zero generations were run.", flush=True)
     # Run the SFT baseline, training stage, and final epoch evaluation when enabled.
     if config.get("sft_enabled", False):
         # Evaluate the base model once before supervised updates begin.
@@ -1091,12 +1188,38 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         use_cpu=not torch.cuda.is_available(),
         seed=int(config.get("seed", 42)),
     )
-    trainer_class = GRPOTrainer
+    class StreamingBatchGRPOTrainer(GRPOTrainer):
+        """Carry streamed text records through Accelerate batch-size inspection."""
+
+        def get_train_dataloader(self):
+            """Add a tensor batch marker while preserving the streamed GRPO records."""
+            original_collator = self.data_collator
+            original_remove_unused_columns = self.args.remove_unused_columns
+
+            def collate_streamed_records(records):
+                """Provide a tensor for Accelerate and keep source records available for GRPO."""
+                return {"_batch_marker": torch.arange(len(records)), "_records": records}
+
+            self.data_collator = collate_streamed_records
+            self.args.remove_unused_columns = False
+            try:
+                return super().get_train_dataloader()
+            finally:
+                self.data_collator = original_collator
+                self.args.remove_unused_columns = original_remove_unused_columns
+
+        def _prepare_inputs(self, generation_batch):
+            """Unwrap streamed source records before GRPO prompt generation."""
+            if isinstance(generation_batch, dict) and "_records" in generation_batch:
+                generation_batch = generation_batch["_records"]
+            return super()._prepare_inputs(generation_batch)
+
+    trainer_class = StreamingBatchGRPOTrainer if config.get("streaming_opencode_grpo", False) else GRPOTrainer
     if config.get("mask_reward_stops", True):
         # Align completion-token loss masks with the per-completion stop boundary used by reward scoring.
         stop_ids = stop_token_id_sequences(tokenizer, QWEN_EVALPLUS_STOP_STRINGS)
 
-        class RewardMaskedGRPOTrainer(GRPOTrainer):
+        class RewardMaskedGRPOTrainer(trainer_class):
             """Mask unscored suffix tokens after every completion's reward stop marker."""
 
             def _generate_and_score_completions(self, inputs: list[dict[str, Any]]) -> dict[str, Any]:
@@ -1303,7 +1426,9 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
     config["training_context"] = "best-checkpoint-final" if best_checkpoint_path is not None else "final"
     config["_evaluation_epoch"] = trainer.state.epoch
     save_evaluation(output_dir, "final", final_metrics, final_details, config)
-    log_evaluation(wandb, final_metrics, "final", trainer.state.global_step)
+    # Keep the final fixed-task score on the same W&B axis as its intermediate evaluations.
+    final_namespace = "training" if config.get("train_subset_evaluation_only", False) else "evaluation"
+    log_evaluation(wandb, final_metrics, "final", trainer.state.global_step, dataset_namespace=final_namespace)
     # Run the canonical hidden-test benchmark after the fixed training schedule is complete.
     if config.get("run_qwen_evalplus_at_end", False):
         final_evalplus = run_qwen_evalplus(output_dir / "final", output_dir, "final", config)
