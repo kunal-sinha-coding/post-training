@@ -5014,3 +5014,7 @@ Discussion: Mouse scrolling worked only after tmux `mouse on` was set, because t
 Commit name: Record Run A versus base-model coverage 2x2.
 Description: Add `analysis/mbpp_runA_vs_base_greedy_2x2.json` and append the experiment record to `logs/results.txt`. The artifact joins the base-model 16-sample coverage from `outputs/evalplus-pass16-mbpphard10x1009-seed42-20261011/base_scores.json` to the Run A (`c4fthzd3`) step-1300 greedy EvalPlus status on the 50 common MBPP+ tasks.
 Discussion: On base tests coverage is 0.780 and trained greedy pass@1 is 0.680, so conversion loss is 0.120 and coverage loss is 0.200. On plus tests coverage is 0.700 and pass@1 is 0.500, so conversion loss is 0.200 and coverage loss is 0.300. The two task pools do not overlap between the original-100 base coverage file and the MBPP+ eval set, so this join uses the 50-task base artifact instead.
+
+Commit name: Record Run A coverage-versus-pass@1 plateau measurement.
+Description: Append the measurement to `logs/results.txt`. The measurement reads greedy pass@1 from the run metrics and group coverage and reward variance from the run reward trace.
+Discussion: The user proposed that the training pass@1 plateau equals the policy coverage. The run data confirms it on the training pool, where greedy pass@1 0.703 sits at 98 percent of coverage 0.718, and the fraction of groups with zero reward variance rose from 0.21 to 0.58.

@@ -19263,3 +19263,13 @@ Interpretation: On base tests the gap to the coverage ceiling is 0.100, and 0.12
 Limitations: The sample is 50 tasks, so each task is two percentage points. Base coverage is measured at temperature 1.0 while the trained metric is greedy. Base coverage and the Run A eval use different generation harnesses. Plus tests require base and extra tests, so the two rows differ.
 Artifact: `analysis/mbpp_runA_vs_base_greedy_2x2.json`.
 Code and environment: Repository HEAD `9ad01993` at analysis.
+
+
+Experiment: Run A coverage versus greedy pass@1 plateau measurement, 2026-10-18.
+Purpose: Test whether the greedy pass@1 plateau of the canonical plateau run equals the policy coverage on the same pool.
+Setup: Run `outputs/grpo-mbpp-fulltrain-8x16-b128-micro2-workers8-0.5b-50000-dual-greedy-evalplus031-visible1-save10-restart-20260929`, W&B run ID `c4fthzd3`, Qwen2.5-Coder-0.5B-Instruct with LoRA r=16 alpha=32, learning rate 1e-5, beta 0.01, DAPO loss, hybrid reward with coefficient 0.75, 16 generations, evaluation_num_completions 1.
+Method: Read greedy pass@1 from each `training-step-N-metrics.json` over the 593-task training evaluation pool. Group `reward-trace.jsonl` into blocks of 16 by `task_id` to get group coverage and the fraction of groups with zero reward variance.
+Results: Greedy pass@1 rose from 0.325 at step 0 to 0.703 at step 1300, at about plus 0.012 per 100 steps at the end. Group coverage was 0.600 in the first 10 percent of the run and 0.718 in the last 10 percent. Greedy pass@1 is therefore 98 percent of coverage at the plateau. Zero-variance reward groups rose from 0.209 to 0.582. All-correct groups rose from 0.036 to 0.419 while all-fail groups fell from 0.400 to 0.282. Mean sample reward rose from 0.298 to 0.666.
+Interpretation: On the training pool the greedy pass@1 plateau equals the policy coverage. Gradient needs within-group reward variance, and 58 percent of groups have none by the end. Coverage does move with training, but pass@1 moves faster and merges with it. On the EvalPlus evaluation pool the merge is less complete, with greedy pass@1 0.632 against base coverage 0.780, which is where the six conversion tasks live.
+Limitations: The training pool coverage is the trained policy measured from its own late rollouts, while the EvalPlus coverage is the base policy on a different task pool, so the two coverage values are not directly comparable.
+Code, data, and environment: Repository HEAD `5aed6cc1`. Analysis is an inline Python pass over the run metrics and reward trace.
