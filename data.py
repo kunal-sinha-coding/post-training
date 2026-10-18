@@ -208,6 +208,26 @@ def add_synthetic_tests_to_prompts(dataset: Any, tests_by_task: dict[str, list[s
     return [{**record, **augment(record)} for record in dataset]
 
 
+def add_task_prompt_hints(dataset: Any, hints_by_task: dict[str, str]) -> Any:
+    """Add task-specific behavioral notes inside the MBPP prompt docstring."""
+    def augment(record: dict[str, Any]) -> dict[str, str]:
+        hint = hints_by_task.get(str(record["task_id"]))
+        if not hint:
+            return {"prompt": str(record["prompt"])}
+        prompt = str(record["prompt"])
+        marker = '\n"""\n```\n\n<|im_end|>'
+        insertion = prompt.rfind(marker)
+        if insertion < 0:
+            raise ValueError(f"Prompt for task {record['task_id']} has no task docstring boundary.")
+        note = "\n\nReference-specific behavior:\n" + str(hint).strip()
+        return {"prompt": prompt[:insertion] + note + prompt[insertion:]}
+
+    # Preserve the dataset representation used by the caller.
+    if hasattr(dataset, "map"):
+        return dataset.map(augment)
+    return [{**record, **augment(record)} for record in dataset]
+
+
 def _to_dataset(records: list[dict[str, Any]]) -> Any:
     """Convert normalized records to a Hugging Face Dataset when available."""
     try:
@@ -469,6 +489,12 @@ def prepare_datasets(config: dict[str, Any]) -> tuple[Any, Any]:
             prompt_tests,
             require_all=bool(config.get("synthetic_tests_require_all", True)),
         )
+    # Expose reference-derived behavioral notes for explicitly selected overfit tasks.
+    task_prompt_hints = config.get("task_prompt_hints", {})
+    if task_prompt_hints:
+        if not isinstance(task_prompt_hints, dict) or not all(isinstance(value, str) for value in task_prompt_hints.values()):
+            raise ValueError("task_prompt_hints must map task IDs to text strings.")
+        train_dataset = add_task_prompt_hints(train_dataset, task_prompt_hints)
     # Fail before training if the configured artifact does not contain the requested row count.
     expected_train_samples = config.get("expected_train_samples")
     if expected_train_samples is not None and len(train_dataset) != int(expected_train_samples):
