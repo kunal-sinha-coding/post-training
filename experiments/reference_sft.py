@@ -213,6 +213,18 @@ def run_training(config: dict[str, Any], config_path: Path, resume_from_checkpoi
     # Resolve the sampled training evaluation mode and its cadence from the configuration.
     sampled_eval_enabled = bool(config.get("sampled_training_eval_enabled", False))
     sampled_eval_steps = max(1, int(config.get("sampled_training_eval_steps", 10)))
+    sampled_eval_every_epoch = bool(config.get("sampled_training_eval_every_epoch", False))
+
+    def run_sampled_evaluation(state: Any, control: Any) -> Any:
+        # Sample every training task and stop the run once each task has at least one passing sample.
+        metrics = evaluate_sampled_training(model, tokenizer, tasks, config, stage_dir, run, int(state.global_step))
+        if metrics and bool(config.get("sampled_training_eval_stop_on_full_coverage", False)) and float(metrics.get("coverage", 0.0)) >= 1.0:
+            run.summary["sampled_eval/stopped_at_step"] = int(state.global_step)
+            run.summary["sampled_eval/stopped_at_epoch"] = float(state.epoch or 0)
+            run.summary["sampled_eval/stop_reason"] = "full_coverage"
+            print(f"Stopping training at optimizer step {int(state.global_step)} because coverage reached 1.0. Diversity: mixed={metrics.get('mixed_fraction')} zero={metrics.get('zero_pass_fraction')} saturated={metrics.get('saturated_fraction')} mean_pass_count={metrics.get('mean_pass_count')}", flush=True)
+            control.should_training_stop = True
+        return control
 
     # Measure the untrained base model at optimizer step zero when the experiment requests a direct baseline.
     if bool(config.get("run_baseline_evaluation", False)):
@@ -244,17 +256,17 @@ def run_training(config: dict[str, Any], config_path: Path, resume_from_checkpoi
             return control
 
         def on_step_end(self, args: Any, state: Any, control: Any, **kwargs: Any) -> Any:
-            # Run the sampled training evaluation on the configured optimizer-step cadence.
-            if sampled_eval_enabled:
+            # Run the sampled evaluation on the optimizer-step cadence when epoch scheduling is off.
+            if sampled_eval_enabled and not sampled_eval_every_epoch:
                 step = int(state.global_step)
                 if step > 0 and step % sampled_eval_steps == 0:
-                    metrics = evaluate_sampled_training(model, tokenizer, tasks, config, stage_dir, run, step)
-                    # Stop the run once every training task has at least one passing sample.
-                    if metrics and bool(config.get("sampled_training_eval_stop_on_full_coverage", False)) and float(metrics.get("coverage", 0.0)) >= 1.0:
-                        run.summary["sampled_eval/stopped_at_step"] = step
-                        run.summary["sampled_eval/stop_reason"] = "full_coverage"
-                        print(f"Stopping training at optimizer step {step} because coverage reached 1.0. Diversity: mixed={metrics.get('mixed_fraction')} zero={metrics.get('zero_pass_fraction')} saturated={metrics.get('saturated_fraction')} mean_pass_count={metrics.get('mean_pass_count')}", flush=True)
-                        control.should_training_stop = True
+                    control = run_sampled_evaluation(state, control)
+            return control
+
+        def on_epoch_end(self, args: Any, state: Any, control: Any, **kwargs: Any) -> Any:
+            # Run the sampled evaluation after each complete pass over the training data.
+            if sampled_eval_enabled and sampled_eval_every_epoch:
+                control = run_sampled_evaluation(state, control)
             return control
 
         def on_train_begin(self, args: Any, state: Any, control: Any, **kwargs: Any) -> Any:
@@ -273,7 +285,7 @@ def run_training(config: dict[str, Any], config_path: Path, resume_from_checkpoi
         per_device_train_batch_size=int(config["sft_per_device_train_batch_size"]),
         gradient_accumulation_steps=int(config["gradient_accumulation_steps"]),
         logging_steps=int(config["logging_steps"]),
-        save_strategy="steps" if sampled_eval_enabled else "epoch",
+        save_strategy="epoch" if (not sampled_eval_enabled or sampled_eval_every_epoch) else "steps",
         save_steps=int(config.get("save_steps", 10)),
         save_total_limit=None,
         report_to=[],

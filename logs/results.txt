@@ -19298,3 +19298,12 @@ Finding: The full-pool sampled-eval SFT config with per-device batch 16 raised C
 Reason: The language-model head materializes logits in float32 over the 151936-token vocabulary, so a batch of 16 at 1024 tokens needs about 10 GB in one allocation.
 Fix: The working config uses per-device batch 8 with gradient accumulation 2, which keeps the effective batch at 16.
 Environment: NVIDIA RTX 2000 Ada Generation GPU with 16 GB, repository HEAD `c7bf2f88`.
+
+Experiment: Per-epoch sampled evaluation on the full MBPP training pool with an automatic ten-step follow-up, 2026-10-18.
+Purpose: Find the epoch where training coverage reaches one, then locate the exact optimizer step with an evaluation every ten optimizer steps.
+Setup: Run one uses `configs/reference-sft-fullpool-perepoch-eval-20261018.yaml`. Run two uses `configs/reference-sft-fullpool-resume-step10-eval-20261018.yaml` and resumes from the checkpoint at the end of the epoch before the stopping epoch.
+Procedure: The run samples 16 completions for all 591 training tasks after each complete epoch, logs the pass-count histogram, the coverage, the mixed fraction, the zero-pass fraction, and the saturated fraction, and stops when coverage reaches one. `scripts/supervise_perepoch_then_step10.py` reads the stopping epoch from `sampled-evaluations.jsonl`, selects the checkpoint at or before the previous epoch end, and starts the ten-step run. Loss is logged at every optimizer step in both runs.
+Selection: The stopping epoch and the previous-epoch checkpoint come from training coverage only. No ground-truth benchmark score is used.
+Records: `outputs/reference-sft-fullpool-perepoch-eval-20261018/full/sampled-evaluations.jsonl` and `outputs/reference-sft-fullpool-resume-step10-eval-20261018/full/sampled-evaluations.jsonl`. The supervisor decision is written to `logs/supervise-perepoch-then-step10.json`.
+Environment: NVIDIA RTX 2000 Ada Generation GPU with 16 GB, repository HEAD `76536107`.
+Limitations: The sampled metric uses the base test suite only. Each full-pool evaluation generates 9456 completions.
