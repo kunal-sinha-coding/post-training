@@ -164,6 +164,20 @@ if ! command -v tmux >/dev/null 2>&1; then
     exit 1
 fi
 
+# Enable mouse scrolling in the config file and on the running tmux server.
+ensure_tmux_mouse() {
+    local tmux_config_file="${TMUX_CONFIG_FILE:-${HOME}/.tmux.conf}"
+
+    # Persist the mouse setting so every future tmux server enables it at startup.
+    touch "$tmux_config_file"
+    if ! grep -qE '^[[:space:]]*set(-option)?[[:space:]]+-g[[:space:]]+mouse[[:space:]]+on' "$tmux_config_file"; then
+        printf 'set -g mouse on\n' >> "$tmux_config_file"
+    fi
+
+    # Apply the mouse setting to the running server so every tmux window scrolls.
+    tmux set -g mouse on
+}
+
 # Create the session and windows only when they do not already exist.
 SESSION_NAME="${TMUX_SESSION_NAME:-codex-work}"
 SKILLS_WORKSPACE_DIR="${SKILLS_WORKSPACE_DIR:-/workspace/skills}"
@@ -189,6 +203,9 @@ ensure_tmux_window() {
 if ! tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
     tmux new-session -d -s "$SESSION_NAME" -n shell
 fi
+
+# Enable mouse scrolling before the development windows open.
+ensure_tmux_mouse
 
 # Open the development windows while reusing any existing windows.
 ensure_tmux_window codex "codex"

@@ -5006,3 +5006,7 @@ Reason: Preserve a reproducible record of why the fixed-eight run plateaued and 
 Commit name: Record hybrid-reward fixed-eight retry.
 Description: Record attempt 017 setup, the evidence-based hybrid reward change, W&B identity, evaluation cadence, stopping rule, and step-zero baseline in `logs/results.txt`.
 Reason: Track the retry against the prior plateau diagnosis and preserve enough setup detail to reproduce the experiment.
+
+Commit name: Enable tmux mouse scrolling in the startup script.
+Description: Add an `ensure_tmux_mouse` function to `start.sh`. The function appends `set -g mouse on` to the tmux config file when the setting is absent, then applies `tmux set -g mouse on` to the running server. Call the function after the session exists and before the development windows open.
+Discussion: Mouse scrolling worked only after tmux `mouse on` was set, because tmux defaults to mouse off. OpenCode captures the mouse by default, so the wheel reaches OpenCode once tmux forwards the mouse events. The change makes every tmux window scroll with the mouse on a fresh launch. The repository is mounted on geesefs, which does not support `chmod`, so the executable bit of `start.sh` was restored with `git add --chmod=+x`.
