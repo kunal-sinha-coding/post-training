@@ -4986,3 +4986,8 @@ Discussion: The user restarted the initial eight-task MBPP overfit attempt with 
 Commit name: Record the ten-step fixed-eight MBPP GRPO restart.
 Description: Record the source checkpoint, task IDs, reward and optimizer setup, evaluation cadence, plateau stop rule, W&B identity, and experiment output path.
 Discussion: The user asked to repeat the initial valid eight-task MBPP attempt, with pass@1 evaluation every ten updates and a stop after three consecutive evaluations without a new best. Attempt 015 was stopped before optimizer step 1 after this cadence change. Attempt 016 starts from the original step-390 adapter.
+
+
+Commit name: Record the initial baseline for the ten-step fixed-eight GRPO restart.
+Description: Record the step-zero fixed-batch pass@1, reward, task outcome counts, and active evaluation and stop-monitor state.
+Discussion: Attempt 016 starts from the original valid step-390 adapter. Its initial MBPP-only setup evaluates every ten updates. The baseline is 3/8 pass@1 and establishes the best score before scheduled evaluation 10.

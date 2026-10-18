@@ -19193,3 +19193,6 @@ Training setup: Fixed MBPP train task IDs 601, 609, 613, 617, 621, 625, 627, 634
 Evaluation and checkpointing: Step-zero greedy baseline is logged. Fixed-batch pass@1 evaluation is scheduled every 10 optimizer updates through `evalplus_eval_steps: 10`. Full training checkpoints are saved every update. `select_best_checkpoint` is disabled to avoid the known metadata-copy failure. A separate plateau monitor seeds best pass@1 from step zero and stops the isolated supervisor/trainer process group on the third scheduled evaluation without a new best.
 Environment and code: Branch `main`, code commit `cf6d12dd`; pre-existing unrelated worktree changes were preserved. GPU: local NVIDIA RTX 2000 Ada Generation. The evaluation denominator is 8 tasks and each task uses its original MBPP assertions.
 Results: Pending step-zero baseline and first scheduled evaluation.
+
+
+Progress update for GRPO MBPP fixed-eight restart, 2026-10-18 04:30 UTC: attempt 016 completed its step-zero fixed-batch baseline at pass@1=0.375 (3/8 tasks). Three tasks are partial, two fail, average reward is 0.50, and test pass fraction is 0.50. The baseline is excluded from the three-evaluation plateau counter and initializes the monitor's best score. Trainer step 1 is active. Fixed-batch evaluations are configured at steps 10, 20, 30, and onward. The separate plateau monitor is active.
