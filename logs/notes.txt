@@ -5001,3 +5001,8 @@ Discussion: Attempt 016 improved from 3/8 to 6/8 pass@1 after ten optimizer upda
 Commit name: Record fixed-eight GRPO plateau diagnosis.
 Description: Append the completed attempt 016 evaluation sequence, manual-stop point, latest 16-sample binary reward vectors, test pass counts, task specifications, and the evidence-based plateau interpretation to `logs/results.txt`. The attempt 016 run was manually stopped at the user's request after 88 completed updates. W&B now marks the run as failed so it does not remain shown as running.
 Reason: Preserve a reproducible record of why the fixed-eight run plateaued and distinguish partial diagnostic progress from the all-or-nothing reward used for optimization.
+
+
+Commit name: Record hybrid-reward fixed-eight retry.
+Description: Record attempt 017 setup, the evidence-based hybrid reward change, W&B identity, evaluation cadence, stopping rule, and step-zero baseline in `logs/results.txt`.
+Reason: Track the retry against the prior plateau diagnosis and preserve enough setup detail to reproduce the experiment.
