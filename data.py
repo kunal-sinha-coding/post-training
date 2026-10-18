@@ -189,12 +189,13 @@ def add_synthetic_tests_to_prompts(dataset: Any, tests_by_task: dict[str, list[s
                 raise ValueError(f"Synthetic prompt tests are missing for task {record['task_id']}.")
             generated_tests = []
         prompt = str(record["prompt"])
-        fence = "\n```"
-        if generated_tests and not prompt.endswith(fence):
-            raise ValueError(f"Prompt for task {record['task_id']} does not end with a code fence.")
+        marker = '\n"""\n```\n\n<|im_end|>'
+        insertion = prompt.rfind(marker)
+        if generated_tests and insertion < 0:
+            raise ValueError(f"Prompt for task {record['task_id']} has no task docstring boundary.")
         if generated_tests:
             examples = "\n\nAdditional examples:\n" + "\n".join(generated_tests)
-            prompt = prompt[:-len(fence)] + examples + fence
+            prompt = prompt[:insertion] + examples + prompt[insertion:]
         return {"prompt": prompt}
 
     # Preserve the dataset representation used by the caller.
