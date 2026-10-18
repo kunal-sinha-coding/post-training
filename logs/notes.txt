@@ -5038,3 +5038,7 @@ Discussion: The user asked to stop at full coverage, evaluate only after each co
 Commit name: Record full-pool per-optimizer-step timing.
 Description: Append the per-optimizer-step timing measurement for W&B run `88d20d61` to `logs/results.txt`.
 Discussion: The user asked how long one optimizer step takes on the current full-pool run. The first epoch gives a median of 1.15 seconds and a mean of 1.30 seconds per optimizer step across 37 steps.
+
+Commit name: Replace the follow-up run with a per-epoch checkpoint summary table.
+Description: Delete `scripts/supervise_perepoch_then_step10.py`, `configs/reference-sft-fullpool-resume-step10-eval-20261018.yaml`, and the supervisor logs. Add `scripts/summarize_epoch_checkpoints.py` to print coverage and diversity for every evaluated epoch checkpoint.
+Discussion: The user cancelled the plan to restart from the previous epoch with a ten-step evaluation. The per-epoch run still stops at full coverage, and the epoch records now serve as the checkpoint table.

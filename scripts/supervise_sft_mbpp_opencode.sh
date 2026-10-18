@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# This supervisor loads local credentials, prepares workspace-backed data caches, and runs the full OpenCode and MBPP one-epoch SFT experiment.
+# This supervisor loads local credentials, stages Python code on local storage, and runs the configured OpenCode and MBPP SFT experiment.
 # It records progress every 30 minutes and resumes unexpected failures from the newest complete checkpoint without deleting artifacts or changing experiment settings.
 set -uo pipefail
 

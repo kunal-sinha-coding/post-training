@@ -102,4 +102,10 @@ def main() -> None:
             state_path.write_text(json.dumps(state, indent=2) + '\n')
         previous = state
         if args.once:
- 
+            break
+        time.sleep(max(0, 1800 - (time.monotonic() - started)))
+
+
+if __name__ == '__main__':
+    # Start the durable monitor only when this script is invoked directly.
+    main()
