@@ -2,3 +2,7 @@
 ## 2026-10-03: Add ASD-STE100 writing guidance
 
 Updated the writing style instructions in AGENTS.md across post-training, personal-website, and user-skills to follow ASD-STE100 Simplified Technical English. This applies the requested style standard before drafting a new blog post.
+
+Commit name: Record two-task GRPO plateau and assertion-visibility retry.
+Description: Document the 80-update evaluation curve, exact task-level and rollout failure masks, W&B run and report links, and the evidence-based change to show all three task assertions in the next fixed-batch retry.
+Discussion: Tests pass fraction reached 0.5 at step 30 and did not set a new high through step 80. Pass@1 remained 0/2. The saved step-80 checkpoint seeds the retry. The current train.py metric namespace fix is already active and W&B history contains the expected evaluation rows.
