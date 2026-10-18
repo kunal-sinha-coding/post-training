@@ -1,0 +1,969 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+trainable params: 8,798,208 || all params: 502,830,976 || trainable%: 1.7497
+wandb: [wandb.login()] Loaded credentials for https://api.wandb.ai from WANDB_API_KEY.
+wandb: Currently logged in as: kunalsinha1125 (kunal-personal) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run f56a104a
+wandb: Tracking run with wandb version 0.30.0
+wandb: Run data is saved locally in /workspace/post-training/wandb/run-20261018_204520-f56a104a
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run mbpp-reference-sft-pilot8-sampled-eval-20261018
+wandb: ⭐️ View project at https://wandb.ai/kunal-personal/grpo-mbpp
+wandb: 🚀 View run at https://wandb.ai/kunal-personal/grpo-mbpp/runs/f56a104a
+W&B run: https://wandb.ai/kunal-personal/grpo-mbpp/runs/f56a104a
+INFO 10-18 20:45:45 [__init__.py:216] Automatically detected platform cuda.
+INFO 10-18 20:45:46 [utils.py:328] non-default args: {'dtype': 'bfloat16', 'max_model_len': 4096, 'gpu_memory_utilization': 0.5, 'disable_log_stats': True, 'enforce_eager': True, 'model': '/tmp/qwen-evalplus-mg_9nud6/merged'}
+INFO 10-18 20:45:57 [__init__.py:742] Resolved architecture: Qwen2ForCausalLM
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO 10-18 20:45:57 [__init__.py:1815] Using max model len 4096
+INFO 10-18 20:45:59 [scheduler.py:222] Chunked prefill is enabled with max_num_batched_tokens=8192.
+INFO 10-18 20:45:59 [__init__.py:3400] Cudagraph is disabled under eager mode
+WARNING 10-18 20:45:59 [__init__.py:2974] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized
+INFO 10-18 20:46:04 [__init__.py:216] Automatically detected platform cuda.
+[1;36m(EngineCore_DP0 pid=989172)[0;0m INFO 10-18 20:46:05 [core.py:654] Waiting for init message from front-end.
+[1;36m(EngineCore_DP0 pid=989172)[0;0m INFO 10-18 20:46:05 [core.py:76] Initializing a V1 LLM engine (v0.10.2) with config: model='/tmp/qwen-evalplus-mg_9nud6/merged', speculative_config=None, tokenizer='/tmp/qwen-evalplus-mg_9nud6/merged', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=4096, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=True, kv_cache_dtype=auto, device_config=cuda, decoding_config=DecodingConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_backend=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=/tmp/qwen-evalplus-mg_9nud6/merged, enable_prefix_caching=True, chunked_prefill_enabled=True, use_async_output_proc=True, pooler_config=None, compilation_config={"level":0,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":null,"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":0,"use_cudagraph":true,"cudagraph_num_of_warmups":0,"cudagraph_capture_sizes":[],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"pass_config":{},"max_capture_size":0,"local_cache_dir":null}
+[W1018 20:46:09.240964118 ProcessGroupNCCL.cpp:981] Warning: TORCH_NCCL_AVOID_RECORD_STREAMS is the default now, this environment variable is thus deprecated. (function operator())
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[1;36m(EngineCore_DP0 pid=989172)[0;0m INFO 10-18 20:46:10 [parallel_state.py:1165] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+[1;36m(EngineCore_DP0 pid=989172)[0;0m WARNING 10-18 20:46:10 [topk_topp_sampler.py:69] FlashInfer is not available. Falling back to the PyTorch-native implementation of top-p & top-k sampling. For the best performance, please install FlashInfer.
+[1;36m(EngineCore_DP0 pid=989172)[0;0m INFO 10-18 20:46:10 [gpu_model_runner.py:2338] Starting to load model /tmp/qwen-evalplus-mg_9nud6/merged...
+[1;36m(EngineCore_DP0 pid=989172)[0;0m INFO 10-18 20:46:10 [gpu_model_runner.py:2370] Loading model from scratch...
+[1;36m(EngineCore_DP0 pid=989172)[0;0m INFO 10-18 20:46:10 [cuda.py:362] Using Flash Attention backend on V1 engine.
+[1;36m(EngineCore_DP0 pid=989172)[0;0m Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+[1;36m(EngineCore_DP0 pid=989172)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  6.41it/s]
+[1;36m(EngineCore_DP0 pid=989172)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  6.39it/s]
+[1;36m(EngineCore_DP0 pid=989172)[0;0m 
+[1;36m(EngineCore_DP0 pid=989172)[0;0m INFO 10-18 20:46:10 [default_loader.py:268] Loading weights took 0.19 seconds
+[1;36m(EngineCore_DP0 pid=989172)[0;0m INFO 10-18 20:46:11 [gpu_model_runner.py:2392] Model loading took 0.9277 GiB and 0.303364 seconds
+[1;36m(EngineCore_DP0 pid=989172)[0;0m INFO 10-18 20:46:12 [gpu_worker.py:298] Available KV cache memory: 5.45 GiB
+[1;36m(EngineCore_DP0 pid=989172)[0;0m INFO 10-18 20:46:12 [kv_cache_utils.py:864] GPU KV cache size: 476,080 tokens
+[1;36m(EngineCore_DP0 pid=989172)[0;0m INFO 10-18 20:46:12 [kv_cache_utils.py:868] Maximum concurrency for 4,096 tokens per request: 116.23x
+[1;36m(EngineCore_DP0 pid=989172)[0;0m INFO 10-18 20:46:12 [gpu_worker.py:391] Free memory on device (15.27/15.58 GiB) on startup. Desired GPU memory utilization is (0.5, 7.79 GiB). Actual usage is 0.93 GiB for weight, 1.4 GiB for peak activation, 0.02 GiB for non-torch memory, and 0.0 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=5692953600` to fit into requested memory, or `--kv-cache-memory=13720163328` to fully utilize gpu memory. Current kv cache memory in use is 5850240000 bytes.
+[1;36m(EngineCore_DP0 pid=989172)[0;0m INFO 10-18 20:46:12 [core.py:218] init engine (profile, create kv cache, warmup model) took 1.57 seconds
+[1;36m(EngineCore_DP0 pid=989172)[0;0m INFO 10-18 20:46:13 [__init__.py:3400] Cudagraph is disabled under eager mode
+INFO 10-18 20:46:13 [llm.py:295] Supported_tasks: ['generate']
+INFO 10-18 20:46:13 [__init__.py:36] No IOProcessor plugins requested by the model
+Adding requests:   0%|          | 0/8 [00:00<?, ?it/s][1;36m(EngineCore_DP0 pid=989172)[0;0m WARNING 10-18 20:46:13 [cudagraph_dispatcher.py:102] cudagraph dispatching keys are not initialized. No cudagraph will be used.
+Adding requests: 100%|██████████| 8/8 [00:00<00:00, 636.61it/s]
+Processed prompts:   0%|          | 0/128 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts:  12%|█▎        | 16/128 [00:01<00:13,  8.50it/s, est. speed input: 808.00 toks/s, output: 536.87 toks/s]Processed prompts:  25%|██▌       | 32/128 [00:02<00:06, 14.52it/s, est. speed input: 1247.00 toks/s, output: 1076.74 toks/s]Processed prompts:  38%|███▊      | 48/128 [00:02<00:03, 20.24it/s, est. speed input: 1870.37 toks/s, output: 1580.19 toks/s]Processed prompts:  50%|█████     | 64/128 [00:03<00:02, 24.58it/s, est. speed input: 2102.80 toks/s, output: 2076.96 toks/s]Processed prompts:  62%|██████▎   | 80/128 [00:03<00:01, 29.55it/s, est. speed input: 2526.07 toks/s, output: 2552.64 toks/s]Processed prompts:  75%|███████▌  | 96/128 [00:03<00:00, 38.30it/s, est. speed input: 2882.07 toks/s, output: 3103.25 toks/s]Processed prompts:  88%|████████▊ | 112/128 [00:03<00:00, 47.35it/s, est. speed input: 3137.42 toks/s, output: 3567.35 toks/s]Processed prompts: 100%|██████████| 128/128 [00:04<00:00, 60.33it/s, est. speed input: 3552.82 toks/s, output: 4106.54 toks/s]Processed prompts: 100%|██████████| 128/128 [00:04<00:00, 60.33it/s, est. speed input: 3552.82 toks/s, output: 4106.54 toks/s]Processed prompts: 100%|██████████| 128/128 [00:04<00:00, 31.19it/s, est. speed input: 3552.82 toks/s, output: 4106.54 toks/s]
+[rank0]:[W1018 20:46:17.797882200 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+Generated 8 prompt completion groups.
+Sampled evaluation at optimizer step 0: coverage=0.5 mean_pass_count=2.5 exact0=0.5
+INFO 10-18 20:46:59 [__init__.py:216] Automatically detected platform cuda.
+INFO 10-18 20:47:00 [utils.py:328] non-default args: {'dtype': 'bfloat16', 'max_model_len': 4096, 'gpu_memory_utilization': 0.5, 'disable_log_stats': True, 'enforce_eager': True, 'model': '/tmp/qwen-evalplus-m0566qd2/merged'}
+INFO 10-18 20:47:10 [__init__.py:742] Resolved architecture: Qwen2ForCausalLM
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO 10-18 20:47:10 [__init__.py:1815] Using max model len 4096
+INFO 10-18 20:47:12 [scheduler.py:222] Chunked prefill is enabled with max_num_batched_tokens=8192.
+INFO 10-18 20:47:12 [__init__.py:3400] Cudagraph is disabled under eager mode
+WARNING 10-18 20:47:12 [__init__.py:2974] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized
+INFO 10-18 20:47:17 [__init__.py:216] Automatically detected platform cuda.
+[1;36m(EngineCore_DP0 pid=990376)[0;0m INFO 10-18 20:47:18 [core.py:654] Waiting for init message from front-end.
+[1;36m(EngineCore_DP0 pid=990376)[0;0m INFO 10-18 20:47:18 [core.py:76] Initializing a V1 LLM engine (v0.10.2) with config: model='/tmp/qwen-evalplus-m0566qd2/merged', speculative_config=None, tokenizer='/tmp/qwen-evalplus-m0566qd2/merged', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=4096, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=True, kv_cache_dtype=auto, device_config=cuda, decoding_config=DecodingConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_backend=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=/tmp/qwen-evalplus-m0566qd2/merged, enable_prefix_caching=True, chunked_prefill_enabled=True, use_async_output_proc=True, pooler_config=None, compilation_config={"level":0,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":null,"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":0,"use_cudagraph":true,"cudagraph_num_of_warmups":0,"cudagraph_capture_sizes":[],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"pass_config":{},"max_capture_size":0,"local_cache_dir":null}
+[W1018 20:47:23.523240700 ProcessGroupNCCL.cpp:981] Warning: TORCH_NCCL_AVOID_RECORD_STREAMS is the default now, this environment variable is thus deprecated. (function operator())
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[1;36m(EngineCore_DP0 pid=990376)[0;0m INFO 10-18 20:47:23 [parallel_state.py:1165] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+[1;36m(EngineCore_DP0 pid=990376)[0;0m WARNING 10-18 20:47:23 [topk_topp_sampler.py:69] FlashInfer is not available. Falling back to the PyTorch-native implementation of top-p & top-k sampling. For the best performance, please install FlashInfer.
+[1;36m(EngineCore_DP0 pid=990376)[0;0m INFO 10-18 20:47:23 [gpu_model_runner.py:2338] Starting to load model /tmp/qwen-evalplus-m0566qd2/merged...
+[1;36m(EngineCore_DP0 pid=990376)[0;0m INFO 10-18 20:47:23 [gpu_model_runner.py:2370] Loading model from scratch...
+[1;36m(EngineCore_DP0 pid=990376)[0;0m INFO 10-18 20:47:23 [cuda.py:362] Using Flash Attention backend on V1 engine.
+[1;36m(EngineCore_DP0 pid=990376)[0;0m Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+[1;36m(EngineCore_DP0 pid=990376)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  9.14it/s]
+[1;36m(EngineCore_DP0 pid=990376)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  9.10it/s]
+[1;36m(EngineCore_DP0 pid=990376)[0;0m 
+[1;36m(EngineCore_DP0 pid=990376)[0;0m INFO 10-18 20:47:23 [default_loader.py:268] Loading weights took 0.14 seconds
+[1;36m(EngineCore_DP0 pid=990376)[0;0m INFO 10-18 20:47:24 [gpu_model_runner.py:2392] Model loading took 0.9277 GiB and 0.244341 seconds
+[1;36m(EngineCore_DP0 pid=990376)[0;0m INFO 10-18 20:47:25 [gpu_worker.py:298] Available KV cache memory: 5.45 GiB
+[1;36m(EngineCore_DP0 pid=990376)[0;0m INFO 10-18 20:47:26 [kv_cache_utils.py:864] GPU KV cache size: 476,080 tokens
+[1;36m(EngineCore_DP0 pid=990376)[0;0m INFO 10-18 20:47:26 [kv_cache_utils.py:868] Maximum concurrency for 4,096 tokens per request: 116.23x
+[1;36m(EngineCore_DP0 pid=990376)[0;0m INFO 10-18 20:47:26 [gpu_worker.py:391] Free memory on device (15.1/15.58 GiB) on startup. Desired GPU memory utilization is (0.5, 7.79 GiB). Actual usage is 0.93 GiB for weight, 1.4 GiB for peak activation, 0.02 GiB for non-torch memory, and 0.0 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=5692953600` to fit into requested memory, or `--kv-cache-memory=13537711104` to fully utilize gpu memory. Current kv cache memory in use is 5850240000 bytes.
+[1;36m(EngineCore_DP0 pid=990376)[0;0m INFO 10-18 20:47:26 [core.py:218] init engine (profile, create kv cache, warmup model) took 1.68 seconds
+[1;36m(EngineCore_DP0 pid=990376)[0;0m INFO 10-18 20:47:26 [__init__.py:3400] Cudagraph is disabled under eager mode
+INFO 10-18 20:47:26 [llm.py:295] Supported_tasks: ['generate']
+INFO 10-18 20:47:26 [__init__.py:36] No IOProcessor plugins requested by the model
+Adding requests:   0%|          | 0/8 [00:00<?, ?it/s][1;36m(EngineCore_DP0 pid=990376)[0;0m WARNING 10-18 20:47:26 [cudagraph_dispatcher.py:102] cudagraph dispatching keys are not initialized. No cudagraph will be used.
+Adding requests: 100%|██████████| 8/8 [00:00<00:00, 600.14it/s]
+Processed prompts:   0%|          | 0/128 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts:  12%|█▎        | 16/128 [00:02<00:14,  7.72it/s, est. speed input: 733.13 toks/s, output: 471.70 toks/s]Processed prompts:  25%|██▌       | 32/128 [00:02<00:05, 16.55it/s, est. speed input: 1341.76 toks/s, output: 1052.19 toks/s]Processed prompts:  38%|███▊      | 48/128 [00:02<00:04, 19.39it/s, est. speed input: 1560.67 toks/s, output: 1297.11 toks/s]Processed prompts:  62%|██████▎   | 80/128 [00:03<00:01, 33.08it/s, est. speed input: 2500.49 toks/s, output: 2322.46 toks/s]Processed prompts:  75%|███████▌  | 96/128 [00:03<00:00, 32.90it/s, est. speed input: 2649.47 toks/s, output: 2604.59 toks/s]Processed prompts:  88%|████████▊ | 112/128 [00:04<00:00, 38.74it/s, est. speed input: 3060.30 toks/s, output: 2973.77 toks/s]Processed prompts: 100%|██████████| 128/128 [00:04<00:00, 40.92it/s, est. speed input: 3288.88 toks/s, output: 3365.77 toks/s]Processed prompts: 100%|██████████| 128/128 [00:04<00:00, 40.92it/s, est. speed input: 3288.88 toks/s, output: 3365.77 toks/s]Processed prompts: 100%|██████████| 128/128 [00:04<00:00, 28.88it/s, est. speed input: 3288.88 toks/s, output: 3365.77 toks/s]
+[rank0]:[W1018 20:47:31.698505970 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+Generated 8 prompt completion groups.
+Sampled evaluation at optimizer step 10: coverage=0.375 mean_pass_count=1.875 exact0=0.625
+{'loss': 0.9672, 'grad_norm': 2.291449785232544, 'learning_rate': 9.55e-06, 'epoch': 10.0}
+INFO 10-18 20:48:11 [__init__.py:216] Automatically detected platform cuda.
+INFO 10-18 20:48:12 [utils.py:328] non-default args: {'dtype': 'bfloat16', 'max_model_len': 4096, 'gpu_memory_utilization': 0.5, 'disable_log_stats': True, 'enforce_eager': True, 'model': '/tmp/qwen-evalplus-qs_0s6_d/merged'}
+INFO 10-18 20:48:23 [__init__.py:742] Resolved architecture: Qwen2ForCausalLM
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO 10-18 20:48:23 [__init__.py:1815] Using max model len 4096
+INFO 10-18 20:48:25 [scheduler.py:222] Chunked prefill is enabled with max_num_batched_tokens=8192.
+INFO 10-18 20:48:25 [__init__.py:3400] Cudagraph is disabled under eager mode
+WARNING 10-18 20:48:25 [__init__.py:2974] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized
+INFO 10-18 20:48:30 [__init__.py:216] Automatically detected platform cuda.
+[1;36m(EngineCore_DP0 pid=991547)[0;0m INFO 10-18 20:48:31 [core.py:654] Waiting for init message from front-end.
+[1;36m(EngineCore_DP0 pid=991547)[0;0m INFO 10-18 20:48:31 [core.py:76] Initializing a V1 LLM engine (v0.10.2) with config: model='/tmp/qwen-evalplus-qs_0s6_d/merged', speculative_config=None, tokenizer='/tmp/qwen-evalplus-qs_0s6_d/merged', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=4096, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=True, kv_cache_dtype=auto, device_config=cuda, decoding_config=DecodingConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_backend=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=/tmp/qwen-evalplus-qs_0s6_d/merged, enable_prefix_caching=True, chunked_prefill_enabled=True, use_async_output_proc=True, pooler_config=None, compilation_config={"level":0,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":null,"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":0,"use_cudagraph":true,"cudagraph_num_of_warmups":0,"cudagraph_capture_sizes":[],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"pass_config":{},"max_capture_size":0,"local_cache_dir":null}
+[W1018 20:48:36.654836801 ProcessGroupNCCL.cpp:981] Warning: TORCH_NCCL_AVOID_RECORD_STREAMS is the default now, this environment variable is thus deprecated. (function operator())
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[1;36m(EngineCore_DP0 pid=991547)[0;0m INFO 10-18 20:48:36 [parallel_state.py:1165] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+[1;36m(EngineCore_DP0 pid=991547)[0;0m WARNING 10-18 20:48:36 [topk_topp_sampler.py:69] FlashInfer is not available. Falling back to the PyTorch-native implementation of top-p & top-k sampling. For the best performance, please install FlashInfer.
+[1;36m(EngineCore_DP0 pid=991547)[0;0m INFO 10-18 20:48:36 [gpu_model_runner.py:2338] Starting to load model /tmp/qwen-evalplus-qs_0s6_d/merged...
+[1;36m(EngineCore_DP0 pid=991547)[0;0m INFO 10-18 20:48:36 [gpu_model_runner.py:2370] Loading model from scratch...
+[1;36m(EngineCore_DP0 pid=991547)[0;0m INFO 10-18 20:48:36 [cuda.py:362] Using Flash Attention backend on V1 engine.
+[1;36m(EngineCore_DP0 pid=991547)[0;0m Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+[1;36m(EngineCore_DP0 pid=991547)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  3.79it/s]
+[1;36m(EngineCore_DP0 pid=991547)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  3.78it/s]
+[1;36m(EngineCore_DP0 pid=991547)[0;0m 
+[1;36m(EngineCore_DP0 pid=991547)[0;0m INFO 10-18 20:48:37 [default_loader.py:268] Loading weights took 0.30 seconds
+[1;36m(EngineCore_DP0 pid=991547)[0;0m INFO 10-18 20:48:37 [gpu_model_runner.py:2392] Model loading took 0.9277 GiB and 0.413113 seconds
+[1;36m(EngineCore_DP0 pid=991547)[0;0m INFO 10-18 20:48:39 [gpu_worker.py:298] Available KV cache memory: 5.45 GiB
+[1;36m(EngineCore_DP0 pid=991547)[0;0m INFO 10-18 20:48:39 [kv_cache_utils.py:864] GPU KV cache size: 476,080 tokens
+[1;36m(EngineCore_DP0 pid=991547)[0;0m INFO 10-18 20:48:39 [kv_cache_utils.py:868] Maximum concurrency for 4,096 tokens per request: 116.23x
+[1;36m(EngineCore_DP0 pid=991547)[0;0m INFO 10-18 20:48:39 [gpu_worker.py:391] Free memory on device (15.09/15.58 GiB) on startup. Desired GPU memory utilization is (0.5, 7.79 GiB). Actual usage is 0.93 GiB for weight, 1.4 GiB for peak activation, 0.02 GiB for non-torch memory, and 0.0 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=5692953600` to fit into requested memory, or `--kv-cache-memory=13533516800` to fully utilize gpu memory. Current kv cache memory in use is 5850240000 bytes.
+[1;36m(EngineCore_DP0 pid=991547)[0;0m INFO 10-18 20:48:39 [core.py:218] init engine (profile, create kv cache, warmup model) took 1.64 seconds
+[1;36m(EngineCore_DP0 pid=991547)[0;0m INFO 10-18 20:48:39 [__init__.py:3400] Cudagraph is disabled under eager mode
+INFO 10-18 20:48:40 [llm.py:295] Supported_tasks: ['generate']
+INFO 10-18 20:48:40 [__init__.py:36] No IOProcessor plugins requested by the model
+Adding requests:   0%|          | 0/8 [00:00<?, ?it/s][1;36m(EngineCore_DP0 pid=991547)[0;0m WARNING 10-18 20:48:40 [cudagraph_dispatcher.py:102] cudagraph dispatching keys are not initialized. No cudagraph will be used.
+Adding requests: 100%|██████████| 8/8 [00:00<00:00, 682.82it/s]
+Processed prompts:   0%|          | 0/128 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts:  12%|█▎        | 16/128 [00:01<00:11,  9.68it/s, est. speed input: 919.86 toks/s, output: 519.22 toks/s]Processed prompts:  25%|██▌       | 32/128 [00:01<00:04, 20.78it/s, est. speed input: 1684.74 toks/s, output: 1054.04 toks/s]Processed prompts:  50%|█████     | 64/128 [00:02<00:01, 39.91it/s, est. speed input: 3152.60 toks/s, output: 1854.04 toks/s]Processed prompts:  75%|███████▌  | 96/128 [00:02<00:00, 59.96it/s, est. speed input: 4464.01 toks/s, output: 2948.99 toks/s]Processed prompts:  88%|████████▊ | 112/128 [00:05<00:01, 15.07it/s, est. speed input: 2153.17 toks/s, output: 1582.21 toks/s]Processed prompts: 100%|██████████| 128/128 [00:06<00:00, 18.30it/s, est. speed input: 2361.63 toks/s, output: 2004.99 toks/s]Processed prompts: 100%|██████████| 128/128 [00:06<00:00, 18.30it/s, est. speed input: 2361.63 toks/s, output: 2004.99 toks/s]Processed prompts: 100%|██████████| 128/128 [00:06<00:00, 20.74it/s, est. speed input: 2361.63 toks/s, output: 2004.99 toks/s]
+[rank0]:[W1018 20:48:46.489255511 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+Generated 8 prompt completion groups.
+Sampled evaluation at optimizer step 20: coverage=0.25 mean_pass_count=1.25 exact0=0.75
+{'loss': 0.7863, 'grad_norm': 1.6175057888031006, 'learning_rate': 9.050000000000001e-06, 'epoch': 20.0}
+INFO 10-18 20:49:26 [__init__.py:216] Automatically detected platform cuda.
+INFO 10-18 20:49:28 [utils.py:328] non-default args: {'dtype': 'bfloat16', 'max_model_len': 4096, 'gpu_memory_utilization': 0.5, 'disable_log_stats': True, 'enforce_eager': True, 'model': '/tmp/qwen-evalplus-lz305qaf/merged'}
+INFO 10-18 20:49:38 [__init__.py:742] Resolved architecture: Qwen2ForCausalLM
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO 10-18 20:49:38 [__init__.py:1815] Using max model len 4096
+INFO 10-18 20:49:40 [scheduler.py:222] Chunked prefill is enabled with max_num_batched_tokens=8192.
+INFO 10-18 20:49:40 [__init__.py:3400] Cudagraph is disabled under eager mode
+WARNING 10-18 20:49:40 [__init__.py:2974] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized
+INFO 10-18 20:49:45 [__init__.py:216] Automatically detected platform cuda.
+[1;36m(EngineCore_DP0 pid=992679)[0;0m INFO 10-18 20:49:46 [core.py:654] Waiting for init message from front-end.
+[1;36m(EngineCore_DP0 pid=992679)[0;0m INFO 10-18 20:49:46 [core.py:76] Initializing a V1 LLM engine (v0.10.2) with config: model='/tmp/qwen-evalplus-lz305qaf/merged', speculative_config=None, tokenizer='/tmp/qwen-evalplus-lz305qaf/merged', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=4096, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=True, kv_cache_dtype=auto, device_config=cuda, decoding_config=DecodingConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_backend=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=/tmp/qwen-evalplus-lz305qaf/merged, enable_prefix_caching=True, chunked_prefill_enabled=True, use_async_output_proc=True, pooler_config=None, compilation_config={"level":0,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":null,"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":0,"use_cudagraph":true,"cudagraph_num_of_warmups":0,"cudagraph_capture_sizes":[],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"pass_config":{},"max_capture_size":0,"local_cache_dir":null}
+[W1018 20:49:50.146079324 ProcessGroupNCCL.cpp:981] Warning: TORCH_NCCL_AVOID_RECORD_STREAMS is the default now, this environment variable is thus deprecated. (function operator())
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[1;36m(EngineCore_DP0 pid=992679)[0;0m INFO 10-18 20:49:50 [parallel_state.py:1165] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+[1;36m(EngineCore_DP0 pid=992679)[0;0m WARNING 10-18 20:49:50 [topk_topp_sampler.py:69] FlashInfer is not available. Falling back to the PyTorch-native implementation of top-p & top-k sampling. For the best performance, please install FlashInfer.
+[1;36m(EngineCore_DP0 pid=992679)[0;0m INFO 10-18 20:49:50 [gpu_model_runner.py:2338] Starting to load model /tmp/qwen-evalplus-lz305qaf/merged...
+[1;36m(EngineCore_DP0 pid=992679)[0;0m INFO 10-18 20:49:51 [gpu_model_runner.py:2370] Loading model from scratch...
+[1;36m(EngineCore_DP0 pid=992679)[0;0m INFO 10-18 20:49:51 [cuda.py:362] Using Flash Attention backend on V1 engine.
+[1;36m(EngineCore_DP0 pid=992679)[0;0m Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+[1;36m(EngineCore_DP0 pid=992679)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  9.45it/s]
+[1;36m(EngineCore_DP0 pid=992679)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  9.42it/s]
+[1;36m(EngineCore_DP0 pid=992679)[0;0m 
+[1;36m(EngineCore_DP0 pid=992679)[0;0m INFO 10-18 20:49:51 [default_loader.py:268] Loading weights took 0.14 seconds
+[1;36m(EngineCore_DP0 pid=992679)[0;0m INFO 10-18 20:49:51 [gpu_model_runner.py:2392] Model loading took 0.9277 GiB and 0.236594 seconds
+[1;36m(EngineCore_DP0 pid=992679)[0;0m INFO 10-18 20:49:53 [gpu_worker.py:298] Available KV cache memory: 5.45 GiB
+[1;36m(EngineCore_DP0 pid=992679)[0;0m INFO 10-18 20:49:53 [kv_cache_utils.py:864] GPU KV cache size: 476,080 tokens
+[1;36m(EngineCore_DP0 pid=992679)[0;0m INFO 10-18 20:49:53 [kv_cache_utils.py:868] Maximum concurrency for 4,096 tokens per request: 116.23x
+[1;36m(EngineCore_DP0 pid=992679)[0;0m INFO 10-18 20:49:53 [gpu_worker.py:391] Free memory on device (15.09/15.58 GiB) on startup. Desired GPU memory utilization is (0.5, 7.79 GiB). Actual usage is 0.93 GiB for weight, 1.4 GiB for peak activation, 0.02 GiB for non-torch memory, and 0.0 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=5692953600` to fit into requested memory, or `--kv-cache-memory=13533516800` to fully utilize gpu memory. Current kv cache memory in use is 5850240000 bytes.
+[1;36m(EngineCore_DP0 pid=992679)[0;0m INFO 10-18 20:49:53 [core.py:218] init engine (profile, create kv cache, warmup model) took 1.51 seconds
+[1;36m(EngineCore_DP0 pid=992679)[0;0m INFO 10-18 20:49:53 [__init__.py:3400] Cudagraph is disabled under eager mode
+INFO 10-18 20:49:54 [llm.py:295] Supported_tasks: ['generate']
+INFO 10-18 20:49:54 [__init__.py:36] No IOProcessor plugins requested by the model
+Adding requests:   0%|          | 0/8 [00:00<?, ?it/s][1;36m(EngineCore_DP0 pid=992679)[0;0m WARNING 10-18 20:49:54 [cudagraph_dispatcher.py:102] cudagraph dispatching keys are not initialized. No cudagraph will be used.
+Adding requests: 100%|██████████| 8/8 [00:00<00:00, 807.12it/s]
+Processed prompts:   0%|          | 0/128 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts:  12%|█▎        | 16/128 [00:01<00:10, 10.81it/s, est. speed input: 1026.57 toks/s, output: 438.98 toks/s]Processed prompts:  25%|██▌       | 32/128 [00:02<00:05, 17.03it/s, est. speed input: 1873.22 toks/s, output: 877.31 toks/s]Processed prompts:  38%|███▊      | 48/128 [00:02<00:02, 27.18it/s, est. speed input: 2754.96 toks/s, output: 1458.33 toks/s]Processed prompts:  50%|█████     | 64/128 [00:02<00:02, 26.76it/s, est. speed input: 2696.51 toks/s, output: 1545.43 toks/s]Processed prompts:  62%|██████▎   | 80/128 [00:02<00:01, 37.01it/s, est. speed input: 3180.34 toks/s, output: 1995.75 toks/s]Processed prompts:  88%|████████▊ | 112/128 [00:03<00:00, 54.74it/s, est. speed input: 3985.36 toks/s, output: 3028.64 toks/s]Processed prompts: 100%|██████████| 128/128 [00:05<00:00, 21.03it/s, est. speed input: 2735.32 toks/s, output: 2144.16 toks/s]Processed prompts: 100%|██████████| 128/128 [00:05<00:00, 21.03it/s, est. speed input: 2735.32 toks/s, output: 2144.16 toks/s]Processed prompts: 100%|██████████| 128/128 [00:05<00:00, 24.02it/s, est. speed input: 2735.32 toks/s, output: 2144.16 toks/s]
+[rank0]:[W1018 20:49:59.752203243 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+Generated 8 prompt completion groups.
+Sampled evaluation at optimizer step 30: coverage=0.125 mean_pass_count=1.125 exact0=0.875
+{'loss': 0.6195, 'grad_norm': 1.1594222784042358, 'learning_rate': 8.550000000000001e-06, 'epoch': 30.0}
+INFO 10-18 20:50:35 [__init__.py:216] Automatically detected platform cuda.
+INFO 10-18 20:50:36 [utils.py:328] non-default args: {'dtype': 'bfloat16', 'max_model_len': 4096, 'gpu_memory_utilization': 0.5, 'disable_log_stats': True, 'enforce_eager': True, 'model': '/tmp/qwen-evalplus-vc3ew89z/merged'}
+INFO 10-18 20:50:49 [__init__.py:742] Resolved architecture: Qwen2ForCausalLM
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO 10-18 20:50:49 [__init__.py:1815] Using max model len 4096
+INFO 10-18 20:50:50 [scheduler.py:222] Chunked prefill is enabled with max_num_batched_tokens=8192.
+INFO 10-18 20:50:50 [__init__.py:3400] Cudagraph is disabled under eager mode
+WARNING 10-18 20:50:51 [__init__.py:2974] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized
+INFO 10-18 20:50:56 [__init__.py:216] Automatically detected platform cuda.
+[1;36m(EngineCore_DP0 pid=993944)[0;0m INFO 10-18 20:50:57 [core.py:654] Waiting for init message from front-end.
+[1;36m(EngineCore_DP0 pid=993944)[0;0m INFO 10-18 20:50:57 [core.py:76] Initializing a V1 LLM engine (v0.10.2) with config: model='/tmp/qwen-evalplus-vc3ew89z/merged', speculative_config=None, tokenizer='/tmp/qwen-evalplus-vc3ew89z/merged', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=4096, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=True, kv_cache_dtype=auto, device_config=cuda, decoding_config=DecodingConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_backend=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=/tmp/qwen-evalplus-vc3ew89z/merged, enable_prefix_caching=True, chunked_prefill_enabled=True, use_async_output_proc=True, pooler_config=None, compilation_config={"level":0,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":null,"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":0,"use_cudagraph":true,"cudagraph_num_of_warmups":0,"cudagraph_capture_sizes":[],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"pass_config":{},"max_capture_size":0,"local_cache_dir":null}
+[W1018 20:51:02.532118736 ProcessGroupNCCL.cpp:981] Warning: TORCH_NCCL_AVOID_RECORD_STREAMS is the default now, this environment variable is thus deprecated. (function operator())
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[1;36m(EngineCore_DP0 pid=993944)[0;0m INFO 10-18 20:51:02 [parallel_state.py:1165] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+[1;36m(EngineCore_DP0 pid=993944)[0;0m WARNING 10-18 20:51:02 [topk_topp_sampler.py:69] FlashInfer is not available. Falling back to the PyTorch-native implementation of top-p & top-k sampling. For the best performance, please install FlashInfer.
+[1;36m(EngineCore_DP0 pid=993944)[0;0m INFO 10-18 20:51:02 [gpu_model_runner.py:2338] Starting to load model /tmp/qwen-evalplus-vc3ew89z/merged...
+[1;36m(EngineCore_DP0 pid=993944)[0;0m INFO 10-18 20:51:02 [gpu_model_runner.py:2370] Loading model from scratch...
+[1;36m(EngineCore_DP0 pid=993944)[0;0m INFO 10-18 20:51:02 [cuda.py:362] Using Flash Attention backend on V1 engine.
+[1;36m(EngineCore_DP0 pid=993944)[0;0m Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+[1;36m(EngineCore_DP0 pid=993944)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  8.95it/s]
+[1;36m(EngineCore_DP0 pid=993944)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  8.90it/s]
+[1;36m(EngineCore_DP0 pid=993944)[0;0m 
+[1;36m(EngineCore_DP0 pid=993944)[0;0m INFO 10-18 20:51:02 [default_loader.py:268] Loading weights took 0.14 seconds
+[1;36m(EngineCore_DP0 pid=993944)[0;0m INFO 10-18 20:51:03 [gpu_model_runner.py:2392] Model loading took 0.9277 GiB and 0.248630 seconds
+[1;36m(EngineCore_DP0 pid=993944)[0;0m INFO 10-18 20:51:04 [gpu_worker.py:298] Available KV cache memory: 5.45 GiB
+[1;36m(EngineCore_DP0 pid=993944)[0;0m INFO 10-18 20:51:04 [kv_cache_utils.py:864] GPU KV cache size: 476,080 tokens
+[1;36m(EngineCore_DP0 pid=993944)[0;0m INFO 10-18 20:51:04 [kv_cache_utils.py:868] Maximum concurrency for 4,096 tokens per request: 116.23x
+[1;36m(EngineCore_DP0 pid=993944)[0;0m INFO 10-18 20:51:05 [gpu_worker.py:391] Free memory on device (15.09/15.58 GiB) on startup. Desired GPU memory utilization is (0.5, 7.79 GiB). Actual usage is 0.93 GiB for weight, 1.4 GiB for peak activation, 0.02 GiB for non-torch memory, and 0.0 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=5692953600` to fit into requested memory, or `--kv-cache-memory=13531419648` to fully utilize gpu memory. Current kv cache memory in use is 5850240000 bytes.
+[1;36m(EngineCore_DP0 pid=993944)[0;0m INFO 10-18 20:51:05 [core.py:218] init engine (profile, create kv cache, warmup model) took 1.61 seconds
+[1;36m(EngineCore_DP0 pid=993944)[0;0m INFO 10-18 20:51:05 [__init__.py:3400] Cudagraph is disabled under eager mode
+INFO 10-18 20:51:05 [llm.py:295] Supported_tasks: ['generate']
+INFO 10-18 20:51:05 [__init__.py:36] No IOProcessor plugins requested by the model
+Adding requests:   0%|          | 0/8 [00:00<?, ?it/s][1;36m(EngineCore_DP0 pid=993944)[0;0m WARNING 10-18 20:51:05 [cudagraph_dispatcher.py:102] cudagraph dispatching keys are not initialized. No cudagraph will be used.
+Adding requests: 100%|██████████| 8/8 [00:00<00:00, 731.69it/s]
+Processed prompts:   0%|          | 0/128 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts:  12%|█▎        | 16/128 [00:01<00:10, 10.21it/s, est. speed input: 970.44 toks/s, output: 500.53 toks/s]Processed prompts:  38%|███▊      | 48/128 [00:01<00:02, 28.77it/s, est. speed input: 2710.58 toks/s, output: 1378.06 toks/s]Processed prompts:  50%|█████     | 64/128 [00:02<00:02, 31.99it/s, est. speed input: 2901.42 toks/s, output: 1474.76 toks/s]Processed prompts:  75%|███████▌  | 96/128 [00:02<00:00, 49.18it/s, est. speed input: 4025.70 toks/s, output: 2350.77 toks/s]Processed prompts:  88%|████████▊ | 112/128 [00:03<00:00, 46.85it/s, est. speed input: 4107.62 toks/s, output: 2655.39 toks/s]Processed prompts: 100%|██████████| 128/128 [00:04<00:00, 29.21it/s, est. speed input: 3513.75 toks/s, output: 2621.77 toks/s]Processed prompts: 100%|██████████| 128/128 [00:04<00:00, 29.21it/s, est. speed input: 3513.75 toks/s, output: 2621.77 toks/s]Processed prompts: 100%|██████████| 128/128 [00:04<00:00, 30.85it/s, est. speed input: 3513.75 toks/s, output: 2621.77 toks/s]
+[rank0]:[W1018 20:51:09.160441226 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+Generated 8 prompt completion groups.
+Sampled evaluation at optimizer step 40: coverage=0.625 mean_pass_count=1.75 exact0=0.375
+{'loss': 0.4959, 'grad_norm': 1.0273102521896362, 'learning_rate': 8.050000000000001e-06, 'epoch': 40.0}
+INFO 10-18 20:52:02 [__init__.py:216] Automatically detected platform cuda.
+INFO 10-18 20:52:03 [utils.py:328] non-default args: {'dtype': 'bfloat16', 'max_model_len': 4096, 'gpu_memory_utilization': 0.5, 'disable_log_stats': True, 'enforce_eager': True, 'model': '/tmp/qwen-evalplus-3n97m4zx/merged'}
+INFO 10-18 20:52:16 [__init__.py:742] Resolved architecture: Qwen2ForCausalLM
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO 10-18 20:52:16 [__init__.py:1815] Using max model len 4096
+INFO 10-18 20:52:18 [scheduler.py:222] Chunked prefill is enabled with max_num_batched_tokens=8192.
+INFO 10-18 20:52:18 [__init__.py:3400] Cudagraph is disabled under eager mode
+WARNING 10-18 20:52:19 [__init__.py:2974] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized
+INFO 10-18 20:52:24 [__init__.py:216] Automatically detected platform cuda.
+[1;36m(EngineCore_DP0 pid=995244)[0;0m INFO 10-18 20:52:25 [core.py:654] Waiting for init message from front-end.
+[1;36m(EngineCore_DP0 pid=995244)[0;0m INFO 10-18 20:52:25 [core.py:76] Initializing a V1 LLM engine (v0.10.2) with config: model='/tmp/qwen-evalplus-3n97m4zx/merged', speculative_config=None, tokenizer='/tmp/qwen-evalplus-3n97m4zx/merged', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=4096, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=True, kv_cache_dtype=auto, device_config=cuda, decoding_config=DecodingConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_backend=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=/tmp/qwen-evalplus-3n97m4zx/merged, enable_prefix_caching=True, chunked_prefill_enabled=True, use_async_output_proc=True, pooler_config=None, compilation_config={"level":0,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":null,"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":0,"use_cudagraph":true,"cudagraph_num_of_warmups":0,"cudagraph_capture_sizes":[],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"pass_config":{},"max_capture_size":0,"local_cache_dir":null}
+[W1018 20:52:29.262816410 ProcessGroupNCCL.cpp:981] Warning: TORCH_NCCL_AVOID_RECORD_STREAMS is the default now, this environment variable is thus deprecated. (function operator())
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[1;36m(EngineCore_DP0 pid=995244)[0;0m INFO 10-18 20:52:30 [parallel_state.py:1165] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+[1;36m(EngineCore_DP0 pid=995244)[0;0m WARNING 10-18 20:52:30 [topk_topp_sampler.py:69] FlashInfer is not available. Falling back to the PyTorch-native implementation of top-p & top-k sampling. For the best performance, please install FlashInfer.
+[1;36m(EngineCore_DP0 pid=995244)[0;0m INFO 10-18 20:52:30 [gpu_model_runner.py:2338] Starting to load model /tmp/qwen-evalplus-3n97m4zx/merged...
+[1;36m(EngineCore_DP0 pid=995244)[0;0m INFO 10-18 20:52:30 [gpu_model_runner.py:2370] Loading model from scratch...
+[1;36m(EngineCore_DP0 pid=995244)[0;0m INFO 10-18 20:52:30 [cuda.py:362] Using Flash Attention backend on V1 engine.
+[1;36m(EngineCore_DP0 pid=995244)[0;0m Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+[1;36m(EngineCore_DP0 pid=995244)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  8.79it/s]
+[1;36m(EngineCore_DP0 pid=995244)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  8.76it/s]
+[1;36m(EngineCore_DP0 pid=995244)[0;0m 
+[1;36m(EngineCore_DP0 pid=995244)[0;0m INFO 10-18 20:52:30 [default_loader.py:268] Loading weights took 0.15 seconds
+[1;36m(EngineCore_DP0 pid=995244)[0;0m INFO 10-18 20:52:31 [gpu_model_runner.py:2392] Model loading took 0.9277 GiB and 0.253397 seconds
+[1;36m(EngineCore_DP0 pid=995244)[0;0m INFO 10-18 20:52:32 [gpu_worker.py:298] Available KV cache memory: 5.45 GiB
+[1;36m(EngineCore_DP0 pid=995244)[0;0m INFO 10-18 20:52:32 [kv_cache_utils.py:864] GPU KV cache size: 476,080 tokens
+[1;36m(EngineCore_DP0 pid=995244)[0;0m INFO 10-18 20:52:32 [kv_cache_utils.py:868] Maximum concurrency for 4,096 tokens per request: 116.23x
+[1;36m(EngineCore_DP0 pid=995244)[0;0m INFO 10-18 20:52:32 [gpu_worker.py:391] Free memory on device (15.09/15.58 GiB) on startup. Desired GPU memory utilization is (0.5, 7.79 GiB). Actual usage is 0.93 GiB for weight, 1.4 GiB for peak activation, 0.02 GiB for non-torch memory, and 0.0 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=5692953600` to fit into requested memory, or `--kv-cache-memory=13531419648` to fully utilize gpu memory. Current kv cache memory in use is 5850240000 bytes.
+[1;36m(EngineCore_DP0 pid=995244)[0;0m INFO 10-18 20:52:32 [core.py:218] init engine (profile, create kv cache, warmup model) took 1.64 seconds
+[1;36m(EngineCore_DP0 pid=995244)[0;0m INFO 10-18 20:52:33 [__init__.py:3400] Cudagraph is disabled under eager mode
+INFO 10-18 20:52:33 [llm.py:295] Supported_tasks: ['generate']
+INFO 10-18 20:52:33 [__init__.py:36] No IOProcessor plugins requested by the model
+Adding requests:   0%|          | 0/8 [00:00<?, ?it/s][1;36m(EngineCore_DP0 pid=995244)[0;0m WARNING 10-18 20:52:33 [cudagraph_dispatcher.py:102] cudagraph dispatching keys are not initialized. No cudagraph will be used.
+Adding requests: 100%|██████████| 8/8 [00:00<00:00, 814.51it/s]
+Processed prompts:   0%|          | 0/128 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts:  12%|█▎        | 16/128 [00:01<00:08, 12.48it/s, est. speed input: 1185.89 toks/s, output: 696.67 toks/s]Processed prompts:  25%|██▌       | 32/128 [00:01<00:04, 21.04it/s, est. speed input: 1812.86 toks/s, output: 1047.11 toks/s]Processed prompts:  50%|█████     | 64/128 [00:02<00:01, 37.41it/s, est. speed input: 2875.83 toks/s, output: 1814.18 toks/s]Processed prompts:  62%|██████▎   | 80/128 [00:02<00:01, 45.32it/s, est. speed input: 3622.96 toks/s, output: 2212.19 toks/s]Processed prompts:  88%|████████▊ | 112/128 [00:03<00:00, 37.01it/s, est. speed input: 3720.73 toks/s, output: 2308.18 toks/s]Processed prompts: 100%|██████████| 128/128 [00:03<00:00, 37.77it/s, est. speed input: 3871.91 toks/s, output: 2841.99 toks/s]Processed prompts: 100%|██████████| 128/128 [00:03<00:00, 37.77it/s, est. speed input: 3871.91 toks/s, output: 2841.99 toks/s]Processed prompts: 100%|██████████| 128/128 [00:03<00:00, 34.00it/s, est. speed input: 3871.91 toks/s, output: 2841.99 toks/s]
+[rank0]:[W1018 20:52:37.569413933 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+Generated 8 prompt completion groups.
+Sampled evaluation at optimizer step 50: coverage=0.625 mean_pass_count=2.0 exact0=0.375
+{'loss': 0.391, 'grad_norm': 0.9697417616844177, 'learning_rate': 7.5500000000000006e-06, 'epoch': 50.0}
+INFO 10-18 20:53:25 [__init__.py:216] Automatically detected platform cuda.
+INFO 10-18 20:53:26 [utils.py:328] non-default args: {'dtype': 'bfloat16', 'max_model_len': 4096, 'gpu_memory_utilization': 0.5, 'disable_log_stats': True, 'enforce_eager': True, 'model': '/tmp/qwen-evalplus-glnurxtw/merged'}
+INFO 10-18 20:53:38 [__init__.py:742] Resolved architecture: Qwen2ForCausalLM
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO 10-18 20:53:38 [__init__.py:1815] Using max model len 4096
+INFO 10-18 20:53:40 [scheduler.py:222] Chunked prefill is enabled with max_num_batched_tokens=8192.
+INFO 10-18 20:53:40 [__init__.py:3400] Cudagraph is disabled under eager mode
+WARNING 10-18 20:53:40 [__init__.py:2974] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized
+INFO 10-18 20:53:45 [__init__.py:216] Automatically detected platform cuda.
+[1;36m(EngineCore_DP0 pid=996344)[0;0m INFO 10-18 20:53:46 [core.py:654] Waiting for init message from front-end.
+[1;36m(EngineCore_DP0 pid=996344)[0;0m INFO 10-18 20:53:46 [core.py:76] Initializing a V1 LLM engine (v0.10.2) with config: model='/tmp/qwen-evalplus-glnurxtw/merged', speculative_config=None, tokenizer='/tmp/qwen-evalplus-glnurxtw/merged', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=4096, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=True, kv_cache_dtype=auto, device_config=cuda, decoding_config=DecodingConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_backend=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=/tmp/qwen-evalplus-glnurxtw/merged, enable_prefix_caching=True, chunked_prefill_enabled=True, use_async_output_proc=True, pooler_config=None, compilation_config={"level":0,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":null,"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":0,"use_cudagraph":true,"cudagraph_num_of_warmups":0,"cudagraph_capture_sizes":[],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"pass_config":{},"max_capture_size":0,"local_cache_dir":null}
+[W1018 20:53:51.286378811 ProcessGroupNCCL.cpp:981] Warning: TORCH_NCCL_AVOID_RECORD_STREAMS is the default now, this environment variable is thus deprecated. (function operator())
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[1;36m(EngineCore_DP0 pid=996344)[0;0m INFO 10-18 20:53:51 [parallel_state.py:1165] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+[1;36m(EngineCore_DP0 pid=996344)[0;0m WARNING 10-18 20:53:51 [topk_topp_sampler.py:69] FlashInfer is not available. Falling back to the PyTorch-native implementation of top-p & top-k sampling. For the best performance, please install FlashInfer.
+[1;36m(EngineCore_DP0 pid=996344)[0;0m INFO 10-18 20:53:51 [gpu_model_runner.py:2338] Starting to load model /tmp/qwen-evalplus-glnurxtw/merged...
+[1;36m(EngineCore_DP0 pid=996344)[0;0m INFO 10-18 20:53:51 [gpu_model_runner.py:2370] Loading model from scratch...
+[1;36m(EngineCore_DP0 pid=996344)[0;0m INFO 10-18 20:53:51 [cuda.py:362] Using Flash Attention backend on V1 engine.
+[1;36m(EngineCore_DP0 pid=996344)[0;0m Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+[1;36m(EngineCore_DP0 pid=996344)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  9.12it/s]
+[1;36m(EngineCore_DP0 pid=996344)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  9.08it/s]
+[1;36m(EngineCore_DP0 pid=996344)[0;0m 
+[1;36m(EngineCore_DP0 pid=996344)[0;0m INFO 10-18 20:53:51 [default_loader.py:268] Loading weights took 0.14 seconds
+[1;36m(EngineCore_DP0 pid=996344)[0;0m INFO 10-18 20:53:52 [gpu_model_runner.py:2392] Model loading took 0.9277 GiB and 0.247897 seconds
+[1;36m(EngineCore_DP0 pid=996344)[0;0m INFO 10-18 20:53:53 [gpu_worker.py:298] Available KV cache memory: 5.45 GiB
+[1;36m(EngineCore_DP0 pid=996344)[0;0m INFO 10-18 20:53:53 [kv_cache_utils.py:864] GPU KV cache size: 476,080 tokens
+[1;36m(EngineCore_DP0 pid=996344)[0;0m INFO 10-18 20:53:53 [kv_cache_utils.py:868] Maximum concurrency for 4,096 tokens per request: 116.23x
+[1;36m(EngineCore_DP0 pid=996344)[0;0m INFO 10-18 20:53:53 [gpu_worker.py:391] Free memory on device (15.09/15.58 GiB) on startup. Desired GPU memory utilization is (0.5, 7.79 GiB). Actual usage is 0.93 GiB for weight, 1.4 GiB for peak activation, 0.02 GiB for non-torch memory, and 0.0 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=5692953600` to fit into requested memory, or `--kv-cache-memory=13531419648` to fully utilize gpu memory. Current kv cache memory in use is 5850240000 bytes.
+[1;36m(EngineCore_DP0 pid=996344)[0;0m INFO 10-18 20:53:53 [core.py:218] init engine (profile, create kv cache, warmup model) took 1.58 seconds
+[1;36m(EngineCore_DP0 pid=996344)[0;0m INFO 10-18 20:53:54 [__init__.py:3400] Cudagraph is disabled under eager mode
+INFO 10-18 20:53:54 [llm.py:295] Supported_tasks: ['generate']
+INFO 10-18 20:53:54 [__init__.py:36] No IOProcessor plugins requested by the model
+Adding requests:   0%|          | 0/8 [00:00<?, ?it/s][1;36m(EngineCore_DP0 pid=996344)[0;0m WARNING 10-18 20:53:54 [cudagraph_dispatcher.py:102] cudagraph dispatching keys are not initialized. No cudagraph will be used.
+Adding requests: 100%|██████████| 8/8 [00:00<00:00, 789.31it/s]
+Processed prompts:   0%|          | 0/128 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts:  12%|█▎        | 16/128 [00:01<00:08, 13.37it/s, est. speed input: 1269.76 toks/s, output: 617.30 toks/s]Processed prompts:  25%|██▌       | 32/128 [00:01<00:04, 22.97it/s, est. speed input: 1969.94 toks/s, output: 1059.45 toks/s]Processed prompts:  38%|███▊      | 48/128 [00:01<00:02, 33.72it/s, est. speed input: 3029.51 toks/s, output: 1564.89 toks/s]Processed prompts:  50%|█████     | 64/128 [00:01<00:01, 46.46it/s, est. speed input: 3632.58 toks/s, output: 2165.47 toks/s]Processed prompts:  62%|██████▎   | 80/128 [00:02<00:00, 54.80it/s, est. speed input: 4386.33 toks/s, output: 2357.09 toks/s]Processed prompts:  75%|███████▌  | 96/128 [00:02<00:00, 46.88it/s, est. speed input: 4229.77 toks/s, output: 2320.40 toks/s]Processed prompts:  88%|████████▊ | 112/128 [00:03<00:00, 28.71it/s, est. speed input: 3610.63 toks/s, output: 2351.90 toks/s]Processed prompts: 100%|██████████| 128/128 [00:03<00:00, 30.65it/s, est. speed input: 3659.63 toks/s, output: 2661.07 toks/s]Processed prompts: 100%|██████████| 128/128 [00:03<00:00, 30.65it/s, est. speed input: 3659.63 toks/s, output: 2661.07 toks/s]Processed prompts: 100%|██████████| 128/128 [00:03<00:00, 32.13it/s, est. speed input: 3659.63 toks/s, output: 2661.07 toks/s]
+[rank0]:[W1018 20:53:58.663393092 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+Generated 8 prompt completion groups.
+Sampled evaluation at optimizer step 60: coverage=0.625 mean_pass_count=3.25 exact0=0.375
+{'loss': 0.2962, 'grad_norm': 0.8739131093025208, 'learning_rate': 7.05e-06, 'epoch': 60.0}
+INFO 10-18 20:54:46 [__init__.py:216] Automatically detected platform cuda.
+INFO 10-18 20:54:47 [utils.py:328] non-default args: {'dtype': 'bfloat16', 'max_model_len': 4096, 'gpu_memory_utilization': 0.5, 'disable_log_stats': True, 'enforce_eager': True, 'model': '/tmp/qwen-evalplus-nx_wl055/merged'}
+INFO 10-18 20:54:59 [__init__.py:742] Resolved architecture: Qwen2ForCausalLM
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO 10-18 20:54:59 [__init__.py:1815] Using max model len 4096
+INFO 10-18 20:55:01 [scheduler.py:222] Chunked prefill is enabled with max_num_batched_tokens=8192.
+INFO 10-18 20:55:01 [__init__.py:3400] Cudagraph is disabled under eager mode
+WARNING 10-18 20:55:01 [__init__.py:2974] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized
+INFO 10-18 20:55:06 [__init__.py:216] Automatically detected platform cuda.
+[1;36m(EngineCore_DP0 pid=997449)[0;0m INFO 10-18 20:55:07 [core.py:654] Waiting for init message from front-end.
+[1;36m(EngineCore_DP0 pid=997449)[0;0m INFO 10-18 20:55:07 [core.py:76] Initializing a V1 LLM engine (v0.10.2) with config: model='/tmp/qwen-evalplus-nx_wl055/merged', speculative_config=None, tokenizer='/tmp/qwen-evalplus-nx_wl055/merged', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=4096, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=True, kv_cache_dtype=auto, device_config=cuda, decoding_config=DecodingConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_backend=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=/tmp/qwen-evalplus-nx_wl055/merged, enable_prefix_caching=True, chunked_prefill_enabled=True, use_async_output_proc=True, pooler_config=None, compilation_config={"level":0,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":null,"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":0,"use_cudagraph":true,"cudagraph_num_of_warmups":0,"cudagraph_capture_sizes":[],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"pass_config":{},"max_capture_size":0,"local_cache_dir":null}
+[W1018 20:55:12.316146408 ProcessGroupNCCL.cpp:981] Warning: TORCH_NCCL_AVOID_RECORD_STREAMS is the default now, this environment variable is thus deprecated. (function operator())
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[1;36m(EngineCore_DP0 pid=997449)[0;0m INFO 10-18 20:55:12 [parallel_state.py:1165] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+[1;36m(EngineCore_DP0 pid=997449)[0;0m WARNING 10-18 20:55:12 [topk_topp_sampler.py:69] FlashInfer is not available. Falling back to the PyTorch-native implementation of top-p & top-k sampling. For the best performance, please install FlashInfer.
+[1;36m(EngineCore_DP0 pid=997449)[0;0m INFO 10-18 20:55:12 [gpu_model_runner.py:2338] Starting to load model /tmp/qwen-evalplus-nx_wl055/merged...
+[1;36m(EngineCore_DP0 pid=997449)[0;0m INFO 10-18 20:55:12 [gpu_model_runner.py:2370] Loading model from scratch...
+[1;36m(EngineCore_DP0 pid=997449)[0;0m INFO 10-18 20:55:12 [cuda.py:362] Using Flash Attention backend on V1 engine.
+[1;36m(EngineCore_DP0 pid=997449)[0;0m Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+[1;36m(EngineCore_DP0 pid=997449)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  8.81it/s]
+[1;36m(EngineCore_DP0 pid=997449)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  8.78it/s]
+[1;36m(EngineCore_DP0 pid=997449)[0;0m 
+[1;36m(EngineCore_DP0 pid=997449)[0;0m INFO 10-18 20:55:12 [default_loader.py:268] Loading weights took 0.15 seconds
+[1;36m(EngineCore_DP0 pid=997449)[0;0m INFO 10-18 20:55:13 [gpu_model_runner.py:2392] Model loading took 0.9277 GiB and 0.246311 seconds
+[1;36m(EngineCore_DP0 pid=997449)[0;0m INFO 10-18 20:55:14 [gpu_worker.py:298] Available KV cache memory: 5.45 GiB
+[1;36m(EngineCore_DP0 pid=997449)[0;0m INFO 10-18 20:55:14 [kv_cache_utils.py:864] GPU KV cache size: 476,080 tokens
+[1;36m(EngineCore_DP0 pid=997449)[0;0m INFO 10-18 20:55:14 [kv_cache_utils.py:868] Maximum concurrency for 4,096 tokens per request: 116.23x
+[1;36m(EngineCore_DP0 pid=997449)[0;0m INFO 10-18 20:55:14 [gpu_worker.py:391] Free memory on device (15.09/15.58 GiB) on startup. Desired GPU memory utilization is (0.5, 7.79 GiB). Actual usage is 0.93 GiB for weight, 1.4 GiB for peak activation, 0.02 GiB for non-torch memory, and 0.0 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=5692953600` to fit into requested memory, or `--kv-cache-memory=13531419648` to fully utilize gpu memory. Current kv cache memory in use is 5850240000 bytes.
+[1;36m(EngineCore_DP0 pid=997449)[0;0m INFO 10-18 20:55:14 [core.py:218] init engine (profile, create kv cache, warmup model) took 1.63 seconds
+[1;36m(EngineCore_DP0 pid=997449)[0;0m INFO 10-18 20:55:15 [__init__.py:3400] Cudagraph is disabled under eager mode
+INFO 10-18 20:55:15 [llm.py:295] Supported_tasks: ['generate']
+INFO 10-18 20:55:15 [__init__.py:36] No IOProcessor plugins requested by the model
+Adding requests:   0%|          | 0/8 [00:00<?, ?it/s][1;36m(EngineCore_DP0 pid=997449)[0;0m WARNING 10-18 20:55:15 [cudagraph_dispatcher.py:102] cudagraph dispatching keys are not initialized. No cudagraph will be used.
+Adding requests: 100%|██████████| 8/8 [00:00<00:00, 738.09it/s]
+Processed prompts:   0%|          | 0/128 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts:  12%|█▎        | 16/128 [00:01<00:09, 11.62it/s, est. speed input: 1103.93 toks/s, output: 628.17 toks/s]Processed prompts:  25%|██▌       | 32/128 [00:01<00:03, 24.79it/s, est. speed input: 2013.14 toks/s, output: 1094.59 toks/s]Processed prompts:  50%|█████     | 64/128 [00:01<00:01, 52.21it/s, est. speed input: 3991.47 toks/s, output: 1884.02 toks/s]Processed prompts:  62%|██████▎   | 80/128 [00:02<00:01, 34.76it/s, est. speed input: 3347.67 toks/s, output: 1841.01 toks/s]Processed prompts:  88%|████████▊ | 112/128 [00:02<00:00, 48.52it/s, est. speed input: 4338.65 toks/s, output: 2631.24 toks/s]Processed prompts: 100%|██████████| 128/128 [00:02<00:00, 48.52it/s, est. speed input: 4994.62 toks/s, output: 3458.40 toks/s]Processed prompts: 100%|██████████| 128/128 [00:02<00:00, 43.85it/s, est. speed input: 4994.62 toks/s, output: 3458.40 toks/s]
+[rank0]:[W1018 20:55:18.792149977 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+Generated 8 prompt completion groups.
+Sampled evaluation at optimizer step 70: coverage=0.75 mean_pass_count=5.0 exact0=0.25
+{'loss': 0.2137, 'grad_norm': 0.817366361618042, 'learning_rate': 6.550000000000001e-06, 'epoch': 70.0}
+INFO 10-18 20:55:55 [__init__.py:216] Automatically detected platform cuda.
+INFO 10-18 20:55:56 [utils.py:328] non-default args: {'dtype': 'bfloat16', 'max_model_len': 4096, 'gpu_memory_utilization': 0.5, 'disable_log_stats': True, 'enforce_eager': True, 'model': '/tmp/qwen-evalplus-3btwab6i/merged'}
+INFO 10-18 20:56:09 [__init__.py:742] Resolved architecture: Qwen2ForCausalLM
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO 10-18 20:56:09 [__init__.py:1815] Using max model len 4096
+INFO 10-18 20:56:10 [scheduler.py:222] Chunked prefill is enabled with max_num_batched_tokens=8192.
+INFO 10-18 20:56:10 [__init__.py:3400] Cudagraph is disabled under eager mode
+WARNING 10-18 20:56:11 [__init__.py:2974] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized
+INFO 10-18 20:56:16 [__init__.py:216] Automatically detected platform cuda.
+[1;36m(EngineCore_DP0 pid=998550)[0;0m INFO 10-18 20:56:17 [core.py:654] Waiting for init message from front-end.
+[1;36m(EngineCore_DP0 pid=998550)[0;0m INFO 10-18 20:56:17 [core.py:76] Initializing a V1 LLM engine (v0.10.2) with config: model='/tmp/qwen-evalplus-3btwab6i/merged', speculative_config=None, tokenizer='/tmp/qwen-evalplus-3btwab6i/merged', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=4096, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=True, kv_cache_dtype=auto, device_config=cuda, decoding_config=DecodingConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_backend=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=/tmp/qwen-evalplus-3btwab6i/merged, enable_prefix_caching=True, chunked_prefill_enabled=True, use_async_output_proc=True, pooler_config=None, compilation_config={"level":0,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":null,"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":0,"use_cudagraph":true,"cudagraph_num_of_warmups":0,"cudagraph_capture_sizes":[],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"pass_config":{},"max_capture_size":0,"local_cache_dir":null}
+[W1018 20:56:22.485997645 ProcessGroupNCCL.cpp:981] Warning: TORCH_NCCL_AVOID_RECORD_STREAMS is the default now, this environment variable is thus deprecated. (function operator())
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[1;36m(EngineCore_DP0 pid=998550)[0;0m INFO 10-18 20:56:22 [parallel_state.py:1165] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+[1;36m(EngineCore_DP0 pid=998550)[0;0m WARNING 10-18 20:56:22 [topk_topp_sampler.py:69] FlashInfer is not available. Falling back to the PyTorch-native implementation of top-p & top-k sampling. For the best performance, please install FlashInfer.
+[1;36m(EngineCore_DP0 pid=998550)[0;0m INFO 10-18 20:56:22 [gpu_model_runner.py:2338] Starting to load model /tmp/qwen-evalplus-3btwab6i/merged...
+[1;36m(EngineCore_DP0 pid=998550)[0;0m INFO 10-18 20:56:22 [gpu_model_runner.py:2370] Loading model from scratch...
+[1;36m(EngineCore_DP0 pid=998550)[0;0m INFO 10-18 20:56:22 [cuda.py:362] Using Flash Attention backend on V1 engine.
+[1;36m(EngineCore_DP0 pid=998550)[0;0m Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+[1;36m(EngineCore_DP0 pid=998550)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  9.39it/s]
+[1;36m(EngineCore_DP0 pid=998550)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  9.35it/s]
+[1;36m(EngineCore_DP0 pid=998550)[0;0m 
+[1;36m(EngineCore_DP0 pid=998550)[0;0m INFO 10-18 20:56:22 [default_loader.py:268] Loading weights took 0.14 seconds
+[1;36m(EngineCore_DP0 pid=998550)[0;0m INFO 10-18 20:56:23 [gpu_model_runner.py:2392] Model loading took 0.9277 GiB and 0.241853 seconds
+[1;36m(EngineCore_DP0 pid=998550)[0;0m INFO 10-18 20:56:24 [gpu_worker.py:298] Available KV cache memory: 5.45 GiB
+[1;36m(EngineCore_DP0 pid=998550)[0;0m INFO 10-18 20:56:24 [kv_cache_utils.py:864] GPU KV cache size: 476,080 tokens
+[1;36m(EngineCore_DP0 pid=998550)[0;0m INFO 10-18 20:56:24 [kv_cache_utils.py:868] Maximum concurrency for 4,096 tokens per request: 116.23x
+[1;36m(EngineCore_DP0 pid=998550)[0;0m INFO 10-18 20:56:24 [gpu_worker.py:391] Free memory on device (15.09/15.58 GiB) on startup. Desired GPU memory utilization is (0.5, 7.79 GiB). Actual usage is 0.93 GiB for weight, 1.4 GiB for peak activation, 0.02 GiB for non-torch memory, and 0.0 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=5692953600` to fit into requested memory, or `--kv-cache-memory=13531419648` to fully utilize gpu memory. Current kv cache memory in use is 5850240000 bytes.
+[1;36m(EngineCore_DP0 pid=998550)[0;0m INFO 10-18 20:56:24 [core.py:218] init engine (profile, create kv cache, warmup model) took 1.58 seconds
+[1;36m(EngineCore_DP0 pid=998550)[0;0m INFO 10-18 20:56:25 [__init__.py:3400] Cudagraph is disabled under eager mode
+INFO 10-18 20:56:25 [llm.py:295] Supported_tasks: ['generate']
+INFO 10-18 20:56:25 [__init__.py:36] No IOProcessor plugins requested by the model
+Adding requests:   0%|          | 0/8 [00:00<?, ?it/s][1;36m(EngineCore_DP0 pid=998550)[0;0m WARNING 10-18 20:56:25 [cudagraph_dispatcher.py:102] cudagraph dispatching keys are not initialized. No cudagraph will be used.
+Adding requests: 100%|██████████| 8/8 [00:00<00:00, 778.20it/s]
+Processed prompts:   0%|          | 0/128 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts:  12%|█▎        | 16/128 [00:01<00:07, 14.63it/s, est. speed input: 2106.83 toks/s, output: 524.85 toks/s]Processed prompts:  25%|██▌       | 32/128 [00:01<00:03, 26.77it/s, est. speed input: 2845.41 toks/s, output: 1104.18 toks/s]Processed prompts:  38%|███▊      | 48/128 [00:01<00:01, 41.94it/s, est. speed input: 3639.46 toks/s, output: 1551.34 toks/s]Processed prompts:  50%|█████     | 64/128 [00:01<00:01, 48.60it/s, est. speed input: 3996.94 toks/s, output: 1777.10 toks/s]Processed prompts:  75%|███████▌  | 96/128 [00:01<00:00, 76.94it/s, est. speed input: 5588.29 toks/s, output: 2711.69 toks/s]Processed prompts:  88%|████████▊ | 112/128 [00:02<00:00, 59.74it/s, est. speed input: 5446.54 toks/s, output: 3169.80 toks/s]Processed prompts: 100%|██████████| 128/128 [00:03<00:00, 30.06it/s, est. speed input: 4105.06 toks/s, output: 2580.54 toks/s]Processed prompts: 100%|██████████| 128/128 [00:03<00:00, 30.06it/s, est. speed input: 4105.06 toks/s, output: 2580.54 toks/s]Processed prompts: 100%|██████████| 128/128 [00:03<00:00, 36.04it/s, est. speed input: 4105.06 toks/s, output: 2580.54 toks/s]
+[rank0]:[W1018 20:56:29.486455257 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+Generated 8 prompt completion groups.
+Sampled evaluation at optimizer step 80: coverage=0.75 mean_pass_count=6.25 exact0=0.25
+{'loss': 0.1429, 'grad_norm': 0.7477288246154785, 'learning_rate': 6.0500000000000005e-06, 'epoch': 80.0}
+INFO 10-18 20:57:06 [__init__.py:216] Automatically detected platform cuda.
+INFO 10-18 20:57:08 [utils.py:328] non-default args: {'dtype': 'bfloat16', 'max_model_len': 4096, 'gpu_memory_utilization': 0.5, 'disable_log_stats': True, 'enforce_eager': True, 'model': '/tmp/qwen-evalplus-in1cux5o/merged'}
+INFO 10-18 20:57:20 [__init__.py:742] Resolved architecture: Qwen2ForCausalLM
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO 10-18 20:57:20 [__init__.py:1815] Using max model len 4096
+INFO 10-18 20:57:21 [scheduler.py:222] Chunked prefill is enabled with max_num_batched_tokens=8192.
+INFO 10-18 20:57:21 [__init__.py:3400] Cudagraph is disabled under eager mode
+WARNING 10-18 20:57:22 [__init__.py:2974] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized
+INFO 10-18 20:57:27 [__init__.py:216] Automatically detected platform cuda.
+[1;36m(EngineCore_DP0 pid=999673)[0;0m INFO 10-18 20:57:28 [core.py:654] Waiting for init message from front-end.
+[1;36m(EngineCore_DP0 pid=999673)[0;0m INFO 10-18 20:57:28 [core.py:76] Initializing a V1 LLM engine (v0.10.2) with config: model='/tmp/qwen-evalplus-in1cux5o/merged', speculative_config=None, tokenizer='/tmp/qwen-evalplus-in1cux5o/merged', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=4096, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=True, kv_cache_dtype=auto, device_config=cuda, decoding_config=DecodingConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_backend=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=/tmp/qwen-evalplus-in1cux5o/merged, enable_prefix_caching=True, chunked_prefill_enabled=True, use_async_output_proc=True, pooler_config=None, compilation_config={"level":0,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":null,"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":0,"use_cudagraph":true,"cudagraph_num_of_warmups":0,"cudagraph_capture_sizes":[],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"pass_config":{},"max_capture_size":0,"local_cache_dir":null}
+[W1018 20:57:33.383703667 ProcessGroupNCCL.cpp:981] Warning: TORCH_NCCL_AVOID_RECORD_STREAMS is the default now, this environment variable is thus deprecated. (function operator())
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[1;36m(EngineCore_DP0 pid=999673)[0;0m INFO 10-18 20:57:33 [parallel_state.py:1165] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+[1;36m(EngineCore_DP0 pid=999673)[0;0m WARNING 10-18 20:57:33 [topk_topp_sampler.py:69] FlashInfer is not available. Falling back to the PyTorch-native implementation of top-p & top-k sampling. For the best performance, please install FlashInfer.
+[1;36m(EngineCore_DP0 pid=999673)[0;0m INFO 10-18 20:57:33 [gpu_model_runner.py:2338] Starting to load model /tmp/qwen-evalplus-in1cux5o/merged...
+[1;36m(EngineCore_DP0 pid=999673)[0;0m INFO 10-18 20:57:33 [gpu_model_runner.py:2370] Loading model from scratch...
+[1;36m(EngineCore_DP0 pid=999673)[0;0m INFO 10-18 20:57:33 [cuda.py:362] Using Flash Attention backend on V1 engine.
+[1;36m(EngineCore_DP0 pid=999673)[0;0m Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+[1;36m(EngineCore_DP0 pid=999673)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  9.31it/s]
+[1;36m(EngineCore_DP0 pid=999673)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  9.28it/s]
+[1;36m(EngineCore_DP0 pid=999673)[0;0m 
+[1;36m(EngineCore_DP0 pid=999673)[0;0m INFO 10-18 20:57:33 [default_loader.py:268] Loading weights took 0.14 seconds
+[1;36m(EngineCore_DP0 pid=999673)[0;0m INFO 10-18 20:57:34 [gpu_model_runner.py:2392] Model loading took 0.9277 GiB and 0.240698 seconds
+[1;36m(EngineCore_DP0 pid=999673)[0;0m INFO 10-18 20:57:35 [gpu_worker.py:298] Available KV cache memory: 5.45 GiB
+[1;36m(EngineCore_DP0 pid=999673)[0;0m INFO 10-18 20:57:35 [kv_cache_utils.py:864] GPU KV cache size: 476,080 tokens
+[1;36m(EngineCore_DP0 pid=999673)[0;0m INFO 10-18 20:57:35 [kv_cache_utils.py:868] Maximum concurrency for 4,096 tokens per request: 116.23x
+[1;36m(EngineCore_DP0 pid=999673)[0;0m INFO 10-18 20:57:35 [gpu_worker.py:391] Free memory on device (15.09/15.58 GiB) on startup. Desired GPU memory utilization is (0.5, 7.79 GiB). Actual usage is 0.93 GiB for weight, 1.4 GiB for peak activation, 0.02 GiB for non-torch memory, and 0.0 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=5692953600` to fit into requested memory, or `--kv-cache-memory=13529322496` to fully utilize gpu memory. Current kv cache memory in use is 5850240000 bytes.
+[1;36m(EngineCore_DP0 pid=999673)[0;0m INFO 10-18 20:57:35 [core.py:218] init engine (profile, create kv cache, warmup model) took 1.60 seconds
+[1;36m(EngineCore_DP0 pid=999673)[0;0m INFO 10-18 20:57:36 [__init__.py:3400] Cudagraph is disabled under eager mode
+INFO 10-18 20:57:36 [llm.py:295] Supported_tasks: ['generate']
+INFO 10-18 20:57:36 [__init__.py:36] No IOProcessor plugins requested by the model
+Adding requests:   0%|          | 0/8 [00:00<?, ?it/s][1;36m(EngineCore_DP0 pid=999673)[0;0m WARNING 10-18 20:57:36 [cudagraph_dispatcher.py:102] cudagraph dispatching keys are not initialized. No cudagraph will be used.
+Adding requests: 100%|██████████| 8/8 [00:00<00:00, 740.39it/s]
+Processed prompts:   0%|          | 0/128 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts:  12%|█▎        | 16/128 [00:00<00:06, 18.21it/s, est. speed input: 1729.84 toks/s, output: 853.46 toks/s]Processed prompts:  25%|██▌       | 32/128 [00:00<00:02, 37.95it/s, est. speed input: 3100.95 toks/s, output: 1647.26 toks/s]Processed prompts:  50%|█████     | 64/128 [00:01<00:00, 80.50it/s, est. speed input: 6169.06 toks/s, output: 2464.24 toks/s]Processed prompts:  75%|███████▌  | 96/128 [00:01<00:00, 93.09it/s, est. speed input: 7677.03 toks/s, output: 3316.99 toks/s]Processed prompts:  88%|████████▊ | 112/128 [00:02<00:00, 43.41it/s, est. speed input: 5335.80 toks/s, output: 2603.53 toks/s]Processed prompts: 100%|██████████| 128/128 [00:02<00:00, 38.69it/s, est. speed input: 5050.67 toks/s, output: 2928.60 toks/s]Processed prompts: 100%|██████████| 128/128 [00:02<00:00, 38.69it/s, est. speed input: 5050.67 toks/s, output: 2928.60 toks/s]Processed prompts: 100%|██████████| 128/128 [00:02<00:00, 44.34it/s, est. speed input: 5050.67 toks/s, output: 2928.60 toks/s]
+[rank0]:[W1018 20:57:39.708700051 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+Generated 8 prompt completion groups.
+Sampled evaluation at optimizer step 90: coverage=0.75 mean_pass_count=7.75 exact0=0.25
+{'loss': 0.0875, 'grad_norm': 0.598327100276947, 'learning_rate': 5.550000000000001e-06, 'epoch': 90.0}
+INFO 10-18 20:58:17 [__init__.py:216] Automatically detected platform cuda.
+INFO 10-18 20:58:18 [utils.py:328] non-default args: {'dtype': 'bfloat16', 'max_model_len': 4096, 'gpu_memory_utilization': 0.5, 'disable_log_stats': True, 'enforce_eager': True, 'model': '/tmp/qwen-evalplus-9mk9trui/merged'}
+INFO 10-18 20:58:30 [__init__.py:742] Resolved architecture: Qwen2ForCausalLM
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO 10-18 20:58:30 [__init__.py:1815] Using max model len 4096
+INFO 10-18 20:58:32 [scheduler.py:222] Chunked prefill is enabled with max_num_batched_tokens=8192.
+INFO 10-18 20:58:32 [__init__.py:3400] Cudagraph is disabled under eager mode
+WARNING 10-18 20:58:32 [__init__.py:2974] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized
+INFO 10-18 20:58:37 [__init__.py:216] Automatically detected platform cuda.
+[1;36m(EngineCore_DP0 pid=1000787)[0;0m INFO 10-18 20:58:38 [core.py:654] Waiting for init message from front-end.
+[1;36m(EngineCore_DP0 pid=1000787)[0;0m INFO 10-18 20:58:38 [core.py:76] Initializing a V1 LLM engine (v0.10.2) with config: model='/tmp/qwen-evalplus-9mk9trui/merged', speculative_config=None, tokenizer='/tmp/qwen-evalplus-9mk9trui/merged', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=4096, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=True, kv_cache_dtype=auto, device_config=cuda, decoding_config=DecodingConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_backend=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=/tmp/qwen-evalplus-9mk9trui/merged, enable_prefix_caching=True, chunked_prefill_enabled=True, use_async_output_proc=True, pooler_config=None, compilation_config={"level":0,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":null,"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":0,"use_cudagraph":true,"cudagraph_num_of_warmups":0,"cudagraph_capture_sizes":[],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"pass_config":{},"max_capture_size":0,"local_cache_dir":null}
+[W1018 20:58:43.865896914 ProcessGroupNCCL.cpp:981] Warning: TORCH_NCCL_AVOID_RECORD_STREAMS is the default now, this environment variable is thus deprecated. (function operator())
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[1;36m(EngineCore_DP0 pid=1000787)[0;0m INFO 10-18 20:58:43 [parallel_state.py:1165] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+[1;36m(EngineCore_DP0 pid=1000787)[0;0m WARNING 10-18 20:58:43 [topk_topp_sampler.py:69] FlashInfer is not available. Falling back to the PyTorch-native implementation of top-p & top-k sampling. For the best performance, please install FlashInfer.
+[1;36m(EngineCore_DP0 pid=1000787)[0;0m INFO 10-18 20:58:43 [gpu_model_runner.py:2338] Starting to load model /tmp/qwen-evalplus-9mk9trui/merged...
+[1;36m(EngineCore_DP0 pid=1000787)[0;0m INFO 10-18 20:58:43 [gpu_model_runner.py:2370] Loading model from scratch...
+[1;36m(EngineCore_DP0 pid=1000787)[0;0m INFO 10-18 20:58:44 [cuda.py:362] Using Flash Attention backend on V1 engine.
+[1;36m(EngineCore_DP0 pid=1000787)[0;0m Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+[1;36m(EngineCore_DP0 pid=1000787)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  9.07it/s]
+[1;36m(EngineCore_DP0 pid=1000787)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  9.03it/s]
+[1;36m(EngineCore_DP0 pid=1000787)[0;0m 
+[1;36m(EngineCore_DP0 pid=1000787)[0;0m INFO 10-18 20:58:44 [default_loader.py:268] Loading weights took 0.14 seconds
+[1;36m(EngineCore_DP0 pid=1000787)[0;0m INFO 10-18 20:58:44 [gpu_model_runner.py:2392] Model loading took 0.9277 GiB and 0.251376 seconds
+[1;36m(EngineCore_DP0 pid=1000787)[0;0m INFO 10-18 20:58:46 [gpu_worker.py:298] Available KV cache memory: 5.45 GiB
+[1;36m(EngineCore_DP0 pid=1000787)[0;0m INFO 10-18 20:58:46 [kv_cache_utils.py:864] GPU KV cache size: 476,080 tokens
+[1;36m(EngineCore_DP0 pid=1000787)[0;0m INFO 10-18 20:58:46 [kv_cache_utils.py:868] Maximum concurrency for 4,096 tokens per request: 116.23x
+[1;36m(EngineCore_DP0 pid=1000787)[0;0m INFO 10-18 20:58:46 [gpu_worker.py:391] Free memory on device (15.09/15.58 GiB) on startup. Desired GPU memory utilization is (0.5, 7.79 GiB). Actual usage is 0.93 GiB for weight, 1.4 GiB for peak activation, 0.02 GiB for non-torch memory, and 0.0 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=5692953600` to fit into requested memory, or `--kv-cache-memory=13531419648` to fully utilize gpu memory. Current kv cache memory in use is 5850240000 bytes.
+[1;36m(EngineCore_DP0 pid=1000787)[0;0m INFO 10-18 20:58:46 [core.py:218] init engine (profile, create kv cache, warmup model) took 1.64 seconds
+[1;36m(EngineCore_DP0 pid=1000787)[0;0m INFO 10-18 20:58:46 [__init__.py:3400] Cudagraph is disabled under eager mode
+INFO 10-18 20:58:47 [llm.py:295] Supported_tasks: ['generate']
+INFO 10-18 20:58:47 [__init__.py:36] No IOProcessor plugins requested by the model
+Adding requests:   0%|          | 0/8 [00:00<?, ?it/s][1;36m(EngineCore_DP0 pid=1000787)[0;0m WARNING 10-18 20:58:47 [cudagraph_dispatcher.py:102] cudagraph dispatching keys are not initialized. No cudagraph will be used.
+Adding requests: 100%|██████████| 8/8 [00:00<00:00, 623.24it/s]
+Processed prompts:   0%|          | 0/128 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts:  12%|█▎        | 16/128 [00:00<00:05, 19.24it/s, est. speed input: 1828.29 toks/s, output: 645.87 toks/s]Processed prompts:  38%|███▊      | 48/128 [00:01<00:01, 57.37it/s, est. speed input: 4549.02 toks/s, output: 2188.60 toks/s]Processed prompts:  62%|██████▎   | 80/128 [00:01<00:00, 60.17it/s, est. speed input: 6051.95 toks/s, output: 2219.69 toks/s]Processed prompts:  75%|███████▌  | 96/128 [00:01<00:00, 50.32it/s, est. speed input: 5443.39 toks/s, output: 2391.04 toks/s]Processed prompts:  88%|████████▊ | 112/128 [00:02<00:00, 52.65it/s, est. speed input: 5708.61 toks/s, output: 3107.28 toks/s]Processed prompts: 100%|██████████| 128/128 [00:02<00:00, 56.52it/s, est. speed input: 5907.94 toks/s, output: 3473.08 toks/s]Processed prompts: 100%|██████████| 128/128 [00:02<00:00, 56.52it/s, est. speed input: 5907.94 toks/s, output: 3473.08 toks/s]Processed prompts: 100%|██████████| 128/128 [00:02<00:00, 51.87it/s, est. speed input: 5907.94 toks/s, output: 3473.08 toks/s]
+[rank0]:[W1018 20:58:49.877844057 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+Generated 8 prompt completion groups.
+Sampled evaluation at optimizer step 100: coverage=1.0 mean_pass_count=9.625 exact0=0.0
+{'loss': 0.0497, 'grad_norm': 0.3979623019695282, 'learning_rate': 5.050000000000001e-06, 'epoch': 100.0}
+INFO 10-18 20:59:39 [__init__.py:216] Automatically detected platform cuda.
+INFO 10-18 20:59:40 [utils.py:328] non-default args: {'dtype': 'bfloat16', 'max_model_len': 4096, 'gpu_memory_utilization': 0.5, 'disable_log_stats': True, 'enforce_eager': True, 'model': '/tmp/qwen-evalplus-fnlebgs2/merged'}
+INFO 10-18 20:59:52 [__init__.py:742] Resolved architecture: Qwen2ForCausalLM
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO 10-18 20:59:52 [__init__.py:1815] Using max model len 4096
+INFO 10-18 20:59:54 [scheduler.py:222] Chunked prefill is enabled with max_num_batched_tokens=8192.
+INFO 10-18 20:59:54 [__init__.py:3400] Cudagraph is disabled under eager mode
+WARNING 10-18 20:59:54 [__init__.py:2974] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized
+INFO 10-18 20:59:59 [__init__.py:216] Automatically detected platform cuda.
+[1;36m(EngineCore_DP0 pid=1001922)[0;0m INFO 10-18 21:00:01 [core.py:654] Waiting for init message from front-end.
+[1;36m(EngineCore_DP0 pid=1001922)[0;0m INFO 10-18 21:00:01 [core.py:76] Initializing a V1 LLM engine (v0.10.2) with config: model='/tmp/qwen-evalplus-fnlebgs2/merged', speculative_config=None, tokenizer='/tmp/qwen-evalplus-fnlebgs2/merged', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=4096, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=True, kv_cache_dtype=auto, device_config=cuda, decoding_config=DecodingConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_backend=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=/tmp/qwen-evalplus-fnlebgs2/merged, enable_prefix_caching=True, chunked_prefill_enabled=True, use_async_output_proc=True, pooler_config=None, compilation_config={"level":0,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":null,"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":0,"use_cudagraph":true,"cudagraph_num_of_warmups":0,"cudagraph_capture_sizes":[],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"pass_config":{},"max_capture_size":0,"local_cache_dir":null}
+[W1018 21:00:05.195302775 ProcessGroupNCCL.cpp:981] Warning: TORCH_NCCL_AVOID_RECORD_STREAMS is the default now, this environment variable is thus deprecated. (function operator())
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[1;36m(EngineCore_DP0 pid=1001922)[0;0m INFO 10-18 21:00:05 [parallel_state.py:1165] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+[1;36m(EngineCore_DP0 pid=1001922)[0;0m WARNING 10-18 21:00:05 [topk_topp_sampler.py:69] FlashInfer is not available. Falling back to the PyTorch-native implementation of top-p & top-k sampling. For the best performance, please install FlashInfer.
+[1;36m(EngineCore_DP0 pid=1001922)[0;0m INFO 10-18 21:00:06 [gpu_model_runner.py:2338] Starting to load model /tmp/qwen-evalplus-fnlebgs2/merged...
+[1;36m(EngineCore_DP0 pid=1001922)[0;0m INFO 10-18 21:00:06 [gpu_model_runner.py:2370] Loading model from scratch...
+[1;36m(EngineCore_DP0 pid=1001922)[0;0m INFO 10-18 21:00:06 [cuda.py:362] Using Flash Attention backend on V1 engine.
+[1;36m(EngineCore_DP0 pid=1001922)[0;0m Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+[1;36m(EngineCore_DP0 pid=1001922)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  8.96it/s]
+[1;36m(EngineCore_DP0 pid=1001922)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  8.93it/s]
+[1;36m(EngineCore_DP0 pid=1001922)[0;0m 
+[1;36m(EngineCore_DP0 pid=1001922)[0;0m INFO 10-18 21:00:06 [default_loader.py:268] Loading weights took 0.15 seconds
+[1;36m(EngineCore_DP0 pid=1001922)[0;0m INFO 10-18 21:00:07 [gpu_model_runner.py:2392] Model loading took 0.9277 GiB and 0.572311 seconds
+[1;36m(EngineCore_DP0 pid=1001922)[0;0m INFO 10-18 21:00:08 [gpu_worker.py:298] Available KV cache memory: 5.53 GiB
+[1;36m(EngineCore_DP0 pid=1001922)[0;0m INFO 10-18 21:00:08 [kv_cache_utils.py:864] GPU KV cache size: 483,520 tokens
+[1;36m(EngineCore_DP0 pid=1001922)[0;0m INFO 10-18 21:00:08 [kv_cache_utils.py:868] Maximum concurrency for 4,096 tokens per request: 118.05x
+[1;36m(EngineCore_DP0 pid=1001922)[0;0m INFO 10-18 21:00:09 [gpu_worker.py:391] Free memory on device (15.01/15.58 GiB) on startup. Desired GPU memory utilization is (0.5, 7.79 GiB). Actual usage is 0.93 GiB for weight, 1.4 GiB for peak activation, -0.07 GiB for non-torch memory, and 0.0 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=5784310784` to fit into requested memory, or `--kv-cache-memory=13531419648` to fully utilize gpu memory. Current kv cache memory in use is 5941597184 bytes.
+[1;36m(EngineCore_DP0 pid=1001922)[0;0m INFO 10-18 21:00:09 [core.py:218] init engine (profile, create kv cache, warmup model) took 1.63 seconds
+[1;36m(EngineCore_DP0 pid=1001922)[0;0m INFO 10-18 21:00:09 [__init__.py:3400] Cudagraph is disabled under eager mode
+INFO 10-18 21:00:09 [llm.py:295] Supported_tasks: ['generate']
+INFO 10-18 21:00:09 [__init__.py:36] No IOProcessor plugins requested by the model
+Adding requests:   0%|          | 0/8 [00:00<?, ?it/s][1;36m(EngineCore_DP0 pid=1001922)[0;0m WARNING 10-18 21:00:09 [cudagraph_dispatcher.py:102] cudagraph dispatching keys are not initialized. No cudagraph will be used.
+Adding requests: 100%|██████████| 8/8 [00:00<00:00, 497.23it/s]
+Processed prompts:   0%|          | 0/128 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts:  12%|█▎        | 16/128 [00:00<00:05, 21.21it/s, est. speed input: 3011.65 toks/s, output: 775.37 toks/s]Processed prompts:  25%|██▌       | 32/128 [00:00<00:02, 39.69it/s, est. speed input: 4159.84 toks/s, output: 1518.17 toks/s]Processed prompts:  38%|███▊      | 48/128 [00:01<00:01, 48.45it/s, est. speed input: 5277.69 toks/s, output: 1638.81 toks/s]Processed prompts:  62%|██████▎   | 80/128 [00:01<00:00, 90.01it/s, est. speed input: 7155.03 toks/s, output: 2665.80 toks/s]Processed prompts:  75%|███████▌  | 96/128 [00:01<00:00, 89.48it/s, est. speed input: 7351.39 toks/s, output: 3222.95 toks/s]Processed prompts:  88%|████████▊ | 112/128 [00:01<00:00, 69.69it/s, est. speed input: 6916.89 toks/s, output: 3387.58 toks/s]Processed prompts: 100%|██████████| 128/128 [00:02<00:00, 36.20it/s, est. speed input: 5274.59 toks/s, output: 3062.42 toks/s]Processed prompts: 100%|██████████| 128/128 [00:02<00:00, 36.20it/s, est. speed input: 5274.59 toks/s, output: 3062.42 toks/s]Processed prompts: 100%|██████████| 128/128 [00:02<00:00, 46.31it/s, est. speed input: 5274.59 toks/s, output: 3062.42 toks/s]
+[rank0]:[W1018 21:00:12.855391709 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+Generated 8 prompt completion groups.
+Sampled evaluation at optimizer step 110: coverage=1.0 mean_pass_count=12.125 exact0=0.0
+{'loss': 0.03, 'grad_norm': 0.29627183079719543, 'learning_rate': 4.5500000000000005e-06, 'epoch': 110.0}
+INFO 10-18 21:00:42 [__init__.py:216] Automatically detected platform cuda.
+INFO 10-18 21:00:43 [utils.py:328] non-default args: {'dtype': 'bfloat16', 'max_model_len': 4096, 'gpu_memory_utilization': 0.5, 'disable_log_stats': True, 'enforce_eager': True, 'model': '/tmp/qwen-evalplus-c2je79hv/merged'}
+INFO 10-18 21:00:56 [__init__.py:742] Resolved architecture: Qwen2ForCausalLM
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO 10-18 21:00:56 [__init__.py:1815] Using max model len 4096
+INFO 10-18 21:00:58 [scheduler.py:222] Chunked prefill is enabled with max_num_batched_tokens=8192.
+INFO 10-18 21:00:58 [__init__.py:3400] Cudagraph is disabled under eager mode
+WARNING 10-18 21:00:58 [__init__.py:2974] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized
+INFO 10-18 21:01:03 [__init__.py:216] Automatically detected platform cuda.
+[1;36m(EngineCore_DP0 pid=1003053)[0;0m INFO 10-18 21:01:04 [core.py:654] Waiting for init message from front-end.
+[1;36m(EngineCore_DP0 pid=1003053)[0;0m INFO 10-18 21:01:04 [core.py:76] Initializing a V1 LLM engine (v0.10.2) with config: model='/tmp/qwen-evalplus-c2je79hv/merged', speculative_config=None, tokenizer='/tmp/qwen-evalplus-c2je79hv/merged', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=4096, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=True, kv_cache_dtype=auto, device_config=cuda, decoding_config=DecodingConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_backend=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=/tmp/qwen-evalplus-c2je79hv/merged, enable_prefix_caching=True, chunked_prefill_enabled=True, use_async_output_proc=True, pooler_config=None, compilation_config={"level":0,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":null,"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":0,"use_cudagraph":true,"cudagraph_num_of_warmups":0,"cudagraph_capture_sizes":[],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"pass_config":{},"max_capture_size":0,"local_cache_dir":null}
+[W1018 21:01:09.450243789 ProcessGroupNCCL.cpp:981] Warning: TORCH_NCCL_AVOID_RECORD_STREAMS is the default now, this environment variable is thus deprecated. (function operator())
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[1;36m(EngineCore_DP0 pid=1003053)[0;0m INFO 10-18 21:01:09 [parallel_state.py:1165] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+[1;36m(EngineCore_DP0 pid=1003053)[0;0m WARNING 10-18 21:01:09 [topk_topp_sampler.py:69] FlashInfer is not available. Falling back to the PyTorch-native implementation of top-p & top-k sampling. For the best performance, please install FlashInfer.
+[1;36m(EngineCore_DP0 pid=1003053)[0;0m INFO 10-18 21:01:09 [gpu_model_runner.py:2338] Starting to load model /tmp/qwen-evalplus-c2je79hv/merged...
+[1;36m(EngineCore_DP0 pid=1003053)[0;0m INFO 10-18 21:01:09 [gpu_model_runner.py:2370] Loading model from scratch...
+[1;36m(EngineCore_DP0 pid=1003053)[0;0m INFO 10-18 21:01:09 [cuda.py:362] Using Flash Attention backend on V1 engine.
+[1;36m(EngineCore_DP0 pid=1003053)[0;0m Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+[1;36m(EngineCore_DP0 pid=1003053)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  9.21it/s]
+[1;36m(EngineCore_DP0 pid=1003053)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  9.18it/s]
+[1;36m(EngineCore_DP0 pid=1003053)[0;0m 
+[1;36m(EngineCore_DP0 pid=1003053)[0;0m INFO 10-18 21:01:09 [default_loader.py:268] Loading weights took 0.14 seconds
+[1;36m(EngineCore_DP0 pid=1003053)[0;0m INFO 10-18 21:01:10 [gpu_model_runner.py:2392] Model loading took 0.9277 GiB and 0.261311 seconds
+[1;36m(EngineCore_DP0 pid=1003053)[0;0m INFO 10-18 21:01:11 [gpu_worker.py:298] Available KV cache memory: 5.45 GiB
+[1;36m(EngineCore_DP0 pid=1003053)[0;0m INFO 10-18 21:01:11 [kv_cache_utils.py:864] GPU KV cache size: 476,080 tokens
+[1;36m(EngineCore_DP0 pid=1003053)[0;0m INFO 10-18 21:01:11 [kv_cache_utils.py:868] Maximum concurrency for 4,096 tokens per request: 116.23x
+[1;36m(EngineCore_DP0 pid=1003053)[0;0m INFO 10-18 21:01:11 [gpu_worker.py:391] Free memory on device (15.09/15.58 GiB) on startup. Desired GPU memory utilization is (0.5, 7.79 GiB). Actual usage is 0.93 GiB for weight, 1.4 GiB for peak activation, 0.02 GiB for non-torch memory, and 0.0 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=5692953600` to fit into requested memory, or `--kv-cache-memory=13531419648` to fully utilize gpu memory. Current kv cache memory in use is 5850240000 bytes.
+[1;36m(EngineCore_DP0 pid=1003053)[0;0m INFO 10-18 21:01:11 [core.py:218] init engine (profile, create kv cache, warmup model) took 1.57 seconds
+[1;36m(EngineCore_DP0 pid=1003053)[0;0m INFO 10-18 21:01:12 [__init__.py:3400] Cudagraph is disabled under eager mode
+INFO 10-18 21:01:12 [llm.py:295] Supported_tasks: ['generate']
+INFO 10-18 21:01:12 [__init__.py:36] No IOProcessor plugins requested by the model
+Adding requests:   0%|          | 0/8 [00:00<?, ?it/s][1;36m(EngineCore_DP0 pid=1003053)[0;0m WARNING 10-18 21:01:12 [cudagraph_dispatcher.py:102] cudagraph dispatching keys are not initialized. No cudagraph will be used.
+Adding requests: 100%|██████████| 8/8 [00:00<00:00, 656.81it/s]
+Processed prompts:   0%|          | 0/128 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts:  12%|█▎        | 16/128 [00:00<00:04, 27.00it/s, est. speed input: 3887.99 toks/s, output: 789.65 toks/s]Processed prompts:  25%|██▌       | 32/128 [00:00<00:01, 49.29it/s, est. speed input: 6272.01 toks/s, output: 1443.15 toks/s]Processed prompts:  38%|███▊      | 48/128 [00:01<00:01, 44.59it/s, est. speed input: 5399.19 toks/s, output: 1713.70 toks/s]Processed prompts:  50%|█████     | 64/128 [00:01<00:01, 61.95it/s, est. speed input: 6175.77 toks/s, output: 2246.05 toks/s]Processed prompts:  75%|███████▌  | 96/128 [00:01<00:00, 81.11it/s, est. speed input: 7202.11 toks/s, output: 3078.39 toks/s]Processed prompts:  88%|████████▊ | 112/128 [00:01<00:00, 87.10it/s, est. speed input: 7513.37 toks/s, output: 3637.20 toks/s]Processed prompts: 100%|██████████| 128/128 [00:02<00:00, 63.57it/s, est. speed input: 6966.33 toks/s, output: 3981.95 toks/s]Processed prompts: 100%|██████████| 128/128 [00:02<00:00, 63.57it/s, est. speed input: 6966.33 toks/s, output: 3981.95 toks/s]Processed prompts: 100%|██████████| 128/128 [00:02<00:00, 61.15it/s, est. speed input: 6966.33 toks/s, output: 3981.95 toks/s]
+[rank0]:[W1018 21:01:14.996283990 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+Generated 8 prompt completion groups.
+Sampled evaluation at optimizer step 120: coverage=1.0 mean_pass_count=12.875 exact0=0.0
+{'loss': 0.0198, 'grad_norm': 0.23409992456436157, 'learning_rate': 4.05e-06, 'epoch': 120.0}
+INFO 10-18 21:02:03 [__init__.py:216] Automatically detected platform cuda.
+INFO 10-18 21:02:04 [utils.py:328] non-default args: {'dtype': 'bfloat16', 'max_model_len': 4096, 'gpu_memory_utilization': 0.5, 'disable_log_stats': True, 'enforce_eager': True, 'model': '/tmp/qwen-evalplus-wcod2zxp/merged'}
+INFO 10-18 21:02:16 [__init__.py:742] Resolved architecture: Qwen2ForCausalLM
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO 10-18 21:02:16 [__init__.py:1815] Using max model len 4096
+INFO 10-18 21:02:18 [scheduler.py:222] Chunked prefill is enabled with max_num_batched_tokens=8192.
+INFO 10-18 21:02:18 [__init__.py:3400] Cudagraph is disabled under eager mode
+WARNING 10-18 21:02:18 [__init__.py:2974] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized
+INFO 10-18 21:02:24 [__init__.py:216] Automatically detected platform cuda.
+[1;36m(EngineCore_DP0 pid=1004208)[0;0m INFO 10-18 21:02:25 [core.py:654] Waiting for init message from front-end.
+[1;36m(EngineCore_DP0 pid=1004208)[0;0m INFO 10-18 21:02:25 [core.py:76] Initializing a V1 LLM engine (v0.10.2) with config: model='/tmp/qwen-evalplus-wcod2zxp/merged', speculative_config=None, tokenizer='/tmp/qwen-evalplus-wcod2zxp/merged', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=4096, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=True, kv_cache_dtype=auto, device_config=cuda, decoding_config=DecodingConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_backend=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=/tmp/qwen-evalplus-wcod2zxp/merged, enable_prefix_caching=True, chunked_prefill_enabled=True, use_async_output_proc=True, pooler_config=None, compilation_config={"level":0,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":null,"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":0,"use_cudagraph":true,"cudagraph_num_of_warmups":0,"cudagraph_capture_sizes":[],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"pass_config":{},"max_capture_size":0,"local_cache_dir":null}
+[W1018 21:02:29.972956945 ProcessGroupNCCL.cpp:981] Warning: TORCH_NCCL_AVOID_RECORD_STREAMS is the default now, this environment variable is thus deprecated. (function operator())
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[1;36m(EngineCore_DP0 pid=1004208)[0;0m INFO 10-18 21:02:29 [parallel_state.py:1165] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+[1;36m(EngineCore_DP0 pid=1004208)[0;0m WARNING 10-18 21:02:29 [topk_topp_sampler.py:69] FlashInfer is not available. Falling back to the PyTorch-native implementation of top-p & top-k sampling. For the best performance, please install FlashInfer.
+[1;36m(EngineCore_DP0 pid=1004208)[0;0m INFO 10-18 21:02:29 [gpu_model_runner.py:2338] Starting to load model /tmp/qwen-evalplus-wcod2zxp/merged...
+[1;36m(EngineCore_DP0 pid=1004208)[0;0m INFO 10-18 21:02:30 [gpu_model_runner.py:2370] Loading model from scratch...
+[1;36m(EngineCore_DP0 pid=1004208)[0;0m INFO 10-18 21:02:30 [cuda.py:362] Using Flash Attention backend on V1 engine.
+[1;36m(EngineCore_DP0 pid=1004208)[0;0m Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+[1;36m(EngineCore_DP0 pid=1004208)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  9.21it/s]
+[1;36m(EngineCore_DP0 pid=1004208)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  9.17it/s]
+[1;36m(EngineCore_DP0 pid=1004208)[0;0m 
+[1;36m(EngineCore_DP0 pid=1004208)[0;0m INFO 10-18 21:02:30 [default_loader.py:268] Loading weights took 0.14 seconds
+[1;36m(EngineCore_DP0 pid=1004208)[0;0m INFO 10-18 21:02:30 [gpu_model_runner.py:2392] Model loading took 0.9277 GiB and 0.247704 seconds
+[1;36m(EngineCore_DP0 pid=1004208)[0;0m INFO 10-18 21:02:32 [gpu_worker.py:298] Available KV cache memory: 5.45 GiB
+[1;36m(EngineCore_DP0 pid=1004208)[0;0m INFO 10-18 21:02:32 [kv_cache_utils.py:864] GPU KV cache size: 476,080 tokens
+[1;36m(EngineCore_DP0 pid=1004208)[0;0m INFO 10-18 21:02:32 [kv_cache_utils.py:868] Maximum concurrency for 4,096 tokens per request: 116.23x
+[1;36m(EngineCore_DP0 pid=1004208)[0;0m INFO 10-18 21:02:32 [gpu_worker.py:391] Free memory on device (15.09/15.58 GiB) on startup. Desired GPU memory utilization is (0.5, 7.79 GiB). Actual usage is 0.93 GiB for weight, 1.4 GiB for peak activation, 0.02 GiB for non-torch memory, and 0.0 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=5692953600` to fit into requested memory, or `--kv-cache-memory=13531419648` to fully utilize gpu memory. Current kv cache memory in use is 5850240000 bytes.
+[1;36m(EngineCore_DP0 pid=1004208)[0;0m INFO 10-18 21:02:32 [core.py:218] init engine (profile, create kv cache, warmup model) took 1.60 seconds
+[1;36m(EngineCore_DP0 pid=1004208)[0;0m INFO 10-18 21:02:32 [__init__.py:3400] Cudagraph is disabled under eager mode
+INFO 10-18 21:02:33 [llm.py:295] Supported_tasks: ['generate']
+INFO 10-18 21:02:33 [__init__.py:36] No IOProcessor plugins requested by the model
+Adding requests:   0%|          | 0/8 [00:00<?, ?it/s][1;36m(EngineCore_DP0 pid=1004208)[0;0m WARNING 10-18 21:02:33 [cudagraph_dispatcher.py:102] cudagraph dispatching keys are not initialized. No cudagraph will be used.
+Adding requests: 100%|██████████| 8/8 [00:00<00:00, 792.84it/s]
+Processed prompts:   0%|          | 0/128 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts:  12%|█▎        | 16/128 [00:00<00:03, 28.54it/s, est. speed input: 4110.27 toks/s, output: 829.42 toks/s]Processed prompts:  25%|██▌       | 32/128 [00:00<00:01, 53.30it/s, est. speed input: 6745.41 toks/s, output: 1540.22 toks/s]Processed prompts:  50%|█████     | 64/128 [00:00<00:00, 93.15it/s, est. speed input: 8762.66 toks/s, output: 2625.42 toks/s]Processed prompts:  62%|██████▎   | 80/128 [00:01<00:00, 85.03it/s, est. speed input: 8351.43 toks/s, output: 2889.40 toks/s]Processed prompts:  75%|███████▌  | 96/128 [00:01<00:00, 79.37it/s, est. speed input: 8085.24 toks/s, output: 3408.90 toks/s]Processed prompts:  88%|████████▊ | 112/128 [00:01<00:00, 55.72it/s, est. speed input: 6927.22 toks/s, output: 3322.49 toks/s]Processed prompts: 100%|██████████| 128/128 [00:01<00:00, 63.88it/s, est. speed input: 7381.50 toks/s, output: 4194.54 toks/s]Processed prompts: 100%|██████████| 128/128 [00:01<00:00, 63.88it/s, est. speed input: 7381.50 toks/s, output: 4194.54 toks/s]Processed prompts: 100%|██████████| 128/128 [00:01<00:00, 64.80it/s, est. speed input: 7381.50 toks/s, output: 4194.54 toks/s]
+[rank0]:[W1018 21:02:35.404962565 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+Generated 8 prompt completion groups.
+Sampled evaluation at optimizer step 130: coverage=1.0 mean_pass_count=13.875 exact0=0.0
+{'loss': 0.0138, 'grad_norm': 0.18071575462818146, 'learning_rate': 3.5500000000000003e-06, 'epoch': 130.0}
+INFO 10-18 21:03:08 [__init__.py:216] Automatically detected platform cuda.
+INFO 10-18 21:03:10 [utils.py:328] non-default args: {'dtype': 'bfloat16', 'max_model_len': 4096, 'gpu_memory_utilization': 0.5, 'disable_log_stats': True, 'enforce_eager': True, 'model': '/tmp/qwen-evalplus-e_uwp951/merged'}
+INFO 10-18 21:03:21 [__init__.py:742] Resolved architecture: Qwen2ForCausalLM
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO 10-18 21:03:21 [__init__.py:1815] Using max model len 4096
+INFO 10-18 21:03:22 [scheduler.py:222] Chunked prefill is enabled with max_num_batched_tokens=8192.
+INFO 10-18 21:03:22 [__init__.py:3400] Cudagraph is disabled under eager mode
+WARNING 10-18 21:03:23 [__init__.py:2974] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized
+INFO 10-18 21:03:28 [__init__.py:216] Automatically detected platform cuda.
+[1;36m(EngineCore_DP0 pid=1005329)[0;0m INFO 10-18 21:03:29 [core.py:654] Waiting for init message from front-end.
+[1;36m(EngineCore_DP0 pid=1005329)[0;0m INFO 10-18 21:03:29 [core.py:76] Initializing a V1 LLM engine (v0.10.2) with config: model='/tmp/qwen-evalplus-e_uwp951/merged', speculative_config=None, tokenizer='/tmp/qwen-evalplus-e_uwp951/merged', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=4096, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=True, kv_cache_dtype=auto, device_config=cuda, decoding_config=DecodingConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_backend=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=/tmp/qwen-evalplus-e_uwp951/merged, enable_prefix_caching=True, chunked_prefill_enabled=True, use_async_output_proc=True, pooler_config=None, compilation_config={"level":0,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":null,"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":0,"use_cudagraph":true,"cudagraph_num_of_warmups":0,"cudagraph_capture_sizes":[],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"pass_config":{},"max_capture_size":0,"local_cache_dir":null}
+[W1018 21:03:34.320250333 ProcessGroupNCCL.cpp:981] Warning: TORCH_NCCL_AVOID_RECORD_STREAMS is the default now, this environment variable is thus deprecated. (function operator())
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[1;36m(EngineCore_DP0 pid=1005329)[0;0m INFO 10-18 21:03:34 [parallel_state.py:1165] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+[1;36m(EngineCore_DP0 pid=1005329)[0;0m WARNING 10-18 21:03:34 [topk_topp_sampler.py:69] FlashInfer is not available. Falling back to the PyTorch-native implementation of top-p & top-k sampling. For the best performance, please install FlashInfer.
+[1;36m(EngineCore_DP0 pid=1005329)[0;0m INFO 10-18 21:03:34 [gpu_model_runner.py:2338] Starting to load model /tmp/qwen-evalplus-e_uwp951/merged...
+[1;36m(EngineCore_DP0 pid=1005329)[0;0m INFO 10-18 21:03:34 [gpu_model_runner.py:2370] Loading model from scratch...
+[1;36m(EngineCore_DP0 pid=1005329)[0;0m INFO 10-18 21:03:34 [cuda.py:362] Using Flash Attention backend on V1 engine.
+[1;36m(EngineCore_DP0 pid=1005329)[0;0m Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+[1;36m(EngineCore_DP0 pid=1005329)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  9.35it/s]
+[1;36m(EngineCore_DP0 pid=1005329)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  9.32it/s]
+[1;36m(EngineCore_DP0 pid=1005329)[0;0m 
+[1;36m(EngineCore_DP0 pid=1005329)[0;0m INFO 10-18 21:03:34 [default_loader.py:268] Loading weights took 0.14 seconds
+[1;36m(EngineCore_DP0 pid=1005329)[0;0m INFO 10-18 21:03:35 [gpu_model_runner.py:2392] Model loading took 0.9277 GiB and 0.243771 seconds
+[1;36m(EngineCore_DP0 pid=1005329)[0;0m INFO 10-18 21:03:36 [gpu_worker.py:298] Available KV cache memory: 5.45 GiB
+[1;36m(EngineCore_DP0 pid=1005329)[0;0m INFO 10-18 21:03:36 [kv_cache_utils.py:864] GPU KV cache size: 476,080 tokens
+[1;36m(EngineCore_DP0 pid=1005329)[0;0m INFO 10-18 21:03:36 [kv_cache_utils.py:868] Maximum concurrency for 4,096 tokens per request: 116.23x
+[1;36m(EngineCore_DP0 pid=1005329)[0;0m INFO 10-18 21:03:36 [gpu_worker.py:391] Free memory on device (15.09/15.58 GiB) on startup. Desired GPU memory utilization is (0.5, 7.79 GiB). Actual usage is 0.93 GiB for weight, 1.4 GiB for peak activation, 0.02 GiB for non-torch memory, and 0.0 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=5692953600` to fit into requested memory, or `--kv-cache-memory=13533516800` to fully utilize gpu memory. Current kv cache memory in use is 5850240000 bytes.
+[1;36m(EngineCore_DP0 pid=1005329)[0;0m INFO 10-18 21:03:36 [core.py:218] init engine (profile, create kv cache, warmup model) took 1.59 seconds
+[1;36m(EngineCore_DP0 pid=1005329)[0;0m INFO 10-18 21:03:37 [__init__.py:3400] Cudagraph is disabled under eager mode
+INFO 10-18 21:03:37 [llm.py:295] Supported_tasks: ['generate']
+INFO 10-18 21:03:37 [__init__.py:36] No IOProcessor plugins requested by the model
+Adding requests:   0%|          | 0/8 [00:00<?, ?it/s][1;36m(EngineCore_DP0 pid=1005329)[0;0m WARNING 10-18 21:03:37 [cudagraph_dispatcher.py:102] cudagraph dispatching keys are not initialized. No cudagraph will be used.
+Adding requests: 100%|██████████| 8/8 [00:00<00:00, 785.23it/s]
+Processed prompts:   0%|          | 0/128 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts:  12%|█▎        | 16/128 [00:00<00:03, 28.42it/s, est. speed input: 4092.88 toks/s, output: 825.92 toks/s]Processed prompts:  25%|██▌       | 32/128 [00:00<00:02, 39.15it/s, est. speed input: 4428.41 toks/s, output: 1057.23 toks/s]Processed prompts:  50%|█████     | 64/128 [00:01<00:00, 71.65it/s, est. speed input: 6299.64 toks/s, output: 2367.73 toks/s]Processed prompts:  62%|██████▎   | 80/128 [00:01<00:00, 53.57it/s, est. speed input: 5427.13 toks/s, output: 2575.35 toks/s]Processed prompts:  75%|███████▌  | 96/128 [00:01<00:00, 52.49it/s, est. speed input: 5468.82 toks/s, output: 2951.88 toks/s]Processed prompts:  88%|████████▊ | 112/128 [00:02<00:00, 54.89it/s, est. speed input: 5759.32 toks/s, output: 3677.16 toks/s]Processed prompts: 100%|██████████| 128/128 [00:03<00:00, 28.35it/s, est. speed input: 4379.80 toks/s, output: 2607.83 toks/s]Processed prompts: 100%|██████████| 128/128 [00:03<00:00, 28.35it/s, est. speed input: 4379.80 toks/s, output: 2607.83 toks/s]Processed prompts: 100%|██████████| 128/128 [00:03<00:00, 38.45it/s, est. speed input: 4379.80 toks/s, output: 2607.83 toks/s]
+[rank0]:[W1018 21:03:40.070951476 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+Generated 8 prompt completion groups.
+Sampled evaluation at optimizer step 140: coverage=1.0 mean_pass_count=13.5 exact0=0.0
+{'loss': 0.0103, 'grad_norm': 0.14144420623779297, 'learning_rate': 3.05e-06, 'epoch': 140.0}
+INFO 10-18 21:04:13 [__init__.py:216] Automatically detected platform cuda.
+INFO 10-18 21:04:14 [utils.py:328] non-default args: {'dtype': 'bfloat16', 'max_model_len': 4096, 'gpu_memory_utilization': 0.5, 'disable_log_stats': True, 'enforce_eager': True, 'model': '/tmp/qwen-evalplus-py6_2t9a/merged'}
+INFO 10-18 21:04:25 [__init__.py:742] Resolved architecture: Qwen2ForCausalLM
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO 10-18 21:04:25 [__init__.py:1815] Using max model len 4096
+INFO 10-18 21:04:27 [scheduler.py:222] Chunked prefill is enabled with max_num_batched_tokens=8192.
+INFO 10-18 21:04:27 [__init__.py:3400] Cudagraph is disabled under eager mode
+WARNING 10-18 21:04:27 [__init__.py:2974] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized
+INFO 10-18 21:04:32 [__init__.py:216] Automatically detected platform cuda.
+[1;36m(EngineCore_DP0 pid=1006454)[0;0m INFO 10-18 21:04:33 [core.py:654] Waiting for init message from front-end.
+[1;36m(EngineCore_DP0 pid=1006454)[0;0m INFO 10-18 21:04:33 [core.py:76] Initializing a V1 LLM engine (v0.10.2) with config: model='/tmp/qwen-evalplus-py6_2t9a/merged', speculative_config=None, tokenizer='/tmp/qwen-evalplus-py6_2t9a/merged', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=4096, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=True, kv_cache_dtype=auto, device_config=cuda, decoding_config=DecodingConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_backend=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=/tmp/qwen-evalplus-py6_2t9a/merged, enable_prefix_caching=True, chunked_prefill_enabled=True, use_async_output_proc=True, pooler_config=None, compilation_config={"level":0,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":null,"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":0,"use_cudagraph":true,"cudagraph_num_of_warmups":0,"cudagraph_capture_sizes":[],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"pass_config":{},"max_capture_size":0,"local_cache_dir":null}
+[W1018 21:04:37.048355955 ProcessGroupNCCL.cpp:981] Warning: TORCH_NCCL_AVOID_RECORD_STREAMS is the default now, this environment variable is thus deprecated. (function operator())
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[1;36m(EngineCore_DP0 pid=1006454)[0;0m INFO 10-18 21:04:37 [parallel_state.py:1165] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+[1;36m(EngineCore_DP0 pid=1006454)[0;0m WARNING 10-18 21:04:37 [topk_topp_sampler.py:69] FlashInfer is not available. Falling back to the PyTorch-native implementation of top-p & top-k sampling. For the best performance, please install FlashInfer.
+[1;36m(EngineCore_DP0 pid=1006454)[0;0m INFO 10-18 21:04:37 [gpu_model_runner.py:2338] Starting to load model /tmp/qwen-evalplus-py6_2t9a/merged...
+[1;36m(EngineCore_DP0 pid=1006454)[0;0m INFO 10-18 21:04:38 [gpu_model_runner.py:2370] Loading model from scratch...
+[1;36m(EngineCore_DP0 pid=1006454)[0;0m INFO 10-18 21:04:38 [cuda.py:362] Using Flash Attention backend on V1 engine.
+[1;36m(EngineCore_DP0 pid=1006454)[0;0m Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+[1;36m(EngineCore_DP0 pid=1006454)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  9.35it/s]
+[1;36m(EngineCore_DP0 pid=1006454)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  9.32it/s]
+[1;36m(EngineCore_DP0 pid=1006454)[0;0m 
+[1;36m(EngineCore_DP0 pid=1006454)[0;0m INFO 10-18 21:04:38 [default_loader.py:268] Loading weights took 0.14 seconds
+[1;36m(EngineCore_DP0 pid=1006454)[0;0m INFO 10-18 21:04:38 [gpu_model_runner.py:2392] Model loading took 0.9277 GiB and 0.240741 seconds
+[1;36m(EngineCore_DP0 pid=1006454)[0;0m INFO 10-18 21:04:40 [gpu_worker.py:298] Available KV cache memory: 5.45 GiB
+[1;36m(EngineCore_DP0 pid=1006454)[0;0m INFO 10-18 21:04:40 [kv_cache_utils.py:864] GPU KV cache size: 476,080 tokens
+[1;36m(EngineCore_DP0 pid=1006454)[0;0m INFO 10-18 21:04:40 [kv_cache_utils.py:868] Maximum concurrency for 4,096 tokens per request: 116.23x
+[1;36m(EngineCore_DP0 pid=1006454)[0;0m INFO 10-18 21:04:40 [gpu_worker.py:391] Free memory on device (15.09/15.58 GiB) on startup. Desired GPU memory utilization is (0.5, 7.79 GiB). Actual usage is 0.93 GiB for weight, 1.4 GiB for peak activation, 0.02 GiB for non-torch memory, and 0.0 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=5692953600` to fit into requested memory, or `--kv-cache-memory=13531419648` to fully utilize gpu memory. Current kv cache memory in use is 5850240000 bytes.
+[1;36m(EngineCore_DP0 pid=1006454)[0;0m INFO 10-18 21:04:40 [core.py:218] init engine (profile, create kv cache, warmup model) took 1.63 seconds
+[1;36m(EngineCore_DP0 pid=1006454)[0;0m INFO 10-18 21:04:40 [__init__.py:3400] Cudagraph is disabled under eager mode
+INFO 10-18 21:04:41 [llm.py:295] Supported_tasks: ['generate']
+INFO 10-18 21:04:41 [__init__.py:36] No IOProcessor plugins requested by the model
+Adding requests:   0%|          | 0/8 [00:00<?, ?it/s][1;36m(EngineCore_DP0 pid=1006454)[0;0m WARNING 10-18 21:04:41 [cudagraph_dispatcher.py:102] cudagraph dispatching keys are not initialized. No cudagraph will be used.
+Adding requests: 100%|██████████| 8/8 [00:00<00:00, 770.59it/s]
+Processed prompts:   0%|          | 0/128 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts:  12%|█▎        | 16/128 [00:00<00:03, 28.60it/s, est. speed input: 4119.55 toks/s, output: 831.32 toks/s]Processed prompts:  25%|██▌       | 32/128 [00:00<00:02, 39.39it/s, est. speed input: 4455.55 toks/s, output: 1063.70 toks/s]Processed prompts:  50%|█████     | 64/128 [00:01<00:00, 72.15it/s, est. speed input: 6341.66 toks/s, output: 2379.85 toks/s]Processed prompts:  62%|██████▎   | 80/128 [00:01<00:00, 67.91it/s, est. speed input: 6263.23 toks/s, output: 2925.39 toks/s]Processed prompts:  75%|███████▌  | 96/128 [00:01<00:00, 55.46it/s, est. speed input: 5837.25 toks/s, output: 3089.22 toks/s]Processed prompts:  88%|████████▊ | 112/128 [00:02<00:00, 46.39it/s, est. speed input: 5616.06 toks/s, output: 2754.61 toks/s]Processed prompts: 100%|██████████| 128/128 [00:03<00:00, 28.07it/s, est. speed input: 4392.81 toks/s, output: 2588.75 toks/s]Processed prompts: 100%|██████████| 128/128 [00:03<00:00, 28.07it/s, est. speed input: 4392.81 toks/s, output: 2588.75 toks/s]Processed prompts: 100%|██████████| 128/128 [00:03<00:00, 38.57it/s, est. speed input: 4392.81 toks/s, output: 2588.75 toks/s]
+[rank0]:[W1018 21:04:44.823695015 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+Generated 8 prompt completion groups.
+Sampled evaluation at optimizer step 150: coverage=1.0 mean_pass_count=14.25 exact0=0.0
+{'loss': 0.0083, 'grad_norm': 0.1219041645526886, 'learning_rate': 2.55e-06, 'epoch': 150.0}
+INFO 10-18 21:05:21 [__init__.py:216] Automatically detected platform cuda.
+INFO 10-18 21:05:22 [utils.py:328] non-default args: {'dtype': 'bfloat16', 'max_model_len': 4096, 'gpu_memory_utilization': 0.5, 'disable_log_stats': True, 'enforce_eager': True, 'model': '/tmp/qwen-evalplus-cfdipc0h/merged'}
+INFO 10-18 21:05:34 [__init__.py:742] Resolved architecture: Qwen2ForCausalLM
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO 10-18 21:05:34 [__init__.py:1815] Using max model len 4096
+INFO 10-18 21:05:36 [scheduler.py:222] Chunked prefill is enabled with max_num_batched_tokens=8192.
+INFO 10-18 21:05:36 [__init__.py:3400] Cudagraph is disabled under eager mode
+WARNING 10-18 21:05:36 [__init__.py:2974] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized
+INFO 10-18 21:05:42 [__init__.py:216] Automatically detected platform cuda.
+[1;36m(EngineCore_DP0 pid=1007573)[0;0m INFO 10-18 21:05:43 [core.py:654] Waiting for init message from front-end.
+[1;36m(EngineCore_DP0 pid=1007573)[0;0m INFO 10-18 21:05:43 [core.py:76] Initializing a V1 LLM engine (v0.10.2) with config: model='/tmp/qwen-evalplus-cfdipc0h/merged', speculative_config=None, tokenizer='/tmp/qwen-evalplus-cfdipc0h/merged', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=4096, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=True, kv_cache_dtype=auto, device_config=cuda, decoding_config=DecodingConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_backend=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=/tmp/qwen-evalplus-cfdipc0h/merged, enable_prefix_caching=True, chunked_prefill_enabled=True, use_async_output_proc=True, pooler_config=None, compilation_config={"level":0,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":null,"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":0,"use_cudagraph":true,"cudagraph_num_of_warmups":0,"cudagraph_capture_sizes":[],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"pass_config":{},"max_capture_size":0,"local_cache_dir":null}
+[W1018 21:05:48.500750262 ProcessGroupNCCL.cpp:981] Warning: TORCH_NCCL_AVOID_RECORD_STREAMS is the default now, this environment variable is thus deprecated. (function operator())
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[1;36m(EngineCore_DP0 pid=1007573)[0;0m INFO 10-18 21:05:48 [parallel_state.py:1165] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+[1;36m(EngineCore_DP0 pid=1007573)[0;0m WARNING 10-18 21:05:48 [topk_topp_sampler.py:69] FlashInfer is not available. Falling back to the PyTorch-native implementation of top-p & top-k sampling. For the best performance, please install FlashInfer.
+[1;36m(EngineCore_DP0 pid=1007573)[0;0m INFO 10-18 21:05:48 [gpu_model_runner.py:2338] Starting to load model /tmp/qwen-evalplus-cfdipc0h/merged...
+[1;36m(EngineCore_DP0 pid=1007573)[0;0m INFO 10-18 21:05:48 [gpu_model_runner.py:2370] Loading model from scratch...
+[1;36m(EngineCore_DP0 pid=1007573)[0;0m INFO 10-18 21:05:48 [cuda.py:362] Using Flash Attention backend on V1 engine.
+[1;36m(EngineCore_DP0 pid=1007573)[0;0m Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+[1;36m(EngineCore_DP0 pid=1007573)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  9.03it/s]
+[1;36m(EngineCore_DP0 pid=1007573)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  9.00it/s]
+[1;36m(EngineCore_DP0 pid=1007573)[0;0m 
+[1;36m(EngineCore_DP0 pid=1007573)[0;0m INFO 10-18 21:05:48 [default_loader.py:268] Loading weights took 0.14 seconds
+[1;36m(EngineCore_DP0 pid=1007573)[0;0m INFO 10-18 21:05:49 [gpu_model_runner.py:2392] Model loading took 0.9277 GiB and 0.254371 seconds
+[1;36m(EngineCore_DP0 pid=1007573)[0;0m INFO 10-18 21:05:50 [gpu_worker.py:298] Available KV cache memory: 5.45 GiB
+[1;36m(EngineCore_DP0 pid=1007573)[0;0m INFO 10-18 21:05:51 [kv_cache_utils.py:864] GPU KV cache size: 476,080 tokens
+[1;36m(EngineCore_DP0 pid=1007573)[0;0m INFO 10-18 21:05:51 [kv_cache_utils.py:868] Maximum concurrency for 4,096 tokens per request: 116.23x
+[1;36m(EngineCore_DP0 pid=1007573)[0;0m INFO 10-18 21:05:51 [gpu_worker.py:391] Free memory on device (15.09/15.58 GiB) on startup. Desired GPU memory utilization is (0.5, 7.79 GiB). Actual usage is 0.93 GiB for weight, 1.4 GiB for peak activation, 0.02 GiB for non-torch memory, and 0.0 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=5692953600` to fit into requested memory, or `--kv-cache-memory=13531419648` to fully utilize gpu memory. Current kv cache memory in use is 5850240000 bytes.
+[1;36m(EngineCore_DP0 pid=1007573)[0;0m INFO 10-18 21:05:51 [core.py:218] init engine (profile, create kv cache, warmup model) took 1.69 seconds
+[1;36m(EngineCore_DP0 pid=1007573)[0;0m INFO 10-18 21:05:51 [__init__.py:3400] Cudagraph is disabled under eager mode
+INFO 10-18 21:05:51 [llm.py:295] Supported_tasks: ['generate']
+INFO 10-18 21:05:51 [__init__.py:36] No IOProcessor plugins requested by the model
+Adding requests:   0%|          | 0/8 [00:00<?, ?it/s][1;36m(EngineCore_DP0 pid=1007573)[0;0m WARNING 10-18 21:05:51 [cudagraph_dispatcher.py:102] cudagraph dispatching keys are not initialized. No cudagraph will be used.
+Adding requests: 100%|██████████| 8/8 [00:00<00:00, 731.00it/s]
+Processed prompts:   0%|          | 0/128 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts:  12%|█▎        | 16/128 [00:00<00:03, 28.79it/s, est. speed input: 4146.24 toks/s, output: 834.92 toks/s]Processed prompts:  38%|███▊      | 48/128 [00:00<00:00, 81.50it/s, est. speed input: 8749.39 toks/s, output: 2112.51 toks/s]Processed prompts:  50%|█████     | 64/128 [00:00<00:00, 82.37it/s, est. speed input: 8585.42 toks/s, output: 2557.65 toks/s]Processed prompts:  62%|██████▎   | 80/128 [00:01<00:00, 75.51it/s, est. speed input: 8051.80 toks/s, output: 2764.58 toks/s]Processed prompts:  75%|███████▌  | 96/128 [00:01<00:00, 69.17it/s, est. speed input: 7618.77 toks/s, output: 3219.36 toks/s]Processed prompts:  88%|████████▊ | 112/128 [00:01<00:00, 69.08it/s, est. speed input: 7642.17 toks/s, output: 3662.36 toks/s]Processed prompts: 100%|██████████| 128/128 [00:02<00:00, 48.10it/s, est. speed input: 6634.97 toks/s, output: 3782.59 toks/s]Processed prompts: 100%|██████████| 128/128 [00:02<00:00, 48.10it/s, est. speed input: 6634.97 toks/s, output: 3782.59 toks/s]Processed prompts: 100%|██████████| 128/128 [00:02<00:00, 58.25it/s, est. speed input: 6634.97 toks/s, output: 3782.59 toks/s]
+[rank0]:[W1018 21:05:54.322905099 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+Generated 8 prompt completion groups.
+Sampled evaluation at optimizer step 160: coverage=1.0 mean_pass_count=14.125 exact0=0.0
+{'loss': 0.0072, 'grad_norm': 0.10947267711162567, 'learning_rate': 2.05e-06, 'epoch': 160.0}
+INFO 10-18 21:06:29 [__init__.py:216] Automatically detected platform cuda.
+INFO 10-18 21:06:30 [utils.py:328] non-default args: {'dtype': 'bfloat16', 'max_model_len': 4096, 'gpu_memory_utilization': 0.5, 'disable_log_stats': True, 'enforce_eager': True, 'model': '/tmp/qwen-evalplus-6wmmf5sz/merged'}
+INFO 10-18 21:06:43 [__init__.py:742] Resolved architecture: Qwen2ForCausalLM
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO 10-18 21:06:43 [__init__.py:1815] Using max model len 4096
+INFO 10-18 21:06:44 [scheduler.py:222] Chunked prefill is enabled with max_num_batched_tokens=8192.
+INFO 10-18 21:06:44 [__init__.py:3400] Cudagraph is disabled under eager mode
+WARNING 10-18 21:06:45 [__init__.py:2974] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized
+INFO 10-18 21:06:50 [__init__.py:216] Automatically detected platform cuda.
+[1;36m(EngineCore_DP0 pid=1008716)[0;0m INFO 10-18 21:06:51 [core.py:654] Waiting for init message from front-end.
+[1;36m(EngineCore_DP0 pid=1008716)[0;0m INFO 10-18 21:06:51 [core.py:76] Initializing a V1 LLM engine (v0.10.2) with config: model='/tmp/qwen-evalplus-6wmmf5sz/merged', speculative_config=None, tokenizer='/tmp/qwen-evalplus-6wmmf5sz/merged', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=4096, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=True, kv_cache_dtype=auto, device_config=cuda, decoding_config=DecodingConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_backend=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=/tmp/qwen-evalplus-6wmmf5sz/merged, enable_prefix_caching=True, chunked_prefill_enabled=True, use_async_output_proc=True, pooler_config=None, compilation_config={"level":0,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":null,"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":0,"use_cudagraph":true,"cudagraph_num_of_warmups":0,"cudagraph_capture_sizes":[],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"pass_config":{},"max_capture_size":0,"local_cache_dir":null}
+[W1018 21:06:56.401426005 ProcessGroupNCCL.cpp:981] Warning: TORCH_NCCL_AVOID_RECORD_STREAMS is the default now, this environment variable is thus deprecated. (function operator())
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[1;36m(EngineCore_DP0 pid=1008716)[0;0m INFO 10-18 21:06:56 [parallel_state.py:1165] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+[1;36m(EngineCore_DP0 pid=1008716)[0;0m WARNING 10-18 21:06:56 [topk_topp_sampler.py:69] FlashInfer is not available. Falling back to the PyTorch-native implementation of top-p & top-k sampling. For the best performance, please install FlashInfer.
+[1;36m(EngineCore_DP0 pid=1008716)[0;0m INFO 10-18 21:06:56 [gpu_model_runner.py:2338] Starting to load model /tmp/qwen-evalplus-6wmmf5sz/merged...
+[1;36m(EngineCore_DP0 pid=1008716)[0;0m INFO 10-18 21:06:56 [gpu_model_runner.py:2370] Loading model from scratch...
+[1;36m(EngineCore_DP0 pid=1008716)[0;0m INFO 10-18 21:06:56 [cuda.py:362] Using Flash Attention backend on V1 engine.
+[1;36m(EngineCore_DP0 pid=1008716)[0;0m Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+[1;36m(EngineCore_DP0 pid=1008716)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  8.07it/s]
+[1;36m(EngineCore_DP0 pid=1008716)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  8.04it/s]
+[1;36m(EngineCore_DP0 pid=1008716)[0;0m 
+[1;36m(EngineCore_DP0 pid=1008716)[0;0m INFO 10-18 21:06:56 [default_loader.py:268] Loading weights took 0.16 seconds
+[1;36m(EngineCore_DP0 pid=1008716)[0;0m INFO 10-18 21:06:57 [gpu_model_runner.py:2392] Model loading took 0.9277 GiB and 0.273514 seconds
+[1;36m(EngineCore_DP0 pid=1008716)[0;0m INFO 10-18 21:06:58 [gpu_worker.py:298] Available KV cache memory: 5.45 GiB
+[1;36m(EngineCore_DP0 pid=1008716)[0;0m INFO 10-18 21:06:59 [kv_cache_utils.py:864] GPU KV cache size: 476,080 tokens
+[1;36m(EngineCore_DP0 pid=1008716)[0;0m INFO 10-18 21:06:59 [kv_cache_utils.py:868] Maximum concurrency for 4,096 tokens per request: 116.23x
+[1;36m(EngineCore_DP0 pid=1008716)[0;0m INFO 10-18 21:06:59 [gpu_worker.py:391] Free memory on device (15.1/15.58 GiB) on startup. Desired GPU memory utilization is (0.5, 7.79 GiB). Actual usage is 0.93 GiB for weight, 1.4 GiB for peak activation, 0.02 GiB for non-torch memory, and 0.0 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=5692953600` to fit into requested memory, or `--kv-cache-memory=13535613952` to fully utilize gpu memory. Current kv cache memory in use is 5850240000 bytes.
+[1;36m(EngineCore_DP0 pid=1008716)[0;0m INFO 10-18 21:06:59 [core.py:218] init engine (profile, create kv cache, warmup model) took 1.71 seconds
+[1;36m(EngineCore_DP0 pid=1008716)[0;0m INFO 10-18 21:06:59 [__init__.py:3400] Cudagraph is disabled under eager mode
+INFO 10-18 21:06:59 [llm.py:295] Supported_tasks: ['generate']
+INFO 10-18 21:06:59 [__init__.py:36] No IOProcessor plugins requested by the model
+Adding requests:   0%|          | 0/8 [00:00<?, ?it/s][1;36m(EngineCore_DP0 pid=1008716)[0;0m WARNING 10-18 21:06:59 [cudagraph_dispatcher.py:102] cudagraph dispatching keys are not initialized. No cudagraph will be used.
+Adding requests: 100%|██████████| 8/8 [00:00<00:00, 529.57it/s]
+Processed prompts:   0%|          | 0/128 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts:  12%|█▎        | 16/128 [00:00<00:04, 27.59it/s, est. speed input: 3972.75 toks/s, output: 800.00 toks/s]Processed prompts:  38%|███▊      | 48/128 [00:00<00:01, 78.13it/s, est. speed input: 8386.81 toks/s, output: 2025.01 toks/s]Processed prompts:  50%|█████     | 64/128 [00:00<00:00, 81.88it/s, est. speed input: 8419.86 toks/s, output: 2507.22 toks/s]Processed prompts:  75%|███████▌  | 96/128 [00:01<00:00, 70.08it/s, est. speed input: 7508.26 toks/s, output: 3173.38 toks/s]Processed prompts:  88%|████████▊ | 112/128 [00:02<00:00, 46.51it/s, est. speed input: 5972.34 toks/s, output: 2874.54 toks/s]Processed prompts: 100%|██████████| 128/128 [00:05<00:00, 14.26it/s, est. speed input: 2751.09 toks/s, output: 1617.87 toks/s]Processed prompts: 100%|██████████| 128/128 [00:05<00:00, 14.26it/s, est. speed input: 2751.09 toks/s, output: 1617.87 toks/s]Processed prompts: 100%|██████████| 128/128 [00:05<00:00, 24.16it/s, est. speed input: 2751.09 toks/s, output: 1617.87 toks/s]
+[rank0]:[W1018 21:07:05.427414885 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+Generated 8 prompt completion groups.
+Sampled evaluation at optimizer step 170: coverage=1.0 mean_pass_count=14.5 exact0=0.0
+{'loss': 0.0064, 'grad_norm': 0.0968921110033989, 'learning_rate': 1.5500000000000002e-06, 'epoch': 170.0}
+INFO 10-18 21:07:38 [__init__.py:216] Automatically detected platform cuda.
+INFO 10-18 21:07:39 [utils.py:328] non-default args: {'dtype': 'bfloat16', 'max_model_len': 4096, 'gpu_memory_utilization': 0.5, 'disable_log_stats': True, 'enforce_eager': True, 'model': '/tmp/qwen-evalplus-zl53hn5k/merged'}
+INFO 10-18 21:07:50 [__init__.py:742] Resolved architecture: Qwen2ForCausalLM
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO 10-18 21:07:50 [__init__.py:1815] Using max model len 4096
+INFO 10-18 21:07:52 [scheduler.py:222] Chunked prefill is enabled with max_num_batched_tokens=8192.
+INFO 10-18 21:07:52 [__init__.py:3400] Cudagraph is disabled under eager mode
+WARNING 10-18 21:07:53 [__init__.py:2974] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized
+INFO 10-18 21:07:58 [__init__.py:216] Automatically detected platform cuda.
+[1;36m(EngineCore_DP0 pid=1009849)[0;0m INFO 10-18 21:07:59 [core.py:654] Waiting for init message from front-end.
+[1;36m(EngineCore_DP0 pid=1009849)[0;0m INFO 10-18 21:07:59 [core.py:76] Initializing a V1 LLM engine (v0.10.2) with config: model='/tmp/qwen-evalplus-zl53hn5k/merged', speculative_config=None, tokenizer='/tmp/qwen-evalplus-zl53hn5k/merged', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=4096, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=True, kv_cache_dtype=auto, device_config=cuda, decoding_config=DecodingConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_backend=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=/tmp/qwen-evalplus-zl53hn5k/merged, enable_prefix_caching=True, chunked_prefill_enabled=True, use_async_output_proc=True, pooler_config=None, compilation_config={"level":0,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":null,"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":0,"use_cudagraph":true,"cudagraph_num_of_warmups":0,"cudagraph_capture_sizes":[],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"pass_config":{},"max_capture_size":0,"local_cache_dir":null}
+[W1018 21:08:04.357717541 ProcessGroupNCCL.cpp:981] Warning: TORCH_NCCL_AVOID_RECORD_STREAMS is the default now, this environment variable is thus deprecated. (function operator())
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[1;36m(EngineCore_DP0 pid=1009849)[0;0m INFO 10-18 21:08:04 [parallel_state.py:1165] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+[1;36m(EngineCore_DP0 pid=1009849)[0;0m WARNING 10-18 21:08:04 [topk_topp_sampler.py:69] FlashInfer is not available. Falling back to the PyTorch-native implementation of top-p & top-k sampling. For the best performance, please install FlashInfer.
+[1;36m(EngineCore_DP0 pid=1009849)[0;0m INFO 10-18 21:08:04 [gpu_model_runner.py:2338] Starting to load model /tmp/qwen-evalplus-zl53hn5k/merged...
+[1;36m(EngineCore_DP0 pid=1009849)[0;0m INFO 10-18 21:08:04 [gpu_model_runner.py:2370] Loading model from scratch...
+[1;36m(EngineCore_DP0 pid=1009849)[0;0m INFO 10-18 21:08:04 [cuda.py:362] Using Flash Attention backend on V1 engine.
+[1;36m(EngineCore_DP0 pid=1009849)[0;0m Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+[1;36m(EngineCore_DP0 pid=1009849)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  8.40it/s]
+[1;36m(EngineCore_DP0 pid=1009849)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  8.36it/s]
+[1;36m(EngineCore_DP0 pid=1009849)[0;0m 
+[1;36m(EngineCore_DP0 pid=1009849)[0;0m INFO 10-18 21:08:04 [default_loader.py:268] Loading weights took 0.15 seconds
+[1;36m(EngineCore_DP0 pid=1009849)[0;0m INFO 10-18 21:08:05 [gpu_model_runner.py:2392] Model loading took 0.9277 GiB and 0.271042 seconds
+[1;36m(EngineCore_DP0 pid=1009849)[0;0m INFO 10-18 21:08:06 [gpu_worker.py:298] Available KV cache memory: 5.45 GiB
+[1;36m(EngineCore_DP0 pid=1009849)[0;0m INFO 10-18 21:08:06 [kv_cache_utils.py:864] GPU KV cache size: 476,080 tokens
+[1;36m(EngineCore_DP0 pid=1009849)[0;0m INFO 10-18 21:08:06 [kv_cache_utils.py:868] Maximum concurrency for 4,096 tokens per request: 116.23x
+[1;36m(EngineCore_DP0 pid=1009849)[0;0m INFO 10-18 21:08:06 [gpu_worker.py:391] Free memory on device (15.09/15.58 GiB) on startup. Desired GPU memory utilization is (0.5, 7.79 GiB). Actual usage is 0.93 GiB for weight, 1.4 GiB for peak activation, 0.02 GiB for non-torch memory, and 0.0 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=5692953600` to fit into requested memory, or `--kv-cache-memory=13531419648` to fully utilize gpu memory. Current kv cache memory in use is 5850240000 bytes.
+[1;36m(EngineCore_DP0 pid=1009849)[0;0m INFO 10-18 21:08:06 [core.py:218] init engine (profile, create kv cache, warmup model) took 1.67 seconds
+[1;36m(EngineCore_DP0 pid=1009849)[0;0m INFO 10-18 21:08:07 [__init__.py:3400] Cudagraph is disabled under eager mode
+INFO 10-18 21:08:07 [llm.py:295] Supported_tasks: ['generate']
+INFO 10-18 21:08:07 [__init__.py:36] No IOProcessor plugins requested by the model
+Adding requests:   0%|          | 0/8 [00:00<?, ?it/s][1;36m(EngineCore_DP0 pid=1009849)[0;0m WARNING 10-18 21:08:07 [cudagraph_dispatcher.py:102] cudagraph dispatching keys are not initialized. No cudagraph will be used.
+Adding requests: 100%|██████████| 8/8 [00:00<00:00, 635.01it/s]
+Processed prompts:   0%|          | 0/128 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts:  12%|█▎        | 16/128 [00:00<00:03, 28.23it/s, est. speed input: 4066.05 toks/s, output: 818.78 toks/s]Processed prompts:  38%|███▊      | 48/128 [00:00<00:01, 79.86it/s, est. speed input: 8574.86 toks/s, output: 2070.38 toks/s]Processed prompts:  50%|█████     | 64/128 [00:00<00:00, 81.99it/s, est. speed input: 8498.73 toks/s, output: 2530.50 toks/s]Processed prompts:  75%|███████▌  | 96/128 [00:01<00:00, 54.10it/s, est. speed input: 6339.02 toks/s, output: 2687.45 toks/s]Processed prompts:  88%|████████▊ | 112/128 [00:02<00:00, 44.30it/s, est. speed input: 5708.45 toks/s, output: 3055.78 toks/s]Processed prompts: 100%|██████████| 128/128 [00:02<00:00, 41.43it/s, est. speed input: 5419.51 toks/s, output: 3119.04 toks/s]Processed prompts: 100%|██████████| 128/128 [00:02<00:00, 41.43it/s, est. speed input: 5419.51 toks/s, output: 3119.04 toks/s]Processed prompts: 100%|██████████| 128/128 [00:02<00:00, 47.58it/s, est. speed input: 5419.51 toks/s, output: 3119.04 toks/s]
+[rank0]:[W1018 21:08:10.677343233 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+Generated 8 prompt completion groups.
+Sampled evaluation at optimizer step 180: coverage=1.0 mean_pass_count=14.625 exact0=0.0
+{'loss': 0.0059, 'grad_norm': 0.09298241883516312, 'learning_rate': 1.0500000000000001e-06, 'epoch': 180.0}
+INFO 10-18 21:08:40 [__init__.py:216] Automatically detected platform cuda.
+INFO 10-18 21:08:41 [utils.py:328] non-default args: {'dtype': 'bfloat16', 'max_model_len': 4096, 'gpu_memory_utilization': 0.5, 'disable_log_stats': True, 'enforce_eager': True, 'model': '/tmp/qwen-evalplus-77mgyjmr/merged'}
+INFO 10-18 21:08:52 [__init__.py:742] Resolved architecture: Qwen2ForCausalLM
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO 10-18 21:08:52 [__init__.py:1815] Using max model len 4096
+INFO 10-18 21:08:54 [scheduler.py:222] Chunked prefill is enabled with max_num_batched_tokens=8192.
+INFO 10-18 21:08:54 [__init__.py:3400] Cudagraph is disabled under eager mode
+WARNING 10-18 21:08:54 [__init__.py:2974] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized
+INFO 10-18 21:08:59 [__init__.py:216] Automatically detected platform cuda.
+[1;36m(EngineCore_DP0 pid=1010982)[0;0m INFO 10-18 21:09:00 [core.py:654] Waiting for init message from front-end.
+[1;36m(EngineCore_DP0 pid=1010982)[0;0m INFO 10-18 21:09:00 [core.py:76] Initializing a V1 LLM engine (v0.10.2) with config: model='/tmp/qwen-evalplus-77mgyjmr/merged', speculative_config=None, tokenizer='/tmp/qwen-evalplus-77mgyjmr/merged', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=4096, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=True, kv_cache_dtype=auto, device_config=cuda, decoding_config=DecodingConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_backend=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=/tmp/qwen-evalplus-77mgyjmr/merged, enable_prefix_caching=True, chunked_prefill_enabled=True, use_async_output_proc=True, pooler_config=None, compilation_config={"level":0,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":null,"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":0,"use_cudagraph":true,"cudagraph_num_of_warmups":0,"cudagraph_capture_sizes":[],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"pass_config":{},"max_capture_size":0,"local_cache_dir":null}
+[W1018 21:09:05.782990183 ProcessGroupNCCL.cpp:981] Warning: TORCH_NCCL_AVOID_RECORD_STREAMS is the default now, this environment variable is thus deprecated. (function operator())
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[1;36m(EngineCore_DP0 pid=1010982)[0;0m INFO 10-18 21:09:05 [parallel_state.py:1165] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+[1;36m(EngineCore_DP0 pid=1010982)[0;0m WARNING 10-18 21:09:05 [topk_topp_sampler.py:69] FlashInfer is not available. Falling back to the PyTorch-native implementation of top-p & top-k sampling. For the best performance, please install FlashInfer.
+[1;36m(EngineCore_DP0 pid=1010982)[0;0m INFO 10-18 21:09:05 [gpu_model_runner.py:2338] Starting to load model /tmp/qwen-evalplus-77mgyjmr/merged...
+[1;36m(EngineCore_DP0 pid=1010982)[0;0m INFO 10-18 21:09:05 [gpu_model_runner.py:2370] Loading model from scratch...
+[1;36m(EngineCore_DP0 pid=1010982)[0;0m INFO 10-18 21:09:05 [cuda.py:362] Using Flash Attention backend on V1 engine.
+[1;36m(EngineCore_DP0 pid=1010982)[0;0m Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+[1;36m(EngineCore_DP0 pid=1010982)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  9.31it/s]
+[1;36m(EngineCore_DP0 pid=1010982)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  9.27it/s]
+[1;36m(EngineCore_DP0 pid=1010982)[0;0m 
+[1;36m(EngineCore_DP0 pid=1010982)[0;0m INFO 10-18 21:09:06 [default_loader.py:268] Loading weights took 0.14 seconds
+[1;36m(EngineCore_DP0 pid=1010982)[0;0m INFO 10-18 21:09:06 [gpu_model_runner.py:2392] Model loading took 0.9277 GiB and 0.244324 seconds
+[1;36m(EngineCore_DP0 pid=1010982)[0;0m INFO 10-18 21:09:07 [gpu_worker.py:298] Available KV cache memory: 5.45 GiB
+[1;36m(EngineCore_DP0 pid=1010982)[0;0m INFO 10-18 21:09:08 [kv_cache_utils.py:864] GPU KV cache size: 476,080 tokens
+[1;36m(EngineCore_DP0 pid=1010982)[0;0m INFO 10-18 21:09:08 [kv_cache_utils.py:868] Maximum concurrency for 4,096 tokens per request: 116.23x
+[1;36m(EngineCore_DP0 pid=1010982)[0;0m INFO 10-18 21:09:08 [gpu_worker.py:391] Free memory on device (15.09/15.58 GiB) on startup. Desired GPU memory utilization is (0.5, 7.79 GiB). Actual usage is 0.93 GiB for weight, 1.4 GiB for peak activation, 0.02 GiB for non-torch memory, and 0.0 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=5692953600` to fit into requested memory, or `--kv-cache-memory=13531419648` to fully utilize gpu memory. Current kv cache memory in use is 5850240000 bytes.
+[1;36m(EngineCore_DP0 pid=1010982)[0;0m INFO 10-18 21:09:08 [core.py:218] init engine (profile, create kv cache, warmup model) took 1.55 seconds
+[1;36m(EngineCore_DP0 pid=1010982)[0;0m INFO 10-18 21:09:08 [__init__.py:3400] Cudagraph is disabled under eager mode
+INFO 10-18 21:09:08 [llm.py:295] Supported_tasks: ['generate']
+INFO 10-18 21:09:08 [__init__.py:36] No IOProcessor plugins requested by the model
+Adding requests:   0%|          | 0/8 [00:00<?, ?it/s][1;36m(EngineCore_DP0 pid=1010982)[0;0m WARNING 10-18 21:09:08 [cudagraph_dispatcher.py:102] cudagraph dispatching keys are not initialized. No cudagraph will be used.
+Adding requests: 100%|██████████| 8/8 [00:00<00:00, 787.64it/s]
+Processed prompts:   0%|          | 0/128 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts:  12%|█▎        | 16/128 [00:00<00:04, 24.20it/s, est. speed input: 3436.45 toks/s, output: 874.16 toks/s]Processed prompts:  25%|██▌       | 32/128 [00:00<00:02, 41.18it/s, est. speed input: 4415.04 toks/s, output: 1608.97 toks/s]Processed prompts:  50%|█████     | 64/128 [00:01<00:00, 78.33it/s, est. speed input: 7266.95 toks/s, output: 2627.62 toks/s]Processed prompts:  62%|██████▎   | 80/128 [00:01<00:00, 62.52it/s, est. speed input: 6437.19 toks/s, output: 2302.50 toks/s]Processed prompts:  88%|████████▊ | 112/128 [00:02<00:00, 54.75it/s, est. speed input: 6005.82 toks/s, output: 2958.21 toks/s]Processed prompts: 100%|██████████| 128/128 [00:02<00:00, 42.53it/s, est. speed input: 5372.87 toks/s, output: 3169.98 toks/s]Processed prompts: 100%|██████████| 128/128 [00:02<00:00, 42.53it/s, est. speed input: 5372.87 toks/s, output: 3169.98 toks/s]Processed prompts: 100%|██████████| 128/128 [00:02<00:00, 47.17it/s, est. speed input: 5372.87 toks/s, output: 3169.98 toks/s]
+[rank0]:[W1018 21:09:11.878957528 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+Generated 8 prompt completion groups.
+Sampled evaluation at optimizer step 190: coverage=1.0 mean_pass_count=13.75 exact0=0.0
+{'loss': 0.0056, 'grad_norm': 0.09141675382852554, 'learning_rate': 5.5e-07, 'epoch': 190.0}
+INFO 10-18 21:09:45 [__init__.py:216] Automatically detected platform cuda.
+INFO 10-18 21:09:46 [utils.py:328] non-default args: {'dtype': 'bfloat16', 'max_model_len': 4096, 'gpu_memory_utilization': 0.5, 'disable_log_stats': True, 'enforce_eager': True, 'model': '/tmp/qwen-evalplus-m6n62ubw/merged'}
+INFO 10-18 21:09:58 [__init__.py:742] Resolved architecture: Qwen2ForCausalLM
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO 10-18 21:09:58 [__init__.py:1815] Using max model len 4096
+INFO 10-18 21:10:00 [scheduler.py:222] Chunked prefill is enabled with max_num_batched_tokens=8192.
+INFO 10-18 21:10:00 [__init__.py:3400] Cudagraph is disabled under eager mode
+WARNING 10-18 21:10:00 [__init__.py:2974] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized
+INFO 10-18 21:10:05 [__init__.py:216] Automatically detected platform cuda.
+[1;36m(EngineCore_DP0 pid=1012093)[0;0m INFO 10-18 21:10:06 [core.py:654] Waiting for init message from front-end.
+[1;36m(EngineCore_DP0 pid=1012093)[0;0m INFO 10-18 21:10:06 [core.py:76] Initializing a V1 LLM engine (v0.10.2) with config: model='/tmp/qwen-evalplus-m6n62ubw/merged', speculative_config=None, tokenizer='/tmp/qwen-evalplus-m6n62ubw/merged', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=4096, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=True, kv_cache_dtype=auto, device_config=cuda, decoding_config=DecodingConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_backend=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=/tmp/qwen-evalplus-m6n62ubw/merged, enable_prefix_caching=True, chunked_prefill_enabled=True, use_async_output_proc=True, pooler_config=None, compilation_config={"level":0,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":null,"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":0,"use_cudagraph":true,"cudagraph_num_of_warmups":0,"cudagraph_capture_sizes":[],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"pass_config":{},"max_capture_size":0,"local_cache_dir":null}
+[W1018 21:10:10.102089481 ProcessGroupNCCL.cpp:981] Warning: TORCH_NCCL_AVOID_RECORD_STREAMS is the default now, this environment variable is thus deprecated. (function operator())
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[1;36m(EngineCore_DP0 pid=1012093)[0;0m INFO 10-18 21:10:10 [parallel_state.py:1165] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+[1;36m(EngineCore_DP0 pid=1012093)[0;0m WARNING 10-18 21:10:10 [topk_topp_sampler.py:69] FlashInfer is not available. Falling back to the PyTorch-native implementation of top-p & top-k sampling. For the best performance, please install FlashInfer.
+[1;36m(EngineCore_DP0 pid=1012093)[0;0m INFO 10-18 21:10:10 [gpu_model_runner.py:2338] Starting to load model /tmp/qwen-evalplus-m6n62ubw/merged...
+[1;36m(EngineCore_DP0 pid=1012093)[0;0m INFO 10-18 21:10:11 [gpu_model_runner.py:2370] Loading model from scratch...
+[1;36m(EngineCore_DP0 pid=1012093)[0;0m INFO 10-18 21:10:11 [cuda.py:362] Using Flash Attention backend on V1 engine.
+[1;36m(EngineCore_DP0 pid=1012093)[0;0m Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+[1;36m(EngineCore_DP0 pid=1012093)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  9.34it/s]
+[1;36m(EngineCore_DP0 pid=1012093)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  9.31it/s]
+[1;36m(EngineCore_DP0 pid=1012093)[0;0m 
+[1;36m(EngineCore_DP0 pid=1012093)[0;0m INFO 10-18 21:10:11 [default_loader.py:268] Loading weights took 0.14 seconds
+[1;36m(EngineCore_DP0 pid=1012093)[0;0m INFO 10-18 21:10:11 [gpu_model_runner.py:2392] Model loading took 0.9277 GiB and 0.241697 seconds
+[1;36m(EngineCore_DP0 pid=1012093)[0;0m INFO 10-18 21:10:13 [gpu_worker.py:298] Available KV cache memory: 5.45 GiB
+[1;36m(EngineCore_DP0 pid=1012093)[0;0m INFO 10-18 21:10:13 [kv_cache_utils.py:864] GPU KV cache size: 476,080 tokens
+[1;36m(EngineCore_DP0 pid=1012093)[0;0m INFO 10-18 21:10:13 [kv_cache_utils.py:868] Maximum concurrency for 4,096 tokens per request: 116.23x
+[1;36m(EngineCore_DP0 pid=1012093)[0;0m INFO 10-18 21:10:13 [gpu_worker.py:391] Free memory on device (15.09/15.58 GiB) on startup. Desired GPU memory utilization is (0.5, 7.79 GiB). Actual usage is 0.93 GiB for weight, 1.4 GiB for peak activation, 0.02 GiB for non-torch memory, and 0.0 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=5692953600` to fit into requested memory, or `--kv-cache-memory=13533516800` to fully utilize gpu memory. Current kv cache memory in use is 5850240000 bytes.
+[1;36m(EngineCore_DP0 pid=1012093)[0;0m INFO 10-18 21:10:13 [core.py:218] init engine (profile, create kv cache, warmup model) took 1.57 seconds
+[1;36m(EngineCore_DP0 pid=1012093)[0;0m INFO 10-18 21:10:13 [__init__.py:3400] Cudagraph is disabled under eager mode
+INFO 10-18 21:10:14 [llm.py:295] Supported_tasks: ['generate']
+INFO 10-18 21:10:14 [__init__.py:36] No IOProcessor plugins requested by the model
+Adding requests:   0%|          | 0/8 [00:00<?, ?it/s][1;36m(EngineCore_DP0 pid=1012093)[0;0m WARNING 10-18 21:10:14 [cudagraph_dispatcher.py:102] cudagraph dispatching keys are not initialized. No cudagraph will be used.
+Adding requests: 100%|██████████| 8/8 [00:00<00:00, 741.93it/s]
+Processed prompts:   0%|          | 0/128 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts:  12%|█▎        | 16/128 [00:00<00:03, 29.53it/s, est. speed input: 4253.11 toks/s, output: 856.45 toks/s]Processed prompts:  38%|███▊      | 48/128 [00:00<00:00, 84.73it/s, est. speed input: 9066.64 toks/s, output: 2189.13 toks/s]Processed prompts:  50%|█████     | 64/128 [00:00<00:00, 88.35it/s, est. speed input: 9079.15 toks/s, output: 2703.55 toks/s]Processed prompts:  75%|███████▌  | 96/128 [00:01<00:00, 59.09it/s, est. speed input: 6863.85 toks/s, output: 2910.65 toks/s]Processed prompts:  88%|████████▊ | 112/128 [00:02<00:00, 47.90it/s, est. speed input: 6156.48 toks/s, output: 3307.66 toks/s]Processed prompts: 100%|██████████| 128/128 [00:02<00:00, 42.96it/s, est. speed input: 5718.38 toks/s, output: 3326.34 toks/s]Processed prompts: 100%|██████████| 128/128 [00:02<00:00, 42.96it/s, est. speed input: 5718.38 toks/s, output: 3326.34 toks/s]Processed prompts: 100%|██████████| 128/128 [00:02<00:00, 50.20it/s, est. speed input: 5718.38 toks/s, output: 3326.34 toks/s]
+[rank0]:[W1018 21:10:16.020919649 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+Generated 8 prompt completion groups.
+Sampled evaluation at optimizer step 200: coverage=1.0 mean_pass_count=14.625 exact0=0.0
+{'loss': 0.0055, 'grad_norm': 0.08839226514101028, 'learning_rate': 5.0000000000000004e-08, 'epoch': 200.0}
+{'train_runtime': 1431.8579, 'train_samples_per_second': 1.117, 'train_steps_per_second': 0.14, 'train_loss': 0.2081471421942115, 'epoch': 200.0}
+wandb: updating run metadata
+wandb: uploading output.log; uploading wandb-summary.json; uploading config.yaml
+wandb: 
+wandb: Run history:
+wandb:                          optimizer_step ▁▁▁▂▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▅▅▅▅▅▆▆▆▆▆▆▇▇▇▇▇▇████
+wandb:             sampled_eval/average_reward ▂▂▁▁▁▂▂▃▄▅▆▇▇████████
+wandb:                   sampled_eval/coverage ▄▃▂▁▅▅▅▆▆▆███████████
+wandb: sampled_eval/estimated_pass_probability ▂▁▁▁▁▁▂▃▄▄▅▇▇█▇██████
+wandb:     sampled_eval/evaluation_sample_size ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb:         sampled_eval/exact_pass_count_0 ▅▆▇█▄▄▄▃▃▃▁▁▁▁▁▁▁▁▁▁▁
+wandb:         sampled_eval/exact_pass_count_1 ▃▃▃▁▆█▁▁▁▁▆▁▁▁▁▁▁▁▁▁▁
+wandb:        sampled_eval/exact_pass_count_10 ▁▁▁▁▁▅▁▁█▁▁▅█▅▅▅▅▅▅▁▅
+wandb:        sampled_eval/exact_pass_count_11 ▁▁▁▁▁▁▁▁▁▅▁▁▁▁█▁▅▁▁▅▁
+wandb:        sampled_eval/exact_pass_count_12 ██▁▁▁▁██▁▁▁▁██▁▁▁█▁█▁
+wandb:                                     +54 ...
+wandb: 
+wandb: Run summary:
+wandb:                          optimizer_step 200
+wandb:             sampled_eval/average_reward 0.91667
+wandb:                   sampled_eval/coverage 1
+wandb: sampled_eval/estimated_pass_probability 0.91406
+wandb:     sampled_eval/evaluation_sample_size 8
+wandb:         sampled_eval/exact_pass_count_0 0
+wandb:         sampled_eval/exact_pass_count_1 0
+wandb:        sampled_eval/exact_pass_count_10 0.125
+wandb:        sampled_eval/exact_pass_count_11 0
+wandb:        sampled_eval/exact_pass_count_12 0
+wandb:                                     +56 ...
+wandb: 
+wandb: 🚀 View run mbpp-reference-sft-pilot8-sampled-eval-20261018 at: https://wandb.ai/kunal-personal/grpo-mbpp/runs/f56a104a
+wandb: ⭐️ View project at: https://wandb.ai/kunal-personal/grpo-mbpp
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20261018_204520-f56a104a/logs

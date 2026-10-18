@@ -172,7 +172,8 @@ def evaluate_sampled_training(model: Any, tokenizer: Any, tasks: list[dict[str, 
         payload.update({f"sampled_eval/{key}": value for key, value in result["metrics"].items() if isinstance(value, (int, float))})
         run.log(payload)
         marker.write_text(json.dumps(record, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
-        print(f"Sampled evaluation at optimizer step {step}: coverage={result['metrics'].get('coverage')} mean_pass_count={result['metrics'].get('mean_pass_count')} exact0={result['metrics'].get('exact_pass_count_0')}", flush=True)
+        print(f"Sampled evaluation at optimizer step {step}: coverage={result['metrics'].get('coverage')} mixed={result['metrics'].get('mixed_fraction')} zero={result['metrics'].get('zero_pass_fraction')} saturated={result['metrics'].get('saturated_fraction')} mean_pass_count={result['metrics'].get('mean_pass_count')}", flush=True)
+        return result["metrics"]
     finally:
         gc.collect()
         torch.cuda.empty_cache()
@@ -247,7 +248,13 @@ def run_training(config: dict[str, Any], config_path: Path, resume_from_checkpoi
             if sampled_eval_enabled:
                 step = int(state.global_step)
                 if step > 0 and step % sampled_eval_steps == 0:
-                    evaluate_sampled_training(model, tokenizer, tasks, config, stage_dir, run, step)
+                    metrics = evaluate_sampled_training(model, tokenizer, tasks, config, stage_dir, run, step)
+                    # Stop the run once every training task has at least one passing sample.
+                    if metrics and bool(config.get("sampled_training_eval_stop_on_full_coverage", False)) and float(metrics.get("coverage", 0.0)) >= 1.0:
+                        run.summary["sampled_eval/stopped_at_step"] = step
+                        run.summary["sampled_eval/stop_reason"] = "full_coverage"
+                        print(f"Stopping training at optimizer step {step} because coverage reached 1.0. Diversity: mixed={metrics.get('mixed_fraction')} zero={metrics.get('zero_pass_fraction')} saturated={metrics.get('saturated_fraction')} mean_pass_count={metrics.get('mean_pass_count')}", flush=True)
+                        control.should_training_stop = True
             return control
 
         def on_train_begin(self, args: Any, state: Any, control: Any, **kwargs: Any) -> Any:
