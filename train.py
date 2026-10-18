@@ -1066,6 +1066,7 @@ def run_training(config: dict[str, Any], stage: str = "all") -> None:
         per_device_train_batch_size=int(config["per_device_train_batch_size"]),
         gradient_accumulation_steps=int(config["gradient_accumulation_steps"]),
         num_generations=int(config["num_generations"]),
+        temperature=float(config.get("temperature", 1.0)),
         generation_batch_size=int(config["generation_batch_size"]) if config.get("generation_batch_size") else None,
         max_completion_length=int(config["max_completion_length"]),
         beta=float(config.get("beta", 0.0)),

@@ -10,3 +10,7 @@ Discussion: Tests pass fraction reached 0.5 at step 30 and did not set a new hig
 Commit name: Record step-90 confirmation and checkpoint selection for assertion-visibility retry.
 Description: Correct the plateau audit record with the later step-90 evaluation, W&B stop, and checkpoint-90 retry source.
 Discussion: The 50-update plateau threshold was reached at step 80. During audit and reporting, step 90 also stayed at 0.5 tests pass fraction, and training advanced to step 99. The retry intentionally uses checkpoint-90 adapter weights with a fresh optimizer.
+
+Commit name: Record visible-assertion retry plateau and temperature exploration change.
+Description: Append attempt-2 metrics and exact rollout failure masks, document the unchanged result after showing all assertions, and wire configured temperature into GRPOConfig for the next retry.
+Discussion: The 50-step retry remained at 0/2 greedy pass@1 and 0.5 tests pass fraction. Most groups had zero within-group reward variance and no full-pass reward samples. The next controlled retry uses temperature 1.3 from checkpoint-50 adapter weights while holding prompts, reward, and optimizer settings fixed.
