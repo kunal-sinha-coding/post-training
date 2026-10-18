@@ -179,6 +179,30 @@ def add_synthetic_tests(dataset: Any, tests_by_task: dict[str, list[str]], requi
     return [{**record, **augment(record)} for record in dataset]
 
 
+def add_synthetic_tests_to_prompts(dataset: Any, tests_by_task: dict[str, list[str]], require_all: bool = True) -> Any:
+    """Expose generated training examples in prompts without changing evaluation tests."""
+    def augment(record: dict[str, Any]) -> dict[str, str]:
+        # Add examples before the task code fence so reward tests remain unchanged.
+        generated_tests = tests_by_task.get(str(record["task_id"]))
+        if generated_tests is None:
+            if require_all:
+                raise ValueError(f"Synthetic prompt tests are missing for task {record['task_id']}.")
+            generated_tests = []
+        prompt = str(record["prompt"])
+        fence = "\n```"
+        if generated_tests and not prompt.endswith(fence):
+            raise ValueError(f"Prompt for task {record['task_id']} does not end with a code fence.")
+        if generated_tests:
+            examples = "\n\nAdditional examples:\n" + "\n".join(generated_tests)
+            prompt = prompt[:-len(fence)] + examples + fence
+        return {"prompt": prompt}
+
+    # Preserve the dataset representation used by the caller.
+    if hasattr(dataset, "map"):
+        return dataset.map(augment)
+    return [{**record, **augment(record)} for record in dataset]
+
+
 def _to_dataset(records: list[dict[str, Any]]) -> Any:
     """Convert normalized records to a Hugging Face Dataset when available."""
     try:
@@ -425,6 +449,21 @@ def prepare_datasets(config: dict[str, Any]) -> tuple[Any, Any]:
     if train_task_ids is not None:
         allowed_task_ids = {str(task_id) for task_id in train_task_ids}
         train_dataset = _filter_dataset(train_dataset, lambda record: str(record["task_id"]) in allowed_task_ids)
+    # Expose optional generated examples in prompts while preserving the original reward tests.
+    if config.get("synthetic_prompt_tests_enabled", False):
+        synthetic_path = config.get("synthetic_tests_path")
+        if not synthetic_path:
+            raise ValueError("synthetic_tests_path is required when synthetic prompt tests are enabled.")
+        prompt_tests = load_synthetic_tests(
+            synthetic_path,
+            tests_per_task=int(config.get("synthetic_prompt_tests_per_task", 5)),
+            validate=False,
+        )
+        train_dataset = add_synthetic_tests_to_prompts(
+            train_dataset,
+            prompt_tests,
+            require_all=bool(config.get("synthetic_tests_require_all", True)),
+        )
     # Fail before training if the configured artifact does not contain the requested row count.
     expected_train_samples = config.get("expected_train_samples")
     if expected_train_samples is not None and len(train_dataset) != int(expected_train_samples):
