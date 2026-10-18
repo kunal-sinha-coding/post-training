@@ -19293,3 +19293,8 @@ Evaluation: Every 10 optimizer steps the run saves the current adapter, samples 
 Code and environment: Repository HEAD `fbd2d6fd`. One NVIDIA RTX 2000 Ada Generation GPU with 16 GB. Reward scoring uses 32 workers.
 Limitations: The sampled metric uses the base test suite only. The batch is 16 rather than the pilot batch of 8 to limit the number of expensive full-pool evaluations.
 Related pilot result: The eight-task pilot `configs/reference-sft-pilot8-sampled-eval-20261018.yaml`, W&B run `f56a104a`, reached coverage 1.0 at optimizer step 100 with pass counts [8, 1, 14, 1, 14, 16, 8, 15], a mixed fraction of 0.875, a saturated fraction of 0.125, and a pass-count standard deviation of 5.72. Coverage fell to 0.125 by step 30 before rising. Each optimizer step took 3.4 seconds excluding evaluation, and each evaluation took about 20 seconds.
+
+Finding: The full-pool sampled-eval SFT config with per-device batch 16 raised CUDA out-of-memory in the loss step on 2026-10-18.
+Reason: The language-model head materializes logits in float32 over the 151936-token vocabulary, so a batch of 16 at 1024 tokens needs about 10 GB in one allocation.
+Fix: The working config uses per-device batch 8 with gradient accumulation 2, which keeps the effective batch at 16.
+Environment: NVIDIA RTX 2000 Ada Generation GPU with 16 GB, repository HEAD `c7bf2f88`.

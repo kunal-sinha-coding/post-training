@@ -5026,3 +5026,7 @@ Discussion: The user asked for reference-solution SFT with a per-task histogram 
 Commit name: Add mixed-fraction tracking and full-coverage stopping, launch full-pool SFT.
 Description: Add the `mixed_fraction`, `zero_pass_fraction`, and `saturated_fraction` metrics in `train.py`, return the sampled metrics from `evaluate_sampled_training`, and stop training in `on_step_end` when coverage reaches one. Add the config `configs/reference-sft-fullpool-sampled-eval-20261018.yaml` for the 591-task pool.
 Discussion: The user asked to repeat the sampled-histogram SFT on the full MBPP pool, to track the percentage of training tasks that are mixed, and to stop when coverage reaches one. The eight-task pilot reached coverage 1.0 at step 100 with a mixed fraction of 0.875, so the full-pool run will report the same quantities at full scale.
+
+Commit name: Fix the full-pool SFT batch to avoid CUDA out-of-memory.
+Description: Set `sft_per_device_train_batch_size` to 8 and `gradient_accumulation_steps` to 2 in `configs/reference-sft-fullpool-sampled-eval-20261018.yaml`, and record the out-of-memory finding.
+Discussion: The batch-16 variant allocated about 10 GB for float32 logits and failed. The batch-8 accumulated variant keeps the effective batch at 16 and runs on the 16 GB GPU.

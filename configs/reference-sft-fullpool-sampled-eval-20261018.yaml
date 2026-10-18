@@ -14,8 +14,9 @@ lora_r: 16
 lora_alpha: 32
 lora_dropout: 0.05
 lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
-sft_per_device_train_batch_size: 16
-gradient_accumulation_steps: 1
+# The per-device batch is 8 with accumulation 2 because batch 16 exhausts the 16 GB GPU in the loss step.
+sft_per_device_train_batch_size: 8
+gradient_accumulation_steps: 2
 learning_rate: 0.00001
 max_prompt_length: 512
 max_completion_length: 512
