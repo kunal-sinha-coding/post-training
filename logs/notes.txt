@@ -4991,3 +4991,8 @@ Discussion: The user asked to repeat the initial valid eight-task MBPP attempt, 
 Commit name: Record the initial baseline for the ten-step fixed-eight GRPO restart.
 Description: Record the step-zero fixed-batch pass@1, reward, task outcome counts, and active evaluation and stop-monitor state.
 Discussion: Attempt 016 starts from the original valid step-390 adapter. Its initial MBPP-only setup evaluates every ten updates. The baseline is 3/8 pass@1 and establishes the best score before scheduled evaluation 10.
+
+
+Commit name: Record the first improved evaluation in the ten-step fixed-eight GRPO restart.
+Description: Record update 10 pass@1, per-task outcomes, reward, and the reset plateau counter.
+Discussion: Attempt 016 improved from 3/8 to 6/8 pass@1 after ten optimizer updates. The first non-improvement evaluation is therefore not pending. Training remains active and the next evaluation is scheduled for update 20.
