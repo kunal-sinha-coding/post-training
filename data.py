@@ -106,8 +106,8 @@ def build_qwen_evalplus_prompt(record: dict[str, Any], visible_test_count: int |
         f"{QWEN_EVALPLUS_SYSTEM_PROMPT}<|im_end|>\n\n"
         "<|im_start|>user\n"
         "Can you complete the following Python function?\n"
-        # Treat explicit examples as binding when the task wording is incomplete or unclear.
-        "Follow the assertions as binding requirements when the prose is ambiguous.\n"
+        # Make the assertions authoritative when they disagree with task prose.
+        "Follow the assertions exactly. If they conflict with the prose, the assertions define the required behavior.\n"
         f"{fence}python\n{task_prompt.strip()}\n{fence}\n\n"
         "<|im_end|>\n"
         "<|im_start|>assistant\n"
