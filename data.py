@@ -194,7 +194,11 @@ def add_synthetic_tests_to_prompts(dataset: Any, tests_by_task: dict[str, list[s
         if generated_tests and insertion < 0:
             raise ValueError(f"Prompt for task {record['task_id']} has no task docstring boundary.")
         if generated_tests:
-            examples = "\n\nAdditional examples:\n" + "\n".join(generated_tests)
+            examples = (
+                "\n\nInfer the general rule from every assertion and example below; "
+                "do not rely on the task prose alone.\nAdditional examples:\n"
+                + "\n".join(generated_tests)
+            )
             prompt = prompt[:insertion] + examples + prompt[insertion:]
         return {"prompt": prompt}
 
