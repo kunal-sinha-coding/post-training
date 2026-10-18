@@ -4996,3 +4996,8 @@ Discussion: Attempt 016 starts from the original valid step-390 adapter. Its ini
 Commit name: Record the first improved evaluation in the ten-step fixed-eight GRPO restart.
 Description: Record update 10 pass@1, per-task outcomes, reward, and the reset plateau counter.
 Discussion: Attempt 016 improved from 3/8 to 6/8 pass@1 after ten optimizer updates. The first non-improvement evaluation is therefore not pending. Training remains active and the next evaluation is scheduled for update 20.
+
+
+Commit name: Record fixed-eight GRPO plateau diagnosis.
+Description: Append the completed attempt 016 evaluation sequence, manual-stop point, latest 16-sample binary reward vectors, test pass counts, task specifications, and the evidence-based plateau interpretation to `logs/results.txt`. The attempt 016 run was manually stopped at the user's request after 88 completed updates. W&B now marks the run as failed so it does not remain shown as running.
+Reason: Preserve a reproducible record of why the fixed-eight run plateaued and distinguish partial diagnostic progress from the all-or-nothing reward used for optimization.
