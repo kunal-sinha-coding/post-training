@@ -14,10 +14,11 @@ lora_r: 16
 lora_alpha: 32
 lora_dropout: 0.05
 lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
-# The per-device batch is 4 with accumulation 4 because the fp32 vocabulary logits of a batch of 8 exhaust the 16 GB GPU.
-# The effective batch stays at 16 samples per optimizer step, so the update count per epoch is unchanged.
-sft_per_device_train_batch_size: 4
-gradient_accumulation_steps: 4
+# The per-device batch is 8 with accumulation 2 to keep 16 samples per optimizer step.
+# The batch and the accumulation must match every existing checkpoint, or the Trainer recomputes the epoch counter on resume.
+# The fp32 vocabulary logits of a batch of 8 are near the 16 GB limit, so the launcher sets expandable CUDA segments.
+sft_per_device_train_batch_size: 8
+gradient_accumulation_steps: 2
 learning_rate: 0.00001
 max_prompt_length: 512
 max_completion_length: 512

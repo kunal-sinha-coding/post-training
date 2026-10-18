@@ -19356,3 +19356,10 @@ Setup: W&B run `88d20d61`, resumed from `checkpoints/checkpoint-555` at epoch 15
 Observation: The peak device memory fell from about 15.8 GiB to about 7.8 GiB, which leaves roughly half the device free.
 Cost: The training forward and backward passes run about twice as often per optimizer step, so one epoch costs about 95 seconds instead of about 48 seconds.
 Limitations: Accumulation changes the order in which samples contribute to a step, so the gradient is not bit-identical to the earlier micro-batch-eight runs. The effective batch size and the number of updates are unchanged.
+
+Fix: Restore micro-batch eight and accumulation two and keep only expandable CUDA segments, 2026-10-18.
+Purpose: Remove the out-of-memory crash without corrupting the Trainer epoch counter, which broke the five-epoch evaluation interval.
+Cause: Changing the micro-batch and the accumulation on resume changed the update count per epoch, so the Trainer recomputed epoch 29.9 for a real epoch of about 15.5 and fired an unwanted evaluation.
+Implementation: Restore `sft_per_device_train_batch_size: 8` and `gradient_accumulation_steps: 2` in `configs/reference-sft-fullpool-perepoch-eval-20261018.yaml` to match every existing checkpoint, and launch with `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True` only. Resume from `checkpoints/checkpoint-555`.
+Observation: The epoch counter reads 15.57 at optimizer step 576, which is correct, and training passes step 574 where an earlier attempt reached a crash. No new out-of-memory error appears after the restart.
+Limitations: The micro-batch-eight configuration still sits near the device limit, so expandable CUDA segments carry the memory safety. If a crash returns, the next lever is a shorter completion length or an activation-memory reduction that does not change the update count per epoch.
