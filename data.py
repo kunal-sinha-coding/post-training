@@ -2,6 +2,7 @@
 # Training excludes every task in the installed canonical EvalPlus runner.
 # When configured, only the first `visible_test_count` training assertions appear in the prompt while reward still grades every assertion.
 # When configured, `train_task_ids` restricts training to an explicit task-ID allowlist instead of the full filtered pool.
+# MBPP prompts tell the model that explicit assertions take priority when task prose is ambiguous.
 
 from __future__ import annotations
 
@@ -90,7 +91,7 @@ def build_prompt(record: dict[str, Any], template: str = DEFAULT_PROMPT_TEMPLATE
 
 
 def build_qwen_evalplus_prompt(record: dict[str, Any], visible_test_count: int | None = None) -> str:
-    """Build the exact Qwen EvalPlus ChatML prompt for one MBPP record."""
+    """Build the MBPP ChatML prompt used by training and fixed-subset evaluation."""
     # Reconstruct the official visible docstring and assistant code prefix from Hugging Face MBPP fields.
     prompt = str(_first_value(record, "text", "prompt", "description", "task", default="")).strip()
     tests = _first_value(record, "test_list", "tests", default=[])
@@ -105,6 +106,8 @@ def build_qwen_evalplus_prompt(record: dict[str, Any], visible_test_count: int |
         f"{QWEN_EVALPLUS_SYSTEM_PROMPT}<|im_end|>\n\n"
         "<|im_start|>user\n"
         "Can you complete the following Python function?\n"
+        # Treat explicit examples as binding when the task wording is incomplete or unclear.
+        "Follow the assertions as binding requirements when the prose is ambiguous.\n"
         f"{fence}python\n{task_prompt.strip()}\n{fence}\n\n"
         "<|im_end|>\n"
         "<|im_start|>assistant\n"
