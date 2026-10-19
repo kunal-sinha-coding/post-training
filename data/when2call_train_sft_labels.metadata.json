@@ -1,0 +1,24 @@
+{
+  "dataset": "nvidia/When2Call",
+  "config": "train_sft",
+  "split": "train",
+  "rows_loaded": 15000,
+  "rows_labeled": 15000,
+  "rows_missing_final_assistant": [],
+  "label_order": [
+    "cannot_answer",
+    "request_for_info",
+    "tool_call",
+    "direct"
+  ],
+  "label_counts": {
+    "cannot_answer": 7529,
+    "request_for_info": 7470,
+    "tool_call": 0,
+    "direct": 1
+  },
+  "heuristic": "experiments/train_when2call_jina.py::infer_action_label, applied to the last assistant message content",
+  "source_dataset_fingerprint": "64bf30ca02961dce",
+  "artifact": "data/when2call_train_sft_labels.jsonl",
+  "artifact_contents": "row index, inferred label, label ID, and SHA-256 of the final assistant response; source text is omitted and can be read from the recorded dataset fingerprint"
+}

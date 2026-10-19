@@ -5191,3 +5191,7 @@ Discussion: The failed run `85e0lwz6` was not resumed. The new run starts from t
 Commit name: Record verified Jina checkpoint save.
 Description: Record the first completed epoch metrics and the successful rolling checkpoint from corrected W&B run `a7bwo46l`.
 Discussion: The retry uses the explicit one-million-epoch-cap name. The first epoch checkpoint was written after evaluation, and the process continued into epoch 2.
+
+Commit name: Save When2Call train_sft heuristic labels.
+Description: Add row-level heuristic labels and metadata without source text for all 15,000 examples in `nvidia/When2Call` `train_sft/train`, and record the class counts and provenance in the experiment results file.
+Discussion: The existing response heuristic was applied to each row's final assistant message. The artifact stores only row indices, labels, and a SHA-256 digest because GitHub secret scanning flagged source strings as token-like. Source text can be recovered from the recorded dataset fingerprint. Counts are 7,529 `cannot_answer`, 7,470 `request_for_info`, 0 `tool_call`, and 1 `direct`. The active Jina run was not modified or stopped. It had already loaded the train_pref split, so the train_sft labels are saved as a separate artifact for now.
