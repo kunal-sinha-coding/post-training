@@ -2205,3 +2205,40 @@ Keep 2e-5. If further optimization is attempted, calibrate the gate on a held-ou
 
 10. Limitations
 The comparison is exploratory and uses repeated test evaluation for research selection. No test labels are used in the inference scripts.
+
+==================== ERROR ANALYSIS 2026-10-19 AUTO-RESEARCH ITERATION 10 ====================
+Command: experiments/when2call_candidate_ranker.py --objective binary --max-pairs 9000 --epochs 2 --lr 2e-5, followed by validity correction and Jev routing.
+Batch mode: full 3,652-row test evaluation.
+
+0. Run summary
+The two-epoch ranker reached raw accuracy 0.5685 and raw macro F1 0.4926. The routed ensemble reached accuracy 0.8491 and macro F1 0.8482. This was slightly below the one-epoch 2e-5 route at macro F1 0.8489, so one epoch remains selected.
+
+1. Iteration comparison
+The extra epoch improved raw ranker macro F1 over the one-epoch raw result but did not improve the complete routed system. This is a small routed regression of 0.0007 macro F1.
+
+2. Run context and data coverage
+All 9,000 preference rows and all 3,652 test rows were used. No new API calls or target metadata were used.
+
+3. Error-pattern distribution
+The full postprocessed artifact is outputs/when2call-auto-research/ensemble_2epoch.json. It routed 2,620 rows to Jev and had lower macro F1 than the one-epoch route.
+
+4. Observed error patterns
+The extra pass shifted the local gate enough to reduce complementarity with Jev. The raw score gain did not translate to routed improvement.
+
+5. Success patterns and controls
+The one-epoch route remains the best complete system under the same inference policy.
+
+6. Deep triage
+The likely cause is mild overfitting or calibration drift in the local refusal detector after the second pass. The effect is small but consistent with the earlier learning-rate comparisons.
+
+7. Shared causes and interactions
+The result reinforces that the gate and expert must be optimized together.
+
+8. Underlying root-cause synthesis
+One epoch provides the best balance between response representation learning and conservative routing calibration in this setup.
+
+9. Proposed solutions and confirmation tests
+Keep the one-epoch 2e-5 model. Further experiments should focus on gate calibration or schema-aware features instead of more epochs.
+
+10. Limitations
+This comparison uses repeated benchmark evaluation for research selection and no test labels in inference code.
