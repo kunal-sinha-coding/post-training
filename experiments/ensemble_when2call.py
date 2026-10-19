@@ -27,6 +27,7 @@ def main():
     parser.add_argument("--route-label", default="request_for_info", help="Comma-separated local labels routed to Jev.")
     parser.add_argument("--switch-complete-request", action="store_true")
     parser.add_argument("--invalid-tool-to-cannot", action="store_true")
+    parser.add_argument("--invalid-non-tool-to-cannot", action="store_true")
     args = parser.parse_args()
     route_labels = set(label.strip() for label in args.route_label.split(",") if label.strip())
     ranker = json.loads(args.ranker.read_text(encoding="utf-8"))
@@ -57,6 +58,8 @@ def main():
             route_count += 1
         if args.invalid_tool_to_cannot and corrected == "tool_call" and not valid_call:
             corrected = "cannot_answer"
+        if args.invalid_non_tool_to_cannot and corrected in ("request_for_info", "direct") and not valid_call:
+            corrected = "cannot_answer"
         if args.switch_complete_request and corrected == "request_for_info" and valid_call:
             required = required_fields(schemas[name])
             question = str(row["question"]).lower()
@@ -64,7 +67,7 @@ def main():
                 corrected = "tool_call"
         predictions.append(corrected)
     targets = [row["correct_answer"] for row in rows]
-    result = {"route_label": sorted(route_labels), "invalid_tool_to_cannot": args.invalid_tool_to_cannot, "routed_rows": route_count, "metrics": metric_values(targets, predictions), "prediction_counts": dict(Counter(predictions)), "predictions": predictions, "targets": targets}
+    result = {"route_label": sorted(route_labels), "invalid_tool_to_cannot": args.invalid_tool_to_cannot, "invalid_non_tool_to_cannot": args.invalid_non_tool_to_cannot, "routed_rows": route_count, "metrics": metric_values(targets, predictions), "prediction_counts": dict(Counter(predictions)), "predictions": predictions, "targets": targets}
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({"routed_rows": route_count, **{key: value for key, value in result["metrics"].items() if key != "confusion_matrix"}}))
