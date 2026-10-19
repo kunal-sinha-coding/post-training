@@ -5195,3 +5195,7 @@ Discussion: The retry uses the explicit one-million-epoch-cap name. The first ep
 Commit name: Save When2Call train_sft heuristic labels.
 Description: Add row-level heuristic labels and metadata without source text for all 15,000 examples in `nvidia/When2Call` `train_sft/train`, and record the class counts and provenance in the experiment results file.
 Discussion: The existing response heuristic was applied to each row's final assistant message. The artifact stores only row indices, labels, and a SHA-256 digest because GitHub secret scanning flagged source strings as token-like. Source text can be recovered from the recorded dataset fingerprint. Counts are 7,529 `cannot_answer`, 7,470 `request_for_info`, 0 `tool_call`, and 1 `direct`. The active Jina run was not modified or stopped. It had already loaded the train_pref split, so the train_sft labels are saved as a separate artifact for now.
+
+Commit name: Add configurable pairwise ranking objective.
+Description: Extend the Jina classifier to retain rejected-response labels, expose `--loss-function` with `cross_entropy` and `pairwise_ranking`, and save loss-specific checkpoints.
+Discussion: Pairwise ranking uses `softplus(-(chosen_class_logit - rejected_class_logit))`. Same-class preference pairs are excluded because they provide no class-ranking signal. The prior run was explicitly killed before restart as requested.
