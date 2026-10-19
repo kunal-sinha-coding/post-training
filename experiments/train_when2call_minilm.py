@@ -25,7 +25,7 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 MODEL_NAME = "nreimers/MiniLM-L6-H384-uncased"
 DATASET_NAME = "nvidia/When2Call"
-LABELS = ("cannot_answer", "request_for_info", "tool_call")
+LABELS = ("cannot_answer", "request_for_info", "tool_call", "direct")
 LABEL_TO_ID = {label: index for index, label in enumerate(LABELS)}
 BATCH_SIZE = 16
 MAX_LENGTH = 512
@@ -64,21 +64,23 @@ class ExampleDataset(Dataset[Example]):
 
 
 def infer_action_label(response: str) -> str:
-    """Map an SFT assistant response to one of the benchmark action labels."""
-    # Treat explicit function-call structures as tool-call targets.
-    try:
-        parsed = json.loads(response)
-        if isinstance(parsed, dict) and ("name" in parsed or "tool_calls" in parsed):
+    """Map a preferred response to its action class for the benchmark classifier."""
+    # Recognize the dataset's tagged tool-call format before checking natural-language answers.
+    match = re.fullmatch(r"\s*<TOOLCALL>\s*(.*?)\s*</TOOLCALL>\s*", response, re.IGNORECASE | re.DOTALL)
+    if match:
+        try:
+            calls = json.loads(match.group(1))
+            if isinstance(calls, list) and calls and all(isinstance(call, dict) and "name" in call for call in calls):
+                return "tool_call"
+        except json.JSONDecodeError:
             return "tool_call"
-    except json.JSONDecodeError:
-        pass
-    if "<tool_call>" in response.lower():
-        return "tool_call"
-    # Treat questions and explicit requests for missing information as clarification targets.
+    # Treat explicit questions and requests for missing information as clarification targets.
     if "?" in response or re.search(r"(?i)\b(i'll need|i need|please provide|please specify|could you|would you|let me know)\b", response):
         return "request_for_info"
-    # Treat remaining SFT responses as unable-to-answer targets because this split contains no direct labels.
-    return "cannot_answer"
+    # Separate explicit refusals from the few preferred responses that answer directly.
+    if re.search(r"(?i)\b(unable|cannot|can't|can not|don't have|do not have|no access|not able|apolog|beyond my|lack|not within my capabilities|designed to .* not)\b", response):
+        return "cannot_answer"
+    return "direct"
 
 
 def tools_text(tools: list[str]) -> str:
@@ -88,13 +90,13 @@ def tools_text(tools: list[str]) -> str:
 
 
 def prepare_train_examples(rows: Any) -> list[Example]:
-    """Build inputs and heuristic labels from the requested train_sft split."""
-    # Convert the user query, available tools, and assistant response into classification records.
+    """Build inputs and inferred action labels from the train_pref chosen responses."""
+    # Convert each user query, tool list, and preferred response into one classification record.
     examples = []
     for index, row in enumerate(rows):
         messages = row["messages"]
         user_text = "\n".join(message["content"] for message in messages if message["role"] == "user")
-        response = "\n".join(message["content"] for message in messages if message["role"] == "assistant")
+        response = row["chosen_response"]["content"]
         action = infer_action_label(response)
         examples.append(Example(f"Question: {user_text}\nAvailable tools:\n{tools_text(row['tools'])}", LABEL_TO_ID[action], str(index)))
     return examples
@@ -114,22 +116,33 @@ def prepare_test_examples(rows: Any) -> list[Example]:
 
 
 def stratified_batch(examples: list[Example], batch_size: int, seed: int) -> list[Example]:
-    """Select a reproducible batch with equal representation from available train classes."""
-    # Shuffle each class independently so the batch does not depend on dataset row order.
+    """Select a reproducible batch with broad representation of every observed class."""
+    # Shuffle examples within each class so selection does not depend on dataset row order.
     rng = random.Random(seed)
     by_label: dict[int, list[Example]] = {}
     for example in examples:
         by_label.setdefault(example.label, []).append(example)
     for label_examples in by_label.values():
         rng.shuffle(label_examples)
-    # Select equal class counts and reject a batch that cannot represent every observed class.
+    # Allocate evenly first, then use remaining slots where enough class examples exist.
     labels = sorted(by_label)
-    if len(labels) < 2 or batch_size % len(labels):
-        raise ValueError("The stratified batch requires at least two classes and an even class allocation.")
-    per_class = batch_size // len(labels)
-    if any(len(by_label[label]) < per_class for label in labels):
-        raise ValueError("A training class has too few examples for the requested batch size.")
-    return [example for label in labels for example in by_label[label][:per_class]]
+    if len(labels) < 2 or batch_size < len(labels):
+        raise ValueError("The stratified batch requires at least two observed classes.")
+    selected_counts = {label: min(batch_size // len(labels), len(by_label[label])) for label in labels}
+    remaining = batch_size - sum(selected_counts.values())
+    while remaining:
+        available = [label for label in labels if selected_counts[label] < len(by_label[label])]
+        if not available:
+            raise ValueError("The observed classes do not have enough examples for the batch size.")
+        for label in available:
+            if remaining == 0:
+                break
+            selected_counts[label] += 1
+            remaining -= 1
+    # Shuffle the selected rows so the model sees a mixed class order in the fixed batch.
+    selected = [example for label in labels for example in by_label[label][:selected_counts[label]]]
+    rng.shuffle(selected)
+    return selected
 
 
 def collate(batch: list[Example], tokenizer: Any) -> dict[str, Any]:
@@ -213,24 +226,23 @@ def main() -> int:
     torch.manual_seed(SEED)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(SEED)
-    # Load exactly the named Hugging Face configurations and their requested splits.
-    train_rows = load_dataset(DATASET_NAME, "train_sft", split="train")
+    # Load the chosen-response preference split and the requested MCQ test split.
+    train_rows = load_dataset(DATASET_NAME, "train_pref", split="train")
     test_rows = load_dataset(DATASET_NAME, "test", split="mcq")
     train_examples = prepare_train_examples(train_rows)
     test_examples = prepare_test_examples(test_rows)
     train_counts = Counter(LABELS[item.label] for item in train_examples)
     test_counts = Counter(LABELS[item.label] for item in test_examples)
-    # Select a batch that includes all action types observed in train_sft.
+    # Select a batch that includes every observed chosen-response action type.
     overfit_examples = stratified_batch(train_examples, BATCH_SIZE, SEED)
-    overfit_labels = sorted({item.label for item in overfit_examples})
-    # Require W&B because the user asked to log the complete experiment.
+        # Require W&B because the user asked to log the complete experiment.
     import wandb
     api_key = __import__("os").environ.get("WANDB_API_KEY")
     if not api_key:
         raise RuntimeError("WANDB_API_KEY is missing from .env or the environment.")
     wandb.login(key=api_key, relogin=False)
-    run = wandb.init(project="post-training", name=f"when2call-minilm-{datetime.now(timezone.utc):%Y%m%d-%H%M%S}", config={"model": MODEL_NAME, "dataset": DATASET_NAME, "train_config": "train_sft/train", "eval_config": "test/mcq", "train_rows": len(train_examples), "test_rows": len(test_examples), "train_label_counts_inferred": dict(train_counts), "test_label_counts_official": dict(test_counts), "train_labels_inferred_from_response": True, "batch_size": BATCH_SIZE, "overfit_eval_interval_steps": OVERFIT_EVAL_INTERVAL, "overfit_max_steps": OVERFIT_MAX_STEPS, "full_train_steps": FULL_TRAIN_STEPS, "full_eval_interval_steps": 1000, "learning_rate": LEARNING_RATE, "max_length": MAX_LENGTH, "seed": SEED, "overfit_batch_label_counts": dict(Counter(LABELS[item.label] for item in overfit_examples)), "checkpoint_policy": "No overfit checkpoint. Save after step 1000 full train and test evaluation."})
-    # Initialize the encoder classifier with the benchmark's three action labels.
+    run = wandb.init(project="post-training", name=f"when2call-minilm-pref-{datetime.now(timezone.utc):%Y%m%d-%H%M%S}", config={"model": MODEL_NAME, "dataset": DATASET_NAME, "train_config": "train_pref/train", "eval_config": "test/mcq", "train_rows": len(train_examples), "test_rows": len(test_examples), "train_label_counts_inferred_from_chosen_response": dict(train_counts), "test_label_counts_official": dict(test_counts), "train_labels_inferred_from_response": True, "rejected_response_used_for_training": False, "batch_size": BATCH_SIZE, "overfit_eval_interval_steps": OVERFIT_EVAL_INTERVAL, "overfit_max_steps": OVERFIT_MAX_STEPS, "full_train_steps": FULL_TRAIN_STEPS, "full_eval_interval_steps": 1000, "learning_rate": LEARNING_RATE, "max_length": MAX_LENGTH, "seed": SEED, "overfit_batch_label_counts": dict(Counter(LABELS[item.label] for item in overfit_examples)), "checkpoint_policy": "No overfit checkpoint. Save after step 1000 full train and test evaluation."})
+    # Initialize the encoder classifier with the inferred action labels and the direct-response outlier class.
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
     model = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME, num_labels=len(LABELS), id2label=dict(enumerate(LABELS)), label2id=LABEL_TO_ID)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
