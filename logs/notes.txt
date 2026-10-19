@@ -5135,3 +5135,7 @@ Discussion: The local epoch-1, epoch-2, and epoch-3 checkpoints were deleted at 
 Commit name: Keep the continuous MiniLM console log out of Git history.
 Description: Ignore `logs/when2call-minilm-continuous.log` because it grows throughout the user-directed long-running experiment. W&B retains each optimizer-step and evaluation record.
 Discussion: The tracked results file records the W&B run and local rolling checkpoint. The continuous console log remains available in the workspace without creating a Git commit for every training update.
+
+Commit name: Record stopped When2Call run and train-test distribution analysis.
+Description: Mark the continuous MiniLM run stopped and record the split comparison, label provenance, query and tool overlap, input-length shift, truncation rates, and final checkpoint metrics.
+Discussion: The user asked to stop the run and analyze systematic train-test differences. The training target is heuristic-inferred from train_pref chosen responses, while test uses official MCQ labels. Test rows are from BFCL v2 Live sources, share only six tool names with train, and have longer tool schemas that cause substantially more truncation at 512 tokens.
