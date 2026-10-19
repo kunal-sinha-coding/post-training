@@ -2131,3 +2131,40 @@ The routing policy was selected after examining benchmark errors, so it is an ex
 
 ==================== ERROR ANALYSIS 2026-10-19 AUTO-RESEARCH ARCHITECTURE CHECK ====================
 The 22M-parameter MiniLM response-aware ranker was trained on all 9,000 preference pairs with a 512-token limit. It reached accuracy 0.2106 and macro F1 0.3068. Tool validity correction reached macro F1 0.3470, and Jev routing reached macro F1 0.3604. The short context and smaller encoder were rejected. This negative result confirms that the larger-context Jina representation is needed for this input format.
+
+==================== ERROR ANALYSIS 2026-10-19 AUTO-RESEARCH ITERATION 8 ====================
+Command: experiments/when2call_candidate_ranker.py --objective binary --max-pairs 9000 --lr 1e-5, followed by the same validity correction and Jev routing.
+Batch mode: full 3,652-row test evaluation.
+
+0. Run summary
+The lower learning-rate ranker improved raw accuracy to 0.5709 and raw macro F1 to 0.5620. After structural correction and Jev routing, it reached accuracy 0.8127 and macro F1 0.8133. This regressed from the 2e-5 route at macro F1 0.8489, so it was rejected.
+
+1. Iteration comparison
+The raw ranker improved, but the downstream route worsened. This shows that the inference harness is sensitive to the ranker's class regions, not only its raw accuracy. The 2e-5 ranker remains selected.
+
+2. Run context and data coverage
+All 9,000 preference rows trained the model and all 3,652 test rows were evaluated. The same no-test-metadata correction and Jev route were used.
+
+3. Error-pattern distribution
+The lower-learning-rate route routed 2,925 rows to Jev and produced substantially more actionable-class disagreement with the local structural correction. The complete confusion artifact is outputs/when2call-auto-research/ensemble_lr1e5.json.
+
+4. Observed error patterns
+The raw lower-rate model changed the distribution of local classes enough that the Jev route no longer preserved the high-precision cannot_answer region. The resulting ensemble lost 0.0356 macro F1 relative to the selected route.
+
+5. Success patterns and controls
+The raw lower-rate model itself improved over the raw 2e-5 model. The controlled downstream comparison shows that raw metric improvement is insufficient when the model is used as a routed component.
+
+6. Deep triage
+The likely cause is shifted score calibration and class-region geometry. The validity correction expects a conservative local cannot_answer detector. The lower-rate model does not produce that region with the same precision, so the route sends more rows to Jev and loses the complementary behavior.
+
+7. Shared causes and interactions
+This result reinforces that model and harness must be selected together. A model with higher standalone accuracy can be worse in a specialized ensemble.
+
+8. Underlying root-cause synthesis
+The remaining optimization target is the joint behavior of local refusal detection and Jev action selection, not raw ranker accuracy alone.
+
+9. Proposed solutions and confirmation tests
+Keep the 2e-5 route. Future changes must be evaluated through the complete harness and not by raw local metrics alone.
+
+10. Limitations
+The comparison uses the same test benchmark for iterative selection. No new API calls were made.
