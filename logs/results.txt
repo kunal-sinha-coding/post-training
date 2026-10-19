@@ -19507,3 +19507,8 @@ Memory and smoke check: Default full precision attention ran out of GPU memory o
 Planned run settings: AdamW learning rate 5e-5, seed 20261019, up to 1,000,000 epochs, baseline train/test evaluation at step 0, full train/test evaluation after every epoch, and one rolling checkpoint after each evaluation under `outputs/when2call-jina-v2-small/latest`. Run identifier and initial metrics will be added after launch.
 Code for this change: `experiments/train_when2call_jina.py`. The local console log is `logs/when2call-jina-v2-small-continuous.log`.
 Limitations: Train labels remain inferred from chosen responses, while test uses official labels. The Jina encoder is pretrained for embeddings; the classification head is newly initialized. Full context means all input tokens are jointly visible in attention, but the long sequences use model attention extrapolated from 512-token training.
+
+
+Experiment startup: When2Call Jina Embeddings v2 Small full-data classifier.
+W&B run: `85e0lwz6`, https://wandb.ai/kunal-personal/post-training/runs/85e0lwz6. The fresh process initialized W&B successfully and is active. The full baseline train and test evaluations are running before optimizer step 1.
+Code: commit `3f13fb36`, `experiments/train_when2call_jina.py`. Console log: `logs/when2call-jina-v2-small-continuous.log`. Checkpoint path: `outputs/when2call-jina-v2-small/latest`.

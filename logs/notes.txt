@@ -5166,3 +5166,8 @@ Discussion: The user requested a smoke test followed by relaunch with the same s
 Commit name: Switch When2Call classification to Jina long context.
 Description: Replace MiniLM chunk pooling with Jina Embeddings v2 Small, full-sequence masked-mean classification, memory-aware gradient accumulation, and a model-specific checkpoint and console log path. Record the old run's final evaluations and the new model smoke check.
 Discussion: At the user's request, the MiniLM W&B run was closed after its epoch 4 evaluation. Jina's tokenizer fits all 9,000 train and 3,652 test inputs within 8,192 tokens. A full-length test example passed a backward smoke check using scaled dot-product attention, bfloat16, and gradient checkpointing. The new run will keep effective batch size 16 and evaluate the baseline and both full splits after each epoch.
+
+
+Commit name: Record Jina When2Call run startup.
+Description: Record W&B run `85e0lwz6`, its model-specific console log and checkpoint paths, and the baseline evaluation startup state.
+Discussion: The user requested a restart using Jina Embeddings v2 Small. The fresh W&B run initialized successfully. It processes complete sequences, retains effective batch size 16 through length-aware gradient accumulation, and evaluates both complete splits at step zero and after every epoch.
