@@ -24,3 +24,6 @@ The current best system applies the 9,000-pair binary ranker, corrects a `cannot
 
 
 The best route now retains only corrected local `cannot_answer` predictions and routes `request_for_info`, `tool_call`, and `direct` predictions to the saved Jev outputs. It reaches accuracy **0.8502**, macro precision **0.8564**, macro recall **0.8454**, and macro F1 **0.8489**.
+
+
+The current best harness adds bidirectional tool-schema validity checks. Invalid `tool_call` candidates map to `cannot_answer`, and valid tool names can map `cannot_answer` to `tool_call`. The final result is accuracy **0.8962**, macro precision **0.8981**, macro recall **0.8886**, and macro F1 **0.8920**.

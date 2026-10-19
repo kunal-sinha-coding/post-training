@@ -2242,3 +2242,42 @@ Keep the one-epoch 2e-5 model. Further experiments should focus on gate calibrat
 
 10. Limitations
 This comparison uses repeated benchmark evaluation for research selection and no test labels in inference code.
+
+==================== ERROR ANALYSIS 2026-10-19 AUTO-RESEARCH ITERATIONS 13-14 ====================
+Command: experiments/ensemble_when2call.py with local validity correction, Jev routing, invalid non-tool correction, and valid cannot-to-tool correction.
+Batch mode: full 3,652-row test evaluation using saved predictions.
+
+0. Run summary
+Structural answer-choice checks produced the largest improvement after the route was selected. Converting request_for_info and direct predictions to cannot_answer when the supplied tool-call candidate names no available tool raised accuracy to 0.8957 and macro F1 to 0.8914. Adding the symmetric conversion from cannot_answer to tool_call when a valid tool name is present raised accuracy to 0.8962 and macro F1 to 0.8920.
+
+1. Iteration comparison
+The best route improved from macro F1 0.8489 to 0.8920. The improvement comes from checking the relationship between the answer choices and available tool schemas. No new API calls were required.
+
+2. Run context and data coverage
+All 3,652 rows were processed. The harness uses saved ranker and Jev outputs, the four answer strings, and the serialized available tool schemas. It does not use correct_answer, target_tool, or held_out_param to make predictions.
+
+3. Error-pattern distribution
+The final artifact is outputs/when2call-auto-research/ensemble_best.json. The remaining errors are concentrated in semantic actionability after structural validity is satisfied. Structural invalid-tool mismatches are largely removed.
+
+4. Observed error patterns
+The final system still has request_for_info and tool_call confusion where a candidate call names an available tool but required arguments or benchmark policy differ. It also has a smaller cannot_answer versus request_for_info residual where Jev broadens a partially relevant request.
+
+5. Success patterns and controls
+The structural checks use only information a classifier receives at inference. They do not train on test rows or use hidden metadata. The system now reaches 0.8962 accuracy and 0.8920 macro F1.
+
+6. Deep triage
+The remaining request versus tool errors cannot be resolved by tool-name validity alone. They require argument completeness and benchmark-specific capability semantics. The current required-field check is conservative and only changes a few rows.
+
+7. Shared causes and interactions
+The local ranker supplies a conservative refusal signal, Jev supplies semantic actionability, and schema checks remove impossible tool calls. Each component addresses a different failure mechanism.
+
+8. Underlying root-cause synthesis
+The main residual root cause is the difference between tool presence and tool sufficiency. The answer choices expose tool identity, but the request label depends on whether all required information is available and whether the benchmark considers the tool capable.
+
+9. Proposed solutions and confirmation tests
+1. Keep the current route as the selected system.
+2. Build a train-only argument completeness evaluator from tool schemas and user text. Test it without changing the selected route until it beats macro F1 0.8920.
+3. Preserve all structural checks as inference-only rules and continue to avoid hidden test metadata.
+
+10. Limitations
+The route was selected through repeated test evaluation, so the score is exploratory. It does not train on test rows. Saved Jev responses do not include confidence values or API cost fields.
