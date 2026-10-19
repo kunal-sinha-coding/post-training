@@ -1919,3 +1919,76 @@ Mbpp/784* [spec_misread]. Multiplies every list element rather than the first ev
 Mbpp/785* [runtime_error]. Parses string fragments containing parentheses as integers. Evidence: "tuple(map(int, tup_str.split(',')))".
 Mbpp/801* [wrong_algorithm]. The all-equal branch returns one instead of the three equal numbers. Evidence: 'if a == b == c:\n        count = 1'.
 Mbpp/809 [wrong_algorithm]. The comparison is reversed and accepts second elements that are larger. Evidence: 'if tuple1[i] >= tuple2[i]:\n            return False'.
+
+==================== ERROR ANALYSIS 2026-10-19 AUTO-RESEARCH ITERATION 1 ====================
+Command: permitted Jev baseline evaluation, frozen Jina embedding probes, Jev prompt sweep, and response-aware Jina candidate ranker.
+Batch mode: full test evaluation for the saved models; prompt sweep used a fixed 150-row sample; the ranker used 500 preference pairs for training.
+
+0. Run summary
+The strongest recorded baseline is Jev with accuracy 0.7429 on 3,652 test rows. The selected Jina checkpoint scored 0.2733 accuracy and 0.2524 macro F1 with one vote. The frozen pairwise-fine-tuned Jina probe scored 0.2705 accuracy and 0.2338 macro F1. The frozen pretrained Jina probe scored 0.2867 accuracy and 0.2319 macro F1. The response-aware ranker scored 0.4162 accuracy and 0.3009 macro F1 after 500 preference pairs. The ranker is an improvement over local Jina classifiers but remains below Jev. The next action is to scale response-aware training and inspect whether its systematic overprediction of tool_call decreases.
+
+1. Iteration comparison
+No earlier auto-research iteration exists. Compared with the prior best Jina checkpoint, the 500-pair ranker improved accuracy by 0.1429 and macro F1 by 0.0485. Jev remains the best measured system. The Jev prompt sweep found baseline instructions at 0.7600, definitions at 0.7467, and strict at 0.7000 on the same 150-row sample. Three repeated baseline prompts had majority accuracy 0.7667 versus single-call accuracy 0.7733, so repetition did not improve the sample.
+
+2. Run context and data coverage
+All full-test metrics use the official MCQ test split with 3,652 rows. Test labels were used only for post-selection measurement and error analysis. The local probes used question and available-tool text. The ranker used train_pref chosen and rejected response text as binary preference supervision, then selected among the four test answer strings without using test labels. The 150-row Jev prompt experiments used a fixed seed and complete API responses. No test metadata fields such as target_tool or held_out_param were used because they encode answer information.
+
+3. Error-pattern distribution
+The primary pattern is selected class disagreement with the official class. Percentages use 3,652 test rows.
+
+| System | Primary error pattern | Count | Percent | Definition |
+|---|---|---:|---:|---|
+| Jev | cannot_answer predicted as request_for_info | 336 | 9.2% | Jev inferred that a clarification could solve a request marked impossible by the benchmark. |
+| Jev | request_for_info predicted as tool_call | 234 | 6.4% | Jev treated a request with missing information as immediately actionable. |
+| Jev | cannot_answer predicted as tool_call | 155 | 4.2% | Jev selected a tool despite no valid answer path under the benchmark label. |
+| Jev | tool_call predicted as request_for_info | 136 | 3.7% | Jev asked for information although the benchmark supplied an actionable call. |
+| Jev | cannot_answer predicted as direct | 61 | 1.7% | Jev treated an unsupported request as an ordinary response. |
+| Ranker | cannot_answer or request_for_info predicted as tool_call | 1,977 | 54.1% | The ranker favored tool-call candidates for both non-tool classes. |
+
+The remaining Jev errors were 17 rows across direct or cannot_answer predictions for the other classes. The ranker had 989 cannot_answer to tool_call errors and 988 request_for_info to tool_call errors.
+
+4. Observed error patterns
+
+### Jev overcalls a tool
+Examples include latte modification with only an incompatible food tool, unsupported memory lookup, and weather tools supplied for unrelated factual questions. The selected class is tool_call although the available tools do not provide a valid action. The failure is a semantic mismatch between the question and the tool descriptions.
+
+### Jev confuses impossible and missing information
+Examples include product availability questions with a product-detail tool and requests that resemble a tool operation but lack a required identifier. The model often selects request_for_info for cannot_answer rows or tool_call for request_for_info rows. The benchmark has near-duplicate prompts where small changes in available tools or expected capability change the label.
+
+### Jina classifiers underuse response evidence
+The selected Jina classifier sees only question and tools. It predicts request_for_info heavily and has low macro F1. The frozen embedding probes did not recover the distinctions. This confirms that a response-aware scorer is a relevant direction, although the first ranker still overcalls tool_call.
+
+### Candidate ranker overcalls tool_call
+The 500-pair ranker confusion counts were: tool_call to tool_call 1,213, cannot_answer to tool_call 989, request_for_info to tool_call 988, cannot_answer to cannot_answer 299, request_for_info to cannot_answer 65, and smaller residual groups. The ranker learned that preferred responses are often tool calls but did not learn enough negative structure for distractor answer choices.
+
+5. Success patterns and controls
+Jev correctly classified 1,152 tool_call, 818 request_for_info, and 743 cannot_answer rows. The candidate ranker correctly selected 1,213 tool_call rows. The prompt sweep confirms that adding longer class definitions did not improve the baseline prompt. The frozen probe regression rules out a simple linear head on the current embedding as the main fix.
+
+6. Deep triage
+
+### Jev overcalls tools
+Observed evidence is the confusion distribution and representative unrelated-tool questions. A likely cause is that the model gives high weight to any available tool and insufficient weight to whether its domain matches the user request. An alternative is benchmark-specific label semantics that differ from ordinary assistant behavior. A targeted test is to add an explicit compatibility instruction and evaluate it on a train-derived held-out set. The prompt sweep's definitions and strict variants did not help, so wording alone is unlikely to solve this pattern.
+
+### Impossible versus missing information
+Observed evidence is the 336 and 234 directional confusions. The likely cause is ambiguity in whether a partially relevant tool is considered sufficient. A competing cause is duplicate or near-duplicate benchmark construction. A targeted test is nearest-neighbor retrieval from training questions and a tool-schema compatibility score, evaluated without target metadata.
+
+### Frozen Jina weakness
+Observed evidence is that pretrained and fine-tuned frozen features both remain below the end-to-end checkpoint. The likely cause is that mean pooling loses the fine distinctions between tool availability and missing arguments. A competing cause is noisy heuristic training labels. A targeted test is end-to-end pairwise training with more preference pairs and a held-out training slice.
+
+### Ranker tool-call bias
+Observed evidence is that 1,977 non-tool rows become tool_call. The likely cause is an imbalanced or too-easy binary preference objective: chosen responses are often tool calls, while candidate ranking needs calibrated four-way discrimination. A competing cause is truncation of long contexts or response candidates. A targeted test is class-balanced four-way candidate training, response-type-balanced sampling, and per-class calibration on a held-out preference split.
+
+7. Shared causes and interactions
+The Jev and ranker failures share a tool availability decision. The ranker shows a stronger version because its preference labels reward chosen responses without directly training the four-way class boundary. Jina's question-only setup cannot inspect the answer choices, while the ranker can inspect them but needs better negative and class-balanced supervision.
+
+8. Underlying root-cause synthesis
+The main upstream mechanism is incomplete modeling of tool compatibility. It explains Jev's tool overcalls and the ranker's tool-call bias. A second mechanism is noisy or incomplete inferred labels in training, which affects all local supervised models. The residual Jev errors on near-duplicate cases may be irreducible without reproducing the benchmark's hidden generation policy.
+
+9. Proposed solutions and confirmation tests
+1. Train the ranker on all preference pairs with balanced batches and an explicit four-way response-class auxiliary loss. Confirm with the same full test denominator and require lower non-tool-to-tool errors.
+2. Add a candidate validity feature for whether a tool-call response names an available tool, while keeping selection independent of target metadata. Confirm on a held-out train split before test evaluation.
+3. Add nearest-neighbor retrieval from training questions and tool schemas as a second local scorer. Confirm whether it reduces Jev's cannot-answer versus request_for_info errors.
+4. Preserve Jev as the current best inference baseline and test only targeted overrides on disagreement slices. Do not spend more API budget on unvalidated repeated voting.
+
+10. Limitations
+Jev API cost metadata was not returned in the saved full comparison, so exact dollars cannot be reconstructed from local files. The prompt sweep consumed 450 calls and the repeatability check consumed 450 calls. The local ranker was trained on only 500 preference pairs. Test labels were used for reporting and error analysis, not for training or model selection. The benchmark contains near-duplicate semantic cases, so ordinary task semantics may not uniquely determine the official label.
