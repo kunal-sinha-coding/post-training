@@ -5139,3 +5139,7 @@ Discussion: The tracked results file records the W&B run and local rolling check
 Commit name: Record stopped When2Call run and train-test distribution analysis.
 Description: Mark the continuous MiniLM run stopped and record the split comparison, label provenance, query and tool overlap, input-length shift, truncation rates, and final checkpoint metrics.
 Discussion: The user asked to stop the run and analyze systematic train-test differences. The training target is heuristic-inferred from train_pref chosen responses, while test uses official MCQ labels. Test rows are from BFCL v2 Live sources, share only six tool names with train, and have longer tool schemas that cause substantially more truncation at 512 tokens.
+
+Commit name: Record blind When2Call test heuristic audit.
+Description: Record candidate-only heuristic predictions, post-hoc label alignment, and the confirmed response-format mismatch between training and test tool calls.
+Discussion: Predictions were generated from the four `answers` candidates without loading `correct_answer`, then saved before scoring. The heuristic identified zero test tool-call candidates because all test candidates are bare JSON, while all 3,000 inferred training tool-call responses use `<TOOLCALL>` tags. The 64.32% selected-answer alignment is diagnostic only and is not an independent row-level prediction because gold selects the candidate after predictions are fixed.
