@@ -5186,3 +5186,8 @@ Discussion: W&B run `85e0lwz6` completed baseline and epoch 1 evaluation but fai
 Commit name: Record corrected Jina run restart.
 Description: Record replacement W&B run `a7bwo46l`, its explicit epoch-cap name, baseline metrics, and active training startup.
 Discussion: The failed run `85e0lwz6` was not resumed. The new run starts from the pretrained base with a fresh head after the checkpoint-write fix passed its smoke test.
+
+
+Commit name: Record verified Jina checkpoint save.
+Description: Record the first completed epoch metrics and the successful rolling checkpoint from corrected W&B run `a7bwo46l`.
+Discussion: The retry uses the explicit one-million-epoch-cap name. The first epoch checkpoint was written after evaluation, and the process continued into epoch 2.
