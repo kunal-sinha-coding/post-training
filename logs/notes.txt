@@ -5289,3 +5289,7 @@ The first background launch found that direct script execution did not expose th
 ## 2026-10-19 Launch detached supervisor
 
 Started the auto research supervisor in a detached setsid session. It runs the leakage-safe ensemble evaluation, waits 900 seconds, and repeats. Runtime logs and the PID file are ignored because they are generated process state.
+
+## 2026-10-19 Add five-minute auto research watchdog
+
+Added experiments/watch_auto_research.py. The watchdog checks the supervisor PID every five minutes and starts a detached replacement when the supervisor is absent. Runtime watchdog logs and its PID file are ignored.

@@ -18,3 +18,6 @@ logs/when2call-jina-v2-small.log
 logs/auto_research_loop.log
 logs/auto_research_supervisor.out
 logs/auto_research_loop.pid
+logs/auto_research_watchdog.log
+logs/auto_research_watchdog.out
+logs/auto_research_watchdog.pid
