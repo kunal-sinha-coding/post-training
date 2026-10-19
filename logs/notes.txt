@@ -5130,3 +5130,8 @@ Discussion: The user asked the training process to continue until they directly 
 Commit name: Record the continuous MiniLM run startup.
 Description: Record W&B run `t9e79vbw`, the continuous run configuration, the shared baseline and epoch evaluation keys, and the rolling checkpoint path in `logs/results.txt`.
 Discussion: The local epoch-1, epoch-2, and epoch-3 checkpoints were deleted at the user's request. The new run starts from the pretrained base, logs baseline train and test evaluation at step zero under the same keys as later evaluations, and is configured for up to one million full-data epochs. The user explicitly directed that training continue until they request a stop.
+
+
+Commit name: Keep the continuous MiniLM console log out of Git history.
+Description: Ignore `logs/when2call-minilm-continuous.log` because it grows throughout the user-directed long-running experiment. W&B retains each optimizer-step and evaluation record.
+Discussion: The tracked results file records the W&B run and local rolling checkpoint. The continuous console log remains available in the workspace without creating a Git commit for every training update.

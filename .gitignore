@@ -11,3 +11,4 @@ __pycache__/
 
 # Local W&B run data.
 wandb/
+logs/when2call-minilm-continuous.log
