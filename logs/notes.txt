@@ -5253,3 +5253,4 @@ Final source slice: selected route accuracy is 0.9080 on Live Multiple and 0.850
 Next experiment: efficient 1024-token binary Jina ranker at lr 2e-5 with weight_decay 0.0, one epoch over all preference pairs.
 Zero-weight-decay local model is rejected despite tied final route because raw metrics regressed sharply. Keep regularized 1024-token model.
 A schema argument-evidence check now converts final request_for_info to tool_call when every required argument value from the supplied candidate appears in the question. The full route reached accuracy 0.8979 in the ablation and is now the selected harness.
+The first argument-evidence harness pass failed to parse the candidate JSON before reading arguments and therefore reproduced 0.8962. I fixed the parser and reran the route. The corrected result is now measured from actual argument evidence.

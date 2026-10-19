@@ -60,7 +60,13 @@ def main():
             except json.JSONDecodeError:
                 continue
         call = row["answers"].get("tool_call")
-        name = candidate_tool_name(call) if isinstance(call, str) else None
+        call_value = None
+        if isinstance(call, str):
+            try:
+                call_value = json.loads(call)
+            except json.JSONDecodeError:
+                call_value = None
+        name = call_value.get("name") if isinstance(call_value, dict) else None
         valid_call = name in schemas
         complete = False
         if valid_call and args.switch_complete_request:
@@ -84,7 +90,7 @@ def main():
                 corrected = "tool_call"
         if args.argument_evidence_to_tool and corrected == "request_for_info" and valid_call:
             required = required_fields(schemas[name])
-            arguments = call.get("arguments", {}) if isinstance(call, dict) else {}
+            arguments = call_value.get("arguments", {}) if isinstance(call_value, dict) else {}
             question = str(row["question"]).lower()
             evidenced = all(any(token in question for token in value_tokens(arguments.get(field))) for field in required) if required else False
             if evidenced:
