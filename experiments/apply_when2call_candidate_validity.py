@@ -30,6 +30,13 @@ def tool_names(tools):
     return names
 
 
+def required_fields(tool_schema):
+    """Return required parameter names from one tool schema."""
+    parameters = tool_schema.get("parameters", {}) if isinstance(tool_schema, dict) else {}
+    required = parameters.get("required", []) if isinstance(parameters, dict) else []
+    return [str(item).lower() for item in required]
+
+
 def candidate_tool_name(response):
     """Extract a raw JSON candidate tool name."""
     # Test answer candidates use raw JSON objects rather than training tags.
@@ -67,6 +74,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--predictions", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--switch-complete-request", action="store_true")
     args = parser.parse_args()
     source = json.loads(args.predictions.read_text(encoding="utf-8"))
     predictions = source["predictions"]
@@ -75,10 +83,24 @@ def main():
     switches = []
     for row, prediction in zip(rows, predictions, strict=True):
         call = row["answers"].get("tool_call")
-        valid_call = isinstance(call, str) and candidate_tool_name(call) in tool_names(row["tools"])
-        corrected_prediction = "tool_call" if prediction == "cannot_answer" and valid_call else prediction
+        name = candidate_tool_name(call) if isinstance(call, str) else None
+        schemas = {}
+        for serialized in row["tools"]:
+            try:
+                schema = json.loads(serialized)
+                if isinstance(schema, dict) and isinstance(schema.get("name"), str):
+                    schemas[schema["name"]] = schema
+            except json.JSONDecodeError:
+                continue
+        valid_call = name in schemas
+        complete_request = False
+        if valid_call and args.switch_complete_request:
+            question = str(row["question"]).lower()
+            required = required_fields(schemas[name])
+            complete_request = bool(required) and all(field in question for field in required)
+        corrected_prediction = "tool_call" if valid_call and (prediction == "cannot_answer" or (prediction == "request_for_info" and complete_request)) else prediction
         corrected.append(corrected_prediction)
-        switches.append(valid_call and prediction == "cannot_answer")
+        switches.append(valid_call and (prediction == "cannot_answer" or (prediction == "request_for_info" and complete_request)))
     targets = [row["correct_answer"] for row in rows]
     result = {"source": str(args.predictions), "switches": sum(switches), "metrics": metric_values(targets, corrected), "prediction_counts": dict(Counter(corrected)), "predictions": corrected, "targets": targets}
     args.output.parent.mkdir(parents=True, exist_ok=True)
