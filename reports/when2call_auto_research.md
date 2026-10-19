@@ -36,3 +36,8 @@ The 2,048-token route also ties the longer contexts at accuracy **0.8962** and m
 
 
 The 1,024-token route also ties the best result at accuracy **0.8962** and macro F1 **0.8920**. The structural postprocessor dominates the final result, so this is the preferred low-cost setting.
+
+
+## API usage
+
+The work used the original 3,652-row Jev pass, a 450-call prompt sweep, a 450-call repeatability sample, and a few smoke calls. No OpenAI calls were made. Jev responses did not expose billing dollars, so the exact spend is not recoverable from local artifacts. All later gains used saved predictions and made no new API calls.
