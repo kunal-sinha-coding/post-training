@@ -5095,3 +5095,8 @@ Discussion: The user approved switching from `train_sft` to `train_pref` after i
 Commit name: Record the MiniLM When2Call train_pref experiment.
 Description: Append the full training setup, W&B run, checkpoint artifact, split coverage, metrics, environment, and limitations to `logs/results.txt`. Update the experiment script description to name `train_pref` and add the completed console log files.
 Discussion: The user approved switching from `train_sft` to `train_pref`. The 16-example stratified batch reached macro F1 1.0 at step 30, after which full training ran for 1,000 optimizer steps. Full training and test metrics were logged to W&B before saving checkpoint 1000. The test macro scores average over the three classes present in the official test labels. The full experiment record identifies the two direct-response training outliers and the inferred-label limitation.
+
+
+Commit name: Add optimizer-step and evaluation timing to the MiniLM run.
+Description: Time each training optimizer step and each evaluation split in `experiments/train_when2call_minilm.py`. Log durations to W&B and the console, and update the experiment record to state that the original run did not capture timings.
+Discussion: CUDA synchronization brackets timed sections so asynchronous GPU work is included in the elapsed duration. The completed historical W&B run has no per-section timing data, so a rerun is required to populate those fields.

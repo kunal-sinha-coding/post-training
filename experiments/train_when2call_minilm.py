@@ -11,6 +11,7 @@ from __future__ import annotations
 import json
 import random
 import re
+import time
 from collections import Counter
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -196,7 +197,7 @@ def batch_metrics(model: Any, tokenizer: Any, examples: list[Example], device: t
     return metric_values(targets, predictions, metric_labels)
 
 
-def log_metrics(run: Any, prefix: str, metrics: dict[str, Any], step: int, loss: float | None = None) -> None:
+def log_metrics(run: Any, prefix: str, metrics: dict[str, Any], step: int, loss: float | None = None, eval_seconds: float | None = None) -> None:
     """Write aggregate and class-level metrics to W&B and the console."""
     # Flatten class metrics so W&B can chart each class beside aggregate scores.
     record: dict[str, Any] = {f"{prefix}/{key}": value for key, value in metrics.items() if isinstance(value, (int, float))}
@@ -208,8 +209,17 @@ def log_metrics(run: Any, prefix: str, metrics: dict[str, Any], step: int, loss:
     record[f"{prefix}/optimizer_step"] = step
     if loss is not None:
         record[f"{prefix}/loss"] = loss
+    if eval_seconds is not None:
+        record[f"{prefix}/eval_seconds"] = eval_seconds
     run.log(record)
-    print(json.dumps({"stage": prefix, "step": step, **metrics, "loss": loss}, sort_keys=True), flush=True)
+    print(json.dumps({"stage": prefix, "step": step, **metrics, "loss": loss, "eval_seconds": eval_seconds}, sort_keys=True), flush=True)
+
+
+def sync_device(device: torch.device) -> None:
+    """Wait for queued GPU work so elapsed timings reflect completed computation."""
+    # Synchronize CUDA only because CPU operations finish synchronously.
+    if device.type == "cuda":
+        torch.cuda.synchronize(device)
 
 
 def move_batch(batch: dict[str, Any], device: torch.device) -> dict[str, Any]:
@@ -253,16 +263,24 @@ def main() -> int:
     # Reuse one fixed training batch until its macro F1 reaches the requested value.
     hit_target = False
     for step in range(1, OVERFIT_MAX_STEPS + 1):
+        sync_device(device)
+        step_started = time.perf_counter()
         model.train()
         batch = move_batch(single_batch, device)
         optimizer.zero_grad(set_to_none=True)
         output = model(**batch)
         output.loss.backward()
         optimizer.step()
-        wandb.log({"overfit/train_loss": float(output.loss.detach().cpu()), "overfit/optimizer_step": step})
+        sync_device(device)
+        step_seconds = time.perf_counter() - step_started
+        wandb.log({"overfit/train_loss": float(output.loss.detach().cpu()), "overfit/optimizer_step": step, "overfit/step_seconds": step_seconds})
         if step % OVERFIT_EVAL_INTERVAL == 0:
+            sync_device(device)
+            eval_started = time.perf_counter()
             metrics = batch_metrics(model, tokenizer, overfit_examples, device, list(range(len(LABELS))))
-            log_metrics(wandb, "overfit", metrics, step, float(output.loss.detach().cpu()))
+            sync_device(device)
+            eval_seconds = time.perf_counter() - eval_started
+            log_metrics(wandb, "overfit", metrics, step, float(output.loss.detach().cpu()), eval_seconds)
             if metrics["macro_f1"] >= 1.0:
                 hit_target = True
                 break
@@ -285,20 +303,31 @@ def main() -> int:
             train_loader.generator.manual_seed(SEED + full_step)
             iterator = iter(train_loader)
             batch = next(iterator)
+        sync_device(device)
+        step_started = time.perf_counter()
         model.train()
         batch = move_batch(batch, device)
         optimizer.zero_grad(set_to_none=True)
         output = model(**batch)
         output.loss.backward()
         optimizer.step()
+        sync_device(device)
+        step_seconds = time.perf_counter() - step_started
         global_step = step + full_step
-        wandb.log({"full_train/loss": float(output.loss.detach().cpu()), "full_train/optimizer_step": full_step, "optimizer_step": global_step})
+        wandb.log({"full_train/loss": float(output.loss.detach().cpu()), "full_train/optimizer_step": full_step, "optimizer_step": global_step, "full_train/step_seconds": step_seconds})
         # Evaluate both complete splits after every 1,000 full-data optimizer steps.
         if full_step % 1000 == 0:
+            sync_device(device)
+            train_eval_started = time.perf_counter()
             train_metrics = batch_metrics(model, tokenizer, train_examples, device, full_eval_labels)
+            sync_device(device)
+            train_eval_seconds = time.perf_counter() - train_eval_started
+            test_eval_started = time.perf_counter()
             test_metrics = batch_metrics(model, tokenizer, test_examples, device, list(range(len(LABELS))))
-            log_metrics(wandb, "full_train_eval", train_metrics, full_step)
-            log_metrics(wandb, "test_eval", test_metrics, full_step)
+            sync_device(device)
+            test_eval_seconds = time.perf_counter() - test_eval_started
+            log_metrics(wandb, "full_train_eval", train_metrics, full_step, eval_seconds=train_eval_seconds)
+            log_metrics(wandb, "test_eval", test_metrics, full_step, eval_seconds=test_eval_seconds)
             # Save the checkpoint only after both requested full-split evaluations finish.
             checkpoint = OUTPUT_DIR / f"checkpoint-{full_step}"
             checkpoint.mkdir(parents=True, exist_ok=True)
