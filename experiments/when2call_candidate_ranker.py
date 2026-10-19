@@ -55,10 +55,10 @@ def pair_text(context, response):
     return f"{context}\nCandidate response:\n{response}"
 
 
-def batch_encode(tokenizer, texts, device):
+def batch_encode(tokenizer, texts, device, max_length=8192):
     """Tokenize a batch with the full Jina context limit."""
     # Truncate only above the model limit so long tool schemas remain available.
-    encoded = tokenizer(texts, padding=True, truncation=True, max_length=8192, return_tensors="pt")
+    encoded = tokenizer(texts, padding=True, truncation=True, max_length=max_length, return_tensors="pt")
     return {key: value.to(device) for key, value in encoded.items()}
 
 
@@ -86,6 +86,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--epochs", type=int, default=1)
     parser.add_argument("--encoder-model", default="jinaai/jina-embeddings-v2-small-en")
+    parser.add_argument("--max-length", type=int, default=8192)
     parser.add_argument("--max-pairs", type=int, default=9000)
     parser.add_argument("--lr", type=float, default=2e-5)
     parser.add_argument("--batch-size", type=int, default=2)
@@ -118,7 +119,7 @@ def main():
         random.shuffle(pairs)
         for start in range(0, len(pairs), args.batch_size):
             batch = pairs[start:start + args.batch_size]
-            inputs = batch_encode(tokenizer, [item.text for item in batch], device)
+            inputs = batch_encode(tokenizer, [item.text for item in batch], device, args.max_length)
             hidden = encoder(**inputs).last_hidden_state
             mask = inputs["attention_mask"].unsqueeze(-1).to(hidden.dtype)
             pooled = (hidden * mask).sum(dim=1) / mask.sum(dim=1).clamp_min(1)
@@ -147,7 +148,7 @@ def main():
             choices = list(row["answers"].items())
             scores = []
             for choice, response in choices:
-                inputs = batch_encode(tokenizer, [pair_text(context, response)], device)
+                inputs = batch_encode(tokenizer, [pair_text(context, response)], device, args.max_length)
                 hidden = encoder(**inputs).last_hidden_state
                 mask = inputs["attention_mask"].unsqueeze(-1).to(hidden.dtype)
                 pooled = (hidden * mask).sum(dim=1) / mask.sum(dim=1).clamp_min(1)
@@ -160,7 +161,7 @@ def main():
                     scores.append(logits[LABEL_TO_ID[choice]] + logits[-1])
             predictions.append(choices[max(range(len(scores)), key=scores.__getitem__)][0])
     targets = [row["correct_answer"] for row in test_rows]
-    result = {"epochs": args.epochs, "max_pairs": args.max_pairs, "lr": args.lr, "objective": args.objective, "encoder_model": args.encoder_model, "metrics": metrics([LABEL_TO_ID[x] for x in targets], [LABEL_TO_ID[x] for x in predictions]), "predictions": predictions, "targets": targets}
+    result = {"epochs": args.epochs, "max_pairs": args.max_pairs, "lr": args.lr, "objective": args.objective, "encoder_model": args.encoder_model, "max_length": args.max_length, "metrics": metrics([LABEL_TO_ID[x] for x in targets], [LABEL_TO_ID[x] for x in predictions]), "predictions": predictions, "targets": targets}
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({key: value for key, value in result.items() if key != "predictions" and key != "targets"}))

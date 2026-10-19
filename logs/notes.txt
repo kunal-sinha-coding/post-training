@@ -5227,3 +5227,4 @@ The strongest current system is a local ranker plus Jev routing policy. After to
 The ensemble initially used substring matching for required fields and produced 0.8390 accuracy. I corrected the harness to use word-boundary matching, consistent with the validity evaluator. The corrected ensemble result is 0.8406 accuracy and 0.8391 macro F1.
 The corrected ranker plus Jev routing ensemble is the current best system: accuracy 0.8406 and macro F1 0.8391 on the full test set. Detailed routing error analysis is appended to logs/error_analysis.txt.
 The next architecture experiment makes the response-aware ranker encoder configurable. It will use outputs/when2call-minilm/latest, a 22M-parameter MiniLM encoder, under the inference-size limit.
+The first MiniLM ranker attempt failed because MiniLM has a 512-token position limit while the generic ranker passed 8,192 tokens. The ranker now exposes max_length; the next MiniLM run uses 512 tokens.
