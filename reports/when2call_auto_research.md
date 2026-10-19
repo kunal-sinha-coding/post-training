@@ -46,3 +46,6 @@ The work used the original 3,652-row Jev pass, a 450-call prompt sweep, a 450-ca
 ## Source slice
 
 The selected route reaches accuracy **0.9080** on BFCL v2 Live Multiple and **0.8509** on BFCL v2 Live Simple. The simpler subset is the main residual error slice.
+
+
+The strict argument-evidence rule is the current best. It reaches accuracy **0.8981**, macro precision **0.9086**, macro recall **0.8874**, and macro F1 **0.8922**.

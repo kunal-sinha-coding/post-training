@@ -5256,3 +5256,4 @@ A schema argument-evidence check now converts final request_for_info to tool_cal
 The first argument-evidence harness pass failed to parse the candidate JSON before reading arguments and therefore reproduced 0.8962. I fixed the parser and reran the route. The corrected result is now measured from actual argument evidence.
 The first parser fix still treated missing argument keys as evidenced because all over an empty token list returned true. I added an explicit field-presence and nonempty-token check. The rerun now matches the manual ablation.
 The argument evidence rule initially matched short tokens such as `ca` inside unrelated words. I fixed it to ignore tokens of length two or less and require word boundaries. The corrected route now uses strict argument evidence.
+Current best route is ensemble_best.json with accuracy 0.8981 and macro F1 0.8922 after strict argument evidence.
