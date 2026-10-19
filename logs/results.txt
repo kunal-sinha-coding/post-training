@@ -19533,3 +19533,8 @@ Label counts: `cannot_answer` 7,529; `request_for_info` 7,470; `tool_call` 0; `d
 Artifacts: `data/when2call_train_sft_labels.jsonl` contains row index, label, label ID, and SHA-256 of the final assistant response; source text is omitted. `data/when2call_train_sft_labels.metadata.json` records source split, fingerprint, label order, heuristic, and counts.
 Run interaction: The active Jina run `a7bwo46l` was left running and unchanged. It had already loaded `train_pref/train`, so these train_sft rows were not added to that live process. The new artifact is prepared for a later training run or restart.
 Limitations: Labels are heuristic predictions from assistant text. No test set or official labels were consulted to validate them. The source rows have no separate ID column, so row indices refer to the recorded dataset fingerprint.
+
+Experiment: Stop cross-entropy Jina run before pairwise restart.
+Purpose: Replace the current objective with configurable pairwise ranking loss using chosen and rejected responses from `train_pref/train`.
+Action: The user explicitly requested immediate termination. The active process was killed without waiting for in-progress evaluation or checkpoint work. The prior process had reached epoch 7 and approximately optimizer step 3,743 in its console log.
+Pair analysis: Existing heuristics produced 8,903 informative chosen/rejected pairs with different classes and 97 same-class pairs across 9,000 rows. Same-class pairs are excluded from ranking loss.
