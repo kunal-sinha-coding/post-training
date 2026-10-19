@@ -19591,3 +19591,7 @@ Excluding direct from Jev routing reduced accuracy to 0.6684 and macro F1 to 0.7
 ## Iteration 23 updated error breakdown
 
 The current normalized artifact scored 0.9155 on Live Multiple and 0.8336 on Live Simple. Confusions were request_for_info to tool_call 291, tool_call to request_for_info 66, request_for_info to direct 8, and tool_call to direct 5.
+
+## Iteration 24 family-specific cannot correction safeguard
+
+Denying valid-cannot-to-tool correction for cmd, get, ThinQ, play, todo, and requests did not improve accuracy and slightly reduced macro F1. The candidate was rejected.

@@ -65,3 +65,7 @@ The full Jev route over request_for_info, tool_call, and direct remains best. Ex
 ## Iteration 23: updated error breakdown
 
 The current normalized artifact scores **0.9155** on Live Multiple and **0.8336** on Live Simple. The largest confusion is request_for_info predicted as tool_call, with 291 rows. The next experiment should target Live Simple behavior without broadening action heuristics.
+
+## Iteration 24: family-specific correction safeguard
+
+A deny list for valid-cannot-to-tool correction on the main Live Simple error families did not improve the result. Accuracy remained 0.8987 and macro F1 slightly decreased. The candidate was rejected.

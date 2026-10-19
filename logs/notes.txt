@@ -5273,3 +5273,7 @@ Tested narrower Jev routing sets against the normalized route. The full three-la
 ## 2026-10-19 Record updated error breakdown
 
 Measured the current best artifact by source slice and confusion pair. Live Simple is the main remaining target. Updated records before commit.
+
+## 2026-10-19 Record family-specific safeguard
+
+Tested a configurable deny-prefix safeguard for valid-cannot-to-tool correction. It did not improve the benchmark. Updated records before commit.

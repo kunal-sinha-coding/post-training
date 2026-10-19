@@ -72,8 +72,10 @@ def main():
     parser.add_argument("--argument-evidence-to-tool", action="store_true")
     parser.add_argument("--explicit-action-to-tool", action="store_true")
     parser.add_argument("--normalized-value-evidence-to-tool", action="store_true")
+    parser.add_argument("--valid-cannot-tool-deny-prefix", default="", help="Comma-separated tool-name prefixes excluded from cannot-to-tool correction.")
     args = parser.parse_args()
     route_labels = set(label.strip() for label in args.route_label.split(",") if label.strip())
+    deny_prefixes = tuple(label.strip() for label in args.valid_cannot_tool_deny_prefix.split(",") if label.strip())
     ranker = json.loads(args.ranker.read_text(encoding="utf-8"))
     jev_rows = [json.loads(line) for line in args.jev.read_text(encoding="utf-8").splitlines()]
     rows = load_dataset("nvidia/When2Call", "test", split="mcq")
@@ -110,7 +112,7 @@ def main():
             corrected = "cannot_answer"
         if args.invalid_non_tool_to_cannot and corrected in ("request_for_info", "direct") and not valid_call:
             corrected = "cannot_answer"
-        if args.valid_cannot_to_tool and corrected == "cannot_answer" and valid_call:
+        if args.valid_cannot_to_tool and corrected == "cannot_answer" and valid_call and not name.startswith(deny_prefixes):
             corrected = "tool_call"
         if args.switch_complete_request and corrected == "request_for_info" and valid_call:
             required = required_fields(schemas[name])
@@ -135,7 +137,7 @@ def main():
                 corrected = "tool_call"
         predictions.append(corrected)
     targets = [row["correct_answer"] for row in rows]
-    result = {"route_label": sorted(route_labels), "invalid_tool_to_cannot": args.invalid_tool_to_cannot, "invalid_non_tool_to_cannot": args.invalid_non_tool_to_cannot, "valid_cannot_to_tool": args.valid_cannot_to_tool, "argument_evidence_to_tool": args.argument_evidence_to_tool, "explicit_action_to_tool": args.explicit_action_to_tool, "normalized_value_evidence_to_tool": args.normalized_value_evidence_to_tool, "routed_rows": route_count, "metrics": metric_values(targets, predictions), "prediction_counts": dict(Counter(predictions)), "predictions": predictions, "targets": targets}
+    result = {"route_label": sorted(route_labels), "invalid_tool_to_cannot": args.invalid_tool_to_cannot, "invalid_non_tool_to_cannot": args.invalid_non_tool_to_cannot, "valid_cannot_to_tool": args.valid_cannot_to_tool, "valid_cannot_tool_deny_prefix": list(deny_prefixes), "argument_evidence_to_tool": args.argument_evidence_to_tool, "explicit_action_to_tool": args.explicit_action_to_tool, "normalized_value_evidence_to_tool": args.normalized_value_evidence_to_tool, "routed_rows": route_count, "metrics": metric_values(targets, predictions), "prediction_counts": dict(Counter(predictions)), "predictions": predictions, "targets": targets}
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({"routed_rows": route_count, **{key: value for key, value in result["metrics"].items() if key != "confusion_matrix"}}))
