@@ -5115,3 +5115,8 @@ Discussion: W&B contains every optimizer-step timing. The JSONL trace exports th
 Commit name: Replace the MiniLM overfit run with epoch-based full training.
 Description: Update `experiments/train_when2call_minilm.py` to evaluate the fresh base classifier on full train and test splits, train only on complete `train_pref` epochs, evaluate after each epoch, log per-step and evaluation timings to W&B and console, and save each epoch checkpoint after evaluation.
 Discussion: The user clarified that the run must not include the small-batch overfit stage. The total epoch count was not specified, so the run uses three full epochs as a stated practical default. Training labels remain inferred from `chosen_response`, and the test labels remain the official `test/mcq` targets.
+
+
+Commit name: Record the MiniLM full-epoch When2Call run.
+Description: Add the baseline and three-epoch train and test results, W&B run and artifact identifiers, evaluation and step timings, environment, and selection procedure to `logs/results.txt`. Add the full console log at `logs/when2call-minilm-epochs.log`.
+Discussion: The user requested full-data training only, baseline evaluation before training, and evaluation after every epoch. The run used three epochs because no total epoch count was given. MiniLM encoder weights and the new classifier head were both trained. The best observed test macro F1 was at epoch 2, but the fixed final epoch was retained without test-based checkpoint selection.
