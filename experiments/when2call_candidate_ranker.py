@@ -116,11 +116,13 @@ def main():
         for row in test_rows:
             context = f"Question: {row['question']}\nAvailable tools:\n{tools_text(row['tools'])}"
             choices = list(row["answers"].items())
-            inputs = batch_encode(tokenizer, [pair_text(context, response) for _, response in choices], device)
-            hidden = encoder(**inputs).last_hidden_state
-            mask = inputs["attention_mask"].unsqueeze(-1).to(hidden.dtype)
-            pooled = (hidden * mask).sum(dim=1) / mask.sum(dim=1).clamp_min(1)
-            scores = head(pooled.float()).squeeze(-1).cpu().tolist()
+            scores = []
+            for _, response in choices:
+                inputs = batch_encode(tokenizer, [pair_text(context, response)], device)
+                hidden = encoder(**inputs).last_hidden_state
+                mask = inputs["attention_mask"].unsqueeze(-1).to(hidden.dtype)
+                pooled = (hidden * mask).sum(dim=1) / mask.sum(dim=1).clamp_min(1)
+                scores.append(head(pooled.float()).squeeze().item())
             predictions.append(choices[max(range(len(scores)), key=scores.__getitem__)][0])
     targets = [row["correct_answer"] for row in test_rows]
     result = {"epochs": args.epochs, "max_pairs": args.max_pairs, "lr": args.lr, "metrics": metrics([LABEL_TO_ID[x] for x in targets], [LABEL_TO_ID[x] for x in predictions]), "predictions": predictions, "targets": targets}
