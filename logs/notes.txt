@@ -5242,3 +5242,4 @@ The best route now also applies the complete-required-field check after Jev rout
 A structural rule now converts final request_for_info or direct predictions to cannot_answer when the supplied tool_call candidate names no available tool. Full-test accuracy rose to 0.8957. This uses only answer and tool text.
 A final validity symmetry check converts final cannot_answer to tool_call when a supplied tool_call candidate names an available tool. It changes four rows and improves accuracy to 0.8962.
 Current best auto-research artifact is outputs/when2call-auto-research/ensemble_best.json with accuracy 0.8962 and macro F1 0.8920. The route uses Jina ranker, saved Jev outputs, and answer/tool schema validity checks only.
+Next experiment: Jina binary ranker at lr 2e-5 with max_length 4096, one epoch over all preference pairs. The full structural and Jev route will determine selection.
