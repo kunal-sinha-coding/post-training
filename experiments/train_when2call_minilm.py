@@ -1,7 +1,7 @@
 """Run a two-stage When2Call action classifier experiment with MiniLM.
 
-The script loads the official train_sft and test/mcq splits, infers action labels from
-SFT responses, overfits one stratified batch without saving it, then trains for 1,000
+The script loads the official train_pref and test/mcq splits, infers action labels from
+chosen responses, overfits one stratified batch without saving it, then trains for 1,000
 optimizer steps if the batch reaches macro F1 1.0. It evaluates full train and test
 splits at step 1,000, saves that checkpoint, and logs configuration and metrics to W&B.
 """
