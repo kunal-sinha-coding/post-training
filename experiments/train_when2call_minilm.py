@@ -2,14 +2,15 @@
 
 The script loads train_pref and test/mcq, infers labels for train_pref, evaluates the
 pretrained encoder with a new classification head before training, then trains for
-three full epochs. It evaluates both splits after each epoch, saves each checkpoint,
-and logs metrics and timing data to W&B.
+the configured epoch limit. It evaluates both splits after each epoch, overwrites a
+rolling checkpoint, and logs metrics and timing data to W&B.
 """
 
 from __future__ import annotations
 
 import json
 import re
+import signal
 import time
 from collections import Counter
 from dataclasses import dataclass
@@ -29,10 +30,11 @@ LABELS = ("cannot_answer", "request_for_info", "tool_call", "direct")
 LABEL_TO_ID = {label: index for index, label in enumerate(LABELS)}
 BATCH_SIZE = 16
 MAX_LENGTH = 512
-EPOCHS = 3
+EPOCHS = 1_000_000
 LEARNING_RATE = 5e-5
 SEED = 20261019
 OUTPUT_DIR = Path("outputs/when2call-minilm")
+STOP_REQUESTED = False
 
 
 @dataclass
@@ -173,6 +175,7 @@ def log_metrics(run: Any, prefix: str, metrics: dict[str, Any], step: int, loss:
     # Preserve the exact confusion matrix as a W&B table and JSON log field.
     record[f"{prefix}/confusion_matrix"] = json.dumps({"labels": metrics["labels"], "matrix": metrics["confusion_matrix"]})
     record[f"{prefix}/optimizer_step"] = step
+    record["optimizer_step"] = step
     if loss is not None:
         record[f"{prefix}/loss"] = loss
     if eval_seconds is not None:
@@ -200,6 +203,13 @@ def sync_device(device: torch.device) -> None:
         torch.cuda.synchronize(device)
 
 
+def request_graceful_stop(signum: int, frame: Any) -> None:
+    """Ask the epoch loop to stop after it saves the current epoch checkpoint."""
+    # Keep training through evaluation and checkpointing before honoring a stop signal.
+    global STOP_REQUESTED
+    STOP_REQUESTED = True
+
+
 def move_batch(batch: dict[str, Any], device: torch.device) -> dict[str, Any]:
     """Move tensor fields to the selected training device."""
     # Leave source identifiers out of model inputs and preserve labels for the loss.
@@ -210,6 +220,8 @@ def main() -> int:
     """Evaluate the base classifier, then train and evaluate each complete epoch."""
     # Load local secrets and make all random choices repeatable.
     load_dotenv(".env")
+    signal.signal(signal.SIGINT, request_graceful_stop)
+    signal.signal(signal.SIGTERM, request_graceful_stop)
     torch.manual_seed(SEED)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(SEED)
@@ -227,7 +239,12 @@ def main() -> int:
         raise RuntimeError("WANDB_API_KEY is missing from .env or the environment.")
     wandb.login(key=api_key, relogin=False)
     steps_per_epoch = (len(train_examples) + BATCH_SIZE - 1) // BATCH_SIZE
-    run = wandb.init(project="post-training", name=f"when2call-minilm-epochs-{datetime.now(timezone.utc):%Y%m%d-%H%M%S}", config={"model": MODEL_NAME, "dataset": DATASET_NAME, "train_config": "train_pref/train", "eval_config": "test/mcq", "train_rows": len(train_examples), "test_rows": len(test_examples), "train_label_counts_inferred_from_chosen_response": dict(train_counts), "test_label_counts_official": dict(test_counts), "train_labels_inferred_from_response": True, "rejected_response_used_for_training": False, "batch_size": BATCH_SIZE, "epochs": EPOCHS, "steps_per_epoch": steps_per_epoch, "total_optimizer_steps": EPOCHS * steps_per_epoch, "evaluation_policy": "Full train and test evaluation before training and after every epoch.", "learning_rate": LEARNING_RATE, "max_length": MAX_LENGTH, "seed": SEED, "checkpoint_policy": "Save a checkpoint after each epoch evaluation."})
+    run = wandb.init(project="post-training", name=f"when2call-minilm-continuous-{datetime.now(timezone.utc):%Y%m%d-%H%M%S}", config={"model": MODEL_NAME, "dataset": DATASET_NAME, "train_config": "train_pref/train", "eval_config": "test/mcq", "train_rows": len(train_examples), "test_rows": len(test_examples), "train_label_counts_inferred_from_chosen_response": dict(train_counts), "test_label_counts_official": dict(test_counts), "train_labels_inferred_from_response": True, "rejected_response_used_for_training": False, "batch_size": BATCH_SIZE, "epochs": EPOCHS, "steps_per_epoch": steps_per_epoch, "total_optimizer_steps": EPOCHS * steps_per_epoch, "evaluation_policy": "Baseline at step 0 and full train and test evaluation after every epoch under shared metric keys.", "learning_rate": LEARNING_RATE, "max_length": MAX_LENGTH, "seed": SEED, "checkpoint_policy": "Overwrite one rolling local checkpoint after each epoch evaluation."})
+    # Use one optimizer-step axis for baseline and all later evaluation metrics.
+    wandb.define_metric("optimizer_step")
+    wandb.define_metric("train_eval/*", step_metric="optimizer_step")
+    wandb.define_metric("test_eval/*", step_metric="optimizer_step")
+    wandb.define_metric("train/*", step_metric="optimizer_step")
     # Initialize the pretrained encoder with a fresh four-class classification head.
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
     model = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME, num_labels=len(LABELS), id2label=dict(enumerate(LABELS)), label2id=LABEL_TO_ID)
@@ -239,13 +256,9 @@ def main() -> int:
     all_labels = list(range(len(LABELS)))
     base_train, base_train_seconds = timed_metrics(model, tokenizer, train_examples, device, all_labels)
     base_test, base_test_seconds = timed_metrics(model, tokenizer, test_examples, device, all_labels)
-    log_metrics(wandb, "base_train_eval", base_train, 0, eval_seconds=base_train_seconds)
-    log_metrics(wandb, "base_test_eval", base_test, 0, eval_seconds=base_test_seconds)
-    # Preserve the baseline aggregate scores in the W&B run summary.
-    for split, metrics in (("train", base_train), ("test", base_test)):
-        for metric in ("accuracy", "macro_precision", "macro_recall", "macro_f1"):
-            wandb.summary[f"base/{split}/{metric}"] = metrics[metric]
-    # Train for three complete shuffled passes and time every optimizer update.
+    log_metrics(wandb, "train_eval", base_train, 0, eval_seconds=base_train_seconds, epoch=0)
+    log_metrics(wandb, "test_eval", base_test, 0, eval_seconds=base_test_seconds, epoch=0)
+    # Train for the configured long run and time every optimizer update.
     global_step = 0
     for epoch in range(1, EPOCHS + 1):
         for batch in train_loader:
@@ -261,7 +274,7 @@ def main() -> int:
             step_seconds = time.perf_counter() - step_started
             step_loss = float(output.loss.detach().cpu())
             global_step += 1
-            wandb.log({"train/loss": step_loss, "train/optimizer_step": global_step, "train/epoch": epoch, "train/step_seconds": step_seconds})
+            wandb.log({"optimizer_step": global_step, "train/loss": step_loss, "train/optimizer_step": global_step, "train/epoch": epoch, "train/step_seconds": step_seconds})
             print(json.dumps({"stage": "train", "epoch": epoch, "step": global_step, "step_seconds": step_seconds, "loss": step_loss}, sort_keys=True), flush=True)
         # Evaluate the complete train and test splits at the end of every epoch.
         train_metrics, train_eval_seconds = timed_metrics(model, tokenizer, train_examples, device, all_labels)
@@ -269,19 +282,21 @@ def main() -> int:
         log_metrics(wandb, "train_eval", train_metrics, global_step, eval_seconds=train_eval_seconds, epoch=epoch)
         log_metrics(wandb, "test_eval", test_metrics, global_step, eval_seconds=test_eval_seconds, epoch=epoch)
         # Save each epoch checkpoint only after both full-split evaluations finish.
-        checkpoint = OUTPUT_DIR / f"epoch-{epoch}"
+        checkpoint = OUTPUT_DIR / "latest"
         checkpoint.mkdir(parents=True, exist_ok=True)
         model.save_pretrained(checkpoint)
         tokenizer.save_pretrained(checkpoint)
-        artifact = wandb.Artifact(f"when2call-minilm-epoch-{epoch}", type="model")
-        artifact.add_dir(str(checkpoint))
-        run.log_artifact(artifact)
+        torch.save({"optimizer": optimizer.state_dict(), "epoch": epoch, "optimizer_step": global_step}, checkpoint / "training_state.pt")
         wandb.summary["checkpoint/path"] = str(checkpoint)
         wandb.summary["checkpoint/epoch"] = epoch
         wandb.summary["checkpoint/optimizer_step"] = global_step
+        wandb.log({"checkpoint/epoch": epoch, "checkpoint/optimizer_step": global_step})
         for split, metrics in (("train", train_metrics), ("test", test_metrics)):
             for metric in ("accuracy", "macro_precision", "macro_recall", "macro_f1"):
-                wandb.summary[f"epoch_{epoch}/{split}/{metric}"] = metrics[metric]
+                wandb.summary[f"latest/{split}/{metric}"] = metrics[metric]
+        # Finish cleanly after the current evaluation and rolling checkpoint are saved.
+        if STOP_REQUESTED:
+            break
     # Close the single W&B run after all epoch evaluations and checkpoint uploads finish.
     wandb.finish()
     return 0
