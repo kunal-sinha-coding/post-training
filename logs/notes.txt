@@ -5281,3 +5281,7 @@ Tested a configurable deny-prefix safeguard for valid-cannot-to-tool correction.
 ## 2026-10-19 Add persistent auto research supervisor
 
 Added experiments/auto_research_loop.py. The supervisor repeatedly runs the current leakage-safe inference route, writes durable heartbeats to logs/auto_research_loop.log, and handles SIGTERM and SIGINT for clean shutdown. This provides an explicit background process that remains active between assistant turns.
+
+## 2026-10-19 Fix supervisor module invocation
+
+The first background launch found that direct script execution did not expose the experiments package. Changed the supervisor to invoke the ensemble module with python -m and restarted it.

@@ -29,7 +29,8 @@ def run_step(repo: Path, log_path: Path) -> int:
     command = [
         "python",
         "-u",
-        "experiments/ensemble_when2call.py",
+        "-m",
+        "experiments.ensemble_when2call",
         "--ranker",
         "outputs/when2call-auto-research/candidate_ranker_binary_9000_len1024.json",
         "--jev",
