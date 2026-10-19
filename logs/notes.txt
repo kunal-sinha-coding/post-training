@@ -5105,3 +5105,8 @@ Discussion: CUDA synchronization brackets timed sections so asynchronous GPU wor
 Commit name: Record MiniLM timing instrumentation and rerun measurements.
 Description: Export per-step and per-evaluation durations from W&B run `449onm8y` to `logs/when2call-minilm-timing-449onm8y.jsonl`. Record mean and median step durations, all evaluation durations, and the rerun W&B link in `logs/results.txt`. Print each timed training step to the console in `experiments/train_when2call_minilm.py`.
 Discussion: The original run did not capture durations. The timed rerun logged 30 overfit steps and 1,000 full-data steps, plus the three fixed-batch evaluations and the two full-split evaluations. The rerun used the same configured seed but produced slightly different metrics, so it is recorded as a separate run.
+
+
+Commit name: Preserve the timed MiniLM rerun console log.
+Description: Add `logs/when2call-minilm-timed.log` and link it in the experiment results so the rerun output and timing records are both retained.
+Discussion: W&B contains every optimizer-step timing. The JSONL trace exports those values locally, while the console log preserves evaluation timing and the full run output.

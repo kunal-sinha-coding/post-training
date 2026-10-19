@@ -1,0 +1,75 @@
+Could not set the permissions on the file '/workspace/.cache/huggingface/hub/datasets--nvidia--When2Call/blobs/2dc6a22b6fc91819fcd25e24f1df8440e9ce8293.incomplete'. Error: [Errno 1] Operation not permitted: '/workspace/.cache/huggingface/hub/datasets--nvidia--When2Call/blobs/2dc6a22b6fc91819fcd25e24f1df8440e9ce8293.incomplete'.
+Continuing without setting permissions.
+Could not set the permissions on the file '/workspace/.cache/huggingface/hub/datasets--nvidia--When2Call/blobs/d90637f108fabf1b097493c5818c3692e1d73140259d2f8e490536255e765bc4.incomplete'. Error: [Errno 1] Operation not permitted: '/workspace/.cache/huggingface/hub/datasets--nvidia--When2Call/blobs/d90637f108fabf1b097493c5818c3692e1d73140259d2f8e490536255e765bc4.incomplete'.
+Continuing without setting permissions.
+Generating train split:   0%|          | 0/9000 [00:00<?, ? examples/s]Generating train split:  60%|█████▉    | 5398/9000 [00:00<00:00, 52174.36 examples/s]Generating train split: 100%|██████████| 9000/9000 [00:00<00:00, 58058.10 examples/s]
+Could not set the permissions on the file '/workspace/.cache/huggingface/hub/datasets--nvidia--When2Call/blobs/ee4aa952a4018fcd60b4afdeabb40df0c8af78e4.incomplete'. Error: [Errno 1] Operation not permitted: '/workspace/.cache/huggingface/hub/datasets--nvidia--When2Call/blobs/ee4aa952a4018fcd60b4afdeabb40df0c8af78e4.incomplete'.
+Continuing without setting permissions.
+Could not set the permissions on the file '/workspace/.cache/huggingface/hub/datasets--nvidia--When2Call/blobs/8c3694e583eeeb8dbc297e6cd90da70efc68efa4b6adb7227523e828c6b7b14c.incomplete'. Error: [Errno 1] Operation not permitted: '/workspace/.cache/huggingface/hub/datasets--nvidia--When2Call/blobs/8c3694e583eeeb8dbc297e6cd90da70efc68efa4b6adb7227523e828c6b7b14c.incomplete'.
+Continuing without setting permissions.
+Generating llm_judge split:   0%|          | 0/300 [00:00<?, ? examples/s]Generating llm_judge split: 100%|██████████| 300/300 [00:00<00:00, 16251.11 examples/s]
+Generating mcq split:   0%|          | 0/3652 [00:00<?, ? examples/s]Generating mcq split: 100%|██████████| 3652/3652 [00:00<00:00, 23104.48 examples/s]Generating mcq split: 100%|██████████| 3652/3652 [00:00<00:00, 22988.32 examples/s]
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: /root/.netrc
+wandb: Currently logged in as: kunalsinha1125 (kunal-personal) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run 449onm8y
+wandb: Tracking run with wandb version 0.30.0
+wandb: Run data is saved locally in /workspace/post-training/wandb/run-20261019_024126-449onm8y
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run when2call-minilm-pref-20261019-024120
+wandb: ⭐️ View project at https://wandb.ai/kunal-personal/post-training
+wandb: 🚀 View run at https://wandb.ai/kunal-personal/post-training/runs/449onm8y
+Could not set the permissions on the file '/workspace/.cache/huggingface/hub/models--nreimers--MiniLM-L6-H384-uncased/blobs/615b59d30bb38818fec848b0f2938d2cac10ef61.incomplete'. Error: [Errno 1] Operation not permitted: '/workspace/.cache/huggingface/hub/models--nreimers--MiniLM-L6-H384-uncased/blobs/615b59d30bb38818fec848b0f2938d2cac10ef61.incomplete'.
+Continuing without setting permissions.
+Could not set the permissions on the file '/workspace/.cache/huggingface/hub/models--nreimers--MiniLM-L6-H384-uncased/blobs/943320398c11a2565f08895672e5d0afafa95d45.incomplete'. Error: [Errno 1] Operation not permitted: '/workspace/.cache/huggingface/hub/models--nreimers--MiniLM-L6-H384-uncased/blobs/943320398c11a2565f08895672e5d0afafa95d45.incomplete'.
+Continuing without setting permissions.
+Could not set the permissions on the file '/workspace/.cache/huggingface/hub/models--nreimers--MiniLM-L6-H384-uncased/blobs/fb140275c155a9c7c5a3b3e0e77a9e839594a938.incomplete'. Error: [Errno 1] Operation not permitted: '/workspace/.cache/huggingface/hub/models--nreimers--MiniLM-L6-H384-uncased/blobs/fb140275c155a9c7c5a3b3e0e77a9e839594a938.incomplete'.
+Continuing without setting permissions.
+Could not set the permissions on the file '/workspace/.cache/huggingface/hub/models--nreimers--MiniLM-L6-H384-uncased/blobs/e7b0375001f109a6b8873d756ad4f7bbb15fbaa5.incomplete'. Error: [Errno 1] Operation not permitted: '/workspace/.cache/huggingface/hub/models--nreimers--MiniLM-L6-H384-uncased/blobs/e7b0375001f109a6b8873d756ad4f7bbb15fbaa5.incomplete'.
+Continuing without setting permissions.
+Could not set the permissions on the file '/workspace/.cache/huggingface/hub/models--nreimers--MiniLM-L6-H384-uncased/blobs/ab5048f3effe06bccb318ee923df90cba4e918b309a0ac6b00c654ede0768b87.incomplete'. Error: [Errno 1] Operation not permitted: '/workspace/.cache/huggingface/hub/models--nreimers--MiniLM-L6-H384-uncased/blobs/ab5048f3effe06bccb318ee923df90cba4e918b309a0ac6b00c654ede0768b87.incomplete'.
+Continuing without setting permissions.
+Some weights of BertForSequenceClassification were not initialized from the model checkpoint at nreimers/MiniLM-L6-H384-uncased and are newly initialized: ['classifier.bias', 'classifier.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+{"accuracy": 0.4375, "confusion_matrix": [[2, 3, 0, 0], [0, 5, 0, 0], [0, 4, 0, 0], [0, 2, 0, 0]], "eval_seconds": 0.058069873601198196, "examples": 16, "labels": ["cannot_answer", "request_for_info", "tool_call", "direct"], "loss": 1.33237886428833, "macro_f1": 0.2744360902255639, "macro_precision": 0.3392857142857143, "macro_recall": 0.35, "per_class": {"cannot_answer": {"f1": 0.5714285714285715, "precision": 1.0, "recall": 0.4, "support": 5}, "direct": {"f1": 0.0, "precision": 0.0, "recall": 0.0, "support": 2}, "request_for_info": {"f1": 0.5263157894736842, "precision": 0.35714285714285715, "recall": 1.0, "support": 5}, "tool_call": {"f1": 0.0, "precision": 0.0, "recall": 0.0, "support": 4}}, "stage": "overfit", "step": 10}
+{"accuracy": 0.5, "confusion_matrix": [[3, 2, 0, 0], [0, 5, 0, 0], [0, 4, 0, 0], [0, 2, 0, 0]], "eval_seconds": 0.0552222840487957, "examples": 16, "labels": ["cannot_answer", "request_for_info", "tool_call", "direct"], "loss": 1.2364754676818848, "macro_f1": 0.32638888888888884, "macro_precision": 0.34615384615384615, "macro_recall": 0.4, "per_class": {"cannot_answer": {"f1": 0.7499999999999999, "precision": 1.0, "recall": 0.6, "support": 5}, "direct": {"f1": 0.0, "precision": 0.0, "recall": 0.0, "support": 2}, "request_for_info": {"f1": 0.5555555555555556, "precision": 0.38461538461538464, "recall": 1.0, "support": 5}, "tool_call": {"f1": 0.0, "precision": 0.0, "recall": 0.0, "support": 4}}, "stage": "overfit", "step": 20}
+Could not set the permissions on the file '/workspace/.cache/huggingface/hub/models--nreimers--MiniLM-L6-H384-uncased/blobs/b3abb56f8065e1a2d95cf12e2435153a77d64c1c9b57c0098ab4fb8538926094.incomplete'. Error: [Errno 1] Operation not permitted: '/workspace/.cache/huggingface/hub/models--nreimers--MiniLM-L6-H384-uncased/blobs/b3abb56f8065e1a2d95cf12e2435153a77d64c1c9b57c0098ab4fb8538926094.incomplete'.
+Continuing without setting permissions.
+{"accuracy": 1.0, "confusion_matrix": [[5, 0, 0, 0], [0, 5, 0, 0], [0, 0, 4, 0], [0, 0, 0, 2]], "eval_seconds": 0.055138904601335526, "examples": 16, "labels": ["cannot_answer", "request_for_info", "tool_call", "direct"], "loss": 0.8251752257347107, "macro_f1": 1.0, "macro_precision": 1.0, "macro_recall": 1.0, "per_class": {"cannot_answer": {"f1": 1.0, "precision": 1.0, "recall": 1.0, "support": 5}, "direct": {"f1": 1.0, "precision": 1.0, "recall": 1.0, "support": 2}, "request_for_info": {"f1": 1.0, "precision": 1.0, "recall": 1.0, "support": 5}, "tool_call": {"f1": 1.0, "precision": 1.0, "recall": 1.0, "support": 4}}, "stage": "overfit", "step": 30}
+{"accuracy": 0.8077777777777778, "confusion_matrix": [[2808, 34, 155, 0], [115, 1917, 969, 0], [299, 156, 2545, 0], [2, 0, 0, 0]], "eval_seconds": 33.96420272812247, "examples": 9000, "labels": ["cannot_answer", "request_for_info", "tool_call", "direct"], "loss": null, "macro_f1": 0.6041422341832083, "macro_precision": 0.6186104081462821, "macro_recall": 0.6060143353116529, "per_class": {"cannot_answer": {"f1": 0.9027487542195789, "precision": 0.8709677419354839, "recall": 0.9369369369369369, "support": 2997}, "direct": {"f1": 0.0, "precision": 0.0, "recall": 0.0, "support": 2}, "request_for_info": {"f1": 0.7505873140172279, "precision": 0.9098243948742287, "recall": 0.6387870709763412, "support": 3001}, "tool_call": {"f1": 0.7632328684960263, "precision": 0.6936494957754157, "recall": 0.8483333333333334, "support": 3000}}, "stage": "full_train_eval", "step": 1000}
+{"accuracy": 0.5268346111719606, "confusion_matrix": [[619, 200, 476, 0], [126, 549, 387, 0], [252, 287, 756, 0], [0, 0, 0, 0]], "eval_seconds": 14.020145043730736, "examples": 3652, "labels": ["cannot_answer", "request_for_info", "tool_call", "direct"], "loss": null, "macro_f1": 0.5274565307488417, "macro_precision": 0.5392467593748708, "macro_recall": 0.5262417381061449, "per_class": {"cannot_answer": {"f1": 0.5401396160558464, "precision": 0.6208625877632898, "recall": 0.477992277992278, "support": 1295}, "direct": {"f1": 0.0, "precision": 0.0, "recall": 0.0, "support": 0}, "request_for_info": {"f1": 0.5233555767397521, "precision": 0.5299227799227799, "recall": 0.5169491525423728, "support": 1062}, "tool_call": {"f1": 0.5188743994509265, "precision": 0.4669549104385423, "recall": 0.5837837837837838, "support": 1295}}, "stage": "test_eval", "step": 1000}
+wandb: Adding directory to artifact (outputs/when2call-minilm/checkpoint-1000)... Done. 0.3s
+wandb: uploading artifact when2call-minilm-checkpoint-1000; updating run metadata
+wandb: uploading artifact when2call-minilm-checkpoint-1000
+wandb: uploading data
+wandb: 
+wandb: Run history:
+wandb:                         full_train/loss ██▆▇▆▆▇▇▆▇▇▆▆▆▇▇▄▂▄▃▄▃▂▅▄▃▂▁▄▂▄▂▅▃▁▅▂▃▃▃
+wandb:               full_train/optimizer_step ▁▁▁▁▂▂▂▂▂▂▃▃▃▃▃▃▃▃▃▃▄▄▄▄▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇█
+wandb:                 full_train/step_seconds ▂▂▃▄▄▄▅▁▅▅▅▅▅▅▆▅▆▆▇▆▇▆▅▆▆▇▆▆▆▅▁▇█▆▆█▇▆▅▆
+wandb:                full_train_eval/accuracy ▁
+wandb:        full_train_eval/cannot_answer/f1 ▁
+wandb: full_train_eval/cannot_answer/precision ▁
+wandb:    full_train_eval/cannot_answer/recall ▁
+wandb:   full_train_eval/cannot_answer/support ▁
+wandb:               full_train_eval/direct/f1 ▁
+wandb:        full_train_eval/direct/precision ▁
+wandb:                                     +66 ...
+wandb: 
+wandb: Run summary:
+wandb:               checkpoint/optimizer_step 1030
+wandb:                         checkpoint/path outputs/when2call-mi...
+wandb:                         full_train/loss 0.64635
+wandb:               full_train/optimizer_step 1000
+wandb:                 full_train/step_seconds 0.18951
+wandb:                full_train_eval/accuracy 0.80778
+wandb:        full_train_eval/cannot_answer/f1 0.90275
+wandb: full_train_eval/cannot_answer/precision 0.87097
+wandb:    full_train_eval/cannot_answer/recall 0.93694
+wandb:   full_train_eval/cannot_answer/support 2997
+wandb:                                     +74 ...
+wandb: 
+wandb: 🚀 View run when2call-minilm-pref-20261019-024120 at: https://wandb.ai/kunal-personal/post-training/runs/449onm8y
+wandb: ⭐️ View project at: https://wandb.ai/kunal-personal/post-training
+wandb: Synced 5 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20261019_024126-449onm8y/logs
