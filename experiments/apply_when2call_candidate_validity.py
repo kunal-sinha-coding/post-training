@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from collections import Counter
 from pathlib import Path
 
@@ -97,7 +98,7 @@ def main():
         if valid_call and args.switch_complete_request:
             question = str(row["question"]).lower()
             required = required_fields(schemas[name])
-            complete_request = bool(required) and all(field in question for field in required)
+            complete_request = bool(required) and all(re.search(r"\b" + re.escape(field) + r"\b", question) for field in required)
         corrected_prediction = "tool_call" if valid_call and (prediction == "cannot_answer" or (prediction == "request_for_info" and complete_request)) else prediction
         corrected.append(corrected_prediction)
         switches.append(valid_call and (prediction == "cannot_answer" or (prediction == "request_for_info" and complete_request)))
