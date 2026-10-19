@@ -27,3 +27,6 @@ The best route now retains only corrected local `cannot_answer` predictions and 
 
 
 The current best harness adds bidirectional tool-schema validity checks. Invalid `tool_call` candidates map to `cannot_answer`, and valid tool names can map `cannot_answer` to `tool_call`. The final result is accuracy **0.8962**, macro precision **0.8981**, macro recall **0.8886**, and macro F1 **0.8920**.
+
+
+A 4,096-token ranker ties the 8,192-token route at accuracy **0.8962** and macro F1 **0.8920**, so the shorter context is the preferred compute setting for future trials.

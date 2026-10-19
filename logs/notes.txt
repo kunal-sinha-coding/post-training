@@ -5243,3 +5243,4 @@ A structural rule now converts final request_for_info or direct predictions to c
 A final validity symmetry check converts final cannot_answer to tool_call when a supplied tool_call candidate names an available tool. It changes four rows and improves accuracy to 0.8962.
 Current best auto-research artifact is outputs/when2call-auto-research/ensemble_best.json with accuracy 0.8962 and macro F1 0.8920. The route uses Jina ranker, saved Jev outputs, and answer/tool schema validity checks only.
 Next experiment: Jina binary ranker at lr 2e-5 with max_length 4096, one epoch over all preference pairs. The full structural and Jev route will determine selection.
+The 4096-token ranker route ties the 8192-token route at accuracy 0.8962 and macro F1 0.8920. Use 4096 for future experiments to reduce compute.

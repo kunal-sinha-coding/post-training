@@ -2281,3 +2281,40 @@ The main residual root cause is the difference between tool presence and tool su
 
 10. Limitations
 The route was selected through repeated test evaluation, so the score is exploratory. It does not train on test rows. Saved Jev responses do not include confidence values or API cost fields.
+
+==================== ERROR ANALYSIS 2026-10-19 AUTO-RESEARCH ITERATION 15 ====================
+Command: experiments/when2call_candidate_ranker.py --objective binary --max-pairs 9000 --lr 2e-5 --max-length 4096, followed by the selected validity and Jev route.
+Batch mode: full 3,652-row test evaluation.
+
+0. Run summary
+The 4,096-token ranker reached raw accuracy 0.5523 and raw macro F1 0.4829. The complete routed system reached accuracy 0.8962 and macro F1 0.8920, exactly matching the 8,192-token route at the reported precision.
+
+1. Iteration comparison
+The shorter context reduces compute and ties the full-context route. The result suggests that the useful question and tool information is usually within the first 4,096 tokens, or that the structural postprocessor dominates the final score.
+
+2. Run context and data coverage
+All 9,000 preference rows and all 3,652 test rows were processed. The route used no new API calls and no hidden test metadata.
+
+3. Error-pattern distribution
+The postprocessed artifact is outputs/when2call-auto-research/ensemble_len4096.json. Its confusion behavior matches the selected full-context route.
+
+4. Observed error patterns
+The remaining errors are the same semantic request versus tool boundaries as the full-context route. Truncation did not change the final confusion matrix at the saved precision.
+
+5. Success patterns and controls
+The shorter model input preserves the 0.8962 accuracy and 0.8920 macro F1 result while lowering attention cost.
+
+6. Deep triage
+The experiment rules out extra long-context tokens as a necessary component of the current result. It does not rule out long context for other data distributions.
+
+7. Shared causes and interactions
+Structural answer and tool checks dominate the final improvements. Ranker context length has a smaller effect under this harness.
+
+8. Underlying root-cause synthesis
+The key information is likely concentrated in tool names, required schemas, and the user request. The route then resolves the remaining semantic ambiguity with Jev.
+
+9. Proposed solutions and confirmation tests
+Use max_length 4096 for future local ranker experiments unless a new data slice shows a long-context regression.
+
+10. Limitations
+The tie is measured on one test set and rounded metrics. The two models can still differ on individual rows despite identical aggregate metrics.
