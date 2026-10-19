@@ -5143,3 +5143,7 @@ Discussion: The user asked to stop the run and analyze systematic train-test dif
 Commit name: Record blind When2Call test heuristic audit.
 Description: Record candidate-only heuristic predictions, post-hoc label alignment, and the confirmed response-format mismatch between training and test tool calls.
 Discussion: Predictions were generated from the four `answers` candidates without loading `correct_answer`, then saved before scoring. The heuristic identified zero test tool-call candidates because all test candidates are bare JSON, while all 3,000 inferred training tool-call responses use `<TOOLCALL>` tags. The 64.32% selected-answer alignment is diagnostic only and is not an independent row-level prediction because gold selects the candidate after predictions are fixed.
+
+Commit name: Record exploratory When2Call response-label heuristic analysis.
+Description: Record the response-format and text rules that matched test correct-response texts, their train split application counts, and the limits of this in-sample analysis.
+Discussion: The expanded parser handles bare JSON tool calls in addition to the train `<TOOLCALL>` wrapper. Refusal rules now run before clarification rules. All 3,652 gold-selected test responses map to their class, but rules were refined on this same test set; direct has no gold test examples, and train has no official labels. Test-only metadata also predicts labels perfectly but is absent from train_pref.
