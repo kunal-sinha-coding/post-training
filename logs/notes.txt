@@ -5100,3 +5100,8 @@ Discussion: The user approved switching from `train_sft` to `train_pref`. The 16
 Commit name: Add optimizer-step and evaluation timing to the MiniLM run.
 Description: Time each training optimizer step and each evaluation split in `experiments/train_when2call_minilm.py`. Log durations to W&B and the console, and update the experiment record to state that the original run did not capture timings.
 Discussion: CUDA synchronization brackets timed sections so asynchronous GPU work is included in the elapsed duration. The completed historical W&B run has no per-section timing data, so a rerun is required to populate those fields.
+
+
+Commit name: Record MiniLM timing instrumentation and rerun measurements.
+Description: Export per-step and per-evaluation durations from W&B run `449onm8y` to `logs/when2call-minilm-timing-449onm8y.jsonl`. Record mean and median step durations, all evaluation durations, and the rerun W&B link in `logs/results.txt`. Print each timed training step to the console in `experiments/train_when2call_minilm.py`.
+Discussion: The original run did not capture durations. The timed rerun logged 30 overfit steps and 1,000 full-data steps, plus the three fixed-batch evaluations and the two full-split evaluations. The rerun used the same configured seed but produced slightly different metrics, so it is recorded as a separate run.

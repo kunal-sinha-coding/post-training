@@ -273,7 +273,9 @@ def main() -> int:
         optimizer.step()
         sync_device(device)
         step_seconds = time.perf_counter() - step_started
-        wandb.log({"overfit/train_loss": float(output.loss.detach().cpu()), "overfit/optimizer_step": step, "overfit/step_seconds": step_seconds})
+        step_loss = float(output.loss.detach().cpu())
+        wandb.log({"overfit/train_loss": step_loss, "overfit/optimizer_step": step, "overfit/step_seconds": step_seconds})
+        print(json.dumps({"stage": "overfit_train", "step": step, "step_seconds": step_seconds, "loss": step_loss}, sort_keys=True), flush=True)
         if step % OVERFIT_EVAL_INTERVAL == 0:
             sync_device(device)
             eval_started = time.perf_counter()
@@ -314,7 +316,9 @@ def main() -> int:
         sync_device(device)
         step_seconds = time.perf_counter() - step_started
         global_step = step + full_step
-        wandb.log({"full_train/loss": float(output.loss.detach().cpu()), "full_train/optimizer_step": full_step, "optimizer_step": global_step, "full_train/step_seconds": step_seconds})
+        step_loss = float(output.loss.detach().cpu())
+        wandb.log({"full_train/loss": step_loss, "full_train/optimizer_step": full_step, "optimizer_step": global_step, "full_train/step_seconds": step_seconds})
+        print(json.dumps({"stage": "full_train", "step": full_step, "step_seconds": step_seconds, "loss": step_loss}, sort_keys=True), flush=True)
         # Evaluate both complete splits after every 1,000 full-data optimizer steps.
         if full_step % 1000 == 0:
             sync_device(device)
