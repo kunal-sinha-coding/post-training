@@ -5254,3 +5254,4 @@ Next experiment: efficient 1024-token binary Jina ranker at lr 2e-5 with weight_
 Zero-weight-decay local model is rejected despite tied final route because raw metrics regressed sharply. Keep regularized 1024-token model.
 A schema argument-evidence check now converts final request_for_info to tool_call when every required argument value from the supplied candidate appears in the question. The full route reached accuracy 0.8979 in the ablation and is now the selected harness.
 The first argument-evidence harness pass failed to parse the candidate JSON before reading arguments and therefore reproduced 0.8962. I fixed the parser and reran the route. The corrected result is now measured from actual argument evidence.
+The first parser fix still treated missing argument keys as evidenced because all over an empty token list returned true. I added an explicit field-presence and nonempty-token check. The rerun now matches the manual ablation.

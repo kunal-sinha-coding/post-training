@@ -92,7 +92,7 @@ def main():
             required = required_fields(schemas[name])
             arguments = call_value.get("arguments", {}) if isinstance(call_value, dict) else {}
             question = str(row["question"]).lower()
-            evidenced = all(any(token in question for token in value_tokens(arguments.get(field))) for field in required) if required else False
+            evidenced = bool(required) and all(field in arguments and any(token in question for token in value_tokens(arguments[field])) for field in required)
             if evidenced:
                 corrected = "tool_call"
         predictions.append(corrected)
