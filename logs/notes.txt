@@ -5110,3 +5110,8 @@ Discussion: The original run did not capture durations. The timed rerun logged 3
 Commit name: Preserve the timed MiniLM rerun console log.
 Description: Add `logs/when2call-minilm-timed.log` and link it in the experiment results so the rerun output and timing records are both retained.
 Discussion: W&B contains every optimizer-step timing. The JSONL trace exports those values locally, while the console log preserves evaluation timing and the full run output.
+
+
+Commit name: Replace the MiniLM overfit run with epoch-based full training.
+Description: Update `experiments/train_when2call_minilm.py` to evaluate the fresh base classifier on full train and test splits, train only on complete `train_pref` epochs, evaluate after each epoch, log per-step and evaluation timings to W&B and console, and save each epoch checkpoint after evaluation.
+Discussion: The user clarified that the run must not include the small-batch overfit stage. The total epoch count was not specified, so the run uses three full epochs as a stated practical default. Training labels remain inferred from `chosen_response`, and the test labels remain the official `test/mcq` targets.
