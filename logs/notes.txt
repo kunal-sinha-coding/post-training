@@ -5202,3 +5202,4 @@ Discussion: Pairwise ranking uses `softplus(-(chosen_class_logit - rejected_clas
 Restart record: W&B run `v7ala5do` is active with the pairwise objective. Step-zero train accuracy and macro F1 are 0.281444 and 0.182463. Step-zero test accuracy and macro F1 are 0.314348 and 0.244239. The first optimizer step completed successfully.
 The training script now accepts `--dataset train_pref|train_sft|combined`, writes each run ID beside its loss-specific checkpoint, and records dataset composition in W&B.
 The monitor now propagates writable `HF_HOME` and `HF_MODULES_CACHE` paths to child jobs and supports `--no-restart` for the final training run before inference-only evaluation.
+Inference evaluator added at `experiments/evaluate_when2call_inference.py`. It records stochastic Jina majority metrics for k=2, 3, 5, and 10, accuracy at k, Jev comparisons, and every disagreement for the eventual best checkpoint.
