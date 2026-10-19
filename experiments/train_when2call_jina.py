@@ -68,11 +68,12 @@ class JinaSequenceClassifier(torch.nn.Module):
         return SimpleNamespace(logits=self.classifier(pooled))
 
     def save_pretrained(self, path: Path) -> None:
-        # Save the pretrained encoder and the learned classifier head together.
+        # Save weights and metadata without copying custom model source files.
         path.mkdir(parents=True, exist_ok=True)
-        self.encoder.save_pretrained(path / "encoder")
-        torch.save(self.classifier.state_dict(), path / "classifier.pt")
-        (path / "classifier_config.json").write_text(json.dumps({"labels": LABELS, "pooling": "attention_masked_mean"}, indent=2) + "\n")
+        weights = {key: value.detach().cpu() for key, value in self.state_dict().items()}
+        torch.save(weights, path / "model_state.pt")
+        (path / "encoder_config.json").write_text(json.dumps(self.encoder.config.to_dict(), indent=2) + "\n")
+        (path / "classifier_config.json").write_text(json.dumps({"base_model": MODEL_NAME, "labels": LABELS, "pooling": "attention_masked_mean"}, indent=2) + "\n")
 
 
 class ExampleDataset(Dataset[Example]):
@@ -317,7 +318,7 @@ def main() -> int:
         raise RuntimeError("WANDB_API_KEY is missing from .env or the environment.")
     wandb.login(key=api_key, relogin=False)
     steps_per_epoch = (len(train_examples) + BATCH_SIZE - 1) // BATCH_SIZE
-    run = wandb.init(project="post-training", name=f"when2call-jina-v2-small-continuous-{datetime.now(timezone.utc):%Y%m%d-%H%M%S}", config={"model": MODEL_NAME, "dataset": DATASET_NAME, "train_config": "train_pref/train", "eval_config": "test/mcq", "train_rows": len(train_examples), "test_rows": len(test_examples), "train_label_counts_inferred_from_chosen_response": dict(train_counts), "test_label_counts_official": dict(test_counts), "train_labels_inferred_from_response": True, "rejected_response_used_for_training": False, "effective_batch_size": BATCH_SIZE, "epochs": EPOCHS, "steps_per_epoch": steps_per_epoch, "total_optimizer_steps": EPOCHS * steps_per_epoch, "evaluation_policy": "Baseline at step 0 and full train and test evaluation after every epoch under shared metric keys.", "learning_rate": LEARNING_RATE, "max_sequence_length": MAX_LENGTH, "input_handling": "Process each complete input in one sequence; use length-aware microbatches and gradient accumulation to preserve effective batch size.", "attention_implementation": "PyTorch scaled dot-product attention with bfloat16 and gradient checkpointing.", "max_batch_attention_values": MAX_BATCH_ATTENTION_VALUES, "seed": SEED, "checkpoint_policy": "Overwrite one rolling local checkpoint after each epoch evaluation."})
+    run = wandb.init(project="post-training", name=f"when2call-jina-v2-small-max-{EPOCHS}-epochs-{datetime.now(timezone.utc):%Y%m%d-%H%M%S}", config={"model": MODEL_NAME, "dataset": DATASET_NAME, "train_config": "train_pref/train", "eval_config": "test/mcq", "train_rows": len(train_examples), "test_rows": len(test_examples), "train_label_counts_inferred_from_chosen_response": dict(train_counts), "test_label_counts_official": dict(test_counts), "train_labels_inferred_from_response": True, "rejected_response_used_for_training": False, "effective_batch_size": BATCH_SIZE, "epochs": EPOCHS, "steps_per_epoch": steps_per_epoch, "total_optimizer_steps": EPOCHS * steps_per_epoch, "evaluation_policy": "Baseline at step 0 and full train and test evaluation after every epoch under shared metric keys.", "learning_rate": LEARNING_RATE, "max_sequence_length": MAX_LENGTH, "input_handling": "Process each complete input in one sequence; use length-aware microbatches and gradient accumulation to preserve effective batch size.", "attention_implementation": "PyTorch scaled dot-product attention with bfloat16 and gradient checkpointing.", "max_batch_attention_values": MAX_BATCH_ATTENTION_VALUES, "seed": SEED, "checkpoint_policy": "Overwrite one rolling local checkpoint after each epoch evaluation."})
     # Use one optimizer-step axis for baseline and all later evaluation metrics.
     wandb.define_metric("optimizer_step")
     wandb.define_metric("train_eval/*", step_metric="optimizer_step")

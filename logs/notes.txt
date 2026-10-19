@@ -5176,3 +5176,8 @@ Discussion: The user requested a restart using Jina Embeddings v2 Small. The fre
 Commit name: Record Jina baseline metrics.
 Description: Save the fresh Jina classifier's step-zero train and test metrics and evaluation durations in the experiment results file.
 Discussion: W&B run `85e0lwz6` completed both baseline evaluations and began epoch 1. The process remained active when this record was written.
+
+
+Commit name: Fix Jina checkpoint saving and clarify run name.
+Description: Save Jina checkpoint weights and configs without asking Transformers to copy remote model code, verify tokenizer and checkpoint writes, and use an explicit one-million-epoch W&B run name.
+Discussion: W&B run `85e0lwz6` completed baseline and epoch 1 evaluation but failed when custom code saving tried to chmod a copied remote Python file on the workspace mount. The failed run had no epoch checkpoint. The replacement checkpoint smoke test passed on the workspace filesystem. The user also asked why the run was called continuous; that inherited name was removed.

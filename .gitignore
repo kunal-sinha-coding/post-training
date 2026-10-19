@@ -14,3 +14,4 @@ wandb/
 logs/when2call-minilm-continuous.log
 
 logs/when2call-jina-v2-small-continuous.log
+logs/when2call-jina-v2-small.log
