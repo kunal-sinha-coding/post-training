@@ -5238,3 +5238,4 @@ The lr 3e-5 ranker has the best raw metrics but routed macro F1 0.8005. Keep lr 
 Next experiment: two epochs of the selected binary Jina ranker at lr 2e-5 over all 9,000 preference rows. Selection remains based on validity correction plus Jev routing.
 The two-epoch 2e-5 route achieved macro F1 0.8482, slightly below one epoch at 0.8489. Keep the one-epoch model and route.
 The best route now adds invalid-tool correction after local validity and Jev routing. It switches routed tool_call predictions to cannot_answer when the supplied call names no available tool. Full test metrics are accuracy 0.8617 and macro F1 0.8594.
+The best route now also applies the complete-required-field check after Jev routing. It raised accuracy to 0.8634 and macro F1 to 0.8609 by switching 10 clarification predictions to tool_call.

@@ -57,6 +57,11 @@ def main():
             route_count += 1
         if args.invalid_tool_to_cannot and corrected == "tool_call" and not valid_call:
             corrected = "cannot_answer"
+        if args.switch_complete_request and corrected == "request_for_info" and valid_call:
+            required = required_fields(schemas[name])
+            question = str(row["question"]).lower()
+            if required and all(re.search(r"\b" + re.escape(field) + r"\b", question) for field in required):
+                corrected = "tool_call"
         predictions.append(corrected)
     targets = [row["correct_answer"] for row in rows]
     result = {"route_label": sorted(route_labels), "invalid_tool_to_cannot": args.invalid_tool_to_cannot, "routed_rows": route_count, "metrics": metric_values(targets, predictions), "prediction_counts": dict(Counter(predictions)), "predictions": predictions, "targets": targets}
