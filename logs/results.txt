@@ -19363,3 +19363,15 @@ Cause: Changing the micro-batch and the accumulation on resume changed the updat
 Implementation: Restore `sft_per_device_train_batch_size: 8` and `gradient_accumulation_steps: 2` in `configs/reference-sft-fullpool-perepoch-eval-20261018.yaml` to match every existing checkpoint, and launch with `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True` only. Resume from `checkpoints/checkpoint-555`.
 Observation: The epoch counter reads 15.57 at optimizer step 576, which is correct, and training passes step 574 where an earlier attempt reached a crash. No new out-of-memory error appears after the restart.
 Limitations: The micro-batch-eight configuration still sits near the device limit, so expandable CUDA segments carry the memory safety. If a crash returns, the next lever is a shorter completion length or an activation-memory reduction that does not change the update count per epoch.
+
+Result: Full-pool reference SFT versus the EvalPlus evaluation set from epoch ten to epoch twenty-five, 2026-10-19.
+Purpose: Report the measured divergence between the training pool and the evaluation set, and record the stop of the run.
+Separation: The training pool drives the model and the EvalPlus set only measures it. No checkpoint was selected with any ground-truth result, so the selection independence holds.
+Setup: W&B run `88d20d61`, config `configs/reference-sft-fullpool-perepoch-eval-20261018.yaml`. All points use the sampled adapter saved at the evaluation step and the canonical EvalPlus greedy pass@1 over the 378 MBPP tasks. The task count is 378 for every point.
+Metrics:
+- Epoch 10, optimizer step 370: MBPP pass@1 0.516, MBPP plus pass@1 0.426, MBPP tests pass fraction 0.583, training-set greedy pass@1 0.411.
+- Epoch 20, optimizer step 740: MBPP pass@1 0.442, MBPP plus pass@1 0.349, training-set greedy pass@1 0.538.
+- Epoch 25, optimizer step 925: MBPP pass@1 0.392, MBPP plus pass@1 0.315, MBPP tests pass fraction 0.458, training-set greedy pass@1 0.695.
+- Training pool from the temperature one histogram over 591 tasks with 16 samples: coverage 0.645, 0.755, and 0.821, mean pass count 3.83, 5.37, and 6.81, zero-pass fraction 0.355, 0.245, and 0.179, mixed fraction 0.640, 0.743, and 0.792.
+Observation: Every training-pool number improves monotonically and both EvalPlus pass at one numbers fall monotonically. MBPP loses 0.124 and MBPP plus loses 0.111 over fifteen epochs. The two test sets agree, so the decline is a trend rather than one noisy draw.
+Limitations: Each EvalPlus point is a single greedy completion per task, so it estimates conversion and not coverage. The run was stopped at optimizer step 1110 at the request of the user, so epoch 30 holds no completed evaluation. The directory `evalplus/epoch-00030` holds 378 generated files but no result file, and it is a leftover of an earlier aborted evaluation from the same day.
