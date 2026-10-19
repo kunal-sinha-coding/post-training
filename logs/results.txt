@@ -19472,3 +19472,12 @@ Limitations: The test response audit evaluates response-to-class mapping, not th
 Label-rule comparison: original versus test-refined response heuristic on When2Call `train_pref`.
 Applied both rules row by row to all 9,000 `chosen_response` texts. They agree on 8,999 rows (99.989%). The only change is one response from `request_for_info` to `cannot_answer`: “Apologies, I'm unable to provide the standings without a specific season. Please provide a season for an accurate response.” The old heuristic checks for a question/request before refusal language; the refined rule checks refusal first.
 Old inferred counts: 3,000 `tool_call`, 2,997 `cannot_answer`, 3,001 `request_for_info`, and 2 `direct`. Refined counts: 3,000 `tool_call`, 2,998 `cannot_answer`, 3,000 `request_for_info`, and 2 `direct`. This is label agreement between heuristics, not accuracy against train ground truth. The refined rule's 100% test result remains test-tuned and in-sample.
+
+
+Experiment update: When2Call MiniLM full-input chunking smoke check.
+Purpose: Confirm the no-truncation input path handles every train and test token and supports a training loss and backward pass.
+Data: `nvidia/When2Call` `train_pref/train` (9,000 examples) and `test/mcq` (3,652 examples). Tokenizer: `nreimers/MiniLM-L6-H384-uncased`.
+Method: Split each complete tokenized input into contiguous 510-token content chunks, add MiniLM special tokens to each chunk, classify each chunk, and average chunk logits per original example. This preserves all input tokens but does not provide cross-chunk attention.
+Full split integrity check: maximum untruncated input length was 3,027 tokens in train and 6,940 in test. The check processed 13,426 train chunks and 8,309 test chunks. Every padded model sequence was at most 512 tokens.
+Smoke check: Used the longest train and longest test examples. The two examples produced 20 chunks and pooled logits with shape 2 by 4. Cross entropy was finite and backward propagation populated the classifier head gradient. The check passed.
+Limitations: The complete text is preserved, but chunk logits are averaged, so tokens in different chunks cannot interact through attention. This changes the input handling from the old truncation-based run and needs a fresh run for comparable metrics.

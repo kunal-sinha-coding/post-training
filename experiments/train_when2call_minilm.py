@@ -30,6 +30,7 @@ LABELS = ("cannot_answer", "request_for_info", "tool_call", "direct")
 LABEL_TO_ID = {label: index for index, label in enumerate(LABELS)}
 BATCH_SIZE = 16
 MAX_LENGTH = 512
+CHUNK_CONTENT_LENGTH = MAX_LENGTH - 2
 EPOCHS = 1_000_000
 LEARNING_RATE = 5e-5
 SEED = 20261019
@@ -115,12 +116,34 @@ def prepare_test_examples(rows: Any) -> list[Example]:
 
 
 def collate(batch: list[Example], tokenizer: Any) -> dict[str, Any]:
-    """Tokenize one batch and attach class labels and stable source identifiers."""
-    # Pad each batch dynamically and truncate long tool schemas at the model limit.
-    encoded = tokenizer([item.text for item in batch], padding=True, truncation=True, max_length=MAX_LENGTH, return_tensors="pt")
+    """Split every full input into model-sized chunks without dropping tokens."""
+    # Split the full token sequence so long questions and tool lists are both preserved.
+    chunk_features = []
+    chunk_to_example = []
+    for example_index, item in enumerate(batch):
+        full_ids = tokenizer(item.text, add_special_tokens=False, truncation=False, verbose=False)["input_ids"]
+        for start in range(0, max(1, len(full_ids)), CHUNK_CONTENT_LENGTH):
+            content = full_ids[start : start + CHUNK_CONTENT_LENGTH]
+            input_ids = tokenizer.build_inputs_with_special_tokens(content)
+            if len(input_ids) > MAX_LENGTH:
+                raise ValueError("A model input chunk exceeds MiniLM's position limit.")
+            chunk_features.append({"input_ids": input_ids, "attention_mask": [1] * len(input_ids)})
+            chunk_to_example.append(example_index)
+    # Pad only the chunks in this batch and keep labels at the example level.
+    encoded = tokenizer.pad(chunk_features, padding=True, return_tensors="pt")
+    encoded["chunk_to_example"] = torch.tensor(chunk_to_example, dtype=torch.long)
     encoded["labels"] = torch.tensor([item.label for item in batch], dtype=torch.long)
     encoded["source_ids"] = [item.source_id for item in batch]
     return encoded
+
+
+def aggregate_chunk_logits(chunk_logits: torch.Tensor, chunk_to_example: torch.Tensor, example_count: int) -> torch.Tensor:
+    """Average chunk logits so every original example has one classification score."""
+    # Pool all chunk scores for each example while preserving gradients during training.
+    sums = torch.zeros((example_count, chunk_logits.shape[-1]), device=chunk_logits.device, dtype=chunk_logits.dtype)
+    sums = sums.index_add(0, chunk_to_example, chunk_logits)
+    counts = torch.bincount(chunk_to_example, minlength=example_count).to(chunk_logits.dtype).unsqueeze(1)
+    return sums / counts.clamp_min(1)
 
 
 def metric_values(targets: list[int], predictions: list[int], labels: list[int]) -> dict[str, Any]:
@@ -151,17 +174,20 @@ def metric_values(targets: list[int], predictions: list[int], labels: list[int])
 def batch_metrics(model: Any, tokenizer: Any, examples: list[Example], device: torch.device, metric_labels: list[int]) -> dict[str, Any]:
     """Evaluate the model on a supplied fixed batch or dataset."""
     # Run inference without gradients while keeping predictions in input order.
-    loader = DataLoader(ExampleDataset(examples), batch_size=64, shuffle=False, collate_fn=lambda items: collate(items, tokenizer))
+    loader = DataLoader(ExampleDataset(examples), batch_size=16, shuffle=False, collate_fn=lambda items: collate(items, tokenizer))
     targets: list[int] = []
     predictions: list[int] = []
     model.eval()
     with torch.inference_mode():
         for batch in loader:
-            labels = batch.pop("labels").tolist()
+            labels = batch.pop("labels").to(device)
+            chunk_to_example = batch.pop("chunk_to_example").to(device)
             batch.pop("source_ids")
             inputs = {key: value.to(device) for key, value in batch.items()}
-            predictions.extend(model(**inputs).logits.argmax(dim=-1).cpu().tolist())
-            targets.extend(labels)
+            chunk_logits = model(**inputs).logits
+            example_logits = aggregate_chunk_logits(chunk_logits, chunk_to_example, len(labels))
+            predictions.extend(example_logits.argmax(dim=-1).cpu().tolist())
+            targets.extend(labels.cpu().tolist())
     return metric_values(targets, predictions, metric_labels)
 
 
@@ -211,9 +237,10 @@ def request_graceful_stop(signum: int, frame: Any) -> None:
 
 
 def move_batch(batch: dict[str, Any], device: torch.device) -> dict[str, Any]:
-    """Move tensor fields to the selected training device."""
-    # Leave source identifiers out of model inputs and preserve labels for the loss.
-    return {key: value.to(device) for key, value in batch.items() if key != "source_ids"}
+    """Move model-input tensors to the selected training device."""
+    # Leave labels, chunk ownership, and source identifiers for grouped loss handling.
+    excluded = {"labels", "chunk_to_example", "source_ids"}
+    return {key: value.to(device) for key, value in batch.items() if key not in excluded}
 
 
 def main() -> int:
@@ -239,7 +266,7 @@ def main() -> int:
         raise RuntimeError("WANDB_API_KEY is missing from .env or the environment.")
     wandb.login(key=api_key, relogin=False)
     steps_per_epoch = (len(train_examples) + BATCH_SIZE - 1) // BATCH_SIZE
-    run = wandb.init(project="post-training", name=f"when2call-minilm-continuous-{datetime.now(timezone.utc):%Y%m%d-%H%M%S}", config={"model": MODEL_NAME, "dataset": DATASET_NAME, "train_config": "train_pref/train", "eval_config": "test/mcq", "train_rows": len(train_examples), "test_rows": len(test_examples), "train_label_counts_inferred_from_chosen_response": dict(train_counts), "test_label_counts_official": dict(test_counts), "train_labels_inferred_from_response": True, "rejected_response_used_for_training": False, "batch_size": BATCH_SIZE, "epochs": EPOCHS, "steps_per_epoch": steps_per_epoch, "total_optimizer_steps": EPOCHS * steps_per_epoch, "evaluation_policy": "Baseline at step 0 and full train and test evaluation after every epoch under shared metric keys.", "learning_rate": LEARNING_RATE, "max_length": MAX_LENGTH, "seed": SEED, "checkpoint_policy": "Overwrite one rolling local checkpoint after each epoch evaluation."})
+    run = wandb.init(project="post-training", name=f"when2call-minilm-continuous-{datetime.now(timezone.utc):%Y%m%d-%H%M%S}", config={"model": MODEL_NAME, "dataset": DATASET_NAME, "train_config": "train_pref/train", "eval_config": "test/mcq", "train_rows": len(train_examples), "test_rows": len(test_examples), "train_label_counts_inferred_from_chosen_response": dict(train_counts), "test_label_counts_official": dict(test_counts), "train_labels_inferred_from_response": True, "rejected_response_used_for_training": False, "batch_size": BATCH_SIZE, "epochs": EPOCHS, "steps_per_epoch": steps_per_epoch, "total_optimizer_steps": EPOCHS * steps_per_epoch, "evaluation_policy": "Baseline at step 0 and full train and test evaluation after every epoch under shared metric keys.", "learning_rate": LEARNING_RATE, "max_sequence_length": MAX_LENGTH, "input_chunking": "Split the complete input token sequence into contiguous chunks of 510 content tokens, add model special tokens, and average per-chunk class logits by source example.", "seed": SEED, "checkpoint_policy": "Overwrite one rolling local checkpoint after each epoch evaluation."})
     # Use one optimizer-step axis for baseline and all later evaluation metrics.
     wandb.define_metric("optimizer_step")
     wandb.define_metric("train_eval/*", step_metric="optimizer_step")
@@ -265,14 +292,19 @@ def main() -> int:
             sync_device(device)
             step_started = time.perf_counter()
             model.train()
-            batch = move_batch(batch, device)
+            labels = batch.pop("labels").to(device)
+            chunk_to_example = batch.pop("chunk_to_example").to(device)
+            batch.pop("source_ids")
+            inputs = move_batch(batch, device)
             optimizer.zero_grad(set_to_none=True)
-            output = model(**batch)
-            output.loss.backward()
+            chunk_logits = model(**inputs).logits
+            example_logits = aggregate_chunk_logits(chunk_logits, chunk_to_example, len(labels))
+            loss = torch.nn.functional.cross_entropy(example_logits, labels)
+            loss.backward()
             optimizer.step()
             sync_device(device)
             step_seconds = time.perf_counter() - step_started
-            step_loss = float(output.loss.detach().cpu())
+            step_loss = float(loss.detach().cpu())
             global_step += 1
             wandb.log({"optimizer_step": global_step, "train/loss": step_loss, "train/optimizer_step": global_step, "train/epoch": epoch, "train/step_seconds": step_seconds})
             print(json.dumps({"stage": "train", "epoch": epoch, "step": global_step, "step_seconds": step_seconds, "loss": step_loss}, sort_keys=True), flush=True)
