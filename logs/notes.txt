@@ -5257,3 +5257,7 @@ The first argument-evidence harness pass failed to parse the candidate JSON befo
 The first parser fix still treated missing argument keys as evidenced because all over an empty token list returned true. I added an explicit field-presence and nonempty-token check. The rerun now matches the manual ablation.
 The argument evidence rule initially matched short tokens such as `ca` inside unrelated words. I fixed it to ignore tokens of length two or less and require word boundaries. The corrected route now uses strict argument evidence.
 Current best route is ensemble_best.json with accuracy 0.8981 and macro F1 0.8922 after strict argument evidence.
+
+## 2026-10-19 Record explicit action ablation
+
+Added a configurable explicit-action-to-tool rule to the inference ensemble and tested it against the current strict argument-evidence route. The rule used only question text and candidate tool validity. It reduced accuracy and macro F1, so it remains disabled. Updated the required error analysis and results records.

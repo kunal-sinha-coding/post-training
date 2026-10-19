@@ -49,3 +49,7 @@ The selected route reaches accuracy **0.9080** on BFCL v2 Live Multiple and **0.
 
 
 The strict argument-evidence rule is the current best. It reaches accuracy **0.8981**, macro precision **0.9086**, macro recall **0.8874**, and macro F1 **0.8922**.
+
+## Iteration 20: explicit action language ablation
+
+A generic whole-word action rule was tested. It switched valid request-for-info candidates to tool_call when the question contained an action verb. The rule reduced accuracy from 0.8981 to 0.7965 and macro F1 from 0.8922 to 0.7513. It overfires on cannot_answer questions. The rule was rejected and remains disabled.

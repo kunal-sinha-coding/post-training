@@ -19575,3 +19575,7 @@ Source slice: the selected route scores accuracy 0.9080 on BFCL v2 Live Multiple
 Auto-research iteration 18: Zero-weight-decay 1024-token ranker had raw accuracy 0.3686 and macro F1 0.3900. The full route still achieved accuracy 0.8962 and macro F1 0.8920. Keep the regularized 1024-token reference.
 Auto-research iteration 19: Argument-evidence correction raised the final route to accuracy 0.8979 from 0.8962. It uses only candidate arguments, tool schemas, and question text, with no new API calls.
 Auto-research iteration 19 corrected: Strict argument evidence with short-token filtering and word boundaries raised the final route to accuracy 0.8981, macro precision 0.9086, macro recall 0.8874, and macro F1 0.8922.
+
+## Iteration 20 explicit action language ablation
+
+The strict argument-evidence ensemble scored accuracy 0.8981 and macro F1 0.8922. A generic whole-word action rule reduced accuracy to 0.7965 and macro F1 to 0.7513. The candidate was rejected.
