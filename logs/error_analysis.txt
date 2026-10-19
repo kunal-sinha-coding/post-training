@@ -2489,3 +2489,7 @@ The updated error pattern remains concentrated in Live Simple. Further work shou
 Iteration 22 route-label ablation
 
 The normalized route was tested with narrower Jev routing sets. Routing request_for_info and tool_call but excluding direct reduced accuracy to 0.6684 and macro F1 to 0.7358. Routing request_for_info and direct but excluding tool_call scored accuracy 0.8916 and macro F1 0.8838. The full request_for_info, tool_call, and direct route remains best at accuracy 0.8987 and macro F1 0.8927. Keep the full route.
+
+Iteration 23 updated error breakdown
+
+The normalized best artifact scored 0.9155 accuracy on Live Multiple with 2656 of 2901 correct, and 0.8336 on Live Simple with 626 of 751 correct. The dominant confusion is request_for_info predicted as tool_call, with 291 rows. The reverse tool_call predicted as request_for_info accounts for 66 rows. Direct confusions are small. Live Simple remains the main target for the next experiment.

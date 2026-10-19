@@ -61,3 +61,7 @@ The route now recognizes exact argument evidence plus ISO dates expressed as mon
 ## Iteration 22: route-label ablation
 
 The full Jev route over request_for_info, tool_call, and direct remains best. Excluding direct scored 0.6684 accuracy and 0.7358 macro F1. Excluding tool_call scored 0.8916 accuracy and 0.8838 macro F1. The full route scores 0.8987 accuracy and 0.8927 macro F1.
+
+## Iteration 23: updated error breakdown
+
+The current normalized artifact scores **0.9155** on Live Multiple and **0.8336** on Live Simple. The largest confusion is request_for_info predicted as tool_call, with 291 rows. The next experiment should target Live Simple behavior without broadening action heuristics.

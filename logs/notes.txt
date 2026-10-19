@@ -5269,3 +5269,7 @@ Added a configurable narrow value normalization rule for dates and common city a
 ## 2026-10-19 Record route-label ablation
 
 Tested narrower Jev routing sets against the normalized route. The full three-label route remains best. Updated the experiment records before commit.
+
+## 2026-10-19 Record updated error breakdown
+
+Measured the current best artifact by source slice and confusion pair. Live Simple is the main remaining target. Updated records before commit.
