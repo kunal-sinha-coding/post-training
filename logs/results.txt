@@ -19428,3 +19428,15 @@ Original checkpoints: The local `epoch-1`, `epoch-2`, and `epoch-3` directories 
 Environment: Python 3.12.3, PyTorch 2.8.0+cu128, CUDA 12.8, Transformers 4.56.2, Datasets 5.0.1, W&B 0.30.0, NVIDIA RTX 2000 Ada Generation GPU with 16,380 MiB memory.
 Code: `experiments/train_when2call_minilm.py` at commit `28e45aed`. Console log: `logs/when2call-minilm-epochs.log`.
 Limitations: This is supervised four-way action classification, not response generation or preference optimization. Training labels were inferred from response text and format. The `direct` class has only two training examples and no test examples, so its test metrics are undefined and excluded from test macro averages. The best observed test score occurred at epoch 2, but test metrics were not used to select a checkpoint.
+
+
+EXPERIMENT STATUS
+Experiment: Continuous MiniLM action classification on When2Call train_pref.
+Status: Active at user request.
+Run: W&B run `when2call-minilm-continuous-20261019-034522`, ID `t9e79vbw`, at https://wandb.ai/kunal-personal/post-training/runs/t9e79vbw.
+Purpose: Restart from the pretrained MiniLM base and continue full-dataset supervised classification until the user directly requests a stop.
+Setup: No small-batch overfit stage. Batch size 16. One full train and test evaluation before training, both logged under `train_eval` and `test_eval` at optimizer step 0. Both complete splits are evaluated after every epoch under those same metric keys. Maximum configured epoch count is 1,000,000. The model encoder and new four-class classification head are trainable.
+Checkpointing: After each epoch evaluation, model, tokenizer, and optimizer state overwrite the rolling local checkpoint at `outputs/when2call-minilm/latest`.
+Data and labels: `nvidia/When2Call` `train_pref/train` and `test/mcq`. Training labels are inferred from `chosen_response`; official MCQ labels are used for evaluation.
+Code: `experiments/train_when2call_minilm.py` at commit `d286e1b6`. Live console log: `logs/when2call-minilm-continuous.log`.
+History: The local `epoch-1`, `epoch-2`, and `epoch-3` checkpoint directories from the previous run were deleted before restart at the user's request. The completed prior run and its W&B artifacts remain in the experiment record.

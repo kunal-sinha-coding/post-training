@@ -5125,3 +5125,8 @@ Discussion: The user requested full-data training only, baseline evaluation befo
 Commit name: Align evaluation metrics and restart continuous MiniLM training.
 Description: Configure the MiniLM run for up to 1,000,000 full-data epochs. Log baseline metrics at optimizer step zero under the same `train_eval` and `test_eval` keys used after every epoch. Save optimizer state and model weights to one rolling local checkpoint after each epoch. Remove the three prior local epoch checkpoint directories before restarting.
 Discussion: The user asked the training process to continue until they directly request a stop. The process now handles SIGINT and SIGTERM by finishing the current epoch evaluation and checkpoint before exiting. Previous W&B artifacts remain as historical records; only the local epoch-1 through epoch-3 checkpoint directories were deleted.
+
+
+Commit name: Record the continuous MiniLM run startup.
+Description: Record W&B run `t9e79vbw`, the continuous run configuration, the shared baseline and epoch evaluation keys, and the rolling checkpoint path in `logs/results.txt`.
+Discussion: The local epoch-1, epoch-2, and epoch-3 checkpoints were deleted at the user's request. The new run starts from the pretrained base, logs baseline train and test evaluation at step zero under the same keys as later evaluations, and is configured for up to one million full-data epochs. The user explicitly directed that training continue until they request a stop.
