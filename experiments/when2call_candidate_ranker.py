@@ -25,6 +25,7 @@ class Pair:
     """Store one question and candidate response pair."""
     text: str
     label: int
+    preference: int
 
 
 def question_text(row):
@@ -87,7 +88,8 @@ def main():
     parser.add_argument("--max-pairs", type=int, default=9000)
     parser.add_argument("--lr", type=float, default=2e-5)
     parser.add_argument("--batch-size", type=int, default=2)
-    parser.add_argument("--objective", choices=("binary", "multiclass"), default="multiclass")
+    parser.add_argument("--objective", choices=("binary", "multiclass", "joint"), default="multiclass")
+    parser.add_argument("--aux-weight", type=float, default=0.5)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     random.seed(20261019)
@@ -96,15 +98,16 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained("jinaai/jina-embeddings-v2-small-en", trust_remote_code=True)
     tokenizer.model_max_length = 8192
     encoder = AutoModel.from_pretrained("jinaai/jina-embeddings-v2-small-en", trust_remote_code=True).to(device)
-    head = torch.nn.Linear(encoder.config.hidden_size, 1 if args.objective == "binary" else len(LABELS)).to(device)
+    head_size = 1 if args.objective == "binary" else len(LABELS) if args.objective == "multiclass" else len(LABELS) + 1
+    head = torch.nn.Linear(encoder.config.hidden_size, head_size).to(device)
     rows = load_dataset(DATASET_NAME, "train_pref", split="train")
     pairs = []
     for row in rows:
         context = question_text(row)
         chosen = row["chosen_response"]["content"]
         rejected = row["rejected_response"]["content"]
-        pairs.append(Pair(pair_text(context, chosen), 1 if args.objective == "binary" else LABEL_TO_ID[response_label(chosen)]))
-        pairs.append(Pair(pair_text(context, rejected), 0 if args.objective == "binary" else LABEL_TO_ID[response_label(rejected)]))
+        pairs.append(Pair(pair_text(context, chosen), 1 if args.objective == "binary" else LABEL_TO_ID[response_label(chosen)], 1))
+        pairs.append(Pair(pair_text(context, rejected), 0 if args.objective == "binary" else LABEL_TO_ID[response_label(rejected)], 0))
     random.shuffle(pairs)
     pairs = pairs[: args.max_pairs * 2]
     optimizer = torch.optim.AdamW(list(encoder.parameters()) + list(head.parameters()), lr=args.lr)
@@ -122,9 +125,13 @@ def main():
             if args.objective == "binary":
                 labels = torch.tensor([item.label for item in batch], dtype=torch.float32, device=device)
                 loss = torch.nn.functional.binary_cross_entropy_with_logits(logits.squeeze(-1), labels)
-            else:
+            elif args.objective == "multiclass":
                 labels = torch.tensor([item.label for item in batch], dtype=torch.long, device=device)
                 loss = torch.nn.functional.cross_entropy(logits, labels)
+            else:
+                class_labels = torch.tensor([item.label for item in batch], dtype=torch.long, device=device)
+                preference_labels = torch.tensor([item.preference for item in batch], dtype=torch.float32, device=device)
+                loss = torch.nn.functional.cross_entropy(logits[:, :len(LABELS)], class_labels) + args.aux_weight * torch.nn.functional.binary_cross_entropy_with_logits(logits[:, -1], preference_labels)
             optimizer.zero_grad()
             loss.backward()
             torch.nn.utils.clip_grad_norm_(list(encoder.parameters()) + list(head.parameters()), 1.0)
@@ -146,8 +153,10 @@ def main():
                 logits = head(pooled.float()).squeeze(0)
                 if args.objective == "binary":
                     scores.append(logits.squeeze().item())
-                else:
+                elif args.objective == "multiclass":
                     scores.append(logits[LABEL_TO_ID[choice]])
+                else:
+                    scores.append(logits[LABEL_TO_ID[choice]] + logits[-1])
             predictions.append(choices[max(range(len(scores)), key=scores.__getitem__)][0])
     targets = [row["correct_answer"] for row in test_rows]
     result = {"epochs": args.epochs, "max_pairs": args.max_pairs, "lr": args.lr, "objective": args.objective, "metrics": metrics([LABEL_TO_ID[x] for x in targets], [LABEL_TO_ID[x] for x in predictions]), "predictions": predictions, "targets": targets}
