@@ -16,3 +16,8 @@ The loop is running on `main`. It uses question and tool text for local models a
 The 9,000-pair ranker still underpredicts `tool_call`. Its confusion counts are 1,002 correct `cannot_answer`, 947 correct `request_for_info`, 71 correct `tool_call`, 887 `tool_call` to `cannot_answer`, and 335 `tool_call` to `request_for_info`. The next experiment adds a multiclass auxiliary loss to the successful binary objective and uses class-balanced sampling.
 
 Detailed iteration reports are in `logs/error_analysis.txt`. Raw model outputs are under `outputs/when2call-auto-research`.
+
+
+## Current best ensemble
+
+The current best system applies the 9,000-pair binary ranker, corrects a `cannot_answer` prediction to `tool_call` when the provided call names an available tool, and routes residual `request_for_info` predictions to the saved Jev output. It reaches accuracy **0.8406**, macro precision **0.8633**, macro recall **0.8326**, and macro F1 **0.8391** on 3,652 rows. It makes no new API calls.

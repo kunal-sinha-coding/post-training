@@ -2038,3 +2038,48 @@ The primary root cause is objective mismatch. A chosen response can be preferred
 
 10. Limitations
 The ranker uses heuristic labels for response classes and no official train labels exist for the preference split. Full test labels are used only for measurement. The run does not log per-example margins, so score calibration errors cannot yet be separated from representation errors.
+
+==================== ERROR ANALYSIS 2026-10-19 AUTO-RESEARCH ITERATION 6 ====================
+Command: experiments/apply_when2call_candidate_validity.py followed by experiments/ensemble_when2call.py using the saved 9,000-pair ranker and saved Jev predictions.
+Batch mode: full 3,652-row test evaluation with no new API calls.
+
+0. Run summary
+The local ranker plus tool validity correction reached accuracy 0.7974 and macro F1 0.8002. Routing only its remaining request_for_info predictions to Jev raised accuracy to 0.8406 and macro F1 to 0.8391. This is the current best result. The main remaining errors are 125 tool_call predictions as cannot_answer, 305 request_for_info predictions as tool_call, and 77 cannot_answer predictions as request_for_info after routing.
+
+1. Iteration comparison
+Compared with the raw 9,000-pair ranker, validity correction and Jev routing improved accuracy by 0.2875 and macro F1 by 0.3559. Compared with Jev alone, the ensemble improved accuracy by 0.0978. The routing rule preserves the ranker's strong cannot_answer decisions and uses Jev for its uncertain clarification decisions.
+
+2. Run context and data coverage
+All 3,652 test rows were processed. The ensemble used only saved predictions plus question, answer-choice, and available-tool text. It did not access target_tool, held_out_param, or correct_answer while producing predictions. Test labels were used after selection to measure the benchmark result.
+
+3. Error-pattern distribution
+| Pattern | Count | Percent | Definition |
+|---|---:|---:|---|
+| tool_call predicted as request_for_info | 305 | 8.4% | The ensemble retains a clarification where the benchmark expects an actionable call. |
+| cannot_answer predicted as request_for_info | 77 | 2.1% | Jev routing changes a ranker clarification into an incorrect clarification for an impossible request. |
+| tool_call predicted as cannot_answer | 125 | 3.4% | The ranker refusal remains after validity correction. |
+| request_for_info predicted as tool_call | 55 | 1.5% | The ranker or validity rule overstates actionability. |
+| cannot_answer predicted as tool_call | 86 | 2.4% | The validity rule accepts a call for a benchmark-impossible row. |
+
+4. Observed error patterns
+The ensemble is highly precise on cannot_answer and has high tool_call recall. Its largest residual is the boundary between request_for_info and tool_call. The validity rule fixes many tool-call underpredictions because answer choices expose whether a proposed tool name is present. Jev routing improves the remaining request_for_info slice but can move some impossible rows into request_for_info.
+
+5. Success patterns and controls
+The ensemble correctly classifies 1,087 cannot_answer, 750 request_for_info, and 1,233 tool_call rows. It does not make additional API calls. The correction uses a structural property of the supplied choices and tool schemas rather than a target-derived field.
+
+6. Deep triage
+The tool_call to request_for_info residual likely comes from missing-argument semantics that the current required-field name check cannot resolve. The cannot_answer to request_for_info residual comes from Jev's broader interpretation of partially relevant tools. The cannot_answer to tool_call residual shows that tool-name presence is necessary but not sufficient for benchmark actionability. Confirmation tests should compare argument completeness and tool-domain compatibility on a held-out train-derived synthetic set before changing the routing policy.
+
+7. Shared causes and interactions
+The local ranker and Jev make complementary errors. The ranker is conservative about tool calls, while Jev is more willing to call tools. The availability rule moves the ranker toward actionability, then Jev resolves only the remaining clarification uncertainty. This explains the large ensemble gain.
+
+8. Underlying root-cause synthesis
+The current performance is limited by two factors. First, tool-name validity is only a coarse compatibility check. Second, request_for_info requires semantic argument-completeness reasoning. The ensemble addresses the first factor directly and uses Jev for part of the second. Residual errors require a better schema-aware argument matcher or a calibrated Jev confidence policy.
+
+9. Proposed solutions and confirmation tests
+1. Build a schema-aware argument completeness scorer using required field names, parameter descriptions, and question spans. Evaluate it on train-derived preference pairs and then use it only as a postprocessor.
+2. Save Jev confidence and probabilities for a small permitted sample, then test whether routing only low-confidence ranker requests or high-confidence Jev calls reduces the 77 cannot-to-request errors.
+3. Keep the current ensemble as the best checkpoint and do not spend additional API budget until a routing change is validated locally.
+
+10. Limitations
+The route label was chosen from the observed error analysis, so this ensemble result is an exploratory benchmark and may be optimistic if treated as a final untouched test. No target fields were used by the inference harness. Jev API cost remains limited to the prior calls. The 9,000-pair ranker output stores predictions but not score margins.
