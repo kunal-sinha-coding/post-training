@@ -5249,3 +5249,4 @@ The 2048-token route ties longer contexts at accuracy 0.8962 and macro F1 0.8920
 Next experiment: binary Jina ranker at lr 2e-5 and max_length 1024, one epoch over all preference pairs, followed by the selected structural and Jev route.
 The 1024-token route ties all longer context routes at accuracy 0.8962 and macro F1 0.8920. Use 1024 for the selected low-cost harness.
 API accounting: the completed work made one full 3,652-row Jev pass, a 450-call three-prompt sweep, a 450-call repeatability sample, and a small number of smoke calls. Jev responses did not expose billing dollars in saved artifacts, so the exact spend cannot be reconstructed. No OpenAI calls were made.
+Final source slice: selected route accuracy is 0.9080 on Live Multiple and 0.8509 on Live Simple. Future research should target Live Simple errors.

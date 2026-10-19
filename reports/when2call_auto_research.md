@@ -41,3 +41,8 @@ The 1,024-token route also ties the best result at accuracy **0.8962** and macro
 ## API usage
 
 The work used the original 3,652-row Jev pass, a 450-call prompt sweep, a 450-call repeatability sample, and a few smoke calls. No OpenAI calls were made. Jev responses did not expose billing dollars, so the exact spend is not recoverable from local artifacts. All later gains used saved predictions and made no new API calls.
+
+
+## Source slice
+
+The selected route reaches accuracy **0.9080** on BFCL v2 Live Multiple and **0.8509** on BFCL v2 Live Simple. The simpler subset is the main residual error slice.

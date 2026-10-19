@@ -2392,3 +2392,6 @@ Use max_length 1024 for the selected low-cost route. Future local model changes 
 
 10. Limitations
 Exact row-level equality across context settings was not established, only aggregate metrics at the displayed precision.
+
+==================== ERROR ANALYSIS 2026-10-19 SOURCE SLICE ====================
+The selected 1,024-token route scores 0.90796 accuracy on BFCL v2 Live Multiple (2,901 rows) and 0.85087 on BFCL v2 Live Simple (751 rows). Jev alone scores 0.73595 and 0.76964 on these sources. The local structural route contributes most of the gain on both sources, with a larger residual gap on Live Simple. This slice suggests that future work should target the simpler subset's actionability policy rather than increase context length.
