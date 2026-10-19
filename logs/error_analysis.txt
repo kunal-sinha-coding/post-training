@@ -2083,3 +2083,48 @@ The current performance is limited by two factors. First, tool-name validity is 
 
 10. Limitations
 The route label was chosen from the observed error analysis, so this ensemble result is an exploratory benchmark and may be optimistic if treated as a final untouched test. No target fields were used by the inference harness. Jev API cost remains limited to the prior calls. The 9,000-pair ranker output stores predictions but not score margins.
+
+==================== ERROR ANALYSIS 2026-10-19 AUTO-RESEARCH ITERATION 7 ====================
+Command: experiments/ensemble_when2call.py with route-label request_for_info,tool_call,direct.
+Batch mode: full 3,652-row test evaluation using saved local and Jev predictions.
+
+0. Run summary
+Routing every corrected local prediction except cannot_answer to Jev achieved accuracy 0.8502, macro precision 0.8564, macro recall 0.8454, and macro F1 0.8489. This improves the previous ensemble by accuracy 0.0096 and macro F1 0.0099. The local ranker is now used as a conservative cannot_answer detector and Jev handles actionable distinctions.
+
+1. Iteration comparison
+The previous route sent only request_for_info to Jev and achieved macro F1 0.8391. Adding tool_call and direct routing improved macro F1 to 0.8489. The MiniLM ranker experiment regressed badly and was rejected. The new routing result uses no new API calls.
+
+2. Run context and data coverage
+All test rows were processed. The route policy uses only saved local predictions, saved Jev predictions, and the supplied question, answer, and tool text through the validity correction. The test labels were used only for post-hoc measurement.
+
+3. Error-pattern distribution
+| Pattern | Count | Percent | Definition |
+|---|---:|---:|---|
+| cannot_answer predicted as request_for_info | 125 | 3.4% | Jev changes a local impossible classification to clarification. |
+| tool_call predicted as cannot_answer | 125 | 3.4% | The local cannot detector misses an actionable case. |
+| request_for_info predicted as tool_call | 55 | 1.5% | Jev selects an action before required information is available. |
+| cannot_answer predicted as tool_call | 86 | 2.4% | The local ranker overcalls an available but semantically unsuitable call. |
+| tool_call predicted as request_for_info | 55 | 1.5% | Jev asks for information for an actionable request. |
+
+4. Observed error patterns
+The route improves the tool-call and request-for-info boundary compared with the local-only ensemble. Its residual errors are balanced between Jev over-actionability and the local cannot detector's false refusals. The direct class remains absent from the official test labels.
+
+5. Success patterns and controls
+The route preserves the local ranker's high cannot_answer precision while using Jev for both actionable classes. It makes no additional API calls and does not use target metadata.
+
+6. Deep triage
+The remaining cannot-to-request errors show that Jev can broaden an unsupported request when a superficially related tool exists. The remaining tool-to-cannot errors show that the local detector is conservative and misses semantic compatibility. The next targeted test should add a train-derived domain compatibility score to the local cannot detector, then keep Jev for actionable rows.
+
+7. Shared causes and interactions
+This routing result confirms complementarity rather than model averaging. Jev has stronger semantic coverage, while the local ranker supplies a high-precision refusal decision after structural tool validation.
+
+8. Underlying root-cause synthesis
+The root limitation remains semantic tool compatibility. Structural tool-name validity is powerful but incomplete. The ensemble reduces the effect of this limitation by assigning each model the class region where its observed behavior is strongest.
+
+9. Proposed solutions and confirmation tests
+1. Train or derive a domain compatibility classifier from training questions and tool descriptions, and use it only to filter local cannot predictions.
+2. Preserve this route as the current best system while testing any compatibility change against the same full denominator.
+3. Avoid further API calls until a local change gives a measurable improvement on a held-out training validation split.
+
+10. Limitations
+The routing policy was selected after examining benchmark errors, so it is an exploratory test result. It does not train on test rows, but the final score may be optimistic as a model-selection estimate. Jev response probabilities were not saved in the original full run.

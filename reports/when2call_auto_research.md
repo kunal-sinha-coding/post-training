@@ -21,3 +21,6 @@ Detailed iteration reports are in `logs/error_analysis.txt`. Raw model outputs a
 ## Current best ensemble
 
 The current best system applies the 9,000-pair binary ranker, corrects a `cannot_answer` prediction to `tool_call` when the provided call names an available tool, and routes residual `request_for_info` predictions to the saved Jev output. It reaches accuracy **0.8406**, macro precision **0.8633**, macro recall **0.8326**, and macro F1 **0.8391** on 3,652 rows. It makes no new API calls.
+
+
+The best route now retains only corrected local `cannot_answer` predictions and routes `request_for_info`, `tool_call`, and `direct` predictions to the saved Jev outputs. It reaches accuracy **0.8502**, macro precision **0.8564**, macro recall **0.8454**, and macro F1 **0.8489**.
