@@ -5156,3 +5156,8 @@ Discussion: Rules agree on 8,999 of 9,000 rows. The one changed label is a clari
 Commit name: Process complete When2Call inputs with MiniLM chunks.
 Description: Chunk the full token sequence, including unusually long questions, and record the full-split integrity and forward-backward smoke checks.
 Discussion: MiniLM has a 512-position limit. The first chunk design failed on a training row whose question alone exceeded that limit. The revised design splits the whole input into contiguous chunks, processes every token, then averages chunk logits for one example-level prediction and loss. This preserves token coverage but does not create cross-chunk attention. The full train and test checks passed, and the longest train and test examples passed a backward smoke check.
+
+
+Commit name: Record restarted When2Call chunked full-data run.
+Description: Record W&B run `szn6t1jk`, its full-data training and evaluation settings, the chunked input design, and the run startup state.
+Discussion: The user requested a smoke test followed by relaunch with the same settings. The full-split token check and longest-example backward check passed. The new run starts from the pretrained MiniLM base and uses a fresh classification head. W&B initialized and the process remained active when this record was written.

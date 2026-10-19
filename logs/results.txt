@@ -19481,3 +19481,15 @@ Method: Split each complete tokenized input into contiguous 510-token content ch
 Full split integrity check: maximum untruncated input length was 3,027 tokens in train and 6,940 in test. The check processed 13,426 train chunks and 8,309 test chunks. Every padded model sequence was at most 512 tokens.
 Smoke check: Used the longest train and longest test examples. The two examples produced 20 chunks and pooled logits with shape 2 by 4. Cross entropy was finite and backward propagation populated the classifier head gradient. The check passed.
 Limitations: The complete text is preserved, but chunk logits are averaged, so tokens in different chunks cannot interact through attention. This changes the input handling from the old truncation-based run and needs a fresh run for comparable metrics.
+
+
+Experiment: When2Call MiniLM continuous full-data run with complete-input chunking.
+Purpose: Train the four-class MiniLM classifier on all `train_pref/train` examples and measure train and official `test/mcq` metrics after every epoch.
+Run: W&B run ID `szn6t1jk`, URL `https://wandb.ai/kunal-personal/post-training/runs/szn6t1jk`. The process was launched on 2026-10-19 and remains active.
+Model and data: `nreimers/MiniLM-L6-H384-uncased`, all encoder and classification-head weights trainable; `nvidia/When2Call` `train_pref/train` (9,000 rows) and `test/mcq` (3,652 rows). Train labels come from the chosen-response heuristic. Test labels come from official `correct_answer`.
+Configuration: Batch size 16, AdamW learning rate 5e-5, seed 20261019, up to 1,000,000 epochs, baseline evaluation at optimizer step 0, and full train/test evaluation after every epoch. Save one rolling checkpoint after each epoch evaluation under `outputs/when2call-minilm/latest`.
+Input handling: Split the full token sequence into contiguous chunks of 510 content tokens, add special tokens within the 512-position limit, and average chunk logits per example before loss and prediction. This processes every input token but does not permit cross-chunk attention. Full-split token coverage check and longest-example backward smoke check passed before launch.
+Code: commit `2dc08aa0`, `experiments/train_when2call_minilm.py`. Console output is appended to `logs/when2call-minilm-continuous.log`. At the time of this record, W&B initialized successfully and the process was active; no new baseline metrics or optimizer steps had yet appeared in the console log.
+Environment: Workspace GPU is an NVIDIA RTX 2000 Ada Generation with 16,380 MiB reported total memory.
+Selection: No checkpoint selection rule is applied. Each completed epoch overwrites the rolling checkpoint.
+Limitations: Train labels are heuristic inferred and are not verified by train ground truth. The test benchmark comes from a different source and has nearly disjoint tool vocabulary. Chunk pooling changes input handling relative to the prior truncated run and should be accounted for when comparing metrics.
