@@ -5220,3 +5220,4 @@ The 2,000-pair multiclass response-label ranker reached accuracy 0.3779 and macr
 The all-pairs binary ranker reached accuracy 0.5531 and macro F1 0.4832. It is the best local model so far but remains below Jev. The next hypothesis is a joint binary plus class-balanced multiclass objective.
 The next code change adds a joint objective that combines multiclass response labels with the successful binary preference loss. The auxiliary weight is configurable.
 The 2,000-pair joint binary plus multiclass objective reached accuracy 0.5364 and macro F1 0.4397, slightly below binary 0.4415. It is being tested at full 9,000-pair scale before rejection.
+A postprocessing experiment switched only ranker cannot_answer predictions to tool_call when the supplied tool_call answer named an available tool. This used no target metadata. On all 3,652 test rows it switched 1,062 rows and raised accuracy to 0.7960 and macro F1 to 0.7990.
