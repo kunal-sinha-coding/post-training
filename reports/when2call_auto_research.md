@@ -33,3 +33,6 @@ A 4,096-token ranker ties the 8,192-token route at accuracy **0.8962** and macro
 
 
 The 2,048-token route also ties the longer contexts at accuracy **0.8962** and macro F1 **0.8920**. Future local trials can use 2,048 tokens.
+
+
+The 1,024-token route also ties the best result at accuracy **0.8962** and macro F1 **0.8920**. The structural postprocessor dominates the final result, so this is the preferred low-cost setting.

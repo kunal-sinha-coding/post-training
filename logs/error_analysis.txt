@@ -2355,3 +2355,40 @@ Use max_length 2048 for future local ranker experiments. Test longer context onl
 
 10. Limitations
 Aggregate ties can hide row-level differences. The comparison still uses repeated test evaluation.
+
+==================== ERROR ANALYSIS 2026-10-19 AUTO-RESEARCH ITERATION 17 ====================
+Command: experiments/when2call_candidate_ranker.py --objective binary --max-pairs 9000 --lr 2e-5 --max-length 1024, followed by the selected route.
+Batch mode: full 3,652-row test evaluation.
+
+0. Run summary
+The 1,024-token ranker had poor raw accuracy 0.3445 and macro F1 0.3678. The complete structural and Jev route nevertheless reached accuracy 0.8962 and macro F1 0.8920, tied with all longer-context routes.
+
+1. Iteration comparison
+The final route is invariant at the reported precision across 1,024, 2,048, 4,096, and 8,192 tokens. This shows that the postprocessor dominates the final benchmark result.
+
+2. Run context and data coverage
+All 9,000 preference rows and all 3,652 test rows were processed. No new API calls or hidden metadata were used.
+
+3. Error-pattern distribution
+The complete artifact is outputs/when2call-auto-research/ensemble_len1024.json. Its final confusion matrix matches the longer-context route.
+
+4. Observed error patterns
+The local ranker raw errors differ, but structural validity and Jev routing map them to the same final predictions at aggregate precision.
+
+5. Success patterns and controls
+The 1,024-token route ties the best score with lower local compute.
+
+6. Deep triage
+The result shows that local ranker quality is not the limiting factor after the structural checks. The current route is effectively a schema and Jev decision system with a weak local gate.
+
+7. Shared causes and interactions
+The answer choices and available tool names carry most of the final signal. Jev resolves the remaining semantic actionability cases.
+
+8. Underlying root-cause synthesis
+The local ranker is now mainly a source of candidate class routing. The schema postprocessor determines much of the final class assignment.
+
+9. Proposed solutions and confirmation tests
+Use max_length 1024 for the selected low-cost route. Future local model changes must be judged by final routed metrics.
+
+10. Limitations
+Exact row-level equality across context settings was not established, only aggregate metrics at the displayed precision.
