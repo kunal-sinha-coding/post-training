@@ -1,0 +1,41 @@
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: /root/.netrc
+wandb: Currently logged in as: kunalsinha1125 (kunal-personal) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: Using an existing wandb-core service via WANDB_SERVICE.
+wandb: setting up run rdbi6gty
+wandb: Tracking run with wandb version 0.30.0
+wandb: Run data is saved locally in /workspace/post-training/wandb/run-20261019_074034-rdbi6gty
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run when2call-jina-v2-small-cross-entropy-combined-max-1000000-epochs-20261019-074027
+wandb: ⭐️ View project at https://wandb.ai/kunal-personal/post-training
+wandb: 🚀 View run at https://wandb.ai/kunal-personal/post-training/runs/rdbi6gty
+Could not set the permissions on the file '/workspace/.cache/huggingface/hub/models--jinaai--jina-embeddings-v2-small-en/blobs/91f9e357cc135266f6f629781aa808d22000eeb3.incomplete'. Error: [Errno 1] Operation not permitted: '/workspace/.cache/huggingface/hub/models--jinaai--jina-embeddings-v2-small-en/blobs/91f9e357cc135266f6f629781aa808d22000eeb3.incomplete'.
+Continuing without setting permissions.
+Could not set the permissions on the file '/workspace/.cache/huggingface/hub/models--jinaai--jina-embeddings-v2-small-en/blobs/113ad77c59f4ad8749d576e5636edc3b72f7d240.incomplete'. Error: [Errno 1] Operation not permitted: '/workspace/.cache/huggingface/hub/models--jinaai--jina-embeddings-v2-small-en/blobs/113ad77c59f4ad8749d576e5636edc3b72f7d240.incomplete'.
+Continuing without setting permissions.
+Could not set the permissions on the file '/workspace/.cache/huggingface/hub/models--jinaai--jina-embeddings-v2-small-en/blobs/2a1d18a8dd28bdc3e88ce9a09da12756fba024f5.incomplete'. Error: [Errno 1] Operation not permitted: '/workspace/.cache/huggingface/hub/models--jinaai--jina-embeddings-v2-small-en/blobs/2a1d18a8dd28bdc3e88ce9a09da12756fba024f5.incomplete'.
+Continuing without setting permissions.
+Could not set the permissions on the file '/workspace/.cache/huggingface/hub/models--jinaai--jina-embeddings-v2-small-en/blobs/a8b3208c2884c4efb86e49300fdd3dc877220cdf.incomplete'. Error: [Errno 1] Operation not permitted: '/workspace/.cache/huggingface/hub/models--jinaai--jina-embeddings-v2-small-en/blobs/a8b3208c2884c4efb86e49300fdd3dc877220cdf.incomplete'.
+Continuing without setting permissions.
+Could not set the permissions on the file '/workspace/.cache/huggingface/hub/models--jinaai--jina-bert-implementation/blobs/64b6ce6fe4477c320b0ab303e2f26ae98beae1f7.incomplete'. Error: [Errno 1] Operation not permitted: '/workspace/.cache/huggingface/hub/models--jinaai--jina-bert-implementation/blobs/64b6ce6fe4477c320b0ab303e2f26ae98beae1f7.incomplete'.
+Continuing without setting permissions.
+Traceback (most recent call last):
+  File "/workspace/post-training/experiments/train_when2call_jina.py", line 456, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/workspace/post-training/experiments/train_when2call_jina.py", line 385, in main
+    encoder = AutoModel.from_pretrained(MODEL_NAME, config=config, trust_remote_code=True)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/transformers/models/auto/auto_factory.py", line 586, in from_pretrained
+    model_class = get_class_from_dynamic_module(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/transformers/dynamic_module_utils.py", line 569, in get_class_from_dynamic_module
+    final_module = get_cached_module_file(
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/transformers/dynamic_module_utils.py", line 427, in get_cached_module_file
+    shutil.copy(resolved_module_file, submodule_path / module_file)
+  File "/usr/lib/python3.12/shutil.py", line 436, in copy
+    copymode(src, dst, follow_symlinks=follow_symlinks)
+  File "/usr/lib/python3.12/shutil.py", line 317, in copymode
+    chmod_func(dst, stat.S_IMODE(st.st_mode))
+PermissionError: [Errno 1] Operation not permitted: '/workspace/.cache/huggingface/modules/transformers_modules/jinaai/jina-bert-implementation/f3ec4cf7de7e561007f27c9efc7148b0bd713f81/modeling_bert.py'
