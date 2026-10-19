@@ -2128,3 +2128,6 @@ The root limitation remains semantic tool compatibility. Structural tool-name va
 
 10. Limitations
 The routing policy was selected after examining benchmark errors, so it is an exploratory test result. It does not train on test rows, but the final score may be optimistic as a model-selection estimate. Jev response probabilities were not saved in the original full run.
+
+==================== ERROR ANALYSIS 2026-10-19 AUTO-RESEARCH ARCHITECTURE CHECK ====================
+The 22M-parameter MiniLM response-aware ranker was trained on all 9,000 preference pairs with a 512-token limit. It reached accuracy 0.2106 and macro F1 0.3068. Tool validity correction reached macro F1 0.3470, and Jev routing reached macro F1 0.3604. The short context and smaller encoder were rejected. This negative result confirms that the larger-context Jina representation is needed for this input format.

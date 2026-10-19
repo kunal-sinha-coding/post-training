@@ -5231,3 +5231,4 @@ The first MiniLM ranker attempt failed because MiniLM has a 512-token position l
 Routing ablation found that the local ranker is strongest on cannot_answer, while Jev is stronger on actionable labels. The new configurable multi-label routing harness will test routing tool_call and direct as well as request_for_info to Jev.
 The current best route retains local cannot_answer predictions and routes all other corrected classes to Jev. It reaches accuracy 0.8502 and macro F1 0.8489 without new API calls.
 The lexical overlap compatibility override was tested on local cannot predictions and did not beat the current route. The next experiment compares full binary ranker learning rate 1e-5 against the selected 2e-5 configuration.
+The MiniLM architecture comparison was a negative result and is recorded in logs/error_analysis.txt. It is not used in the current ensemble.
