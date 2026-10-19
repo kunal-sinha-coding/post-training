@@ -5246,3 +5246,4 @@ Next experiment: Jina binary ranker at lr 2e-5 with max_length 4096, one epoch o
 The 4096-token ranker route ties the 8192-token route at accuracy 0.8962 and macro F1 0.8920. Use 4096 for future experiments to reduce compute.
 Next experiment: binary Jina ranker at lr 2e-5 and max_length 2048, one epoch over all preference pairs, followed by the selected route.
 The 2048-token route ties longer contexts at accuracy 0.8962 and macro F1 0.8920. Use max_length 2048 for future local experiments.
+Next experiment: binary Jina ranker at lr 2e-5 and max_length 1024, one epoch over all preference pairs, followed by the selected structural and Jev route.
