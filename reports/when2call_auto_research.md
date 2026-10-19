@@ -30,3 +30,6 @@ The current best harness adds bidirectional tool-schema validity checks. Invalid
 
 
 A 4,096-token ranker ties the 8,192-token route at accuracy **0.8962** and macro F1 **0.8920**, so the shorter context is the preferred compute setting for future trials.
+
+
+The 2,048-token route also ties the longer contexts at accuracy **0.8962** and macro F1 **0.8920**. Future local trials can use 2,048 tokens.
