@@ -17,6 +17,19 @@ from datasets import load_dataset
 from experiments.apply_when2call_candidate_validity import candidate_tool_name, metric_values, required_fields, tool_names
 
 
+def value_tokens(value):
+    """Yield meaningful scalar tokens from nested tool arguments."""
+    # Flatten nested argument structures while ignoring placeholders.
+    if isinstance(value, dict):
+        for item in value.values():
+            yield from value_tokens(item)
+    elif isinstance(value, list):
+        for item in value:
+            yield from value_tokens(item)
+    elif isinstance(value, (str, int, float)) and str(value).lower() not in ("", "none", "null", "dontcare", "any", "default"):
+        yield from re.findall(r"[a-z0-9]+", str(value).lower())
+
+
 def main():
     """Run the configured local and Jev routing policy."""
     # Parse prediction artifacts and the one class routed to Jev.
@@ -29,6 +42,7 @@ def main():
     parser.add_argument("--invalid-tool-to-cannot", action="store_true")
     parser.add_argument("--invalid-non-tool-to-cannot", action="store_true")
     parser.add_argument("--valid-cannot-to-tool", action="store_true")
+    parser.add_argument("--argument-evidence-to-tool", action="store_true")
     args = parser.parse_args()
     route_labels = set(label.strip() for label in args.route_label.split(",") if label.strip())
     ranker = json.loads(args.ranker.read_text(encoding="utf-8"))
@@ -68,9 +82,16 @@ def main():
             question = str(row["question"]).lower()
             if required and all(re.search(r"\b" + re.escape(field) + r"\b", question) for field in required):
                 corrected = "tool_call"
+        if args.argument_evidence_to_tool and corrected == "request_for_info" and valid_call:
+            required = required_fields(schemas[name])
+            arguments = call.get("arguments", {}) if isinstance(call, dict) else {}
+            question = str(row["question"]).lower()
+            evidenced = all(any(token in question for token in value_tokens(arguments.get(field))) for field in required) if required else False
+            if evidenced:
+                corrected = "tool_call"
         predictions.append(corrected)
     targets = [row["correct_answer"] for row in rows]
-    result = {"route_label": sorted(route_labels), "invalid_tool_to_cannot": args.invalid_tool_to_cannot, "invalid_non_tool_to_cannot": args.invalid_non_tool_to_cannot, "valid_cannot_to_tool": args.valid_cannot_to_tool, "routed_rows": route_count, "metrics": metric_values(targets, predictions), "prediction_counts": dict(Counter(predictions)), "predictions": predictions, "targets": targets}
+    result = {"route_label": sorted(route_labels), "invalid_tool_to_cannot": args.invalid_tool_to_cannot, "invalid_non_tool_to_cannot": args.invalid_non_tool_to_cannot, "valid_cannot_to_tool": args.valid_cannot_to_tool, "argument_evidence_to_tool": args.argument_evidence_to_tool, "routed_rows": route_count, "metrics": metric_values(targets, predictions), "prediction_counts": dict(Counter(predictions)), "predictions": predictions, "targets": targets}
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({"routed_rows": route_count, **{key: value for key, value in result["metrics"].items() if key != "confusion_matrix"}}))
