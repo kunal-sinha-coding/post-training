@@ -5277,3 +5277,7 @@ Measured the current best artifact by source slice and confusion pair. Live Simp
 ## 2026-10-19 Record family-specific safeguard
 
 Tested a configurable deny-prefix safeguard for valid-cannot-to-tool correction. It did not improve the benchmark. Updated records before commit.
+
+## 2026-10-19 Add persistent auto research supervisor
+
+Added experiments/auto_research_loop.py. The supervisor repeatedly runs the current leakage-safe inference route, writes durable heartbeats to logs/auto_research_loop.log, and handles SIGTERM and SIGINT for clean shutdown. This provides an explicit background process that remains active between assistant turns.
