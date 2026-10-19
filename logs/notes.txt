@@ -5147,3 +5147,7 @@ Discussion: Predictions were generated from the four `answers` candidates withou
 Commit name: Record exploratory When2Call response-label heuristic analysis.
 Description: Record the response-format and text rules that matched test correct-response texts, their train split application counts, and the limits of this in-sample analysis.
 Discussion: The expanded parser handles bare JSON tool calls in addition to the train `<TOOLCALL>` wrapper. Refusal rules now run before clarification rules. All 3,652 gold-selected test responses map to their class, but rules were refined on this same test set; direct has no gold test examples, and train has no official labels. Test-only metadata also predicts labels perfectly but is absent from train_pref.
+
+Commit name: Record train label rule agreement comparison.
+Description: Compare the original action-label heuristic with the test-refined response rule on all train_pref chosen responses.
+Discussion: Rules agree on 8,999 of 9,000 rows. The one changed label is a clarification response containing explicit inability language. This measures agreement only because train_pref has no official action labels.
