@@ -12,3 +12,5 @@ __pycache__/
 # Local W&B run data.
 wandb/
 logs/when2call-minilm-continuous.log
+
+logs/when2call-jina-v2-small-continuous.log

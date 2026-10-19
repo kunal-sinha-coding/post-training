@@ -19493,3 +19493,17 @@ Code: commit `2dc08aa0`, `experiments/train_when2call_minilm.py`. Console output
 Environment: Workspace GPU is an NVIDIA RTX 2000 Ada Generation with 16,380 MiB reported total memory.
 Selection: No checkpoint selection rule is applied. Each completed epoch overwrites the rolling checkpoint.
 Limitations: Train labels are heuristic inferred and are not verified by train ground truth. The test benchmark comes from a different source and has nearly disjoint tool vocabulary. Chunk pooling changes input handling relative to the prior truncated run and should be accounted for when comparing metrics.
+
+
+Experiment closure: When2Call MiniLM chunked run, stopped for model switch.
+W&B run: `szn6t1jk`, https://wandb.ai/kunal-personal/post-training/runs/szn6t1jk. The run closed cleanly after epoch 4 at step 2,252 when the user requested switching to Jina Embeddings v2 Small.
+Completed metrics (train accuracy / macro F1; test accuracy / macro F1): baseline 0.3330 / 0.1249 and 0.3546 / 0.1745; epoch 1 0.7212 / 0.5400 and 0.4526 / 0.4393; epoch 2 0.7881 / 0.5865 and 0.5487 / 0.5442; epoch 3 0.7919 / 0.5895 and 0.4502 / 0.4284; epoch 4 0.8337 / 0.6221 and 0.5485 / 0.5463. Epoch 4 train and test evaluations took 52.89 and 31.46 seconds. The epoch 4 rolling checkpoint was saved at `outputs/when2call-minilm/latest`.
+
+Experiment preparation: When2Call Jina Embeddings v2 Small full-context classifier.
+Purpose: Replace MiniLM chunk pooling with a long-context encoder that processes each full question and tool list in one sequence.
+Data: `nvidia/When2Call` `train_pref/train` (9,000 rows) and `test/mcq` (3,652 rows). Jina tokenizer full-split check: maximum length is 3,029 tokens in train and 6,942 in test, including special tokens; no examples exceed the model's 8,192-token input limit.
+Model: `jinaai/jina-embeddings-v2-small-en`, 512 hidden size, four encoder layers, eight attention heads, with a fresh four-class linear head over attention-masked mean pooling. The encoder and head are trainable. The official model card states an 8,192-token sequence length and that it extrapolates to this length from 512-token training: https://huggingface.co/jinaai/jina-embeddings-v2-small-en.
+Memory and smoke check: Default full precision attention ran out of GPU memory on a 6,942-token backward pass. PyTorch scaled dot-product attention, bfloat16 autocast, and gradient checkpointing passed the longest test example forward and backward with finite loss and classifier-head gradients; peak allocated memory was 5.14 GiB. Effective batch size stays 16. Length-aware microbatches cap attention work for memory safety and accumulate gradients before one optimizer step.
+Planned run settings: AdamW learning rate 5e-5, seed 20261019, up to 1,000,000 epochs, baseline train/test evaluation at step 0, full train/test evaluation after every epoch, and one rolling checkpoint after each evaluation under `outputs/when2call-jina-v2-small/latest`. Run identifier and initial metrics will be added after launch.
+Code for this change: `experiments/train_when2call_jina.py`. The local console log is `logs/when2call-jina-v2-small-continuous.log`.
+Limitations: Train labels remain inferred from chosen responses, while test uses official labels. The Jina encoder is pretrained for embeddings; the classification head is newly initialized. Full context means all input tokens are jointly visible in attention, but the long sequences use model attention extrapolated from 512-token training.

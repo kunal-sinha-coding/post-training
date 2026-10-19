@@ -5161,3 +5161,8 @@ Discussion: MiniLM has a 512-position limit. The first chunk design failed on a 
 Commit name: Record restarted When2Call chunked full-data run.
 Description: Record W&B run `szn6t1jk`, its full-data training and evaluation settings, the chunked input design, and the run startup state.
 Discussion: The user requested a smoke test followed by relaunch with the same settings. The full-split token check and longest-example backward check passed. The new run starts from the pretrained MiniLM base and uses a fresh classification head. W&B initialized and the process remained active when this record was written.
+
+
+Commit name: Switch When2Call classification to Jina long context.
+Description: Replace MiniLM chunk pooling with Jina Embeddings v2 Small, full-sequence masked-mean classification, memory-aware gradient accumulation, and a model-specific checkpoint and console log path. Record the old run's final evaluations and the new model smoke check.
+Discussion: At the user's request, the MiniLM W&B run was closed after its epoch 4 evaluation. Jina's tokenizer fits all 9,000 train and 3,652 test inputs within 8,192 tokens. A full-length test example passed a backward smoke check using scaled dot-product attention, bfloat16, and gradient checkpointing. The new run will keep effective batch size 16 and evaluate the baseline and both full splits after each epoch.
