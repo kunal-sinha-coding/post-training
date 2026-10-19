@@ -5199,3 +5199,4 @@ Discussion: The existing response heuristic was applied to each row's final assi
 Commit name: Add configurable pairwise ranking objective.
 Description: Extend the Jina classifier to retain rejected-response labels, expose `--loss-function` with `cross_entropy` and `pairwise_ranking`, and save loss-specific checkpoints.
 Discussion: Pairwise ranking uses `softplus(-(chosen_class_logit - rejected_class_logit))`. Same-class preference pairs are excluded because they provide no class-ranking signal. The prior run was explicitly killed before restart as requested.
+Restart record: W&B run `v7ala5do` is active with the pairwise objective. Step-zero train accuracy and macro F1 are 0.281444 and 0.182463. Step-zero test accuracy and macro F1 are 0.314348 and 0.244239. The first optimizer step completed successfully.
