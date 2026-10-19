@@ -85,15 +85,18 @@ def main():
     parser.add_argument("--epochs", type=int, default=10)
     parser.add_argument("--lr", type=float, default=1e-2)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--pretrained", action="store_true")
     args = parser.parse_args()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     tokenizer = AutoTokenizer.from_pretrained(args.checkpoint, trust_remote_code=True)
     tokenizer.model_max_length = 8192
     encoder = AutoModel.from_pretrained("jinaai/jina-embeddings-v2-small-en", trust_remote_code=True)
-    state = torch.load(args.checkpoint / "model_state.pt", map_location="cpu")
-    model = JinaSequenceClassifier(encoder, len(LABELS))
-    model.load_state_dict(state)
-    encoder = model.encoder.to(device)
+    if not args.pretrained:
+        state = torch.load(args.checkpoint / "model_state.pt", map_location="cpu")
+        model = JinaSequenceClassifier(encoder, len(LABELS))
+        model.load_state_dict(state)
+        encoder = model.encoder
+    encoder = encoder.to(device)
     train_examples = load_train_examples(args.dataset)
     test_examples = build_test_texts(load_dataset(DATASET_NAME, "test", split="mcq"))
     train_features = embed_examples(encoder, tokenizer, train_examples, device)
@@ -113,7 +116,7 @@ def main():
             loss.backward()
             optimizer.step()
     predictions = head(test_features).argmax(dim=-1).tolist()
-    result = {"dataset": args.dataset, "epochs": args.epochs, "lr": args.lr, "metrics": metric_dict(test_targets, predictions)}
+    result = {"dataset": args.dataset, "epochs": args.epochs, "lr": args.lr, "pretrained": args.pretrained, "metrics": metric_dict(test_targets, predictions)}
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(result))
