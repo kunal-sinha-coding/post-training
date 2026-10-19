@@ -69,3 +69,7 @@ The current normalized artifact scores **0.9155** on Live Multiple and **0.8336*
 ## Iteration 24: family-specific correction safeguard
 
 A deny list for valid-cannot-to-tool correction on the main Live Simple error families did not improve the result. Accuracy remained 0.8987 and macro F1 slightly decreased. The candidate was rejected.
+
+## Iteration 25: immediate ranker comparison
+
+The weight-decay-zero 1024-token ranker and the 2048-token ranker both tied the active route at **0.8987 accuracy** and **0.8927 macro F1**. The active artifact remains unchanged.

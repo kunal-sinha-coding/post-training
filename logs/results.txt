@@ -19595,3 +19595,7 @@ The current normalized artifact scored 0.9155 on Live Multiple and 0.8336 on Liv
 ## Iteration 24 family-specific cannot correction safeguard
 
 Denying valid-cannot-to-tool correction for cmd, get, ThinQ, play, todo, and requests did not improve accuracy and slightly reduced macro F1. The candidate was rejected.
+
+## Iteration 25 immediate ranker artifact comparison
+
+The wd0 1024-token and regular 2048-token candidate rankers both tied the active route at 0.8987 accuracy and 0.8927 macro F1. The active artifact was retained.

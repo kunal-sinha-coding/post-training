@@ -2497,3 +2497,7 @@ The normalized best artifact scored 0.9155 accuracy on Live Multiple with 2656 o
 Iteration 24 family-specific cannot correction safeguard
 
 A configurable deny-prefix list was tested for the valid-cannot-to-tool correction. The tested prefixes were cmd, get, ThinQ, play, todo, and requests, based on Live Simple error counts. Accuracy stayed at 0.8987, while macro F1 decreased from 0.8927 to 0.8927 at displayed precision. The safeguard did not improve the route and was rejected.
+
+Iteration 25 immediate ranker artifact comparison
+
+To avoid an idle interval, the weight-decay-zero 1024-token ranker and the 2048-token ranker were evaluated immediately with the normalized best route. Both matched the current best at accuracy 0.8987 and macro F1 0.8927. Neither candidate replaced the active artifact.

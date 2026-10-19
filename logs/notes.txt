@@ -5293,3 +5293,7 @@ Started the auto research supervisor in a detached setsid session. It runs the l
 ## 2026-10-19 Add five-minute auto research watchdog
 
 Added experiments/watch_auto_research.py. The watchdog checks the supervisor PID every five minutes and starts a detached replacement when the supervisor is absent. Runtime watchdog logs and its PID file are ignored.
+
+## 2026-10-19 Record immediate ranker comparison
+
+Evaluated two existing ranker artifacts immediately instead of waiting for the scheduled loop interval. Both tied the current best. Updated records before commit.
