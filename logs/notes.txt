@@ -5181,3 +5181,8 @@ Discussion: W&B run `85e0lwz6` completed both baseline evaluations and began epo
 Commit name: Fix Jina checkpoint saving and clarify run name.
 Description: Save Jina checkpoint weights and configs without asking Transformers to copy remote model code, verify tokenizer and checkpoint writes, and use an explicit one-million-epoch W&B run name.
 Discussion: W&B run `85e0lwz6` completed baseline and epoch 1 evaluation but failed when custom code saving tried to chmod a copied remote Python file on the workspace mount. The failed run had no epoch checkpoint. The replacement checkpoint smoke test passed on the workspace filesystem. The user also asked why the run was called continuous; that inherited name was removed.
+
+
+Commit name: Record corrected Jina run restart.
+Description: Record replacement W&B run `a7bwo46l`, its explicit epoch-cap name, baseline metrics, and active training startup.
+Discussion: The failed run `85e0lwz6` was not resumed. The new run starts from the pretrained base with a fresh head after the checkpoint-write fix passed its smoke test.
