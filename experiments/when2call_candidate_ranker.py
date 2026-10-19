@@ -89,6 +89,7 @@ def main():
     parser.add_argument("--max-length", type=int, default=8192)
     parser.add_argument("--max-pairs", type=int, default=9000)
     parser.add_argument("--lr", type=float, default=2e-5)
+    parser.add_argument("--weight-decay", type=float, default=0.01)
     parser.add_argument("--batch-size", type=int, default=2)
     parser.add_argument("--objective", choices=("binary", "multiclass", "joint"), default="multiclass")
     parser.add_argument("--aux-weight", type=float, default=0.5)
@@ -112,7 +113,7 @@ def main():
         pairs.append(Pair(pair_text(context, rejected), 0 if args.objective == "binary" else LABEL_TO_ID[response_label(rejected)], 0))
     random.shuffle(pairs)
     pairs = pairs[: args.max_pairs * 2]
-    optimizer = torch.optim.AdamW(list(encoder.parameters()) + list(head.parameters()), lr=args.lr)
+    optimizer = torch.optim.AdamW(list(encoder.parameters()) + list(head.parameters()), lr=args.lr, weight_decay=args.weight_decay)
     encoder.train()
     head.train()
     for _ in range(args.epochs):
@@ -161,7 +162,7 @@ def main():
                     scores.append(logits[LABEL_TO_ID[choice]] + logits[-1])
             predictions.append(choices[max(range(len(scores)), key=scores.__getitem__)][0])
     targets = [row["correct_answer"] for row in test_rows]
-    result = {"epochs": args.epochs, "max_pairs": args.max_pairs, "lr": args.lr, "objective": args.objective, "encoder_model": args.encoder_model, "max_length": args.max_length, "metrics": metrics([LABEL_TO_ID[x] for x in targets], [LABEL_TO_ID[x] for x in predictions]), "predictions": predictions, "targets": targets}
+    result = {"epochs": args.epochs, "max_pairs": args.max_pairs, "lr": args.lr, "weight_decay": args.weight_decay, "objective": args.objective, "encoder_model": args.encoder_model, "max_length": args.max_length, "metrics": metrics([LABEL_TO_ID[x] for x in targets], [LABEL_TO_ID[x] for x in predictions]), "predictions": predictions, "targets": targets}
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({key: value for key, value in result.items() if key != "predictions" and key != "targets"}))
