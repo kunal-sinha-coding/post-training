@@ -24,9 +24,10 @@ def main():
     parser.add_argument("--ranker", type=Path, required=True)
     parser.add_argument("--jev", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--route-label", default="request_for_info")
+    parser.add_argument("--route-label", default="request_for_info", help="Comma-separated local labels routed to Jev.")
     parser.add_argument("--switch-complete-request", action="store_true")
     args = parser.parse_args()
+    route_labels = set(label.strip() for label in args.route_label.split(",") if label.strip())
     ranker = json.loads(args.ranker.read_text(encoding="utf-8"))
     jev_rows = [json.loads(line) for line in args.jev.read_text(encoding="utf-8").splitlines()]
     rows = load_dataset("nvidia/When2Call", "test", split="mcq")
@@ -50,12 +51,12 @@ def main():
             question = str(row["question"]).lower()
             complete = bool(required) and all(re.search(r"\b" + re.escape(field) + r"\b", question) for field in required)
         corrected = "tool_call" if valid_call and (local == "cannot_answer" or (local == "request_for_info" and complete)) else local
-        if corrected == args.route_label:
+        if corrected in route_labels:
             corrected = jev["jev"]
             route_count += 1
         predictions.append(corrected)
     targets = [row["correct_answer"] for row in rows]
-    result = {"route_label": args.route_label, "routed_rows": route_count, "metrics": metric_values(targets, predictions), "prediction_counts": dict(Counter(predictions)), "predictions": predictions, "targets": targets}
+    result = {"route_label": sorted(route_labels), "routed_rows": route_count, "metrics": metric_values(targets, predictions), "prediction_counts": dict(Counter(predictions)), "predictions": predictions, "targets": targets}
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({"routed_rows": route_count, **{key: value for key, value in result["metrics"].items() if key != "confusion_matrix"}}))
