@@ -19512,3 +19512,5 @@ Limitations: Train labels remain inferred from chosen responses, while test uses
 Experiment startup: When2Call Jina Embeddings v2 Small full-data classifier.
 W&B run: `85e0lwz6`, https://wandb.ai/kunal-personal/post-training/runs/85e0lwz6. The fresh process initialized W&B successfully and is active. The full baseline train and test evaluations are running before optimizer step 1.
 Code: commit `3f13fb36`, `experiments/train_when2call_jina.py`. Console log: `logs/when2call-jina-v2-small-continuous.log`. Checkpoint path: `outputs/when2call-jina-v2-small/latest`.
+
+Initial evaluation: W&B run `85e0lwz6`, optimizer step 0. Train accuracy 0.281444, macro precision 0.244949, macro recall 0.211201, macro F1 0.182463; evaluation took 20.898 seconds. Test accuracy 0.314348, macro precision 0.314545, macro recall 0.305717, macro F1 0.244239; evaluation took 23.832 seconds. Test macro metrics average the three classes present in the official labels. The baseline predicted classes using the fresh head before training. At the time of this result record, training had started and was progressing through epoch 1.

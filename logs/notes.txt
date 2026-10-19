@@ -5171,3 +5171,8 @@ Discussion: At the user's request, the MiniLM W&B run was closed after its epoch
 Commit name: Record Jina When2Call run startup.
 Description: Record W&B run `85e0lwz6`, its model-specific console log and checkpoint paths, and the baseline evaluation startup state.
 Discussion: The user requested a restart using Jina Embeddings v2 Small. The fresh W&B run initialized successfully. It processes complete sequences, retains effective batch size 16 through length-aware gradient accumulation, and evaluates both complete splits at step zero and after every epoch.
+
+
+Commit name: Record Jina baseline metrics.
+Description: Save the fresh Jina classifier's step-zero train and test metrics and evaluation durations in the experiment results file.
+Discussion: W&B run `85e0lwz6` completed both baseline evaluations and began epoch 1. The process remained active when this record was written.
