@@ -2485,3 +2485,7 @@ The candidate added a narrow evidence check for required argument values. It ret
 The prior strict route scored accuracy 0.8981, macro precision 0.9086, macro recall 0.8874, and macro F1 0.8922. The normalized route scored accuracy 0.8987, macro precision 0.9094, macro recall 0.8879, and macro F1 0.8927. This is a small improvement. Keep the rule, but treat the gain as provisional because the alias list is narrow and benchmark-specific.
 
 The updated error pattern remains concentrated in Live Simple. Further work should prefer schema-grounded normalization learned from training data rather than expanding aliases from test examples.
+
+Iteration 22 route-label ablation
+
+The normalized route was tested with narrower Jev routing sets. Routing request_for_info and tool_call but excluding direct reduced accuracy to 0.6684 and macro F1 to 0.7358. Routing request_for_info and direct but excluding tool_call scored accuracy 0.8916 and macro F1 0.8838. The full request_for_info, tool_call, and direct route remains best at accuracy 0.8987 and macro F1 0.8927. Keep the full route.

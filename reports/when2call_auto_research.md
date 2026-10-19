@@ -57,3 +57,7 @@ A generic whole-word action rule was tested. It switched valid request-for-info 
 ## Iteration 21: narrow value normalization
 
 The route now recognizes exact argument evidence plus ISO dates expressed as month names and a small city alias set. Accuracy is **0.8987**, macro precision **0.9094**, macro recall **0.8879**, and macro F1 **0.8927**. This is the current best result. The gain is small, so future changes should use schema-grounded normalization rather than expanding aliases from test errors.
+
+## Iteration 22: route-label ablation
+
+The full Jev route over request_for_info, tool_call, and direct remains best. Excluding direct scored 0.6684 accuracy and 0.7358 macro F1. Excluding tool_call scored 0.8916 accuracy and 0.8838 macro F1. The full route scores 0.8987 accuracy and 0.8927 macro F1.

@@ -19583,3 +19583,7 @@ The strict argument-evidence ensemble scored accuracy 0.8981 and macro F1 0.8922
 ## Iteration 21 narrow value normalization
 
 The strict argument evidence ensemble was extended with ISO date normalization and the aliases SD, LA, LAX, and NYC. Accuracy improved from 0.8981 to 0.8987. Macro F1 improved from 0.8922 to 0.8927. The updated artifact is outputs/when2call-auto-research/ensemble_best.json.
+
+## Iteration 22 route-label ablation
+
+Excluding direct from Jev routing reduced accuracy to 0.6684 and macro F1 to 0.7358. Excluding tool_call reduced accuracy to 0.8916 and macro F1 to 0.8838. The full route remains best at 0.8987 accuracy and 0.8927 macro F1.

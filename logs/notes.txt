@@ -5265,3 +5265,7 @@ Added a configurable explicit-action-to-tool rule to the inference ensemble and 
 ## 2026-10-19 Record narrow value normalization
 
 Added a configurable narrow value normalization rule for dates and common city abbreviations. The full route was re-evaluated and the artifact was updated because it improved accuracy and macro F1. Updated experiment records before commit.
+
+## 2026-10-19 Record route-label ablation
+
+Tested narrower Jev routing sets against the normalized route. The full three-label route remains best. Updated the experiment records before commit.
