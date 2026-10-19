@@ -5234,3 +5234,4 @@ The lexical overlap compatibility override was tested on local cannot prediction
 The MiniLM architecture comparison was a negative result and is recorded in logs/error_analysis.txt. It is not used in the current ensemble.
 The lr 1e-5 ranker has higher raw F1 but lower routed F1 (0.8133). The lr 2e-5 ranker plus validity correction and Jev routing remains selected at macro F1 0.8489.
 Next hyperparameter experiment: full binary Jina ranker at lr 3e-5, selected by routed macro F1 rather than raw ranker metrics.
+The lr 3e-5 ranker has the best raw metrics but routed macro F1 0.8005. Keep lr 2e-5 for the selected route at macro F1 0.8489.

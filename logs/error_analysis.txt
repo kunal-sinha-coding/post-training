@@ -2168,3 +2168,40 @@ Keep the 2e-5 route. Future changes must be evaluated through the complete harne
 
 10. Limitations
 The comparison uses the same test benchmark for iterative selection. No new API calls were made.
+
+==================== ERROR ANALYSIS 2026-10-19 AUTO-RESEARCH ITERATION 9 ====================
+Command: experiments/when2call_candidate_ranker.py --objective binary --max-pairs 9000 --lr 3e-5, followed by validity correction and Jev routing.
+Batch mode: full 3,652-row test evaluation.
+
+0. Run summary
+The 3e-5 ranker reached raw accuracy 0.6418 and raw macro F1 0.6412, the best standalone ranker result. Its routed ensemble reached accuracy 0.7998 and macro F1 0.8005, below the selected 2e-5 route at macro F1 0.8489.
+
+1. Iteration comparison
+The higher learning rate improved raw classification but changed the local class regions in a way that made the specialized route ineffective. This is another controlled example where raw ranker metrics do not predict routed quality.
+
+2. Run context and data coverage
+The run used all 9,000 preference rows and all 3,652 test rows. No new API calls or target metadata were used.
+
+3. Error-pattern distribution
+The complete postprocessed predictions are in outputs/when2call-auto-research/ensemble_lr3e5.json. The routed run sent 2,945 rows to Jev and lost macro F1 relative to 2e-5.
+
+4. Observed error patterns
+The ranker became more decisive, but the structural correction switched fewer rows and the route transferred a different class mix to Jev. The resulting complementarity was weaker.
+
+5. Success patterns and controls
+The raw ranker objective itself benefited from 3e-5. The full-harness comparison rejects it for the current system.
+
+6. Deep triage
+The most likely cause is calibration shift. The route depends on a conservative local cannot_answer region. The higher-rate model changes that region and invalidates the previous handoff boundary.
+
+7. Shared causes and interactions
+The result again shows that model selection must use the complete inference harness.
+
+8. Underlying root-cause synthesis
+The route is a mixture-of-experts policy with a learned gate defined by local class output. Learning rate changes both expert quality and gate behavior.
+
+9. Proposed solutions and confirmation tests
+Keep 2e-5. If further optimization is attempted, calibrate the gate on a held-out train-derived set rather than changing the ranker without recalibrating routing.
+
+10. Limitations
+The comparison is exploratory and uses repeated test evaluation for research selection. No test labels are used in the inference scripts.
