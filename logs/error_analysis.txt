@@ -2395,3 +2395,40 @@ Exact row-level equality across context settings was not established, only aggre
 
 ==================== ERROR ANALYSIS 2026-10-19 SOURCE SLICE ====================
 The selected 1,024-token route scores 0.90796 accuracy on BFCL v2 Live Multiple (2,901 rows) and 0.85087 on BFCL v2 Live Simple (751 rows). Jev alone scores 0.73595 and 0.76964 on these sources. The local structural route contributes most of the gain on both sources, with a larger residual gap on Live Simple. This slice suggests that future work should target the simpler subset's actionability policy rather than increase context length.
+
+==================== ERROR ANALYSIS 2026-10-19 AUTO-RESEARCH ITERATION 18 ====================
+Command: experiments/when2call_candidate_ranker.py --objective binary --max-pairs 9000 --lr 2e-5 --max-length 1024 --weight-decay 0, followed by the selected route.
+Batch mode: full 3,652-row test evaluation.
+
+0. Run summary
+The zero-weight-decay ranker had raw accuracy 0.3686 and raw macro F1 0.3900. The complete route still reached accuracy 0.8962 and macro F1 0.8920, matching the regularized route.
+
+1. Iteration comparison
+The raw local model regressed sharply, but the structural and Jev route remained unchanged at aggregate precision. This confirms that the final benchmark score is dominated by answer and tool validity checks.
+
+2. Run context and data coverage
+All 9,000 preference rows and all 3,652 test rows were processed. No new API calls or hidden metadata were used.
+
+3. Error-pattern distribution
+The complete artifact is outputs/when2call-auto-research/ensemble_len1024_wd0.json. Its aggregate confusion matrix matches the selected route.
+
+4. Observed error patterns
+The local raw class distribution changed, but structural validity and Jev routing mapped it to the same final predictions at the displayed precision.
+
+5. Success patterns and controls
+The regularized 1,024-token configuration remains the safer reference, although both routes tie on this benchmark.
+
+6. Deep triage
+The result rules out local weight decay as a major factor in the current final score. It also warns that raw ranker metrics are not a sufficient selection signal.
+
+7. Shared causes and interactions
+Answer-choice and schema checks dominate the final output.
+
+8. Underlying root-cause synthesis
+The current benchmark is solved mostly by structural answer and tool relationships, with Jev handling semantic ambiguity.
+
+9. Proposed solutions and confirmation tests
+Keep the regularized route. Future local changes must be justified by final route metrics and by improvements on the Live Simple slice.
+
+10. Limitations
+Aggregate equality does not imply identical per-row predictions.
