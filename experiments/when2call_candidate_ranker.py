@@ -85,6 +85,7 @@ def main():
     # Parse the run controls and initialize the base Jina encoder.
     parser = argparse.ArgumentParser()
     parser.add_argument("--epochs", type=int, default=1)
+    parser.add_argument("--encoder-model", default="jinaai/jina-embeddings-v2-small-en")
     parser.add_argument("--max-pairs", type=int, default=9000)
     parser.add_argument("--lr", type=float, default=2e-5)
     parser.add_argument("--batch-size", type=int, default=2)
@@ -95,9 +96,9 @@ def main():
     random.seed(20261019)
     torch.manual_seed(20261019)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    tokenizer = AutoTokenizer.from_pretrained("jinaai/jina-embeddings-v2-small-en", trust_remote_code=True)
+    tokenizer = AutoTokenizer.from_pretrained(args.encoder_model, trust_remote_code=True)
     tokenizer.model_max_length = 8192
-    encoder = AutoModel.from_pretrained("jinaai/jina-embeddings-v2-small-en", trust_remote_code=True).to(device)
+    encoder = AutoModel.from_pretrained(args.encoder_model, trust_remote_code=True).to(device)
     head_size = 1 if args.objective == "binary" else len(LABELS) if args.objective == "multiclass" else len(LABELS) + 1
     head = torch.nn.Linear(encoder.config.hidden_size, head_size).to(device)
     rows = load_dataset(DATASET_NAME, "train_pref", split="train")
@@ -159,7 +160,7 @@ def main():
                     scores.append(logits[LABEL_TO_ID[choice]] + logits[-1])
             predictions.append(choices[max(range(len(scores)), key=scores.__getitem__)][0])
     targets = [row["correct_answer"] for row in test_rows]
-    result = {"epochs": args.epochs, "max_pairs": args.max_pairs, "lr": args.lr, "objective": args.objective, "metrics": metrics([LABEL_TO_ID[x] for x in targets], [LABEL_TO_ID[x] for x in predictions]), "predictions": predictions, "targets": targets}
+    result = {"epochs": args.epochs, "max_pairs": args.max_pairs, "lr": args.lr, "objective": args.objective, "encoder_model": args.encoder_model, "metrics": metrics([LABEL_TO_ID[x] for x in targets], [LABEL_TO_ID[x] for x in predictions]), "predictions": predictions, "targets": targets}
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({key: value for key, value in result.items() if key != "predictions" and key != "targets"}))
