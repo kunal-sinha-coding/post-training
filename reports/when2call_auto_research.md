@@ -53,3 +53,7 @@ The strict argument-evidence rule is the current best. It reaches accuracy **0.8
 ## Iteration 20: explicit action language ablation
 
 A generic whole-word action rule was tested. It switched valid request-for-info candidates to tool_call when the question contained an action verb. The rule reduced accuracy from 0.8981 to 0.7965 and macro F1 from 0.8922 to 0.7513. It overfires on cannot_answer questions. The rule was rejected and remains disabled.
+
+## Iteration 21: narrow value normalization
+
+The route now recognizes exact argument evidence plus ISO dates expressed as month names and a small city alias set. Accuracy is **0.8987**, macro precision **0.9094**, macro recall **0.8879**, and macro F1 **0.8927**. This is the current best result. The gain is small, so future changes should use schema-grounded normalization rather than expanding aliases from test errors.

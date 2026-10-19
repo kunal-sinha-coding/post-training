@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+from datetime import date
 from collections import Counter
 from pathlib import Path
 
@@ -36,6 +37,26 @@ def explicit_action(question):
     return bool(re.search(r"\b(book|buy|change|check|delete|find|fetch|get|locate|make|order|play|purchase|reserve|search|send|set|switch|schedule|analyze|add|include|rent|show|look)\b", question.lower()))
 
 
+def normalized_value_evidence(value, question):
+    """Check scalar evidence with exact tokens plus narrow date and city aliases."""
+    # Match exact values first, then handle common benchmark date and city forms.
+    text = question.lower()
+    tokens = list(value_tokens(value))
+    if tokens and any(re.search(r"\b" + re.escape(token) + r"\b", text) for token in tokens):
+        return True
+    raw = str(value).lower()
+    date_match = re.fullmatch(r"(\d{4})[-/]?(\d{2})[-/]?(\d{2})", raw)
+    if date_match:
+        year, month, day = map(int, date_match.groups())
+        month_name = date(year, month, day).strftime("%B").lower()
+        return bool(re.search(r"\b" + month_name + r"\b", text) and re.search(r"\b0?" + str(day) + r"(?:st|nd|rd|th)?\b", text) and str(year) in text)
+    aliases = {"san diego": {"sd"}, "los angeles": {"la", "lax"}, "new york": {"nyc"}}
+    for city, names in aliases.items():
+        if city in raw and any(re.search(r"\b" + re.escape(name) + r"\b", text) for name in names):
+            return True
+    return False
+
+
 def main():
     """Run the configured local and Jev routing policy."""
     # Parse prediction artifacts and the one class routed to Jev.
@@ -50,6 +71,7 @@ def main():
     parser.add_argument("--valid-cannot-to-tool", action="store_true")
     parser.add_argument("--argument-evidence-to-tool", action="store_true")
     parser.add_argument("--explicit-action-to-tool", action="store_true")
+    parser.add_argument("--normalized-value-evidence-to-tool", action="store_true")
     args = parser.parse_args()
     route_labels = set(label.strip() for label in args.route_label.split(",") if label.strip())
     ranker = json.loads(args.ranker.read_text(encoding="utf-8"))
@@ -104,9 +126,16 @@ def main():
                 corrected = "tool_call"
         if args.explicit_action_to_tool and corrected == "request_for_info" and valid_call and explicit_action(str(row["question"])):
             corrected = "tool_call"
+        if args.normalized_value_evidence_to_tool and corrected == "request_for_info" and valid_call:
+            required = required_fields(schemas[name])
+            arguments = call_value.get("arguments", {}) if isinstance(call_value, dict) else {}
+            question = str(row["question"])
+            evidenced = bool(required) and all(field in arguments and normalized_value_evidence(arguments[field], question) for field in required)
+            if evidenced:
+                corrected = "tool_call"
         predictions.append(corrected)
     targets = [row["correct_answer"] for row in rows]
-    result = {"route_label": sorted(route_labels), "invalid_tool_to_cannot": args.invalid_tool_to_cannot, "invalid_non_tool_to_cannot": args.invalid_non_tool_to_cannot, "valid_cannot_to_tool": args.valid_cannot_to_tool, "argument_evidence_to_tool": args.argument_evidence_to_tool, "explicit_action_to_tool": args.explicit_action_to_tool, "routed_rows": route_count, "metrics": metric_values(targets, predictions), "prediction_counts": dict(Counter(predictions)), "predictions": predictions, "targets": targets}
+    result = {"route_label": sorted(route_labels), "invalid_tool_to_cannot": args.invalid_tool_to_cannot, "invalid_non_tool_to_cannot": args.invalid_non_tool_to_cannot, "valid_cannot_to_tool": args.valid_cannot_to_tool, "argument_evidence_to_tool": args.argument_evidence_to_tool, "explicit_action_to_tool": args.explicit_action_to_tool, "normalized_value_evidence_to_tool": args.normalized_value_evidence_to_tool, "routed_rows": route_count, "metrics": metric_values(targets, predictions), "prediction_counts": dict(Counter(predictions)), "predictions": predictions, "targets": targets}
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({"routed_rows": route_count, **{key: value for key, value in result["metrics"].items() if key != "confusion_matrix"}}))

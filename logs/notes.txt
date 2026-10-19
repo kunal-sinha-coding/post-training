@@ -5261,3 +5261,7 @@ Current best route is ensemble_best.json with accuracy 0.8981 and macro F1 0.892
 ## 2026-10-19 Record explicit action ablation
 
 Added a configurable explicit-action-to-tool rule to the inference ensemble and tested it against the current strict argument-evidence route. The rule used only question text and candidate tool validity. It reduced accuracy and macro F1, so it remains disabled. Updated the required error analysis and results records.
+
+## 2026-10-19 Record narrow value normalization
+
+Added a configurable narrow value normalization rule for dates and common city abbreviations. The full route was re-evaluated and the artifact was updated because it improved accuracy and macro F1. Updated experiment records before commit.

@@ -19579,3 +19579,7 @@ Auto-research iteration 19 corrected: Strict argument evidence with short-token 
 ## Iteration 20 explicit action language ablation
 
 The strict argument-evidence ensemble scored accuracy 0.8981 and macro F1 0.8922. A generic whole-word action rule reduced accuracy to 0.7965 and macro F1 to 0.7513. The candidate was rejected.
+
+## Iteration 21 narrow value normalization
+
+The strict argument evidence ensemble was extended with ISO date normalization and the aliases SD, LA, LAX, and NYC. Accuracy improved from 0.8981 to 0.8987. Macro F1 improved from 0.8922 to 0.8927. The updated artifact is outputs/when2call-auto-research/ensemble_best.json.

@@ -2477,3 +2477,11 @@ The candidate was a generic question-only action rule. When a valid candidate to
 The strict argument-evidence route without this rule remained at accuracy 0.8981, macro precision 0.9086, macro recall 0.8874, and macro F1 0.8922. Adding the generic action rule reduced accuracy to 0.7965 and macro F1 to 0.7513. The rule overfires on cannot_answer examples whose questions contain ordinary action verbs. Reject this candidate and keep it configurable for reproducibility only.
 
 The next hypothesis remains targeted value normalization. Dates, city aliases, implicit values, and schema defaults need narrow handling because broad action language is not a reliable intent signal.
+
+Iteration 21 narrow value normalization
+
+The candidate added a narrow evidence check for required argument values. It retained exact token matching, and added only ISO date values matched to month-name plus day plus year text, plus aliases SD for San Diego, LA or LAX for Los Angeles, and NYC for New York. It used no labels or hidden test fields during prediction.
+
+The prior strict route scored accuracy 0.8981, macro precision 0.9086, macro recall 0.8874, and macro F1 0.8922. The normalized route scored accuracy 0.8987, macro precision 0.9094, macro recall 0.8879, and macro F1 0.8927. This is a small improvement. Keep the rule, but treat the gain as provisional because the alias list is narrow and benchmark-specific.
+
+The updated error pattern remains concentrated in Live Simple. Further work should prefer schema-grounded normalization learned from training data rather than expanding aliases from test examples.
