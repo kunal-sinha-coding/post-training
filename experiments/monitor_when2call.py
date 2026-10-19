@@ -86,15 +86,19 @@ def main() -> int:
     parser.add_argument("--next-log", required=True)
     parser.add_argument("--poll-seconds", type=int, default=30)
     parser.add_argument("--patience", type=int, default=3)
+    parser.add_argument("--no-restart", action="store_true")
     args = parser.parse_args()
     api = wandb.Api()
     stopped, _ = monitor_run(api, f"{args.project}/{args.run_id}", args.pid, args.patience, args.poll_seconds)
-    if not stopped:
+    if not stopped or args.no_restart:
         return 0
     command = ["python", "-u", "experiments/train_when2call_jina.py", "--loss-function", "cross_entropy", "--dataset", "combined"]
     log_path = Path(args.next_log)
     with log_path.open("a", encoding="utf-8") as log_file:
-        process = subprocess.Popen(command, cwd=Path(__file__).resolve().parents[1], stdout=log_file, stderr=subprocess.STDOUT, env=os.environ.copy())
+        child_environment = os.environ.copy()
+        child_environment.setdefault("HF_HOME", "/tmp/jina_hf_cache_pairwise")
+        child_environment.setdefault("HF_MODULES_CACHE", "/tmp/jina_modules_cache_pairwise")
+        process = subprocess.Popen(command, cwd=Path(__file__).resolve().parents[1], stdout=log_file, stderr=subprocess.STDOUT, env=child_environment)
     next_run_id = wait_for_run_id(Path(args.next_run_id_file))
     monitor_run(api, f"{args.project}/{next_run_id}", process.pid, args.patience, args.poll_seconds)
     return 0
