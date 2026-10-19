@@ -1992,3 +1992,49 @@ The main upstream mechanism is incomplete modeling of tool compatibility. It exp
 
 10. Limitations
 Jev API cost metadata was not returned in the saved full comparison, so exact dollars cannot be reconstructed from local files. The prompt sweep consumed 450 calls and the repeatability check consumed 450 calls. The local ranker was trained on only 500 preference pairs. Test labels were used for reporting and error analysis, not for training or model selection. The benchmark contains near-duplicate semantic cases, so ordinary task semantics may not uniquely determine the official label.
+
+==================== ERROR ANALYSIS 2026-10-19 AUTO-RESEARCH ITERATION 2 ====================
+Command: experiments/when2call_candidate_ranker.py --objective binary --max-pairs 9000 --epochs 1 --batch-size 2 --lr 2e-5.
+Batch mode: all 9,000 train_pref rows expanded to chosen and rejected pairs; full 3,652-row test evaluation.
+
+0. Run summary
+The all-pairs binary response-aware ranker reached accuracy 0.5531 and macro F1 0.4832. It improved over the 2,000-pair binary ranker by 0.0227 accuracy and 0.0417 macro F1. It remains below the Jev baseline at 0.7429 accuracy. The dominant residual is tool_call underprediction: 887 official tool_call rows became cannot_answer and 335 became request_for_info.
+
+1. Iteration comparison
+The full-pair run improved accuracy and macro F1 over the 2,000-pair run. cannot_answer and request_for_info recognition remained strong. tool_call predictions increased from 15 to 71, but tool_call recall remained low. This supports the hypothesis that more pair coverage helps calibration, but binary chosen-versus-rejected training still does not represent the four-way candidate decision.
+
+2. Run context and data coverage
+The run used all 9,000 train_pref rows, without test labels or answer metadata during training. Each preference row produced one chosen and one rejected question-response pair. Evaluation covered all 3,652 MCQ test rows and scored the four supplied answer candidates one at a time.
+
+3. Error-pattern distribution
+| Primary pattern | Count | Percent | Definition |
+|---|---:|---:|---|
+| tool_call predicted as cannot_answer | 887 | 24.3% | The model selected a refusal-like candidate over the correct tool call. |
+| tool_call predicted as request_for_info | 335 | 9.2% | The model selected a clarification candidate over an actionable call. |
+| cannot_answer predicted as request_for_info | 204 | 5.6% | The model treated an impossible request as potentially clarifiable. |
+| request_for_info predicted as cannot_answer | 108 | 3.0% | The model treated missing information as impossible. |
+| cannot_answer predicted as tool_call | 86 | 2.4% | The model selected an unsupported call. |
+| request_for_info predicted as tool_call | 6 | 0.2% | The model selected a call before required information was supplied. |
+
+4. Observed error patterns
+The ranker now separates non-tool classes better than the 500-pair and 2,000-pair versions. Its remaining error is asymmetric. It generally sees a tool-call candidate as less preferable than refusal or clarification, even when the official class is tool_call. This likely reflects the chosen and rejected response distribution and the fact that candidate selection is not the same as binary response quality.
+
+5. Success patterns and controls
+The model selected 1,002 cannot_answer rows and 947 request_for_info rows correctly. The full-pair improvement over 2,000 pairs confirms that data quantity was a real factor. The remaining tool_call deficit rules out data quantity as the only issue.
+
+6. Deep triage
+The tool_call underprediction is supported by 1,222 tool_call failures versus only 71 correct tool_call predictions. A likely cause is that preference training presents tool calls as chosen responses but does not provide a class-aware score for each answer option. Another likely cause is class imbalance in inferred response labels and the semantic difference between a preferred response and the benchmark's selected option. A targeted confirmation is a calibrated four-class head trained jointly with the pairwise loss, with class-balanced sampling and a held-out train split. The multiclass-only attempt regressed, so the next test should retain the binary ranking loss and add the multiclass term rather than replace it.
+
+7. Shared causes and interactions
+The ranker is now strong on refusal and clarification distinctions but weak on actionability. The binary loss creates a ranking direction but not a calibrated class boundary. This explains why added data improves macro F1 without restoring tool_call recall.
+
+8. Underlying root-cause synthesis
+The primary root cause is objective mismatch. A chosen response can be preferred for many reasons, while the test task requires selecting one of four answer labels. The secondary cause is response-label noise from heuristic training labels. Together they explain the strong non-tool performance and persistent tool-call failures.
+
+9. Proposed solutions and confirmation tests
+1. Add a weighted multiclass auxiliary loss to the binary objective. Train on all preference pairs and evaluate per-class recall. The confirmation target is tool_call recall substantially above 0.055 without losing the current cannot_answer and request_for_info scores.
+2. Calibrate candidate scores on a held-out preference split. Select a temperature or class bias only from training data, then run one full test evaluation.
+3. Test a MiniLM response-aware ranker for a faster architecture comparison. Use the same pairs and objective so the comparison isolates model capacity.
+
+10. Limitations
+The ranker uses heuristic labels for response classes and no official train labels exist for the preference split. Full test labels are used only for measurement. The run does not log per-example margins, so score calibration errors cannot yet be separated from representation errors.
