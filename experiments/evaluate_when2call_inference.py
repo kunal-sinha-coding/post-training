@@ -123,12 +123,18 @@ def main() -> int:
         jev_labels = list(executor.map(lambda state: jev_choice(state, api_key), states))
     jina_labels = all_votes[0]
     disagreements = []
+    predictions = []
     for index, (jina_label, jev_label, target) in enumerate(zip(jina_labels, jev_labels, targets, strict=True)):
-        if jina_label != LABEL_TO_ID[jev_label]:
-            disagreements.append({"row_index": index, "jina": LABELS[jina_label], "jev": jev_label, "correct": LABELS[target], "state": states[index]})
+        row = {"row_index": index, "jina": LABELS[jina_label], "jev": jev_label, "correct": LABELS[target], "agreement": jina_label == LABEL_TO_ID[jev_label], "state": states[index]}
+        predictions.append(row)
+        if not row["agreement"]:
+            disagreements.append(row)
     consensus = [jev_label if jina_label != LABEL_TO_ID[jev_label] else LABELS[jina_label] for jina_label, jev_label in zip(jina_labels, jev_labels, strict=True)]
     report = {"jina_jev_disagreements": len(disagreements), "jina_jev_agreements": len(targets) - len(disagreements), "jina_accuracy": sum(pred == target for pred, target in zip(jina_labels, targets, strict=True)) / len(targets), "jev_accuracy": sum(LABEL_TO_ID[pred] == target for pred, target in zip(jev_labels, targets, strict=True)) / len(targets), "consensus_accuracy": sum(LABEL_TO_ID[pred] == target for pred, target in zip(consensus, targets, strict=True)) / len(targets)}
     (args.output_dir / "jev_comparison.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    with (args.output_dir / "predictions.jsonl").open("w", encoding="utf-8") as handle:
+        for row in predictions:
+            handle.write(json.dumps(row, ensure_ascii=False) + "\n")
     with (args.output_dir / "disagreements.jsonl").open("w", encoding="utf-8") as handle:
         for row in disagreements:
             handle.write(json.dumps(row, ensure_ascii=False) + "\n")
