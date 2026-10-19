@@ -15,3 +15,6 @@ logs/when2call-minilm-continuous.log
 
 logs/when2call-jina-v2-small-continuous.log
 logs/when2call-jina-v2-small.log
+logs/auto_research_loop.log
+logs/auto_research_supervisor.out
+logs/auto_research_loop.pid

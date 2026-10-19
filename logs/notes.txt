@@ -5285,3 +5285,7 @@ Added experiments/auto_research_loop.py. The supervisor repeatedly runs the curr
 ## 2026-10-19 Fix supervisor module invocation
 
 The first background launch found that direct script execution did not expose the experiments package. Changed the supervisor to invoke the ensemble module with python -m and restarted it.
+
+## 2026-10-19 Launch detached supervisor
+
+Started the auto research supervisor in a detached setsid session. It runs the leakage-safe ensemble evaluation, waits 900 seconds, and repeats. Runtime logs and the PID file are ignored because they are generated process state.
