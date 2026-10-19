@@ -120,18 +120,38 @@ def tools_text(tools: list[str]) -> str:
     return "\n".join(tools) if tools else "No tools are available."
 
 
-def prepare_train_examples(rows: Any) -> list[Example]:
-    """Build inputs and inferred action labels from the train_pref chosen responses."""
-    # Convert each user query, tool list, and preferred response into one classification record.
+def prepare_train_examples(rows: Any, source_offset: int = 0) -> list[Example]:
+    """Build inputs and inferred action labels from one supported training split."""
+    # Convert each query, tool list, and available assistant response into one classification record.
     examples = []
     for index, row in enumerate(rows):
         messages = row["messages"]
         user_text = "\n".join(message["content"] for message in messages if message["role"] == "user")
-        response = row["chosen_response"]["content"]
+        if "chosen_response" in row:
+            response = row["chosen_response"]["content"]
+            rejected_label = LABEL_TO_ID[infer_action_label(row["rejected_response"]["content"])]
+        else:
+            assistant_messages = [message for message in messages if message["role"] == "assistant"]
+            if not assistant_messages:
+                raise ValueError(f"Training row {index} has no assistant response.")
+            response = assistant_messages[-1]["content"]
+            rejected_label = None
         action = infer_action_label(response)
-        rejected_action = infer_action_label(row["rejected_response"]["content"])
-        examples.append(Example(f"Question: {user_text}\nAvailable tools:\n{tools_text(row['tools'])}", LABEL_TO_ID[action], str(index), LABEL_TO_ID[rejected_action]))
+        examples.append(Example(f"Question: {user_text}\nAvailable tools:\n{tools_text(row['tools'])}", LABEL_TO_ID[action], str(source_offset + index), rejected_label))
     return examples
+
+
+def load_train_examples(dataset_choice: str) -> list[Example]:
+    """Load the selected preference, SFT, or combined training data."""
+    # Keep split loading explicit so W&B records the exact data composition.
+    if dataset_choice == "train_pref":
+        return prepare_train_examples(load_dataset(DATASET_NAME, "train_pref", split="train"))
+    if dataset_choice == "train_sft":
+        return prepare_train_examples(load_dataset(DATASET_NAME, "train_sft", split="train"))
+    pref_rows = load_dataset(DATASET_NAME, "train_pref", split="train")
+    sft_rows = load_dataset(DATASET_NAME, "train_sft", split="train")
+    pref_examples = prepare_train_examples(pref_rows)
+    return pref_examples + prepare_train_examples(sft_rows, source_offset=len(pref_examples))
 
 
 def prepare_test_examples(rows: Any) -> list[Example]:
@@ -320,9 +340,12 @@ def main() -> int:
     # Select the training objective from a configurable command-line hyperparameter.
     parser = argparse.ArgumentParser()
     parser.add_argument("--loss-function", choices=("cross_entropy", "pairwise_ranking"), default="cross_entropy")
-    loss_function = parser.parse_args().loss_function
+    parser.add_argument("--dataset", choices=("train_pref", "train_sft", "combined"), default="train_pref")
+    arguments = parser.parse_args()
+    loss_function = arguments.loss_function
+    dataset_choice = arguments.dataset
     loss_slug = loss_function.replace("_", "-")
-    checkpoint_dir = OUTPUT_DIR / loss_slug / "latest"
+    checkpoint_dir = OUTPUT_DIR / loss_slug / dataset_choice / "latest"
     # Load local secrets and make all random choices repeatable.
     load_dotenv(".env")
     signal.signal(signal.SIGINT, request_graceful_stop)
@@ -330,10 +353,9 @@ def main() -> int:
     torch.manual_seed(SEED)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(SEED)
-    # Load the chosen-response preference split and the requested MCQ test split.
-    train_rows = load_dataset(DATASET_NAME, "train_pref", split="train")
+    # Load the selected training composition and the requested MCQ test split.
     test_rows = load_dataset(DATASET_NAME, "test", split="mcq")
-    train_examples = prepare_train_examples(train_rows)
+    train_examples = load_train_examples(dataset_choice)
     test_examples = prepare_test_examples(test_rows)
     train_counts = Counter(LABELS[item.label] for item in train_examples)
     test_counts = Counter(LABELS[item.label] for item in test_examples)
@@ -344,7 +366,10 @@ def main() -> int:
         raise RuntimeError("WANDB_API_KEY is missing from .env or the environment.")
     wandb.login(key=api_key, relogin=False)
     steps_per_epoch = (len(train_examples) + BATCH_SIZE - 1) // BATCH_SIZE
-    run = wandb.init(project="post-training", name=f"when2call-jina-v2-small-{loss_slug}-max-{EPOCHS}-epochs-{datetime.now(timezone.utc):%Y%m%d-%H%M%S}", config={"model": MODEL_NAME, "dataset": DATASET_NAME, "train_config": "train_pref/train", "eval_config": "test/mcq", "train_rows": len(train_examples), "test_rows": len(test_examples), "train_label_counts_inferred_from_chosen_response": dict(train_counts), "test_label_counts_official": dict(test_counts), "train_labels_inferred_from_response": True, "rejected_response_used_for_training": True, "loss_function": loss_function, "pairwise_loss": "softplus(-(chosen_class_logit - rejected_class_logit))" if loss_function == "pairwise_ranking" else None, "informative_preference_pairs": sum(item.rejected_label != item.label for item in train_examples), "effective_batch_size": BATCH_SIZE, "epochs": EPOCHS, "steps_per_epoch": steps_per_epoch, "total_optimizer_steps": EPOCHS * steps_per_epoch, "evaluation_policy": "Baseline at step 0 and full train and test evaluation after every epoch under shared metric keys.", "learning_rate": LEARNING_RATE, "max_sequence_length": MAX_LENGTH, "input_handling": "Process each complete input in one sequence; use length-aware microbatches and gradient accumulation to preserve effective batch size.", "attention_implementation": "PyTorch scaled dot-product attention with bfloat16 and gradient checkpointing.", "max_batch_attention_values": MAX_BATCH_ATTENTION_VALUES, "seed": SEED, "checkpoint_policy": "Save a separate rolling checkpoint for each loss function after each epoch evaluation."})
+    informative_pairs = sum(item.rejected_label is not None and item.rejected_label != item.label for item in train_examples)
+    run = wandb.init(project="post-training", name=f"when2call-jina-v2-small-{loss_slug}-{dataset_choice}-max-{EPOCHS}-epochs-{datetime.now(timezone.utc):%Y%m%d-%H%M%S}", config={"model": MODEL_NAME, "dataset": DATASET_NAME, "dataset_choice": dataset_choice, "train_config": dataset_choice + "/train" if dataset_choice != "combined" else "train_pref/train + train_sft/train", "eval_config": "test/mcq", "train_rows": len(train_examples), "test_rows": len(test_examples), "train_label_counts_inferred_from_response": dict(train_counts), "test_label_counts_official": dict(test_counts), "train_labels_inferred_from_response": True, "rejected_response_used_for_training": informative_pairs > 0, "loss_function": loss_function, "pairwise_loss": "softplus(-(chosen_class_logit - rejected_class_logit))" if loss_function == "pairwise_ranking" else None, "informative_preference_pairs": informative_pairs, "effective_batch_size": BATCH_SIZE, "epochs": EPOCHS, "steps_per_epoch": steps_per_epoch, "total_optimizer_steps": EPOCHS * steps_per_epoch, "evaluation_policy": "Baseline at step 0 and full train and test evaluation after every epoch under shared metric keys.", "learning_rate": LEARNING_RATE, "max_sequence_length": MAX_LENGTH, "input_handling": "Process each complete input in one sequence; use length-aware microbatches and gradient accumulation to preserve effective batch size.", "attention_implementation": "PyTorch scaled dot-product attention with bfloat16 and gradient checkpointing.", "max_batch_attention_values": MAX_BATCH_ATTENTION_VALUES, "seed": SEED, "checkpoint_policy": "Save a separate rolling checkpoint for each loss function and dataset choice after each epoch evaluation."})
+    checkpoint_dir.mkdir(parents=True, exist_ok=True)
+    (checkpoint_dir.parent / "wandb_run_id.txt").write_text(run.id + "\n", encoding="utf-8")
     # Use one optimizer-step axis for baseline and all later evaluation metrics.
     wandb.define_metric("optimizer_step")
     wandb.define_metric("train_eval/*", step_metric="optimizer_step")
