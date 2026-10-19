@@ -19375,3 +19375,18 @@ Metrics:
 - Training pool from the temperature one histogram over 591 tasks with 16 samples: coverage 0.645, 0.755, and 0.821, mean pass count 3.83, 5.37, and 6.81, zero-pass fraction 0.355, 0.245, and 0.179, mixed fraction 0.640, 0.743, and 0.792.
 Observation: Every training-pool number improves monotonically and both EvalPlus pass at one numbers fall monotonically. MBPP loses 0.124 and MBPP plus loses 0.111 over fifteen epochs. The two test sets agree, so the decline is a trend rather than one noisy draw.
 Limitations: Each EvalPlus point is a single greedy completion per task, so it estimates conversion and not coverage. The run was stopped at optimizer step 1110 at the request of the user, so epoch 30 holds no completed evaluation. The directory `evalplus/epoch-00030` holds 378 generated files but no result file, and it is a leftover of an earlier aborted evaluation from the same day.
+
+Experiment: Pass at sixteen on the full reference training pool for the Qwen2.5-Coder 1.5B instruct base model.
+Date: 2026-10-19 UTC.
+
+Purpose: Measure how well a larger base model covers the reference training pool before any training, and compare it with the 0.5B base model and the trained 0.5B checkpoints.
+Setup: 591-task MBPP training pool from `configs/reference-sft-fullpool-perepoch-eval-20261018.yaml`. Sixteen samples per task at temperature 1.0. One prompt format and one test reward, both identical to the reference SFT sampled evaluation. The evaluator is `experiments/eval_pass16_training_pool.py`, which calls `evaluate_training_mbpp_sampled` unchanged.
+Model: `Qwen/Qwen2.5-Coder-1.5B-Instruct` at snapshot `2e1fd397ee46e1388853d2af2c993145b0f1098a`. No adapter and no fine tuning.
+Data: All 591 tasks were scorable, so the denominator is 591 everywhere.
+Command: `TRAINING_HF_DATASETS_CACHE=/workspace/.cache/huggingface/datasets python3 experiments/eval_pass16_training_pool.py --config configs/reference-sft-fullpool-perepoch-eval-20261018.yaml --model <1.5B snapshot> --output outputs/eval-pass16-training-pool-qwen15b-20261019/train-pool-pass16-qwen1.5b-base.json --num-samples 16 --temperature 1.0`.
+Metrics: Coverage 0.7394, which is 437 tasks with at least one pass. Zero-pass fraction 0.2606, which is 154 tasks. Mixed fraction 0.6853, which is 405 tasks. Saturated fraction 0.0541, which is 32 tasks. Mean pass count 6.291 of 16. Estimated per-sample pass probability 0.3932, so pass at one is 0.393.
+Comparison: The 0.5B base model at step zero measured coverage 0.5804 and pass at one 0.2502 with 248 zero-pass tasks. The trained 0.5B model at epoch 25 measured coverage 0.8206 and pass at one 0.4258 with 106 zero-pass tasks. Relative to the 0.5B base model, the untrained 1.5B base model gains 0.159 coverage, gains 0.143 pass at one, and removes 94 of the 248 unsolvable tasks. It also nearly matches the fully trained 0.5B model on the same pool.
+Observation: Model size alone recovers most of the training-pool coverage that the 0.5B model needed roughly fifteen epochs of reference SFT to reach. The untrained 1.5B base sits between the 0.5B step-569 and step-740 checkpoints on this metric.
+Limitations: Coverage on the training pool is not the evaluation metric. For the 0.5B model, training-pool coverage rose monotonically while EvalPlus pass at one fell monotonically, so this number does not predict the EvalPlus score. The measurement is one sampling draw of 16 per task, so the per-task counts carry sampling noise. The pool excludes EvalPlus identifiers and texts by construction.
+Environment: One 15.58 GiB GPU. vLLM with `gpu_memory_utilization` 0.5 used about 8.1 GiB. Generation took 4 minutes 36 seconds for 9,456 samples.
+Code: `experiments/eval_pass16_training_pool.py` at commit `de75eed6`.
