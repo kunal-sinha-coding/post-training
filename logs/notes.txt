@@ -5466,6 +5466,7 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-20 Added --sft-loss-function to clean_validation_baseline.py so the SFT and preference objectives can be selected independently.
 2026-10-20 Launched W&B-logged cross-entropy SFT adaptation followed by pairwise preference training with full schemas and argument cues, pid 40975.
 2026-10-20 W&B run 336pl3aq completed the hybrid objective at 0.930667 training accuracy and 0.698004 training macro F1. The frozen checkpoint is ready for aggregate-only black-box evaluation.
+2026-10-20 Launched W&B-logged aggregate-only black-box test evaluation for the hybrid objective checkpoint, pid 41402.
 2026-10-20 Launched W&B-logged two-SFT and one-preference training with smoothing 0.05, full raw schemas, and no engineered argument cues, pid 39386.
 2026-10-20 W&B run d4zj0go1 found test rows have 3.0107 tools on average versus 2.4563 in train_pref and 509 test tool names versus 3039 training names. Its train question-length statistic was invalid because train questions are stored in messages. Fixed the extractor for a clean rerun.
 2026-10-20 Corrected the active state after the watchdog recorded the completed full-data process as an audit. The full-data Jina run is queued for retry.
