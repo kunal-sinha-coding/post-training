@@ -40,23 +40,26 @@ def main() -> int:
     # Parse only the frozen checkpoint and output locations for the one authorized test pass.
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, default=Path("outputs/clean-validation-final-test-ensemble.json"))
+    parser.add_argument("--checkpoint", action="append", dest="checkpoint_paths", help="Frozen checkpoint path. Repeat once per ensemble member.")
     args = parser.parse_args()
     # Open W&B before loading official examples so the post-selection measurement is tracked.
     import wandb
 
     if not os.getenv("WANDB_API_KEY"):
         raise RuntimeError("WANDB_API_KEY is required for the official test measurement.")
-    checkpoints = {
-        "seed20": Path("outputs/clean-validation-fixedsplit-seed20-len4096"),
-        "seed21": Path("outputs/clean-validation-fixedsplit-seed21-len4096"),
-        "seed22": Path("outputs/clean-validation-fixedsplit-seed22-len4096"),
-    }
+    # Use explicit frozen checkpoints for black-box candidate comparison, with the original ensemble as default.
+    checkpoint_paths = args.checkpoint_paths or [
+        "outputs/clean-validation-fixedsplit-seed20-len4096",
+        "outputs/clean-validation-fixedsplit-seed21-len4096",
+        "outputs/clean-validation-fixedsplit-seed22-len4096",
+    ]
+    checkpoints = {f"checkpoint{index}": Path(path) for index, path in enumerate(checkpoint_paths)}
     run = wandb.init(
         project=os.getenv("WANDB_PROJECT", "when2call-research"),
         entity=os.getenv("WANDB_ENTITY"),
-        name="when2call-frozen-ensemble-official-test-once",
+        name="when2call-blackbox-test-aggregate",
         job_type="official-test-measurement",
-        config={"checkpoints": {key: str(value) for key, value in checkpoints.items()}, "dataset": f"{DATASET_NAME}:test/mcq", "selection_complete": True, "test_measurement_only": True, "max_length": 4096},
+        config={"checkpoints": {key: str(value) for key, value in checkpoints.items()}, "dataset": f"{DATASET_NAME}:test/mcq", "selection_complete": True, "black_box": True, "max_length": 4096},
     )
     atexit.register(run.finish)
     # Freeze the model context and load the official labels only for final measurement.

@@ -2,17 +2,8 @@
   "status": "active",
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "A bounded, class-balanced auxiliary sample from train_sft may improve robustness without allowing its source skew to dominate the train_pref classifier.",
-  "active_experiment": {
-    "pid": 21656,
-    "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.audit_split_stability"
-    ],
-    "started_at": "2026-10-20T09:55:12.546762+00:00"
-  },
+  "current_hypothesis": "A frozen SFT auxiliary candidate may generalize to the black-box test despite a validation regression, but aggregate test metrics must be the only returned test signal.",
+  "active_experiment": null,
   "worker_command": [
     "python",
     "-u",
@@ -30,8 +21,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T09:55:12.546786+00:00",
-  "last_action": "Watchdog adopted existing validation worker pid 21656.",
+  "last_heartbeat": "2026-10-20T10:02:00+00:00",
+  "last_action": "SFT auxiliary-source experiment completed with W&B run evg908f5. The watchdog audit exited. The next action is aggregate-only black-box test evaluation.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
