@@ -2,26 +2,8 @@
   "status": "active",
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "At the same fixed split and 4096-token context, seed 20261020 should reproduce the earlier seed effect and separate training stochasticity from context-length changes.",
-  "active_experiment": {
-    "pid": 14135,
-    "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.clean_validation_baseline",
-      "--add-argument-cues",
-      "--seed",
-      "20261020",
-      "--split-seed",
-      "20261021",
-      "--max-length",
-      "4096",
-      "--output-dir",
-      "outputs/clean-validation-fixedsplit-seed20-len4096"
-    ],
-    "started_at": "2026-10-20T09:09:33.415202+00:00"
-  },
+  "current_hypothesis": "The argument-cue classifier will show its training-seed variance on the fixed split with seed 20261022 at the selected 4096-token context.",
+  "active_experiment": null,
   "worker_command": [
     "python",
     "-u",
@@ -29,13 +11,13 @@
     "experiments.clean_validation_baseline",
     "--add-argument-cues",
     "--seed",
-    "20261020",
+    "20261022",
     "--split-seed",
     "20261021",
     "--max-length",
     "4096",
     "--output-dir",
-    "outputs/clean-validation-fixedsplit-seed20-len4096"
+    "outputs/clean-validation-fixedsplit-seed22-len4096"
   ],
   "experiment_queue": [
     "Audit and baseline the clean train_pref development split.",
@@ -48,8 +30,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T09:09:33.415216+00:00",
-  "last_action": "Recorded W&B run znr9qixl as duplicate-worker CUDA OOM. The watchdog was patched to adopt existing workers, and pid 14135 remains active.",
+  "last_heartbeat": "2026-10-20T09:12:45.005282+00:00",
+  "last_action": "Recorded W&B run k77l5wan at 0.947778 accuracy and 0.711076 macro F1. Queued fixed-split seed-20261022 replication.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }

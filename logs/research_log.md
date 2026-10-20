@@ -214,3 +214,17 @@ Result: The run failed with CUDA out of memory while a restarted seed-20261021 w
 
 Analysis: This is an infrastructure failure caused by duplicate worker recovery, not evidence against the model configuration. The watchdog now adopts an existing validation worker before launching a new one. The active seed-20261021 worker is retained as the sole current GPU worker.
 
+## EXP-20261020-016
+
+Timestamp: 2026-10-20. The W&B-logged matched seed-20261020 4,096-token run completed.
+
+Hypothesis: At the fixed split, 4,096 tokens will match or improve the seed-20261020 8,192-token result without memory failure.
+
+Setup: The cached `train_pref` rows used `split_seed=20261021`, training seed 20261020, Jina warm start, cross entropy, one epoch, batch size 8, argument cues, and `max_length=4096`. W&B run: `k77l5wan`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/k77l5wan). The official test split was not loaded.
+
+Results: Training loss was 0.186641. Development accuracy was 0.947778 and macro F1 was 0.711076. Per-class F1 was 0.989983 for `cannot_answer`, 0.928755 for `request_for_info`, 0.925566 for `tool_call`, and 0.000000 for `direct`. The confusion matrix was [[593, 0, 6, 0], [1, 541, 58, 0], [4, 24, 572, 0], [1, 0, 0, 0]].
+
+Analysis: The result is 0.001667 accuracy and 0.001052 macro F1 above the same fixed-split seed-20261020 result at 8,192 tokens. It also improves over seed-20261021 at 4,096 tokens by 0.003889 accuracy and 0.002789 macro F1. The remaining errors are request_for_info to tool_call and tool_call to request_for_info.
+
+Decision: Retain 4,096 tokens as the current complete-input setting. The next run uses seed 20261022 on the same split to estimate training variance before testing a new intervention.
+
