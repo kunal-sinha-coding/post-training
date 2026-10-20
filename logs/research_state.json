@@ -4,7 +4,7 @@
   "protocol": "clean_validation_v1",
   "current_hypothesis": "Three MiniLM fine-tuning epochs may remove the one-epoch underfitting seen on validation and improve black-box generalization.",
   "active_experiment": {
-    "pid": 26971,
+    "pid": 27563,
     "command": [
       "python",
       "-u",
@@ -17,7 +17,7 @@
       "--output",
       "outputs/blackbox-test-minilm.json"
     ],
-    "started_at": "2026-10-20T12:50:00+00:00"
+    "started_at": "2026-10-20T13:10:00+00:00"
   },
   "worker_command": [
     "python",
@@ -36,8 +36,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T13:05:00+00:00",
-  "last_action": "MiniLM one-epoch candidate completed with W&B run w0a2c260 and was rejected. The next candidate uses three MiniLM epochs.",
+  "last_heartbeat": "2026-10-20T13:10:00+00:00",
+  "last_action": "Launched W&B-logged aggregate-only three-epoch MiniLM candidate pid 27563.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
