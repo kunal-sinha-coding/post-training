@@ -704,6 +704,14 @@ Setup: The frozen checkpoint used two `train_sft` adaptation epochs, one `train_
 
 Results: Black-box test accuracy was 0.532585 and macro F1 was 0.533929.
 
+## EXP-20261020-066
+
+Timestamp: 2026-10-20. A no-argument-cue candidate was trained and frozen.
+
+Setup: Two W&B-logged `train_sft` adaptation epochs and one `train_pref` epoch used full raw schemas, label smoothing 0.05, and no engineered argument cue. The official test split was not loaded during training. W&B run: `hffvrfec`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/hffvrfec).
+
+Training diagnostics: Training accuracy was 0.966111 and training macro F1 was 0.724674. The frozen checkpoint is queued for aggregate-only black-box measurement.
+
 Analysis: Even the smaller direct augmentation reduced both metrics. Direct augmentation is rejected. The next intervention removes the engineered required-argument cue while preserving all raw tool schemas.
 
 ## EXP-20261020-049
