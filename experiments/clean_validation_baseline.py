@@ -7,7 +7,9 @@ metrics and the checkpoint without loading the official test split.
 from __future__ import annotations
 
 import argparse
+import atexit
 import json
+import os
 import random
 import re
 from collections import Counter
@@ -147,6 +149,19 @@ def main() -> int:
     parser.add_argument("--split-seed", type=int, default=None)
     parser.add_argument("--max-length", type=int, default=8192)
     args = parser.parse_args()
+    # Open a W&B run before loading data so failures and completed metrics are both tracked.
+    import wandb
+
+    if not os.getenv("WANDB_API_KEY"):
+        raise RuntimeError("WANDB_API_KEY is required for clean validation experiments.")
+    run = wandb.init(
+        project=os.getenv("WANDB_PROJECT", "when2call-research"),
+        entity=os.getenv("WANDB_ENTITY"),
+        name=f"clean-validation-seed{args.seed}-split{args.split_seed or args.seed}-len{args.max_length}",
+        job_type="clean-validation",
+        config=vars(args),
+    )
+    atexit.register(run.finish)
     seed = args.seed
     random.seed(seed)
     torch.manual_seed(seed)
@@ -200,6 +215,17 @@ def main() -> int:
         "device": str(device),
     }
     (args.output_dir / "metrics.json").write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
+    # Log the complete validation result and key training diagnostics to W&B.
+    run.log({
+        "train/accuracy": train_metrics["accuracy"],
+        "train/macro_f1": train_metrics["macro_f1"],
+        "development/accuracy": dev_metrics["accuracy"],
+        "development/macro_f1": dev_metrics["macro_f1"],
+        "training/loss": loss,
+        "data/train_examples": len(train),
+        "data/development_examples": len(development),
+    })
+    run.summary.update({"development_accuracy": dev_metrics["accuracy"], "development_macro_f1": dev_metrics["macro_f1"], "output_dir": str(args.output_dir)})
     print(json.dumps({"train": train_metrics, "development": dev_metrics, "loss": loss}, indent=2))
     return 0
 

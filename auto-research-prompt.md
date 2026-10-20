@@ -268,6 +268,12 @@ Every research iteration must include:
 
 Record failed experiments, aborted runs, and negative results as well as successes.
 
+### W&B logging — mandatory for every experiment
+
+Every experiment must create a W&B run before data loading or model execution. The run must record the exact command, Git commit, model and checkpoint identifiers, dataset split, random seeds, configuration, context length, training loss, validation accuracy, validation macro F1, per-class metrics, confusion matrix, runtime, output artifact paths, and failure details when the experiment does not complete. Use the configured W&B project and entity from the environment or repository configuration. If W&B cannot be initialized, do not run the experiment. A local log alone does not satisfy this requirement.
+
+After every experiment, finish the W&B run and record its run ID and URL in the persistent research log. Use W&B curves and summaries when selecting the next experiment. Do not use official test labels or test metrics for W&B-based candidate selection.
+
 Maintain a separate leaderboard of the best configurations, using validation results only.
 
 Preserve sufficient artifacts to reproduce important experiments.

@@ -150,3 +150,17 @@ Analysis: The result is below the prior seed-20261021 result of 0.948333 accurac
 
 Decision: Keep the fixed split for future comparisons. Do not promote a seed-specific calibration rule. The next experiment tests a second training seed on this same fixed split.
 
+## EXP-20261020-011
+
+Timestamp: 2026-10-20. The fixed-split rerun at the original 8,192-token context failed before producing metrics.
+
+Hypothesis: The argument-cue classifier can be replicated on the fixed split when the context length is reduced to fit the available GPU memory.
+
+Setup: The run used the fixed `split_seed=20261021`, seed 20261020, Jina warm start, cross entropy, one epoch, batch size 8, and argument cues. It used the existing 8,192-token context. The official test split was not loaded.
+
+Result: The process failed with `torch.OutOfMemoryError` while allocating 254 MiB. The GPU had 19.58 GiB total, 168.88 MiB free, and the process used approximately 16.15 GiB of GPU memory plus 3.25 GiB of non-PyTorch memory. No validation metrics were produced.
+
+Analysis: This is an infrastructure failure caused by the context and memory configuration, not a model result. The run was not used for selection. The runner now supports W&B logging and a configurable `--max-length`; the recovery test uses 1,024 tokens and will log its configuration and metrics to W&B before execution.
+
+Next action: Run the fixed-split seed-20261021 comparison at 1,024 tokens with mandatory W&B logging.
+

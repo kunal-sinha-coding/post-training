@@ -2,24 +2,8 @@
   "status": "active",
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "On the fixed split, changing only the training seed will estimate training stochasticity and test whether the argument-cue configuration is stable.",
-  "active_experiment": {
-    "pid": 12203,
-    "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.clean_validation_baseline",
-      "--add-argument-cues",
-      "--seed",
-      "20261020",
-      "--split-seed",
-      "20261021",
-      "--output-dir",
-      "outputs/clean-validation-fixedsplit-train20"
-    ],
-    "started_at": "2026-10-20T08:57:34.622247+00:00"
-  },
+  "current_hypothesis": "Reducing the Jina context from 8192 to 1024 will prevent the observed CUDA OOM while preserving enough schema and argument-cue signal for the fixed-split seed comparison.",
+  "active_experiment": null,
   "worker_command": [
     "python",
     "-u",
@@ -30,8 +14,10 @@
     "20261021",
     "--split-seed",
     "20261021",
+    "--max-length",
+    "1024",
     "--output-dir",
-    "outputs/clean-validation-fixedsplit-seed21"
+    "outputs/clean-validation-fixedsplit-seed21-len1024"
   ],
   "experiment_queue": [
     "Audit and baseline the clean train_pref development split.",
@@ -44,8 +30,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T08:58:37.746091+00:00",
-  "last_action": "The fixed-split seed21 worker exited before producing an artifact because the GPU was occupied. The original fixed-split worker remains active and is being allowed to finish.",
+  "last_heartbeat": "2026-10-20T09:00:59.451461+00:00",
+  "last_action": "Recorded the 8192-token CUDA OOM and prepared a W&B-logged 1024-token recovery experiment.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
