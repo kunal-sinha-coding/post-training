@@ -47,6 +47,16 @@ def load_training_rows() -> object:
     return load_dataset(DATASET_NAME, "train_pref", split="train")
 
 
+def load_sft_training_rows() -> object:
+    """Load the cached supervised fine tuning arrow file without contacting the test split."""
+    # Prefer the immutable local SFT cache so auxiliary training never depends on test metadata.
+    cache_path = Path("/workspace/.cache/huggingface/datasets/nvidia___when2_call/train_sft/0.0.0/0582f7749df63a96fdc3070932e83e72396ace53/when2call-train.arrow")
+    if cache_path.exists():
+        from datasets import Dataset
+        return Dataset.from_file(str(cache_path))
+    return load_dataset(DATASET_NAME, "train_sft", split="train")
+
+
 def split_examples(examples: list, dev_fraction: float, seed: int) -> tuple[list, list]:
     """Create a deterministic stratified development split from inferred training labels."""
     # Group records by inferred label so the development set contains every observed class.
@@ -165,6 +175,7 @@ def main() -> int:
     parser.add_argument("--max-length", type=int, default=8192)
     parser.add_argument("--include-rejected-examples", action="store_true")
     parser.add_argument("--rejected-direct-samples", type=int, default=0)
+    parser.add_argument("--sft-aux-samples-per-class", type=int, default=0)
     args = parser.parse_args()
     # Open a W&B run before loading data so failures and completed metrics are both tracked.
     import wandb
@@ -197,6 +208,16 @@ def main() -> int:
         rejected_direct = [item for item in prepare_rejected_examples(rows) if item.label == LABEL_TO_ID["direct"]]
         random.Random(seed).shuffle(rejected_direct)
         train.extend(rejected_direct[:args.rejected_direct_samples])
+    # Add a bounded equal-count SFT sample only for labels present in that source.
+    if args.sft_aux_samples_per_class > 0:
+        sft_examples = prepare_train_examples(load_sft_training_rows())
+        sft_by_label = {label: [] for label in range(len(LABELS))}
+        for item in sft_examples:
+            sft_by_label[item.label].append(item)
+        for label in (LABEL_TO_ID["cannot_answer"], LABEL_TO_ID["request_for_info"], LABEL_TO_ID["direct"]):
+            selected = list(sft_by_label[label])
+            random.Random(seed + label).shuffle(selected)
+            train.extend(selected[:args.sft_aux_samples_per_class])
     if args.omit_tool_schemas:
         remove_tool_schemas(train)
         remove_tool_schemas(development)
