@@ -4,7 +4,7 @@
   "protocol": "clean_validation_v1",
   "current_hypothesis": "Two SFT adaptation epochs without preference training may generalize better than the preference objective under the observed shift.",
   "active_experiment": {
-    "pid": 0,
+    "pid": 56295,
     "command": [
       "python",
       "-u",
@@ -26,13 +26,28 @@
       "--pref-train-epochs",
       "0"
     ],
-    "started_at": "2026-10-20T21:26:17.582469+00:00"
+    "started_at": "2026-10-20T21:29:20.524467+00:00"
   },
   "worker_command": [
     "python",
     "-u",
     "-m",
-    "experiments.clean_validation_baseline"
+    "experiments.clean_validation_baseline",
+    "--output-dir",
+    "outputs/clean-validation-staged-sft2-nopref-jina-seed21-len4096",
+    "--add-argument-cues",
+    "--seed",
+    "20261021",
+    "--split-seed",
+    "20261021",
+    "--max-length",
+    "4096",
+    "--label-smoothing",
+    "0.05",
+    "--sft-pretrain-epochs",
+    "2",
+    "--pref-train-epochs",
+    "0"
   ],
   "experiment_queue": [
     "Audit and baseline the clean train_pref development split.",
@@ -45,8 +60,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T21:27:59+00:00",
-  "last_action": "Recorded unintended default baseline run 1fpiaob9 and prepared the explicit two-SFT/no-preference command.",
+  "last_heartbeat": "2026-10-20T21:29:20.524482+00:00",
+  "last_action": "Watchdog adopted existing validation worker pid 56295.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
