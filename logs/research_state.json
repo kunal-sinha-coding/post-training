@@ -2,7 +2,7 @@
   "status": "active",
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "A semantic no-tool-match fallback can recover answerable direct requests that the classifier confuses with tool_call, without using test data.",
+  "current_hypothesis": "Broader training-only source coverage may improve robustness on a new validation partition without using official test labels.",
   "active_experiment": null,
   "worker_command": [
     "python",
@@ -21,8 +21,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T09:46:18.911194+00:00",
-  "last_action": "Recorded W&B run lkvns5cj as a rejected direct-sample result. Added a W&B-logged semantic direct fallback diagnostic to split stability.",
+  "last_heartbeat": "2026-10-20T09:49:00+00:00",
+  "last_action": "Semantic direct fallback diagnostic completed and was rejected. Next worker must test broader training-only source coverage.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }

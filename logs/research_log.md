@@ -386,3 +386,15 @@ Results: Training accuracy was 0.959178 and macro F1 was 0.724396. Development a
 
 Analysis: The targeted augmentation did not repair direct prediction and reduced the validation result relative to the 0.948333 and 0.711448 baseline. The approach is rejected. The next diagnostic tests a semantic no-tool-match direct fallback using only question text and available tool names on the fixed validation split.
 
+## EXP-20261020-031
+
+Timestamp: 2026-10-20. The W&B-logged semantic direct fallback diagnostic completed.
+
+Hypothesis: A direct request that has no matching available tool name can be separated from a tool call by changing an ensemble `tool_call` prediction to `direct` when the question contains an explicit computational cue.
+
+Setup: The frozen three-seed, 4,096-token logit ensemble was evaluated on the fixed `split_seed=20261021` development partition. The rule used only question text and available tool names. It did not load official test data or fit parameters. W&B run: `jnsvs2x4`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/jnsvs2x4).
+
+Results: The unmodified ensemble reached 0.962778 accuracy and 0.722337 full macro F1. The fallback reached 0.917778 accuracy and 0.703717 full macro F1. It changed 81 true `tool_call` examples to `direct` and did not recover the direct example, because the direct example was predicted as `cannot_answer` by the ensemble. Supported-class performance therefore also regressed.
+
+Analysis: The no-tool-match condition is not sufficient evidence for a direct label. The direct and tool-call boundary requires stronger semantic evidence, and the single direct validation example is too small to tune a rule. The fallback is rejected. The next experiment will test whether a broader training-only source improves robustness on a new validation partition without using official test labels.
+
