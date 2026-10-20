@@ -10,8 +10,8 @@
     "Measure class weighting and calibration on the clean split.",
     "Evaluate ensembles only after freezing a validation-selected candidate."
   ],
-  "best_validation": {"accuracy": null, "macro_f1": null, "artifact": null},
-  "last_heartbeat": null,
-  "last_action": "Created clean validation protocol after leakage audit.",
+  "best_validation": {"accuracy": 0.9366666666666666, "macro_f1": 0.7030322841670513, "artifact": "outputs/clean-validation-baseline/metrics.json"},
+  "last_heartbeat": "2026-10-20T08:20:00+00:00",
+  "last_action": "Completed EXP-20261020-001 and selected pairwise objective comparison as the next action.",
   "stop_command": "STOP"
 }

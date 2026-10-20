@@ -5309,3 +5309,5 @@ The first direct script launch failed because Python did not include the reposit
 The clean baseline then found that the cached Jina model tokenizer and configuration files were zero bytes because a previous download was interrupted. The complete local `outputs/when2call-jina-v2-small/latest` checkpoint was used as a warm start instead. The experiment remains validation only and records the checkpoint provenance.
 
 The local warm start required one more fix because the serialized encoder configuration retained the original remote model path. The loader now points that field to the local checkpoint before constructing the encoder.
+
+Completed EXP-20261020-001 on the clean validation split. The warm started Jina classifier reached 0.936667 development accuracy and 0.703032 development macro F1 on 1,800 held out `train_pref` examples. The main errors were `request_for_info` and `tool_call` confusion. Added the persistent research log, summary, and validation leaderboard. The next experiment compares cross entropy and pairwise ranking on the identical split.
