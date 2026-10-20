@@ -5392,6 +5392,7 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-20 Launched the forced-refresh W&B-logged aggregate-only MiniLM candidate as pid 25591.
 2026-10-20 W&B run 4nx7g8oe captured a MiniLM pipeline failure after download because examples were not tokenized before batching. Added explicit tokenization and will retry the same candidate.
 2026-10-20 W&B run fu6t54a4 confirmed the refreshed MiniLM weights loaded, then failed on a 739-token example under the 512-token limit. Added explicit MiniLM truncation and will retry.
+2026-10-20 W&B run y5xgvnwb showed MiniLM training completed, then failed because the development split was not tokenized before diagnostics. Added the missing tokenization step.
 2026-10-20 Launched the corrected W&B-logged aggregate-only MiniLM candidate as pid 26498.
 2026-10-20 Corrected the active research state after the watchdog recorded a stale audit. The MiniLM retry remains the next experiment.
 2026-10-20 Relaunched the corrected W&B-logged aggregate-only MiniLM candidate as pid 26165.

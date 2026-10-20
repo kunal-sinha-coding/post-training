@@ -90,6 +90,7 @@ def main() -> int:
     for epoch in range(args.epochs):
         tokenize_for_minilm(train, tokenizer)
         losses.append(train_epoch(model, tokenizer, train, device, optimizer, 20261022 + epoch))
+    tokenize_for_minilm(development, tokenizer)
     dev_metrics = batch_metrics(model, tokenizer, development, device, list(range(len(LABELS))))
     test_examples = prepare_test_examples(load_cached_rows(test_path))
     tokenize_for_minilm(development, tokenizer)

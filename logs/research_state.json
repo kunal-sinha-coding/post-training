@@ -3,11 +3,7 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "A different pretrained encoder family may capture tool-use semantics and improve black-box generalization over Jina.",
-  "active_experiment": {
-    "pid": 26498,
-    "command": ["python", "-u", "-m", "experiments.minilm_when2call_blackbox", "--epochs", "1", "--learning-rate", "2e-5", "--output", "outputs/blackbox-test-minilm.json"],
-    "started_at": "2026-10-20T12:35:00+00:00"
-  },
+  "active_experiment": null,
   "worker_command": [
     "python",
     "-u",
@@ -26,7 +22,7 @@
     "artifact": "outputs/clean-validation-calibration.json"
   },
   "last_heartbeat": "2026-10-20T12:35:00+00:00",
-  "last_action": "Launched W&B-logged aggregate-only MiniLM candidate pid 26498 after adding explicit 512-token truncation.",
+  "last_action": "W&B run y5xgvnwb captured a MiniLM development-metric tokenization failure after training completed. The final preprocessing omission is corrected for retry.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
