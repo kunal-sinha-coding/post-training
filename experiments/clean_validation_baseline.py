@@ -50,7 +50,7 @@ def load_training_rows() -> object:
 def load_sft_training_rows() -> object:
     """Load the cached supervised fine tuning arrow file without contacting the test split."""
     # Prefer the immutable local SFT cache so auxiliary training never depends on test metadata.
-    cache_path = Path("/workspace/.cache/huggingface/datasets/nvidia___when2_call/train_sft/0.0.0/0582f7749df63a96fdc3070932e83e72396ace53/when2call-train.arrow")
+    cache_path = Path("/workspace/.cache/huggingface/datasets/nvidia___when2_call/train_sft/0.0.0/0582f7749df63a96fdc3070932e83e72396ace53/when2_call-train.arrow")
     if cache_path.exists():
         from datasets import Dataset
         return Dataset.from_file(str(cache_path))

@@ -3,11 +3,7 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "A bounded, class-balanced auxiliary sample from train_sft may improve robustness without allowing its source skew to dominate the train_pref classifier.",
-  "active_experiment": {
-    "pid": 21350,
-    "command": ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-sftaux500-seed22-len4096", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--add-argument-cues", "--sft-aux-samples-per-class", "500"],
-    "started_at": "2026-10-20T09:52:00+00:00"
-  },
+  "active_experiment": null,
   "worker_command": [
     "python",
     "-u",
@@ -26,7 +22,7 @@
     "artifact": "outputs/clean-validation-calibration.json"
   },
   "last_heartbeat": "2026-10-20T09:52:00+00:00",
-  "last_action": "Launched W&B-logged bounded train_sft auxiliary-source experiment pid 21350 in an attached monitored session.",
+  "last_action": "W&B run ka4ncgnw captured a train_sft cache filename failure before model execution. The cache path is corrected and the same experiment will be retried.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
