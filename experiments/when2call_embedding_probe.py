@@ -31,6 +31,7 @@ from experiments.train_when2call_jina import (
     tokenize_examples,
     tools_text,
 )
+from experiments.clean_validation_baseline import load_model
 
 
 def build_test_texts(rows):
@@ -118,15 +119,9 @@ def main():
     run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name="when2call-frozen-encoder-linear-probe", job_type="black-box-test-candidate", config=vars(args))
     atexit.register(run.finish)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    tokenizer = AutoTokenizer.from_pretrained(args.checkpoint, trust_remote_code=True)
-    tokenizer.model_max_length = 8192
-    encoder = AutoModel.from_pretrained("jinaai/jina-embeddings-v2-small-en", trust_remote_code=True)
-    if not args.pretrained:
-        state = torch.load(args.checkpoint / "model_state.pt", map_location="cpu")
-        model = JinaSequenceClassifier(encoder, len(LABELS))
-        model.load_state_dict(state)
-        encoder = model.encoder
-    encoder = encoder.to(device)
+    # Reuse the validated local loader so classifier artifacts resolve their native encoder metadata.
+    loaded_model, tokenizer = load_model(device, 8192)
+    encoder = loaded_model.encoder
     train_examples = load_train_examples(args.dataset) if args.dataset != "train_pref" else prepare_train_examples(load_cached_rows("train_pref"))
     test_examples = build_test_texts(load_cached_test_rows())
     train_features = embed_examples(encoder, tokenizer, train_examples, device)

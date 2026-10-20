@@ -3,11 +3,7 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "A frozen-encoder class-balanced linear probe may generalize better than a fully fine-tuned classifier that over-specializes to train_pref.",
-  "active_experiment": {
-    "pid": 24287,
-    "command": ["python", "-u", "-m", "experiments.when2call_embedding_probe", "--checkpoint", "outputs/clean-validation-fixedsplit-seed21-len4096", "--dataset", "train_pref", "--epochs", "10", "--lr", "0.01", "--output", "outputs/blackbox-test-linear-probe.json"],
-    "started_at": "2026-10-20T11:10:00+00:00"
-  },
+  "active_experiment": null,
   "worker_command": [
     "python",
     "-u",
@@ -26,7 +22,7 @@
     "artifact": "outputs/clean-validation-calibration.json"
   },
   "last_heartbeat": "2026-10-20T11:10:00+00:00",
-  "last_action": "Launched W&B-logged aggregate-only frozen-encoder linear probe pid 24287.",
+  "last_action": "W&B run n4p9vgtq captured a linear probe loader failure before model execution. The loader is corrected for retry.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
