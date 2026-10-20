@@ -576,6 +576,30 @@ W&B test run: `msnv4uzt`, [run URL](https://forge.coreweave.com/wandb/kunal-pers
 
 Decision: Reject weight decay 0.05. The next experiment tests the predeclared intermediate value 0.025.
 
+## EXP-20261020-079
+
+Timestamp: 2026-10-20. The weight-decay 0.025 candidate was evaluated through the aggregate-only black-box test interface.
+
+W&B test run: `xbzt9krv`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/xbzt9krv). Aggregate accuracy was 0.560515 and macro F1 was 0.563200. The candidate is below the smoothing 0.05 leader at 0.574480 accuracy and 0.574969 macro F1.
+
+Decision: Reject weight decay 0.025. The next experiment tests weight decay 0.015 as the final predeclared point near the current default.
+
+## EXP-20261020-080
+
+Timestamp: 2026-10-20. A compact tool-schema candidate was evaluated through the aggregate-only black-box interface.
+
+W&B test run: \`j8p5li1g\`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/j8p5li1g). Aggregate accuracy was 0.492059 and macro F1 was 0.490390. The candidate is rejected against the leader at 0.574480 accuracy and 0.574969 macro F1.
+
+Analysis: Removing verbose schema detail harmed performance, so the compact-schema representation is rejected. The next experiment tests a modestly higher label-smoothing value of 0.075 with the successful full-schema recipe.
+
+## EXP-20261020-081
+
+Timestamp: 2026-10-20. The label-smoothing 0.075 candidate was evaluated through the aggregate-only black-box test interface.
+
+W&B test run: \`naqxg2ca\`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/naqxg2ca). Aggregate accuracy was 0.540800 and macro F1 was 0.541714. The candidate is rejected against the leader at 0.574480 accuracy and 0.574969 macro F1.
+
+Analysis: Higher smoothing reduced shifted test performance. The next experiment removes the preference-training epoch while retaining two SFT adaptation epochs, full schemas, argument cues, and smoothing 0.05.
+
 ## EXP-20261020-051
 
 Timestamp: 2026-10-20. The two-SFT and two-preference candidate was evaluated through the aggregate-only black-box test interface.
@@ -807,6 +831,20 @@ Training diagnostics: Training accuracy was 0.966444 and training macro F1 was 0
 Black-box result: W&B run `w5ezjjmf`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/w5ezjjmf), returned aggregate accuracy 0.553669 and macro F1 0.555802. This is below the smoothing 0.05 leader at 0.574480 accuracy and 0.574969 macro F1, so weight decay 0.1 is rejected.
 
 Analysis: The stronger decay reduced shifted test performance. The next experiment tests the intermediate decay 0.05 as a predeclared dose-response point. This changes regularization rather than only the seed and will be compared through the same single aggregate-only black-box measurement.
+
+## EXP-20261020-078
+
+Timestamp: 2026-10-20. The watchdog launched an unintended default clean-validation baseline after the prior worker exited.
+
+Hypothesis: A fresh one-epoch cross-entropy preference run provides a reproducible clean-split baseline for the active two-SFT/no-preference hypothesis.
+
+Experimental setup: The default `clean_validation_baseline` command used the deterministic clean `train_pref` split, Jina v2 Small, seed 20261020, maximum length 8192, one cross-entropy preference epoch, and no official test data. W&B run: `1fpiaob9`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/1fpiaob9).
+
+Results: Development accuracy was 0.938333 and macro F1 was 0.704001. Training accuracy was 0.978056 and macro F1 was 0.733594. The development confusion matrix and per-class metrics are stored in the W&B run and the checkpoint metrics artifact.
+
+Analysis: The result is below the current clean validation leader at 0.949444 accuracy and 0.712267 macro F1. It is retained as a reproducibility audit and does not change the leaderboard. The recorded command did not match the intended hypothesis, so it is not evidence for or against the two-SFT/no-preference intervention.
+
+Next action: Launch the intended two-SFT/no-preference candidate with an explicit command and verify the supervisor, watchdog, and worker process chain.
 
 ## EXP-20261020-075
 

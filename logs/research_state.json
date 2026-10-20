@@ -4,14 +4,29 @@
   "protocol": "clean_validation_v1",
   "current_hypothesis": "Two SFT adaptation epochs without preference training may generalize better than the preference objective under the observed shift.",
   "active_experiment": {
-    "pid": 53698,
+    "pid": 0,
     "command": [
       "python",
       "-u",
       "-m",
-      "experiments.clean_validation_baseline"
+      "experiments.clean_validation_baseline",
+      "--output-dir",
+      "outputs/clean-validation-staged-sft2-nopref-jina-seed21-len4096",
+      "--add-argument-cues",
+      "--seed",
+      "20261021",
+      "--split-seed",
+      "20261021",
+      "--max-length",
+      "4096",
+      "--label-smoothing",
+      "0.05",
+      "--sft-pretrain-epochs",
+      "2",
+      "--pref-train-epochs",
+      "0"
     ],
-    "started_at": "2026-10-20T21:20:00+00:00"
+    "started_at": "2026-10-20T21:26:17.582469+00:00"
   },
   "worker_command": [
     "python",
@@ -30,8 +45,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T21:20:00+00:00",
-  "last_action": "Started W&B-logged two-SFT training without preference training, pid 53698.",
+  "last_heartbeat": "2026-10-20T21:27:59+00:00",
+  "last_action": "Recorded unintended default baseline run 1fpiaob9 and prepared the explicit two-SFT/no-preference command.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
