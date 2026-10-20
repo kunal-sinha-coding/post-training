@@ -2,7 +2,7 @@
   "status": "active",
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "A different pretrained encoder family may capture tool-use semantics and improve black-box generalization over Jina.",
+  "current_hypothesis": "Three MiniLM fine-tuning epochs may remove the one-epoch underfitting seen on validation and improve black-box generalization.",
   "active_experiment": {
     "pid": 26971,
     "command": [
@@ -11,7 +11,7 @@
       "-m",
       "experiments.minilm_when2call_blackbox",
       "--epochs",
-      "1",
+      "3",
       "--learning-rate",
       "2e-5",
       "--output",
@@ -36,8 +36,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T12:50:00+00:00",
-  "last_action": "Launched W&B-logged aggregate-only MiniLM candidate pid 26971 after fixing development diagnostics.",
+  "last_heartbeat": "2026-10-20T13:05:00+00:00",
+  "last_action": "MiniLM one-epoch candidate completed with W&B run w0a2c260 and was rejected. The next candidate uses three MiniLM epochs.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
