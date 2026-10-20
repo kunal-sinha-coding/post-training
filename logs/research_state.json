@@ -3,8 +3,38 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "A lower learning rate of 2.5e-5 may reduce optimization overfit while retaining the successful adaptation and smoothing recipe.",
-  "active_experiment": null,
-  "worker_command": null,
+  "active_experiment": {
+    "pid": 42821,
+    "command": [
+      "python",
+      "-u",
+      "-m",
+      "experiments.clean_validation_baseline",
+      "--output-dir",
+      "outputs/clean-validation-staged-sft2-smooth005-lr25e5-jina-seed21-len4096",
+      "--seed",
+      "20261021",
+      "--max-length",
+      "4096",
+      "--add-argument-cues",
+      "--train-all",
+      "--sft-pretrain-epochs",
+      "2",
+      "--pref-train-epochs",
+      "1",
+      "--label-smoothing",
+      "0.05",
+      "--learning-rate",
+      "2.5e-5"
+    ],
+    "started_at": "2026-10-20T20:08:00+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.clean_validation_baseline"
+  ],
   "experiment_queue": [
     "Audit and baseline the clean train_pref development split.",
     "Compare inferred-label cross entropy and pairwise training on the same split.",
@@ -16,8 +46,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T20:05:00+00:00",
-  "last_action": "Black-box W&B run qhfo0c4h completed at 0.545455 accuracy and 0.538119 macro F1. The next candidate uses learning rate 2.5e-5.",
+  "last_heartbeat": "2026-10-20T20:08:00+00:00",
+  "last_action": "Started W&B-logged two-SFT and one-preference training with smoothing 0.05 and learning rate 2.5e-5, pid 42821.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
