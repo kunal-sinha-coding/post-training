@@ -2,23 +2,9 @@
   "status": "active",
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "A measurable unlabeled train and test covariate shift identifies the highest-impact generalization intervention.",
-  "active_experiment": {
-    "pid": 29522,
-    "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.audit_split_stability"
-    ],
-    "started_at": "2026-10-20T10:50:13.176427+00:00"
-  },
-  "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.audit_split_stability"
-  ],
+  "current_hypothesis": "Staged train_sft context adaptation followed by train_pref fine-tuning may improve robustness to the longer questions, higher tool counts, and narrower test tool vocabulary.",
+  "active_experiment": null,
+  "worker_command": null,
   "experiment_queue": [
     "Audit and baseline the clean train_pref development split.",
     "Compare inferred-label cross entropy and pairwise training on the same split.",
@@ -30,8 +16,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T10:50:13.176448+00:00",
-  "last_action": "Watchdog started validation worker pid 29522.",
+  "last_heartbeat": "2026-10-20T12:32:00+00:00",
+  "last_action": "Corrected stale watchdog state after the covariate diagnostic. The next experiment is staged train_sft adaptation followed by train_pref fine-tuning.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
