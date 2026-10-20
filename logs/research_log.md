@@ -788,6 +788,14 @@ Results: Black-box test accuracy was 0.564622 and macro F1 was 0.563220.
 
 Analysis: The lower learning rate was below the 5e-5 leader and is rejected. The next candidate tests weight decay 0.1 with learning rate 5e-5.
 
+## EXP-20261020-077
+
+Timestamp: 2026-10-20. A stronger AdamW weight-decay candidate was trained and frozen.
+
+Setup: Two W&B-logged cross-entropy SFT epochs and one preference epoch used all 9,000 chosen rows, full schemas, argument cues, label smoothing 0.05, learning rate 5e-5, weight decay 0.1, seed 20261021, and maximum length 4096. The official test split was not loaded during training. W&B run: `5h85he8a`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/5h85he8a).
+
+Training diagnostics: Training accuracy was 0.966444 and training macro F1 was 0.724900. The frozen checkpoint is queued for one aggregate-only black-box measurement. Candidate selection will use only the returned aggregate accuracy and macro F1.
+
 ## EXP-20261020-075
 
 Timestamp: 2026-10-20. A lower-learning-rate candidate was trained and frozen.

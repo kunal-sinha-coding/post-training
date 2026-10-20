@@ -3,8 +3,9 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "AdamW weight decay 0.1 may regularize the successful recipe and improve shifted test generalization.",
+  "current_hypothesis": "The weight-decay 0.1 checkpoint may improve shifted test generalization relative to the smoothing 0.05 leader.",
   "active_experiment": {
-    "pid": 43565,
+    "pid": 44016,
     "command": [
       "python",
       "-u",
@@ -29,7 +30,10 @@
       "--weight-decay",
       "0.1"
     ],
-    "started_at": "2026-10-20T20:38:00+00:00"
+    "started_at": "2026-10-20T20:45:00+00:00",
+    "phase": "aggregate_only_black_box_evaluation",
+    "source_checkpoint": "outputs/clean-validation-staged-sft2-smooth005-wd010-jina-seed21-len4096",
+    "output": "outputs/clean-validation-staged-sft2-smooth005-wd010-jina-seed21-blackbox.json"
   },
   "worker_command": [
     "python",
@@ -48,8 +52,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T20:38:00+00:00",
-  "last_action": "Started W&B-logged two-SFT and one-preference training with smoothing 0.05, learning rate 5e-5, and weight decay 0.1, pid 43565.",
+  "last_heartbeat": "2026-10-20T20:45:00+00:00",
+  "last_action": "Started W&B-logged aggregate-only black-box test evaluation for the weight-decay 0.1 checkpoint, pid 44016.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
