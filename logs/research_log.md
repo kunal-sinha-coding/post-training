@@ -290,3 +290,17 @@ Results: Calibration accuracy was 0.981944. The selected bias was [0.1, -0.3, 0.
 
 Analysis: The larger calibration slice regressed the validation result. Calibration is rejected as a shared intervention. The next experiment evaluates a three-seed logit ensemble on the fixed split to test whether training variance can be reduced without selecting a class bias.
 
+## EXP-20261020-022
+
+Timestamp: 2026-10-20. The W&B-logged three-seed fixed-split ensemble completed.
+
+Hypothesis: Averaging logits from three independently trained 4,096-token classifiers will reduce training variance and improve the fixed development result.
+
+Setup: The three checkpoints were trained only on the inferred-label `train_pref` training partition with fixed `split_seed=20261021`, argument cues, cross entropy, one epoch, and 4,096-token complete inputs. The ensemble averaged seed20, seed21, and seed22 logits on the same 1,800 development examples. W&B run: `p31jnavf`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/p31jnavf). The official test split was not loaded.
+
+Results: Individual development scores were 0.947778 and 0.711076 for seed20, 0.945556 and 0.709513 for seed21, and 0.948333 and 0.711448 for seed22. The ensemble reached 0.962778 accuracy and 0.722337 macro F1. Ensemble per-class F1 was 0.992469 for `cannot_answer`, 0.950378 for `request_for_info`, 0.946502 for `tool_call`, and 0.000000 for `direct`.
+
+Analysis: The ensemble improved accuracy by 0.014444 over the strongest individual seed and macro F1 by 0.010889. The improvement is measured on a fixed held-out development split and uses no official test labels. This is the first candidate that is strong and stable enough to freeze.
+
+Decision: Freeze the three-seed logit ensemble and perform the one authorized official test measurement. Do not use the resulting test metrics for further candidate selection.
+
