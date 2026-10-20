@@ -38,6 +38,10 @@ def process_alive(pid: int) -> bool:
     except (ProcessLookupError, PermissionError):
         return False
     state = subprocess.check_output(["ps", "-o", "stat=", "-p", str(pid)], text=True).strip()
+    try:
+        state = subprocess.check_output(["ps", "-o", "stat=", "-p", str(pid)], text=True).strip()
+    except subprocess.CalledProcessError:
+        return False
     return bool(state) and not state.startswith("Z")
 
 
@@ -51,7 +55,10 @@ def running_validation_workers(exclude_pid: int) -> list[int]:
         if len(fields) != 2:
             continue
         pid, command = int(fields[0]), fields[1]
-        state = subprocess.check_output(["ps", "-o", "stat=", "-p", str(pid)], text=True).strip()
+        try:
+            state = subprocess.check_output(["ps", "-o", "stat=", "-p", str(pid)], text=True).strip()
+        except subprocess.CalledProcessError:
+            continue
         if pid != exclude_pid and not state.startswith("Z") and "experiments.clean_validation_baseline" in command:
             workers.append(pid)
     return workers

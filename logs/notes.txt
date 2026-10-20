@@ -5503,3 +5503,4 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-20 Updated auto-research-prompt.md to require OS process-state checks for zombie workers, atomic state validation, and a simulated recovery test.
 2026-10-20 Updated auto-research-prompt.md to require a proactive failure-mode audit before unattended monitoring, including monitor self-termination, orphan workers, malformed state, duplicate workers, and recovery verification.
 2026-10-20 Clarified auto-research-prompt.md so the full failure-mode audit runs on every five-minute watchdog tick, including worker state, duplicates, heartbeat, command consistency, monitor health, and recovery validation.
+2026-10-20 Fixed validation_watchdog.py to tolerate a process disappearing between process-list inspection and state inspection. The prior uncaught ps race caused the watchdog to exit during recovery.
