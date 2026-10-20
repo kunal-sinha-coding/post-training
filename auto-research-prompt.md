@@ -356,6 +356,8 @@ The watchdog itself must be supervised by an independent persistent supervisor. 
 
 Every start or restart command must be verified. After launching a process, wait for a short confirmation interval, inspect the process table, confirm the expected PID and command are alive, confirm the expected log or heartbeat changed, confirm the supervisor-to-watchdog-to-worker relationship, and record failure if any check fails. A successful shell return code is not evidence that a process started or stayed running.
 
+Do not proceed as if the setup works until verification succeeds. Iterate on the launch, supervision, and recovery setup until durable logs confirm that the supervisor and watchdog are alive and that the current active workload is alive. The active workload is exactly one of training or aggregate-only evaluation because they may compete for the same GPU. During training, verify supervisor, watchdog, and training. During evaluation, verify supervisor, watchdog, and evaluator. After every phase transition, verify the new process and its logs before continuing.
+
 The watchdog must inspect the operating-system process state, not only whether the process identifier exists. Treat zombie, defunct, exited, and unreapable worker states as not running. Validate the research state JSON before each check and write state updates atomically so a malformed state file cannot disable recovery. Test the watchdog by simulating a completed or zombie worker and confirming that it starts the next authorized experiment.
 
 This must be an actual executable monitoring mechanism, not merely an instruction in your reasoning.
