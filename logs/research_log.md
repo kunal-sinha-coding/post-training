@@ -768,6 +768,14 @@ Results: The base checkpoint returned 0.574480 accuracy and 0.574969 macro F1. T
 
 Analysis: The required-field rule is rejected. The next candidate adds all rejected-response examples as auxiliary supervision to the best smoothing recipe.
 
+## EXP-20261020-073
+
+Timestamp: 2026-10-20. A rejected-response auxiliary candidate was trained and frozen.
+
+Setup: Two W&B-logged cross-entropy SFT epochs and one preference epoch used all 9,000 chosen rows plus all 9,000 rejected-response rows, full schemas, argument cues, label smoothing 0.05, seed 20261021, and maximum length 4096. The official test split was not loaded during training. W&B run: `yagv5r27`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/yagv5r27).
+
+Training diagnostics: Training accuracy was 0.457833 and training macro F1 was 0.369259. The checkpoint is still measured once through the aggregate-only black-box interface for completeness.
+
 Analysis: Even the smaller direct augmentation reduced both metrics. Direct augmentation is rejected. The next intervention removes the engineered required-argument cue while preserving all raw tool schemas.
 
 ## EXP-20261020-049
