@@ -3,7 +3,11 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "A weighted frozen ensemble that emphasizes seed21 may improve both black-box accuracy and macro F1 over seed21 alone.",
-  "active_experiment": null,
+  "active_experiment": {
+    "pid": 22832,
+    "command": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-fixedsplit-seed21-len4096", "--checkpoint", "outputs/clean-validation-fixedsplit-seed20-len4096", "--checkpoint", "outputs/clean-validation-fixedsplit-seed22-len4096", "--weight", "0.6", "--weight", "0.2", "--weight", "0.2", "--output", "outputs/blackbox-test-weighted-seed21.json"],
+    "started_at": "2026-10-20T10:26:00+00:00"
+  },
   "worker_command": [
     "python",
     "-u",
@@ -21,8 +25,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T10:25:00+00:00",
-  "last_action": "Black-box seed21 evaluation completed with W&B run cwcy4vgu. Added weighted-logit support and queued a seed21-dominant frozen ensemble.",
+  "last_heartbeat": "2026-10-20T10:26:00+00:00",
+  "last_action": "Launched aggregate-only black-box evaluation for seed21-dominant weighted frozen ensemble pid 22832.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
