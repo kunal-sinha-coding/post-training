@@ -348,6 +348,8 @@ Do not enter an idle conversational state waiting for user instructions when the
 
 ## 9. Five-Minute Watchdog — Mandatory
 
+Before relying on the watchdog, perform a proactive failure-mode audit. Check how the monitor detects live processes, handles zombie or orphaned workers, validates and atomically updates state, survives malformed state, handles its own termination, avoids duplicate GPU workers, and confirms that recovery actually launches the intended command. Add a durable regression test or equivalent manual simulation for each discovered failure mode, and record the fix before continuing unattended research.
+
 Implement a persistent watchdog that checks research activity **every five minutes**.
 
 The watchdog must inspect the operating-system process state, not only whether the process identifier exists. Treat zombie, defunct, exited, and unreapable worker states as not running. Validate the research state JSON before each check and write state updates atomically so a malformed state file cannot disable recovery. Test the watchdog by simulating a completed or zombie worker and confirming that it starts the next authorized experiment.

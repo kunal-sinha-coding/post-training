@@ -5501,3 +5501,4 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-20 Launched W&B-logged aggregate-only black-box evaluation for the 0.8 seed21 weighted ensemble with the required-field inference rule, pid 23876.
 2026-10-20 Fixed validation_watchdog.py so zombie processes are not treated as active workers and are not adopted during recovery. This prevents completed workers from blocking the five-minute restart policy.
 2026-10-20 Updated auto-research-prompt.md to require OS process-state checks for zombie workers, atomic state validation, and a simulated recovery test.
+2026-10-20 Updated auto-research-prompt.md to require a proactive failure-mode audit before unattended monitoring, including monitor self-termination, orphan workers, malformed state, duplicate workers, and recovery verification.
