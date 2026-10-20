@@ -20,7 +20,9 @@ from datasets import load_dataset
 
 from experiments.train_when2call_jina import (
     DATASET_NAME,
+    LABEL_TO_ID,
     LABELS,
+    Example,
     JinaSequenceClassifier,
     autocast_context,
     batch_metrics,
@@ -28,6 +30,7 @@ from experiments.train_when2call_jina import (
     infer_action_label,
     prepare_train_examples,
     tokenize_examples,
+    tools_text,
 )
 import experiments.train_when2call_jina as jina_training
 from transformers import AutoConfig, AutoModel, AutoTokenizer
@@ -91,6 +94,18 @@ def add_argument_cues(examples: list) -> list:
     return examples
 
 
+def prepare_rejected_examples(rows: object) -> list[Example]:
+    """Create training-only examples labeled from rejected response content."""
+    # Reuse the same question and tool context while testing whether rejected labels repair direct-class sparsity.
+    examples = []
+    for index, row in enumerate(rows):
+        user_text = "\n".join(message["content"] for message in row["messages"] if message["role"] == "user")
+        label = LABEL_TO_ID[infer_action_label(row["rejected_response"]["content"])]
+        text = f"Question: {user_text}\nAvailable tools:\n{tools_text(row['tools'])}"
+        examples.append(Example(text, label, f"rejected-{index}"))
+    return examples
+
+
 def load_model(device: torch.device, max_length: int) -> tuple[torch.nn.Module, object]:
     """Load the cached local Jina encoder with a fresh four class head."""
     # Recreate the compact encoder from the complete local checkpoint under the two billion parameter limit.
@@ -148,6 +163,7 @@ def main() -> int:
     parser.add_argument("--seed", type=int, default=20261020)
     parser.add_argument("--split-seed", type=int, default=None)
     parser.add_argument("--max-length", type=int, default=8192)
+    parser.add_argument("--include-rejected-examples", action="store_true")
     args = parser.parse_args()
     # Open a W&B run before loading data so failures and completed metrics are both tracked.
     import wandb
@@ -172,6 +188,9 @@ def main() -> int:
     examples = prepare_train_examples(rows)
     split_seed = seed if args.split_seed is None else args.split_seed
     train, development = split_examples(examples, 0.2, split_seed)
+    # Add rejected-response supervision only to training after the development split is frozen.
+    if args.include_rejected_examples:
+        train.extend(prepare_rejected_examples(rows))
     if args.omit_tool_schemas:
         remove_tool_schemas(train)
         remove_tool_schemas(development)
@@ -212,6 +231,7 @@ def main() -> int:
         "loss_function": args.loss_function,
         "omit_tool_schemas": args.omit_tool_schemas,
         "add_argument_cues": args.add_argument_cues,
+        "include_rejected_examples": args.include_rejected_examples,
         "device": str(device),
     }
     (args.output_dir / "metrics.json").write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")

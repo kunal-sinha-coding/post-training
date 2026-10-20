@@ -304,3 +304,11 @@ Analysis: The ensemble improved accuracy by 0.014444 over the strongest individu
 
 Decision: Freeze the three-seed logit ensemble and perform the one authorized official test measurement. Do not use the resulting test metrics for further candidate selection.
 
+## EXP-20261020-023
+
+Timestamp: 2026-10-20. The ensemble reached 0.962778 validation accuracy and 0.722337 macro F1, so the user threshold is not met because macro F1 is below 0.90. The official test evaluation remains locked.
+
+Next hypothesis: The low macro F1 is driven by a train and evaluation label mismatch. The chosen training responses contain only two inferred `direct` examples, while rejected responses contain 2,736 inferred `direct` examples. Adding rejected-response examples as training-only supervision may repair the missing direct class and raise macro F1.
+
+Planned setup: Use the fixed `split_seed=20261021`, seed 20261022, argument cues, 4,096 tokens, cross entropy, and one epoch. Add rejected examples only after freezing the development split. W&B logging is mandatory. The official test split will not be loaded.
+
