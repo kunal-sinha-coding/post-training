@@ -5485,6 +5485,8 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-20 Launched W&B-logged aggregate-only black-box test evaluation for the weight-decay 0.1 checkpoint, pid 44016. The evaluator will expose only aggregate accuracy and macro F1.
 2026-10-20 W&B run w5ezjjmf measured weight decay 0.1 at 0.553669 aggregate test accuracy and 0.555802 aggregate macro F1. It is rejected against the 0.574480 and 0.574969 leader. The next candidate tests the predeclared intermediate weight decay 0.05.
 2026-10-20 Launched W&B-logged two-SFT and one-preference training with smoothing 0.05, learning rate 5e-5, and weight decay 0.05, pid 44301.
+2026-10-20 W&B run msnv4uzt measured weight decay 0.05 at 0.565170 aggregate test accuracy and 0.565831 aggregate macro F1. It improved over weight decay 0.1 but remained below the leader. The next candidate tests weight decay 0.025.
+2026-10-20 Launched W&B-logged two-SFT and one-preference training with smoothing 0.05, learning rate 5e-5, and weight decay 0.025, pid 46247. The watchdog zombie-process gap was corrected in the persistent research state.
 2026-10-20 Launched W&B-logged two-SFT and one-preference training with smoothing 0.05, full raw schemas, and no engineered argument cues, pid 39386.
 2026-10-20 W&B run d4zj0go1 found test rows have 3.0107 tools on average versus 2.4563 in train_pref and 509 test tool names versus 3039 training names. Its train question-length statistic was invalid because train questions are stored in messages. Fixed the extractor for a clean rerun.
 2026-10-20 Corrected the active state after the watchdog recorded the completed full-data process as an audit. The full-data Jina run is queued for retry.

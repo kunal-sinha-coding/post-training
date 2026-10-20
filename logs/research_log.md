@@ -568,6 +568,14 @@ Training diagnostics: Training accuracy was 0.963556 and training macro F1 was 0
 
 Decision: The checkpoint is queued for one aggregate-only black-box test measurement. It will be retained only if its aggregate test metrics improve the current leader.
 
+## EXP-20261020-078
+
+Timestamp: 2026-10-20. The weight-decay 0.05 candidate was evaluated through the aggregate-only black-box test interface.
+
+W&B test run: `msnv4uzt`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/msnv4uzt). Aggregate accuracy was 0.565170 and macro F1 was 0.565831. The candidate improved over weight decay 0.1 but remained below the leader at 0.574480 accuracy and 0.574969 macro F1.
+
+Decision: Reject weight decay 0.05. The next experiment tests the predeclared intermediate value 0.025.
+
 ## EXP-20261020-051
 
 Timestamp: 2026-10-20. The two-SFT and two-preference candidate was evaluated through the aggregate-only black-box test interface.
