@@ -5317,3 +5317,5 @@ Completed EXP-20261020-002. Pairwise ranking reduced development accuracy to 0.9
 The training label audit found balanced chosen labels but 2,736 rejected responses inferred as `direct`. Raw pairwise ranking therefore adds a strong negative target for a class that is almost absent among chosen responses. Class weighting is not supported by the evidence. The next experiment will test a tool schema input ablation.
 
 Completed EXP-20261020-003. Removing tool schemas reduced development accuracy to 0.590000 and macro F1 to 0.374995. The experiment was rejected. Tool definitions are necessary evidence, so the next experiment preserves schemas and adds explicit required argument cues.
+
+Completed EXP-20261020-004 and EXP-20261020-005. Explicit required argument cues improved validation accuracy and macro F1 across two seeds. The seed 20261021 run reached 0.948333 accuracy and 0.711410 macro F1. Promoted it as the current validation leader and selected a separate calibration slice experiment next.

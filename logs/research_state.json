@@ -10,8 +10,8 @@
     "Measure class weighting and calibration on the clean split.",
     "Evaluate ensembles only after freezing a validation-selected candidate."
   ],
-  "best_validation": {"accuracy": 0.9366666666666666, "macro_f1": 0.7030322841670513, "artifact": "outputs/clean-validation-baseline/metrics.json"},
+  "best_validation": {"accuracy": 0.9483333333333334, "macro_f1": 0.7114095720310705, "artifact": "outputs/clean-validation-argument-cues-seed21/metrics.json"},
   "last_heartbeat": "2026-10-20T08:20:00+00:00",
-  "last_action": "Rejected EXP-20261020-003 schema removal and selected an explicit argument cue experiment.",
+  "last_action": "Promoted argument cues after two seed improvements and selected a separate calibration slice experiment.",
   "stop_command": "STOP"
 }

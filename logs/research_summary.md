@@ -19,3 +19,5 @@ EXP-20261020-002 rejected pairwise ranking. Development accuracy was 0.903889 an
 The label audit found balanced chosen labels: 2,997 `cannot_answer`, 3,001 `request_for_info`, 3,000 `tool_call`, and 2 `direct`. Rejected responses contain 2,736 `direct` labels. This explains why raw pairwise ranking regressed and removes class weighting from the immediate plan. The next test will examine whether tool schema text causes shortcut errors.
 
 EXP-20261020-003 rejected schema removal. Development accuracy was 0.590000 and macro F1 was 0.374995. Tool definitions are necessary evidence. The next experiment will preserve schemas and add explicit required argument names.
+
+The required argument cue configuration improved both metrics across two seeds. The current best validation result is 0.948333 accuracy and 0.711410 macro F1. The next experiment will test calibration using a separate training calibration slice.

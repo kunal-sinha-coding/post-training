@@ -55,3 +55,27 @@ Results: Training loss was 0.787945. Training accuracy was 0.640278 and training
 Analysis: The hypothesis was rejected. Removing tool schemas reduced development accuracy by 0.346667 and macro F1 by 0.328038 relative to the clean cross entropy baseline. The model needs schema information. The large increase in `cannot_answer` to `tool_call` errors shows that schemas carry important evidence for whether a tool is available. The experiment is rejected for the leaderboard.
 
 Next action: Keep schemas and test a stable prompt that adds explicit required argument names derived from each schema. This preserves tool identity while making the completeness signal easier for the encoder to represent.
+
+## EXP-20261020-004
+
+Timestamp: 2026-10-20. The run completed on the fixed seed 20261020 split.
+
+Hypothesis: Adding a short list of required argument names after each full tool schema will make request completeness easier to encode while preserving schema evidence.
+
+Setup: This used the same cached `train_pref` data, deterministic split, Jina warm start, one epoch, batch size 8, learning rate 5e-5, and cross entropy as EXP-20261020-001. The input added `Required argument names: tool(field1,field2)` cues. The official test split was not loaded. Code revision: f64b1462.
+
+Results: Development accuracy was 0.938889 and macro F1 was 0.704172. Development F1 was 0.976092 for `cannot_answer`, 0.930891 for `request_for_info`, 0.909705 for `tool_call`, and 0.000000 for `direct`. The confusion matrix was [[592, 0, 7, 0], [2, 559, 39, 0], [19, 42, 539, 0], [1, 0, 0, 0]].
+
+Analysis: This was a small improvement over the baseline of 0.002222 accuracy and 0.001140 macro F1. The result was promising but required another seed because the gain was small.
+
+## EXP-20261020-005
+
+Timestamp: 2026-10-20. The replication completed with seed 20261021.
+
+Setup: The same argument cue change was evaluated with a new deterministic split and training order. All other configuration remained fixed. The official test split was not loaded. Code revision: 83531d01.
+
+Results: Development accuracy was 0.948333 and macro F1 was 0.711410. Development F1 was 0.980913 for `cannot_answer`, 0.937815 for `request_for_info`, 0.926910 for `tool_call`, and 0.000000 for `direct`. The confusion matrix was [[591, 1, 7, 0], [3, 558, 39, 0], [11, 31, 558, 0], [1, 0, 0, 0]].
+
+Analysis: The argument cue improved both metrics across two seeds. Relative to the baseline, the seed 20261021 result was 0.011667 higher in accuracy and 0.008377 higher in macro F1. The improvement is supported for the common classes, but the direct class remains unsupported by training data. The argument cue configuration is the current validation leader.
+
+Next action: Evaluate a validation-only calibration of the leader using a separate calibration slice from the training partition. Select the calibration rule without using development labels, then measure the frozen rule on development.
