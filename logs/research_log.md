@@ -758,6 +758,16 @@ Results: Black-box test accuracy was 0.555860 and macro F1 was 0.556464.
 
 Analysis: The hybrid objective was below the smoothing 0.05 cross-entropy leader and is rejected. The next evaluation applies a fixed required-field inference rule to the smoothing 0.05 checkpoint.
 
+## EXP-20261020-072
+
+Timestamp: 2026-10-20. The required-field inference rule was evaluated through the aggregate-only black-box test interface.
+
+Setup: The smoothing 0.05 checkpoint was evaluated once with the frozen required-field rule. W&B test run: `ksqspcda`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/ksqspcda). Only aggregate accuracy and macro F1 were returned.
+
+Results: The base checkpoint returned 0.574480 accuracy and 0.574969 macro F1. The rule-adjusted aggregate returned 0.570372 accuracy and 0.571751 macro F1.
+
+Analysis: The required-field rule is rejected. The next candidate adds all rejected-response examples as auxiliary supervision to the best smoothing recipe.
+
 Analysis: Even the smaller direct augmentation reduced both metrics. Direct augmentation is rejected. The next intervention removes the engineered required-argument cue while preserving all raw tool schemas.
 
 ## EXP-20261020-049
