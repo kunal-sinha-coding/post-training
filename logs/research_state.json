@@ -3,8 +3,26 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "A second train_sft context adaptation epoch may improve robustness further without changing the labeled objective or model architecture.",
-  "active_experiment": null,
-  "worker_command": null,
+  "active_experiment": {
+    "pid": 31674,
+    "command": [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_frozen_when2call_ensemble_test",
+      "--checkpoint",
+      "outputs/clean-validation-staged-sft2-jina-seed21-len4096",
+      "--output",
+      "outputs/clean-validation-staged-sft2-jina-seed21-blackbox.json"
+    ],
+    "started_at": "2026-10-20T13:05:00+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_frozen_when2call_ensemble_test"
+  ],
   "experiment_queue": [
     "Audit and baseline the clean train_pref development split.",
     "Compare inferred-label cross entropy and pairwise training on the same split.",
@@ -16,8 +34,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T13:00:00+00:00",
-  "last_action": "Two-epoch staged adaptation completed in W&B run 1igvarg9. The frozen checkpoint is queued for aggregate-only black-box test measurement.",
+  "last_heartbeat": "2026-10-20T13:05:00+00:00",
+  "last_action": "Started W&B-logged aggregate-only black-box test measurement for the two-epoch staged adaptation checkpoint, pid 31674.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
