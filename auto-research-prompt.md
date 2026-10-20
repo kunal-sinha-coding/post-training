@@ -352,6 +352,8 @@ On every five-minute watchdog tick, perform the failure-mode audit again. Check 
 
 Implement a persistent watchdog that checks research activity **every five minutes**.
 
+The watchdog itself must be supervised by an independent persistent supervisor. The supervisor must detect watchdog exit, crash, or stale monitor heartbeat, restart the watchdog automatically, record the reason and restart time, and verify that five-minute checks resume. A watchdog without an independent supervisor is not sufficient.
+
 The watchdog must inspect the operating-system process state, not only whether the process identifier exists. Treat zombie, defunct, exited, and unreapable worker states as not running. Validate the research state JSON before each check and write state updates atomically so a malformed state file cannot disable recovery. Test the watchdog by simulating a completed or zombie worker and confirming that it starts the next authorized experiment.
 
 This must be an actual executable monitoring mechanism, not merely an instruction in your reasoning.
