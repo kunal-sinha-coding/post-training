@@ -5515,3 +5515,5 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-20 Prepared the next generalization experiment while the backup worker runs. Added compact tool-schema input handling that preserves tool names and required fields while removing verbose schema details. Added the same frozen transform to aggregate-only test evaluation.
 2026-10-20 The prior worker became a zombie. The primary loop immediately launched compact-schema W&B training as pid 51614 and updated the durable state.
 2026-10-20 W&B run j8p5li1g measured compact schemas at 0.492059 aggregate test accuracy and 0.490390 aggregate macro F1. It is rejected. The next candidate tests label smoothing 0.075.
+2026-10-20 W&B run naqxg2ca measured label smoothing 0.075 at 0.540800 aggregate test accuracy and 0.541714 aggregate macro F1. It is rejected. The next candidate removes preference training after two SFT epochs.
+2026-10-20 Launched W&B-logged two-SFT training without preference training, using full schemas, argument cues, smoothing 0.05, and pid 53698. The watchdog also launched fallback pid 53740 before state correction.

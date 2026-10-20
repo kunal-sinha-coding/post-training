@@ -2,16 +2,16 @@
   "status": "active",
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "Compact tool schemas may improve shifted test generalization by preserving action structure while reducing memorization of verbose schema details.",
+  "current_hypothesis": "Two SFT adaptation epochs without preference training may generalize better than the preference objective under the observed shift.",
   "active_experiment": {
-    "pid": 51614,
+    "pid": 53698,
     "command": [
       "python",
       "-u",
       "-m",
       "experiments.clean_validation_baseline"
     ],
-    "started_at": "2026-10-20T20:58:00+00:00"
+    "started_at": "2026-10-20T21:20:00+00:00"
   },
   "worker_command": [
     "python",
@@ -30,8 +30,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T20:58:00+00:00",
-  "last_action": "Started W&B-logged compact-schema training with two SFT epochs and one preference epoch, pid 51614.",
+  "last_heartbeat": "2026-10-20T21:20:00+00:00",
+  "last_action": "Started W&B-logged two-SFT training without preference training, pid 53698.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
