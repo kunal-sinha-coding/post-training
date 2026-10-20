@@ -5395,6 +5395,7 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-20 W&B run y5xgvnwb showed MiniLM training completed, then failed because the development split was not tokenized before diagnostics. Added the missing tokenization step.
 2026-10-20 Launched the corrected W&B-logged aggregate-only MiniLM candidate as pid 26971.
 2026-10-20 W&B run w0a2c260 completed MiniLM one-epoch training at 0.517251 test accuracy and 0.512505 macro F1. It is below the Jina leader. The next candidate uses three MiniLM epochs.
+2026-10-20 W&B run yub1a4vo completed MiniLM three-epoch training at 0.504381 test accuracy and 0.487968 macro F1. It is rejected. The next candidate trains the established Jina architecture on all train_pref examples.
 2026-10-20 Corrected the active state after the watchdog retained the completed one-epoch MiniLM record. The next candidate is three MiniLM epochs.
 2026-10-20 Launched W&B-logged aggregate-only three-epoch MiniLM candidate pid 27563.
 2026-10-20 Launched the corrected W&B-logged aggregate-only MiniLM candidate as pid 26498.

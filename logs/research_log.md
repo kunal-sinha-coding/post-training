@@ -480,3 +480,13 @@ Results: Validation accuracy was 0.743889 and validation macro F1 was 0.554655. 
 
 Decision: The one-epoch MiniLM candidate is below the current Jina leader. Its weak validation result suggests underfitting, so the next experiment increases MiniLM training to three epochs while keeping the architecture, data, and truncation fixed.
 
+## EXP-20261020-040
+
+Timestamp: 2026-10-20. The three-epoch MiniLM candidate completed through the aggregate-only black-box test interface.
+
+Setup: The cached MiniLM encoder, `train_pref` data, 512-token truncation, and learning rate 2e-5 were unchanged from EXP-039. Only the epoch count changed from one to three. W&B run: `yub1a4vo`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/yub1a4vo).
+
+Results: Validation accuracy was 0.776667 and validation macro F1 was 0.579669. The black-box test returned 0.504381 accuracy and 0.487968 macro F1.
+
+Analysis: More MiniLM optimization improved validation but reduced test metrics. This is evidence of representation mismatch or overfitting, not underfitting alone. MiniLM is rejected. The next experiment uses all labeled `train_pref` examples with the established Jina architecture to test whether additional training coverage improves the black-box distribution.
+
