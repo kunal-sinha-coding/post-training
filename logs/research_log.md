@@ -398,3 +398,15 @@ Results: The unmodified ensemble reached 0.962778 accuracy and 0.722337 full mac
 
 Analysis: The no-tool-match condition is not sufficient evidence for a direct label. The direct and tool-call boundary requires stronger semantic evidence, and the single direct validation example is too small to tune a rule. The fallback is rejected. The next experiment will test whether a broader training-only source improves robustness on a new validation partition without using official test labels.
 
+## EXP-20261020-032
+
+Timestamp: 2026-10-20. The W&B-logged bounded SFT auxiliary-source experiment completed.
+
+Hypothesis: Adding a small, class-balanced sample from `train_sft` may improve robustness while preserving the `train_pref` class boundary.
+
+Setup: The fixed `train_pref` `split_seed=20261021` development partition was frozen before adding 500 `cannot_answer`, 500 `request_for_info`, and the one available `direct` SFT example to training. Argument cues, seed 20261022, one cross-entropy epoch, and max length 4096 were used. The official test split was not loaded. W&B run: `evg908f5`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/evg908f5).
+
+Results: Training accuracy was 0.964638 and macro F1 was 0.722598. Development accuracy was 0.931111 and full macro F1 was 0.698357, below the 0.948333 and 0.711448 baseline. The model still predicted zero direct examples.
+
+Analysis: The bounded SFT source did not improve the held-out development result. Its label composition does not include tool-call examples and therefore changes the class boundary in an unbalanced way even when the sampled classes are balanced among available labels. The intervention is rejected. The frozen ensemble remains the strongest validation candidate. The SFT candidate is now frozen for one aggregate-only black-box test measurement under the revised user rule.
+
