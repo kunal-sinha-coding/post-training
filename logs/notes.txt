@@ -5468,6 +5468,7 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-20 W&B run 336pl3aq completed the hybrid objective at 0.930667 training accuracy and 0.698004 training macro F1. The frozen checkpoint is ready for aggregate-only black-box evaluation.
 2026-10-20 Launched W&B-logged aggregate-only black-box test evaluation for the hybrid objective checkpoint, pid 41402.
 2026-10-20 W&B run dmrw4w1v evaluated the cross-entropy SFT and pairwise hybrid at 0.555860 aggregate test accuracy and 0.556464 aggregate macro F1. It is rejected. The next measurement applies the frozen required-field inference rule to the smoothing 0.05 leader.
+2026-10-20 Launched W&B-logged aggregate-only required-field inference evaluation for the smoothing 0.05 checkpoint, pid 41724.
 2026-10-20 Launched W&B-logged two-SFT and one-preference training with smoothing 0.05, full raw schemas, and no engineered argument cues, pid 39386.
 2026-10-20 W&B run d4zj0go1 found test rows have 3.0107 tools on average versus 2.4563 in train_pref and 509 test tool names versus 3039 training names. Its train question-length statistic was invalid because train questions are stored in messages. Fixed the extractor for a clean rerun.
 2026-10-20 Corrected the active state after the watchdog recorded the completed full-data process as an audit. The full-data Jina run is queued for retry.
