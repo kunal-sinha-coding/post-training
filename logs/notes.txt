@@ -5487,6 +5487,7 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-20 Launched W&B-logged two-SFT and one-preference training with smoothing 0.05, learning rate 5e-5, and weight decay 0.05, pid 44301.
 2026-10-20 W&B run msnv4uzt measured weight decay 0.05 at 0.565170 aggregate test accuracy and 0.565831 aggregate macro F1. It improved over weight decay 0.1 but remained below the leader. The next candidate tests weight decay 0.025.
 2026-10-20 Launched W&B-logged two-SFT and one-preference training with smoothing 0.05, learning rate 5e-5, and weight decay 0.025, pid 46247. The watchdog zombie-process gap was corrected in the persistent research state.
+2026-10-20 W&B run xbzt9krv measured weight decay 0.025 at 0.560515 aggregate test accuracy and 0.563200 aggregate macro F1. It is rejected. The next candidate tests weight decay 0.015.
 2026-10-20 Fixed validation_watchdog.py so zombie processes are not treated as active workers and are not adopted during recovery. This prevents completed workers from blocking the five-minute restart policy.
 2026-10-20 Launched W&B-logged two-SFT and one-preference training with smoothing 0.05, full raw schemas, and no engineered argument cues, pid 39386.
 2026-10-20 W&B run d4zj0go1 found test rows have 3.0107 tools on average versus 2.4563 in train_pref and 509 test tool names versus 3039 training names. Its train question-length statistic was invalid because train questions are stored in messages. Fixed the extractor for a clean rerun.
@@ -5504,3 +5505,4 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-20 Updated auto-research-prompt.md to require a proactive failure-mode audit before unattended monitoring, including monitor self-termination, orphan workers, malformed state, duplicate workers, and recovery verification.
 2026-10-20 Clarified auto-research-prompt.md so the full failure-mode audit runs on every five-minute watchdog tick, including worker state, duplicates, heartbeat, command consistency, monitor health, and recovery validation.
 2026-10-20 Fixed validation_watchdog.py to tolerate a process disappearing between process-list inspection and state inspection. The prior uncaught ps race caused the watchdog to exit during recovery.
+2026-10-20 Corrected duplicate state entries after launching the weight-decay 0.015 rerun. Validated JSON and verified watchdog pid 50060 and training pid 49690 are active.
