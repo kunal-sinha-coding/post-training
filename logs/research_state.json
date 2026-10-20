@@ -3,8 +3,26 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "A smaller rejected direct augmentation of 10 examples may repair direct sparsity without the distribution shift caused by 100 examples.",
-  "active_experiment": null,
-  "worker_command": null,
+  "active_experiment": {
+    "pid": 39011,
+    "command": [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_frozen_when2call_ensemble_test",
+      "--checkpoint",
+      "outputs/clean-validation-staged-sft2-smooth005-direct10-jina-seed21-len4096",
+      "--output",
+      "outputs/clean-validation-staged-sft2-smooth005-direct10-jina-seed21-blackbox.json"
+    ],
+    "started_at": "2026-10-20T17:36:00+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_frozen_when2call_ensemble_test"
+  ],
   "experiment_queue": [
     "Audit and baseline the clean train_pref development split.",
     "Compare inferred-label cross entropy and pairwise training on the same split.",
@@ -16,8 +34,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T17:35:00+00:00",
-  "last_action": "10-example direct augmentation training completed in W&B run l15a4jhh. The frozen checkpoint is queued for aggregate-only black-box measurement.",
+  "last_heartbeat": "2026-10-20T17:36:00+00:00",
+  "last_action": "Started W&B-logged aggregate-only black-box test measurement for the 10-example direct augmentation checkpoint, pid 39011.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
