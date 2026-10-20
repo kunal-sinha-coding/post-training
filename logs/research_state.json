@@ -4,24 +4,30 @@
   "protocol": "clean_validation_v1",
   "current_hypothesis": "A second train_sft context adaptation epoch may improve robustness further without changing the labeled objective or model architecture.",
   "active_experiment": {
-    "pid": 30529,
+    "pid": 30856,
     "command": [
       "python",
       "-u",
       "-m",
-      "experiments.evaluate_frozen_when2call_ensemble_test",
-      "--checkpoint",
-      "outputs/clean-validation-staged-sft-jina-seed21-len4096",
-      "--output",
-      "outputs/clean-validation-staged-sft-jina-seed21-blackbox.json"
+      "experiments.clean_validation_baseline",
+      "--output-dir",
+      "outputs/clean-validation-staged-sft2-jina-seed21-len4096",
+      "--seed",
+      "20261021",
+      "--max-length",
+      "4096",
+      "--add-argument-cues",
+      "--train-all",
+      "--sft-pretrain-epochs",
+      "2"
     ],
-    "started_at": "2026-10-20T12:41:00+00:00"
+    "started_at": "2026-10-20T12:50:00+00:00"
   },
   "worker_command": [
     "python",
     "-u",
     "-m",
-    "experiments.evaluate_frozen_when2call_ensemble_test"
+    "experiments.clean_validation_baseline"
   ],
   "experiment_queue": [
     "Audit and baseline the clean train_pref development split.",
@@ -34,8 +40,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T12:48:00+00:00",
-  "last_action": "Black-box W&B run 71up0hgk completed at 0.542716 accuracy and 0.544268 macro F1. The next candidate uses two SFT adaptation epochs.",
+  "last_heartbeat": "2026-10-20T12:50:00+00:00",
+  "last_action": "Started W&B-logged two-epoch SFT adaptation followed by train_pref fine-tuning, pid 30856.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
