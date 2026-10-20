@@ -20,7 +20,7 @@ from transformers import AutoModel, AutoTokenizer
 from experiments.clean_validation_baseline import split_examples
 from experiments.train_when2call_jina import LABELS, JinaSequenceClassifier, batch_metrics, collate, metric_values, prepare_test_examples, prepare_train_examples
 
-MINILM_PATH = "/workspace/.cache/huggingface/hub/models--nreimers--MiniLM-L6-H384-uncased/snapshots/3276f0fac9d818781d7a1327b3ff818fc4e643c0"
+MINILM_MODEL = "nreimers/MiniLM-L6-H384-uncased"
 
 
 def load_cached_rows(path: Path) -> object:
@@ -73,9 +73,9 @@ def main() -> int:
     test_path = Path("/workspace/.cache/huggingface/datasets/nvidia___when2_call/test/0.0.0/0582f7749df63a96fdc3070932e83e72396ace53/when2_call-mcq.arrow")
     examples = prepare_train_examples(load_cached_rows(train_path))
     train, development = split_examples(examples, 0.2, 20261021)
-    tokenizer = AutoTokenizer.from_pretrained(MINILM_PATH, trust_remote_code=True)
+    tokenizer = AutoTokenizer.from_pretrained(MINILM_MODEL, trust_remote_code=True, force_download=True)
     tokenizer.model_max_length = 512
-    model = JinaSequenceClassifier(AutoModel.from_pretrained(MINILM_PATH, trust_remote_code=True), len(LABELS)).to(device)
+    model = JinaSequenceClassifier(AutoModel.from_pretrained(MINILM_MODEL, trust_remote_code=True, force_download=True), len(LABELS)).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.learning_rate)
     losses = []
     for epoch in range(args.epochs):
