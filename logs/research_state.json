@@ -2,22 +2,25 @@
   "status": "active",
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The argument-cue classifier will show its training-seed variance on the fixed split with seed 20261022 at the selected 4096-token context.",
+  "current_hypothesis": "A bounded class-logit bias fitted only on a 10 percent training calibration slice can improve the fixed-split 4096-token seed-20261022 model without using development labels for fitting.",
   "active_experiment": null,
   "worker_command": [
     "python",
     "-u",
     "-m",
-    "experiments.clean_validation_baseline",
-    "--add-argument-cues",
+    "experiments.calibrate_clean_validation",
+    "--checkpoint",
+    "outputs/clean-validation-fixedsplit-seed22-len4096",
+    "--output",
+    "outputs/clean-validation-fixedsplit-calibration-seed22.json",
     "--seed",
     "20261022",
     "--split-seed",
     "20261021",
+    "--calibration-fraction",
+    "0.1",
     "--max-length",
-    "4096",
-    "--output-dir",
-    "outputs/clean-validation-fixedsplit-seed22-len4096"
+    "4096"
   ],
   "experiment_queue": [
     "Audit and baseline the clean train_pref development split.",
@@ -30,8 +33,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T09:12:45.005282+00:00",
-  "last_action": "Recorded W&B run k77l5wan at 0.947778 accuracy and 0.711076 macro F1. Queued fixed-split seed-20261022 replication.",
+  "last_heartbeat": "2026-10-20T09:16:10.030460+00:00",
+  "last_action": "Recorded W&B run 7hposvnc at 0.948333 accuracy and 0.711448 macro F1. Added W&B instrumentation to calibration and queued a training-only calibration test.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }

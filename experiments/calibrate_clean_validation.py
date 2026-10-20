@@ -7,7 +7,9 @@ examples, and measures the frozen rule on development examples only.
 from __future__ import annotations
 
 import argparse
+import atexit
 import json
+import os
 import random
 from pathlib import Path
 
@@ -16,13 +18,14 @@ from transformers import AutoConfig, AutoModel, AutoTokenizer
 
 from experiments.clean_validation_baseline import add_argument_cues, load_training_rows, split_examples
 from experiments.train_when2call_jina import LABELS, JinaSequenceClassifier, autocast_context, collate, metric_values
+import experiments.train_when2call_jina as jina_training
 
 
-def load_checkpoint(checkpoint: Path, device: torch.device) -> tuple[torch.nn.Module, object]:
+def load_checkpoint(checkpoint: Path, device: torch.device, max_length: int) -> tuple[torch.nn.Module, object]:
     """Load the saved argument cue classifier and its local tokenizer."""
     # Rebuild the encoder from local configuration so calibration does not require a network call.
     tokenizer = AutoTokenizer.from_pretrained("outputs/when2call-jina-v2-small/latest", trust_remote_code=True)
-    tokenizer.model_max_length = 8192
+    tokenizer.model_max_length = max_length
     config = AutoConfig.from_pretrained(checkpoint / "encoder_config.json", trust_remote_code=True)
     config._name_or_path = str(Path("outputs/when2call-jina-v2-small/latest").resolve())
     config.attn_implementation = "torch"
@@ -72,23 +75,40 @@ def main() -> int:
     """Fit calibration on training data and evaluate it on the held out development split."""
     # Keep the split and checkpoint fixed to the current validation leader.
     parser = argparse.ArgumentParser()
-    parser.add_argument("--checkpoint", type=Path, default=Path("outputs/clean-validation-argument-cues-seed21"))
+    parser.add_argument("--checkpoint", type=Path, default=Path("outputs/clean-validation-fixedsplit-seed22-len4096"))
     parser.add_argument("--output", type=Path, default=Path("outputs/clean-validation-calibration.json"))
-    parser.add_argument("--seed", type=int, default=20261021)
+    parser.add_argument("--seed", type=int, default=20261022)
+    parser.add_argument("--split-seed", type=int, default=20261021)
     parser.add_argument("--calibration-fraction", type=float, default=0.1)
+    parser.add_argument("--max-length", type=int, default=4096)
     args = parser.parse_args()
+    # Open a W&B run before data loading so calibration failures and metrics are tracked.
+    import wandb
+
+    if not os.getenv("WANDB_API_KEY"):
+        raise RuntimeError("WANDB_API_KEY is required for clean validation calibration.")
+    run = wandb.init(
+        project=os.getenv("WANDB_PROJECT", "when2call-research"),
+        entity=os.getenv("WANDB_ENTITY"),
+        name=f"clean-calibration-seed{args.seed}-split{args.split_seed}-len{args.max_length}",
+        job_type="clean-validation-calibration",
+        config=vars(args),
+    )
+    atexit.register(run.finish)
     seed = args.seed
     random.seed(seed)
     torch.manual_seed(seed)
     rows = load_training_rows()
-    examples = split_examples(__import__("experiments.train_when2call_jina", fromlist=["prepare_train_examples"]).prepare_train_examples(rows), 0.2, seed)
+    examples = split_examples(__import__("experiments.train_when2call_jina", fromlist=["prepare_train_examples"]).prepare_train_examples(rows), 0.2, args.split_seed)
     train, development = examples
     add_argument_cues(train)
     add_argument_cues(development)
     calibration_count = max(1, round(len(train) * args.calibration_fraction))
     calibration = train[:calibration_count]
     remaining_train = train[calibration_count:]
-    tokenizer_model, tokenizer = load_checkpoint(args.checkpoint, torch.device("cuda" if torch.cuda.is_available() else "cpu"))
+    # Apply the selected context limit to the shared validation collation path.
+    jina_training.MAX_LENGTH = args.max_length
+    tokenizer_model, tokenizer = load_checkpoint(args.checkpoint, torch.device("cuda" if torch.cuda.is_available() else "cpu"), args.max_length)
     for item in calibration + remaining_train + development:
         item.token_ids = tokenizer(item.text, add_special_tokens=True, truncation=False, verbose=False)["input_ids"]
     device = next(tokenizer_model.parameters()).device
@@ -97,8 +117,11 @@ def main() -> int:
     bias = fit_bias(calibration_logits, calibration_labels)
     predictions = (development_logits + bias).argmax(dim=1).tolist()
     metrics = metric_values(development_labels.tolist(), predictions, list(range(len(LABELS))))
-    result = {"seed": seed, "calibration_fraction": args.calibration_fraction, "calibration_examples": len(calibration), "development_examples": len(development), "bias": bias.tolist(), "calibration_accuracy": float((calibration_logits + bias).argmax(dim=1).eq(calibration_labels).float().mean()), "development_metrics": metrics, "test_loaded": False, "checkpoint": str(args.checkpoint)}
+    result = {"seed": seed, "split_seed": args.split_seed, "max_length": args.max_length, "calibration_fraction": args.calibration_fraction, "calibration_examples": len(calibration), "development_examples": len(development), "bias": bias.tolist(), "calibration_accuracy": float((calibration_logits + bias).argmax(dim=1).eq(calibration_labels).float().mean()), "development_metrics": metrics, "test_loaded": False, "checkpoint": str(args.checkpoint), "wandb_run_id": run.id, "wandb_run_url": run.url}
     args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+    # Log the fitted bias and the frozen development measurement to W&B.
+    run.log({"calibration/accuracy": result["calibration_accuracy"], "development/accuracy": metrics["accuracy"], "development/macro_f1": metrics["macro_f1"]})
+    run.summary.update({"development_accuracy": metrics["accuracy"], "development_macro_f1": metrics["macro_f1"], "bias": bias.tolist()})
     print(json.dumps(result, indent=2))
     return 0
 

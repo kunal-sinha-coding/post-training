@@ -228,3 +228,17 @@ Analysis: The result is 0.001667 accuracy and 0.001052 macro F1 above the same f
 
 Decision: Retain 4,096 tokens as the current complete-input setting. The next run uses seed 20261022 on the same split to estimate training variance before testing a new intervention.
 
+## EXP-20261020-017
+
+Timestamp: 2026-10-20. The W&B-logged third fixed-split seed replication completed.
+
+Hypothesis: The argument-cue model will remain near the two-seed fixed-split range when training seed 20261022 is used at 4,096 tokens.
+
+Setup: The cached `train_pref` rows used `split_seed=20261021`, training seed 20261022, Jina warm start, cross entropy, one epoch, batch size 8, argument cues, and `max_length=4096`. W&B run: `7hposvnc`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/7hposvnc). The official test split was not loaded.
+
+Results: Training loss was 0.186572. Development accuracy was 0.948333 and macro F1 was 0.711448. Per-class F1 was 0.988294 for `cannot_answer`, 0.933769 for `request_for_info`, 0.923729 for `tool_call`, and 0.000000 for `direct`. The confusion matrix was [[591, 2, 6, 0], [0, 571, 29, 0], [5, 50, 545, 0], [1, 0, 0, 0]].
+
+Analysis: This is the highest of the three fixed-split 4,096-token seed results. The three-seed mean is 0.946667 accuracy and 0.710270 macro F1. The main stable bottleneck remains the request_for_info and tool_call boundary.
+
+Decision: Keep the 4,096-token argument-cue baseline. The next experiment fits a bounded class bias on a training-only calibration slice from this fixed split and measures the frozen rule on development.
+
