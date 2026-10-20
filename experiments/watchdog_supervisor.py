@@ -1,4 +1,4 @@
-"""Supervise the five-minute validation watchdog and restart it after failures.
+"""Supervise the 30-second validation watchdog and restart it after failures.
 
 The flow starts the watchdog, records its launch and exit, waits briefly after an exit, and starts it again.
 """
@@ -41,7 +41,7 @@ def main() -> int:
     # Keep the watchdog independent from the training worker.
     repo = Path(__file__).resolve().parents[1]
     log_path = repo / "logs/validation_supervisor.log"
-    command = [sys.executable, "-u", "-m", "experiments.validation_watchdog", "--interval-seconds", "300"]
+    command = [sys.executable, "-u", "-m", "experiments.validation_watchdog", "--interval-seconds", "30"]
     while True:
         # Adopt one existing watchdog or start one child and capture its output.
         try:

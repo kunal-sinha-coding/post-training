@@ -1,7 +1,7 @@
 """Monitor the clean When2Call research worker and recover stalled validation work.
 
-The flow reads durable state, checks the worker process and heartbeat, records each five minute
-check, and starts only the command declared in the state file when recovery is required.
+The flow reads durable state, checks the worker process and heartbeat every 30 seconds, records
+each check, and starts only the command declared in the state file when recovery is required.
 """
 from __future__ import annotations
 
@@ -100,10 +100,10 @@ def start_worker(repo: Path, state_path: Path, log_path: Path) -> int:
 
 def main() -> int:
     """Check the clean worker forever at the configured interval."""
-    # Parse paths and enforce a minimum interval that is compatible with the five minute policy.
+    # Parse paths and enforce a short minimum interval for rapid failure recovery.
     parser = argparse.ArgumentParser()
     parser.add_argument("--repo", type=Path, default=Path(__file__).resolve().parents[1])
-    parser.add_argument("--interval-seconds", type=int, default=300)
+    parser.add_argument("--interval-seconds", type=int, default=30)
     args = parser.parse_args()
     state_path = args.repo / "logs/research_state.json"
     log_path = args.repo / "logs/validation_watchdog.log"
@@ -137,7 +137,7 @@ def main() -> int:
             except Exception as error:
                 # Record a tick failure and keep the watchdog alive for the next check.
                 write_log(log_path, f"tick error {type(error).__name__}: {error}")
-            time.sleep(max(300, args.interval_seconds))
+            time.sleep(max(1, args.interval_seconds))
 
 
 if __name__ == "__main__":

@@ -346,13 +346,13 @@ If performance plateaus, investigate the plateau rather than stopping.
 
 Do not enter an idle conversational state waiting for user instructions when there is meaningful work available within the authorized scope.
 
-## 9. Five-Minute Watchdog — Mandatory
+## 9. Thirty-Second Watchdog — Mandatory
 
-On every five-minute watchdog tick, perform the failure-mode audit again. Check the operating-system state of the recorded worker, detect zombie, defunct, orphaned, or duplicate workers, validate the research state JSON, verify heartbeat and command consistency, confirm that the monitor itself is healthy, and confirm that any recovery launch uses the intended command. Do not rely only on process identifier existence or a stale state field. Record each detected failure and corrective action. Add durable regression tests or equivalent simulations for every failure mode found.
+On every 30-second watchdog tick, perform the failure-mode audit again. Check the operating-system state of the recorded worker, detect zombie, defunct, orphaned, or duplicate workers, validate the research state JSON, verify heartbeat and command consistency, confirm that the monitor itself is healthy, and confirm that any recovery launch uses the intended command. Do not rely only on process identifier existence or a stale state field. Record each detected failure and corrective action. Add durable regression tests or equivalent simulations for every failure mode found.
 
-Implement a persistent watchdog that checks research activity **every five minutes**.
+Implement a persistent watchdog that checks research activity **every 30 seconds**.
 
-The watchdog itself must be supervised by an independent persistent supervisor. The supervisor must detect watchdog exit, crash, or stale monitor heartbeat, restart the watchdog automatically, record the reason and restart time, and verify that five-minute checks resume. A watchdog without an independent supervisor is not sufficient.
+The watchdog itself must be supervised by an independent persistent supervisor. The supervisor must detect watchdog exit, crash, or stale monitor heartbeat, restart the watchdog automatically, record the reason and restart time, and verify that 30-second checks resume. A watchdog without an independent supervisor is not sufficient.
 
 Every start or restart command must be verified. After launching a process, wait for a short confirmation interval, inspect the process table, confirm the expected PID and command are alive, confirm the expected log or heartbeat changed, confirm the supervisor-to-watchdog-to-worker relationship, and record failure if any check fails. A successful shell return code is not evidence that a process started or stayed running.
 
@@ -560,7 +560,7 @@ Begin now.
 2. Audit the current data, labels, evaluation harness, and leakage risks.
 3. Summarize the strongest existing results and remaining bottlenecks.
 4. Create the persistent research log, leaderboard, and experiment state.
-5. Implement and verify the five-minute watchdog and recovery mechanism.
+5. Implement and verify the 30-second watchdog and recovery mechanism.
 6. Develop a prioritized experimental roadmap.
 7. Launch the first high-value experiment.
 8. Continue the autonomous research loop.
