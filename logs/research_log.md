@@ -490,3 +490,11 @@ Results: Validation accuracy was 0.776667 and validation macro F1 was 0.579669. 
 
 Analysis: More MiniLM optimization improved validation but reduced test metrics. This is evidence of representation mismatch or overfitting, not underfitting alone. MiniLM is rejected. The next experiment uses all labeled `train_pref` examples with the established Jina architecture to test whether additional training coverage improves the black-box distribution.
 
+## EXP-20261020-041
+
+Timestamp: 2026-10-20. The established Jina classifier was retrained on all labeled `train_pref` examples.
+
+Setup: All 9,000 cached `train_pref` examples were used for one cross-entropy epoch with seed 20261021, argument cues, and max length 4096. No overlapping development metric was reported. W&B run: `yymr31cf`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/yymr31cf).
+
+Results: Training accuracy was 0.970111 and training macro F1 was 0.727740. The checkpoint is frozen for aggregate-only black-box test evaluation. These training metrics are not a validation estimate.
+

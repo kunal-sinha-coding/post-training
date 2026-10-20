@@ -4,24 +4,14 @@
   "protocol": "clean_validation_v1",
   "current_hypothesis": "Training the established Jina classifier on all 9,000 train_pref examples may improve black-box generalization by using the withheld 20 percent of labeled training data.",
   "active_experiment": {
-    "pid": 28209,
+    "pid": 28543,
     "command": [
       "python",
       "-u",
       "-m",
-      "experiments.clean_validation_baseline",
-      "--output-dir",
-      "outputs/clean-validation-alltrain-seed21-len4096",
-      "--seed",
-      "20261021",
-      "--split-seed",
-      "20261021",
-      "--max-length",
-      "4096",
-      "--add-argument-cues",
-      "--train-all"
+      "experiments.audit_split_stability"
     ],
-    "started_at": "2026-10-20T14:10:00+00:00"
+    "started_at": "2026-10-20T10:45:12.714315+00:00"
   },
   "worker_command": [
     "python",
@@ -40,8 +30,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T14:10:00+00:00",
-  "last_action": "Relaunching full-data Jina training after fixing the null development W&B summary.",
+  "last_heartbeat": "2026-10-20T10:45:12.714338+00:00",
+  "last_action": "Watchdog adopted existing validation worker pid 28543.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
