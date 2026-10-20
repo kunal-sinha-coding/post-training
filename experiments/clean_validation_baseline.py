@@ -64,6 +64,7 @@ def load_model(device: torch.device) -> tuple[torch.nn.Module, object]:
     tokenizer = AutoTokenizer.from_pretrained(checkpoint, trust_remote_code=True)
     tokenizer.model_max_length = 8192
     config = AutoConfig.from_pretrained(checkpoint / "encoder_config.json", trust_remote_code=True)
+    config._name_or_path = str(checkpoint.resolve())
     config.attn_implementation = "torch"
     encoder = AutoModel.from_config(config, trust_remote_code=True)
     model = JinaSequenceClassifier(encoder, len(LABELS)).to(device)
