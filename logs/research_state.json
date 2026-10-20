@@ -3,7 +3,11 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "The strongest individual frozen validation seed may outperform the three-seed average on the black-box test distribution.",
-  "active_experiment": null,
+  "active_experiment": {
+    "pid": 22527,
+    "command": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-fixedsplit-seed21-len4096", "--output", "outputs/blackbox-test-seed21.json"],
+    "started_at": "2026-10-20T10:16:00+00:00"
+  },
   "worker_command": [
     "python",
     "-u",
@@ -21,8 +25,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T10:15:00+00:00",
-  "last_action": "Aggregate-only black-box SFT evaluation completed with W&B run alfj92em and was rejected. Next action is black-box evaluation of the strongest individual frozen seed.",
+  "last_heartbeat": "2026-10-20T10:16:00+00:00",
+  "last_action": "Launched aggregate-only black-box evaluation for frozen seed21 candidate pid 22527.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
