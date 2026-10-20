@@ -460,3 +460,13 @@ Results: The black-box test returned 0.531763 accuracy and 0.534757 macro F1. Th
 
 Decision: Reject the inference rule. The next experiment tests a different model family with a frozen encoder and a class-balanced linear probe. This is a substantive generalization diagnostic, not a seed-only adjustment.
 
+## EXP-20261020-038
+
+Timestamp: 2026-10-20. The frozen-encoder linear probe was evaluated through the aggregate-only black-box test interface.
+
+Setup: The probe reused the local Jina encoder representation, trained a class-balanced linear head for ten epochs on cached `train_pref`, and returned only aggregate test metrics. W&B run: `tm1ee79b`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/tm1ee79b).
+
+Results: The black-box test returned 0.390471 accuracy and 0.360191 macro F1.
+
+Analysis: The frozen representation plus linear head was much worse than the fine-tuned Jina classifier. Freezing the encoder is rejected. The next experiment changes the encoder family to cached MiniLM.
+

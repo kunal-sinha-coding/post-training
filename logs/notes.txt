@@ -5384,5 +5384,6 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-20 Added W&B logging and aggregate-only test output to when2call_embedding_probe.py. The probe now uses the cached train_pref and official test artifacts and exposes only black-box accuracy and macro F1.
 2026-10-20 Launched W&B-logged aggregate-only frozen-encoder linear probe pid 24287 with train_pref, ten epochs, and learning rate 0.01.
 2026-10-20 W&B run n4p9vgtq captured a linear probe startup failure because the classifier checkpoint has no standalone tokenizer config. No metric was produced. The probe will reuse the validated local Jina loader.
+2026-10-20 W&B run tm1ee79b completed the corrected frozen-encoder linear probe at 0.390471 accuracy and 0.360191 macro F1. The approach is rejected. The next experiment changes the encoder family to cached MiniLM.
 2026-10-20 Relaunched the corrected W&B-logged aggregate-only frozen-encoder linear probe as pid 24497.
 2026-10-20 Launched W&B-logged aggregate-only black-box evaluation for the 0.8 seed21 weighted ensemble with the required-field inference rule, pid 23876.
