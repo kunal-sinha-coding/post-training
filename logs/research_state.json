@@ -3,22 +3,8 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "Label smoothing may reduce shortcut overconfidence and improve robustness on the shifted test distribution while preserving tool schemas.",
-  "active_experiment": {
-    "pid": 34788,
-    "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_frozen_when2call_ensemble_test"
-    ],
-    "started_at": "2026-10-20T15:02:00+00:00"
-  },
-  "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.evaluate_frozen_when2call_ensemble_test"
-  ],
+  "active_experiment": null,
+  "worker_command": null,
   "experiment_queue": [
     "Audit and baseline the clean train_pref development split.",
     "Compare inferred-label cross entropy and pairwise training on the same split.",
@@ -30,8 +16,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T15:02:00+00:00",
-  "last_action": "Watchdog started fallback aggregate-only evaluator pid 34788 after stale state. It will complete before label-smoothing training starts.",
+  "last_heartbeat": "2026-10-20T15:08:00+00:00",
+  "last_action": "Watchdog fallback aggregate-only evaluator pid 34788 completed at 0.528204 accuracy and 0.530578 macro F1. Label-smoothing training is next.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
