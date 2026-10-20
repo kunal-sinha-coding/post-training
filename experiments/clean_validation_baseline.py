@@ -57,6 +57,15 @@ def split_examples(examples: list, dev_fraction: float, seed: int) -> tuple[list
     return train, development
 
 
+def remove_tool_schemas(examples: list) -> list:
+    """Replace each tool schema with a stable absence marker while preserving the question."""
+    # Keep the input length and prompt boundary comparable while removing schema identity cues.
+    for example in examples:
+        question = example.text.split("\nAvailable tools:", 1)[0]
+        example.text = question + "\nAvailable tools:\nNo tools are available."
+    return examples
+
+
 def load_model(device: torch.device) -> tuple[torch.nn.Module, object]:
     """Load the cached local Jina encoder with a fresh four class head."""
     # Recreate the compact encoder from the complete local checkpoint under the two billion parameter limit.
@@ -109,6 +118,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output-dir", type=Path, default=Path("outputs/clean-validation-baseline"))
     parser.add_argument("--loss-function", choices=("cross_entropy", "pairwise_ranking"), default="cross_entropy")
+    parser.add_argument("--omit-tool-schemas", action="store_true")
     args = parser.parse_args()
     seed = 20261020
     random.seed(seed)
@@ -119,6 +129,9 @@ def main() -> int:
     rows = load_training_rows()
     examples = prepare_train_examples(rows)
     train, development = split_examples(examples, 0.2, seed)
+    if args.omit_tool_schemas:
+        remove_tool_schemas(train)
+        remove_tool_schemas(development)
     tokenizer_model, tokenizer = load_model(device)
     tokenize_examples(train, tokenizer)
     tokenize_examples(development, tokenizer)
@@ -148,6 +161,7 @@ def main() -> int:
         "development_metrics": dev_metrics,
         "model": "jinaai/jina-embeddings-v2-small-en",
         "loss_function": args.loss_function,
+        "omit_tool_schemas": args.omit_tool_schemas,
         "device": str(device),
     }
     (args.output_dir / "metrics.json").write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
