@@ -9,9 +9,19 @@
       "python",
       "-u",
       "-m",
-      "experiments.audit_split_stability"
+      "experiments.clean_validation_baseline",
+      "--output-dir",
+      "outputs/clean-validation-alltrain-seed21-len4096",
+      "--seed",
+      "20261021",
+      "--split-seed",
+      "20261021",
+      "--max-length",
+      "4096",
+      "--add-argument-cues",
+      "--train-all"
     ],
-    "started_at": "2026-10-20T10:40:12.636727+00:00"
+    "started_at": "2026-10-20T14:10:00+00:00"
   },
   "worker_command": [
     "python",
@@ -30,8 +40,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T10:40:12.636749+00:00",
-  "last_action": "Watchdog adopted existing validation worker pid 28209.",
+  "last_heartbeat": "2026-10-20T14:10:00+00:00",
+  "last_action": "Relaunching full-data Jina training after fixing the null development W&B summary.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
