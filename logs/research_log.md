@@ -606,6 +606,14 @@ Results: The ensemble returned 0.565991 accuracy and 0.567364 macro F1. The indi
 
 Analysis: The fixed ensemble improved both aggregate metrics over the one-preference leader. The next candidate tests label smoothing as a generalization regularizer on the best two-SFT/one-preference schedule.
 
+## EXP-20261020-055
+
+Timestamp: 2026-10-20. A label-smoothed candidate was trained and frozen.
+
+Setup: Two W&B-logged `train_sft` adaptation epochs and one `train_pref` epoch used full schemas, argument cues, seed 20261021, maximum length 4096, and cross-entropy label smoothing 0.05. The official test split was not loaded during training. W&B run: `i4qudcmu`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/i4qudcmu).
+
+Training diagnostics: Training accuracy was 0.971333 and training macro F1 was 0.728577. The frozen checkpoint is queued for aggregate-only black-box measurement.
+
 ## EXP-20261020-049
 
 Timestamp: 2026-10-20. The three-epoch staged adaptation candidate was evaluated through the aggregate-only black-box test interface.
