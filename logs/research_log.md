@@ -107,3 +107,17 @@ Results: Calibration selected [0.0, 0.3, 0.0, 0.0] and reached 0.981944 calibrat
 Analysis: The hypothesis was rejected. Calibration decreased accuracy by 0.000556 and macro F1 by 0.000474. The selected bias changed sign across seeds, which shows that the calibration slice is too small or too variable for a shared fixed rule. The seed 20261021 calibration result remains a local validation observation and is not promoted as a general inference rule.
 
 Next action: Keep the uncalibrated argument cue model as the reproducible configuration. Investigate a larger calibration slice or a temperature-only calibration that cannot shift class priors before further model changes.
+
+## EXP-20261020-008
+
+Timestamp: 2026-10-20. The run completed without loading the official test split.
+
+Hypothesis: Increasing the calibration slice from 10% to 20% will reduce calibration variance on seed 20261020.
+
+Setup: The seed 20261020 argument cue checkpoint was frozen. Calibration used 1,440 of the 7,200 training partition rows. The bounded coordinate grid used only calibration accuracy, then measured the frozen bias on the 1,800 row development split. Code revision: 5010f6a2.
+
+Results: The selected bias was [-0.2, -0.1, 0.0, 0.0]. Calibration accuracy was 0.980556. Development accuracy was 0.939444 and macro F1 was 0.704614. This improved the uncalibrated seed 20261020 result by 0.000556 accuracy and 0.000442 macro F1.
+
+Analysis: The larger slice reduced the magnitude of the unstable positive request bias and gave a small local improvement. It does not establish a shared rule because the seed 20261021 result selected a negative request bias and achieved a larger score. Calibration remains a secondary seed-specific diagnostic.
+
+Next action: Retain the uncalibrated argument cue configuration for any future final candidate comparison. Continue with a schema-preserving model or data experiment using the clean validation protocol.

@@ -25,3 +25,5 @@ The required argument cue configuration improved both metrics across two seeds. 
 Training-only calibration improved the current result to 0.949444 accuracy and 0.712267 macro F1. The next experiment will test whether the selected bias is stable across the second argument cue seed.
 
 Cross-seed calibration was unstable. It improved seed 20261021 but reduced seed 20261020 and selected the opposite bias. The calibrated rule is rejected as a general configuration. The uncalibrated argument cue model remains the reproducible candidate.
+
+A larger calibration slice gave seed 20261020 a small local gain to 0.939444 accuracy and 0.704614 macro F1, but did not produce a shared calibration rule. The uncalibrated argument cue model remains the reproducible candidate for future comparisons.

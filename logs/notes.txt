@@ -5323,3 +5323,5 @@ Completed EXP-20261020-004 and EXP-20261020-005. Explicit required argument cues
 Completed EXP-20261020-006. A training-only class bias improved the seed 20261021 development result to 0.949444 accuracy and 0.712267 macro F1. The next experiment repeats calibration on the seed 20261020 checkpoint.
 
 Completed EXP-20261020-007. Calibration reduced the seed 20261020 result to 0.938333 accuracy and 0.703698 macro F1, and selected the opposite bias from seed 20261021. Rejected calibration as a shared rule. The uncalibrated argument cue model remains the reproducible candidate.
+
+Completed EXP-20261020-008. A 20 percent calibration slice gave seed 20261020 a small local gain to 0.939444 accuracy and 0.704614 macro F1. It did not establish a shared bias. Retained the uncalibrated argument cue configuration for future comparisons.
