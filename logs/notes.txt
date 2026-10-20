@@ -5510,6 +5510,7 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-20 Updated auto-research-prompt.md to require an independent persistent supervisor that restarts the watchdog after exit or stale monitor heartbeat and verifies resumed five-minute checks.
 2026-10-20 Implemented validation_watchdog.py state-backup recovery, per-tick exception handling, and an exclusive watchdog lock. Added watchdog_supervisor.py to restart the watchdog after exit and log each restart.
 2026-10-20 Fixed watchdog_supervisor.py to adopt an existing watchdog instead of creating a duplicate lock holder.
+2026-10-20 Updated auto-research-prompt.md to require verification after every process start or restart, including delayed process checks, command identity, log or heartbeat changes, process relationships, and forced-restart tests.
 2026-10-20 Prepared the next generalization experiment while the backup worker runs. Added compact tool-schema input handling that preserves tool names and required fields while removing verbose schema details. Added the same frozen transform to aggregate-only test evaluation.
 2026-10-20 The prior worker became a zombie. The primary loop immediately launched compact-schema W&B training as pid 51614 and updated the durable state.
 2026-10-20 W&B run j8p5li1g measured compact schemas at 0.492059 aggregate test accuracy and 0.490390 aggregate macro F1. It is rejected. The next candidate tests label smoothing 0.075.

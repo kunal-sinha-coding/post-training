@@ -354,6 +354,8 @@ Implement a persistent watchdog that checks research activity **every five minut
 
 The watchdog itself must be supervised by an independent persistent supervisor. The supervisor must detect watchdog exit, crash, or stale monitor heartbeat, restart the watchdog automatically, record the reason and restart time, and verify that five-minute checks resume. A watchdog without an independent supervisor is not sufficient.
 
+Every start or restart command must be verified. After launching a process, wait for a short confirmation interval, inspect the process table, confirm the expected PID and command are alive, confirm the expected log or heartbeat changed, confirm the supervisor-to-watchdog-to-worker relationship, and record failure if any check fails. A successful shell return code is not evidence that a process started or stayed running.
+
 The watchdog must inspect the operating-system process state, not only whether the process identifier exists. Treat zombie, defunct, exited, and unreapable worker states as not running. Validate the research state JSON before each check and write state updates atomically so a malformed state file cannot disable recovery. Test the watchdog by simulating a completed or zombie worker and confirming that it starts the next authorized experiment.
 
 This must be an actual executable monitoring mechanism, not merely an instruction in your reasoning.
