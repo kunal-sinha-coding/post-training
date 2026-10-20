@@ -266,3 +266,15 @@ Results: Calibration accuracy was 0.977778. The selected bias was [-0.3, 0.0, 0.
 
 Analysis: The gain was small at 0.000556 accuracy and 0.000438 macro F1. The selected bias differs from seed-20261022, which selected [0.1, -0.3, 0.0, 0.0]. The 10 percent rule is not stable. The next experiment increases the calibration fraction to 20 percent for seed-20261020.
 
+## EXP-20261020-020
+
+Timestamp: 2026-10-20. The W&B-logged 20 percent calibration completed on seed-20261020.
+
+Hypothesis: Increasing the calibration slice from 10 percent to 20 percent will reduce bias variance and improve the matched seed result.
+
+Setup: The fixed `split_seed=20261021`, seed-20261020 4,096-token checkpoint, and 1,440-row calibration slice were used. W&B run: `nuj17h04`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/nuj17h04). The official test split was not loaded.
+
+Results: Calibration accuracy was 0.972917. The selected bias was [-0.3, 0.0, 0.0, 0.0]. Development accuracy was 0.948333 and macro F1 was 0.711514, identical to the 10 percent calibration result.
+
+Analysis: The larger slice did not change the selected rule or improve the development result. The calibration improvement remains small and seed-dependent. The next test applies the same 20 percent procedure to seed-20261022.
+
