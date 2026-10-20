@@ -670,6 +670,14 @@ Results: Black-box test accuracy was 0.565991 and macro F1 was 0.568509.
 
 Analysis: Smoothing 0.025 was below smoothing 0.05 and is rejected. The next intervention adds bounded rejected direct examples to address the direct-class sparsity while retaining the best smoothing setting.
 
+## EXP-20261020-062
+
+Timestamp: 2026-10-20. A direct-class-balanced candidate was trained and frozen.
+
+Setup: Two W&B-logged `train_sft` adaptation epochs and one `train_pref` epoch used full schemas, argument cues, seed 20261021, maximum length 4096, label smoothing 0.05, and 100 rejected direct examples. The official test split was not loaded during training. W&B run: `osv2dleb`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/osv2dleb).
+
+Training diagnostics: Training accuracy was 0.954176 and training macro F1 was 0.719624. The frozen checkpoint is queued for aggregate-only black-box measurement.
+
 ## EXP-20261020-049
 
 Timestamp: 2026-10-20. The three-epoch staged adaptation candidate was evaluated through the aggregate-only black-box test interface.
