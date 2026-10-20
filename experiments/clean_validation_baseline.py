@@ -176,6 +176,7 @@ def main() -> int:
     parser.add_argument("--include-rejected-examples", action="store_true")
     parser.add_argument("--rejected-direct-samples", type=int, default=0)
     parser.add_argument("--sft-aux-samples-per-class", type=int, default=0)
+    parser.add_argument("--train-all", action="store_true")
     args = parser.parse_args()
     # Open a W&B run before loading data so failures and completed metrics are both tracked.
     import wandb
@@ -200,6 +201,9 @@ def main() -> int:
     examples = prepare_train_examples(rows)
     split_seed = seed if args.split_seed is None else args.split_seed
     train, development = split_examples(examples, 0.2, split_seed)
+    # Use every labeled train_pref example when producing a frozen black-box test candidate.
+    if args.train_all:
+        train, development = examples, []
     # Add rejected-response supervision only to training after the development split is frozen.
     if args.include_rejected_examples:
         train.extend(prepare_rejected_examples(rows))
@@ -234,7 +238,7 @@ def main() -> int:
     optimizer = torch.optim.AdamW(tokenizer_model.parameters(), lr=5e-5)
     loss = train_epoch(tokenizer_model, tokenizer, train, device, optimizer, args.loss_function, seed)
     train_metrics = batch_metrics(tokenizer_model, tokenizer, train, device, list(range(len(LABELS))))
-    dev_metrics = batch_metrics(tokenizer_model, tokenizer, development, device, list(range(len(LABELS))))
+    dev_metrics = batch_metrics(tokenizer_model, tokenizer, development, device, list(range(len(LABELS))) if development else []) if development else None
 
     # Save metrics, split provenance, and model weights for later comparisons.
     args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -260,6 +264,7 @@ def main() -> int:
         "add_argument_cues": args.add_argument_cues,
         "include_rejected_examples": args.include_rejected_examples,
         "rejected_direct_samples": args.rejected_direct_samples,
+        "train_all": args.train_all,
         "device": str(device),
     }
     (args.output_dir / "metrics.json").write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
@@ -267,8 +272,7 @@ def main() -> int:
     run.log({
         "train/accuracy": train_metrics["accuracy"],
         "train/macro_f1": train_metrics["macro_f1"],
-        "development/accuracy": dev_metrics["accuracy"],
-        "development/macro_f1": dev_metrics["macro_f1"],
+        **({"development/accuracy": dev_metrics["accuracy"], "development/macro_f1": dev_metrics["macro_f1"]} if dev_metrics else {}),
         "training/loss": loss,
         "data/train_examples": len(train),
         "data/development_examples": len(development),
