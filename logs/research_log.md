@@ -164,3 +164,15 @@ Analysis: This is an infrastructure failure caused by the context and memory con
 
 Next action: Run the fixed-split seed-20261021 comparison at 1,024 tokens with mandatory W&B logging.
 
+## EXP-20261020-012
+
+Timestamp: 2026-10-20. The W&B-logged 1,024-token recovery was rejected before training.
+
+Hypothesis: A 1,024-token context will avoid the observed 8,192-token CUDA OOM while retaining the required input signal.
+
+Setup: The fixed `split_seed=20261021`, training seed 20261021, Jina warm start, cross entropy, one epoch, batch size 8, argument cues, and `max_length=1024` were used. W&B run: `tmr06oll`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/tmr06oll). The official test split was not loaded.
+
+Result: The run failed during tokenization because source ID 5517 contains 1,182 tokens. The current harness rejects inputs above the configured limit instead of truncating them. No model metrics were produced. W&B captured the configuration and failure run.
+
+Analysis: The context is too short for the existing complete-input validation rule. This is a configuration failure, not a model result. The next recovery uses 2,048 tokens, which covers the observed maximum beyond 1,024 and remains below the memory-risk setting.
+
