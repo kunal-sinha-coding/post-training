@@ -168,6 +168,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output-dir", type=Path, default=Path("outputs/clean-validation-baseline"))
     parser.add_argument("--loss-function", choices=("cross_entropy", "pairwise_ranking"), default="cross_entropy")
+    parser.add_argument("--sft-loss-function", choices=("cross_entropy", "pairwise_ranking"), default="cross_entropy")
     parser.add_argument("--omit-tool-schemas", action="store_true")
     parser.add_argument("--add-argument-cues", action="store_true")
     parser.add_argument("--seed", type=int, default=20261020)
@@ -245,7 +246,7 @@ def main() -> int:
         tokenize_examples(sft_pretrain, tokenizer)
         optimizer = torch.optim.AdamW(tokenizer_model.parameters(), lr=5e-5)
         for epoch in range(args.sft_pretrain_epochs):
-            sft_pretrain_losses.append(train_epoch(tokenizer_model, tokenizer, sft_pretrain, device, optimizer, args.loss_function, seed + epoch, args.label_smoothing))
+            sft_pretrain_losses.append(train_epoch(tokenizer_model, tokenizer, sft_pretrain, device, optimizer, args.sft_loss_function, seed + epoch, args.label_smoothing))
     tokenize_examples(train, tokenizer)
     tokenize_examples(development, tokenizer)
 
@@ -280,6 +281,7 @@ def main() -> int:
         "development_metrics": dev_metrics,
         "model": "jinaai/jina-embeddings-v2-small-en",
         "loss_function": args.loss_function,
+        "sft_loss_function": args.sft_loss_function,
         "omit_tool_schemas": args.omit_tool_schemas,
         "add_argument_cues": args.add_argument_cues,
         "include_rejected_examples": args.include_rejected_examples,

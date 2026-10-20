@@ -730,6 +730,16 @@ Setup: One W&B-logged pairwise ranking epoch over all 9,000 `train_pref` example
 
 Training diagnostics: Training accuracy was 0.929667 and training macro F1 was 0.697285. The frozen checkpoint is queued for aggregate-only black-box measurement.
 
+## EXP-20261020-069
+
+Timestamp: 2026-10-20. The pure pairwise-ranking candidate was evaluated through the aggregate-only black-box test interface.
+
+Setup: The frozen checkpoint used one pairwise chosen-versus-rejected epoch over all 9,000 `train_pref` rows with full schemas and argument cues. W&B test run: `zmj4nhx6`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/zmj4nhx6). Only aggregate accuracy and macro F1 were returned.
+
+Results: Black-box test accuracy was 0.485761 and macro F1 was 0.482804.
+
+Analysis: Pure pairwise ranking is rejected. The next candidate uses cross-entropy for two SFT adaptation epochs and pairwise ranking for one preference epoch.
+
 Analysis: Even the smaller direct augmentation reduced both metrics. Direct augmentation is rejected. The next intervention removes the engineered required-argument cue while preserving all raw tool schemas.
 
 ## EXP-20261020-049
