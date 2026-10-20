@@ -277,7 +277,7 @@ def main() -> int:
         "data/train_examples": len(train),
         "data/development_examples": len(development),
     })
-    run.summary.update({"development_accuracy": dev_metrics["accuracy"], "development_macro_f1": dev_metrics["macro_f1"], "output_dir": str(args.output_dir)})
+    run.summary.update({**({"development_accuracy": dev_metrics["accuracy"], "development_macro_f1": dev_metrics["macro_f1"]} if dev_metrics else {}), "output_dir": str(args.output_dir)})
     print(json.dumps({"train": train_metrics, "development": dev_metrics, "loss": loss}, indent=2))
     return 0
 
