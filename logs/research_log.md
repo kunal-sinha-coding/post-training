@@ -578,3 +578,13 @@ Results: Black-box test accuracy was 0.546002 and macro F1 was 0.548968.
 
 Analysis: Three adaptation epochs reduced both aggregate metrics from the two-epoch leader. The two-epoch adaptation setting is retained. The next intervention changes the labeled fine-tuning dose from one to two epochs.
 
+## EXP-20261020-050
+
+Timestamp: 2026-10-20. A two-epoch SFT and two-epoch preference fine-tuning candidate was trained and frozen.
+
+Setup: Two W&B-logged epochs over cached `train_sft` examples preceded two cross-entropy epochs over all 9,000 cached `train_pref` examples. The Jina encoder, argument cues, seed 20261021, and maximum length 4096 were unchanged. The official test split was not loaded during training. W&B run: `5j1jazfz`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/5j1jazfz).
+
+Training diagnostics: Training accuracy was 0.975111 and training macro F1 was 0.731324. No development metric was used because all labeled `train_pref` rows were used for the frozen candidate.
+
+Decision: The checkpoint is queued for one aggregate-only black-box test measurement. It will be retained only if its aggregate test metrics improve the current leader.
+
