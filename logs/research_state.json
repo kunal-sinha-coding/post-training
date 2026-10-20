@@ -1,6 +1,6 @@
 {
   "status": "active",
-  "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
+  "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "A deterministic train_pref development split is required before comparing When2Call models because prior scripts selected with official test labels.",
   "active_experiment": null,

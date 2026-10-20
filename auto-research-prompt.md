@@ -27,6 +27,12 @@ The agent may wait only while an experiment or required external operation is ac
 
 The research loop remains active until the user sends exactly `STOP` as the complete top level message. No other wording authorizes stopping, pausing, idling, or ending the loop.
 
+## Watchdog recovery is mandatory
+
+Every five minute watchdog check MUST actively recover idle research. If the check finds no running experiment, no useful research worker, an empty active experiment record, a stale heartbeat, a crashed process, or an unexpectedly terminated worker while the research state is active, the watchdog MUST immediately load the latest durable state, identify the next unfinished experiment, start or restart the research worker for that experiment, write its PID and start time, update the heartbeat, and record the recovery action. It MUST NOT only print a status message and wait for a future user message.
+
+After recovery, the watchdog MUST keep monitoring the new worker. When that worker completes, the research worker MUST analyze and log the result and start the next experiment. If the worker fails, the watchdog MUST preserve the failure, diagnose it, and start the next recovery or replacement experiment. The watchdog may remain without a worker only after it has attempted recovery and recorded an external blocker, and it must retry recovery at the next check.
+
 Investigate model architecture, training data, label quality, class balance, context construction, loss functions, calibration, ensembles, multi stage inference, error categories, and robustness across seeds. Research external resources only after checking provenance, licensing, and benchmark contamination.
 
 ## Evaluation integrity

@@ -6,6 +6,8 @@ Updated `auto-research-prompt.md` to state in explicit terms that the research a
 
 The watchdog audit found a gap: it logged an active state with no worker but did not start the declared command. Updated the recovery condition so an active state with no worker starts the worker command. The fixed split replication exited without an artifact and is queued for automatic recovery.
 
+Expanded the prompt with an explicit watchdog recovery rule. When active research has no worker, stale heartbeat, crash, or unexpected termination, the watchdog must load durable state, identify the next unfinished experiment, start or restart the worker, write the PID and heartbeat, and record recovery. It must never only log and wait for a user message.
+
 ## 2026-10-20: Establish clean When2Call research protocol
 
 Saved the autonomous research prompt in `auto-research-prompt.md`. Audited the repository and found that historical When2Call routing experiments loaded official test labels and used test metrics to select routing rules, ensembles, and checkpoints. Marked those results as historical and excluded them from new model selection. Added a deterministic stratified development split from `train_pref`, a one epoch Jina baseline runner that never loads the official test split, durable research state, a validation leaderboard, a research summary, and a five minute watchdog with state based recovery. The first experiment is the clean baseline audit.
