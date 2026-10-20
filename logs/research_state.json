@@ -2,7 +2,7 @@
   "status": "active",
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "A 4096-token Jina context will include every observed validation input and reduce the quadratic memory cost enough to avoid the 8192-token CUDA OOM.",
+  "current_hypothesis": "At the same fixed split and 4096-token context, seed 20261020 should reproduce the earlier seed effect and separate training stochasticity from context-length changes.",
   "active_experiment": null,
   "worker_command": [
     "python",
@@ -11,13 +11,13 @@
     "experiments.clean_validation_baseline",
     "--add-argument-cues",
     "--seed",
-    "20261021",
+    "20261020",
     "--split-seed",
     "20261021",
     "--max-length",
     "4096",
     "--output-dir",
-    "outputs/clean-validation-fixedsplit-seed21-len4096"
+    "outputs/clean-validation-fixedsplit-seed20-len4096"
   ],
   "experiment_queue": [
     "Audit and baseline the clean train_pref development split.",
@@ -30,8 +30,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T09:04:49.665606+00:00",
-  "last_action": "Recorded W&B run j76hgv9r as a 2048-token input-length failure and queued a 4096-token recovery.",
+  "last_heartbeat": "2026-10-20T09:08:02.291360+00:00",
+  "last_action": "Recorded W&B run jqruhu4u with 0.943889 accuracy and 0.708287 macro F1. Queued the matched seed-20261020 4096-token run.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }

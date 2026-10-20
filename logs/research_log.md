@@ -188,3 +188,17 @@ Result: The run failed during tokenization because source ID 5267 contains 2,769
 
 Analysis: The complete-input harness needs at least 2,769 tokens for this split. This is a configuration failure, not a model result. The next recovery uses 4,096 tokens.
 
+## EXP-20261020-014
+
+Timestamp: 2026-10-20. The W&B-logged 4,096-token fixed-split seed replication completed.
+
+Hypothesis: A complete 4,096-token context will avoid the 8,192-token OOM and preserve the argument-cue classifier performance on the fixed development split.
+
+Setup: The cached `train_pref` rows used `split_seed=20261021`, with training seed 20261021, Jina warm start, cross entropy, one epoch, batch size 8, argument cues, and `max_length=4096`. W&B run: `jqruhu4u`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/jqruhu4u). The official test split was not loaded.
+
+Results: Training loss was 0.179014. Development accuracy was 0.943889 and macro F1 was 0.708287. Per-class F1 was 0.982278 for `cannot_answer`, 0.931234 for `request_for_info`, 0.919635 for `tool_call`, and 0.000000 for `direct`. The confusion matrix was [[582, 2, 15, 0], [1, 562, 37, 0], [2, 43, 555, 0], [1, 0, 0, 0]].
+
+Analysis: The run completed without memory failure. Compared with the fixed-split seed-20261020 result at 0.946111 accuracy and 0.710024 macro F1, seed 20261021 is lower by 0.002222 accuracy and 0.001737 macro F1. The dominant residual is request_for_info versus tool_call. The direct class remains unsupported by inferred chosen labels.
+
+Decision: Keep `max_length=4096` as the complete-input recovery setting. The next run repeats 4,096 tokens with seed 20261020 to separate seed variance from the earlier 8,192-token result.
+
