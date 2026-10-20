@@ -74,6 +74,18 @@ def load_state(path: Path) -> dict:
         return json.loads(backup.read_text(encoding="utf-8"))
 
 
+def audit_research_log(path: Path, previous_size: int | None) -> tuple[int, str | None]:
+    """Check that the persistent research log still exists and does not shrink."""
+    # Detect deletion or truncation before the watchdog performs recovery.
+    try:
+        current_size = path.stat().st_size
+    except FileNotFoundError:
+        return 0, "research_log.md is missing"
+    if previous_size is not None and current_size < previous_size:
+        return current_size, f"research_log.md shrank from {previous_size} to {current_size} bytes"
+    return current_size, None
+
+
 def start_worker(repo: Path, state_path: Path, log_path: Path) -> int:
     """Start the recovery command declared by the research state."""
     # Refuse recovery when no safe validation command has been registered.
@@ -114,6 +126,11 @@ def main() -> int:
             try:
                 # Inspect the worker and heartbeat before deciding whether recovery is needed.
                 state = load_state(state_path)
+                # Preserve the largest observed research log size across watchdog restarts.
+                log_size, log_error = audit_research_log(args.repo / "logs/research_log.md", state.get("research_log_size"))
+                if log_error:
+                    write_log(log_path, f"integrity failure: {log_error}")
+                state["research_log_size"] = max(log_size, int(state.get("research_log_size", 0) or 0))
                 active = state.get("active_experiment") or {}
                 pid = int(active.get("pid", 0) or 0)
                 heartbeat = state.get("last_heartbeat")

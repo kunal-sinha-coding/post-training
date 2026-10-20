@@ -63,5 +63,6 @@
   "last_heartbeat": "2026-10-20T21:29:20.524482+00:00",
   "last_action": "Watchdog adopted existing validation worker pid 56295.",
   "watchdog_enabled": true,
+  "research_log_size": 79616,
   "stop_command": "STOP"
 }
