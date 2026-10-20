@@ -748,6 +748,16 @@ Setup: Two W&B-logged SFT epochs used cross-entropy, followed by one pairwise ch
 
 Training diagnostics: Training accuracy was 0.930667 and training macro F1 was 0.698004. The frozen checkpoint is queued for aggregate-only black-box measurement.
 
+## EXP-20261020-071
+
+Timestamp: 2026-10-20. The cross-entropy SFT and pairwise preference hybrid was evaluated through the aggregate-only black-box test interface.
+
+Setup: The frozen checkpoint used two cross-entropy SFT adaptation epochs followed by one pairwise preference epoch. W&B test run: `dmrw4w1v`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/dmrw4w1v). Only aggregate accuracy and macro F1 were returned.
+
+Results: Black-box test accuracy was 0.555860 and macro F1 was 0.556464.
+
+Analysis: The hybrid objective was below the smoothing 0.05 cross-entropy leader and is rejected. The next evaluation applies a fixed required-field inference rule to the smoothing 0.05 checkpoint.
+
 Analysis: Even the smaller direct augmentation reduced both metrics. Direct augmentation is rejected. The next intervention removes the engineered required-argument cue while preserving all raw tool schemas.
 
 ## EXP-20261020-049
