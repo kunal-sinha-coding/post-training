@@ -796,6 +796,10 @@ Setup: Two W&B-logged cross-entropy SFT epochs and one preference epoch used all
 
 Training diagnostics: Training accuracy was 0.966444 and training macro F1 was 0.724900. The frozen checkpoint is queued for one aggregate-only black-box measurement. Candidate selection will use only the returned aggregate accuracy and macro F1.
 
+Black-box result: W&B run `w5ezjjmf`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/w5ezjjmf), returned aggregate accuracy 0.553669 and macro F1 0.555802. This is below the smoothing 0.05 leader at 0.574480 accuracy and 0.574969 macro F1, so weight decay 0.1 is rejected.
+
+Analysis: The stronger decay reduced shifted test performance. The next experiment tests the intermediate decay 0.05 as a predeclared dose-response point. This changes regularization rather than only the seed and will be compared through the same single aggregate-only black-box measurement.
+
 ## EXP-20261020-075
 
 Timestamp: 2026-10-20. A lower-learning-rate candidate was trained and frozen.

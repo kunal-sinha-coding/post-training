@@ -4,8 +4,9 @@
   "protocol": "clean_validation_v1",
   "current_hypothesis": "AdamW weight decay 0.1 may regularize the successful recipe and improve shifted test generalization.",
   "current_hypothesis": "The weight-decay 0.1 checkpoint may improve shifted test generalization relative to the smoothing 0.05 leader.",
+  "current_hypothesis": "Intermediate weight decay 0.05 may preserve the smoothing 0.05 recipe while reducing overfitting under the observed train to test shift.",
   "active_experiment": {
-    "pid": 44016,
+    "pid": 44301,
     "command": [
       "python",
       "-u",
@@ -31,9 +32,9 @@
       "0.1"
     ],
     "started_at": "2026-10-20T20:45:00+00:00",
-    "phase": "aggregate_only_black_box_evaluation",
-    "source_checkpoint": "outputs/clean-validation-staged-sft2-smooth005-wd010-jina-seed21-len4096",
-    "output": "outputs/clean-validation-staged-sft2-smooth005-wd010-jina-seed21-blackbox.json"
+    "phase": "training",
+    "source_checkpoint": null,
+    "output": null
   },
   "worker_command": [
     "python",
@@ -52,8 +53,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T20:45:00+00:00",
-  "last_action": "Started W&B-logged aggregate-only black-box test evaluation for the weight-decay 0.1 checkpoint, pid 44016.",
+  "last_heartbeat": "2026-10-20T20:50:00+00:00",
+  "last_action": "Started W&B-logged two-SFT and one-preference training with smoothing 0.05, learning rate 5e-5, and weight decay 0.05, pid 44301.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
