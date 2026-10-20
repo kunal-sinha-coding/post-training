@@ -3,7 +3,16 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "A different pretrained encoder family may capture tool-use semantics and improve black-box generalization over Jina.",
-  "active_experiment": null,
+  "active_experiment": {
+    "pid": 26857,
+    "command": [
+      "python",
+      "-u",
+      "-m",
+      "experiments.audit_split_stability"
+    ],
+    "started_at": "2026-10-20T10:30:12.621207+00:00"
+  },
   "worker_command": [
     "python",
     "-u",
@@ -21,8 +30,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T12:35:00+00:00",
-  "last_action": "W&B run y5xgvnwb captured a MiniLM development-metric tokenization failure after training completed. The final preprocessing omission is corrected for retry.",
+  "last_heartbeat": "2026-10-20T10:30:12.621248+00:00",
+  "last_action": "Watchdog started validation worker pid 26857.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
