@@ -5401,6 +5401,7 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-20 W&B run 8j49gjwg completed full-data training but failed while updating a null development summary. The checkpoint was written with train accuracy 0.94511 and train macro F1 0.70917. Fixed the summary path and will rerun for a clean W&B completion.
 2026-10-20 W&B run yymr31cf completed full-data Jina training cleanly. The all-train checkpoint reached train accuracy 0.970111 and train macro F1 0.727740. It is frozen for aggregate-only black-box evaluation.
 2026-10-20 Corrected the active state after the watchdog recorded a stale audit. The all-train Jina checkpoint remains frozen for black-box evaluation.
+2026-10-20 Launched W&B-logged aggregate-only black-box evaluation for the all-train Jina checkpoint pid 28966.
 2026-10-20 Corrected the active state after the watchdog recorded the completed full-data process as an audit. The full-data Jina run is queued for retry.
 2026-10-20 Corrected the active state after the watchdog retained the completed one-epoch MiniLM record. The next candidate is three MiniLM epochs.
 2026-10-20 Launched W&B-logged aggregate-only three-epoch MiniLM candidate pid 27563.

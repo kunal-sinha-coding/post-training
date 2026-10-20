@@ -3,7 +3,11 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "Training the established Jina classifier on all 9,000 train_pref examples may improve black-box generalization by using the withheld 20 percent of labeled training data.",
-  "active_experiment": null,
+  "active_experiment": {
+    "pid": 28966,
+    "command": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-alltrain-seed21-len4096", "--output", "outputs/blackbox-test-alltrain-jina.json"],
+    "started_at": "2026-10-20T14:50:00+00:00"
+  },
   "worker_command": [
     "python",
     "-u",
@@ -21,8 +25,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T14:45:00+00:00",
-  "last_action": "Full-data Jina training completed with W&B run yymr31cf. The checkpoint is frozen for aggregate-only black-box evaluation.",
+  "last_heartbeat": "2026-10-20T14:50:00+00:00",
+  "last_action": "Launched aggregate-only black-box evaluation for the all-train Jina checkpoint pid 28966.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
