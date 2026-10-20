@@ -2,7 +2,7 @@
   "status": "active",
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "Three MiniLM fine-tuning epochs may remove the one-epoch underfitting seen on validation and improve black-box generalization.",
+  "current_hypothesis": "Training the established Jina classifier on all 9,000 train_pref examples may improve black-box generalization by using the withheld 20 percent of labeled training data.",
   "active_experiment": {
     "pid": 27563,
     "command": [
@@ -10,12 +10,11 @@
       "-u",
       "-m",
       "experiments.minilm_when2call_blackbox",
-      "--epochs",
-      "3",
+      "--train-all",
       "--learning-rate",
       "2e-5",
       "--output",
-      "outputs/blackbox-test-minilm.json"
+      "outputs/clean-validation-alltrain-seed21-len4096"
     ],
     "started_at": "2026-10-20T13:10:00+00:00"
   },
@@ -36,8 +35,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T13:10:00+00:00",
-  "last_action": "Launched W&B-logged aggregate-only three-epoch MiniLM candidate pid 27563.",
+  "last_heartbeat": "2026-10-20T13:55:00+00:00",
+  "last_action": "MiniLM three-epoch candidate completed with W&B run yub1a4vo and was rejected. The next candidate trains Jina on all train_pref examples.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
