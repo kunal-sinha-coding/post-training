@@ -3,40 +3,8 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "Cross-entropy SFT adaptation followed by pairwise preference training may combine domain adaptation with direct preference supervision.",
-  "active_experiment": {
-    "pid": 40975,
-    "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.clean_validation_baseline",
-      "--output-dir",
-      "outputs/clean-validation-hybrid-sft2-pairwise-jina-seed21-len4096",
-      "--seed",
-      "20261021",
-      "--max-length",
-      "4096",
-      "--add-argument-cues",
-      "--train-all",
-      "--loss-function",
-      "pairwise_ranking",
-      "--sft-loss-function",
-      "cross_entropy",
-      "--sft-pretrain-epochs",
-      "2",
-      "--pref-train-epochs",
-      "1",
-      "--label-smoothing",
-      "0.05"
-    ],
-    "started_at": "2026-10-20T18:53:00+00:00"
-  },
-  "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.clean_validation_baseline"
-  ],
+  "active_experiment": null,
+  "worker_command": null,
   "experiment_queue": [
     "Audit and baseline the clean train_pref development split.",
     "Compare inferred-label cross entropy and pairwise training on the same split.",
@@ -48,8 +16,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T18:53:00+00:00",
-  "last_action": "Started W&B-logged cross-entropy SFT adaptation followed by pairwise preference training, pid 40975.",
+  "last_heartbeat": "2026-10-20T19:05:00+00:00",
+  "last_action": "Hybrid training completed in W&B run 336pl3aq. The frozen checkpoint is queued for aggregate-only black-box measurement.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }

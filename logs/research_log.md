@@ -740,6 +740,14 @@ Results: Black-box test accuracy was 0.485761 and macro F1 was 0.482804.
 
 Analysis: Pure pairwise ranking is rejected. The next candidate uses cross-entropy for two SFT adaptation epochs and pairwise ranking for one preference epoch.
 
+## EXP-20261020-070
+
+Timestamp: 2026-10-20. A cross-entropy SFT and pairwise preference hybrid was trained and frozen.
+
+Setup: Two W&B-logged SFT epochs used cross-entropy, followed by one pairwise chosen-versus-rejected epoch over all 9,000 `train_pref` rows. Full schemas, argument cues, smoothing 0.05, seed 20261021, and maximum length 4096 were fixed. The official test split was not loaded during training. W&B run: `336pl3aq`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/336pl3aq).
+
+Training diagnostics: Training accuracy was 0.930667 and training macro F1 was 0.698004. The frozen checkpoint is queued for aggregate-only black-box measurement.
+
 Analysis: Even the smaller direct augmentation reduced both metrics. Direct augmentation is rejected. The next intervention removes the engineered required-argument cue while preserving all raw tool schemas.
 
 ## EXP-20261020-049
