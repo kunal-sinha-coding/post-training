@@ -254,3 +254,15 @@ Results: Calibration accuracy was 0.979167. The selected bias was [0.1, -0.3, 0.
 
 Analysis: The training-only calibration improved accuracy by 0.001667 and macro F1 by 0.001263. The gain is evidence for a better request_for_info and tool_call boundary on this seed, but it is not yet a shared rule. The next run tests calibration on the matched seed-20261020 checkpoint with the same fixed split and fraction.
 
+## EXP-20261020-019
+
+Timestamp: 2026-10-20. The W&B-logged matched seed-20261020 calibration completed.
+
+Hypothesis: The 10 percent calibration procedure will improve the matched seed-20261020 checkpoint without using development labels.
+
+Setup: The fixed `split_seed=20261021`, seed-20261020 4,096-token checkpoint, and 720-row calibration slice were used. W&B run: `nqlv9krq`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/nqlv9krq). The official test split was not loaded.
+
+Results: Calibration accuracy was 0.977778. The selected bias was [-0.3, 0.0, 0.0, 0.0]. Development accuracy was 0.948333 and macro F1 was 0.711514, compared with uncalibrated 0.947778 accuracy and 0.711076 macro F1.
+
+Analysis: The gain was small at 0.000556 accuracy and 0.000438 macro F1. The selected bias differs from seed-20261022, which selected [0.1, -0.3, 0.0, 0.0]. The 10 percent rule is not stable. The next experiment increases the calibration fraction to 20 percent for seed-20261020.
+

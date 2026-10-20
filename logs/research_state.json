@@ -2,7 +2,7 @@
   "status": "active",
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The training-only calibration bias will improve or remain neutral on the matched seed-20261020 fixed-split checkpoint if it captures a shared request_for_info and tool_call boundary.",
+  "current_hypothesis": "A 20 percent training calibration slice will reduce the seed-specific bias variance and produce a more stable calibration rule on the fixed split.",
   "active_experiment": null,
   "worker_command": [
     "python",
@@ -12,13 +12,13 @@
     "--checkpoint",
     "outputs/clean-validation-fixedsplit-seed20-len4096",
     "--output",
-    "outputs/clean-validation-fixedsplit-calibration-seed20.json",
+    "outputs/clean-validation-fixedsplit-calibration-seed20-frac20.json",
     "--seed",
     "20261020",
     "--split-seed",
     "20261021",
     "--calibration-fraction",
-    "0.1",
+    "0.2",
     "--max-length",
     "4096"
   ],
@@ -33,8 +33,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T09:18:12.844359+00:00",
-  "last_action": "Recorded W&B calibration run 79647i9d with 0.950000 accuracy and 0.712711 macro F1. Queued matched seed-20261020 calibration.",
+  "last_heartbeat": "2026-10-20T09:20:05.990568+00:00",
+  "last_action": "Recorded W&B calibration run nqlv9krq at 0.948333 accuracy and 0.711514 macro F1. Queued 20 percent calibration for seed 20261020.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
