@@ -5425,6 +5425,7 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-20 Launched W&B-logged aggregate-only black-box test evaluation for the two-SFT and two-preference checkpoint, pid 33402.
 2026-10-20 W&B run 8rxpknt4 evaluated the two-SFT and two-preference checkpoint at 0.550110 aggregate test accuracy and 0.541577 aggregate macro F1. It is rejected. The next candidate removes tool schemas during both training and black-box evaluation.
 2026-10-20 Added --omit-tool-schemas to the aggregate-only test evaluator. The evaluator applies the same frozen visible-input transform used by training and still returns only aggregate metrics.
+2026-10-20 Launched W&B-logged question-only training with two SFT adaptation epochs and one train_pref epoch, pid 33721. The same omission transform will be used during black-box evaluation.
 2026-10-20 Added diagnose_unlabeled_covariate_shift.py. It logs W&B before loading data and reads only question and tool fields, never test labels or answer fields.
 2026-10-20 W&B run d4zj0go1 found test rows have 3.0107 tools on average versus 2.4563 in train_pref and 509 test tool names versus 3039 training names. Its train question-length statistic was invalid because train questions are stored in messages. Fixed the extractor for a clean rerun.
 2026-10-20 Corrected the active state after the watchdog recorded the completed full-data process as an audit. The full-data Jina run is queued for retry.
