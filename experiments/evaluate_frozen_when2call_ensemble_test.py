@@ -16,6 +16,7 @@ from datasets import Dataset, load_dataset
 
 import experiments.train_when2call_jina as jina_training
 from experiments.apply_when2call_candidate_validity import required_fields
+from experiments.clean_validation_baseline import remove_tool_schemas
 from experiments.calibrate_clean_validation import collect_logits, load_checkpoint
 from experiments.train_when2call_jina import DATASET_NAME, LABELS, metric_values, prepare_test_examples
 
@@ -65,6 +66,7 @@ def main() -> int:
     parser.add_argument("--checkpoint", action="append", dest="checkpoint_paths", help="Frozen checkpoint path. Repeat once per ensemble member.")
     parser.add_argument("--weight", action="append", dest="weights", type=float, help="Logit weight for each checkpoint. Repeat once per checkpoint.")
     parser.add_argument("--complete-request-to-tool", action="store_true", help="Apply a frozen required-field inference rule.")
+    parser.add_argument("--omit-tool-schemas", action="store_true", help="Apply the frozen question-only input transform.")
     args = parser.parse_args()
     # Open W&B before loading official examples so the post-selection measurement is tracked.
     import wandb
@@ -87,7 +89,7 @@ def main() -> int:
         entity=os.getenv("WANDB_ENTITY"),
         name="when2call-blackbox-test-aggregate",
         job_type="official-test-measurement",
-        config={"checkpoints": {key: str(value) for key, value in checkpoints.items()}, "weights": weights.tolist(), "complete_request_to_tool": args.complete_request_to_tool, "dataset": f"{DATASET_NAME}:test/mcq", "selection_complete": True, "black_box": True, "max_length": 4096},
+        config={"checkpoints": {key: str(value) for key, value in checkpoints.items()}, "weights": weights.tolist(), "complete_request_to_tool": args.complete_request_to_tool, "omit_tool_schemas": args.omit_tool_schemas, "dataset": f"{DATASET_NAME}:test/mcq", "selection_complete": True, "black_box": True, "max_length": 4096},
     )
     atexit.register(run.finish)
     # Freeze the model context and load the official labels only for final measurement.
@@ -95,6 +97,9 @@ def main() -> int:
     jina_training.MAX_LENGTH = 8192
     rows = load_official_test_rows()
     examples = prepare_test_examples(rows)
+    # Apply only the frozen visible-input transform selected before official measurement.
+    if args.omit_tool_schemas:
+        remove_tool_schemas(examples)
     truncated_examples = 0
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     logits_by_checkpoint = []

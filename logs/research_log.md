@@ -568,6 +568,16 @@ Training diagnostics: Training accuracy was 0.963556 and training macro F1 was 0
 
 Decision: The checkpoint is queued for one aggregate-only black-box test measurement. It will be retained only if its aggregate test metrics improve the current leader.
 
+## EXP-20261020-051
+
+Timestamp: 2026-10-20. The two-SFT and two-preference candidate was evaluated through the aggregate-only black-box test interface.
+
+Setup: The frozen checkpoint used two `train_sft` adaptation epochs followed by two `train_pref` fine-tuning epochs. W&B test run: `8rxpknt4`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/8rxpknt4). Only aggregate accuracy and macro F1 were returned.
+
+Results: Black-box test accuracy was 0.550110 and macro F1 was 0.541577.
+
+Analysis: The extra preference epoch reduced both aggregate metrics from the two-SFT and one-preference leader. It is rejected. The next intervention tests a question-only representation with the best two-SFT and one-preference training schedule.
+
 ## EXP-20261020-049
 
 Timestamp: 2026-10-20. The three-epoch staged adaptation candidate was evaluated through the aggregate-only black-box test interface.
