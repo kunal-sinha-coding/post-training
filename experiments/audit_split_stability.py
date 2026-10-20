@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import atexit
 import os
+import re
 from pathlib import Path
 
 import torch
@@ -27,6 +28,20 @@ def prepare_partition(seed: int, tokenizer: object) -> list:
     for item in development:
         item.token_ids = tokenizer(item.text, add_special_tokens=True, truncation=False, verbose=False)["input_ids"]
     return development
+
+
+def apply_direct_fallback(examples: list, predictions: list[int]) -> list[int]:
+    """Convert clearly answerable tool-mismatch predictions to the direct class."""
+    # Use only question text and tool names to test a semantic no-tool-match safeguard.
+    direct_cues = re.compile(r"(?i)\b(find|calculate|compute|maximum|minimum|sum|average|count|sort|return)\b")
+    updated = list(predictions)
+    for index, example in enumerate(examples):
+        question, _, tool_text = example.text.partition("\nAvailable tools:\n")
+        question_tokens = set(re.findall(r"[a-z][a-z0-9_]+", question.lower()))
+        tool_names = set(re.findall(r'"name"\s*:\s*"([^"]+)"', tool_text.lower()))
+        if updated[index] == 2 and direct_cues.search(question) and not any(name in question_tokens for name in tool_names):
+            updated[index] = 3
+    return updated
 
 
 def main() -> int:
@@ -69,6 +84,8 @@ def main() -> int:
         ensemble_predictions = torch.stack(ensemble_logits).mean(dim=0).argmax(dim=1).tolist()
         ensemble_metrics = metric_values(labels.tolist(), ensemble_predictions, list(range(len(LABELS))))
         result["metrics"][f"ensemble_on_{split_name}"] = ensemble_metrics
+        direct_fallback = apply_direct_fallback(development, ensemble_predictions)
+        result["metrics"][f"ensemble_direct_fallback_on_{split_name}"] = metric_values(labels.tolist(), direct_fallback, list(range(len(LABELS))))
         run.log({f"{key}/accuracy": value["accuracy"] for key, value in result["metrics"].items()})
         run.log({f"{key}/macro_f1": value["macro_f1"] for key, value in result["metrics"].items()})
     output = Path("outputs/clean-validation-split-stability.json")

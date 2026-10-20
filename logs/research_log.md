@@ -374,3 +374,15 @@ Result: CUDA allocation of 912 MiB failed while stale process 19481 held approxi
 
 Recovery: The GPU is now clear. The same experiment will be retried as a single worker.
 
+## EXP-20261020-030
+
+Timestamp: 2026-10-20. The W&B-logged targeted direct augmentation completed after the clean GPU retry.
+
+Hypothesis: Adding 100 inferred rejected-direct examples to the training partition will create direct predictions without broad rejected-label noise.
+
+Setup: The fixed `split_seed=20261021`, seed 20261022, argument cues, 4,096 tokens, cross entropy, and 100 rejected-direct samples were used. W&B run: `lkvns5cj`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/lkvns5cj). The official test split was not loaded.
+
+Results: Training accuracy was 0.959178 and macro F1 was 0.724396. Development accuracy was 0.943889 and full macro F1 was 0.708123. The model still predicted zero direct examples.
+
+Analysis: The targeted augmentation did not repair direct prediction and reduced the validation result relative to the 0.948333 and 0.711448 baseline. The approach is rejected. The next diagnostic tests a semantic no-tool-match direct fallback using only question text and available tool names on the fixed validation split.
+

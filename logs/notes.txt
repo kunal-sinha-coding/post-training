@@ -5360,3 +5360,4 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-20 W&B run mo14kybu hit a collator-limit mismatch after test truncation. The evaluator now keeps the native 8192 collator limit while truncating test inputs to 4096.
 2026-10-20 W&B run sh67pf6x completed the one-time official test measurement at 0.528204 accuracy and 0.530578 full macro F1. Test metrics are post-selection only. The next validation experiment adds 100 rejected-direct samples instead of all 2736.
 2026-10-20 W&B run b7xrpd5x failed with CUDA OOM because the official test process overlapped the validation worker. GPU state is now clear. The same 100 rejected-direct experiment will be retried alone.
+2026-10-20 W&B run lkvns5cj rejected 100 direct samples at 0.943889 accuracy and 0.708123 macro F1. Added a validation-only semantic no-tool-match direct fallback diagnostic.
