@@ -1,5 +1,9 @@
 # Experiment Notes
 
+## 2026-10-20: Establish clean When2Call research protocol
+
+Saved the autonomous research prompt in `auto-research-prompt.md`. Audited the repository and found that historical When2Call routing experiments loaded official test labels and used test metrics to select routing rules, ensembles, and checkpoints. Marked those results as historical and excluded them from new model selection. Added a deterministic stratified development split from `train_pref`, a one epoch Jina baseline runner that never loads the official test split, durable research state, a validation leaderboard, a research summary, and a five minute watchdog with state based recovery. The first experiment is the clean baseline audit.
+
 ## 2026-09-11: Add cached LLM output verifier experiment
 
 Added experiments/llm_output_verifier.py to select one of the existing ten EvalPlus candidates per task with one external LLM call. The script includes the task prompt, all standard and extended test inputs, candidate programs, and saved observed outputs while withholding correctness labels. It caches each decision by prompt hash and computes accuracy only after selection so the artifact can be reused for follow-up verifier experiments.

@@ -1,0 +1,17 @@
+{
+  "status": "active",
+  "protocol": "clean_validation_v1",
+  "current_hypothesis": "A deterministic train_pref development split is required before comparing When2Call models because prior scripts selected with official test labels.",
+  "active_experiment": null,
+  "worker_command": ["python", "-u", "experiments/clean_validation_baseline.py"],
+  "experiment_queue": [
+    "Audit and baseline the clean train_pref development split.",
+    "Compare inferred-label cross entropy and pairwise training on the same split.",
+    "Measure class weighting and calibration on the clean split.",
+    "Evaluate ensembles only after freezing a validation-selected candidate."
+  ],
+  "best_validation": {"accuracy": null, "macro_f1": null, "artifact": null},
+  "last_heartbeat": null,
+  "last_action": "Created clean validation protocol after leakage audit.",
+  "stop_command": "STOP"
+}
