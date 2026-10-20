@@ -3,8 +3,34 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "Pairwise chosen-versus-rejected ranking may use the preference structure more directly and improve shifted test generalization.",
-  "active_experiment": null,
-  "worker_command": null,
+  "active_experiment": {
+    "pid": 40305,
+    "command": [
+      "python",
+      "-u",
+      "-m",
+      "experiments.clean_validation_baseline",
+      "--output-dir",
+      "outputs/clean-validation-pairwise-jina-seed21-len4096",
+      "--seed",
+      "20261021",
+      "--max-length",
+      "4096",
+      "--add-argument-cues",
+      "--train-all",
+      "--loss-function",
+      "pairwise_ranking",
+      "--pref-train-epochs",
+      "1"
+    ],
+    "started_at": "2026-10-20T18:23:00+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.clean_validation_baseline"
+  ],
   "experiment_queue": [
     "Audit and baseline the clean train_pref development split.",
     "Compare inferred-label cross entropy and pairwise training on the same split.",
@@ -16,8 +42,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T18:20:00+00:00",
-  "last_action": "Black-box W&B run gcc482l6 completed at 0.539157 accuracy and 0.541246 macro F1. The next candidate uses pairwise ranking.",
+  "last_heartbeat": "2026-10-20T18:23:00+00:00",
+  "last_action": "Started W&B-logged pairwise chosen-versus-rejected training with full schemas and argument cues, pid 40305.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
