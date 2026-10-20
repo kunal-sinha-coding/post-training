@@ -518,3 +518,13 @@ Results: Train questions averaged 14.142 words with a 26-word 95th percentile. T
 
 Analysis: The test distribution has longer questions, more tools per row, and a much narrower tool-name vocabulary. This explains why validation performance from random `train_pref` partitions is not a reliable proxy for test performance. The next intervention uses staged domain adaptation with `train_sft` language and tool contexts followed by labeled `train_pref` fine-tuning. It does not use test inputs for training.
 
+## EXP-20261020-044
+
+Timestamp: 2026-10-20. A staged adaptation candidate was trained and frozen for aggregate-only black-box measurement.
+
+Setup: One W&B-logged epoch over cached `train_sft` examples preceded one cross-entropy epoch over all 9,000 cached `train_pref` examples. The Jina encoder, argument cues, seed 20261021, and maximum length 4096 were fixed. The official test split was not loaded during training. W&B run: `9og4lo61`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/9og4lo61).
+
+Training diagnostics: Training accuracy was 0.968667 and training macro F1 was 0.726640. No development metric was used because all labeled `train_pref` rows were used for the frozen candidate.
+
+Decision: The checkpoint is ready for one aggregate-only black-box test measurement. Its test metric will be compared only after the frozen artifact is complete.
+
