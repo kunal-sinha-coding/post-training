@@ -4,14 +4,26 @@
   "protocol": "clean_validation_v1",
   "current_hypothesis": "Increasing the seed21 logit weight to 0.8 may improve black-box macro F1 without reducing accuracy.",
   "active_experiment": {
-    "pid": 23177,
+    "pid": 23286,
     "command": [
       "python",
       "-u",
       "-m",
-      "experiments.audit_split_stability"
+      "experiments.evaluate_frozen_when2call_ensemble_test",
+      "--checkpoint",
+      "outputs/clean-validation-fixedsplit-seed21-len4096",
+      "--checkpoint",
+      "outputs/clean-validation-fixedsplit-seed20-len4096",
+      "--checkpoint",
+      "outputs/clean-validation-fixedsplit-seed22-len4096",
+      "--weight",
+      "0.8",
+      "--weight",
+      "0.1",
+      "--weight",
+      "0.1"
     ],
-    "started_at": "2026-10-20T10:05:12.566452+00:00"
+    "started_at": "2026-10-20T10:36:00+00:00"
   },
   "worker_command": [
     "python",
@@ -30,8 +42,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T10:05:12.566473+00:00",
-  "last_action": "Watchdog started validation worker pid 23177.",
+  "last_heartbeat": "2026-10-20T10:36:00+00:00",
+  "last_action": "Launched aggregate-only black-box evaluation for frozen weighted ensemble pid 23286 with weights 0.8, 0.1, and 0.1.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
