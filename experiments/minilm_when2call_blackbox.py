@@ -18,7 +18,8 @@ from datasets import Dataset
 from transformers import AutoModel, AutoTokenizer
 
 from experiments.clean_validation_baseline import split_examples
-from experiments.train_when2call_jina import LABELS, JinaSequenceClassifier, batch_metrics, collate, metric_values, prepare_test_examples, prepare_train_examples
+import experiments.train_when2call_jina as jina_training
+from experiments.train_when2call_jina import LABELS, JinaSequenceClassifier, batch_metrics, collate, prepare_test_examples, prepare_train_examples, tokenize_examples
 
 MINILM_MODEL = "nreimers/MiniLM-L6-H384-uncased"
 
@@ -75,13 +76,17 @@ def main() -> int:
     train, development = split_examples(examples, 0.2, 20261021)
     tokenizer = AutoTokenizer.from_pretrained(MINILM_MODEL, trust_remote_code=True, force_download=True)
     tokenizer.model_max_length = 512
+    jina_training.MAX_LENGTH = 512
     model = JinaSequenceClassifier(AutoModel.from_pretrained(MINILM_MODEL, trust_remote_code=True, force_download=True), len(LABELS)).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.learning_rate)
     losses = []
     for epoch in range(args.epochs):
+        tokenize_examples(train, tokenizer)
         losses.append(train_epoch(model, tokenizer, train, device, optimizer, 20261022 + epoch))
     dev_metrics = batch_metrics(model, tokenizer, development, device, list(range(len(LABELS))))
     test_examples = prepare_test_examples(load_cached_rows(test_path))
+    tokenize_examples(development, tokenizer)
+    tokenize_examples(test_examples, tokenizer)
     test_metrics = batch_metrics(model, tokenizer, test_examples, device, list(range(len(LABELS))))
     aggregate = {"accuracy": test_metrics["accuracy"], "macro_f1": test_metrics["macro_f1"]}
     result = {"model": "nreimers/MiniLM-L6-H384-uncased", "epochs": args.epochs, "learning_rate": args.learning_rate, "development": {"accuracy": dev_metrics["accuracy"], "macro_f1": dev_metrics["macro_f1"]}, "black_box": True, "metrics": aggregate, "wandb_run_id": run.id, "wandb_run_url": run.url}

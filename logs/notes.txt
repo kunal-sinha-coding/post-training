@@ -5390,6 +5390,7 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-20 W&B run fepcxeu1 captured a MiniLM startup failure because the model alias resolved to a corrupted zero-byte tokenizer cache. The complete local snapshot was found and will be used for retry.
 2026-10-20 W&B run an2768rz showed that the supposed complete MiniLM snapshot files are also zero bytes. The retry now requests a fresh public checkpoint download with force_download.
 2026-10-20 Launched the forced-refresh W&B-logged aggregate-only MiniLM candidate as pid 25591.
+2026-10-20 W&B run 4nx7g8oe captured a MiniLM pipeline failure after download because examples were not tokenized before batching. Added explicit tokenization and will retry the same candidate.
 2026-10-20 Relaunched the corrected W&B-logged aggregate-only frozen-encoder linear probe as pid 24497.
 2026-10-20 Relaunched the corrected W&B-logged aggregate-only MiniLM candidate as pid 25129 using the complete local snapshot.
 2026-10-20 Launched W&B-logged aggregate-only black-box evaluation for the 0.8 seed21 weighted ensemble with the required-field inference rule, pid 23876.
