@@ -2,10 +2,8 @@
   "status": "active",
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "Intermediate weight decay 0.05 may preserve the smoothing 0.05 recipe while reducing overfitting under the observed train to test shift.",
   "current_hypothesis": "Weight decay 0.025 may preserve the smoothing 0.05 recipe while reducing overfitting with less underfitting than decay 0.05.",
   "active_experiment": {
-    "pid": 44686,
     "pid": 46247,
     "command": [
       "python",
@@ -13,7 +11,7 @@
       "-m",
       "experiments.clean_validation_baseline"
     ],
-    "started_at": "2026-10-20T13:35:16.708436+00:00"
+    "started_at": "2026-10-20T17:40:00+00:00",
     "started_at": "2026-10-20T17:40:00+00:00",
     "phase": "training",
     "source_checkpoint": null,
@@ -36,8 +34,6 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T13:35:16.708458+00:00",
-  "last_action": "Watchdog started validation worker pid 44686.",
   "last_heartbeat": "2026-10-20T17:40:00+00:00",
   "last_action": "Started W&B-logged two-SFT and one-preference training with smoothing 0.05, learning rate 5e-5, and weight decay 0.025, pid 46247.",
   "watchdog_enabled": true,

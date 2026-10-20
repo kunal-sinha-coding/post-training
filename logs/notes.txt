@@ -5499,3 +5499,5 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-20 Relaunched the corrected W&B-logged aggregate-only frozen-encoder linear probe as pid 24497.
 2026-10-20 Relaunched the corrected W&B-logged aggregate-only MiniLM candidate as pid 25129 using the complete local snapshot.
 2026-10-20 Launched W&B-logged aggregate-only black-box evaluation for the 0.8 seed21 weighted ensemble with the required-field inference rule, pid 23876.
+2026-10-20 Fixed validation_watchdog.py so zombie processes are not treated as active workers and are not adopted during recovery. This prevents completed workers from blocking the five-minute restart policy.
+2026-10-20 Updated auto-research-prompt.md to require OS process-state checks for zombie workers, atomic state validation, and a simulated recovery test.
