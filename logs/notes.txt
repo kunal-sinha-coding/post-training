@@ -5387,5 +5387,6 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-20 W&B run tm1ee79b completed the corrected frozen-encoder linear probe at 0.390471 accuracy and 0.360191 macro F1. The approach is rejected. The next experiment changes the encoder family to cached MiniLM.
 2026-10-20 Added minilm_when2call_blackbox.py. It fine-tunes cached MiniLM on train_pref, logs W&B before data loading, and exposes only aggregate test accuracy and macro F1.
 2026-10-20 Launched W&B-logged aggregate-only MiniLM candidate pid 24888 with one epoch and learning rate 2e-5.
+2026-10-20 W&B run fepcxeu1 captured a MiniLM startup failure because the model alias resolved to a corrupted zero-byte tokenizer cache. The complete local snapshot was found and will be used for retry.
 2026-10-20 Relaunched the corrected W&B-logged aggregate-only frozen-encoder linear probe as pid 24497.
 2026-10-20 Launched W&B-logged aggregate-only black-box evaluation for the 0.8 seed21 weighted ensemble with the required-field inference rule, pid 23876.
