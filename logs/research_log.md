@@ -688,6 +688,14 @@ Results: Black-box test accuracy was 0.556955 and macro F1 was 0.555230.
 
 Analysis: Adding 100 direct examples reduced both aggregate metrics from the smoothing 0.05 leader. It is rejected. The next candidate tests a smaller direct augmentation of 10 examples.
 
+## EXP-20261020-064
+
+Timestamp: 2026-10-20. The 10-example direct augmentation candidate was trained and frozen.
+
+Setup: Two W&B-logged `train_sft` adaptation epochs and one `train_pref` epoch used full schemas, label smoothing 0.05, and 10 rejected direct examples. The official test split was not loaded during training. W&B run: `l15a4jhh`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/l15a4jhh).
+
+Training diagnostics: Training accuracy was 0.968701 and training macro F1 was 0.727075. The frozen checkpoint is queued for aggregate-only black-box measurement.
+
 ## EXP-20261020-049
 
 Timestamp: 2026-10-20. The three-epoch staged adaptation candidate was evaluated through the aggregate-only black-box test interface.
