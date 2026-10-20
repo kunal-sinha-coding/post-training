@@ -85,7 +85,7 @@ def main() -> int:
         alive = process_alive(pid)
         stale = heartbeat is None
         write_log(log_path, f"check pid={pid} alive={alive} heartbeat={heartbeat} stale={stale}")
-        if state.get("status") == "active" and active and (not alive or stale):
+        if state.get("status") == "active" and (not active or not alive or stale):
             start_worker(args.repo, state_path, log_path)
         time.sleep(max(300, args.interval_seconds))
 
