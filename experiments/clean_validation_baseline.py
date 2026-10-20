@@ -73,7 +73,7 @@ def load_model(device: torch.device) -> tuple[torch.nn.Module, object]:
     return model, tokenizer
 
 
-def train_epoch(model: torch.nn.Module, tokenizer: object, examples: list, device: torch.device, optimizer: object) -> float:
+def train_epoch(model: torch.nn.Module, tokenizer: object, examples: list, device: torch.device, optimizer: object, loss_function: str) -> float:
     """Run one deterministic full batch training epoch and return mean loss."""
     # Shuffle only the training partition and use small batches for the available GPU memory.
     model.train()
@@ -83,12 +83,20 @@ def train_epoch(model: torch.nn.Module, tokenizer: object, examples: list, devic
     for start in range(0, len(order), 8):
         batch = collate(order[start:start + 8], tokenizer)
         labels = batch.pop("labels").to(device)
-        batch.pop("rejected_labels")
+        rejected_labels = batch.pop("rejected_labels").to(device)
         batch.pop("source_ids")
         inputs = {key: value.to(device) for key, value in batch.items()}
         optimizer.zero_grad(set_to_none=True)
         with autocast_context(device):
-            loss = torch.nn.functional.cross_entropy(model(**inputs).logits, labels)
+            logits = model(**inputs).logits
+            if loss_function == "pairwise_ranking":
+                informative = (rejected_labels >= 0) & (labels != rejected_labels)
+                if not informative.any():
+                    continue
+                rows = torch.arange(len(labels), device=device)[informative]
+                loss = torch.nn.functional.softplus(-(logits[rows, labels[informative]] - logits[rows, rejected_labels[informative]])).mean()
+            else:
+                loss = torch.nn.functional.cross_entropy(logits, labels)
         loss.backward()
         optimizer.step()
         losses.append(float(loss.detach().cpu()))
@@ -100,6 +108,7 @@ def main() -> int:
     # Parse only local output settings and keep the dataset split fixed in code and metadata.
     parser = argparse.ArgumentParser()
     parser.add_argument("--output-dir", type=Path, default=Path("outputs/clean-validation-baseline"))
+    parser.add_argument("--loss-function", choices=("cross_entropy", "pairwise_ranking"), default="cross_entropy")
     args = parser.parse_args()
     seed = 20261020
     random.seed(seed)
@@ -116,7 +125,7 @@ def main() -> int:
 
     # Train one compact baseline epoch and evaluate only the held out development partition.
     optimizer = torch.optim.AdamW(tokenizer_model.parameters(), lr=5e-5)
-    loss = train_epoch(tokenizer_model, tokenizer, train, device, optimizer)
+    loss = train_epoch(tokenizer_model, tokenizer, train, device, optimizer, args.loss_function)
     train_metrics = batch_metrics(tokenizer_model, tokenizer, train, device, list(range(len(LABELS))))
     dev_metrics = batch_metrics(tokenizer_model, tokenizer, development, device, list(range(len(LABELS))))
 
@@ -138,6 +147,7 @@ def main() -> int:
         "train_metrics": train_metrics,
         "development_metrics": dev_metrics,
         "model": "jinaai/jina-embeddings-v2-small-en",
+        "loss_function": args.loss_function,
         "device": str(device),
     }
     (args.output_dir / "metrics.json").write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
