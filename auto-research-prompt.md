@@ -29,6 +29,8 @@ Prohibited activities include:
 - Reading or extracting individual test labels from local files, caches, logs, or evaluator internals.
 - Selecting models, prompts, hyperparameters, thresholds, or checkpoints using per-example test outcomes.
 - Generating synthetic data from test labels or example-level test outcomes.
+- Probing the test set by submitting minimally changed prediction sets, one-example perturbations, repeated queries, or adaptive candidates to infer whether individual examples were correct.
+- Reconstructing individual test outcomes, labels, or correctness from differences between aggregate metric responses across runs.
 - Exploiting artifacts that expose test answers.
 - Using external datasets containing duplicates or near-duplicates of test examples.
 
