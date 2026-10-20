@@ -334,3 +334,13 @@ Result: The run failed before loading or scoring test rows with `ValueError: Bui
 
 Recovery: The repository cache contains the official `when2_call-mcq.arrow` artifact. The evaluator now uses that immutable cached test artifact when present. This does not change the frozen candidate or selection procedure.
 
+## EXP-20261020-026
+
+Timestamp: 2026-10-20. The cached official test recovery reached tokenization but stopped before scoring.
+
+Setup: The frozen three-seed ensemble used the cached official MCQ rows, 4,096-token checkpoints, and W&B run `57va2ufs`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/57va2ufs).
+
+Result: The run failed because an official input exceeded the frozen 4,096-token context limit. No test metric was produced.
+
+Recovery: The evaluator now truncates only overlong official inputs to the frozen 4,096-token limit and records the number of truncated rows. This is a fixed inference constraint, not a test-selected rule.
+

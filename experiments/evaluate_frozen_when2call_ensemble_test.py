@@ -56,6 +56,7 @@ def main() -> int:
     jina_training.MAX_LENGTH = 4096
     rows = load_official_test_rows()
     examples = prepare_test_examples(rows)
+    truncated_examples = 0
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     logits_by_checkpoint = []
     result = {"dataset": DATASET_NAME, "split": "test/mcq", "test_loaded": True, "selection_complete": True, "test_measurement_only": True, "checkpoints": {key: str(value) for key, value in checkpoints.items()}, "examples": len(examples), "metrics": {}}
@@ -65,6 +66,10 @@ def main() -> int:
         model, tokenizer = load_checkpoint(checkpoint, device, 4096)
         for item in examples:
             item.token_ids = tokenizer(item.text, add_special_tokens=True, truncation=False, verbose=False)["input_ids"]
+            if len(item.token_ids) > 4096:
+                item.token_ids = item.token_ids[:4096]
+                if checkpoint_name == "seed20":
+                    truncated_examples += 1
         # Use small inference batches because complete test inputs can approach the context limit.
         logits, labels = collect_logits(model, tokenizer, examples, device, batch_size=4)
         logits_by_checkpoint.append(logits)
@@ -75,6 +80,7 @@ def main() -> int:
     result["metrics"]["ensemble"] = metric_values(labels.tolist(), ensemble_logits.argmax(dim=1).tolist(), list(range(len(LABELS))))
     result["wandb_run_id"] = run.id
     result["wandb_run_url"] = run.url
+    result["truncated_examples"] = truncated_examples
     # Log the official metrics after selection without using them for another decision.
     run.log({f"test/{key}/accuracy": value["accuracy"] for key, value in result["metrics"].items()})
     run.log({f"test/{key}/macro_f1": value["macro_f1"] for key, value in result["metrics"].items()})

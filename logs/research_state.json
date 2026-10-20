@@ -23,8 +23,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T09:34:54.259226+00:00",
-  "last_action": "Recorded W&B run sw93ekt4 as a remote test metadata failure. Patched the evaluator to use the cached official MCQ arrow artifact and queued the recovery measurement.",
+  "last_heartbeat": "2026-10-20T09:36:29.840995+00:00",
+  "last_action": "Recorded W&B run 57va2ufs as a context-length failure. Patched the frozen evaluator to truncate overlong test inputs to 4096 and queued the final measurement retry.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
