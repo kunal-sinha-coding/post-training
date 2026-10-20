@@ -5382,4 +5382,5 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-20 W&B run 9nq8kqpj completed the 0.8 seed21 weighted black-box evaluation at 0.534502 accuracy and 0.537033 macro F1. This is the current aggregate leader. Added a required-field inference-rule candidate. Seed-only training changes are deprioritized.
 2026-10-20 W&B run v1u74u6h rejected the required-field inference rule at 0.531763 accuracy and 0.534757 macro F1. The next experiment is a frozen-encoder class-balanced linear probe.
 2026-10-20 Added W&B logging and aggregate-only test output to when2call_embedding_probe.py. The probe now uses the cached train_pref and official test artifacts and exposes only black-box accuracy and macro F1.
+2026-10-20 Launched W&B-logged aggregate-only frozen-encoder linear probe pid 24287 with train_pref, ten epochs, and learning rate 0.01.
 2026-10-20 Launched W&B-logged aggregate-only black-box evaluation for the 0.8 seed21 weighted ensemble with the required-field inference rule, pid 23876.
