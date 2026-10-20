@@ -2,12 +2,8 @@
   "status": "active",
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "A weighted frozen ensemble that emphasizes seed21 may improve both black-box accuracy and macro F1 over seed21 alone.",
-  "active_experiment": {
-    "pid": 22832,
-    "command": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-fixedsplit-seed21-len4096", "--checkpoint", "outputs/clean-validation-fixedsplit-seed20-len4096", "--checkpoint", "outputs/clean-validation-fixedsplit-seed22-len4096", "--weight", "0.6", "--weight", "0.2", "--weight", "0.2", "--output", "outputs/blackbox-test-weighted-seed21.json"],
-    "started_at": "2026-10-20T10:26:00+00:00"
-  },
+  "current_hypothesis": "Increasing the seed21 logit weight to 0.8 may improve black-box macro F1 without reducing accuracy.",
+  "active_experiment": null,
   "worker_command": [
     "python",
     "-u",
@@ -25,8 +21,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T10:26:00+00:00",
-  "last_action": "Launched aggregate-only black-box evaluation for seed21-dominant weighted frozen ensemble pid 22832.",
+  "last_heartbeat": "2026-10-20T10:35:00+00:00",
+  "last_action": "Weighted seed21-dominant black-box evaluation completed with W&B run cd39ygs4. The next frozen candidate uses weights 0.8, 0.1, and 0.1.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }

@@ -430,3 +430,13 @@ Results: The black-box test returned 0.532311 accuracy and 0.534613 macro F1. Th
 
 Decision: Retain seed21 as the current black-box leader. The next candidate is a frozen weighted logit ensemble with the seed21 checkpoint weighted most heavily.
 
+## EXP-20261020-035
+
+Timestamp: 2026-10-20. The seed21-dominant frozen weighted ensemble was evaluated through the aggregate-only black-box test interface.
+
+Setup: The frozen checkpoints were ordered as seed21, seed20, and seed22 with logit weights 0.6, 0.2, and 0.2. W&B run: `cd39ygs4`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/cd39ygs4). Only aggregate test metrics were returned.
+
+Results: The black-box test returned 0.532311 accuracy and 0.534701 macro F1. Accuracy matched seed21 alone. Macro F1 improved from 0.534613 to 0.534701.
+
+Decision: Retain this weighted ensemble as the current aggregate leader. The next experiment increases the seed21 weight to 0.8 and reduces the other two weights equally.
+

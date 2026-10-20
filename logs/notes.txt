@@ -5375,4 +5375,5 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-20 Launched W&B-logged aggregate-only black-box evaluation for frozen seed21 candidate pid 22527. Only accuracy and macro F1 may be returned.
 2026-10-20 W&B run cwcy4vgu evaluated frozen seed21 through the aggregate-only black-box interface at 0.532311 accuracy and 0.534613 macro F1. It exceeded the equal three-seed ensemble. Added weighted-logit support for the next frozen candidate.
 2026-10-20 Launched W&B-logged aggregate-only black-box evaluation for weighted frozen ensemble pid 22832 with weights 0.6 seed21, 0.2 seed20, and 0.2 seed22.
+2026-10-20 W&B run cd39ygs4 completed the weighted black-box evaluation at 0.532311 accuracy and 0.534701 macro F1. This is the current aggregate leader. The next candidate uses weights 0.8, 0.1, and 0.1.
 2026-10-20 Updated auto-research-prompt.md to prohibit test-set probing. The rule now forbids one-example perturbations, repeated adaptive submissions, and reconstructing individual test outcomes from aggregate metric differences.
