@@ -696,6 +696,16 @@ Setup: Two W&B-logged `train_sft` adaptation epochs and one `train_pref` epoch u
 
 Training diagnostics: Training accuracy was 0.968701 and training macro F1 was 0.727075. The frozen checkpoint is queued for aggregate-only black-box measurement.
 
+## EXP-20261020-065
+
+Timestamp: 2026-10-20. The 10-example direct augmentation candidate was evaluated through the aggregate-only black-box test interface.
+
+Setup: The frozen checkpoint used two `train_sft` adaptation epochs, one `train_pref` epoch, full schemas, label smoothing 0.05, and 10 rejected direct examples. W&B test run: `9sm5egyd`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/9sm5egyd). Only aggregate accuracy and macro F1 were returned.
+
+Results: Black-box test accuracy was 0.532585 and macro F1 was 0.533929.
+
+Analysis: Even the smaller direct augmentation reduced both metrics. Direct augmentation is rejected. The next intervention removes the engineered required-argument cue while preserving all raw tool schemas.
+
 ## EXP-20261020-049
 
 Timestamp: 2026-10-20. The three-epoch staged adaptation candidate was evaluated through the aggregate-only black-box test interface.
