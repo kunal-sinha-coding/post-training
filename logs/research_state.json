@@ -3,7 +3,11 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "A visible required-field rule may correct under-called tool requests and generalize better than seed weighting.",
-  "active_experiment": null,
+  "active_experiment": {
+    "pid": 23876,
+    "command": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-fixedsplit-seed21-len4096", "--checkpoint", "outputs/clean-validation-fixedsplit-seed20-len4096", "--checkpoint", "outputs/clean-validation-fixedsplit-seed22-len4096", "--weight", "0.8", "--weight", "0.1", "--weight", "0.1", "--complete-request-to-tool", "--output", "outputs/blackbox-test-required-field-rule.json"],
+    "started_at": "2026-10-20T10:52:00+00:00"
+  },
   "worker_command": [
     "python",
     "-u",
@@ -21,8 +25,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T10:50:00+00:00",
-  "last_action": "0.8 seed21 weighted black-box evaluation completed with W&B run 9nq8kqpj. The next candidate applies a visible required-field inference rule.",
+  "last_heartbeat": "2026-10-20T10:52:00+00:00",
+  "last_action": "Launched aggregate-only black-box evaluation for the required-field inference candidate pid 23876.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
