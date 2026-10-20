@@ -278,3 +278,15 @@ Results: Calibration accuracy was 0.972917. The selected bias was [-0.3, 0.0, 0.
 
 Analysis: The larger slice did not change the selected rule or improve the development result. The calibration improvement remains small and seed-dependent. The next test applies the same 20 percent procedure to seed-20261022.
 
+## EXP-20261020-021
+
+Timestamp: 2026-10-20. The W&B-logged 20 percent calibration on seed-20261022 completed.
+
+Hypothesis: A larger calibration slice will retain the 10 percent seed-20261022 improvement.
+
+Setup: The fixed `split_seed=20261021`, seed-20261022 4,096-token checkpoint, and 1,440-row calibration slice were used. W&B run: `yb3ghcbx`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/yb3ghcbx). The official test split was not loaded.
+
+Results: Calibration accuracy was 0.981944. The selected bias was [0.1, -0.3, 0.0, 0.0]. Development accuracy was 0.947222 and macro F1 was 0.710627, below the uncalibrated 0.948333 accuracy and 0.711448 macro F1.
+
+Analysis: The larger calibration slice regressed the validation result. Calibration is rejected as a shared intervention. The next experiment evaluates a three-seed logit ensemble on the fixed split to test whether training variance can be reduced without selecting a class bias.
+

@@ -2,25 +2,13 @@
   "status": "active",
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 20 percent calibration rule will reproduce the seed-20261022 improvement and show whether its selected bias is stable with more calibration data.",
+  "current_hypothesis": "A logit ensemble of the three independently trained 4096-token fixed-split seeds will improve or stabilize validation accuracy and macro F1 relative to the individual models.",
   "active_experiment": null,
   "worker_command": [
     "python",
     "-u",
     "-m",
-    "experiments.calibrate_clean_validation",
-    "--checkpoint",
-    "outputs/clean-validation-fixedsplit-seed22-len4096",
-    "--output",
-    "outputs/clean-validation-fixedsplit-calibration-seed22-frac20.json",
-    "--seed",
-    "20261022",
-    "--split-seed",
-    "20261021",
-    "--calibration-fraction",
-    "0.2",
-    "--max-length",
-    "4096"
+    "experiments.audit_split_stability"
   ],
   "experiment_queue": [
     "Audit and baseline the clean train_pref development split.",
@@ -33,8 +21,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T09:21:52.206619+00:00",
-  "last_action": "Recorded W&B run nuj17h04 with unchanged 0.948333 accuracy and 0.711514 macro F1. Queued 20 percent calibration for seed 20261022.",
+  "last_heartbeat": "2026-10-20T09:23:57.224606+00:00",
+  "last_action": "Recorded W&B run yb3ghcbx as calibration regression. Added W&B logging to split stability and queued the fixed-split three-seed ensemble.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
