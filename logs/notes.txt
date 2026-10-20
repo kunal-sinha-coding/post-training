@@ -5301,3 +5301,7 @@ Added experiments/watch_auto_research.py. The watchdog checks the supervisor PID
 ## 2026-10-19 Record immediate ranker comparison
 
 Evaluated two existing ranker artifacts immediately instead of waiting for the scheduled loop interval. Both tied the current best. Updated records before commit.
+
+## 2026-10-20 Clean baseline launch diagnostics
+
+The first direct script launch failed because Python did not include the repository root for the `experiments` import. The module launch then found that the remote dataset metadata exposes only a default configuration, despite a complete cached `train_pref` arrow file being present. The baseline runner now uses that cached training artifact, and the watchdog command uses the module form.
