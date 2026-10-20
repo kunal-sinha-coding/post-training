@@ -470,3 +470,13 @@ Results: The black-box test returned 0.390471 accuracy and 0.360191 macro F1.
 
 Analysis: The frozen representation plus linear head was much worse than the fine-tuned Jina classifier. Freezing the encoder is rejected. The next experiment changes the encoder family to cached MiniLM.
 
+## EXP-20261020-039
+
+Timestamp: 2026-10-20. The fine-tuned MiniLM candidate completed through the aggregate-only black-box test interface.
+
+Setup: The cached `nreimers/MiniLM-L6-H384-uncased` encoder was fine-tuned for one epoch on cached `train_pref`, with explicit 512-token truncation. The validation split was used only for diagnostics. W&B run: `w0a2c260`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/w0a2c260). Only aggregate test metrics were returned.
+
+Results: Validation accuracy was 0.743889 and validation macro F1 was 0.554655. The black-box test returned 0.517251 accuracy and 0.512505 macro F1.
+
+Decision: The one-epoch MiniLM candidate is below the current Jina leader. Its weak validation result suggests underfitting, so the next experiment increases MiniLM training to three epochs while keeping the architecture, data, and truncation fixed.
+
