@@ -614,6 +614,16 @@ Setup: Two W&B-logged `train_sft` adaptation epochs and one `train_pref` epoch u
 
 Training diagnostics: Training accuracy was 0.971333 and training macro F1 was 0.728577. The frozen checkpoint is queued for aggregate-only black-box measurement.
 
+## EXP-20261020-056
+
+Timestamp: 2026-10-20. The label-smoothed candidate was evaluated through the aggregate-only black-box test interface.
+
+Setup: The frozen checkpoint used two `train_sft` adaptation epochs, one `train_pref` epoch, full schemas, and label smoothing 0.05. W&B test run: `f3fl4i4c`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/f3fl4i4c). Only aggregate accuracy and macro F1 were returned.
+
+Results: Black-box test accuracy was 0.574480 and macro F1 was 0.574969.
+
+Analysis: Label smoothing improved both aggregate metrics over the fixed ensemble leader. The next experiment tests smoothing 0.10 with the same data, architecture, and training schedule.
+
 ## EXP-20261020-049
 
 Timestamp: 2026-10-20. The three-epoch staged adaptation candidate was evaluated through the aggregate-only black-box test interface.
