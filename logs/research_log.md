@@ -15,3 +15,17 @@ Analysis: The hypothesis was supported. The clean protocol produced a stable val
 Failed launches: Direct file execution failed with `ModuleNotFoundError: experiments`. Module execution then failed because the remote dataset configuration was unavailable. The cached arrow fallback fixed the data issue. The Jina download cache contained zero byte tokenizer and configuration files. The local checkpoint fallback fixed the model issue. A serialized remote model path then caused a local configuration error. Pointing `_name_or_path` to the local checkpoint fixed it.
 
 Next action: Run EXP-20261020-002 with the same split, model, seed, and batch settings while changing the objective to pairwise ranking. Compare both accuracy and macro F1 against this validation baseline. Preserve the current checkpoint.
+
+## EXP-20261020-002
+
+Timestamp: 2026-10-20. The run completed after the baseline implementation was extended with a pairwise objective.
+
+Hypothesis: Rejected responses in `train_pref` will provide a stronger boundary between `request_for_info` and `tool_call` than cross entropy on inferred chosen-response labels.
+
+Setup: This used the exact EXP-20261020-001 data split, seed, Jina warm start, one epoch, batch size 8, and learning rate 5e-5. The only intended change was the pairwise ranking loss `softplus(-(chosen_logit - rejected_logit))`. The official test split was not loaded. Code revision: 6a5b219a.
+
+Results: Training loss was 0.083911. Training accuracy was 0.927083 and training macro F1 was 0.695722. Development accuracy was 0.903889 and development macro F1 was 0.678567. Development per class F1 was 0.944154 for `cannot_answer`, 0.906325 for `request_for_info`, 0.863787 for `tool_call`, and 0.000000 for `direct`. The development confusion matrix was [[541, 7, 51, 0], [1, 566, 33, 0], [4, 76, 520, 0], [1, 0, 0, 0]].
+
+Analysis: The hypothesis was rejected. Relative to EXP-20261020-001, development accuracy decreased by 0.032778 and macro F1 decreased by 0.024466. The pairwise objective increased `tool_call` to `request_for_info` errors from 43 to 76 and `cannot_answer` to `tool_call` errors from 27 to 51. The direct class remained unresolved because only one development example has that inferred label. Pairwise ranking is rejected for the current leaderboard.
+
+Next action: Audit the training response label distribution and inference patterns, then test a targeted class-balanced cross entropy change only if the audit identifies a credible imbalance mechanism.

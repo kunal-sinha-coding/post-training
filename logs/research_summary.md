@@ -13,3 +13,5 @@ Main known risks are noisy inferred training labels, train and evaluation target
 Experiment EXP-20261020-001 completed on 2026-10-20. A deterministic 80/20 split of 9,000 cached `train_pref` rows produced 7,200 training and 1,800 development examples. The warm started Jina model reached 0.936667 development accuracy and 0.703032 development macro F1. The development confusion matrix shows 27 `cannot_answer` examples predicted as `tool_call`, 41 `request_for_info` examples predicted as `tool_call` or `cannot_answer`, and 43 `tool_call` examples predicted as `request_for_info`. The single inferred `direct` example was missed.
 
 Next action: compare cross entropy with pairwise preference training on the same split and checkpoint provenance. The likely high value bottleneck is separation of `request_for_info` and `tool_call`, but the direct class count is too small for a reliable class conclusion.
+
+EXP-20261020-002 rejected pairwise ranking. Development accuracy was 0.903889 and macro F1 was 0.678567. Cross entropy remains the current best. The next experiment audits inferred labels before changing the loss again.
