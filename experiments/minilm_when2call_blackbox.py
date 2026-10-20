@@ -52,6 +52,13 @@ def train_epoch(model: torch.nn.Module, tokenizer: object, examples: list, devic
     return sum(losses) / max(1, len(losses))
 
 
+def tokenize_for_minilm(examples: list, tokenizer: object) -> None:
+    """Tokenize MiniLM inputs with explicit 512-token truncation."""
+    # MiniLM has a shorter context than Jina, so truncation is an explicit fixed candidate choice.
+    for item in examples:
+        item.token_ids = tokenizer(item.text, add_special_tokens=True, truncation=True, max_length=512, verbose=False)["input_ids"]
+
+
 def main() -> int:
     """Train the MiniLM candidate and return aggregate black-box test metrics."""
     # Parse the fixed architecture and training controls before opening the tracker.
@@ -81,12 +88,12 @@ def main() -> int:
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.learning_rate)
     losses = []
     for epoch in range(args.epochs):
-        tokenize_examples(train, tokenizer)
+        tokenize_for_minilm(train, tokenizer)
         losses.append(train_epoch(model, tokenizer, train, device, optimizer, 20261022 + epoch))
     dev_metrics = batch_metrics(model, tokenizer, development, device, list(range(len(LABELS))))
     test_examples = prepare_test_examples(load_cached_rows(test_path))
-    tokenize_examples(development, tokenizer)
-    tokenize_examples(test_examples, tokenizer)
+    tokenize_for_minilm(development, tokenizer)
+    tokenize_for_minilm(test_examples, tokenizer)
     test_metrics = batch_metrics(model, tokenizer, test_examples, device, list(range(len(LABELS))))
     aggregate = {"accuracy": test_metrics["accuracy"], "macro_f1": test_metrics["macro_f1"]}
     result = {"model": "nreimers/MiniLM-L6-H384-uncased", "epochs": args.epochs, "learning_rate": args.learning_rate, "development": {"accuracy": dev_metrics["accuracy"], "macro_f1": dev_metrics["macro_f1"]}, "black_box": True, "metrics": aggregate, "wandb_run_id": run.id, "wandb_run_url": run.url}
