@@ -58,14 +58,17 @@ def split_examples(examples: list, dev_fraction: float, seed: int) -> tuple[list
 
 
 def load_model(device: torch.device) -> tuple[torch.nn.Module, object]:
-    """Load the pretrained Jina encoder with a fresh four class head."""
-    # Recreate the compact encoder architecture under the two billion parameter limit.
-    tokenizer = AutoTokenizer.from_pretrained("jinaai/jina-embeddings-v2-small-en", trust_remote_code=True)
+    """Load the cached local Jina encoder with a fresh four class head."""
+    # Recreate the compact encoder from the complete local checkpoint under the two billion parameter limit.
+    checkpoint = Path("outputs/when2call-jina-v2-small/latest")
+    tokenizer = AutoTokenizer.from_pretrained(checkpoint, trust_remote_code=True)
     tokenizer.model_max_length = 8192
-    config = AutoConfig.from_pretrained("jinaai/jina-embeddings-v2-small-en", trust_remote_code=True)
+    config = AutoConfig.from_pretrained(checkpoint / "encoder_config.json", trust_remote_code=True)
     config.attn_implementation = "torch"
-    encoder = AutoModel.from_pretrained("jinaai/jina-embeddings-v2-small-en", config=config, trust_remote_code=True)
+    encoder = AutoModel.from_config(config, trust_remote_code=True)
     model = JinaSequenceClassifier(encoder, len(LABELS)).to(device)
+    prior_state = torch.load(checkpoint / "model_state.pt", map_location="cpu")
+    model.encoder.load_state_dict({key.removeprefix("encoder."): value for key, value in prior_state.items() if key.startswith("encoder.")})
     return model, tokenizer
 
 

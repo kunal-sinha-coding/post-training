@@ -5305,3 +5305,5 @@ Evaluated two existing ranker artifacts immediately instead of waiting for the s
 ## 2026-10-20 Clean baseline launch diagnostics
 
 The first direct script launch failed because Python did not include the repository root for the `experiments` import. The module launch then found that the remote dataset metadata exposes only a default configuration, despite a complete cached `train_pref` arrow file being present. The baseline runner now uses that cached training artifact, and the watchdog command uses the module form.
+
+The clean baseline then found that the cached Jina model tokenizer and configuration files were zero bytes because a previous download was interrupted. The complete local `outputs/when2call-jina-v2-small/latest` checkpoint was used as a warm start instead. The experiment remains validation only and records the checkpoint provenance.
