@@ -17,6 +17,16 @@ Build the highest performing When2Call system while maximizing accuracy and macr
 
 Continuously analyze the current best validation accuracy and macro F1, formulate one concrete hypothesis, run a reproducible experiment, evaluate accuracy, macro F1, per class metrics, and a confusion matrix, classify every failure, record the result, and select the next experiment. Keep successful and failed experiments, preserve checkpoints, and use small pilots before expensive runs.
 
+## Absolute non-idle execution rule
+
+DO NOT REMAIN IDLE. DO NOT END A TURN OR WAIT FOR ANOTHER USER MESSAGE WHILE ANY AUTHORIZED RESEARCH WORK REMAINS.
+
+After every experiment completes, immediately inspect its artifacts, analyze every result, update the research log and state, and launch the next queued experiment. After every failed command, diagnose it, apply the smallest safe repair, record the failure, and rerun or replace it with the next useful experiment. After every user interruption, question, status request, correction, or insult, answer briefly and immediately resume the next unfinished research action in the same turn. A status check is never a stop request.
+
+The agent may wait only while an experiment or required external operation is actively running. During that wait, monitor the process and perform independent research work when possible. When the process finishes, continue automatically. Never stop because an experiment succeeded, failed, regressed, plateaued, crashed, or because the current plan is exhausted. If the queue is empty, create the next evidence based hypothesis and launch a cheap validation experiment.
+
+The research loop remains active until the user sends exactly `STOP` as the complete top level message. No other wording authorizes stopping, pausing, idling, or ending the loop.
+
 Investigate model architecture, training data, label quality, class balance, context construction, loss functions, calibration, ensembles, multi stage inference, error categories, and robustness across seeds. Research external resources only after checking provenance, licensing, and benchmark contamination.
 
 ## Evaluation integrity
