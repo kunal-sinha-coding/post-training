@@ -30,14 +30,15 @@ def write_log(path: Path, message: str) -> None:
 
 def process_alive(pid: int) -> bool:
     """Return whether a process identifier still exists."""
-    # Signal zero checks process existence without changing process state.
+    # Check both process existence and process state so zombies do not block recovery.
     if pid <= 0:
         return False
     try:
         os.kill(pid, 0)
     except (ProcessLookupError, PermissionError):
         return False
-    return True
+    state = subprocess.check_output(["ps", "-o", "stat=", "-p", str(pid)], text=True).strip()
+    return bool(state) and not state.startswith("Z")
 
 
 def running_validation_workers(exclude_pid: int) -> list[int]:
@@ -50,7 +51,8 @@ def running_validation_workers(exclude_pid: int) -> list[int]:
         if len(fields) != 2:
             continue
         pid, command = int(fields[0]), fields[1]
-        if pid != exclude_pid and "experiments.clean_validation_baseline" in command:
+        state = subprocess.check_output(["ps", "-o", "stat=", "-p", str(pid)], text=True).strip()
+        if pid != exclude_pid and not state.startswith("Z") and "experiments.clean_validation_baseline" in command:
             workers.append(pid)
     return workers
 
