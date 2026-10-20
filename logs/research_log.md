@@ -568,3 +568,13 @@ Training diagnostics: Training accuracy was 0.963556 and training macro F1 was 0
 
 Decision: The checkpoint is queued for one aggregate-only black-box test measurement. It will be retained only if its aggregate test metrics improve the current leader.
 
+## EXP-20261020-049
+
+Timestamp: 2026-10-20. The three-epoch staged adaptation candidate was evaluated through the aggregate-only black-box test interface.
+
+Setup: The frozen checkpoint used three `train_sft` adaptation epochs followed by one `train_pref` fine-tuning epoch. W&B test run: `z36fvr5j`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/z36fvr5j). Only aggregate accuracy and macro F1 were returned.
+
+Results: Black-box test accuracy was 0.546002 and macro F1 was 0.548968.
+
+Analysis: Three adaptation epochs reduced both aggregate metrics from the two-epoch leader. The two-epoch adaptation setting is retained. The next intervention changes the labeled fine-tuning dose from one to two epochs.
+

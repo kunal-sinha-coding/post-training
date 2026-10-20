@@ -177,6 +177,7 @@ def main() -> int:
     parser.add_argument("--rejected-direct-samples", type=int, default=0)
     parser.add_argument("--sft-aux-samples-per-class", type=int, default=0)
     parser.add_argument("--sft-pretrain-epochs", type=int, default=0)
+    parser.add_argument("--pref-train-epochs", type=int, default=1)
     parser.add_argument("--train-all", action="store_true")
     args = parser.parse_args()
     # Open a W&B run before loading data so failures and completed metrics are both tracked.
@@ -247,9 +248,12 @@ def main() -> int:
     tokenize_examples(train, tokenizer)
     tokenize_examples(development, tokenizer)
 
-    # Train one compact baseline epoch and evaluate only the held out development partition.
+    # Train the selected number of compact preference epochs and evaluate only the held out development partition.
     optimizer = torch.optim.AdamW(tokenizer_model.parameters(), lr=5e-5)
-    loss = train_epoch(tokenizer_model, tokenizer, train, device, optimizer, args.loss_function, seed)
+    preference_losses = []
+    for epoch in range(args.pref_train_epochs):
+        preference_losses.append(train_epoch(tokenizer_model, tokenizer, train, device, optimizer, args.loss_function, seed + args.sft_pretrain_epochs + epoch))
+    loss = sum(preference_losses) / max(1, len(preference_losses))
     train_metrics = batch_metrics(tokenizer_model, tokenizer, train, device, list(range(len(LABELS))))
     dev_metrics = batch_metrics(tokenizer_model, tokenizer, development, device, list(range(len(LABELS))) if development else []) if development else None
 
@@ -270,6 +274,7 @@ def main() -> int:
         "development_label_counts": dict(Counter(LABELS[item.label] for item in development)),
         "loss": loss,
         "sft_pretrain_losses": sft_pretrain_losses,
+        "preference_losses": preference_losses,
         "train_metrics": train_metrics,
         "development_metrics": dev_metrics,
         "model": "jinaai/jina-embeddings-v2-small-en",
@@ -279,6 +284,7 @@ def main() -> int:
         "include_rejected_examples": args.include_rejected_examples,
         "rejected_direct_samples": args.rejected_direct_samples,
         "sft_pretrain_epochs": args.sft_pretrain_epochs,
+        "pref_train_epochs": args.pref_train_epochs,
         "train_all": args.train_all,
         "device": str(device),
     }
@@ -290,10 +296,11 @@ def main() -> int:
         **({"development/accuracy": dev_metrics["accuracy"], "development/macro_f1": dev_metrics["macro_f1"]} if dev_metrics else {}),
         "training/loss": loss,
         "training/sft_pretrain_loss": sum(sft_pretrain_losses) / max(1, len(sft_pretrain_losses)),
+        "training/preference_loss": loss,
         "data/train_examples": len(train),
         "data/development_examples": len(development),
     })
-    run.summary.update({**({"development_accuracy": dev_metrics["accuracy"], "development_macro_f1": dev_metrics["macro_f1"]} if dev_metrics else {}), "output_dir": str(args.output_dir), "sft_pretrain_losses": sft_pretrain_losses})
+    run.summary.update({**({"development_accuracy": dev_metrics["accuracy"], "development_macro_f1": dev_metrics["macro_f1"]} if dev_metrics else {}), "output_dir": str(args.output_dir), "sft_pretrain_losses": sft_pretrain_losses, "preference_losses": preference_losses})
     print(json.dumps({"train": train_metrics, "development": dev_metrics, "loss": loss}, indent=2))
     return 0
 
