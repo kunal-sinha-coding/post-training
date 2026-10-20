@@ -202,3 +202,15 @@ Analysis: The run completed without memory failure. Compared with the fixed-spli
 
 Decision: Keep `max_length=4096` as the complete-input recovery setting. The next run repeats 4,096 tokens with seed 20261020 to separate seed variance from the earlier 8,192-token result.
 
+## EXP-20261020-015
+
+Timestamp: 2026-10-20. The matched seed-20261020 4,096-token run failed because the watchdog had restarted the prior worker concurrently.
+
+Hypothesis: The fixed-split seed comparison will complete when no duplicate validation worker competes for GPU memory.
+
+Setup: The run used seed 20261020, split seed 20261021, Jina warm start, cross entropy, one epoch, batch size 8, argument cues, and `max_length=4096`. W&B run: `znr9qixl`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/znr9qixl). The official test split was not loaded.
+
+Result: The run failed with CUDA out of memory while a restarted seed-20261021 worker used 15.20 GiB of GPU memory. No validation metrics were produced. W&B captured the configuration and failure.
+
+Analysis: This is an infrastructure failure caused by duplicate worker recovery, not evidence against the model configuration. The watchdog now adopts an existing validation worker before launching a new one. The active seed-20261021 worker is retained as the sole current GPU worker.
+

@@ -40,6 +40,21 @@ def process_alive(pid: int) -> bool:
     return True
 
 
+def running_validation_workers(exclude_pid: int) -> list[int]:
+    """Return validation worker process identifiers already running in the repository."""
+    # Inspect command lines so recovery adopts an existing worker before creating a duplicate.
+    output = subprocess.check_output(["ps", "-eo", "pid=,args="], text=True)
+    workers = []
+    for line in output.splitlines():
+        fields = line.strip().split(maxsplit=1)
+        if len(fields) != 2:
+            continue
+        pid, command = int(fields[0]), fields[1]
+        if pid != exclude_pid and "experiments.clean_validation_baseline" in command:
+            workers.append(pid)
+    return workers
+
+
 def load_state(path: Path) -> dict:
     """Load the atomic research state document."""
     # Parse the complete state on every check so external workers can update it.
@@ -86,7 +101,19 @@ def main() -> int:
         stale = heartbeat is None
         write_log(log_path, f"check pid={pid} alive={alive} heartbeat={heartbeat} stale={stale}")
         if state.get("status") == "active" and (not active or not alive or stale):
-            start_worker(args.repo, state_path, log_path)
+            # Adopt a worker launched before the state update instead of competing for the GPU.
+            existing = running_validation_workers(os.getpid())
+            if existing:
+                active_pid = existing[0]
+                state["active_experiment"] = {"pid": active_pid, "command": state.get("worker_command"), "started_at": timestamp()}
+                state["last_heartbeat"] = timestamp()
+                state["last_action"] = f"Watchdog adopted existing validation worker pid {active_pid}."
+                temporary = state_path.with_suffix(".tmp")
+                temporary.write_text(json.dumps(state, indent=2) + "\n", encoding="utf-8")
+                temporary.replace(state_path)
+                write_log(log_path, f"adopted existing validation worker pid {active_pid}")
+            else:
+                start_worker(args.repo, state_path, log_path)
         time.sleep(max(300, args.interval_seconds))
 
 
