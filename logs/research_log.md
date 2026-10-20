@@ -242,3 +242,15 @@ Analysis: This is the highest of the three fixed-split 4,096-token seed results.
 
 Decision: Keep the 4,096-token argument-cue baseline. The next experiment fits a bounded class bias on a training-only calibration slice from this fixed split and measures the frozen rule on development.
 
+## EXP-20261020-018
+
+Timestamp: 2026-10-20. The W&B-logged training-only calibration completed on the fixed split.
+
+Hypothesis: A bounded class bias fitted on a 10 percent training calibration slice will improve the seed-20261022 checkpoint without using development labels.
+
+Setup: The fixed `split_seed=20261021` was used with the seed-20261022, 4,096-token argument-cue checkpoint. Calibration used 720 training rows and measured the frozen rule on 1,800 development rows. W&B run: `79647i9d`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/79647i9d). The official test split was not loaded.
+
+Results: Calibration accuracy was 0.979167. The selected bias was [0.1, -0.3, 0.0, 0.0]. Development accuracy was 0.950000 and macro F1 was 0.712711, compared with the uncalibrated 0.948333 accuracy and 0.711448 macro F1.
+
+Analysis: The training-only calibration improved accuracy by 0.001667 and macro F1 by 0.001263. The gain is evidence for a better request_for_info and tool_call boundary on this seed, but it is not yet a shared rule. The next run tests calibration on the matched seed-20261020 checkpoint with the same fixed split and fraction.
+

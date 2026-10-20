@@ -2,7 +2,7 @@
   "status": "active",
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "A bounded class-logit bias fitted only on a 10 percent training calibration slice can improve the fixed-split 4096-token seed-20261022 model without using development labels for fitting.",
+  "current_hypothesis": "The training-only calibration bias will improve or remain neutral on the matched seed-20261020 fixed-split checkpoint if it captures a shared request_for_info and tool_call boundary.",
   "active_experiment": null,
   "worker_command": [
     "python",
@@ -10,11 +10,11 @@
     "-m",
     "experiments.calibrate_clean_validation",
     "--checkpoint",
-    "outputs/clean-validation-fixedsplit-seed22-len4096",
+    "outputs/clean-validation-fixedsplit-seed20-len4096",
     "--output",
-    "outputs/clean-validation-fixedsplit-calibration-seed22.json",
+    "outputs/clean-validation-fixedsplit-calibration-seed20.json",
     "--seed",
-    "20261022",
+    "20261020",
     "--split-seed",
     "20261021",
     "--calibration-fraction",
@@ -33,8 +33,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T09:16:10.030460+00:00",
-  "last_action": "Recorded W&B run 7hposvnc at 0.948333 accuracy and 0.711448 macro F1. Added W&B instrumentation to calibration and queued a training-only calibration test.",
+  "last_heartbeat": "2026-10-20T09:18:12.844359+00:00",
+  "last_action": "Recorded W&B calibration run 79647i9d with 0.950000 accuracy and 0.712711 macro F1. Queued matched seed-20261020 calibration.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
