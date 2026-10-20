@@ -79,3 +79,17 @@ Results: Development accuracy was 0.948333 and macro F1 was 0.711410. Developmen
 Analysis: The argument cue improved both metrics across two seeds. Relative to the baseline, the seed 20261021 result was 0.011667 higher in accuracy and 0.008377 higher in macro F1. The improvement is supported for the common classes, but the direct class remains unsupported by training data. The argument cue configuration is the current validation leader.
 
 Next action: Evaluate a validation-only calibration of the leader using a separate calibration slice from the training partition. Select the calibration rule without using development labels, then measure the frozen rule on development.
+
+## EXP-20261020-006
+
+Timestamp: 2026-10-20. The run completed with no official test data loaded.
+
+Hypothesis: A class logit bias fitted on a held out calibration slice from the training partition can improve the argument cue classifier without fitting on development labels.
+
+Setup: The seed 20261021 argument cue checkpoint was frozen. The 7,200 row training partition was split into 720 calibration rows and 6,480 unused rows. A bounded coordinate grid selected class biases using calibration accuracy only. The frozen bias was then evaluated on the existing 1,800 row development split. The selected bias was [0.0, -0.3, 0.0, 0.0] for [cannot_answer, request_for_info, tool_call, direct]. Code revision: 8c73bbe1.
+
+Results: Calibration accuracy was 0.980556. Development accuracy was 0.949444 and macro F1 was 0.712267. Development F1 was 0.980913 for `cannot_answer`, 0.938879 for `request_for_info`, 0.929276 for `tool_call`, and 0.000000 for `direct`. The confusion matrix was [[591, 1, 7, 0], [3, 553, 44, 0], [11, 24, 565, 0], [1, 0, 0, 0]].
+
+Analysis: The training-only calibration improved accuracy by 0.001111 and macro F1 by 0.000858 relative to EXP-20261020-005. The improvement is small but uses a clean fitting boundary. The `tool_call` recall improved while `request_for_info` recall decreased. The direct class remains unsupported by the inferred training data.
+
+Next action: Repeat the calibration on the seed 20261020 argument cue checkpoint and compare whether the same negative request bias is stable across seeds.
