@@ -37,7 +37,6 @@ def process_alive(pid: int) -> bool:
         os.kill(pid, 0)
     except (ProcessLookupError, PermissionError):
         return False
-    state = subprocess.check_output(["ps", "-o", "stat=", "-p", str(pid)], text=True).strip()
     try:
         state = subprocess.check_output(["ps", "-o", "stat=", "-p", str(pid)], text=True).strip()
     except subprocess.CalledProcessError:
