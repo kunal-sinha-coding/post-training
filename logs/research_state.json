@@ -3,7 +3,16 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "Increasing the seed21 logit weight to 0.8 may improve black-box macro F1 without reducing accuracy.",
-  "active_experiment": null,
+  "active_experiment": {
+    "pid": 23177,
+    "command": [
+      "python",
+      "-u",
+      "-m",
+      "experiments.audit_split_stability"
+    ],
+    "started_at": "2026-10-20T10:05:12.566452+00:00"
+  },
   "worker_command": [
     "python",
     "-u",
@@ -21,8 +30,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T10:35:00+00:00",
-  "last_action": "Weighted seed21-dominant black-box evaluation completed with W&B run cd39ygs4. The next frozen candidate uses weights 0.8, 0.1, and 0.1.",
+  "last_heartbeat": "2026-10-20T10:05:12.566473+00:00",
+  "last_action": "Watchdog started validation worker pid 23177.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
