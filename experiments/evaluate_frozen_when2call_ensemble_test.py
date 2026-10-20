@@ -12,11 +12,20 @@ import os
 from pathlib import Path
 
 import torch
-from datasets import load_dataset
+from datasets import Dataset, load_dataset
 
 import experiments.train_when2call_jina as jina_training
 from experiments.calibrate_clean_validation import collect_logits, load_checkpoint
 from experiments.train_when2call_jina import DATASET_NAME, LABELS, metric_values, prepare_test_examples
+
+
+def load_official_test_rows() -> object:
+    """Load the cached official MCQ rows when remote configuration metadata is incomplete."""
+    # Use the immutable local test artifact because the remote dataset exposes only default metadata.
+    cache_path = Path("/workspace/.cache/huggingface/datasets/nvidia___when2_call/test/0.0.0/0582f7749df63a96fdc3070932e83e72396ace53/when2_call-mcq.arrow")
+    if cache_path.exists():
+        return Dataset.from_file(str(cache_path))
+    return load_dataset(DATASET_NAME, "test", split="mcq")
 
 
 def main() -> int:
@@ -45,7 +54,7 @@ def main() -> int:
     atexit.register(run.finish)
     # Freeze the model context and load the official labels only for final measurement.
     jina_training.MAX_LENGTH = 4096
-    rows = load_dataset(DATASET_NAME, "test", split="mcq")
+    rows = load_official_test_rows()
     examples = prepare_test_examples(rows)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     logits_by_checkpoint = []

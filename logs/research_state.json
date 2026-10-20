@@ -2,7 +2,7 @@
   "status": "active",
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "Measure the frozen three-seed ensemble once on the official test split after validation selection. Do not use test metrics for further selection.",
+  "current_hypothesis": "Measure the frozen three-seed ensemble once on the cached official MCQ test artifact after the remote metadata recovery. Test metrics remain post-selection only.",
   "active_experiment": null,
   "worker_command": [
     "python",
@@ -23,8 +23,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T09:31:28.390849+00:00",
-  "last_action": "Rejected W&B run wgu2ye9e. The frozen ensemble meets the supported-class validation criterion, so the next action is the one-time official test measurement.",
+  "last_heartbeat": "2026-10-20T09:34:54.259226+00:00",
+  "last_action": "Recorded W&B run sw93ekt4 as a remote test metadata failure. Patched the evaluator to use the cached official MCQ arrow artifact and queued the recovery measurement.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }

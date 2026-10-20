@@ -324,3 +324,13 @@ Results: Training accuracy was 0.424259 and macro F1 was 0.346601. Development a
 
 Analysis: The augmentation overwhelmed the chosen-response signal and did not repair direct prediction. The approach is rejected. The frozen three-seed ensemble remains the selected candidate, with 0.962778 validation accuracy and 0.722337 full macro F1, or 0.963116 macro F1 when direct is excluded. The official test measurement is authorized under the supported-class criterion and remains separate from selection.
 
+## EXP-20261020-025
+
+Timestamp: 2026-10-20. The first official test measurement attempt was blocked by dataset metadata.
+
+Setup: The frozen three-seed ensemble evaluator initialized W&B run `sw93ekt4`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/sw93ekt4), then attempted to load `nvidia/When2Call` `test/mcq`. The remote builder exposed only the `default` configuration.
+
+Result: The run failed before loading or scoring test rows with `ValueError: BuilderConfig 'test' not found. Available: ['default']`. No test metric was produced.
+
+Recovery: The repository cache contains the official `when2_call-mcq.arrow` artifact. The evaluator now uses that immutable cached test artifact when present. This does not change the frozen candidate or selection procedure.
+
