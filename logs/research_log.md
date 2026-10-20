@@ -352,3 +352,15 @@ Result: The evaluator reported a padded input above the shared Jina limit even t
 
 Recovery: The evaluator now keeps the native collator limit at 8,192 while explicitly truncating official test inputs to 4,096. No candidate or selection rule changed.
 
+## EXP-20261020-028
+
+Timestamp: 2026-10-20. The frozen ensemble official test measurement completed after post-selection evaluation.
+
+W&B run: `sh67pf6x`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/sh67pf6x). The cached official `test/mcq` split contained 3,652 rows and six rows were truncated to the frozen 4,096-token inference limit.
+
+Results: The frozen three-seed ensemble reached 0.528204 official test accuracy and 0.530578 full macro F1. Per-class F1 was 0.561892 for `cannot_answer`, 0.547268 for `request_for_info`, 0.482576 for `tool_call`, and 0.000000 for `direct` with zero official direct support. The test confusion matrix was [[606, 268, 421, 0], [89, 686, 287, 0], [167, 491, 637, 0]].
+
+Selection boundary: This was a single post-selection measurement. These test metrics will not be used to select, tune, or compare later systems. Validation-only research continues.
+
+Next hypothesis: The broad rejected-response augmentation failed because 2,736 inferred direct rows overwhelmed the chosen-response distribution. Adding a small bounded sample of rejected direct rows may improve the direct-class boundary without damaging the common classes.
+

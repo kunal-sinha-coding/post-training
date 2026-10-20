@@ -164,6 +164,7 @@ def main() -> int:
     parser.add_argument("--split-seed", type=int, default=None)
     parser.add_argument("--max-length", type=int, default=8192)
     parser.add_argument("--include-rejected-examples", action="store_true")
+    parser.add_argument("--rejected-direct-samples", type=int, default=0)
     args = parser.parse_args()
     # Open a W&B run before loading data so failures and completed metrics are both tracked.
     import wandb
@@ -191,6 +192,11 @@ def main() -> int:
     # Add rejected-response supervision only to training after the development split is frozen.
     if args.include_rejected_examples:
         train.extend(prepare_rejected_examples(rows))
+    # Add only a bounded direct subset when testing targeted label repair.
+    if args.rejected_direct_samples > 0:
+        rejected_direct = [item for item in prepare_rejected_examples(rows) if item.label == LABEL_TO_ID["direct"]]
+        random.Random(seed).shuffle(rejected_direct)
+        train.extend(rejected_direct[:args.rejected_direct_samples])
     if args.omit_tool_schemas:
         remove_tool_schemas(train)
         remove_tool_schemas(development)
@@ -232,6 +238,7 @@ def main() -> int:
         "omit_tool_schemas": args.omit_tool_schemas,
         "add_argument_cues": args.add_argument_cues,
         "include_rejected_examples": args.include_rejected_examples,
+        "rejected_direct_samples": args.rejected_direct_samples,
         "device": str(device),
     }
     (args.output_dir / "metrics.json").write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
