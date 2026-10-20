@@ -538,3 +538,13 @@ Results: Black-box test accuracy was 0.542716 and macro F1 was 0.544268.
 
 Analysis: The candidate improved both aggregate metrics over the previous 0.534502 accuracy and 0.537033 macro F1 leader. The mechanism is retained. The next experiment increases only the SFT adaptation dose to two epochs, then repeats the same frozen aggregate-only measurement.
 
+## EXP-20261020-046
+
+Timestamp: 2026-10-20. A two-epoch staged adaptation candidate was trained and frozen.
+
+Setup: Two W&B-logged epochs over cached `train_sft` examples preceded one cross-entropy epoch over all 9,000 cached `train_pref` examples. The Jina encoder, argument cues, seed 20261021, and maximum length 4096 were unchanged. The official test split was not loaded during training. W&B run: `1igvarg9`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/1igvarg9).
+
+Training diagnostics: Training accuracy was 0.970556 and training macro F1 was 0.728040. No development metric was used because all labeled `train_pref` rows were used for the frozen candidate.
+
+Decision: The checkpoint is queued for one aggregate-only black-box test measurement. The two-epoch dose will be retained only if its aggregate test metrics improve the current leader.
+
