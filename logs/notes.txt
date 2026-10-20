@@ -5404,6 +5404,7 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-20 Launched W&B-logged aggregate-only black-box evaluation for the all-train Jina checkpoint pid 28966.
 2026-10-20 W&B run 2zc4g4rk evaluated the all-train Jina checkpoint at 0.509584 accuracy and 0.510353 macro F1. It is rejected. The next experiment is an unlabeled train and test covariate diagnostic.
 2026-10-20 Corrected the active state after the watchdog retained the completed all-train evaluation. The next experiment is an unlabeled covariate diagnostic.
+2026-10-20 Added diagnose_unlabeled_covariate_shift.py. It logs W&B before loading data and reads only question and tool fields, never test labels or answer fields.
 2026-10-20 Corrected the active state after the watchdog recorded the completed full-data process as an audit. The full-data Jina run is queued for retry.
 2026-10-20 Corrected the active state after the watchdog retained the completed one-epoch MiniLM record. The next candidate is three MiniLM epochs.
 2026-10-20 Launched W&B-logged aggregate-only three-epoch MiniLM candidate pid 27563.
