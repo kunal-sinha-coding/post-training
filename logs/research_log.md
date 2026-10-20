@@ -498,3 +498,13 @@ Setup: All 9,000 cached `train_pref` examples were used for one cross-entropy ep
 
 Results: Training accuracy was 0.970111 and training macro F1 was 0.727740. The checkpoint is frozen for aggregate-only black-box test evaluation. These training metrics are not a validation estimate.
 
+## EXP-20261020-042
+
+Timestamp: 2026-10-20. The all-data Jina checkpoint was evaluated through the aggregate-only black-box test interface.
+
+Setup: The frozen checkpoint trained on all 9,000 `train_pref` examples was evaluated alone. W&B run: `2zc4g4rk`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/2zc4g4rk). Only aggregate test metrics were returned.
+
+Results: The black-box test returned 0.509584 accuracy and 0.510353 macro F1.
+
+Decision: Training on all rows is rejected against the 0.534502 accuracy and 0.537033 macro F1 weighted Jina candidate. The next step is an unlabeled train and test covariate diagnostic. It will not inspect test labels or correctness.
+
