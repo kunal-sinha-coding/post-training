@@ -1,7 +1,7 @@
-"""Evaluate the frozen clean When2Call ensemble on the official test split exactly once.
+"""Evaluate frozen When2Call candidates through an aggregate-only official test interface.
 
-The flow loads three validation-selected checkpoints, averages their logits on the official
-MCQ test inputs, logs the post-selection measurement to W&B, and saves the final metrics.
+The flow loads frozen checkpoints, computes predictions inside the evaluator, returns only
+aggregate accuracy and macro F1, logs no example-level labels, and saves no per-class detail.
 """
 from __future__ import annotations
 
@@ -17,6 +17,13 @@ from datasets import Dataset, load_dataset
 import experiments.train_when2call_jina as jina_training
 from experiments.calibrate_clean_validation import collect_logits, load_checkpoint
 from experiments.train_when2call_jina import DATASET_NAME, LABELS, metric_values, prepare_test_examples
+
+
+def aggregate_metrics(labels: list[int], predictions: list[int]) -> dict[str, float]:
+    """Reduce hidden test labels to the two permitted aggregate metrics."""
+    # Compute the complete metric internally and discard all label-conditioned details immediately.
+    metrics = metric_values(labels, predictions, list(range(len(LABELS))))
+    return {"accuracy": metrics["accuracy"], "macro_f1": metrics["macro_f1"]}
 
 
 def load_official_test_rows() -> object:
@@ -60,7 +67,7 @@ def main() -> int:
     truncated_examples = 0
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     logits_by_checkpoint = []
-    result = {"dataset": DATASET_NAME, "split": "test/mcq", "test_loaded": True, "selection_complete": True, "test_measurement_only": True, "checkpoints": {key: str(value) for key, value in checkpoints.items()}, "examples": len(examples), "metrics": {}}
+    result = {"dataset": DATASET_NAME, "split": "test/mcq", "test_loaded": True, "selection_complete": True, "test_measurement_only": True, "black_box": True, "checkpoints": {key: str(value) for key, value in checkpoints.items()}, "examples": len(examples), "metrics": {}}
     # Evaluate each frozen checkpoint independently before averaging its logits.
     labels = None
     for checkpoint_name, checkpoint in checkpoints.items():
@@ -74,11 +81,10 @@ def main() -> int:
         # Use small inference batches because complete test inputs can approach the context limit.
         logits, labels = collect_logits(model, tokenizer, examples, device, batch_size=4)
         logits_by_checkpoint.append(logits)
-        metrics = metric_values(labels.tolist(), logits.argmax(dim=1).tolist(), list(range(len(LABELS))))
-        result["metrics"][checkpoint_name] = metrics
+        result["metrics"][checkpoint_name] = aggregate_metrics(labels.tolist(), logits.argmax(dim=1).tolist())
     # Average frozen seed logits and compute the single official ensemble measurement.
     ensemble_logits = torch.stack(logits_by_checkpoint).mean(dim=0)
-    result["metrics"]["ensemble"] = metric_values(labels.tolist(), ensemble_logits.argmax(dim=1).tolist(), list(range(len(LABELS))))
+    result["metrics"]["ensemble"] = aggregate_metrics(labels.tolist(), ensemble_logits.argmax(dim=1).tolist())
     result["wandb_run_id"] = run.id
     result["wandb_run_url"] = run.url
     result["truncated_examples"] = truncated_examples

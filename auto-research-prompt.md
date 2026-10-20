@@ -17,25 +17,26 @@ You are conducting an open-ended, empirical research project. Continuously formu
 - **There is no limit on the combined parameter count of an ensemble or multi-model system.** You may combine any number of models, provided each individual model has at most 2B parameters.
 - You may choose any model architecture within these constraints.
 
-### Data leakage
+### Data leakage and black-box test evaluation
 
-There must be no leakage from the test set.
+There must be no access to individual official test labels or per-example correctness information.
+
+The official test set is a black-box evaluator. A test run may receive only aggregate metrics such as accuracy and macro F1, plus non-label operational metadata such as runtime and row count. The evaluator must not print, save, upload, or expose individual test labels, predictions paired with labels, confusion matrices, per-class metrics, error lists, label-conditioned slices, or example-level correctness.
 
 Prohibited activities include:
 
 - Training or fine-tuning on test examples or labels.
-- Selecting models, prompts, hyperparameters, thresholds, or checkpoints using test performance.
-- Generating synthetic data from test examples.
+- Reading or extracting individual test labels from local files, caches, logs, or evaluator internals.
+- Selecting models, prompts, hyperparameters, thresholds, or checkpoints using per-example test outcomes.
+- Generating synthetic data from test labels or example-level test outcomes.
 - Exploiting artifacts that expose test answers.
 - Using external datasets containing duplicates or near-duplicates of test examples.
 
-Use a dedicated development/validation set for experimentation.
+Use a dedicated development or validation set for ordinary debugging and error analysis. Freeze each candidate configuration before sending it to the black-box test evaluator. Aggregate test accuracy and macro F1 may be used to compare frozen candidates because they do not reveal which examples were correct, but no test-derived change may be made from an individual example or label.
 
-Inspect the existing project's evaluation practices. If test performance has previously been used for iterative model selection, document this and establish a clean evaluation protocol.
+Inspect the existing project's evaluation practices. If prior work exposed test labels or per-example test outcomes, document the exposure and establish a clean black-box protocol for all new runs.
 
-Evaluate on the official test set only once, after freezing the final system, if an authorized evaluation mechanism is available.
-
-When uncertain about leakage, take the conservative approach.
+When uncertain about leakage, take the conservative approach and return only aggregate test metrics.
 
 ## 2. Initial Investigation
 
@@ -272,7 +273,7 @@ Record failed experiments, aborted runs, and negative results as well as success
 
 Every experiment must create a W&B run before data loading or model execution. The run must record the exact command, Git commit, model and checkpoint identifiers, dataset split, random seeds, configuration, context length, training loss, validation accuracy, validation macro F1, per-class metrics, confusion matrix, runtime, output artifact paths, and failure details when the experiment does not complete. Use the configured W&B project and entity from the environment or repository configuration. If W&B cannot be initialized, do not run the experiment. A local log alone does not satisfy this requirement.
 
-After every experiment, finish the W&B run and record its run ID and URL in the persistent research log. Use W&B curves and summaries when selecting the next experiment. Do not use official test labels or test metrics for W&B-based candidate selection.
+After every experiment, finish the W&B run and record its run ID and URL in the persistent research log. Use W&B curves and summaries when selecting the next experiment. For black-box test runs, log only aggregate test accuracy and macro F1, never per-example labels or correctness. Do not use hidden test labels or example-level test outcomes for candidate selection.
 
 Maintain a separate leaderboard of the best configurations, using validation results only.
 
