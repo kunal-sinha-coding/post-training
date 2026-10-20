@@ -312,3 +312,15 @@ Next hypothesis: The low macro F1 is driven by a train and evaluation label mism
 
 Planned setup: Use the fixed `split_seed=20261021`, seed 20261022, argument cues, 4,096 tokens, cross entropy, and one epoch. Add rejected examples only after freezing the development split. W&B logging is mandatory. The official test split will not be loaded.
 
+## EXP-20261020-024
+
+Timestamp: 2026-10-20. The W&B-logged rejected-response augmentation completed and was rejected.
+
+Hypothesis: Adding all inferred rejected-response labels to the training partition will repair the missing `direct` class and raise full four-class macro F1.
+
+Setup: The fixed `split_seed=20261021`, seed 20261022, argument cues, 4,096 tokens, cross entropy, one epoch, and 9,000 rejected-response additions were used. The development partition remained unchanged at 1,800 examples. W&B run: `wgu2ye9e`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/wgu2ye9e). The official test split was not loaded.
+
+Results: Training accuracy was 0.424259 and macro F1 was 0.346601. Development accuracy was 0.833889 and full macro F1 was 0.626885. The three common-class F1 values were 0.900441, 0.803387, and 0.803712. The model still predicted zero `direct` examples.
+
+Analysis: The augmentation overwhelmed the chosen-response signal and did not repair direct prediction. The approach is rejected. The frozen three-seed ensemble remains the selected candidate, with 0.962778 validation accuracy and 0.722337 full macro F1, or 0.963116 macro F1 when direct is excluded. The official test measurement is authorized under the supported-class criterion and remains separate from selection.
+

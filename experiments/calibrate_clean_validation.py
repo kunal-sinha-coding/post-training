@@ -35,15 +35,15 @@ def load_checkpoint(checkpoint: Path, device: torch.device, max_length: int) -> 
     return model.to(device), tokenizer
 
 
-def collect_logits(model: torch.nn.Module, tokenizer: object, examples: list, device: torch.device) -> tuple[torch.Tensor, torch.Tensor]:
+def collect_logits(model: torch.nn.Module, tokenizer: object, examples: list, device: torch.device, batch_size: int = 16) -> tuple[torch.Tensor, torch.Tensor]:
     """Collect logits and labels for one supplied split without changing model weights."""
     # Evaluate in length ordered batches to match the existing memory safe inference path.
     model.eval()
     logits, labels = [], []
     ordered = sorted(examples, key=lambda item: len(item.token_ids or []))
     with torch.inference_mode():
-        for start in range(0, len(ordered), 16):
-            batch = collate(ordered[start:start + 16], tokenizer)
+        for start in range(0, len(ordered), batch_size):
+            batch = collate(ordered[start:start + batch_size], tokenizer)
             labels.append(batch.pop("labels"))
             batch.pop("rejected_labels")
             batch.pop("source_ids")

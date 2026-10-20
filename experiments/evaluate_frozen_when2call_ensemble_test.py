@@ -56,7 +56,8 @@ def main() -> int:
         model, tokenizer = load_checkpoint(checkpoint, device, 4096)
         for item in examples:
             item.token_ids = tokenizer(item.text, add_special_tokens=True, truncation=False, verbose=False)["input_ids"]
-        logits, labels = collect_logits(model, tokenizer, examples, device)
+        # Use small inference batches because complete test inputs can approach the context limit.
+        logits, labels = collect_logits(model, tokenizer, examples, device, batch_size=4)
         logits_by_checkpoint.append(logits)
         metrics = metric_values(labels.tolist(), logits.argmax(dim=1).tolist(), list(range(len(LABELS))))
         result["metrics"][checkpoint_name] = metrics
