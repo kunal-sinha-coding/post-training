@@ -84,6 +84,25 @@ def remove_tool_schemas(examples: list) -> list:
     return examples
 
 
+def compact_tool_schemas(examples: list) -> list:
+    """Keep tool names and required fields while removing verbose schema details."""
+    # Preserve action-relevant structure while reducing reliance on long tool descriptions.
+    for example in examples:
+        parts = example.text.split("\nAvailable tools:\n", 1)
+        if len(parts) != 2:
+            continue
+        compact = []
+        for line in parts[1].splitlines():
+            try:
+                schema = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if isinstance(schema, dict) and isinstance(schema.get("name"), str):
+                compact.append(json.dumps({"name": schema["name"], "required": required_fields(schema)}, separators=(",", ":")))
+        example.text = parts[0] + "\nAvailable tools:\n" + "\n".join(compact)
+    return examples
+
+
 def add_argument_cues(examples: list) -> list:
     """Append explicit required argument names extracted from each available tool schema."""
     # Give the encoder a short structured cue for completeness without removing any original schema text.
@@ -170,6 +189,7 @@ def main() -> int:
     parser.add_argument("--loss-function", choices=("cross_entropy", "pairwise_ranking"), default="cross_entropy")
     parser.add_argument("--sft-loss-function", choices=("cross_entropy", "pairwise_ranking"), default="cross_entropy")
     parser.add_argument("--omit-tool-schemas", action="store_true")
+    parser.add_argument("--compact-tool-schemas", action="store_true")
     parser.add_argument("--add-argument-cues", action="store_true")
     parser.add_argument("--seed", type=int, default=20261020)
     parser.add_argument("--split-seed", type=int, default=None)
@@ -231,6 +251,9 @@ def main() -> int:
     if args.omit_tool_schemas:
         remove_tool_schemas(train)
         remove_tool_schemas(development)
+    if args.compact_tool_schemas:
+        compact_tool_schemas(train)
+        compact_tool_schemas(development)
     if args.add_argument_cues:
         add_argument_cues(train)
         add_argument_cues(development)
@@ -243,6 +266,8 @@ def main() -> int:
         sft_pretrain = prepare_train_examples(load_sft_training_rows())
         if args.omit_tool_schemas:
             remove_tool_schemas(sft_pretrain)
+        if args.compact_tool_schemas:
+            compact_tool_schemas(sft_pretrain)
         if args.add_argument_cues:
             add_argument_cues(sft_pretrain)
         tokenize_examples(sft_pretrain, tokenizer)
@@ -285,6 +310,7 @@ def main() -> int:
         "loss_function": args.loss_function,
         "sft_loss_function": args.sft_loss_function,
         "omit_tool_schemas": args.omit_tool_schemas,
+        "compact_tool_schemas": args.compact_tool_schemas,
         "add_argument_cues": args.add_argument_cues,
         "include_rejected_examples": args.include_rejected_examples,
         "rejected_direct_samples": args.rejected_direct_samples,

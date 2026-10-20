@@ -5509,3 +5509,4 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-20 Audit found an unguarded duplicate ps call in process_alive that could terminate the watchdog during a process race. Removed the call and compiled the watchdog before restart.
 2026-10-20 Updated auto-research-prompt.md to require an independent persistent supervisor that restarts the watchdog after exit or stale monitor heartbeat and verifies resumed five-minute checks.
 2026-10-20 Implemented validation_watchdog.py state-backup recovery, per-tick exception handling, and an exclusive watchdog lock. Added watchdog_supervisor.py to restart the watchdog after exit and log each restart.
+2026-10-20 Prepared the next generalization experiment while the backup worker runs. Added compact tool-schema input handling that preserves tool names and required fields while removing verbose schema details. Added the same frozen transform to aggregate-only test evaluation.
