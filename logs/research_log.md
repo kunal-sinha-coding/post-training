@@ -642,6 +642,16 @@ Results: Black-box test accuracy was 0.550931 and macro F1 was 0.552377.
 
 Analysis: Smoothing 0.10 was worse than smoothing 0.05 and is rejected. The next measurement tests a fixed 0.8 smoothing 0.05 and 0.2 unsmoothed ensemble.
 
+## EXP-20261020-059
+
+Timestamp: 2026-10-20. The fixed smoothing 0.05 and unsmoothed ensemble was evaluated through the aggregate-only black-box test interface.
+
+Setup: The ensemble combined the smoothing 0.05 checkpoint and the unsmoothed two-SFT/one-preference checkpoint with fixed weights 0.8 and 0.2. W&B test run: `ef0t7agy`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/ef0t7agy). Only aggregate accuracy and macro F1 were returned.
+
+Results: The ensemble returned 0.571742 accuracy and 0.572932 macro F1.
+
+Analysis: The ensemble was below the single smoothing 0.05 checkpoint and is rejected. The next experiment tests label smoothing 0.025 on the same successful schedule.
+
 ## EXP-20261020-049
 
 Timestamp: 2026-10-20. The three-epoch staged adaptation candidate was evaluated through the aggregate-only black-box test interface.
