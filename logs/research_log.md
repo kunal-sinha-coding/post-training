@@ -578,6 +578,14 @@ Results: Black-box test accuracy was 0.550110 and macro F1 was 0.541577.
 
 Analysis: The extra preference epoch reduced both aggregate metrics from the two-SFT and one-preference leader. It is rejected. The next intervention tests a question-only representation with the best two-SFT and one-preference training schedule.
 
+## EXP-20261020-052
+
+Timestamp: 2026-10-20. A question-only candidate was trained and frozen.
+
+Setup: Two W&B-logged epochs over `train_sft` and one `train_pref` epoch used the frozen schema-removal transform. The Jina encoder, argument cues, seed 20261021, and maximum length 4096 were unchanged. The official test split was not loaded during training. W&B run: `qpmuj35u`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/qpmuj35u).
+
+Training diagnostics: Training accuracy was 0.660000 and training macro F1 was 0.444012. The checkpoint is still measured through the aggregate-only test interface because training metrics are not a substitute for the black-box measurement.
+
 ## EXP-20261020-049
 
 Timestamp: 2026-10-20. The three-epoch staged adaptation candidate was evaluated through the aggregate-only black-box test interface.
