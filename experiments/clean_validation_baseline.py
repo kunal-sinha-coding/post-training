@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import json
 import random
+import re
 from collections import Counter
 from pathlib import Path
 
@@ -27,6 +28,7 @@ from experiments.train_when2call_jina import (
     tokenize_examples,
 )
 from transformers import AutoConfig, AutoModel, AutoTokenizer
+from experiments.apply_when2call_candidate_validity import required_fields
 
 
 def load_training_rows() -> object:
@@ -63,6 +65,26 @@ def remove_tool_schemas(examples: list) -> list:
     for example in examples:
         question = example.text.split("\nAvailable tools:", 1)[0]
         example.text = question + "\nAvailable tools:\nNo tools are available."
+    return examples
+
+
+def add_argument_cues(examples: list) -> list:
+    """Append explicit required argument names extracted from each available tool schema."""
+    # Give the encoder a short structured cue for completeness without removing any original schema text.
+    for example in examples:
+        parts = example.text.split("\nAvailable tools:\n", 1)
+        if len(parts) != 2:
+            continue
+        names = []
+        for line in parts[1].splitlines():
+            try:
+                schema = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if isinstance(schema, dict) and isinstance(schema.get("name"), str):
+                fields = required_fields(schema)
+                names.append(schema["name"] + "(" + ",".join(fields) + ")")
+        example.text = example.text + "\nRequired argument names: " + ("; ".join(names) if names else "none")
     return examples
 
 
@@ -119,6 +141,7 @@ def main() -> int:
     parser.add_argument("--output-dir", type=Path, default=Path("outputs/clean-validation-baseline"))
     parser.add_argument("--loss-function", choices=("cross_entropy", "pairwise_ranking"), default="cross_entropy")
     parser.add_argument("--omit-tool-schemas", action="store_true")
+    parser.add_argument("--add-argument-cues", action="store_true")
     args = parser.parse_args()
     seed = 20261020
     random.seed(seed)
@@ -132,6 +155,9 @@ def main() -> int:
     if args.omit_tool_schemas:
         remove_tool_schemas(train)
         remove_tool_schemas(development)
+    if args.add_argument_cues:
+        add_argument_cues(train)
+        add_argument_cues(development)
     tokenizer_model, tokenizer = load_model(device)
     tokenize_examples(train, tokenizer)
     tokenize_examples(development, tokenizer)
@@ -162,6 +188,7 @@ def main() -> int:
         "model": "jinaai/jina-embeddings-v2-small-en",
         "loss_function": args.loss_function,
         "omit_tool_schemas": args.omit_tool_schemas,
+        "add_argument_cues": args.add_argument_cues,
         "device": str(device),
     }
     (args.output_dir / "metrics.json").write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
