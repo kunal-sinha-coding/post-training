@@ -12,6 +12,6 @@
   ],
   "best_validation": {"accuracy": 0.9494444444444444, "macro_f1": 0.7122671588915738, "artifact": "outputs/clean-validation-calibration.json"},
   "last_heartbeat": "2026-10-20T08:20:00+00:00",
-  "last_action": "Completed training-only calibration and selected cross-seed calibration replication.",
+  "last_action": "Rejected unstable cross-seed calibration and retained uncalibrated argument cues as the reproducible candidate.",
   "stop_command": "STOP"
 }

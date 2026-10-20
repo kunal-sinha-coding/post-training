@@ -93,3 +93,17 @@ Results: Calibration accuracy was 0.980556. Development accuracy was 0.949444 an
 Analysis: The training-only calibration improved accuracy by 0.001111 and macro F1 by 0.000858 relative to EXP-20261020-005. The improvement is small but uses a clean fitting boundary. The `tool_call` recall improved while `request_for_info` recall decreased. The direct class remains unsupported by the inferred training data.
 
 Next action: Repeat the calibration on the seed 20261020 argument cue checkpoint and compare whether the same negative request bias is stable across seeds.
+
+## EXP-20261020-007
+
+Timestamp: 2026-10-20. The run completed without loading the official test split.
+
+Hypothesis: The class bias selected from the training calibration slice will improve both argument cue seeds.
+
+Setup: The seed 20261020 argument cue checkpoint was frozen. The same 720 row training calibration slice procedure and bounded coordinate grid were used. Development labels were used only after bias selection. Code revision: 93fddb8f.
+
+Results: Calibration selected [0.0, 0.3, 0.0, 0.0] and reached 0.981944 calibration accuracy. Development accuracy was 0.938333 and macro F1 was 0.703698. The uncalibrated seed 20261020 result was 0.938889 accuracy and 0.704172 macro F1.
+
+Analysis: The hypothesis was rejected. Calibration decreased accuracy by 0.000556 and macro F1 by 0.000474. The selected bias changed sign across seeds, which shows that the calibration slice is too small or too variable for a shared fixed rule. The seed 20261021 calibration result remains a local validation observation and is not promoted as a general inference rule.
+
+Next action: Keep the uncalibrated argument cue model as the reproducible configuration. Investigate a larger calibration slice or a temperature-only calibration that cannot shift class priors before further model changes.

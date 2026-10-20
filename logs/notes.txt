@@ -5321,3 +5321,5 @@ Completed EXP-20261020-003. Removing tool schemas reduced development accuracy t
 Completed EXP-20261020-004 and EXP-20261020-005. Explicit required argument cues improved validation accuracy and macro F1 across two seeds. The seed 20261021 run reached 0.948333 accuracy and 0.711410 macro F1. Promoted it as the current validation leader and selected a separate calibration slice experiment next.
 
 Completed EXP-20261020-006. A training-only class bias improved the seed 20261021 development result to 0.949444 accuracy and 0.712267 macro F1. The next experiment repeats calibration on the seed 20261020 checkpoint.
+
+Completed EXP-20261020-007. Calibration reduced the seed 20261020 result to 0.938333 accuracy and 0.703698 macro F1, and selected the opposite bias from seed 20261021. Rejected calibration as a shared rule. The uncalibrated argument cue model remains the reproducible candidate.
