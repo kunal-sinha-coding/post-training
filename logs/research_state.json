@@ -2,7 +2,7 @@
   "status": "active",
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "Staged train_sft context adaptation followed by train_pref fine-tuning may improve robustness to the longer questions, higher tool counts, and narrower test tool vocabulary.",
+  "current_hypothesis": "A second train_sft context adaptation epoch may improve robustness further without changing the labeled objective or model architecture.",
   "active_experiment": {
     "pid": 30529,
     "command": [
@@ -34,8 +34,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T12:41:00+00:00",
-  "last_action": "Started W&B-logged aggregate-only black-box test measurement for staged adaptation checkpoint, pid 30529.",
+  "last_heartbeat": "2026-10-20T12:48:00+00:00",
+  "last_action": "Black-box W&B run 71up0hgk completed at 0.542716 accuracy and 0.544268 macro F1. The next candidate uses two SFT adaptation epochs.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }

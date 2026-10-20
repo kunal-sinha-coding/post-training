@@ -528,3 +528,13 @@ Training diagnostics: Training accuracy was 0.968667 and training macro F1 was 0
 
 Decision: The checkpoint is ready for one aggregate-only black-box test measurement. Its test metric will be compared only after the frozen artifact is complete.
 
+## EXP-20261020-045
+
+Timestamp: 2026-10-20. The staged adaptation candidate was evaluated through the aggregate-only black-box test interface.
+
+Setup: The frozen checkpoint used one `train_sft` adaptation epoch followed by one `train_pref` fine-tuning epoch. W&B test run: `71up0hgk`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/71up0hgk). Only aggregate accuracy and macro F1 were returned.
+
+Results: Black-box test accuracy was 0.542716 and macro F1 was 0.544268.
+
+Analysis: The candidate improved both aggregate metrics over the previous 0.534502 accuracy and 0.537033 macro F1 leader. The mechanism is retained. The next experiment increases only the SFT adaptation dose to two epochs, then repeats the same frozen aggregate-only measurement.
+
