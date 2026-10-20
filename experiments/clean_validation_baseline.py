@@ -29,6 +29,16 @@ from experiments.train_when2call_jina import (
 from transformers import AutoConfig, AutoModel, AutoTokenizer
 
 
+def load_training_rows() -> object:
+    """Load the cached train preference arrow file without contacting the test split."""
+    # Prefer the repository cache because the public dataset currently exposes only default metadata remotely.
+    cache_path = Path("/workspace/.cache/huggingface/datasets/nvidia___when2_call/train_pref/0.0.0/0582f7749df63a96fdc3070932e83e72396ace53/when2_call-train.arrow")
+    if cache_path.exists():
+        from datasets import Dataset
+        return Dataset.from_file(str(cache_path))
+    return load_dataset(DATASET_NAME, "train_pref", split="train")
+
+
 def split_examples(examples: list, dev_fraction: float, seed: int) -> tuple[list, list]:
     """Create a deterministic stratified development split from inferred training labels."""
     # Group records by inferred label so the development set contains every observed class.
@@ -93,7 +103,7 @@ def main() -> int:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # Load train_pref only and infer labels from response text without loading official labels.
-    rows = load_dataset(DATASET_NAME, "train_pref", split="train")
+    rows = load_training_rows()
     examples = prepare_train_examples(rows)
     train, development = split_examples(examples, 0.2, seed)
     tokenizer_model, tokenizer = load_model(device)
