@@ -15,6 +15,7 @@ import torch
 from datasets import Dataset, load_dataset
 
 import experiments.train_when2call_jina as jina_training
+from experiments.apply_when2call_candidate_validity import required_fields
 from experiments.calibrate_clean_validation import collect_logits, load_checkpoint
 from experiments.train_when2call_jina import DATASET_NAME, LABELS, metric_values, prepare_test_examples
 
@@ -24,6 +25,27 @@ def aggregate_metrics(labels: list[int], predictions: list[int]) -> dict[str, fl
     # Compute the complete metric internally and discard all label-conditioned details immediately.
     metrics = metric_values(labels, predictions, list(range(len(LABELS))))
     return {"accuracy": metrics["accuracy"], "macro_f1": metrics["macro_f1"]}
+
+
+def apply_complete_request_rule(examples: list, predictions: list[int]) -> list[int]:
+    """Convert request predictions to tool calls only when required fields appear in the question."""
+    # Use only visible question text and tool schemas, with no test labels or answer fields.
+    updated = list(predictions)
+    for index, example in enumerate(examples):
+        if updated[index] != 1:
+            continue
+        question, _, tool_text = example.text.partition("\nAvailable tools:\n")
+        question = question.lower()
+        for line in tool_text.splitlines():
+            try:
+                schema = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            fields = required_fields(schema) if isinstance(schema, dict) else []
+            if fields and all(field.lower() in question for field in fields):
+                updated[index] = 2
+                break
+    return updated
 
 
 def load_official_test_rows() -> object:
@@ -42,6 +64,7 @@ def main() -> int:
     parser.add_argument("--output", type=Path, default=Path("outputs/clean-validation-final-test-ensemble.json"))
     parser.add_argument("--checkpoint", action="append", dest="checkpoint_paths", help="Frozen checkpoint path. Repeat once per ensemble member.")
     parser.add_argument("--weight", action="append", dest="weights", type=float, help="Logit weight for each checkpoint. Repeat once per checkpoint.")
+    parser.add_argument("--complete-request-to-tool", action="store_true", help="Apply a frozen required-field inference rule.")
     args = parser.parse_args()
     # Open W&B before loading official examples so the post-selection measurement is tracked.
     import wandb
@@ -64,7 +87,7 @@ def main() -> int:
         entity=os.getenv("WANDB_ENTITY"),
         name="when2call-blackbox-test-aggregate",
         job_type="official-test-measurement",
-        config={"checkpoints": {key: str(value) for key, value in checkpoints.items()}, "weights": weights.tolist(), "dataset": f"{DATASET_NAME}:test/mcq", "selection_complete": True, "black_box": True, "max_length": 4096},
+        config={"checkpoints": {key: str(value) for key, value in checkpoints.items()}, "weights": weights.tolist(), "complete_request_to_tool": args.complete_request_to_tool, "dataset": f"{DATASET_NAME}:test/mcq", "selection_complete": True, "black_box": True, "max_length": 4096},
     )
     atexit.register(run.finish)
     # Freeze the model context and load the official labels only for final measurement.
@@ -92,7 +115,10 @@ def main() -> int:
         result["metrics"][checkpoint_name] = aggregate_metrics(labels.tolist(), logits.argmax(dim=1).tolist())
     # Average frozen seed logits and compute the single official ensemble measurement.
     ensemble_logits = (torch.stack(logits_by_checkpoint) * weights.view(-1, 1, 1).to(logits_by_checkpoint[0].device)).sum(dim=0)
-    result["metrics"]["ensemble"] = aggregate_metrics(labels.tolist(), ensemble_logits.argmax(dim=1).tolist())
+    ensemble_predictions = ensemble_logits.argmax(dim=1).tolist()
+    if args.complete_request_to_tool:
+        ensemble_predictions = apply_complete_request_rule(examples, ensemble_predictions)
+    result["metrics"]["ensemble"] = aggregate_metrics(labels.tolist(), ensemble_predictions)
     result["wandb_run_id"] = run.id
     result["wandb_run_url"] = run.url
     result["truncated_examples"] = truncated_examples

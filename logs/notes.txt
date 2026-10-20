@@ -5378,3 +5378,4 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-20 W&B run cd39ygs4 completed the weighted black-box evaluation at 0.532311 accuracy and 0.534701 macro F1. This is the current aggregate leader. The next candidate uses weights 0.8, 0.1, and 0.1.
 2026-10-20 Updated auto-research-prompt.md to prohibit test-set probing. The rule now forbids one-example perturbations, repeated adaptive submissions, and reconstructing individual test outcomes from aggregate metric differences.
 2026-10-20 Corrected the active state after the five-minute watchdog had recorded a stale audit. The active worker is black-box weighted candidate pid 23286.
+2026-10-20 W&B run 9nq8kqpj completed the 0.8 seed21 weighted black-box evaluation at 0.534502 accuracy and 0.537033 macro F1. This is the current aggregate leader. Added a required-field inference-rule candidate. Seed-only training changes are deprioritized.

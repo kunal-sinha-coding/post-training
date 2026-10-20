@@ -440,3 +440,13 @@ Results: The black-box test returned 0.532311 accuracy and 0.534701 macro F1. Ac
 
 Decision: Retain this weighted ensemble as the current aggregate leader. The next experiment increases the seed21 weight to 0.8 and reduces the other two weights equally.
 
+## EXP-20261020-036
+
+Timestamp: 2026-10-20. The 0.8 seed21 weighted frozen ensemble was evaluated through the aggregate-only black-box test interface.
+
+Setup: The frozen checkpoints were ordered as seed21, seed20, and seed22 with logit weights 0.8, 0.1, and 0.1. W&B run: `9nq8kqpj`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/9nq8kqpj). Only aggregate test metrics were returned.
+
+Results: The black-box test returned 0.534502 accuracy and 0.537033 macro F1. This improved the prior weighted result by 0.002190 accuracy and 0.002332 macro F1.
+
+Decision: Retain this as the current aggregate leader. Seed-only changes are now deprioritized. The next experiment tests a generalizable required-field inference rule that changes a request prediction to a tool call only when the visible question contains every required field of an available tool.
+

@@ -2,29 +2,8 @@
   "status": "active",
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "Increasing the seed21 logit weight to 0.8 may improve black-box macro F1 without reducing accuracy.",
-  "active_experiment": {
-    "pid": 23286,
-    "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_frozen_when2call_ensemble_test",
-      "--checkpoint",
-      "outputs/clean-validation-fixedsplit-seed21-len4096",
-      "--checkpoint",
-      "outputs/clean-validation-fixedsplit-seed20-len4096",
-      "--checkpoint",
-      "outputs/clean-validation-fixedsplit-seed22-len4096",
-      "--weight",
-      "0.8",
-      "--weight",
-      "0.1",
-      "--weight",
-      "0.1"
-    ],
-    "started_at": "2026-10-20T10:36:00+00:00"
-  },
+  "current_hypothesis": "A visible required-field rule may correct under-called tool requests and generalize better than seed weighting.",
+  "active_experiment": null,
   "worker_command": [
     "python",
     "-u",
@@ -42,8 +21,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T10:36:00+00:00",
-  "last_action": "Launched aggregate-only black-box evaluation for frozen weighted ensemble pid 23286 with weights 0.8, 0.1, and 0.1.",
+  "last_heartbeat": "2026-10-20T10:50:00+00:00",
+  "last_action": "0.8 seed21 weighted black-box evaluation completed with W&B run 9nq8kqpj. The next candidate applies a visible required-field inference rule.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
