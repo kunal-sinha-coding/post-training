@@ -4,7 +4,7 @@
   "protocol": "clean_validation_v1",
   "current_hypothesis": "A different pretrained encoder family may capture tool-use semantics and improve black-box generalization over Jina.",
   "active_experiment": {
-    "pid": 25129,
+    "pid": 25591,
     "command": [
       "python",
       "-u",
@@ -17,7 +17,7 @@
       "--output",
       "outputs/blackbox-test-minilm.json"
     ],
-    "started_at": "2026-10-20T11:55:00+00:00"
+    "started_at": "2026-10-20T12:05:00+00:00"
   },
   "worker_command": [
     "python",
@@ -36,8 +36,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T11:55:00+00:00",
-  "last_action": "Relaunched W&B-logged aggregate-only MiniLM candidate pid 25129 using the complete local snapshot.",
+  "last_heartbeat": "2026-10-20T12:05:00+00:00",
+  "last_action": "Launched W&B-logged aggregate-only MiniLM candidate pid 25591 with a forced public checkpoint refresh.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
