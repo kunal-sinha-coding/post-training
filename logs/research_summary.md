@@ -29,3 +29,5 @@ Cross-seed calibration was unstable. It improved seed 20261021 but reduced seed 
 A larger calibration slice gave seed 20261020 a small local gain to 0.939444 accuracy and 0.704614 macro F1, but did not produce a shared calibration rule. The uncalibrated argument cue model remains the reproducible candidate for future comparisons.
 
 The third argument cue seed regressed to 0.922222 accuracy and 0.691627 macro F1. The gain is split sensitive. The next action is a split stability audit using fixed model outputs.
+
+The fixed-output audit showed that each checkpoint scored higher on partitions used by other runs. The earlier seed comparison changed both model training order and the validation partition. The next experiment fixes the split and varies only training seed.

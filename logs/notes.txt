@@ -5327,3 +5327,5 @@ Completed EXP-20261020-007. Calibration reduced the seed 20261020 result to 0.93
 Completed EXP-20261020-008. A 20 percent calibration slice gave seed 20261020 a small local gain to 0.939444 accuracy and 0.704614 macro F1. It did not establish a shared bias. Retained the uncalibrated argument cue configuration for future comparisons.
 
 Completed EXP-20261020-009. The third argument cue seed regressed to 0.922222 accuracy and 0.691627 macro F1. The improvement is split sensitive. The next action is a fixed-output split stability audit.
+
+The fixed-output audit completed for all nine checkpoint and partition pairs. Cross partition scores were higher than each checkpoint's own held out score, so the earlier seed comparison was confounded by changing the split. Added a separate split seed option to support a controlled fixed-split training seed replication.

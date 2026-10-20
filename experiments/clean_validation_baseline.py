@@ -143,6 +143,7 @@ def main() -> int:
     parser.add_argument("--omit-tool-schemas", action="store_true")
     parser.add_argument("--add-argument-cues", action="store_true")
     parser.add_argument("--seed", type=int, default=20261020)
+    parser.add_argument("--split-seed", type=int, default=None)
     args = parser.parse_args()
     seed = args.seed
     random.seed(seed)
@@ -152,7 +153,8 @@ def main() -> int:
     # Load train_pref only and infer labels from response text without loading official labels.
     rows = load_training_rows()
     examples = prepare_train_examples(rows)
-    train, development = split_examples(examples, 0.2, seed)
+    split_seed = seed if args.split_seed is None else args.split_seed
+    train, development = split_examples(examples, 0.2, split_seed)
     if args.omit_tool_schemas:
         remove_tool_schemas(train)
         remove_tool_schemas(development)
@@ -178,6 +180,7 @@ def main() -> int:
         "official_test_loaded": False,
         "label_source": "inferred from chosen response content",
         "seed": seed,
+        "split_seed": split_seed,
         "dev_fraction": 0.2,
         "train_examples": len(train),
         "development_examples": len(development),
