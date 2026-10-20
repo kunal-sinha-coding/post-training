@@ -3,7 +3,16 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "Broader training-only source coverage may improve robustness on a new validation partition without using official test labels.",
-  "active_experiment": null,
+  "active_experiment": {
+    "pid": 20929,
+    "command": [
+      "python",
+      "-u",
+      "-m",
+      "experiments.audit_split_stability"
+    ],
+    "started_at": "2026-10-20T09:50:12.531988+00:00"
+  },
   "worker_command": [
     "python",
     "-u",
@@ -21,8 +30,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T09:49:00+00:00",
-  "last_action": "Semantic direct fallback diagnostic completed and was rejected. Next worker must test broader training-only source coverage.",
+  "last_heartbeat": "2026-10-20T09:50:12.532008+00:00",
+  "last_action": "Watchdog started validation worker pid 20929.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
