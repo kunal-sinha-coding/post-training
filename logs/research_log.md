@@ -135,3 +135,18 @@ Results: Development accuracy was 0.922222 and macro F1 was 0.691627. Developmen
 Analysis: The hypothesis was rejected as a robust claim. The result is 0.026111 accuracy and 0.019783 macro F1 below EXP-20261020-005. Most of the regression is `tool_call` predictions becoming `request_for_info`. The result confirms that one epoch and the deterministic split can produce high variance. The current best individual result remains useful, but it is not sufficient for final selection.
 
 Next action: Run a split stability audit with fixed model outputs across the three development partitions before changing the model again.
+
+## EXP-20261020-010
+
+Timestamp: 2026-10-20. The fixed-split seed replication completed without loading the official test split.
+
+Hypothesis: Fixing the development partition will show whether the argument-cue gain survives when only the training seed changes.
+
+Setup: The cached `train_pref` rows were split with `split_seed=20261021`, producing 7,200 training and 1,800 development examples. The Jina warm-start encoder used cross entropy, one epoch, batch size 8, learning rate 5e-5, seed 20261020, and the required argument cue input. The official test split was not loaded.
+
+Results: Development accuracy was 0.946111 and macro F1 was 0.710024. The confusion matrix was [[582, 1, 16, 0], [0, 550, 50, 0], [2, 27, 571, 0], [1, 0, 0, 0]].
+
+Analysis: The result is below the prior seed-20261021 result of 0.948333 accuracy and 0.711410 macro F1, but it is higher than the same seed on its original partition at 0.938889 accuracy and 0.704172 macro F1. This confirms that the validation partition materially affects the score. The remaining errors are concentrated in request_for_info versus tool_call. The direct class still has one development example and no usable inferred training support.
+
+Decision: Keep the fixed split for future comparisons. Do not promote a seed-specific calibration rule. The next experiment tests a second training seed on this same fixed split.
+

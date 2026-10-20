@@ -1,9 +1,25 @@
 {
-  "status": "stopped",
+  "status": "active",
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "A deterministic train_pref development split is required before comparing When2Call models because prior scripts selected with official test labels.",
-  "active_experiment": null,
+  "current_hypothesis": "On the fixed split, changing only the training seed will estimate training stochasticity and test whether the argument-cue configuration is stable.",
+  "active_experiment": {
+    "pid": 12203,
+    "command": [
+      "python",
+      "-u",
+      "-m",
+      "experiments.clean_validation_baseline",
+      "--add-argument-cues",
+      "--seed",
+      "20261020",
+      "--split-seed",
+      "20261021",
+      "--output-dir",
+      "outputs/clean-validation-fixedsplit-train20"
+    ],
+    "started_at": "2026-10-20T08:57:34.622247+00:00"
+  },
   "worker_command": [
     "python",
     "-u",
@@ -11,11 +27,11 @@
     "experiments.clean_validation_baseline",
     "--add-argument-cues",
     "--seed",
-    "20261020",
+    "20261021",
     "--split-seed",
     "20261021",
     "--output-dir",
-    "outputs/clean-validation-fixedsplit-train20"
+    "outputs/clean-validation-fixedsplit-seed21"
   ],
   "experiment_queue": [
     "Audit and baseline the clean train_pref development split.",
@@ -28,8 +44,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T08:49:47.644740+00:00",
-  "last_action": "Received exact STOP, terminated watchdog scheduling, and persisted final state.",
-  "watchdog_enabled": false,
+  "last_heartbeat": "2026-10-20T08:58:37.746091+00:00",
+  "last_action": "The fixed-split seed21 worker exited before producing an artifact because the GPU was occupied. The original fixed-split worker remains active and is being allowed to finish.",
+  "watchdog_enabled": true,
   "stop_command": "STOP"
 }

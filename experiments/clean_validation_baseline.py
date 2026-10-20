@@ -27,6 +27,7 @@ from experiments.train_when2call_jina import (
     prepare_train_examples,
     tokenize_examples,
 )
+import experiments.train_when2call_jina as jina_training
 from transformers import AutoConfig, AutoModel, AutoTokenizer
 from experiments.apply_when2call_candidate_validity import required_fields
 
@@ -88,12 +89,12 @@ def add_argument_cues(examples: list) -> list:
     return examples
 
 
-def load_model(device: torch.device) -> tuple[torch.nn.Module, object]:
+def load_model(device: torch.device, max_length: int) -> tuple[torch.nn.Module, object]:
     """Load the cached local Jina encoder with a fresh four class head."""
     # Recreate the compact encoder from the complete local checkpoint under the two billion parameter limit.
     checkpoint = Path("outputs/when2call-jina-v2-small/latest")
     tokenizer = AutoTokenizer.from_pretrained(checkpoint, trust_remote_code=True)
-    tokenizer.model_max_length = 8192
+    tokenizer.model_max_length = max_length
     config = AutoConfig.from_pretrained(checkpoint / "encoder_config.json", trust_remote_code=True)
     config._name_or_path = str(checkpoint.resolve())
     config.attn_implementation = "torch"
@@ -144,6 +145,7 @@ def main() -> int:
     parser.add_argument("--add-argument-cues", action="store_true")
     parser.add_argument("--seed", type=int, default=20261020)
     parser.add_argument("--split-seed", type=int, default=None)
+    parser.add_argument("--max-length", type=int, default=8192)
     args = parser.parse_args()
     seed = args.seed
     random.seed(seed)
@@ -161,7 +163,9 @@ def main() -> int:
     if args.add_argument_cues:
         add_argument_cues(train)
         add_argument_cues(development)
-    tokenizer_model, tokenizer = load_model(device)
+    # Use the selected context limit in both token validation and model padding.
+    jina_training.MAX_LENGTH = args.max_length
+    tokenizer_model, tokenizer = load_model(device, args.max_length)
     tokenize_examples(train, tokenizer)
     tokenize_examples(development, tokenizer)
 
