@@ -586,6 +586,16 @@ Setup: Two W&B-logged epochs over `train_sft` and one `train_pref` epoch used th
 
 Training diagnostics: Training accuracy was 0.660000 and training macro F1 was 0.444012. The checkpoint is still measured through the aggregate-only test interface because training metrics are not a substitute for the black-box measurement.
 
+## EXP-20261020-053
+
+Timestamp: 2026-10-20. The question-only candidate was evaluated through the aggregate-only black-box test interface.
+
+Setup: The frozen question-only checkpoint used two `train_sft` adaptation epochs and one `train_pref` epoch. The evaluator applied the same frozen schema-removal transform. W&B test run: `plrkutza`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/plrkutza). Only aggregate accuracy and macro F1 were returned.
+
+Results: Black-box test accuracy was 0.417853 and macro F1 was 0.355946.
+
+Analysis: Removing tool schemas is strongly harmful, so the question-only representation is rejected. The full-schema two-SFT/one-preference checkpoint remains the leader. The next measurement tests a frozen aggregate-only ensemble of the one-preference leader and the two-preference alternative.
+
 ## EXP-20261020-049
 
 Timestamp: 2026-10-20. The three-epoch staged adaptation candidate was evaluated through the aggregate-only black-box test interface.
