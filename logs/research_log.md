@@ -508,3 +508,13 @@ Results: The black-box test returned 0.509584 accuracy and 0.510353 macro F1.
 
 Decision: Training on all rows is rejected against the 0.534502 accuracy and 0.537033 macro F1 weighted Jina candidate. The next step is an unlabeled train and test covariate diagnostic. It will not inspect test labels or correctness.
 
+## EXP-20261020-043
+
+Timestamp: 2026-10-20. The unlabeled covariate diagnostic completed without reading official test labels.
+
+Setup: Cached `train_pref` and official test Arrow rows were compared using only visible question and tool fields. W&B run: `mrl5oycn`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/mrl5oycn). The test label and answer fields were not accessed.
+
+Results: Train questions averaged 14.142 words with a 26-word 95th percentile. Test questions averaged 17.962 words with a 35-word 95th percentile. Train rows averaged 2.456 tools and exposed 3,039 tool names. Test rows averaged 3.011 tools and exposed 509 tool names.
+
+Analysis: The test distribution has longer questions, more tools per row, and a much narrower tool-name vocabulary. This explains why validation performance from random `train_pref` partitions is not a reliable proxy for test performance. The next intervention uses staged domain adaptation with `train_sft` language and tool contexts followed by labeled `train_pref` fine-tuning. It does not use test inputs for training.
+

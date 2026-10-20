@@ -3,7 +3,16 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "A measurable unlabeled train and test covariate shift identifies the highest-impact generalization intervention.",
-  "active_experiment": null,
+  "active_experiment": {
+    "pid": 29522,
+    "command": [
+      "python",
+      "-u",
+      "-m",
+      "experiments.audit_split_stability"
+    ],
+    "started_at": "2026-10-20T10:50:13.176427+00:00"
+  },
   "worker_command": [
     "python",
     "-u",
@@ -21,8 +30,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T15:00:00+00:00",
-  "last_action": "All-train black-box evaluation completed with W&B run 2zc4g4rk and was rejected. Next action is an unlabeled covariate diagnostic.",
+  "last_heartbeat": "2026-10-20T10:50:13.176448+00:00",
+  "last_action": "Watchdog started validation worker pid 29522.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
