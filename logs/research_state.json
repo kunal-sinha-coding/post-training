@@ -2,7 +2,7 @@
   "status": "active",
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "A weighted ensemble of the best one-preference and two-preference full-schema checkpoints may reduce variance without exposing individual test outcomes.",
+  "current_hypothesis": "Label smoothing may reduce shortcut overconfidence and improve robustness on the shifted test distribution while preserving tool schemas.",
   "active_experiment": {
     "pid": 34788,
     "command": [
@@ -11,7 +11,7 @@
       "-m",
       "experiments.evaluate_frozen_when2call_ensemble_test"
     ],
-    "started_at": "2026-10-20T11:40:14.547892+00:00"
+    "started_at": "2026-10-20T15:02:00+00:00"
   },
   "worker_command": [
     "python",
@@ -30,8 +30,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T11:40:14.547915+00:00",
-  "last_action": "Watchdog started validation worker pid 34788.",
+  "last_heartbeat": "2026-10-20T15:02:00+00:00",
+  "last_action": "Watchdog started fallback aggregate-only evaluator pid 34788 after stale state. It will complete before label-smoothing training starts.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
