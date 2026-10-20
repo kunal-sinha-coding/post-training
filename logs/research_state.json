@@ -3,7 +3,22 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "A different pretrained encoder family may capture tool-use semantics and improve black-box generalization over Jina.",
-  "active_experiment": null,
+  "active_experiment": {
+    "pid": 25129,
+    "command": [
+      "python",
+      "-u",
+      "-m",
+      "experiments.minilm_when2call_blackbox",
+      "--epochs",
+      "1",
+      "--learning-rate",
+      "2e-5",
+      "--output",
+      "outputs/blackbox-test-minilm.json"
+    ],
+    "started_at": "2026-10-20T11:55:00+00:00"
+  },
   "worker_command": [
     "python",
     "-u",
@@ -21,8 +36,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T11:45:00+00:00",
-  "last_action": "W&B run fepcxeu1 captured a MiniLM cache failure before model execution. The candidate now uses the complete local snapshot for retry.",
+  "last_heartbeat": "2026-10-20T11:55:00+00:00",
+  "last_action": "Relaunched W&B-logged aggregate-only MiniLM candidate pid 25129 using the complete local snapshot.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
