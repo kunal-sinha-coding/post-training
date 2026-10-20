@@ -32,8 +32,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T09:39:40.098880+00:00",
-  "last_action": "Recorded one-time W&B official test run sh67pf6x at 0.528204 accuracy and 0.530578 macro F1. Test metrics are frozen and excluded from future selection. Added targeted rejected-direct sampling as the next validation experiment.",
+  "last_heartbeat": "2026-10-20T09:42:39.602923+00:00",
+  "last_action": "Recorded W&B run b7xrpd5x as an overlap-induced CUDA OOM. GPU state is clear and the targeted direct-sample experiment is queued for a single-worker retry.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }

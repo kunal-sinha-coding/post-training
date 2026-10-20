@@ -364,3 +364,13 @@ Selection boundary: This was a single post-selection measurement. These test met
 
 Next hypothesis: The broad rejected-response augmentation failed because 2,736 inferred direct rows overwhelmed the chosen-response distribution. Adding a small bounded sample of rejected direct rows may improve the direct-class boundary without damaging the common classes.
 
+## EXP-20261020-029
+
+Timestamp: 2026-10-20. The targeted 100 rejected-direct-sample run failed with CUDA OOM during overlap with the prior official test process.
+
+Setup: The fixed `split_seed=20261021`, seed 20261022, argument cues, 4,096 tokens, and 100 targeted rejected-direct examples were used. W&B run: `b7xrpd5x`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/b7xrpd5x). The official test split was not loaded by this experiment.
+
+Result: CUDA allocation of 912 MiB failed while stale process 19481 held approximately 9.35 GiB. No validation metric was produced. This is an infrastructure failure, not a model result.
+
+Recovery: The GPU is now clear. The same experiment will be retried as a single worker.
+
