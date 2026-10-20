@@ -450,3 +450,13 @@ Results: The black-box test returned 0.534502 accuracy and 0.537033 macro F1. Th
 
 Decision: Retain this as the current aggregate leader. Seed-only changes are now deprioritized. The next experiment tests a generalizable required-field inference rule that changes a request prediction to a tool call only when the visible question contains every required field of an available tool.
 
+## EXP-20261020-037
+
+Timestamp: 2026-10-20. The frozen required-field inference candidate was evaluated through the aggregate-only black-box test interface.
+
+Setup: The 0.8 seed21 weighted frozen ensemble was evaluated with a rule that changed only `request_for_info` predictions to `tool_call` when every required field of an available tool appeared in the visible question. W&B run: `v1u74u6h`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/v1u74u6h). Only aggregate metrics were returned.
+
+Results: The black-box test returned 0.531763 accuracy and 0.534757 macro F1. The rule reduced accuracy from 0.534502 and did not improve the combined objective.
+
+Decision: Reject the inference rule. The next experiment tests a different model family with a frozen encoder and a class-balanced linear probe. This is a substantive generalization diagnostic, not a seed-only adjustment.
+

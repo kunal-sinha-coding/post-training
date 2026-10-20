@@ -2,12 +2,8 @@
   "status": "active",
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "A visible required-field rule may correct under-called tool requests and generalize better than seed weighting.",
-  "active_experiment": {
-    "pid": 23876,
-    "command": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-fixedsplit-seed21-len4096", "--checkpoint", "outputs/clean-validation-fixedsplit-seed20-len4096", "--checkpoint", "outputs/clean-validation-fixedsplit-seed22-len4096", "--weight", "0.8", "--weight", "0.1", "--weight", "0.1", "--complete-request-to-tool", "--output", "outputs/blackbox-test-required-field-rule.json"],
-    "started_at": "2026-10-20T10:52:00+00:00"
-  },
+  "current_hypothesis": "A frozen-encoder class-balanced linear probe may generalize better than a fully fine-tuned classifier that over-specializes to train_pref.",
+  "active_experiment": null,
   "worker_command": [
     "python",
     "-u",
@@ -25,8 +21,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T10:52:00+00:00",
-  "last_action": "Launched aggregate-only black-box evaluation for the required-field inference candidate pid 23876.",
+  "last_heartbeat": "2026-10-20T11:05:00+00:00",
+  "last_action": "Required-field inference candidate completed with W&B run v1u74u6h and was rejected. Next action is a frozen-encoder linear probe.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }

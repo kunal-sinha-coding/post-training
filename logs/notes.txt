@@ -5380,4 +5380,5 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-20 Corrected the active state after the five-minute watchdog had recorded a stale audit. The active worker is black-box weighted candidate pid 23286.
 2026-10-20 Updated auto-research-prompt.md experiment prioritization. The prompt now requires broad solution-space exploration, explicit expected-impact and generalization assessment, and lower priority for seed-only or narrow heuristic changes.
 2026-10-20 W&B run 9nq8kqpj completed the 0.8 seed21 weighted black-box evaluation at 0.534502 accuracy and 0.537033 macro F1. This is the current aggregate leader. Added a required-field inference-rule candidate. Seed-only training changes are deprioritized.
+2026-10-20 W&B run v1u74u6h rejected the required-field inference rule at 0.531763 accuracy and 0.534757 macro F1. The next experiment is a frozen-encoder class-balanced linear probe.
 2026-10-20 Launched W&B-logged aggregate-only black-box evaluation for the 0.8 seed21 weighted ensemble with the required-field inference rule, pid 23876.
