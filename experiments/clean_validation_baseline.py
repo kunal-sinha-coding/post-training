@@ -104,12 +104,12 @@ def load_model(device: torch.device) -> tuple[torch.nn.Module, object]:
     return model, tokenizer
 
 
-def train_epoch(model: torch.nn.Module, tokenizer: object, examples: list, device: torch.device, optimizer: object, loss_function: str) -> float:
+def train_epoch(model: torch.nn.Module, tokenizer: object, examples: list, device: torch.device, optimizer: object, loss_function: str, seed: int) -> float:
     """Run one deterministic full batch training epoch and return mean loss."""
     # Shuffle only the training partition and use small batches for the available GPU memory.
     model.train()
     order = list(examples)
-    random.Random(20261020).shuffle(order)
+    random.Random(seed).shuffle(order)
     losses = []
     for start in range(0, len(order), 8):
         batch = collate(order[start:start + 8], tokenizer)
@@ -142,8 +142,9 @@ def main() -> int:
     parser.add_argument("--loss-function", choices=("cross_entropy", "pairwise_ranking"), default="cross_entropy")
     parser.add_argument("--omit-tool-schemas", action="store_true")
     parser.add_argument("--add-argument-cues", action="store_true")
+    parser.add_argument("--seed", type=int, default=20261020)
     args = parser.parse_args()
-    seed = 20261020
+    seed = args.seed
     random.seed(seed)
     torch.manual_seed(seed)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -164,7 +165,7 @@ def main() -> int:
 
     # Train one compact baseline epoch and evaluate only the held out development partition.
     optimizer = torch.optim.AdamW(tokenizer_model.parameters(), lr=5e-5)
-    loss = train_epoch(tokenizer_model, tokenizer, train, device, optimizer, args.loss_function)
+    loss = train_epoch(tokenizer_model, tokenizer, train, device, optimizer, args.loss_function, seed)
     train_metrics = batch_metrics(tokenizer_model, tokenizer, train, device, list(range(len(LABELS))))
     dev_metrics = batch_metrics(tokenizer_model, tokenizer, development, device, list(range(len(LABELS))))
 
