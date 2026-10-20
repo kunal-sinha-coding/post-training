@@ -17,3 +17,5 @@ Next action: compare cross entropy with pairwise preference training on the same
 EXP-20261020-002 rejected pairwise ranking. Development accuracy was 0.903889 and macro F1 was 0.678567. Cross entropy remains the current best. The next experiment audits inferred labels before changing the loss again.
 
 The label audit found balanced chosen labels: 2,997 `cannot_answer`, 3,001 `request_for_info`, 3,000 `tool_call`, and 2 `direct`. Rejected responses contain 2,736 `direct` labels. This explains why raw pairwise ranking regressed and removes class weighting from the immediate plan. The next test will examine whether tool schema text causes shortcut errors.
+
+EXP-20261020-003 rejected schema removal. Development accuracy was 0.590000 and macro F1 was 0.374995. Tool definitions are necessary evidence. The next experiment will preserve schemas and add explicit required argument names.

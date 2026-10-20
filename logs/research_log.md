@@ -41,3 +41,17 @@ Results: Chosen response labels were `cannot_answer` 2,997, `request_for_info` 3
 Analysis: The main data issue is objective target asymmetry, not chosen-label imbalance. Cross entropy learns the chosen response class distribution. Pairwise training also treats many rejected direct responses as negative evidence, even though direct is nearly absent among chosen responses. This is evidence for rejecting raw pairwise ranking in this dataset. It does not prove that the response heuristic is correct for every example because the audit uses generated response text rather than official training labels.
 
 Next action: Keep cross entropy as the training objective. Test a response aware input ablation that removes tool schemas from a development-only classifier comparison, because the remaining errors may come from the encoder using schema overlap as a shortcut. Preserve the current best checkpoint.
+
+## EXP-20261020-003
+
+Timestamp: 2026-10-20. The run completed on the clean validation split.
+
+Hypothesis: Tool schema text may act as a shortcut and removing it may improve generalization to the action boundary.
+
+Setup: This used the exact EXP-20261020-001 data split, seed, Jina warm start, one epoch, batch size 8, learning rate 5e-5, and cross entropy. The only input change replaced every tool schema with `No tools are available.` The official test split was not loaded. Code revision: afb213e5.
+
+Results: Training loss was 0.787945. Training accuracy was 0.640278 and training macro F1 was 0.409906. Development accuracy was 0.590000 and development macro F1 was 0.374995. Development per class F1 was 0.043546 for `cannot_answer`, 0.827181 for `request_for_info`, 0.629252 for `tool_call`, and 0.000000 for `direct`. The development confusion matrix was [[14, 61, 524, 0], [23, 493, 84, 0], [7, 38, 555, 0], [0, 0, 1, 0]].
+
+Analysis: The hypothesis was rejected. Removing tool schemas reduced development accuracy by 0.346667 and macro F1 by 0.328038 relative to the clean cross entropy baseline. The model needs schema information. The large increase in `cannot_answer` to `tool_call` errors shows that schemas carry important evidence for whether a tool is available. The experiment is rejected for the leaderboard.
+
+Next action: Keep schemas and test a stable prompt that adds explicit required argument names derived from each schema. This preserves tool identity while making the completeness signal easier for the encoder to represent.
