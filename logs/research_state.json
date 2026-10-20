@@ -23,8 +23,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T09:36:29.840995+00:00",
-  "last_action": "Recorded W&B run 57va2ufs as a context-length failure. Patched the frozen evaluator to truncate overlong test inputs to 4096 and queued the final measurement retry.",
+  "last_heartbeat": "2026-10-20T09:38:12.517556+00:00",
+  "last_action": "Recorded W&B run mo14kybu as a collator-limit failure. Patched the evaluator to retain the native collator limit while truncating test inputs to 4096 and queued the final retry.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }

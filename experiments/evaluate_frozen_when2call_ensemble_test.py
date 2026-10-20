@@ -53,7 +53,8 @@ def main() -> int:
     )
     atexit.register(run.finish)
     # Freeze the model context and load the official labels only for final measurement.
-    jina_training.MAX_LENGTH = 4096
+    # Keep the native collator limit while explicitly truncating every test input to 4096.
+    jina_training.MAX_LENGTH = 8192
     rows = load_official_test_rows()
     examples = prepare_test_examples(rows)
     truncated_examples = 0

@@ -344,3 +344,11 @@ Result: The run failed because an official input exceeded the frozen 4,096-token
 
 Recovery: The evaluator now truncates only overlong official inputs to the frozen 4,096-token limit and records the number of truncated rows. This is a fixed inference constraint, not a test-selected rule.
 
+## EXP-20261020-027
+
+Timestamp: 2026-10-20. The truncation retry initialized W&B run `mo14kybu`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/mo14kybu), but stopped during collation before scoring.
+
+Result: The evaluator reported a padded input above the shared Jina limit even though the test tokenization diagnostic showed all explicitly truncated sequences were at most 4,096 tokens. The failure was caused by the collator global limit being set to 4,096 while the loaded model retains its native 8,192-token configuration.
+
+Recovery: The evaluator now keeps the native collator limit at 8,192 while explicitly truncating official test inputs to 4,096. No candidate or selection rule changed.
+
