@@ -41,6 +41,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, default=Path("outputs/clean-validation-final-test-ensemble.json"))
     parser.add_argument("--checkpoint", action="append", dest="checkpoint_paths", help="Frozen checkpoint path. Repeat once per ensemble member.")
+    parser.add_argument("--weight", action="append", dest="weights", type=float, help="Logit weight for each checkpoint. Repeat once per checkpoint.")
     args = parser.parse_args()
     # Open W&B before loading official examples so the post-selection measurement is tracked.
     import wandb
@@ -54,12 +55,16 @@ def main() -> int:
         "outputs/clean-validation-fixedsplit-seed22-len4096",
     ]
     checkpoints = {f"checkpoint{index}": Path(path) for index, path in enumerate(checkpoint_paths)}
+    weights = torch.tensor(args.weights if args.weights is not None else [1.0] * len(checkpoints), dtype=torch.float32)
+    if len(weights) != len(checkpoints) or float(weights.sum()) <= 0:
+        raise ValueError("The number of weights must match checkpoints and their sum must be positive.")
+    weights = weights / weights.sum()
     run = wandb.init(
         project=os.getenv("WANDB_PROJECT", "when2call-research"),
         entity=os.getenv("WANDB_ENTITY"),
         name="when2call-blackbox-test-aggregate",
         job_type="official-test-measurement",
-        config={"checkpoints": {key: str(value) for key, value in checkpoints.items()}, "dataset": f"{DATASET_NAME}:test/mcq", "selection_complete": True, "black_box": True, "max_length": 4096},
+        config={"checkpoints": {key: str(value) for key, value in checkpoints.items()}, "weights": weights.tolist(), "dataset": f"{DATASET_NAME}:test/mcq", "selection_complete": True, "black_box": True, "max_length": 4096},
     )
     atexit.register(run.finish)
     # Freeze the model context and load the official labels only for final measurement.
@@ -86,7 +91,7 @@ def main() -> int:
         logits_by_checkpoint.append(logits)
         result["metrics"][checkpoint_name] = aggregate_metrics(labels.tolist(), logits.argmax(dim=1).tolist())
     # Average frozen seed logits and compute the single official ensemble measurement.
-    ensemble_logits = torch.stack(logits_by_checkpoint).mean(dim=0)
+    ensemble_logits = (torch.stack(logits_by_checkpoint) * weights.view(-1, 1, 1).to(logits_by_checkpoint[0].device)).sum(dim=0)
     result["metrics"]["ensemble"] = aggregate_metrics(labels.tolist(), ensemble_logits.argmax(dim=1).tolist())
     result["wandb_run_id"] = run.id
     result["wandb_run_url"] = run.url

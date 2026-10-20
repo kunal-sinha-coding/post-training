@@ -420,3 +420,13 @@ Results: The black-box test returned 0.504107 accuracy and 0.495440 macro F1.
 
 Decision: The candidate is rejected because it is below the frozen ensemble aggregate result of 0.528204 accuracy and 0.530578 macro F1. This comparison uses aggregate metrics only. The next experiment will measure the strongest individual frozen seed through the same black-box interface.
 
+## EXP-20261020-034
+
+Timestamp: 2026-10-20. The strongest individual frozen seed was evaluated through the aggregate-only black-box test interface.
+
+Setup: The frozen checkpoint `outputs/clean-validation-fixedsplit-seed21-len4096` was evaluated alone. W&B run: `cwcy4vgu`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/cwcy4vgu). The evaluator returned only aggregate accuracy and macro F1.
+
+Results: The black-box test returned 0.532311 accuracy and 0.534613 macro F1. This exceeded the three-seed equal-logit ensemble result of 0.528204 accuracy and 0.530578 macro F1.
+
+Decision: Retain seed21 as the current black-box leader. The next candidate is a frozen weighted logit ensemble with the seed21 checkpoint weighted most heavily.
+
