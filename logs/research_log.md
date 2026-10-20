@@ -778,6 +778,14 @@ Results: Black-box test accuracy was 0.545455 and macro F1 was 0.538119.
 
 Analysis: Rejected-response auxiliary supervision is rejected. The next intervention exposes learning rate and tests 2.5e-5 instead of 5e-5 on the best recipe.
 
+## EXP-20261020-075
+
+Timestamp: 2026-10-20. A lower-learning-rate candidate was trained and frozen.
+
+Setup: Two W&B-logged cross-entropy SFT epochs and one preference epoch used full schemas, argument cues, label smoothing 0.05, learning rate 2.5e-5, seed 20261021, and maximum length 4096. The official test split was not loaded during training. W&B run: `sm0m7yce`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/sm0m7yce).
+
+Training diagnostics: Training accuracy was 0.982889 and training macro F1 was 0.737242. The frozen checkpoint is queued for aggregate-only black-box measurement.
+
 ## EXP-20261020-073
 
 Timestamp: 2026-10-20. A rejected-response auxiliary candidate was trained and frozen.
