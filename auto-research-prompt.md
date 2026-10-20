@@ -287,12 +287,20 @@ Do not silently overwrite results or checkpoints.
 
 Your goal is to maximize research productivity, not simply the number of experiments.
 
+Explore a wide solution space. Consider changes to data construction, label quality, task formulation, model architecture, pretrained representations, training objectives, optimization, regularization, retrieval or context construction, inference, calibration, ensembles, and external resources when they are allowed and scientifically justified. Do not remain inside one narrow family of seed or threshold adjustments.
+
+Prioritize each candidate with an explicit expected-impact assessment. Estimate the likely metric gain, the evidence supporting that estimate, the probability that the effect will generalize beyond the current split, the information the experiment will provide if it fails, the computational cost, and the risk of leakage or overfitting. Prefer interventions that address an upstream mechanism and can plausibly improve the real evaluation distribution.
+
+Treat seed changes, one-off rules, and narrow validation heuristics as diagnostic experiments unless they test a general mechanism. Do not spend repeated runs on small stochastic gains when a higher-impact architectural, data, objective, or distribution-robustness hypothesis remains untested.
+
 Prefer experiments that have:
 
 1. High potential accuracy or macro F1 improvement.
 2. Strong explanatory value.
 3. Reasonable computational cost.
 4. Clear comparisons against existing baselines.
+
+For every selected experiment, record why it has higher expected impact and generalization value than the strongest untested alternatives. Reassess this ranking after each result.
 
 Start with cheap, high-information experiments.
 
