@@ -75,6 +75,7 @@ def main() -> int:
     parser.add_argument("--checkpoint", type=Path, default=Path("outputs/clean-validation-argument-cues-seed21"))
     parser.add_argument("--output", type=Path, default=Path("outputs/clean-validation-calibration.json"))
     parser.add_argument("--seed", type=int, default=20261021)
+    parser.add_argument("--calibration-fraction", type=float, default=0.1)
     args = parser.parse_args()
     seed = args.seed
     random.seed(seed)
@@ -84,8 +85,9 @@ def main() -> int:
     train, development = examples
     add_argument_cues(train)
     add_argument_cues(development)
-    calibration = train[: len(train) // 10]
-    remaining_train = train[len(train) // 10 :]
+    calibration_count = max(1, round(len(train) * args.calibration_fraction))
+    calibration = train[:calibration_count]
+    remaining_train = train[calibration_count:]
     tokenizer_model, tokenizer = load_checkpoint(args.checkpoint, torch.device("cuda" if torch.cuda.is_available() else "cpu"))
     for item in calibration + remaining_train + development:
         item.token_ids = tokenizer(item.text, add_special_tokens=True, truncation=False, verbose=False)["input_ids"]
@@ -95,7 +97,7 @@ def main() -> int:
     bias = fit_bias(calibration_logits, calibration_labels)
     predictions = (development_logits + bias).argmax(dim=1).tolist()
     metrics = metric_values(development_labels.tolist(), predictions, list(range(len(LABELS))))
-    result = {"seed": seed, "calibration_examples": len(calibration), "development_examples": len(development), "bias": bias.tolist(), "calibration_accuracy": float((calibration_logits + bias).argmax(dim=1).eq(calibration_labels).float().mean()), "development_metrics": metrics, "test_loaded": False, "checkpoint": str(args.checkpoint)}
+    result = {"seed": seed, "calibration_fraction": args.calibration_fraction, "calibration_examples": len(calibration), "development_examples": len(development), "bias": bias.tolist(), "calibration_accuracy": float((calibration_logits + bias).argmax(dim=1).eq(calibration_labels).float().mean()), "development_metrics": metrics, "test_loaded": False, "checkpoint": str(args.checkpoint)}
     args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(result, indent=2))
     return 0
