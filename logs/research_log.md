@@ -768,6 +768,16 @@ Results: The base checkpoint returned 0.574480 accuracy and 0.574969 macro F1. T
 
 Analysis: The required-field rule is rejected. The next candidate adds all rejected-response examples as auxiliary supervision to the best smoothing recipe.
 
+## EXP-20261020-074
+
+Timestamp: 2026-10-20. The rejected-response auxiliary candidate was evaluated through the aggregate-only black-box test interface.
+
+Setup: The frozen checkpoint used two SFT epochs and one preference epoch with all rejected responses, full schemas, argument cues, and label smoothing 0.05. W&B test run: `qhfo0c4h`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/qhfo0c4h). Only aggregate accuracy and macro F1 were returned.
+
+Results: Black-box test accuracy was 0.545455 and macro F1 was 0.538119.
+
+Analysis: Rejected-response auxiliary supervision is rejected. The next intervention exposes learning rate and tests 2.5e-5 instead of 5e-5 on the best recipe.
+
 ## EXP-20261020-073
 
 Timestamp: 2026-10-20. A rejected-response auxiliary candidate was trained and frozen.
