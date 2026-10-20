@@ -624,6 +624,14 @@ Results: Black-box test accuracy was 0.574480 and macro F1 was 0.574969.
 
 Analysis: Label smoothing improved both aggregate metrics over the fixed ensemble leader. The next experiment tests smoothing 0.10 with the same data, architecture, and training schedule.
 
+## EXP-20261020-057
+
+Timestamp: 2026-10-20. A smoothing 0.10 candidate was trained and frozen.
+
+Setup: Two W&B-logged `train_sft` adaptation epochs and one `train_pref` epoch used full schemas, argument cues, seed 20261021, maximum length 4096, and cross-entropy label smoothing 0.10. The official test split was not loaded during training. W&B run: `mqwf3hho`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/mqwf3hho).
+
+Training diagnostics: Training accuracy was 0.967111 and training macro F1 was 0.725440. The frozen checkpoint is queued for aggregate-only black-box measurement.
+
 ## EXP-20261020-049
 
 Timestamp: 2026-10-20. The three-epoch staged adaptation candidate was evaluated through the aggregate-only black-box test interface.
