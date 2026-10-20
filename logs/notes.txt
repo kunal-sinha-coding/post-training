@@ -5337,3 +5337,5 @@ Completed EXP-20261020-008. A 20 percent calibration slice gave seed 20261020 a 
 Completed EXP-20261020-009. The third argument cue seed regressed to 0.922222 accuracy and 0.691627 macro F1. The improvement is split sensitive. The next action is a fixed-output split stability audit.
 
 The fixed-output audit completed for all nine checkpoint and partition pairs. Cross partition scores were higher than each checkpoint's own held out score, so the earlier seed comparison was confounded by changing the split. Added a separate split seed option to support a controlled fixed-split training seed replication.
+
+Received the exact top level `STOP` command. Terminated the watchdog, confirmed no research worker remained, marked the durable research state as stopped, and preserved all experiment artifacts.

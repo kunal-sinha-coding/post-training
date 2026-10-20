@@ -2,6 +2,8 @@
 
 Current status: Active.
 
+Final status: Stopped after the exact top level `STOP` command. The watchdog and research workers were terminated.
+
 The non-idle execution rule is active. A completed experiment must be followed immediately by analysis, durable logging, and the next experiment. The loop must continue until the exact top level message `STOP` is received.
 
 The repository contains When2Call classifiers based on Jina embeddings, MiniLM artifacts, Jev predictions, and rule based ensembles. Several historical experiments report official test accuracy and macro F1. The code also uses test labels to select routing rules and checkpoints. Those results are useful for diagnosis, but they are not valid evidence for clean model selection.
