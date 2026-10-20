@@ -410,3 +410,13 @@ Results: Training accuracy was 0.964638 and macro F1 was 0.722598. Development a
 
 Analysis: The bounded SFT source did not improve the held-out development result. Its label composition does not include tool-call examples and therefore changes the class boundary in an unbalanced way even when the sampled classes are balanced among available labels. The intervention is rejected. The frozen ensemble remains the strongest validation candidate. The SFT candidate is now frozen for one aggregate-only black-box test measurement under the revised user rule.
 
+## EXP-20261020-033
+
+Timestamp: 2026-10-20. The frozen SFT candidate was evaluated through the aggregate-only black-box test interface.
+
+Setup: One frozen checkpoint, `outputs/clean-validation-sftaux500-seed22-len4096`, was evaluated on the official test split. The evaluator returned only aggregate accuracy and macro F1, recorded no per-example correctness, and logged W&B run `alfj92em`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/alfj92em). The configuration was frozen before test execution.
+
+Results: The black-box test returned 0.504107 accuracy and 0.495440 macro F1.
+
+Decision: The candidate is rejected because it is below the frozen ensemble aggregate result of 0.528204 accuracy and 0.530578 macro F1. This comparison uses aggregate metrics only. The next experiment will measure the strongest individual frozen seed through the same black-box interface.
+
