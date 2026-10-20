@@ -722,6 +722,14 @@ Results: Black-box test accuracy was 0.539157 and macro F1 was 0.541246.
 
 Analysis: Removing argument cues reduced both metrics. The full representation is retained. The next intervention changes the objective to pairwise chosen-versus-rejected ranking.
 
+## EXP-20261020-068
+
+Timestamp: 2026-10-20. A pairwise-ranking candidate was trained and frozen.
+
+Setup: One W&B-logged pairwise ranking epoch over all 9,000 `train_pref` examples used full schemas, argument cues, seed 20261021, and maximum length 4096. The SFT adaptation stage was omitted because its rows have no chosen-versus-rejected pair. The official test split was not loaded during training. W&B run: `204l97zv`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/204l97zv).
+
+Training diagnostics: Training accuracy was 0.929667 and training macro F1 was 0.697285. The frozen checkpoint is queued for aggregate-only black-box measurement.
+
 Analysis: Even the smaller direct augmentation reduced both metrics. Direct augmentation is rejected. The next intervention removes the engineered required-argument cue while preserving all raw tool schemas.
 
 ## EXP-20261020-049
