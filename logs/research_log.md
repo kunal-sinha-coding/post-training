@@ -176,3 +176,15 @@ Result: The run failed during tokenization because source ID 5517 contains 1,182
 
 Analysis: The context is too short for the existing complete-input validation rule. This is a configuration failure, not a model result. The next recovery uses 2,048 tokens, which covers the observed maximum beyond 1,024 and remains below the memory-risk setting.
 
+## EXP-20261020-013
+
+Timestamp: 2026-10-20. The W&B-logged 2,048-token recovery was rejected before training.
+
+Hypothesis: A 2,048-token context will avoid the 8,192-token CUDA OOM and include all validation inputs.
+
+Setup: The fixed `split_seed=20261021`, training seed 20261021, Jina warm start, cross entropy, one epoch, batch size 8, argument cues, and `max_length=2048` were used. W&B run: `j76hgv9r`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/j76hgv9r). The official test split was not loaded.
+
+Result: The run failed during tokenization because source ID 5267 contains 2,769 tokens. No model metrics were produced. W&B captured the configuration and failure.
+
+Analysis: The complete-input harness needs at least 2,769 tokens for this split. This is a configuration failure, not a model result. The next recovery uses 4,096 tokens.
+

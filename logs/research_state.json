@@ -2,7 +2,7 @@
   "status": "active",
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog must start the next worker whenever active research has no worker, stale heartbeat, crash, or unexpected termination. Wait only for an active process or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "A 2048-token Jina context will include all observed validation inputs and avoid the 8192-token CUDA OOM while preserving the argument-cue signal.",
+  "current_hypothesis": "A 4096-token Jina context will include every observed validation input and reduce the quadratic memory cost enough to avoid the 8192-token CUDA OOM.",
   "active_experiment": null,
   "worker_command": [
     "python",
@@ -15,9 +15,9 @@
     "--split-seed",
     "20261021",
     "--max-length",
-    "2048",
+    "4096",
     "--output-dir",
-    "outputs/clean-validation-fixedsplit-seed21-len2048"
+    "outputs/clean-validation-fixedsplit-seed21-len4096"
   ],
   "experiment_queue": [
     "Audit and baseline the clean train_pref development split.",
@@ -30,8 +30,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T09:02:49.988289+00:00",
-  "last_action": "Recorded W&B run tmr06oll as a 1024-token input-length failure and queued a 2048-token recovery.",
+  "last_heartbeat": "2026-10-20T09:04:49.665606+00:00",
+  "last_action": "Recorded W&B run j76hgv9r as a 2048-token input-length failure and queued a 4096-token recovery.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }
