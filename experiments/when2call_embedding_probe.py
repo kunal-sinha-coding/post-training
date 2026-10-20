@@ -7,7 +7,9 @@ trains a small weighted linear classifier, and evaluates the classifier on MCQ.
 from __future__ import annotations
 
 import argparse
+import atexit
 import json
+import os
 from pathlib import Path
 
 import torch
@@ -24,6 +26,7 @@ from experiments.train_when2call_jina import (
     infer_action_label,
     length_aware_batches,
     load_train_examples,
+    prepare_train_examples,
     prepare_test_examples,
     tokenize_examples,
     tools_text,
@@ -76,6 +79,27 @@ def metric_dict(targets, predictions):
     return {"accuracy": sum(a == b for a, b in zip(targets, predictions)) / len(targets), "macro_precision": sum(x[0] for x in scores) / 3, "macro_recall": sum(x[1] for x in scores) / 3, "macro_f1": sum(x[2] for x in scores) / 3}
 
 
+def load_cached_rows(dataset_name):
+    """Load one immutable local training artifact without contacting test metadata."""
+    # Keep the probe reproducible on the cached training source and avoid remote split discovery.
+    filename = "when2_call-train.arrow"
+    path = Path(f"/workspace/.cache/huggingface/datasets/nvidia___when2_call/{dataset_name}/0.0.0/0582f7749df63a96fdc3070932e83e72396ace53/{filename}")
+    if path.exists():
+        from datasets import Dataset
+        return Dataset.from_file(str(path))
+    return load_dataset(DATASET_NAME, dataset_name, split="train")
+
+
+def load_cached_test_rows():
+    """Load the official test artifact for aggregate-only scoring inside the evaluator."""
+    # Keep test scoring inside this process and expose only aggregate metrics to the caller.
+    path = Path("/workspace/.cache/huggingface/datasets/nvidia___when2_call/test/0.0.0/0582f7749df63a96fdc3070932e83e72396ace53/when2_call-mcq.arrow")
+    if path.exists():
+        from datasets import Dataset
+        return Dataset.from_file(str(path))
+    return load_dataset(DATASET_NAME, "test", split="mcq")
+
+
 def main():
     """Train the probe head and save its test metrics."""
     # Parse the experiment controls and establish a writable model cache.
@@ -87,6 +111,12 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--pretrained", action="store_true")
     args = parser.parse_args()
+    # Initialize W&B before loading data so failures and completed runs are both tracked.
+    import wandb
+    if not os.getenv("WANDB_API_KEY"):
+        raise RuntimeError("WANDB_API_KEY is required for embedding probe experiments.")
+    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name="when2call-frozen-encoder-linear-probe", job_type="black-box-test-candidate", config=vars(args))
+    atexit.register(run.finish)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     tokenizer = AutoTokenizer.from_pretrained(args.checkpoint, trust_remote_code=True)
     tokenizer.model_max_length = 8192
@@ -97,8 +127,8 @@ def main():
         model.load_state_dict(state)
         encoder = model.encoder
     encoder = encoder.to(device)
-    train_examples = load_train_examples(args.dataset)
-    test_examples = build_test_texts(load_dataset(DATASET_NAME, "test", split="mcq"))
+    train_examples = load_train_examples(args.dataset) if args.dataset != "train_pref" else prepare_train_examples(load_cached_rows("train_pref"))
+    test_examples = build_test_texts(load_cached_test_rows())
     train_features = embed_examples(encoder, tokenizer, train_examples, device)
     test_features = embed_examples(encoder, tokenizer, test_examples, device)
     train_targets = torch.tensor([item.label for item in train_examples])
@@ -116,10 +146,14 @@ def main():
             loss.backward()
             optimizer.step()
     predictions = head(test_features).argmax(dim=-1).tolist()
-    result = {"dataset": args.dataset, "epochs": args.epochs, "lr": args.lr, "pretrained": args.pretrained, "metrics": metric_dict(test_targets, predictions)}
+    metrics = metric_dict(test_targets, predictions)
+    result = {"dataset": args.dataset, "epochs": args.epochs, "lr": args.lr, "pretrained": args.pretrained, "black_box": True, "metrics": {"accuracy": metrics["accuracy"], "macro_f1": metrics["macro_f1"]}, "wandb_run_id": run.id, "wandb_run_url": run.url}
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(result))
+    # Log only aggregate test metrics because this evaluator is a black box.
+    run.log({"test/accuracy": metrics["accuracy"], "test/macro_f1": metrics["macro_f1"], "training/epochs": args.epochs})
+    run.summary.update({"test_accuracy": metrics["accuracy"], "test_macro_f1": metrics["macro_f1"], "black_box": True})
 
 
 if __name__ == "__main__":
