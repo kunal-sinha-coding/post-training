@@ -660,6 +660,16 @@ Setup: Two W&B-logged `train_sft` adaptation epochs and one `train_pref` epoch u
 
 Training diagnostics: Training accuracy was 0.965889 and training macro F1 was 0.724531. The frozen checkpoint is queued for aggregate-only black-box measurement.
 
+## EXP-20261020-061
+
+Timestamp: 2026-10-20. The smoothing 0.025 candidate was evaluated through the aggregate-only black-box test interface.
+
+Setup: The frozen checkpoint used two `train_sft` adaptation epochs, one `train_pref` epoch, full schemas, and label smoothing 0.025. W&B test run: `mui0lstj`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/mui0lstj). Only aggregate accuracy and macro F1 were returned.
+
+Results: Black-box test accuracy was 0.565991 and macro F1 was 0.568509.
+
+Analysis: Smoothing 0.025 was below smoothing 0.05 and is rejected. The next intervention adds bounded rejected direct examples to address the direct-class sparsity while retaining the best smoothing setting.
+
 ## EXP-20261020-049
 
 Timestamp: 2026-10-20. The three-epoch staged adaptation candidate was evaluated through the aggregate-only black-box test interface.
