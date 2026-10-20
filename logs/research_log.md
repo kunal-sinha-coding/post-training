@@ -652,6 +652,14 @@ Results: The ensemble returned 0.571742 accuracy and 0.572932 macro F1.
 
 Analysis: The ensemble was below the single smoothing 0.05 checkpoint and is rejected. The next experiment tests label smoothing 0.025 on the same successful schedule.
 
+## EXP-20261020-060
+
+Timestamp: 2026-10-20. A smoothing 0.025 candidate was trained and frozen.
+
+Setup: Two W&B-logged `train_sft` adaptation epochs and one `train_pref` epoch used full schemas, argument cues, seed 20261021, maximum length 4096, and cross-entropy label smoothing 0.025. The official test split was not loaded during training. W&B run: `sihmzpv8`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/sihmzpv8).
+
+Training diagnostics: Training accuracy was 0.965889 and training macro F1 was 0.724531. The frozen checkpoint is queued for aggregate-only black-box measurement.
+
 ## EXP-20261020-049
 
 Timestamp: 2026-10-20. The three-epoch staged adaptation candidate was evaluated through the aggregate-only black-box test interface.

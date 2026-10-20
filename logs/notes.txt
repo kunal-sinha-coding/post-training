@@ -5445,6 +5445,7 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-20 Launched W&B-logged aggregate-only evaluation of smoothing 0.05 and unsmoothed full-schema checkpoints with weights 0.8 and 0.2, pid 36757.
 2026-10-20 W&B run ef0t7agy evaluated the smoothing 0.05 and unsmoothed ensemble at 0.571742 aggregate test accuracy and 0.572932 aggregate macro F1. It is below the single smoothing 0.05 leader. The next candidate tests smoothing 0.025.
 2026-10-20 Launched W&B-logged two-SFT and one-preference training with label smoothing 0.025, pid 37080.
+2026-10-20 W&B run sihmzpv8 completed label smoothing 0.025 training at 0.965889 training accuracy and 0.724531 training macro F1. The frozen checkpoint is ready for aggregate-only black-box evaluation.
 2026-10-20 W&B run d4zj0go1 found test rows have 3.0107 tools on average versus 2.4563 in train_pref and 509 test tool names versus 3039 training names. Its train question-length statistic was invalid because train questions are stored in messages. Fixed the extractor for a clean rerun.
 2026-10-20 Corrected the active state after the watchdog recorded the completed full-data process as an audit. The full-data Jina run is queued for retry.
 2026-10-20 Corrected the active state after the watchdog retained the completed one-epoch MiniLM record. The next candidate is three MiniLM epochs.
