@@ -21,7 +21,11 @@ def summarize(rows: object) -> dict[str, float]:
     tool_counts = []
     tool_names = set()
     for row in rows:
-        question = str(row.get("question", ""))
+        # Read user message text from train_pref and the direct question field from MCQ rows.
+        if "messages" in row:
+            question = "\n".join(str(message.get("content", "")) for message in row["messages"] if message.get("role") == "user")
+        else:
+            question = str(row.get("question", ""))
         tools = row.get("tools", [])
         question_lengths.append(len(question.split()))
         tool_counts.append(len(tools))
