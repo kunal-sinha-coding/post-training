@@ -15,3 +15,5 @@ Experiment EXP-20261020-001 completed on 2026-10-20. A deterministic 80/20 split
 Next action: compare cross entropy with pairwise preference training on the same split and checkpoint provenance. The likely high value bottleneck is separation of `request_for_info` and `tool_call`, but the direct class count is too small for a reliable class conclusion.
 
 EXP-20261020-002 rejected pairwise ranking. Development accuracy was 0.903889 and macro F1 was 0.678567. Cross entropy remains the current best. The next experiment audits inferred labels before changing the loss again.
+
+The label audit found balanced chosen labels: 2,997 `cannot_answer`, 3,001 `request_for_info`, 3,000 `tool_call`, and 2 `direct`. Rejected responses contain 2,736 `direct` labels. This explains why raw pairwise ranking regressed and removes class weighting from the immediate plan. The next test will examine whether tool schema text causes shortcut errors.

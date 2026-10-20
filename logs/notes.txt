@@ -5313,3 +5313,5 @@ The local warm start required one more fix because the serialized encoder config
 Completed EXP-20261020-001 on the clean validation split. The warm started Jina classifier reached 0.936667 development accuracy and 0.703032 development macro F1 on 1,800 held out `train_pref` examples. The main errors were `request_for_info` and `tool_call` confusion. Added the persistent research log, summary, and validation leaderboard. The next experiment compares cross entropy and pairwise ranking on the identical split.
 
 Completed EXP-20261020-002. Pairwise ranking reduced development accuracy to 0.903889 and macro F1 to 0.678567. It increased `tool_call` to `request_for_info` errors from 43 to 76. The approach was rejected, and the next action is an audit of inferred training labels.
+
+The training label audit found balanced chosen labels but 2,736 rejected responses inferred as `direct`. Raw pairwise ranking therefore adds a strong negative target for a class that is almost absent among chosen responses. Class weighting is not supported by the evidence. The next experiment will test a tool schema input ablation.

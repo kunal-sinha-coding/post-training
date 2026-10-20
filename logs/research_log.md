@@ -29,3 +29,15 @@ Results: Training loss was 0.083911. Training accuracy was 0.927083 and training
 Analysis: The hypothesis was rejected. Relative to EXP-20261020-001, development accuracy decreased by 0.032778 and macro F1 decreased by 0.024466. The pairwise objective increased `tool_call` to `request_for_info` errors from 43 to 76 and `cannot_answer` to `tool_call` errors from 27 to 51. The direct class remained unresolved because only one development example has that inferred label. Pairwise ranking is rejected for the current leaderboard.
 
 Next action: Audit the training response label distribution and inference patterns, then test a targeted class-balanced cross entropy change only if the audit identifies a credible imbalance mechanism.
+
+## EXP-20261020-AUDIT-001
+
+Timestamp: 2026-10-20. This read only audit completed after EXP-20261020-002.
+
+Setup: The same cached 9,000 row `train_pref` artifact was inspected with the existing `infer_action_label` function. No development or official test labels were loaded.
+
+Results: Chosen response labels were `cannot_answer` 2,997, `request_for_info` 3,001, `tool_call` 3,000, and `direct` 2. Rejected response labels were `cannot_answer` 2,152, `request_for_info` 2,105, `tool_call` 2,007, and `direct` 2,736. The most frequent chosen and rejected pair was `tool_call` versus `cannot_answer` with 1,081 rows. The chosen labels are balanced, so class weighting is not justified by chosen-label frequency. The rejected responses are dominated by `direct`, which likely explains why the pairwise objective moved the decision boundary away from the three common chosen classes. The two direct chosen rows explain why the stratified development split contains one direct example.
+
+Analysis: The main data issue is objective target asymmetry, not chosen-label imbalance. Cross entropy learns the chosen response class distribution. Pairwise training also treats many rejected direct responses as negative evidence, even though direct is nearly absent among chosen responses. This is evidence for rejecting raw pairwise ranking in this dataset. It does not prove that the response heuristic is correct for every example because the audit uses generated response text rather than official training labels.
+
+Next action: Keep cross entropy as the training objective. Test a response aware input ablation that removes tool schemas from a development-only classifier comparison, because the remaining errors may come from the encoder using schema overlap as a shortcut. Preserve the current best checkpoint.
