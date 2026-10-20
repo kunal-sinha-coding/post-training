@@ -121,3 +121,17 @@ Results: The selected bias was [-0.2, -0.1, 0.0, 0.0]. Calibration accuracy was 
 Analysis: The larger slice reduced the magnitude of the unstable positive request bias and gave a small local improvement. It does not establish a shared rule because the seed 20261021 result selected a negative request bias and achieved a larger score. Calibration remains a secondary seed-specific diagnostic.
 
 Next action: Retain the uncalibrated argument cue configuration for any future final candidate comparison. Continue with a schema-preserving model or data experiment using the clean validation protocol.
+
+## EXP-20261020-009
+
+Timestamp: 2026-10-20. The run completed without loading the official test split.
+
+Hypothesis: The required argument cue improvement will replicate on a third deterministic seed.
+
+Setup: The same cached `train_pref` data, argument cue input, Jina warm start, one epoch, batch size 8, and learning rate 5e-5 were used with seed 20261022. The official test split was not loaded. Code revision: 83531d01.
+
+Results: Development accuracy was 0.922222 and macro F1 was 0.691627. Development F1 was 0.992469 for `cannot_answer`, 0.897036 for `request_for_info`, 0.877005 for `tool_call`, and 0.000000 for `direct`. The confusion matrix was [[593, 1, 5, 0], [0, 575, 25, 0], [2, 106, 492, 0], [1, 0, 0, 0]].
+
+Analysis: The hypothesis was rejected as a robust claim. The result is 0.026111 accuracy and 0.019783 macro F1 below EXP-20261020-005. Most of the regression is `tool_call` predictions becoming `request_for_info`. The result confirms that one epoch and the deterministic split can produce high variance. The current best individual result remains useful, but it is not sufficient for final selection.
+
+Next action: Run a split stability audit with fixed model outputs across the three development partitions before changing the model again.
