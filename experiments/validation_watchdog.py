@@ -6,6 +6,7 @@ check, and starts only the command declared in the state file when recovery is r
 from __future__ import annotations
 
 import argparse
+import fcntl
 import json
 import os
 import subprocess
@@ -65,8 +66,12 @@ def running_validation_workers(exclude_pid: int) -> list[int]:
 
 def load_state(path: Path) -> dict:
     """Load the atomic research state document."""
-    # Parse the complete state on every check so external workers can update it.
-    return json.loads(path.read_text(encoding="utf-8"))
+    # Recover from a transient or malformed primary file by using the last valid backup.
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        backup = path.with_suffix(".bak")
+        return json.loads(backup.read_text(encoding="utf-8"))
 
 
 def start_worker(repo: Path, state_path: Path, log_path: Path) -> int:
@@ -83,6 +88,9 @@ def start_worker(repo: Path, state_path: Path, log_path: Path) -> int:
     state["active_experiment"] = {"pid": process.pid, "command": command, "started_at": timestamp()}
     state["last_heartbeat"] = timestamp()
     state["last_action"] = f"Watchdog started validation worker pid {process.pid}."
+    backup = state_path.with_suffix(".bak")
+    if state_path.exists():
+        state_path.replace(backup)
     temporary = state_path.with_suffix(".tmp")
     temporary.write_text(json.dumps(state, indent=2) + "\n", encoding="utf-8")
     temporary.replace(state_path)
@@ -99,30 +107,37 @@ def main() -> int:
     args = parser.parse_args()
     state_path = args.repo / "logs/research_state.json"
     log_path = args.repo / "logs/validation_watchdog.log"
-    while True:
-        # Inspect the worker and heartbeat before deciding whether recovery is needed.
-        state = load_state(state_path)
-        active = state.get("active_experiment") or {}
-        pid = int(active.get("pid", 0) or 0)
-        heartbeat = state.get("last_heartbeat")
-        alive = process_alive(pid)
-        stale = heartbeat is None
-        write_log(log_path, f"check pid={pid} alive={alive} heartbeat={heartbeat} stale={stale}")
-        if state.get("status") == "active" and (not active or not alive or stale):
-            # Adopt a worker launched before the state update instead of competing for the GPU.
-            existing = running_validation_workers(os.getpid())
-            if existing:
-                active_pid = existing[0]
-                state["active_experiment"] = {"pid": active_pid, "command": state.get("worker_command"), "started_at": timestamp()}
-                state["last_heartbeat"] = timestamp()
-                state["last_action"] = f"Watchdog adopted existing validation worker pid {active_pid}."
-                temporary = state_path.with_suffix(".tmp")
-                temporary.write_text(json.dumps(state, indent=2) + "\n", encoding="utf-8")
-                temporary.replace(state_path)
-                write_log(log_path, f"adopted existing validation worker pid {active_pid}")
-            else:
-                start_worker(args.repo, state_path, log_path)
-        time.sleep(max(300, args.interval_seconds))
+    lock_path = args.repo / "logs/validation_watchdog.lock"
+    with lock_path.open("w", encoding="utf-8") as lock_stream:
+        fcntl.flock(lock_stream.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        while True:
+            try:
+                # Inspect the worker and heartbeat before deciding whether recovery is needed.
+                state = load_state(state_path)
+                active = state.get("active_experiment") or {}
+                pid = int(active.get("pid", 0) or 0)
+                heartbeat = state.get("last_heartbeat")
+                alive = process_alive(pid)
+                stale = heartbeat is None
+                write_log(log_path, f"check pid={pid} alive={alive} heartbeat={heartbeat} stale={stale}")
+                if state.get("status") == "active" and (not active or not alive or stale):
+                    # Adopt a worker launched before the state update instead of competing for the GPU.
+                    existing = running_validation_workers(os.getpid())
+                    if existing:
+                        active_pid = existing[0]
+                        state["active_experiment"] = {"pid": active_pid, "command": state.get("worker_command"), "started_at": timestamp()}
+                        state["last_heartbeat"] = timestamp()
+                        state["last_action"] = f"Watchdog adopted existing validation worker pid {active_pid}."
+                        temporary = state_path.with_suffix(".tmp")
+                        temporary.write_text(json.dumps(state, indent=2) + "\n", encoding="utf-8")
+                        temporary.replace(state_path)
+                        write_log(log_path, f"adopted existing validation worker pid {active_pid}")
+                    else:
+                        start_worker(args.repo, state_path, log_path)
+            except Exception as error:
+                # Record a tick failure and keep the watchdog alive for the next check.
+                write_log(log_path, f"tick error {type(error).__name__}: {error}")
+            time.sleep(max(300, args.interval_seconds))
 
 
 if __name__ == "__main__":
