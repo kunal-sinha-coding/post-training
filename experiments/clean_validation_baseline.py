@@ -181,6 +181,7 @@ def main() -> int:
     parser.add_argument("--pref-train-epochs", type=int, default=1)
     parser.add_argument("--label-smoothing", type=float, default=0.0)
     parser.add_argument("--learning-rate", type=float, default=5e-5)
+    parser.add_argument("--weight-decay", type=float, default=0.01)
     parser.add_argument("--train-all", action="store_true")
     args = parser.parse_args()
     # Open a W&B run before loading data so failures and completed metrics are both tracked.
@@ -245,14 +246,14 @@ def main() -> int:
         if args.add_argument_cues:
             add_argument_cues(sft_pretrain)
         tokenize_examples(sft_pretrain, tokenizer)
-        optimizer = torch.optim.AdamW(tokenizer_model.parameters(), lr=args.learning_rate)
+        optimizer = torch.optim.AdamW(tokenizer_model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay)
         for epoch in range(args.sft_pretrain_epochs):
             sft_pretrain_losses.append(train_epoch(tokenizer_model, tokenizer, sft_pretrain, device, optimizer, args.sft_loss_function, seed + epoch, args.label_smoothing))
     tokenize_examples(train, tokenizer)
     tokenize_examples(development, tokenizer)
 
     # Train the selected number of compact preference epochs and evaluate only the held out development partition.
-    optimizer = torch.optim.AdamW(tokenizer_model.parameters(), lr=args.learning_rate)
+    optimizer = torch.optim.AdamW(tokenizer_model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay)
     preference_losses = []
     for epoch in range(args.pref_train_epochs):
         preference_losses.append(train_epoch(tokenizer_model, tokenizer, train, device, optimizer, args.loss_function, seed + args.sft_pretrain_epochs + epoch, args.label_smoothing))
@@ -291,6 +292,7 @@ def main() -> int:
         "pref_train_epochs": args.pref_train_epochs,
         "label_smoothing": args.label_smoothing,
         "learning_rate": args.learning_rate,
+        "weight_decay": args.weight_decay,
         "train_all": args.train_all,
         "device": str(device),
     }

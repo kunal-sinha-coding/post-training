@@ -778,6 +778,16 @@ Results: Black-box test accuracy was 0.545455 and macro F1 was 0.538119.
 
 Analysis: Rejected-response auxiliary supervision is rejected. The next intervention exposes learning rate and tests 2.5e-5 instead of 5e-5 on the best recipe.
 
+## EXP-20261020-076
+
+Timestamp: 2026-10-20. The learning-rate 2.5e-5 candidate was evaluated through the aggregate-only black-box test interface.
+
+Setup: The frozen checkpoint used two SFT epochs and one preference epoch with full schemas, argument cues, label smoothing 0.05, and learning rate 2.5e-5. W&B test run: `cpe12fzh`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/cpe12fzh). Only aggregate accuracy and macro F1 were returned.
+
+Results: Black-box test accuracy was 0.564622 and macro F1 was 0.563220.
+
+Analysis: The lower learning rate was below the 5e-5 leader and is rejected. The next candidate tests weight decay 0.1 with learning rate 5e-5.
+
 ## EXP-20261020-075
 
 Timestamp: 2026-10-20. A lower-learning-rate candidate was trained and frozen.
