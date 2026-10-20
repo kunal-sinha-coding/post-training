@@ -10,8 +10,8 @@
     "Measure class weighting and calibration on the clean split.",
     "Evaluate ensembles only after freezing a validation-selected candidate."
   ],
-  "best_validation": {"accuracy": 0.9483333333333334, "macro_f1": 0.7114095720310705, "artifact": "outputs/clean-validation-argument-cues-seed21/metrics.json"},
+  "best_validation": {"accuracy": 0.9494444444444444, "macro_f1": 0.7122671588915738, "artifact": "outputs/clean-validation-calibration.json"},
   "last_heartbeat": "2026-10-20T08:20:00+00:00",
-  "last_action": "Promoted argument cues after two seed improvements and selected a separate calibration slice experiment.",
+  "last_action": "Completed training-only calibration and selected cross-seed calibration replication.",
   "stop_command": "STOP"
 }

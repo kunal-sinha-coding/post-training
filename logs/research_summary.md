@@ -21,3 +21,5 @@ The label audit found balanced chosen labels: 2,997 `cannot_answer`, 3,001 `requ
 EXP-20261020-003 rejected schema removal. Development accuracy was 0.590000 and macro F1 was 0.374995. Tool definitions are necessary evidence. The next experiment will preserve schemas and add explicit required argument names.
 
 The required argument cue configuration improved both metrics across two seeds. The current best validation result is 0.948333 accuracy and 0.711410 macro F1. The next experiment will test calibration using a separate training calibration slice.
+
+Training-only calibration improved the current result to 0.949444 accuracy and 0.712267 macro F1. The next experiment will test whether the selected bias is stable across the second argument cue seed.

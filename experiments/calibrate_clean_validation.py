@@ -74,8 +74,9 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--checkpoint", type=Path, default=Path("outputs/clean-validation-argument-cues-seed21"))
     parser.add_argument("--output", type=Path, default=Path("outputs/clean-validation-calibration.json"))
+    parser.add_argument("--seed", type=int, default=20261021)
     args = parser.parse_args()
-    seed = 20261021
+    seed = args.seed
     random.seed(seed)
     torch.manual_seed(seed)
     rows = load_training_rows()
