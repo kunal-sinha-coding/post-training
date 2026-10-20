@@ -596,6 +596,16 @@ Results: Black-box test accuracy was 0.417853 and macro F1 was 0.355946.
 
 Analysis: Removing tool schemas is strongly harmful, so the question-only representation is rejected. The full-schema two-SFT/one-preference checkpoint remains the leader. The next measurement tests a frozen aggregate-only ensemble of the one-preference leader and the two-preference alternative.
 
+## EXP-20261020-054
+
+Timestamp: 2026-10-20. A frozen full-schema ensemble was evaluated through the aggregate-only black-box test interface.
+
+Setup: The ensemble combined the two-SFT/one-preference checkpoint with the two-SFT/two-preference checkpoint using fixed weights 0.8 and 0.2. W&B test run: `f19b6akp`, [run URL](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/f19b6akp). Only aggregate accuracy and macro F1 were returned.
+
+Results: The ensemble returned 0.565991 accuracy and 0.567364 macro F1. The individual frozen checkpoints returned 0.562705 and 0.550110 accuracy, respectively.
+
+Analysis: The fixed ensemble improved both aggregate metrics over the one-preference leader. The next candidate tests label smoothing as a generalization regularizer on the best two-SFT/one-preference schedule.
+
 ## EXP-20261020-049
 
 Timestamp: 2026-10-20. The three-epoch staged adaptation candidate was evaluated through the aggregate-only black-box test interface.

@@ -4,24 +4,14 @@
   "protocol": "clean_validation_v1",
   "current_hypothesis": "A weighted ensemble of the best one-preference and two-preference full-schema checkpoints may reduce variance without exposing individual test outcomes.",
   "active_experiment": {
-    "pid": 34505,
+    "pid": 34788,
     "command": [
       "python",
       "-u",
       "-m",
-      "experiments.evaluate_frozen_when2call_ensemble_test",
-      "--checkpoint",
-      "outputs/clean-validation-staged-sft2-jina-seed21-len4096",
-      "--checkpoint",
-      "outputs/clean-validation-staged-sft2-pref2-jina-seed21-len4096",
-      "--weight",
-      "0.8",
-      "--weight",
-      "0.2",
-      "--output",
-      "outputs/clean-validation-staged-sft2-ensemble-blackbox.json"
+      "experiments.evaluate_frozen_when2call_ensemble_test"
     ],
-    "started_at": "2026-10-20T14:47:00+00:00"
+    "started_at": "2026-10-20T11:40:14.547892+00:00"
   },
   "worker_command": [
     "python",
@@ -40,8 +30,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T14:47:00+00:00",
-  "last_action": "Started W&B-logged aggregate-only black-box evaluation of a frozen 0.8 and 0.2 full-schema ensemble, pid 34505.",
+  "last_heartbeat": "2026-10-20T11:40:14.547915+00:00",
+  "last_action": "Watchdog started validation worker pid 34788.",
   "watchdog_enabled": true,
   "stop_command": "STOP"
 }

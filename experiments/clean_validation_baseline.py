@@ -132,7 +132,7 @@ def load_model(device: torch.device, max_length: int) -> tuple[torch.nn.Module, 
     return model, tokenizer
 
 
-def train_epoch(model: torch.nn.Module, tokenizer: object, examples: list, device: torch.device, optimizer: object, loss_function: str, seed: int) -> float:
+def train_epoch(model: torch.nn.Module, tokenizer: object, examples: list, device: torch.device, optimizer: object, loss_function: str, seed: int, label_smoothing: float = 0.0) -> float:
     """Run one deterministic full batch training epoch and return mean loss."""
     # Shuffle only the training partition and use small batches for the available GPU memory.
     model.train()
@@ -155,7 +155,7 @@ def train_epoch(model: torch.nn.Module, tokenizer: object, examples: list, devic
                 rows = torch.arange(len(labels), device=device)[informative]
                 loss = torch.nn.functional.softplus(-(logits[rows, labels[informative]] - logits[rows, rejected_labels[informative]])).mean()
             else:
-                loss = torch.nn.functional.cross_entropy(logits, labels)
+                loss = torch.nn.functional.cross_entropy(logits, labels, label_smoothing=label_smoothing)
         loss.backward()
         optimizer.step()
         losses.append(float(loss.detach().cpu()))
@@ -178,6 +178,7 @@ def main() -> int:
     parser.add_argument("--sft-aux-samples-per-class", type=int, default=0)
     parser.add_argument("--sft-pretrain-epochs", type=int, default=0)
     parser.add_argument("--pref-train-epochs", type=int, default=1)
+    parser.add_argument("--label-smoothing", type=float, default=0.0)
     parser.add_argument("--train-all", action="store_true")
     args = parser.parse_args()
     # Open a W&B run before loading data so failures and completed metrics are both tracked.
@@ -244,7 +245,7 @@ def main() -> int:
         tokenize_examples(sft_pretrain, tokenizer)
         optimizer = torch.optim.AdamW(tokenizer_model.parameters(), lr=5e-5)
         for epoch in range(args.sft_pretrain_epochs):
-            sft_pretrain_losses.append(train_epoch(tokenizer_model, tokenizer, sft_pretrain, device, optimizer, args.loss_function, seed + epoch))
+            sft_pretrain_losses.append(train_epoch(tokenizer_model, tokenizer, sft_pretrain, device, optimizer, args.loss_function, seed + epoch, args.label_smoothing))
     tokenize_examples(train, tokenizer)
     tokenize_examples(development, tokenizer)
 
@@ -252,7 +253,7 @@ def main() -> int:
     optimizer = torch.optim.AdamW(tokenizer_model.parameters(), lr=5e-5)
     preference_losses = []
     for epoch in range(args.pref_train_epochs):
-        preference_losses.append(train_epoch(tokenizer_model, tokenizer, train, device, optimizer, args.loss_function, seed + args.sft_pretrain_epochs + epoch))
+        preference_losses.append(train_epoch(tokenizer_model, tokenizer, train, device, optimizer, args.loss_function, seed + args.sft_pretrain_epochs + epoch, args.label_smoothing))
     loss = sum(preference_losses) / max(1, len(preference_losses))
     train_metrics = batch_metrics(tokenizer_model, tokenizer, train, device, list(range(len(LABELS))))
     dev_metrics = batch_metrics(tokenizer_model, tokenizer, development, device, list(range(len(LABELS))) if development else []) if development else None
@@ -285,6 +286,7 @@ def main() -> int:
         "rejected_direct_samples": args.rejected_direct_samples,
         "sft_pretrain_epochs": args.sft_pretrain_epochs,
         "pref_train_epochs": args.pref_train_epochs,
+        "label_smoothing": args.label_smoothing,
         "train_all": args.train_all,
         "device": str(device),
     }
