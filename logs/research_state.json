@@ -4,7 +4,7 @@
   "protocol": "clean_validation_v1",
   "current_hypothesis": "Two SFT adaptation epochs without preference training may generalize better than the preference objective under the observed shift.",
   "active_experiment": {
-    "pid": 56295,
+    "pid": 119471,
     "command": [
       "python",
       "-u",
@@ -26,7 +26,7 @@
       "--pref-train-epochs",
       "0"
     ],
-    "started_at": "2026-10-20T21:29:20.524467+00:00"
+    "started_at": "2026-10-21T16:33:14.714085+00:00"
   },
   "worker_command": [
     "python",
@@ -50,18 +50,22 @@
     "0"
   ],
   "experiment_queue": [
-    "Audit and baseline the clean train_pref development split.",
-    "Compare inferred-label cross entropy and pairwise training on the same split.",
-    "Measure class weighting and calibration on the clean split.",
-    "Evaluate ensembles only after freezing a validation-selected candidate."
+    "Run Qwen2.5 0.5B direct four-label SFT on the fixed clean split.",
+    "Run Qwen2.5 1.5B direct four-label SFT on the fixed clean split.",
+    "Compare Qwen LoRA ranks, learning rates, context lengths, and label formats with one variable changed at a time.",
+    "Run Qwen RPO-style preference optimization with beta and chosen-loss ablations.",
+    "Run Qwen policy-gradient RL with inferred-label rewards and a frozen reference policy.",
+    "Evaluate Qwen SFT, RPO, and RL across multiple seeds before selection.",
+    "Evaluate a validation-selected Jina plus Qwen ensemble.",
+    "Explore another model family only after the Qwen objective family is rejected or reaches a plateau."
   ],
   "best_validation": {
     "accuracy": 0.9494444444444444,
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-20T21:29:20.524482+00:00",
-  "last_action": "Watchdog adopted existing validation worker pid 56295.",
+  "last_heartbeat": "2026-10-21T16:33:14.714106+00:00",
+  "last_action": "Watchdog started validation worker pid 119471.",
   "watchdog_enabled": true,
   "research_log_size": 79616,
   "stop_command": "STOP"
