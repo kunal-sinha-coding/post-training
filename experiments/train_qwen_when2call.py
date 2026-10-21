@@ -125,6 +125,17 @@ def score_rows(model: object, tokenizer: object, rows: list[ClassificationRow], 
     return torch.log_softmax(next_logits.float(), dim=-1)
 
 
+def reference_scores(model: object, tokenizer: object, rows: list[ClassificationRow], label_ids: list[int], device: torch.device, max_length: int) -> torch.Tensor:
+    """Return frozen-base log probabilities for one batch."""
+    # Disable only the trainable LoRA adapter so the base Qwen model remains the reference policy.
+    if hasattr(model, "disable_adapter"):
+        with model.disable_adapter():
+            with torch.no_grad():
+                return score_rows(model, tokenizer, rows, label_ids, device, max_length)
+    with torch.no_grad():
+        return score_rows(model, tokenizer, rows, label_ids, device, max_length)
+
+
 def metrics(rows: list[ClassificationRow], predictions: list[int]) -> dict:
     """Compute accuracy, macro F1, and the four-class confusion matrix."""
     # Calculate all metrics locally without loading any official test labels.
@@ -161,11 +172,16 @@ def train_epoch(model: object, tokenizer: object, rows: list[ClassificationRow],
             valid = rejected != chosen
             if not valid.any():
                 continue
-            loss = -torch.nn.functional.logsigmoid(beta * (log_probs[valid, chosen[valid]] - log_probs[valid, rejected[valid]])).mean()
+            ref_probs = reference_scores(model, tokenizer, batch, label_ids, device, max_length)
+            policy_margin = log_probs[valid, chosen[valid]] - log_probs[valid, rejected[valid]]
+            reference_margin = ref_probs[valid, chosen[valid]] - ref_probs[valid, rejected[valid]]
+            loss = -torch.nn.functional.logsigmoid(beta * (policy_margin - reference_margin)).mean()
         else:
+            ref_probs = reference_scores(model, tokenizer, batch, label_ids, device, max_length)
             distribution = log_probs.exp()
             sampled = torch.multinomial(distribution, 1).squeeze(1)
             reward = (sampled == chosen).float() * 2.0 - 1.0
+            reward = reward - beta * (log_probs[torch.arange(len(batch), device=device), sampled] - ref_probs[torch.arange(len(batch), device=device), sampled]).detach()
             loss = -(reward.detach() * log_probs[torch.arange(len(batch), device=device), sampled]).mean()
         loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
