@@ -2793,6 +2793,20 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Training macro F1: 0.7375190867973014. Clean-validation accuracy: 0.965. Clean-validation macro F1: 0.7239720018988125. The candidate is viable on clean validation, so its required aggregate black-box measurement is queued before any new experiment. Test labels are not used for selection.
 
+## test-clean-validation-cues-aux05-rejected10-smooth0075-seed20261022
+
+Status: completed.
+
+Aggregate official test accuracy: 0.5397042716319824. Aggregate official test macro F1: 0.5406305903911816. W&B run: emaouk00. The clean-validation gain did not transfer, so the targeted rejected-direct branch is rejected. Test labels were used only for aggregate reporting.
+
+## clean-validation-cues-aux05-sftpre1-smooth0075-seed20261022
+
+Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-sftpre1-smooth0075-seed20261022", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--sft-aux-samples-per-class", "5", "--sft-pretrain-epochs", "1", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"].
+
+Hypothesis: The 5-example auxiliary setup is the strongest observed encoder configuration, while SFT pretraining alone was weak. Combining them tests whether SFT pretraining improves the auxiliary representation without abandoning the successful auxiliary signal. Selection will use clean validation only. If viable, its aggregate black-box test will be queued before any later experiment.
+
 ## clean-validation-cues-aux05-smooth0075-seed20261022
 
 Timestamp: 2026-10-22T19:15:28.987093+00:00. Status: completed.

@@ -266,3 +266,5 @@ Historical official test results remain detailed in [research_log.md](research_l
 | Candidate | clean-validation-cues-aux04-smooth0075-seed20261022 | 0.9583333333333334 | 0.7189225176789794 | [metrics](/workspace/post-training/outputs/clean-validation-cues-aux04-smooth0075-seed20261022/metrics.json) | completed |
 | Candidate | clean-validation-cues-aux05-rejected10-smooth0075-seed20261022 | 0.965 | 0.7239720018988125 | [metrics](/workspace/post-training/outputs/clean-validation-cues-aux05-rejected10-smooth0075-seed20261022/metrics.json) | completed |
 | test-clean-validation-cues-aux05-rejected10-smooth0075-seed20261022 | — | — | — | Required aggregate black-box measurement queued | queued |
+| test-clean-validation-cues-aux05-rejected10-smooth0075-seed20261022 | 0.5397042716319824 | 0.5406305903911816 | emaouk00 | Aggregate-only test measurement, targeted branch rejected | completed |
+| Candidate | clean-validation-cues-aux05-sftpre1-smooth0075-seed20261022 | — | — | [queued](../outputs/clean-validation-cues-aux05-sftpre1-smooth0075-seed20261022) | queued |
