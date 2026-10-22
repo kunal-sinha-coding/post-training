@@ -895,6 +895,14 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-cues-sftsmooth002-seed20261022
+
+Timestamp: 2026-10-22T10:40:11.603463+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-sftsmooth002-seed20261022", "--output", "outputs/test-clean-validation-cues-sftsmooth002-seed20261022.json"]. Output: /workspace/post-training/outputs/test-clean-validation-cues-sftsmooth002-seed20261022.json. W&B run: ymdpwtrh.
+
+Aggregate black-box test accuracy: 0.5432639649507119. Aggregate black-box test macro F1: 0.5442518795459972. Selection was complete before test evaluation. No test labels were used for selection.
+
 ## qwen-sft-15b-seed20261022
 
 Timestamp: 2026-10-22T06:14:06.351398+00:00. Status: failed_or_incomplete.
@@ -962,5 +970,235 @@ Timestamp: 2026-10-22T06:14:20.813497+00:00. Status: completed.
 Setup: ["python", "-m", "experiments.train_qwen_when2call", "--model", "Qwen/Qwen2.5-0.5B-Instruct", "--objective", "rl"]. Output: /workspace/post-training/outputs/qwen-when2call-rl-05b-seed20261022. W&B run: 1bu4znru.
 
 Clean development accuracy: 0.79222. Clean development macro F1: 0.56393. Official test loaded: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-when2call-sft-15b-2ep-seed20261022
+
+Timestamp: 2026-10-22T06:48:18.268470+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--objective", "sft", "--output-dir", "outputs/qwen-when2call-sft-15b-2ep-seed20261022", "--seed", "20261022", "--split-seed", "20261022", "--epochs", "2", "--batch-size", "1", "--max-length", "4096", "--learning-rate", "2e-5", "--lora-rank", "16"]. Output: /workspace/post-training/outputs/qwen-when2call-sft-15b-2ep-seed20261022. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-when2call-sft-15b-lr1e5-seed20261022
+
+Timestamp: 2026-10-22T07:39:31.707316+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--objective", "sft", "--output-dir", "outputs/qwen-when2call-sft-15b-lr1e5-seed20261022", "--seed", "20261022", "--split-seed", "20261022", "--epochs", "1", "--batch-size", "1", "--max-length", "4096", "--learning-rate", "1e-5", "--lora-rank", "16"]. Output: /workspace/post-training/outputs/qwen-when2call-sft-15b-lr1e5-seed20261022. W&B run: p37eogoh.
+
+Clean development accuracy: 0.8711111111111111. Clean development macro F1: 0.6540315541682907. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## test-qwen-sft-05b-seed20261022
+
+Timestamp: 2026-10-22T07:44:28.550912+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_qwen_when2call_test", "--model", "Qwen/Qwen2.5-0.5B-Instruct", "--checkpoint", "outputs/qwen-when2call-sft-05b-seed20261022", "--output-dir", "outputs/test-qwen-sft-05b-seed20261022", "--lora-rank", "16", "--max-length", "4096", "--batch-size", "1"]. Output: /workspace/post-training/outputs/test-qwen-sft-05b-seed20261022. W&B run: w944h7e8.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: True. Official test metrics: {"accuracy": 0.5958378970427163, "macro_f1": 0.4232188202379165}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## test-qwen-sft-15b-seed20261022
+
+Timestamp: 2026-10-22T07:51:29.836604+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_qwen_when2call_test", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--checkpoint", "outputs/qwen-when2call-sft-15b-seed20261022", "--output-dir", "outputs/test-qwen-sft-15b-seed20261022", "--lora-rank", "16", "--max-length", "4096", "--batch-size", "1"]. Output: /workspace/post-training/outputs/test-qwen-sft-15b-seed20261022. W&B run: vefoyfhf.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: True. Official test metrics: {"accuracy": 0.6788061336254108, "macro_f1": 0.5050116864318432}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## test-qwen-rpo-05b-seed20261022
+
+Timestamp: 2026-10-22T07:56:00.274094+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_qwen_when2call_test", "--model", "Qwen/Qwen2.5-0.5B-Instruct", "--checkpoint", "outputs/qwen-when2call-rpo-05b-seed20261022", "--output-dir", "outputs/test-qwen-rpo-05b-seed20261022", "--lora-rank", "16", "--max-length", "4096", "--batch-size", "1"]. Output: /workspace/post-training/outputs/test-qwen-rpo-05b-seed20261022. W&B run: 8v90395u.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: True. Official test metrics: {"accuracy": 0.5813253012048193, "macro_f1": 0.4273368362156368}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## test-qwen-rl-05b-seed20261022
+
+Timestamp: 2026-10-22T08:00:31.779110+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_qwen_when2call_test", "--model", "Qwen/Qwen2.5-0.5B-Instruct", "--checkpoint", "outputs/qwen-when2call-rl-05b-seed20261022", "--output-dir", "outputs/test-qwen-rl-05b-seed20261022", "--lora-rank", "16", "--max-length", "4096", "--batch-size", "1"]. Output: /workspace/post-training/outputs/test-qwen-rl-05b-seed20261022. W&B run: g1lggfyw.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: True. Official test metrics: {"accuracy": 0.5648959474260679, "macro_f1": 0.42326700764133907}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## test-qwen-sft-15b-lr1e5-seed20261022
+
+Timestamp: 2026-10-22T08:07:05.865846+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_qwen_when2call_test", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--checkpoint", "outputs/qwen-when2call-sft-15b-lr1e5-seed20261022", "--output-dir", "outputs/test-qwen-sft-15b-lr1e5-seed20261022", "--lora-rank", "16", "--max-length", "4096", "--batch-size", "1"]. Output: /workspace/post-training/outputs/test-qwen-sft-15b-lr1e5-seed20261022. W&B run: lzvvcnfp.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: True. Official test metrics: {"accuracy": 0.6297918948521358, "macro_f1": 0.4587653046615539}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-when2call-sft-05b-2ep-seed20261022
+
+Timestamp: 2026-10-22T08:45:37.216722+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call", "--model", "Qwen/Qwen2.5-0.5B-Instruct", "--objective", "sft", "--output-dir", "outputs/qwen-when2call-sft-05b-2ep-seed20261022", "--seed", "20261022", "--split-seed", "20261022", "--epochs", "2", "--batch-size", "2", "--max-length", "4096", "--learning-rate", "2e-5", "--lora-rank", "16"]. Output: /workspace/post-training/outputs/qwen-when2call-sft-05b-2ep-seed20261022. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## test-qwen-sft-15b-2ep-seed20261022
+
+Timestamp: 2026-10-22T08:52:41.021531+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_qwen_when2call_test", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--checkpoint", "outputs/qwen-when2call-sft-15b-2ep-seed20261022", "--output-dir", "outputs/test-qwen-sft-15b-2ep-seed20261022", "--lora-rank", "16", "--max-length", "4096", "--batch-size", "1"]. Output: /workspace/post-training/outputs/test-qwen-sft-15b-2ep-seed20261022. W&B run: vbdutodo.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: True. Official test metrics: {"accuracy": 0.6514238773274917, "macro_f1": 0.46092686327503485}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-cues-seed20261022
+
+Timestamp: 2026-10-22T08:56:13.932174+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-seed20261022", "--seed", "20261022", "--split-seed", "20261022", "--max-length", "4096", "--add-argument-cues", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.9388888888888889. Clean development macro F1: 0.7042109139304156. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-compact-2048-seed20261022
+
+Timestamp: 2026-10-22T08:59:17.004073+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-compact-2048-seed20261022", "--seed", "20261022", "--split-seed", "20261022", "--max-length", "2048", "--compact-tool-schemas", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-compact-2048-seed20261022. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-compact-2048-seed20261022
+
+Timestamp: 2026-10-22T09:05:18.785405+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-compact-2048-seed20261022", "--seed", "20261022", "--split-seed", "20261022", "--max-length", "2048", "--compact-tool-schemas", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-compact-2048-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.8294444444444444. Clean development macro F1: 0.6212644631405057. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-full-2048-smooth005-seed20261022
+
+Timestamp: 2026-10-22T09:08:22.203234+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-full-2048-smooth005-seed20261022", "--seed", "20261022", "--split-seed", "20261022", "--max-length", "2048", "--label-smoothing", "0.05", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-full-2048-smooth005-seed20261022. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-question-2048-smooth005-seed20261022
+
+Timestamp: 2026-10-22T09:10:26.379060+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-question-2048-smooth005-seed20261022", "--seed", "20261022", "--split-seed", "20261022", "--max-length", "2048", "--omit-tool-schemas", "--label-smoothing", "0.05", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-question-2048-smooth005-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.5905555555555555. Clean development macro F1: 0.4272945672381965. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-pairwise-cues-seed20261022
+
+Timestamp: 2026-10-22T09:41:54.619935+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-pairwise-cues-seed20261022", "--loss-function", "pairwise_ranking", "--add-argument-cues", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-pairwise-cues-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.915. Clean development macro F1: 0.6857616478914805. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-cues-smooth002-seed20261022
+
+Timestamp: 2026-10-22T09:46:28.217498+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-smooth002-seed20261022", "--add-argument-cues", "--label-smoothing", "0.02", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-smooth002-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.9405555555555556. Clean development macro F1: 0.7055713243319585. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-cues-wd005-seed20261022
+
+Timestamp: 2026-10-22T10:00:09.616289+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-wd005-seed20261022", "--add-argument-cues", "--weight-decay", "0.05", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-wd005-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.935. Clean development macro F1: 0.7016421857214856. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-cues-sftpre1-seed20261022
+
+Timestamp: 2026-10-22T10:07:48.067502+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-sftpre1-seed20261022", "--add-argument-cues", "--sft-pretrain-epochs", "1", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-sftpre1-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.945. Clean development macro F1: 0.7089487218519661. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-cues-len8192-seed20261022
+
+Timestamp: 2026-10-22T10:19:28.440113+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-len8192-seed20261022", "--add-argument-cues", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "8192", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-len8192-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.9344444444444444. Clean development macro F1: 0.7011448404944383. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-compact-4096-seed20261022
+
+Timestamp: 2026-10-22T10:24:28.576580+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-compact-4096-seed20261022", "--compact-tool-schemas", "--add-argument-cues", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-compact-4096-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.8783333333333333. Clean development macro F1: 0.6593892555894565. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-cues-sftpairwise-seed20261022
+
+Timestamp: 2026-10-22T10:30:35.757787+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-sftpairwise-seed20261022", "--add-argument-cues", "--sft-pretrain-epochs", "1", "--sft-loss-function", "pairwise_ranking", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-sftpairwise-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.9288888888888889. Clean development macro F1: 0.6973110405998094. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-cues-sftsmooth002-seed20261022
+
+Timestamp: 2026-10-22T10:33:35.431108+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-sftsmooth002-seed20261022", "--add-argument-cues", "--sft-pretrain-epochs", "1", "--label-smoothing", "0.02", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-sftsmooth002-seed20261022. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-cues-sftsmooth002-seed20261022
+
+Timestamp: 2026-10-22T10:39:11.459839+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-sftsmooth002-seed20261022", "--add-argument-cues", "--sft-pretrain-epochs", "1", "--label-smoothing", "0.02", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-sftsmooth002-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.9216666666666666. Clean development macro F1: 0.6922046717292848. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
