@@ -101,3 +101,5 @@ Historical official test results remain detailed in [research_log.md](research_l
 | Candidate | clean-validation-cues-rejected50-seed20261022 | 0.965 | 0.7239519914135641 | [metrics](/workspace/post-training/outputs/clean-validation-cues-rejected50-seed20261022/metrics.json) | completed |
 | Candidate | clean-validation-cues-lr25e5-smooth0005-seed20261022 | 0.9594444444444444 | 0.7197254132419473 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0005-seed20261022/metrics.json) | completed |
 | Candidate | clean-validation-cues-lr25e5-smooth0005-pref2-seed20261022 | 0.9594444444444444 | 0.7198484068367867 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0005-pref2-seed20261022/metrics.json) | completed |
+| Candidate | clean-validation-cues-aux100-smooth0005-seed20261022 | 0.9605555555555556 | 0.720571692457166 | [metrics](/workspace/post-training/outputs/clean-validation-cues-aux100-smooth0005-seed20261022/metrics.json) | completed |
+| test-clean-validation-cues-aux100-smooth0005-seed20261022 | 0.5323110624315444 | 0.5303234003713634 | sq617mjp | Aggregate-only test measurement, rejected |
