@@ -261,7 +261,9 @@ def main() -> int:
     args.output_dir.mkdir(parents=True, exist_ok=True)
     model.save_pretrained(args.output_dir)
     tokenizer.save_pretrained(args.output_dir)
-    metadata = {"model": args.model, "objective": args.objective, "dataset": DATASET_NAME, "official_test_loaded": False, "label_source": "inferred from chosen response content", "train_examples": len(train_rows), "development_examples": len(development_rows), "label_tokens": label_ids, "losses": losses, "train_metrics": train_metrics, "development_metrics": development_metrics, "config": vars(args), "device": str(device), "wandb_run_id": run.id, "wandb_run_url": run.url}
+    # Convert path-valued arguments before writing JSON so a completed run cannot fail during bookkeeping.
+    serializable_config = {key: str(value) if isinstance(value, Path) else value for key, value in vars(args).items()}
+    metadata = {"model": args.model, "objective": args.objective, "dataset": DATASET_NAME, "official_test_loaded": False, "label_source": "inferred from chosen response content", "train_examples": len(train_rows), "development_examples": len(development_rows), "label_tokens": label_ids, "losses": losses, "train_metrics": train_metrics, "development_metrics": development_metrics, "config": serializable_config, "device": str(device), "wandb_run_id": run.id, "wandb_run_url": run.url}
     (args.output_dir / "metrics.json").write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
     write_heartbeat(heartbeat_path, "completed")
     run.summary.update({"development_accuracy": development_metrics["accuracy"], "development_macro_f1": development_metrics["macro_f1"], "output_dir": str(args.output_dir), "label_ids": label_ids})

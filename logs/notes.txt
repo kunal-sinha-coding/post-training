@@ -5538,3 +5538,4 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-22 Clarified the research protocol so frozen finalists receive aggregate-only official test measurements after clean-validation selection, and updated the leaderboard to show explicit test status and the current historical test leader.
 2026-10-22 Clarified that every viable completed method must receive one aggregate-only official test evaluation. Clearly failed or unusable methods may skip the test only with a recorded reason.
 2026-10-22 Added an aggregate-only Qwen official-test evaluator for the four completed frozen adapters. It records only accuracy, macro F1, row count, and W&B metadata.
+2026-10-22 Fixed Qwen completion bookkeeping so a successful training run serializes its Path-valued output argument and does not fail while writing metrics.json.
