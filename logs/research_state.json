@@ -4,10 +4,10 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The encoder probes failed from GPU memory pressure at 8,192 tokens, not from measured model quality. A 2,048-token compact-schema probe is a valid cheaper test of whether shorter structured inputs preserve the clean-validation signal.",
+  "current_hypothesis": "Compact schemas at 2,048 tokens performed poorly on both clean validation and the official test. Full schemas may preserve useful tool semantics at the same memory-safe length, while label smoothing may reduce overconfident class boundaries.",
   "active_experiment": {},
-  "worker_command": ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-compact-2048-seed20261022", "--seed", "20261022", "--split-seed", "20261022", "--max-length", "2048", "--compact-tool-schemas", "--pref-train-epochs", "1"],
-  "worker_queue": [["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-compact-2048-seed20261022", "--output", "outputs/test-clean-validation-compact-2048-seed20261022.json"]],
+  "worker_command": ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-full-2048-smooth005-seed20261022", "--seed", "20261022", "--split-seed", "20261022", "--max-length", "2048", "--label-smoothing", "0.05", "--pref-train-epochs", "1"],
+  "worker_queue": [["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-full-2048-smooth005-seed20261022", "--output", "outputs/test-clean-validation-full-2048-smooth005-seed20261022.json"]],
   "experiment_queue": [
     "Run one cheap encoder-only alternative on the fixed clean split.",
     "Run one additional Jina encoder training variant with a distinct mechanism.",
@@ -22,14 +22,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T08:59:16.963555+00:00",
+  "last_heartbeat": "2026-10-22T09:05:18.744283+00:00",
   "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
-  "research_log_size": 92203,
+  "research_log_size": 92940,
   "stop_command": "STOP",
   "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T09:00:18.785678+00:00",
-  "planning_ack_deadline": "2026-10-22T09:02:18.785700+00:00",
-  "planning_attempts": 3
+  "planning_notified_at": "2026-10-22T09:06:51.121139+00:00",
+  "planning_ack_deadline": "2026-10-22T09:08:51.121161+00:00",
+  "planning_attempts": 5
 }
