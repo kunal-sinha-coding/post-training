@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The SFT auxiliary-sample encoder had complete evidence but reached only 0.504107 official-test accuracy and 0.495440 macro F1. Pairwise ranking with argument cues is the next distinct encoder mechanism, followed by its aggregate test measurement.",
+  "current_hypothesis": "Pairwise ranking with argument cues reached 0.547371 official-test accuracy and 0.540544 macro F1. A small label-smoothing value may improve calibration without changing the input representation, so it is the next distinct mechanism probe.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -12,10 +12,10 @@
     "-m",
     "experiments.clean_validation_baseline",
     "--output-dir",
-    "outputs/clean-validation-pairwise-cues-seed20261022",
-    "--loss-function",
-    "pairwise_ranking",
+    "outputs/clean-validation-cues-smooth002-seed20261022",
     "--add-argument-cues",
+    "--label-smoothing",
+    "0.02",
     "--seed",
     "20261022",
     "--split-seed",
@@ -32,9 +32,9 @@
       "-m",
       "experiments.evaluate_frozen_when2call_ensemble_test",
       "--checkpoint",
-      "outputs/clean-validation-pairwise-cues-seed20261022",
+      "outputs/clean-validation-cues-smooth002-seed20261022",
       "--output",
-      "outputs/test-clean-validation-pairwise-cues-seed20261022.json"
+      "outputs/test-clean-validation-cues-smooth002-seed20261022.json"
     ]
   ],
   "experiment_queue": [
@@ -51,10 +51,10 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T09:33:57.059852+00:00",
-  "last_action": "Codex queued pairwise-ranking encoder training followed by its aggregate black-box test.",
+  "last_heartbeat": "2026-10-22T09:41:50.572548+00:00",
+  "last_action": "Codex queued argument-cue encoder training with label smoothing followed by its aggregate black-box test.",
   "watchdog_enabled": true,
-  "research_log_size": 94477,
+  "research_log_size": 95240,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -62,10 +62,10 @@
     "-m",
     "experiments.clean_validation_baseline",
     "--output-dir",
-    "outputs/clean-validation-pairwise-cues-seed20261022",
-    "--loss-function",
-    "pairwise_ranking",
+    "outputs/clean-validation-cues-smooth002-seed20261022",
     "--add-argument-cues",
+    "--label-smoothing",
+    "0.02",
     "--seed",
     "20261022",
     "--split-seed",
@@ -76,7 +76,7 @@
     "1"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T09:38:17.280840+00:00",
-  "planning_ack_deadline": "2026-10-22T09:40:17.280866+00:00",
-  "planning_attempts": 19
+  "planning_notified_at": "2026-10-22T09:42:52.731883+00:00",
+  "planning_ack_deadline": "2026-10-22T09:44:52.731904+00:00",
+  "planning_attempts": 20
 }
