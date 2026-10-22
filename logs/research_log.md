@@ -895,6 +895,16 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-cues-lr35e5-smooth001-seed20261022
+
+Timestamp: 2026-10-22T11:17:45.558962+00:00. Status: completed.
+
+Setup: The frozen 3.5e-5 learning-rate, 0.01 label-smoothing argument-cue checkpoint was measured through the aggregate-only official test interface after training and clean-validation selection. W&B run: `bllijjtr`. Test labels were not used for selection.
+
+Training accuracy was 0.980694 and macro F1 was 0.735549. Clean-validation accuracy was 0.954444 and macro F1 was 0.715923. Aggregate test accuracy was 0.533954 and macro F1 was 0.532214. The candidate is rejected against the current test leader.
+
+This record was written after the JSON-only test recorder skipped the output file. Candidate selection must use clean validation only.
+
 ## test-clean-validation-cues-lr25e5-smooth001-seed20261022
 
 Timestamp: 2026-10-22T11:09:36.540373+00:00. Status: completed.
@@ -1308,3 +1318,13 @@ Setup: A frozen logit blend used the two fixed-split argument-cue checkpoints wi
 Training evidence and clean-validation evidence are recorded in the two component checkpoint records. Aggregate test accuracy was 0.555038 and macro F1 was 0.554319. The blend is below the current aggregate test leader at 0.555859 macro F1 and is not promoted.
 
 This record was written after the non-blocking recorder skipped the JSON-only output. Candidate selection must use clean validation only.
+
+## clean-validation-cues-lr35e5-smooth001-seed20261022
+
+Timestamp: 2026-10-22T11:16:45.220072+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-lr35e5-smooth001-seed20261022", "--add-argument-cues", "--learning-rate", "3.5e-5", "--label-smoothing", "0.01", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-lr35e5-smooth001-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.9544444444444444. Clean development macro F1: 0.7159234489856523. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
