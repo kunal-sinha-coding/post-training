@@ -965,6 +965,22 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Training macro F1: 0.7398961981765076. Clean-validation accuracy: 0.9733333333333334. Clean-validation macro F1: 0.7301869624062053. The candidate is viable on clean validation, so its required aggregate black-box measurement is queued before any new experiment. Test labels are not used for selection.
 
+## test-clean-validation-cues-aux05-lr15e5-wd0005-smooth0075-seed20261022
+
+Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-lr15e5-wd0005-smooth0075-seed20261022", "--output", "outputs/test-clean-validation-cues-aux05-lr15e5-wd0005-smooth0075-seed20261022.json"]. W&B run: uzf5knwv.
+
+Aggregate official test accuracy: 0.5339539978094195. Aggregate official test macro F1: 0.5308321960237418. The clean-validation gain did not transfer, so this lower-learning-rate branch is rejected. Test labels were used only for this separate aggregate measurement after candidate selection.
+
+## clean-validation-cues-aux05-wd0001-smooth0075-seed20261022
+
+Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-wd0001-smooth0075-seed20261022", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--sft-aux-samples-per-class", "5", "--weight-decay", "0.001", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"].
+
+Hypothesis: The successful auxiliary setup used weight decay 0.005, while the lower-learning-rate variant failed to transfer. A lighter 0.001 weight decay tests whether regularization strength, rather than the representation, caused the transfer loss. Selection will use clean validation only. Aggregate testing will be queued only if viable.
+
 ## test-clean-validation-cues-lr25e5-smooth0075-wd00125-seed20261022
 
 Timestamp: 2026-10-22T18:52:12.333281+00:00. Status: completed.
