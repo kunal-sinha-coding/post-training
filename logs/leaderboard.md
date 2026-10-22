@@ -108,6 +108,7 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-compact4096-cues-smooth0005-seed20261022 | 0.47562979189485216 | 0.46297199832394026 | pkigdv55 | Aggregate-only test measurement, rejected |
 | test-clean-validation-question4096-cues-smooth0005-seed20261022 | 0.42278203723986857 | 0.39761158364909016 | bc7kscw8 | Aggregate-only test measurement, rejected |
 | test-clean-validation-full4096-smooth0005-seed20261022 | 0.5104052573932092 | 0.5097359143540459 | i7cptk86 | Aggregate-only test measurement, rejected standalone |
+| test-clean-validation-leader-full4096-smooth0005-weight80-20 | 0.5468236582694413 | 0.5465229266503612 | f7yz75k4 | Aggregate-only blend, below current leader |
 | Candidate | clean-validation-cues-aux25-smooth0005-seed20261022 | 0.9633333333333334 | 0.7226758876077004 | [metrics](/workspace/post-training/outputs/clean-validation-cues-aux25-smooth0005-seed20261022/metrics.json) | completed |
 | Candidate | clean-validation-cues-all-rejected-smooth0005-seed20261022 | 0.9211111111111111 | 0.6914984409297129 | [metrics](/workspace/post-training/outputs/clean-validation-cues-all-rejected-smooth0005-seed20261022/metrics.json) | completed |
 | Candidate | clean-validation-compact4096-cues-smooth0005-seed20261022 | 0.8994444444444445 | 0.674996165463329 | [metrics](/workspace/post-training/outputs/clean-validation-compact4096-cues-smooth0005-seed20261022/metrics.json) | completed |

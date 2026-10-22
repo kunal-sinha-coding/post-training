@@ -4,9 +4,9 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The full-schema no-cue control reached aggregate test macro F1 0.509736, below the leader, but its clean-validation macro F1 was 0.717651. A 0.80 leader and 0.20 no-cue frozen blend tests whether its different errors provide complementary signal without selecting on test labels.",
+  "current_hypothesis": "The 0.80 leader and 0.20 no-cue blend reached aggregate test macro F1 0.546523, below the leader. A conservative 0.95 leader and 0.05 no-cue blend tests whether a small diversity component preserves the leader while avoiding the larger no-cue contribution.",
   "active_experiment": {
-    "pid": 207050,
+    "pid": 207625,
     "command": [
       "python",
       "-u",
@@ -17,13 +17,13 @@
       "--checkpoint",
       "outputs/clean-validation-full4096-smooth0005-seed20261022",
       "--weight",
-      "0.80",
+      "0.95",
       "--weight",
-      "0.20",
+      "0.05",
       "--output",
-      "outputs/test-clean-validation-leader-full4096-smooth0005-weight80-20.json"
+      "outputs/test-clean-validation-leader-full4096-smooth0005-weight95-05.json"
     ],
-    "started_at": "2026-10-22T13:17:04.499967+00:00"
+    "started_at": "2026-10-22T13:21:39.679256+00:00"
   },
   "worker_command": [
     "python",
@@ -35,11 +35,11 @@
     "--checkpoint",
     "outputs/clean-validation-full4096-smooth0005-seed20261022",
     "--weight",
-    "0.80",
+    "0.95",
     "--weight",
-    "0.20",
+    "0.05",
     "--output",
-    "outputs/test-clean-validation-leader-full4096-smooth0005-weight80-20.json"
+    "outputs/test-clean-validation-leader-full4096-smooth0005-weight95-05.json"
   ],
   "worker_queue": [],
   "experiment_queue": [
@@ -56,14 +56,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T13:17:04.499989+00:00",
-  "last_action": "Watchdog started validation worker pid 207050.",
+  "last_heartbeat": "2026-10-22T13:21:39.679275+00:00",
+  "last_action": "Watchdog started validation worker pid 207625.",
   "watchdog_enabled": true,
-  "research_log_size": 144560,
+  "research_log_size": 145590,
   "stop_command": "STOP",
   "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T13:16:33.977425+00:00",
-  "planning_ack_deadline": "2026-10-22T13:18:33.977450+00:00",
-  "planning_attempts": 75
+  "planning_notified_at": "2026-10-22T13:19:39.107540+00:00",
+  "planning_ack_deadline": "2026-10-22T13:21:39.107564+00:00",
+  "planning_attempts": 76
 }

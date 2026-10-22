@@ -905,6 +905,16 @@ The checkpoint had complete training and clean-validation evidence. Aggregate bl
 
 This record was written by the primary Codex process because the test-only output has no output directory for the recorder. Candidate selection used clean validation only.
 
+## test-clean-validation-leader-full4096-smooth0005-weight80-20
+
+Timestamp: 2026-10-22T13:19:37.000000+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0005-seed20261022", "--checkpoint", "outputs/clean-validation-full4096-smooth0005-seed20261022", "--weight", "0.80", "--weight", "0.20", "--output", "outputs/test-clean-validation-leader-full4096-smooth0005-weight80-20.json"]. Output: /workspace/post-training/outputs/test-clean-validation-leader-full4096-smooth0005-weight80-20.json. W&B run: f7yz75k4.
+
+The linked checkpoints had complete training and clean-validation evidence. Aggregate black-box test accuracy was 0.5468236582694413 and macro F1 was 0.5465229266503612. The official test labels were used only for this separate measurement after clean-validation selection. The 80/20 blend is below the current 50/50 leader.
+
+This record was written by the primary Codex process because the test-only output has no output directory for the recorder. Candidate selection used clean validation only.
+
 ## test-clean-validation-question4096-cues-smooth0005-seed20261022
 
 Timestamp: 2026-10-22T13:08:18.000000+00:00. Status: completed.
