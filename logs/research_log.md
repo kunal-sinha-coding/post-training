@@ -2829,6 +2829,20 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 
 Hypothesis: Pairwise ranking was weak on the base encoder, but the 5-example auxiliary dose is the strongest observed representation. This bounded interaction tests whether auxiliary examples make pairwise supervision useful. Selection will use clean validation only. Aggregate testing will be queued only if the result is viable.
 
+## clean-validation-cues-aux05-pairwise-smooth0075-seed20261022
+
+Status: completed.
+
+Training macro F1: 0.7297395589008295. Clean-validation accuracy: 0.9577777777777777. Clean-validation macro F1: 0.7186428185257185. The result is clearly below the viable clean-validation range, so the aggregate black-box test was intentionally skipped. This is a clean-validation-only rejection and does not use test labels.
+
+## clean-validation-cues-aux05-wd0005-smooth0075-seed20261022
+
+Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-wd0005-smooth0075-seed20261022", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--sft-aux-samples-per-class", "5", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"].
+
+Hypothesis: The 5-example auxiliary encoder is the strongest base setup, while 0.005 weight decay was weak as a standalone branch. This bounded interaction tests whether mild regularization improves the auxiliary representation. Selection will use clean validation only. Aggregate testing will be queued only if the result is viable.
+
 ## clean-validation-cues-aux05-smooth0075-seed20261022
 
 Timestamp: 2026-10-22T19:15:28.987093+00:00. Status: completed.
@@ -2886,5 +2900,15 @@ Timestamp: 2026-10-22T19:58:24.422492+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-sftpre1-smooth0075-seed20261022", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--sft-aux-samples-per-class", "5", "--sft-pretrain-epochs", "1", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux05-sftpre1-smooth0075-seed20261022. W&B run: not available.
 
 Clean development accuracy: 0.9622222222222222. Clean development macro F1: 0.7219141885054488. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-cues-aux05-pairwise-smooth0075-seed20261022
+
+Timestamp: 2026-10-22T20:04:09.453414+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-pairwise-smooth0075-seed20261022", "--loss-function", "pairwise_ranking", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--sft-aux-samples-per-class", "5", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux05-pairwise-smooth0075-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.9577777777777777. Clean development macro F1: 0.7186428185257185. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.

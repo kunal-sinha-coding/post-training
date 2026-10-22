@@ -4,18 +4,16 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 5-example auxiliary plus one SFT pretraining epoch reached aggregate accuracy 0.532859 and macro F1 0.535621, so the interaction did not transfer. A bounded pairwise-ranking interaction tests whether the successful 5-example auxiliary signal makes pairwise supervision useful despite the weak base pairwise result. Selection will use clean validation only, and test labels will not guide selection.",
+  "current_hypothesis": "The 5-example auxiliary plus pairwise-ranking run reached training macro F1 0.729740 and clean-validation macro F1 0.718643, clearly below the viable range, so aggregate testing was skipped. A bounded 0.005 weight-decay interaction tests whether mild regularization improves the strongest auxiliary setup. Selection will use clean validation only, and test labels will not guide selection.",
   "active_experiment": {
-    "pid": 255283,
+    "pid": 255727,
     "command": [
       "python",
       "-u",
       "-m",
       "experiments.clean_validation_baseline",
       "--output-dir",
-      "outputs/clean-validation-cues-aux05-pairwise-smooth0075-seed20261022",
-      "--loss-function",
-      "pairwise_ranking",
+      "outputs/clean-validation-cues-aux05-wd0005-smooth0075-seed20261022",
       "--add-argument-cues",
       "--learning-rate",
       "2.5e-5",
@@ -23,6 +21,8 @@
       "0.0075",
       "--sft-aux-samples-per-class",
       "5",
+      "--weight-decay",
+      "0.005",
       "--seed",
       "20261022",
       "--split-seed",
@@ -32,7 +32,7 @@
       "--pref-train-epochs",
       "1"
     ],
-    "started_at": "2026-10-22T20:01:34.686730+00:00"
+    "started_at": "2026-10-22T20:04:44.907989+00:00"
   },
   "worker_command": [
     "python",
@@ -40,9 +40,7 @@
     "-m",
     "experiments.clean_validation_baseline",
     "--output-dir",
-    "outputs/clean-validation-cues-aux05-pairwise-smooth0075-seed20261022",
-    "--loss-function",
-    "pairwise_ranking",
+    "outputs/clean-validation-cues-aux05-wd0005-smooth0075-seed20261022",
     "--add-argument-cues",
     "--learning-rate",
     "2.5e-5",
@@ -50,6 +48,8 @@
     "0.0075",
     "--sft-aux-samples-per-class",
     "5",
+    "--weight-decay",
+    "0.005",
     "--seed",
     "20261022",
     "--split-seed",
@@ -90,10 +90,10 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T20:01:34.686742+00:00",
-  "last_action": "Watchdog started validation worker pid 255283.",
+  "last_heartbeat": "2026-10-22T20:04:44.908004+00:00",
+  "last_action": "Watchdog started validation worker pid 255727.",
   "watchdog_enabled": true,
-  "research_log_size": 257405,
+  "research_log_size": 259563,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -101,9 +101,7 @@
     "-m",
     "experiments.clean_validation_baseline",
     "--output-dir",
-    "outputs/clean-validation-cues-aux05-pairwise-smooth0075-seed20261022",
-    "--loss-function",
-    "pairwise_ranking",
+    "outputs/clean-validation-cues-aux05-wd0005-smooth0075-seed20261022",
     "--add-argument-cues",
     "--learning-rate",
     "2.5e-5",
@@ -111,6 +109,8 @@
     "0.0075",
     "--sft-aux-samples-per-class",
     "5",
+    "--weight-decay",
+    "0.005",
     "--seed",
     "20261022",
     "--split-seed",
@@ -121,7 +121,7 @@
     "1"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T20:00:34.191330+00:00",
-  "planning_ack_deadline": "2026-10-22T20:02:34.191355+00:00",
-  "planning_attempts": 169
+  "planning_notified_at": "2026-10-22T20:04:14.412176+00:00",
+  "planning_ack_deadline": "2026-10-22T20:06:14.412200+00:00",
+  "planning_attempts": 170
 }
