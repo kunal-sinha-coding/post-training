@@ -3864,3 +3864,27 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 Clean development accuracy: 0.9694444444444444. Clean development macro F1: 0.7273312605361406. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-cues-aux05-lr15e5-sftpre2-mainpairwise-wd0005-smooth005-seed20261022
+
+Timestamp: 2026-10-22T22:52:52.250576+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-lr15e5-sftpre2-mainpairwise-wd0005-smooth005-seed20261022", "--loss-function", "pairwise_ranking", "--sft-loss-function", "cross_entropy", "--add-argument-cues", "--sft-aux-samples-per-class", "5", "--sft-pretrain-epochs", "2", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux05-lr15e5-sftpre2-mainpairwise-wd0005-smooth005-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.9627777777777777. Clean development macro F1: 0.7222541406699516. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## test-clean-validation-cues-aux05-lr15e5-sftpre2-mainpairwise-wd0005-smooth005-seed20261022
+
+Timestamp: 2026-10-22T22:53:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-lr15e5-sftpre2-mainpairwise-wd0005-smooth005-seed20261022", "--output", "outputs/test-clean-validation-cues-aux05-lr15e5-sftpre2-mainpairwise-wd0005-smooth005-seed20261022.json"]. Candidate selection uses clean validation only. Official test labels are reserved for this aggregate measurement.
+
+Training accuracy: 0.9730966578837886. Training macro F1: 0.7299146183687648. Clean development accuracy: 0.9627777777777777. Clean development macro F1: 0.7222541406699516. Aggregate black-box test metrics: pending.
+
+The test is queued before the next distinct no-SFT-pretraining probe.
+
+## test-clean-validation-cues-aux05-lr15e5-sftpre1-mainpairwise-wd0005-smooth005-seed20261022-result
+
+The preceding one-epoch low-learning-rate probe completed aggregate testing with accuracy 0.5254654983570646 and macro F1 0.5277179397392181 from W&B run 6fs6z73m. It is below the current 55/45 encoder ensemble leader. Selection used clean validation only.
