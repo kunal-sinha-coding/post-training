@@ -1,33 +1,30 @@
 {
-  "status": "active",
+  "status": "awaiting_codex_planning",
   "planning_owner": "codex_primary",
-  "planning_required": false,
+  "planning_required": true,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The combined SFT plus label-smoothing candidate reached only 0.692205 clean-validation macro F1 and 0.544252 aggregate test macro F1. The clean-validation calibration artifact is the strongest current clean-validation candidate at 0.712267 macro F1, but it has no aggregate test measurement. Measure that frozen candidate before selecting another training mechanism.",
-  "active_experiment": {
-    "pid": 183416,
-    "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_frozen_when2call_ensemble_test",
-      "--checkpoint",
-      "outputs/clean-validation-argument-cues-seed21",
-      "--output",
-      "outputs/test-clean-validation-argument-cues-seed21.json"
-    ],
-    "started_at": "2026-10-22T10:41:43.594157+00:00"
-  },
+  "current_hypothesis": "The clean-validation leader reached 0.712267 clean-validation macro F1 but only 0.539060 aggregate test macro F1. The strongest clean-validation candidates may contain complementary errors, so a frozen three-member logit ensemble will test whether clean-validation-selected aggregation improves robustness without using test labels.",
+  "active_experiment": {},
   "worker_command": [
     "python",
     "-u",
     "-m",
     "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
+    "outputs/clean-validation-cues-seed20261022",
+    "--checkpoint",
+    "outputs/clean-validation-cues-smooth002-seed20261022",
+    "--checkpoint",
     "outputs/clean-validation-argument-cues-seed21",
+    "--weight",
+    "0.30",
+    "--weight",
+    "0.30",
+    "--weight",
+    "0.40",
     "--output",
-    "outputs/test-clean-validation-argument-cues-seed21.json"
+    "outputs/test-clean-validation-three-member-clean-selected.json"
   ],
   "worker_queue": [],
   "experiment_queue": [
@@ -45,13 +42,13 @@
     "artifact": "outputs/clean-validation-calibration.json"
   },
   "last_heartbeat": "2026-10-22T10:41:43.594170+00:00",
-  "last_action": "Watchdog started validation worker pid 183416.",
+  "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
-  "research_log_size": 101410,
+  "research_log_size": 102092,
   "stop_command": "STOP",
   "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T10:40:13.028679+00:00",
-  "planning_ack_deadline": "2026-10-22T10:42:13.028703+00:00",
-  "planning_attempts": 32
+  "planning_notified_at": "2026-10-22T10:43:16.403219+00:00",
+  "planning_ack_deadline": "2026-10-22T10:45:16.403244+00:00",
+  "planning_attempts": 33
 }
