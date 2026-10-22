@@ -29,6 +29,32 @@ def write_log(path: Path, message: str) -> None:
         stream.write(f"[{timestamp()}] {message}\n")
 
 
+def notify_codex_planning(repo: Path, state: dict, log_path: Path) -> None:
+    """Notify the configured parent Codex thread that planning is required."""
+    # Queue one durable planning request so the parent agent can refill work without restarting stale training.
+    thread = state.get("codex_thread")
+    if not thread:
+        write_log(log_path, "planning handoff not sent because codex_thread is absent")
+        return
+    message = (
+        "The research worker queue is exhausted. Inspect the latest clean-validation results, "
+        "form new hypotheses, append distinct commands to logs/research_state.json worker_queue, "
+        "set planning_required to false, set status to active, and verify the next launch. "
+        "Do not use test labels for selection."
+    )
+    result = subprocess.run(
+        ["codex", "queue", "--thread", thread, "--message", message],
+        cwd=repo,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if result.returncode == 0:
+        write_log(log_path, f"sent planning handoff to Codex thread {thread}")
+    else:
+        write_log(log_path, f"planning handoff failed return_code={result.returncode} stderr={result.stderr.strip()}")
+
+
 def process_alive(pid: int) -> bool:
     """Return whether a process identifier still exists."""
     # Check both process existence and process state so zombies do not block recovery.
@@ -130,6 +156,7 @@ def advance_worker_command(state_path: Path, state: dict, log_path: Path) -> boo
         temporary.write_text(json.dumps(state, indent=2) + "\n", encoding="utf-8")
         temporary.replace(state_path)
         write_log(log_path, "queue exhausted; handed control to primary Codex for planning")
+        notify_codex_planning(state_path.parent.parent, state, log_path)
         return False
     next_command = queue.pop(0)
     previous_command = state.get("worker_command")
