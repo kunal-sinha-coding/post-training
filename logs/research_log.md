@@ -943,6 +943,14 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: The 85/15 and 80/20 probes produced the same aggregate result, while the component clean-validation macro F1 values remain nearly tied. The fixed 75/25 point closes this bounded, predeclared sweep before changing the ensemble family. The weight is fixed from clean validation and test labels will not guide selection.
 
+## clean-validation-cues-aux05-sftpairwise-smooth0075-seed20261022
+
+Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-sftpairwise-smooth0075-seed20261022", "--sft-loss-function", "pairwise_ranking", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--sft-aux-samples-per-class", "5", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"].
+
+Hypothesis: The full auxiliary encoder with pairwise preference loss was weak, but that result does not isolate the auxiliary SFT objective. This bounded variant applies pairwise ranking only to the five-example auxiliary SFT data while keeping the successful preference-training configuration unchanged. Selection will use clean validation only. Its aggregate black-box test will be queued before any later experiment if viable. Test labels will not guide selection.
+
 ## clean-validation-cues-aux05-smooth005-wd0005-seed20261022
 
 Status: queued.
