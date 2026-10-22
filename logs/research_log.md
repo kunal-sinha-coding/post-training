@@ -1047,6 +1047,16 @@ Timestamp: 2026-10-22T18:21:00+00:00. Status: queued.
 
 Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-sftpre1-smooth0075-seed20261022", "--output", "outputs/test-clean-validation-cues-sftpre1-smooth0075-seed20261022.json"]. This is the required separate aggregate black-box measurement. The checkpoint was selected from training and clean validation only. Official test labels are not used for selection.
 
+Aggregate black-box test accuracy was 0.552848 and macro F1 was 0.552862 from W&B run 3vp5i9s4. The SFT-pretraining branch is below the single-checkpoint leader and is closed.
+
+## clean-validation-cues-lr25e5-smooth00775-seed20261022
+
+Timestamp: 2026-10-22T18:23:00+00:00. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-lr25e5-smooth00775-seed20261022", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.00775", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. This uses the fixed clean split and does not load official test labels.
+
+Hypothesis: The clean-validation results rise from smoothing 0.00725 to 0.0075, so a small 0.00775 step may improve the local regularization optimum without a broad search. Aggregate black-box evaluation will follow only if training and clean validation are credible.
+
 ## test-clean-validation-smooth0075-smooth006-weight90-10
 
 Timestamp: 2026-10-22T16:17:46+00:00. Status: completed.
