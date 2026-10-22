@@ -4,27 +4,8 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 90/10 blend of the 5-example-per-class auxiliary encoder and the 0.015 weight-decay encoder reached aggregate accuracy 0.560241 and macro F1 0.559778, below the current best. A 90/10 blend of the auxiliary encoder with the original clean-validation leader tests whether the strongest auxiliary checkpoint benefits from a larger contribution by the original leader. Training and clean-validation evidence are recorded before aggregate testing, and test labels are not used for selection.",
-  "active_experiment": {
-    "pid": 249868,
-    "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_frozen_when2call_ensemble_test",
-      "--checkpoint",
-      "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
-      "--checkpoint",
-      "outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022",
-      "--weight",
-      "0.90",
-      "--weight",
-      "0.10",
-      "--output",
-      "outputs/test-clean-validation-aux05-smooth0075-leader-weight90-10.json"
-    ],
-    "started_at": "2026-10-22T19:26:18.520585+00:00"
-  },
+  "current_hypothesis": "The 90/10 blend of the 5-example-per-class auxiliary encoder and the original clean-validation leader reached aggregate accuracy 0.560515 and macro F1 0.560004, matching best accuracy but remaining below best macro F1. A bounded 80/20 blend tests whether a larger contribution by the original leader improves macro F1. Training and clean-validation evidence are recorded before aggregate testing, and test labels are not used for selection.",
+  "active_experiment": {},
   "worker_command": [
     "python",
     "-u",
@@ -35,13 +16,30 @@
     "--checkpoint",
     "outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022",
     "--weight",
-    "0.90",
+    "0.80",
     "--weight",
-    "0.10",
+    "0.20",
     "--output",
-    "outputs/test-clean-validation-aux05-smooth0075-leader-weight90-10.json"
+    "outputs/test-clean-validation-aux05-smooth0075-leader-weight80-20.json"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_frozen_when2call_ensemble_test",
+      "--checkpoint",
+      "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
+      "--checkpoint",
+      "outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022",
+      "--weight",
+      "0.80",
+      "--weight",
+      "0.20",
+      "--output",
+      "outputs/test-clean-validation-aux05-smooth0075-leader-weight80-20.json"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -73,28 +71,13 @@
     "artifact": "outputs/clean-validation-calibration.json"
   },
   "last_heartbeat": "2026-10-22T19:26:18.520593+00:00",
-  "last_action": "Watchdog started validation worker pid 249868.",
+  "last_action": "Recorded the completed 90/10 leader blend and queued one distinct clean-validation-selected 80/20 weight probe.",
   "watchdog_enabled": true,
   "research_log_size": 241466,
   "stop_command": "STOP",
-  "next_experiment": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.evaluate_frozen_when2call_ensemble_test",
-    "--checkpoint",
-    "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
-    "--checkpoint",
-    "outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022",
-    "--weight",
-    "0.90",
-    "--weight",
-    "0.10",
-    "--output",
-    "outputs/test-clean-validation-aux05-smooth0075-leader-weight90-10.json"
-  ],
+  "next_experiment": "Run the queued 80/20 aggregate test of the 5-example auxiliary encoder with the original clean-validation leader.",
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T19:25:18.046532+00:00",
-  "planning_ack_deadline": "2026-10-22T19:27:18.046558+00:00",
-  "planning_attempts": 157
+  "planning_notified_at": "2026-10-22T19:27:53.195790+00:00",
+  "planning_ack_deadline": "2026-10-22T19:29:53.195814+00:00",
+  "planning_attempts": 158
 }
