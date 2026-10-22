@@ -895,6 +895,16 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-cues-all-rejected-smooth0005-seed20261022
+
+Timestamp: 2026-10-22T12:56:04.000000+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-all-rejected-smooth0005-seed20261022", "--output", "outputs/test-clean-validation-cues-all-rejected-smooth0005-seed20261022.json"]. Output: /workspace/post-training/outputs/test-clean-validation-cues-all-rejected-smooth0005-seed20261022.json. W&B run: g39osqop.
+
+The checkpoint had complete training and clean-validation evidence. Aggregate black-box test accuracy was 0.5342278203723987 and macro F1 was 0.5361566774390402. The official test labels were used only for this separate measurement after clean-validation selection. The all-rejected-response branch is rejected because both training and clean-validation performance collapsed.
+
+This record was written by the primary Codex process because the test-only output has no output directory for the recorder. Candidate selection used clean validation only.
+
 ## test-clean-validation-cues-aux100-smooth0005-seed20261022
 
 Timestamp: 2026-10-22T12:38:43.000000+00:00. Status: completed.
@@ -1596,3 +1606,13 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 The checkpoint had complete training and clean-validation evidence. Aggregate black-box test accuracy was 0.5306681270536692 and macro F1 was 0.5321158070556226. The official test labels were used only for this separate measurement after clean-validation selection. The 25-example auxiliary-data branch is rejected because it did not transfer.
 
 This record was written by the primary Codex process because the test-only output has no output directory for the recorder. Candidate selection used clean validation only.
+
+## clean-validation-cues-all-rejected-smooth0005-seed20261022
+
+Timestamp: 2026-10-22T12:54:04.205513+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-all-rejected-smooth0005-seed20261022", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.005", "--include-rejected-examples", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-all-rejected-smooth0005-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.9211111111111111. Clean development macro F1: 0.6914984409297129. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
