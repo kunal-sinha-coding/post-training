@@ -2538,3 +2538,21 @@ Status: queued.
 Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-wd0005-seed20261022", "--output", "outputs/test-clean-validation-cues-lr25e5-smooth0075-wd0005-seed20261022.json"].
 
 Training macro F1: 0.7382765898966769. Clean-validation accuracy: 0.9605555555555556. Clean-validation macro F1: 0.7205671612268054. The aggregate black-box test measurement is queued before any new experiment. Candidate selection uses clean validation only.
+
+## test-clean-validation-cues-lr25e5-smooth0075-wd0005-seed20261022
+
+Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-wd0005-seed20261022", "--output", "outputs/test-clean-validation-cues-lr25e5-smooth0075-wd0005-seed20261022.json"]. W&B run: 2knjkwra.
+
+Training macro F1: 0.7382765898966769. Clean-validation macro F1: 0.7205671612268054. Aggregate official test accuracy: 0.5544906900328587. Aggregate official test macro F1: 0.5540492326535695. The official test was run after freezing the candidate and returned aggregate metrics only. Test labels were not used for selection.
+
+Analysis: The standalone 0.005 weight-decay checkpoint is below the current best. A fixed 90/10 blend with the clean-validation leader is queued to test complementary errors without modifying either checkpoint.
+
+## test-clean-validation-smooth0075-wd0005-weight90-10
+
+Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-wd0005-seed20261022", "--weight", "0.90", "--weight", "0.10", "--output", "outputs/test-clean-validation-smooth0075-wd0005-weight90-10.json"].
+
+The 90/10 weights were fixed from clean-validation evidence before this aggregate test. No test labels are used for selection.
