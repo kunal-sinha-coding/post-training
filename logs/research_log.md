@@ -3198,3 +3198,23 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 Clean development accuracy: 0.9638888888888889. Clean development macro F1: 0.7231036545054879. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-seed20261022
+
+Timestamp: 2026-10-22T20:56:52.088386+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-seed20261022", "--sft-loss-function", "pairwise_ranking", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--sft-aux-samples-per-class", "5", "--weight-decay", "0.001", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.9655555555555555. Clean development macro F1: 0.724368404037876. Official test loaded: False. Official test metrics: {}.
+
+Training macro F1: 0.7405337865489832. The candidate is viable on clean validation, so its required aggregate black-box measurement is queued before any new experiment. Test labels are not used for selection.
+
+## test-clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-seed20261022
+
+Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-seed20261022", "--output", "outputs/test-clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-seed20261022.json"].
+
+Training macro F1: 0.7405337865489832. Clean-validation accuracy: 0.9655555555555555. Clean-validation macro F1: 0.724368404037876. This aggregate-only measurement is required before any new experiment. Candidate selection used training and clean validation only. Test labels will not guide selection.
+
+This record was written automatically. Candidate selection must use clean validation only.
