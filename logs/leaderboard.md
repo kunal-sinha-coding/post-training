@@ -143,6 +143,8 @@ Historical official test results remain detailed in [research_log.md](research_l
 | Candidate | clean-validation-cues-lr25e5-smooth001-seed20261022 | 0.9594444444444444 | 0.7197186472536391 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth001-seed20261022/metrics.json) | completed |
 | Candidate | clean-validation-cues-lr3e5-smooth0075-seed20261022 | 0.9588888888888889 | 0.719330656113196 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr3e5-smooth0075-seed20261022/metrics.json) | completed |
 | Candidate | clean-validation-cues-lr2e5-smooth0075-seed20261022 | 0.9661111111111111 | 0.7247810348174888 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr2e5-smooth0075-seed20261022/metrics.json) | completed |
+| test-clean-validation-smooth0075-smooth006-weight90-10 | 0.5566812705366923 | 0.5563625000341915 | qieyp23h | Aggregate-only blend, below single-checkpoint leader |
+| test-clean-validation-smooth0075-smooth006-weight95-05 | 0.5572289156626506 | 0.5569424184943376 | d3isygqx | Aggregate-only blend, below single-checkpoint leader |
 | test-clean-validation-cues-lr25e5-smooth006-seed20261022 | 0.5536692223439211 | 0.5529239848222985 | 5k4tczrx | Aggregate-only test measurement, smoothing branch rejected |
 | test-clean-validation-cues-lr225e5-smooth0075-seed20261022 | 0.5528477546549836 | 0.5542963302352063 | drkhxlxe | Aggregate-only test measurement, intermediate learning-rate branch rejected |
 | Candidate | clean-validation-cues-lr25e5-smooth006-seed20261022 | — | — | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth006-seed20261022/metrics.json) | queued |
