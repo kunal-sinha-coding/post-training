@@ -11,6 +11,7 @@ import atexit
 import json
 import os
 import random
+import time
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -153,7 +154,16 @@ def metrics(rows: list[ClassificationRow], predictions: list[int]) -> dict:
     return {"accuracy": sum(row.label == prediction for row, prediction in zip(rows, predictions)) / max(1, len(rows)), "macro_f1": sum(f1_values) / len(f1_values), "confusion_matrix": matrix, "examples": len(rows)}
 
 
-def train_epoch(model: object, tokenizer: object, rows: list[ClassificationRow], label_ids: list[int], objective: str, device: torch.device, optimizer: object, max_length: int, batch_size: int, beta: float, seed: int) -> float:
+def write_heartbeat(path: Path, phase: str, step: int = 0) -> None:
+    """Write the current worker phase and progress."""
+    # Use an atomic replacement so the watchdog never reads a partial heartbeat.
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(".tmp")
+    temporary.write_text(json.dumps({"timestamp": time.time(), "phase": phase, "step": step}) + "\n", encoding="utf-8")
+    temporary.replace(path)
+
+
+def train_epoch(model: object, tokenizer: object, rows: list[ClassificationRow], label_ids: list[int], objective: str, device: torch.device, optimizer: object, max_length: int, batch_size: int, beta: float, seed: int, heartbeat_path: Path) -> float:
     """Run one objective-specific training epoch and return mean loss."""
     # Shuffle only training rows and optimize the selected action objective in small memory-safe batches.
     model.train()
@@ -161,6 +171,7 @@ def train_epoch(model: object, tokenizer: object, rows: list[ClassificationRow],
     random.Random(seed).shuffle(order)
     losses = []
     for start in range(0, len(order), batch_size):
+        write_heartbeat(heartbeat_path, "training", start)
         batch = order[start:start + batch_size]
         optimizer.zero_grad(set_to_none=True)
         log_probs = score_rows(model, tokenizer, batch, label_ids, device, max_length)
@@ -190,13 +201,15 @@ def train_epoch(model: object, tokenizer: object, rows: list[ClassificationRow],
     return sum(losses) / max(1, len(losses))
 
 
-def evaluate(model: object, tokenizer: object, rows: list[ClassificationRow], label_ids: list[int], device: torch.device, max_length: int, batch_size: int) -> dict:
+def evaluate(model: object, tokenizer: object, rows: list[ClassificationRow], label_ids: list[int], device: torch.device, max_length: int, batch_size: int, heartbeat_path: Path | None = None) -> dict:
     """Evaluate action predictions on one clean partition."""
     # Disable gradients and aggregate predictions across fixed batches.
     model.eval()
     predictions = []
     with torch.no_grad():
         for start in range(0, len(rows), batch_size):
+            if heartbeat_path is not None:
+                write_heartbeat(heartbeat_path, "evaluation", start)
             scores = score_rows(model, tokenizer, rows[start:start + batch_size], label_ids, device, max_length)
             predictions.extend(scores.argmax(dim=-1).cpu().tolist())
     return metrics(rows, predictions)
@@ -231,6 +244,8 @@ def main() -> int:
     random.seed(args.seed)
     torch.manual_seed(args.seed)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    heartbeat_path = args.output_dir / "heartbeat.json"
+    write_heartbeat(heartbeat_path, "loading")
     # Load and split only inferred-label training rows after W&B initialization.
     train_rows, development_rows = split_rows(prepare_rows(load_rows()), args.split_seed)
     model, tokenizer = load_model(args.model, device, args.lora_rank)
@@ -238,9 +253,9 @@ def main() -> int:
     optimizer = torch.optim.AdamW((parameter for parameter in model.parameters() if parameter.requires_grad), lr=args.learning_rate, weight_decay=args.weight_decay)
     losses = []
     for epoch in range(args.epochs):
-        losses.append(train_epoch(model, tokenizer, train_rows, label_ids, args.objective, device, optimizer, args.max_length, args.batch_size, args.beta, args.seed + epoch))
-        train_metrics = evaluate(model, tokenizer, train_rows, label_ids, device, args.max_length, args.batch_size)
-        development_metrics = evaluate(model, tokenizer, development_rows, label_ids, device, args.max_length, args.batch_size)
+        losses.append(train_epoch(model, tokenizer, train_rows, label_ids, args.objective, device, optimizer, args.max_length, args.batch_size, args.beta, args.seed + epoch, heartbeat_path))
+        train_metrics = evaluate(model, tokenizer, train_rows, label_ids, device, args.max_length, args.batch_size, heartbeat_path)
+        development_metrics = evaluate(model, tokenizer, development_rows, label_ids, device, args.max_length, args.batch_size, heartbeat_path)
         run.log({"epoch": epoch + 1, "training/loss": losses[-1], "train/accuracy": train_metrics["accuracy"], "train/macro_f1": train_metrics["macro_f1"], "development/accuracy": development_metrics["accuracy"], "development/macro_f1": development_metrics["macro_f1"], "development/confusion_matrix": development_metrics["confusion_matrix"]})
     # Save the adapter and complete experiment metadata without touching official test data.
     args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -248,6 +263,7 @@ def main() -> int:
     tokenizer.save_pretrained(args.output_dir)
     metadata = {"model": args.model, "objective": args.objective, "dataset": DATASET_NAME, "official_test_loaded": False, "label_source": "inferred from chosen response content", "train_examples": len(train_rows), "development_examples": len(development_rows), "label_tokens": label_ids, "losses": losses, "train_metrics": train_metrics, "development_metrics": development_metrics, "config": vars(args), "device": str(device), "wandb_run_id": run.id, "wandb_run_url": run.url}
     (args.output_dir / "metrics.json").write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
+    write_heartbeat(heartbeat_path, "completed")
     run.summary.update({"development_accuracy": development_metrics["accuracy"], "development_macro_f1": development_metrics["macro_f1"], "output_dir": str(args.output_dir), "label_ids": label_ids})
     print(json.dumps(metadata, indent=2))
     return 0

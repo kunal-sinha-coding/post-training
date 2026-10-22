@@ -884,3 +884,83 @@ Training diagnostics: Training accuracy was 0.975111 and training macro F1 was 0
 
 Decision: The checkpoint is queued for one aggregate-only black-box test measurement. It will be retained only if its aggregate test metrics improve the current leader.
 
+
+## qwen-sft-05b-seed20261022
+
+Timestamp: 2026-10-22T06:14:06.302509+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-m", "experiments.train_qwen_when2call", "--model", "Qwen/Qwen2.5-0.5B-Instruct", "--objective", "sft"]. Output: /workspace/post-training/outputs/qwen-when2call-sft-05b-seed20261022. W&B run: 3o1rp1ea.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-sft-15b-seed20261022
+
+Timestamp: 2026-10-22T06:14:06.351398+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-m", "experiments.train_qwen_when2call", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--objective", "sft"]. Output: /workspace/post-training/outputs/qwen-when2call-sft-15b-seed20261022. W&B run: m1rg8d6l.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-rpo-05b-seed20261022
+
+Timestamp: 2026-10-22T06:14:06.405167+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-m", "experiments.train_qwen_when2call", "--model", "Qwen/Qwen2.5-0.5B-Instruct", "--objective", "rpo"]. Output: /workspace/post-training/outputs/qwen-when2call-rpo-05b-seed20261022. W&B run: 0ok4nguk.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-rl-05b-seed20261022
+
+Timestamp: 2026-10-22T06:14:06.458888+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-m", "experiments.train_qwen_when2call", "--model", "Qwen/Qwen2.5-0.5B-Instruct", "--objective", "rl"]. Output: /workspace/post-training/outputs/qwen-when2call-rl-05b-seed20261022. W&B run: 1bu4znru.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-sft-05b-seed20261022
+
+Timestamp: 2026-10-22T06:14:20.648903+00:00. Status: completed.
+
+Setup: ["python", "-m", "experiments.train_qwen_when2call", "--model", "Qwen/Qwen2.5-0.5B-Instruct", "--objective", "sft"]. Output: /workspace/post-training/outputs/qwen-when2call-sft-05b-seed20261022. W&B run: 3o1rp1ea.
+
+Clean development accuracy: 0.87444. Clean development macro F1: 0.65687. Official test loaded: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-sft-15b-seed20261022
+
+Timestamp: 2026-10-22T06:14:20.705664+00:00. Status: completed.
+
+Setup: ["python", "-m", "experiments.train_qwen_when2call", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--objective", "sft"]. Output: /workspace/post-training/outputs/qwen-when2call-sft-15b-seed20261022. W&B run: m1rg8d6l.
+
+Clean development accuracy: 0.89444. Clean development macro F1: 0.67099. Official test loaded: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-rpo-05b-seed20261022
+
+Timestamp: 2026-10-22T06:14:20.760201+00:00. Status: completed.
+
+Setup: ["python", "-m", "experiments.train_qwen_when2call", "--model", "Qwen/Qwen2.5-0.5B-Instruct", "--objective", "rpo"]. Output: /workspace/post-training/outputs/qwen-when2call-rpo-05b-seed20261022. W&B run: 0ok4nguk.
+
+Clean development accuracy: 0.83222. Clean development macro F1: 0.62484. Official test loaded: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-rl-05b-seed20261022
+
+Timestamp: 2026-10-22T06:14:20.813497+00:00. Status: completed.
+
+Setup: ["python", "-m", "experiments.train_qwen_when2call", "--model", "Qwen/Qwen2.5-0.5B-Instruct", "--objective", "rl"]. Output: /workspace/post-training/outputs/qwen-when2call-rl-05b-seed20261022. W&B run: 1bu4znru.
+
+Clean development accuracy: 0.79222. Clean development macro F1: 0.56393. Official test loaded: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

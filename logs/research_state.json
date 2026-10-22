@@ -1,7 +1,6 @@
 {
   "status": "active",
   "planning_owner": "codex_primary",
-  "codex_thread": "01a15b35-9f56-7b92-a638-822ed66a3349",
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",

@@ -29,14 +29,14 @@ def write_log(path: Path, message: str) -> None:
         stream.write(f"[{timestamp()}] {message}\n")
 
 
-def notify_codex_planning(repo: Path, state: dict, log_path: Path) -> None:
+def notify_codex_planning(repo: Path, state_path: Path, state: dict, log_path: Path, message: str | None = None) -> None:
     """Notify the configured parent Codex thread that planning is required."""
     # Queue one durable planning request so the parent agent can refill work without restarting stale training.
-    thread = state.get("codex_thread")
+    thread = os.getenv("CODEX_THREAD") or discover_codex_thread() or state.get("codex_thread")
     if not thread:
         write_log(log_path, "planning handoff not sent because codex_thread is absent")
         return
-    message = (
+    message = message or (
         "The research worker queue is exhausted. Inspect the latest clean-validation results, "
         "form new hypotheses, append distinct commands to logs/research_state.json worker_queue, "
         "set planning_required to false, set status to active, and verify the next launch. "
@@ -50,9 +50,38 @@ def notify_codex_planning(repo: Path, state: dict, log_path: Path) -> None:
         check=False,
     )
     if result.returncode == 0:
+        state["planning_notified_at"] = timestamp()
+        state["planning_ack_deadline"] = (datetime.now(timezone.utc) + timedelta(seconds=120)).isoformat()
+        state["planning_attempts"] = int(state.get("planning_attempts", 0) or 0) + 1
+        temporary = state_path.with_suffix(".tmp")
+        temporary.write_text(json.dumps(state, indent=2) + "\n", encoding="utf-8")
+        temporary.replace(state_path)
         write_log(log_path, f"sent planning handoff to Codex thread {thread}")
     else:
         write_log(log_path, f"planning handoff failed return_code={result.returncode} stderr={result.stderr.strip()}")
+
+
+def discover_codex_thread() -> str | None:
+    """Find the active Codex resume thread from the process table."""
+    # Prefer the live parent session so a restarted session never receives an old handoff.
+    output = subprocess.check_output(["ps", "-eo", "args="], text=True)
+    for command in output.splitlines():
+        fields = command.strip().split()
+        if len(fields) >= 3 and fields[0].endswith("codex") and fields[1] == "resume":
+            return fields[2]
+    return None
+
+
+def worker_heartbeat_fresh(repo: Path, active: dict) -> bool:
+    """Return whether the active worker has written a recent heartbeat."""
+    # Use the trainer heartbeat when available and retain launch-state compatibility for older jobs.
+    command = active.get("command") or []
+    if "--output-dir" not in command:
+        return True
+    heartbeat = repo / command[command.index("--output-dir") + 1] / "heartbeat.json"
+    if not heartbeat.exists():
+        return True
+    return time.time() - heartbeat.stat().st_mtime < 120
 
 
 def process_alive(pid: int) -> bool:
@@ -142,13 +171,13 @@ def start_worker(repo: Path, state_path: Path, log_path: Path) -> int:
     return process.pid
 
 
-def start_recorder(repo: Path, active: dict, log_path: Path) -> None:
+def start_recorder(repo: Path, active: dict, log_path: Path) -> dict | None:
     """Start asynchronous result recording for an exited worker."""
     # Record completion in parallel so bookkeeping never delays the next experiment launch.
     command = active.get("command") or []
     if "--output-dir" not in command:
         write_log(log_path, "completion recorder skipped because output directory is absent")
-        return
+        return None
     output_dir = command[command.index("--output-dir") + 1]
     experiment_id = Path(output_dir).name
     recorder_command = [
@@ -171,6 +200,44 @@ def start_recorder(repo: Path, active: dict, log_path: Path) -> None:
     process = subprocess.Popen(recorder_command, cwd=repo, stdout=output, stderr=subprocess.STDOUT, start_new_session=True)
     output.close()
     write_log(log_path, f"started asynchronous recorder pid {process.pid} for {experiment_id}")
+    return {"pid": process.pid, "experiment_id": experiment_id}
+
+
+def recording_is_complete(repo: Path, experiment_id: str) -> bool:
+    """Return whether the experiment has an append-only journal record."""
+    # Use the machine journal as the durable completion marker.
+    journal = repo / "logs/experiment_records.jsonl"
+    if not journal.exists():
+        return False
+    return f'"experiment_id": "{experiment_id}"' in journal.read_text(encoding="utf-8")
+
+
+def check_recording_jobs(repo: Path, state_path: Path, state: dict, log_path: Path) -> None:
+    """Detect failed asynchronous recorders and notify Codex without blocking."""
+    # Remove completed recorder jobs and report failed jobs for later Codex repair.
+    remaining = []
+    changed = False
+    for job in state.get("recording_jobs", []):
+        if recording_is_complete(repo, job["experiment_id"]):
+            changed = True
+            continue
+        if process_alive(int(job["pid"])):
+            remaining.append(job)
+            continue
+        changed = True
+        message = (
+            f"The asynchronous recorder failed for experiment {job['experiment_id']}. "
+            "Repair the record from the manifest, worker output, watchdog log, and W&B data. "
+            "Write a complete or minimal failure record, update the research log and leaderboard, "
+            "then continue the research loop. Do not block new experiments on this repair."
+        )
+        notify_codex_planning(repo, state_path, state, log_path, message)
+        write_log(log_path, f"recorder failed for {job['experiment_id']}; Codex repair requested")
+    if changed:
+        state["recording_jobs"] = remaining
+        temporary = state_path.with_suffix(".tmp")
+        temporary.write_text(json.dumps(state, indent=2) + "\n", encoding="utf-8")
+        temporary.replace(state_path)
 
 
 def advance_worker_command(state_path: Path, state: dict, log_path: Path) -> bool:
@@ -187,7 +254,7 @@ def advance_worker_command(state_path: Path, state: dict, log_path: Path) -> boo
         temporary.write_text(json.dumps(state, indent=2) + "\n", encoding="utf-8")
         temporary.replace(state_path)
         write_log(log_path, "queue exhausted; handed control to primary Codex for planning")
-        notify_codex_planning(state_path.parent.parent, state, log_path)
+        notify_codex_planning(state_path.parent.parent, state_path, state, log_path)
         return False
     next_command = queue.pop(0)
     previous_command = state.get("worker_command")
@@ -224,11 +291,16 @@ def main() -> int:
                 if log_error:
                     write_log(log_path, f"integrity failure: {log_error}")
                 state["research_log_size"] = max(log_size, int(state.get("research_log_size", 0) or 0))
+                check_recording_jobs(args.repo, state_path, state, log_path)
+                if state.get("status") == "awaiting_codex_planning" and state.get("planning_required"):
+                    deadline = state.get("planning_ack_deadline")
+                    if deadline and datetime.now(timezone.utc) >= datetime.fromisoformat(deadline):
+                        notify_codex_planning(args.repo, state_path, state, log_path)
                 active = state.get("active_experiment") or {}
                 pid = int(active.get("pid", 0) or 0)
                 heartbeat = state.get("last_heartbeat")
                 alive = process_alive(pid)
-                stale = heartbeat is None
+                stale = heartbeat is None or not worker_heartbeat_fresh(args.repo, active)
                 write_log(log_path, f"check pid={pid} alive={alive} heartbeat={heartbeat} stale={stale}")
                 if state.get("status") == "active" and (not active or not alive or stale):
                     # Adopt a worker launched before the state update instead of competing for the GPU.
@@ -243,7 +315,9 @@ def main() -> int:
                         temporary.replace(state_path)
                         write_log(log_path, f"adopted existing validation worker pid {active_pid}")
                     else:
-                        start_recorder(args.repo, active, log_path)
+                        recorder_job = start_recorder(args.repo, active, log_path)
+                        if recorder_job:
+                            state.setdefault("recording_jobs", []).append(recorder_job)
                         if advance_worker_command(state_path, state, log_path):
                             start_worker(args.repo, state_path, log_path)
             except Exception as error:

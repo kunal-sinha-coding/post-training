@@ -50,7 +50,11 @@ def record(repo: Path, args: argparse.Namespace) -> dict:
         output_dir = repo / output_dir
     metrics = load_metrics(output_dir)
     development = metrics.get("development_metrics") or {}
-    status = "completed" if development else "failed_or_incomplete"
+    if args.development_accuracy is not None:
+        development["accuracy"] = float(args.development_accuracy)
+    if args.development_macro_f1 is not None:
+        development["macro_f1"] = float(args.development_macro_f1)
+    status = args.status or ("completed" if development else "failed_or_incomplete")
     record = {
         "experiment_id": args.experiment_id,
         "timestamp": timestamp(),
@@ -62,8 +66,8 @@ def record(repo: Path, args: argparse.Namespace) -> dict:
         "metrics_path": str(output_dir / "metrics.json"),
         "development_metrics": development,
         "train_metrics": metrics.get("train_metrics", {}),
-        "wandb_run_id": metrics.get("wandb_run_id"),
-        "wandb_run_url": metrics.get("wandb_run_url"),
+        "wandb_run_id": args.wandb_run_id or metrics.get("wandb_run_id"),
+        "wandb_run_url": args.wandb_run_url or metrics.get("wandb_run_url"),
         "official_test_loaded": metrics.get("official_test_loaded"),
     }
     journal = repo / "logs/experiment_records.jsonl"
@@ -100,6 +104,11 @@ def main() -> int:
     parser.add_argument("--output-dir", required=True)
     parser.add_argument("--started-at", required=True)
     parser.add_argument("--exit-code", default="unknown")
+    parser.add_argument("--wandb-run-id")
+    parser.add_argument("--wandb-run-url")
+    parser.add_argument("--development-accuracy")
+    parser.add_argument("--development-macro-f1")
+    parser.add_argument("--status")
     args = parser.parse_args()
     record(args.repo, args)
     return 0
