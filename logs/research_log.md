@@ -3249,6 +3249,22 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Training macro F1: 0.7397028339750772 and 0.7400150832997929. Clean-validation macro F1: 0.7239512392080304 and 0.7222682597836991. The 95/5 weight is fixed from clean-validation evidence before aggregate evaluation. Test labels will not guide selection.
 
+## test-clean-validation-cues-aux05-sftpairwise-wd0001-weight95-05
+
+Timestamp: 2026-10-22T21:04:36.000000+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022", "--weight", "0.95", "--weight", "0.05", "--output", "outputs/test-clean-validation-cues-aux05-sftpairwise-wd0001-weight95-05.json"]. Output: /workspace/post-training/outputs/test-clean-validation-cues-aux05-sftpairwise-wd0001-weight95-05.json. W&B run: n2h6t7xn.
+
+Training macro F1: 0.7397028339750772 and 0.7400150832997929. Clean-validation macro F1: 0.7239512392080304 and 0.7222682597836991. Aggregate ensemble accuracy: 0.559145673603505. Aggregate ensemble macro F1: 0.5585713653270444. Component checkpoint accuracy: 0.5585980284775466 and 0.5613362541073385. Component checkpoint macro F1: 0.5580430730402365 and 0.5605781292774973. All three evidence types are recorded. The weight was fixed from clean validation and test labels were used only for this separate measurement.
+
+## test-clean-validation-cues-aux05-sftpairwise-wd0001-weight90-10
+
+Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022", "--weight", "0.90", "--weight", "0.10", "--output", "outputs/test-clean-validation-cues-aux05-sftpairwise-wd0001-weight90-10.json"].
+
+Hypothesis: The 95/5 point was fixed before test evaluation as part of the bounded ensemble sweep. The next fixed 90/10 point tests a larger contribution from the distinct pairwise checkpoint without using test labels for selection.
+
 This record was written automatically. Candidate selection must use clean validation only.
 
 ## clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022
