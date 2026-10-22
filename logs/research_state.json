@@ -4,48 +4,32 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "Two SFT adaptation epochs without preference training may generalize better than the preference objective under the observed shift.",
-  "active_experiment": {
-    "pid": 163281,
-    "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_qwen_when2call_test",
-      "--model",
-      "Qwen/Qwen2.5-1.5B-Instruct",
-      "--checkpoint",
-      "outputs/qwen-when2call-sft-15b-2ep-seed20261022",
-      "--output-dir",
-      "outputs/test-qwen-sft-15b-2ep-seed20261022",
-      "--lora-rank",
-      "16",
-      "--max-length",
-      "4096",
-      "--batch-size",
-      "1"
-    ],
-    "started_at": "2026-10-22T08:45:37.176627+00:00"
-  },
+  "current_hypothesis": "The clean-validation leader is an encoder system, while the latest Qwen test is weak. Two cheap input-structure encoder probes may reveal whether schema compression or explicit argument cues improve generalization before any deeper ensemble work.",
+  "active_experiment": {},
   "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.evaluate_qwen_when2call_test",
-    "--model",
-    "Qwen/Qwen2.5-1.5B-Instruct",
-    "--checkpoint",
-    "outputs/qwen-when2call-sft-15b-2ep-seed20261022",
-    "--output-dir",
-    "outputs/test-qwen-sft-15b-2ep-seed20261022",
-    "--lora-rank",
-    "16",
-    "--max-length",
-    "4096",
-    "--batch-size",
-    "1"
+    "python", "-u", "-m", "experiments.clean_validation_baseline",
+    "--output-dir", "outputs/clean-validation-compact-seed20261022",
+    "--seed", "20261022", "--split-seed", "20261022", "--max-length", "4096",
+    "--compact-tool-schemas", "--pref-train-epochs", "1"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test",
+      "--checkpoint", "outputs/clean-validation-compact-seed20261022",
+      "--output", "outputs/test-clean-validation-compact-seed20261022.json"
+    ],
+    [
+      "python", "-u", "-m", "experiments.clean_validation_baseline",
+      "--output-dir", "outputs/clean-validation-cues-seed20261022",
+      "--seed", "20261022", "--split-seed", "20261022", "--max-length", "4096",
+      "--add-argument-cues", "--pref-train-epochs", "1"
+    ],
+    [
+      "python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test",
+      "--checkpoint", "outputs/clean-validation-cues-seed20261022",
+      "--output", "outputs/test-clean-validation-cues-seed20261022.json"
+    ]
+  ],
   "experiment_queue": [
     "Run one cheap encoder-only alternative on the fixed clean split.",
     "Run one additional Jina encoder training variant with a distinct mechanism.",
@@ -61,32 +45,18 @@
     "artifact": "outputs/clean-validation-calibration.json"
   },
   "last_heartbeat": "2026-10-22T08:45:37.176643+00:00",
-  "last_action": "Watchdog started validation worker pid 163281.",
+  "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
-  "research_log_size": 89189,
+  "research_log_size": 90776,
   "stop_command": "STOP",
   "next_experiment": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.evaluate_qwen_when2call_test",
-    "--model",
-    "Qwen/Qwen2.5-1.5B-Instruct",
-    "--checkpoint",
-    "outputs/qwen-when2call-sft-15b-2ep-seed20261022",
-    "--output-dir",
-    "outputs/test-qwen-sft-15b-2ep-seed20261022",
-    "--lora-rank",
-    "16",
-    "--max-length",
-    "4096",
-    "--batch-size",
-    "1"
+    "python", "-u", "-m", "experiments.clean_validation_baseline",
+    "--output-dir", "outputs/clean-validation-compact-seed20261022",
+    "--seed", "20261022", "--split-seed", "20261022", "--max-length", "4096",
+    "--compact-tool-schemas", "--pref-train-epochs", "1"
   ],
-  "recording_jobs": [
-    {
-      "pid": 163280,
-      "experiment_id": "qwen-when2call-sft-05b-2ep-seed20261022"
-    }
-  ]
+  "recording_jobs": [],
+  "planning_notified_at": "2026-10-22T08:52:42.079452+00:00",
+  "planning_ack_deadline": "2026-10-22T08:54:42.079477+00:00",
+  "planning_attempts": 1
 }
