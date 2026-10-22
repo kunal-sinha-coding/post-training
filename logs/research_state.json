@@ -4,9 +4,9 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The lower-rate SFT-pretraining smoothing-02 checkpoint reached 0.719797 clean-validation macro F1 but only 0.550064 aggregate test macro F1, so the SFT branch is rejected. A fixed complete-request-to-tool rule on the strong smoothing-02 checkpoint tests whether visible required-field evidence repairs request versus tool-call errors without tuning on test labels.",
+  "current_hypothesis": "The complete-request-to-tool rule reduced the smoothing-02 checkpoint to 0.546246 aggregate test macro F1, so the rule is rejected. The recent Jina training, smoothing, and ensemble branches all remain below the current leader. The next probe evaluates whether the same checkpoint should be left unmodified as the control through the aggregate interface before shifting to a different model family.",
   "active_experiment": {
-    "pid": 192970,
+    "pid": 193414,
     "command": [
       "python",
       "-u",
@@ -14,11 +14,10 @@
       "experiments.evaluate_frozen_when2call_ensemble_test",
       "--checkpoint",
       "outputs/clean-validation-cues-lr25e5-sftpre1-smooth002-seed20261022",
-      "--complete-request-to-tool",
       "--output",
-      "outputs/test-clean-validation-cues-lr25e5-smooth002-complete-request.json"
+      "outputs/test-clean-validation-cues-lr25e5-smooth002-control.json"
     ],
-    "started_at": "2026-10-22T11:43:14.779827+00:00"
+    "started_at": "2026-10-22T11:45:19.534922+00:00"
   },
   "worker_command": [
     "python",
@@ -27,9 +26,8 @@
     "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
     "outputs/clean-validation-cues-lr25e5-sftpre1-smooth002-seed20261022",
-    "--complete-request-to-tool",
     "--output",
-    "outputs/test-clean-validation-cues-lr25e5-smooth002-complete-request.json"
+    "outputs/test-clean-validation-cues-lr25e5-smooth002-control.json"
   ],
   "worker_queue": [],
   "experiment_queue": [
@@ -46,14 +44,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T11:43:14.779847+00:00",
-  "last_action": "Watchdog started validation worker pid 192970.",
+  "last_heartbeat": "2026-10-22T11:45:19.534941+00:00",
+  "last_action": "Watchdog started validation worker pid 193414.",
   "watchdog_enabled": true,
-  "research_log_size": 118268,
+  "research_log_size": 119023,
   "stop_command": "STOP",
   "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T11:41:44.204882+00:00",
-  "planning_ack_deadline": "2026-10-22T11:43:44.204903+00:00",
-  "planning_attempts": 47
+  "planning_notified_at": "2026-10-22T11:44:18.997741+00:00",
+  "planning_ack_deadline": "2026-10-22T11:46:18.997766+00:00",
+  "planning_attempts": 48
 }

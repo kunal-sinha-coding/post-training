@@ -905,6 +905,16 @@ Training macro F1 was 0.739329. Clean-validation macro F1 was 0.719797. Aggregat
 
 This record was written after the JSON-only test recorder skipped the output file. Candidate selection must use clean validation only.
 
+## test-clean-validation-cues-lr25e5-smooth002-complete-request
+
+Timestamp: 2026-10-22T11:44:16.189495+00:00. Status: completed.
+
+Setup: The fixed complete-request-to-tool rule was applied to the frozen 2.5e-5, 0.02-smoothing argument-cue checkpoint. The rule used only visible required-field text and was fixed before the aggregate-only test measurement. W&B run: `xsy6g933`. Test labels were not used for selection.
+
+Aggregate test accuracy was 0.544907 and macro F1 was 0.546246. The rule is rejected because it reduced the unmodified checkpoint result of 0.549836 accuracy and 0.550064 macro F1.
+
+Training and clean-validation evidence are recorded in the checkpoint record. This record was written after the JSON-only test recorder skipped the output file.
+
 ## test-clean-validation-cues-lr25e5-sftpre1-smooth001-seed20261022
 
 Timestamp: 2026-10-22T11:30:27.945367+00:00. Status: completed.
