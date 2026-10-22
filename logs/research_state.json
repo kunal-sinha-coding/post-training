@@ -5,7 +5,20 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "The 1.5e-5 learning-rate encoder run has complete training macro F1 0.740159 and clean-validation macro F1 0.726473 evidence. Its aggregate black-box test measurement is missing, so queue that measurement before selecting another experiment.",
-  "active_experiment": {},
+  "active_experiment": {
+    "pid": 217427,
+    "command": [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_frozen_when2call_ensemble_test",
+      "--checkpoint",
+      "outputs/clean-validation-cues-lr15e5-smooth0075-seed20261022",
+      "--output",
+      "outputs/test-clean-validation-cues-lr15e5-smooth0075-seed20261022.json"
+    ],
+    "started_at": "2026-10-22T14:28:59.538759+00:00"
+  },
   "worker_command": [
     "python",
     "-u",
@@ -16,7 +29,18 @@
     "--output",
     "outputs/test-clean-validation-cues-lr15e5-smooth0075-seed20261022.json"
   ],
-  "worker_queue": [["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr15e5-smooth0075-seed20261022", "--output", "outputs/test-clean-validation-cues-lr15e5-smooth0075-seed20261022.json"]],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_frozen_when2call_ensemble_test",
+      "--checkpoint",
+      "outputs/clean-validation-cues-lr15e5-smooth0075-seed20261022",
+      "--output",
+      "outputs/test-clean-validation-cues-lr15e5-smooth0075-seed20261022.json"
+    ]
+  ],
   "experiment_queue": [
     "Run one cheap encoder-only alternative on the fixed clean split.",
     "Run one additional Jina encoder training variant with a distinct mechanism.",
@@ -31,18 +55,13 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T14:24:52.440102+00:00",
-  "last_action": "Watchdog handed planning control to the primary Codex process.",
+  "last_heartbeat": "2026-10-22T14:28:59.538778+00:00",
+  "last_action": "Watchdog started validation worker pid 217427.",
   "watchdog_enabled": true,
-  "research_log_size": 162020,
+  "research_log_size": 162842,
   "stop_command": "STOP",
   "next_experiment": null,
-  "recording_jobs": [
-    {
-      "pid": 217297,
-      "experiment_id": "clean-validation-cues-lr15e5-smooth0075-seed20261022"
-    }
-  ],
+  "recording_jobs": [],
   "planning_notified_at": "2026-10-22T14:28:28.999775+00:00",
   "planning_ack_deadline": "2026-10-22T14:30:28.999798+00:00",
   "planning_attempts": 93
