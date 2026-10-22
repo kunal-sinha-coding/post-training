@@ -895,6 +895,24 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-cues-lr25e5-smooth006-seed20261022
+
+Timestamp: 2026-10-22T16:15:10+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth006-seed20261022", "--output", "outputs/test-clean-validation-cues-lr25e5-smooth006-seed20261022.json"]. Output: /workspace/post-training/outputs/test-clean-validation-cues-lr25e5-smooth006-seed20261022.json. W&B run: 5k4tczrx.
+
+The checkpoint had training macro F1 0.738068 and clean-validation macro F1 0.720132 evidence. Aggregate black-box test accuracy was 0.5536692223439211 and macro F1 was 0.5529239848222985. Official test labels were used only for this separate measurement after clean-validation selection. The isolated 0.006-smoothing branch is rejected.
+
+This record was written by the primary Codex process because the test-only output has no output directory for the recorder. Candidate selection used clean validation only.
+
+## test-clean-validation-smooth0075-smooth006-weight90-10
+
+Timestamp: 2026-10-22T16:15:10+00:00. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth006-seed20261022", "--weight", "0.90", "--weight", "0.10", "--output", "outputs/test-clean-validation-smooth0075-smooth006-weight90-10.json"]. The weights were fixed from clean-validation evidence before the aggregate-only measurement. Official test labels are not used for selection.
+
+Hypothesis: A small contribution from the 0.006 checkpoint may correct complementary errors while preserving the leader's clean-validation performance.
+
 ## test-clean-validation-cues-lr225e5-smooth0075-seed20261022
 
 Timestamp: 2026-10-22T16:06:06+00:00. Status: completed.
