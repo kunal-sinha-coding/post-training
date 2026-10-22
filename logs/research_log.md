@@ -895,6 +895,24 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-cues-aux03-lr15e5-bothpairwise-wd0005-smooth000-seed20261022
+
+Timestamp: 2026-10-22T23:13:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux03-lr15e5-bothpairwise-wd0005-smooth000-seed20261022", "--output", "outputs/test-clean-validation-cues-aux03-lr15e5-bothpairwise-wd0005-smooth000-seed20261022.json"]. Candidate selection uses clean validation only. Official test labels are reserved for this aggregate measurement.
+
+Training accuracy: 0.9821007353961426. Training macro F1: 0.7366846018233995. Clean development accuracy: 0.9677777777777777. Clean development macro F1: 0.7260453767575579. Aggregate black-box test metrics: pending.
+
+The test is queued before the next distinct auxiliary-1 encoder probe.
+
+## clean-validation-cues-aux01-lr15e5-bothpairwise-wd0005-smooth000-seed20261022
+
+Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux01-lr15e5-bothpairwise-wd0005-smooth000-seed20261022", "--loss-function", "pairwise_ranking", "--sft-loss-function", "pairwise_ranking", "--add-argument-cues", "--sft-aux-samples-per-class", "1", "--learning-rate", "1.5e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Candidate selection will use clean validation only. The aggregate black-box test will be queued only if the clean result is viable.
+
+Hypothesis: reducing auxiliary coverage from 3 to 1 may reduce auxiliary-label noise while preserving the pairwise objective signal. Test labels will not be used for selection.
+
 ## test-clean-validation-cues-aux05-lr15e5-bothpairwise-wd0005-smooth000-seed20261022-result
 
 Timestamp: 2026-10-22T23:09:43Z. Status: completed.
@@ -3982,5 +4000,15 @@ Timestamp: 2026-10-22T23:07:40.535786+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-lr15e5-bothpairwise-wd0005-smooth000-seed20261022", "--loss-function", "pairwise_ranking", "--sft-loss-function", "pairwise_ranking", "--add-argument-cues", "--sft-aux-samples-per-class", "5", "--learning-rate", "1.5e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux05-lr15e5-bothpairwise-wd0005-smooth000-seed20261022. W&B run: not available.
 
 Clean development accuracy: 0.965. Clean development macro F1: 0.7239883461105784. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-cues-aux03-lr15e5-bothpairwise-wd0005-smooth000-seed20261022
+
+Timestamp: 2026-10-22T23:12:15.294166+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux03-lr15e5-bothpairwise-wd0005-smooth000-seed20261022", "--loss-function", "pairwise_ranking", "--sft-loss-function", "pairwise_ranking", "--add-argument-cues", "--sft-aux-samples-per-class", "3", "--learning-rate", "1.5e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux03-lr15e5-bothpairwise-wd0005-smooth000-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.9677777777777777. Clean development macro F1: 0.7260453767575579. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
