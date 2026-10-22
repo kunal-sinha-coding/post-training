@@ -223,7 +223,9 @@ def main() -> int:
     import wandb
     if not os.getenv("WANDB_API_KEY"):
         raise RuntimeError("WANDB_API_KEY is required for Qwen experiments.")
-    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name=f"qwen-when2call-{args.objective}-{Path(args.model).name}-seed{args.seed}", job_type="qwen-when2call-clean-validation", config=vars(args))
+    # Include the unique output directory so separate launches never share a misleading W&B display name.
+    run_name = f"qwen-when2call-{args.objective}-{Path(args.model).name}-{Path(args.output_dir).name}"
+    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name=run_name, job_type="qwen-when2call-clean-validation", config=vars(args))
     atexit.register(run.finish)
     # Fix all random sources before model construction and training.
     random.seed(args.seed)
