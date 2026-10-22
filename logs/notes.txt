@@ -5790,3 +5790,7 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 
 2026-10-22 The watchdog launched the distinct predeclared 60/40 ensemble evaluation as PID 268955 at 21:21:14 UTC after Codex recorded the completed 65/35 result. The state is active, planning_required is false, and the queue is empty because the worker is active. The launch was verified from logs/validation_watchdog.log and the live process table.
 
+2026-10-22 The clean-validation-selected 60/40 ensemble completed with aggregate accuracy 0.559419 and macro F1 0.558816 from W&B run uop6p5hw. Training, clean-validation, and aggregate black-box evidence are recorded. The next distinct 55/45 blend was queued from the predeclared bounded sweep without using test labels for selection.
+
+2026-10-22 The watchdog launched the distinct predeclared 55/45 ensemble evaluation as PID 269394 at 21:23:49 UTC after Codex recorded the completed 60/40 result. The state is active, planning_required is false, and the queue is empty because the worker is active. The launch was verified from logs/validation_watchdog.log and the live process table.
+
