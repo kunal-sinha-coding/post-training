@@ -5774,3 +5774,7 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 
 2026-10-22 The watchdog launched the distinct predeclared 80/20 ensemble evaluation as PID 267131 at 21:11:51 UTC after Codex recorded the completed 85/15 result. The state is active, planning_required is false, and the queue is empty because the worker is active. The launch was verified from logs/validation_watchdog.log and the live process table.
 
+2026-10-22 The clean-validation-selected 80/20 ensemble completed with aggregate accuracy 0.559693 and macro F1 0.559133 from W&B run zucehovq. Training, clean-validation, and aggregate black-box evidence are recorded. The next distinct 75/25 blend was queued from the predeclared bounded sweep without using test labels for selection.
+
+2026-10-22 The watchdog launched the distinct predeclared 75/25 ensemble evaluation as PID 267595 at 21:14:29 UTC after Codex recorded the completed 80/20 result. The state is active, planning_required is false, and the queue is empty because the worker is active. The launch was verified from logs/validation_watchdog.log and the live process table.
+
