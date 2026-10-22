@@ -1,7 +1,7 @@
 {
-  "status": "active",
+  "status": "awaiting_codex_planning",
   "planning_owner": "codex_primary",
-  "planning_required": false,
+  "planning_required": true,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "The isolated 0.002-smoothing checkpoint reached aggregate test macro F1 0.554532 and is below the 0.0075 leader. A controlled 2e-5 learning-rate run with 0.0075 smoothing tests a modestly lower rate while keeping the split, seed, cues, and one preference epoch fixed.",
@@ -27,7 +27,7 @@
     "--pref-train-epochs",
     "1"
   ],
-  "worker_queue": [["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-lr2e5-smooth0075-seed20261022", "--add-argument-cues", "--learning-rate", "2e-5", "--label-smoothing", "0.0075", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]],
+  "worker_queue": [],
   "experiment_queue": [
     "Run one cheap encoder-only alternative on the fixed clean split.",
     "Run one additional Jina encoder training variant with a distinct mechanism.",
@@ -42,14 +42,19 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T15:18:34.557645+00:00",
+  "last_heartbeat": "2026-10-22T15:23:11.903957+00:00",
   "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
-  "research_log_size": 173960,
+  "research_log_size": 174966,
   "stop_command": "STOP",
   "next_experiment": null,
-  "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T15:21:08.840338+00:00",
-  "planning_ack_deadline": "2026-10-22T15:23:08.840367+00:00",
-  "planning_attempts": 105
+  "recording_jobs": [
+    {
+      "pid": 223982,
+      "experiment_id": "clean-validation-cues-lr2e5-smooth0075-seed20261022"
+    }
+  ],
+  "planning_notified_at": "2026-10-22T15:27:57.041655+00:00",
+  "planning_ack_deadline": "2026-10-22T15:29:57.041682+00:00",
+  "planning_attempts": 106
 }
