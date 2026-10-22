@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 0.0075 label-smoothing checkpoint reached aggregate test macro F1 0.557200, the strongest recent single result. A 50/50 blend with the 0.005 smoothing checkpoint tests whether the two nearby high-quality encoders provide complementary errors without using test labels for selection.",
+  "current_hypothesis": "The 50/50 0.0075 and 0.005 smoothing blend reached aggregate test macro F1 0.556082, below the 0.0075 single checkpoint. A clean-validation-weighted 75/25 blend tests whether a smaller contribution from the weaker checkpoint preserves diversity without diluting the stronger model.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -16,11 +16,11 @@
     "--checkpoint",
     "outputs/clean-validation-cues-lr25e5-smooth0005-seed20261022",
     "--weight",
-    "0.50",
+    "0.75",
     "--weight",
-    "0.50",
+    "0.25",
     "--output",
-    "outputs/test-clean-validation-smooth0075-smooth0005-blend.json"
+    "outputs/test-clean-validation-smooth0075-smooth0005-weight75-25.json"
   ],
   "worker_queue": [
     [
@@ -33,11 +33,11 @@
       "--checkpoint",
       "outputs/clean-validation-cues-lr25e5-smooth0005-seed20261022",
       "--weight",
-      "0.50",
+      "0.75",
       "--weight",
-      "0.50",
+      "0.25",
       "--output",
-      "outputs/test-clean-validation-smooth0075-smooth0005-blend.json"
+      "outputs/test-clean-validation-smooth0075-smooth0005-weight75-25.json"
     ]
   ],
   "experiment_queue": [
@@ -54,14 +54,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T13:40:24.830799+00:00",
+  "last_heartbeat": "2026-10-22T13:46:29.343299+00:00",
   "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
-  "research_log_size": 151674,
+  "research_log_size": 152665,
   "stop_command": "STOP",
   "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T13:42:57.947163+00:00",
-  "planning_ack_deadline": "2026-10-22T13:44:57.947189+00:00",
-  "planning_attempts": 82
+  "planning_notified_at": "2026-10-22T13:48:35.576226+00:00",
+  "planning_ack_deadline": "2026-10-22T13:50:35.576250+00:00",
+  "planning_attempts": 83
 }

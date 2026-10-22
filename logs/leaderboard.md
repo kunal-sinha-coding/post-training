@@ -119,4 +119,5 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-cues-lr25e5-smooth0003-seed20261022 | 0.5487404162102957 | 0.549059562936055 | 6zja56ys | Aggregate-only test measurement, below current ensemble leader |
 | test-clean-validation-smooth0003-smooth002-blend | 0.5547645125958379 | 0.5545235874095277 | ocqevq5b | Aggregate-only blend, below current leader |
 | test-clean-validation-cues-lr25e5-smooth0075-seed20261022 | 0.5575027382256298 | 0.557199809126295 | qrm0do5e | Aggregate-only test measurement; current recent single-checkpoint leader |
+| test-clean-validation-smooth0075-smooth0005-blend | 0.556407447973713 | 0.5560823529789355 | g0z4n9qp | Aggregate-only blend, below 0.0075 single checkpoint |
 | Candidate | clean-validation-cues-lr25e5-smooth0075-seed20261022 | 0.9611111111111111 | 0.7209765903359181 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022/metrics.json) | completed |
