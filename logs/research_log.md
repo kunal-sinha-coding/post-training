@@ -905,6 +905,16 @@ Training macro F1 was 0.739540. Clean-validation macro F1 was 0.721062. Aggregat
 
 This record was written after the JSON-only test recorder skipped the output file. Candidate selection must use clean validation only.
 
+## test-clean-validation-sftpre1-three-member-blend
+
+Timestamp: 2026-10-22T11:33:00.801282+00:00. Status: completed.
+
+Setup: A frozen three-member logit blend used the base argument-cue checkpoint, the 2.5e-5 smoothing-02 checkpoint, and the 2.5e-5 SFT-pretraining smoothing-01 checkpoint. Weights were 0.35, 0.45, and 0.20, fixed from clean-validation evidence before the aggregate-only test measurement. W&B run: `2t8jf9ys`. Test labels were not used for selection.
+
+Aggregate test accuracy was 0.554217 and macro F1 was 0.553765. The blend is below the current leader and is rejected. All component training and clean-validation evidence is recorded.
+
+This record was written after the JSON-only test recorder skipped the output file. Candidate selection must use clean validation only.
+
 ## test-clean-validation-cues-lr35e5-smooth001-seed20261022
 
 Timestamp: 2026-10-22T11:17:45.558962+00:00. Status: completed.

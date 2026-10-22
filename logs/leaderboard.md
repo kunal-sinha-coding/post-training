@@ -79,5 +79,6 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-base-lr25e5-smooth001-blend | 0.5542168674698795 | 0.5541083776705987 | ad50cw1r | Aggregate-only test measurement, below current leader |
 | test-clean-validation-three-member-smoothing-blend | 0.5536692223439211 | 0.5532078153995593 | 70vqjc9g | Aggregate-only test measurement, below current leader |
 | test-clean-validation-cues-lr25e5-sftpre1-smooth001-seed20261022 | 0.5470974808324206 | 0.5485890786555717 | qpt5aenk | Aggregate-only test measurement, below current leader |
+| test-clean-validation-sftpre1-three-member-blend | 0.5542168674698795 | 0.5537654581750732 | 2t8jf9ys | Aggregate-only test measurement, below current leader |
 | Candidate | clean-validation-cues-lr35e5-smooth001-seed20261022 | 0.9544444444444444 | 0.7159234489856523 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr35e5-smooth001-seed20261022/metrics.json) | completed |
 | Candidate | clean-validation-cues-lr25e5-sftpre1-smooth001-seed20261022 | 0.9611111111111111 | 0.7210619055474808 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-sftpre1-smooth001-seed20261022/metrics.json) | completed |

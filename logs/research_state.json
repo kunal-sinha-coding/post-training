@@ -4,9 +4,9 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The lower-rate SFT-pretraining checkpoint reached 0.721062 clean-validation macro F1 but only 0.548589 aggregate test macro F1. A frozen blend of the base, smoothing-02, and this SFT-pretraining checkpoint tests whether its stronger clean-validation boundary adds complementary errors without another training run. Weights 0.35, 0.45, and 0.20 are fixed from clean-validation evidence.",
+  "current_hypothesis": "The SFT-pretraining three-member blend reached 0.553765 aggregate test macro F1 and did not improve the leader. A 0.40 base and 0.60 smoothing-02 logit blend tests whether giving more weight to the stronger clean-validation checkpoint improves the prior 0.56 and 0.44 blend without another training run.",
   "active_experiment": {
-    "pid": 191242,
+    "pid": 191668,
     "command": [
       "python",
       "-u",
@@ -16,18 +16,14 @@
       "outputs/clean-validation-cues-seed20261022",
       "--checkpoint",
       "outputs/clean-validation-cues-lr25e5-smooth002-seed20261022",
-      "--checkpoint",
-      "outputs/clean-validation-cues-lr25e5-sftpre1-smooth001-seed20261022",
       "--weight",
-      "0.35",
+      "0.40",
       "--weight",
-      "0.45",
-      "--weight",
-      "0.20",
+      "0.60",
       "--output",
-      "outputs/test-clean-validation-sftpre1-three-member-blend.json"
+      "outputs/test-clean-validation-base-smooth002-weight40-60.json"
     ],
-    "started_at": "2026-10-22T11:31:00.252915+00:00"
+    "started_at": "2026-10-22T11:33:33.282991+00:00"
   },
   "worker_command": [
     "python",
@@ -38,16 +34,12 @@
     "outputs/clean-validation-cues-seed20261022",
     "--checkpoint",
     "outputs/clean-validation-cues-lr25e5-smooth002-seed20261022",
-    "--checkpoint",
-    "outputs/clean-validation-cues-lr25e5-sftpre1-smooth001-seed20261022",
     "--weight",
-    "0.35",
+    "0.40",
     "--weight",
-    "0.45",
-    "--weight",
-    "0.20",
+    "0.60",
     "--output",
-    "outputs/test-clean-validation-sftpre1-three-member-blend.json"
+    "outputs/test-clean-validation-base-smooth002-weight40-60.json"
   ],
   "worker_queue": [],
   "experiment_queue": [
@@ -64,14 +56,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T11:31:00.252934+00:00",
-  "last_action": "Watchdog started validation worker pid 191242.",
+  "last_heartbeat": "2026-10-22T11:33:33.283005+00:00",
+  "last_action": "Watchdog started validation worker pid 191668.",
   "watchdog_enabled": true,
-  "research_log_size": 115123,
+  "research_log_size": 115847,
   "stop_command": "STOP",
   "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T11:30:29.735018+00:00",
-  "planning_ack_deadline": "2026-10-22T11:32:29.735043+00:00",
-  "planning_attempts": 44
+  "planning_notified_at": "2026-10-22T11:33:02.779955+00:00",
+  "planning_ack_deadline": "2026-10-22T11:35:02.779980+00:00",
+  "planning_attempts": 45
 }
