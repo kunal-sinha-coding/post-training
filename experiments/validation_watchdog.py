@@ -45,9 +45,15 @@ def process_alive(pid: int) -> bool:
     return bool(state) and not state.startswith("Z")
 
 
-def running_validation_workers(exclude_pid: int) -> list[int]:
-    """Return validation worker process identifiers already running in the repository."""
-    # Inspect command lines so recovery adopts an existing worker before creating a duplicate.
+def command_matches(expected: list[str], actual: str) -> bool:
+    """Return whether a process command contains the declared worker command."""
+    # Match every declared argument so stale workers from an earlier experiment cannot be adopted.
+    return bool(expected) and all(argument in actual for argument in expected)
+
+
+def running_validation_workers(exclude_pid: int, expected_command: list[str]) -> list[int]:
+    """Return matching validation worker process identifiers already running in the repository."""
+    # Inspect command lines so recovery adopts only the declared worker before creating a duplicate.
     output = subprocess.check_output(["ps", "-eo", "pid=,args="], text=True)
     workers = []
     for line in output.splitlines():
@@ -59,7 +65,7 @@ def running_validation_workers(exclude_pid: int) -> list[int]:
             state = subprocess.check_output(["ps", "-o", "stat=", "-p", str(pid)], text=True).strip()
         except subprocess.CalledProcessError:
             continue
-        if pid != exclude_pid and not state.startswith("Z") and "experiments.clean_validation_baseline" in command:
+        if pid != exclude_pid and not state.startswith("Z") and command_matches(expected_command, command):
             workers.append(pid)
     return workers
 
@@ -139,7 +145,7 @@ def main() -> int:
                 write_log(log_path, f"check pid={pid} alive={alive} heartbeat={heartbeat} stale={stale}")
                 if state.get("status") == "active" and (not active or not alive or stale):
                     # Adopt a worker launched before the state update instead of competing for the GPU.
-                    existing = running_validation_workers(os.getpid())
+                    existing = running_validation_workers(os.getpid(), state.get("worker_command") or [])
                     if existing:
                         active_pid = existing[0]
                         state["active_experiment"] = {"pid": active_pid, "command": state.get("worker_command"), "started_at": timestamp()}
