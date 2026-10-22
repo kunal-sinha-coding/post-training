@@ -913,6 +913,14 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 
 Hypothesis: reducing auxiliary coverage from 3 to 1 may reduce auxiliary-label noise while preserving the pairwise objective signal. Test labels will not be used for selection.
 
+## test-clean-validation-cues-aux03-lr15e5-bothpairwise-wd0005-smooth000-seed20261022-result
+
+Timestamp: 2026-10-22T23:15:48Z. Status: completed.
+
+Dataset: nvidia/When2Call, split test/mcq. Selection was complete before this measurement and did not use test labels. W&B run: denzub2s. Examples: 3652.
+
+Aggregate black-box accuracy: 0.5339539978094195. Aggregate black-box macro F1: 0.5354362033398691. The result is below the current 55/45 encoder ensemble leader. The watchdog then launched the queued auxiliary-1 training probe as PID 285684.
+
 ## test-clean-validation-cues-aux05-lr15e5-bothpairwise-wd0005-smooth000-seed20261022-result
 
 Timestamp: 2026-10-22T23:09:43Z. Status: completed.

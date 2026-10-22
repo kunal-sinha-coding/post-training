@@ -5850,4 +5850,5 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-22 The queue update commit records the no-SFT training evidence, the completed two-epoch aggregate test, and the ordered test-before-auxiliary-pairwise queue.
 2026-10-22 The queue update commit records the two-epoch training evidence, the completed one-epoch aggregate test, and the ordered test-before-no-SFT queue.
 2026-10-22 The auxiliary-3 probe completed with training accuracy 0.982101, training macro F1 0.736685, clean-validation accuracy 0.967778, and clean-validation macro F1 0.726045. Its missing aggregate black-box test was placed first in the queue. A distinct auxiliary-1 encoder probe was placed second. Selection uses clean validation only.
+2026-10-22 The auxiliary-3 aggregate test completed with accuracy 0.533954 and macro F1 0.535436 from W&B run denzub2s. It is below the current 55/45 encoder ensemble leader. The watchdog launched the queued auxiliary-1 training probe as PID 285684.
 
