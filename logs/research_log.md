@@ -985,6 +985,16 @@ Timestamp: 2026-10-22T17:50:00+00:00. Status: queued.
 
 Setup: ["python", "-u", "-m", "experiments.evaluate_qwen_when2call_test", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--checkpoint", "outputs/qwen-when2call-rpo-15b-seed20261022", "--output-dir", "outputs/test-qwen-rpo-15b-seed20261022", "--lora-rank", "16", "--max-length", "4096", "--batch-size", "1"]. Training macro F1 was 0.614407 and clean-validation macro F1 was 0.598739. This is the required separate aggregate black-box measurement. Official test labels are not used for selection.
 
+Aggregate black-box test accuracy was 0.529847 and macro F1 was 0.399156 from W&B run 5eakf32i. The Qwen RPO branch is rejected.
+
+## clean-validation-cues-lr25e5-smooth0075-len6144-seed20261022
+
+Timestamp: 2026-10-22T18:00:00+00:00. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-lr25e5-smooth0075-len6144-seed20261022", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "6144", "--pref-train-epochs", "1"]. Training and candidate selection use the fixed clean split. Official test labels are not used for selection.
+
+Hypothesis: A 6,144-token context may retain useful long-schema information while avoiding the memory failure observed at 8,192 tokens.
+
 ## test-clean-validation-smooth0075-smooth006-weight90-10
 
 Timestamp: 2026-10-22T16:17:46+00:00. Status: completed.
@@ -2260,5 +2270,15 @@ Timestamp: 2026-10-22T17:49:34.543404+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--objective", "rpo", "--output-dir", "outputs/qwen-when2call-rpo-15b-seed20261022", "--seed", "20261022", "--split-seed", "20261022", "--epochs", "1", "--batch-size", "1", "--max-length", "4096", "--learning-rate", "1e-5", "--lora-rank", "16"]. Output: /workspace/post-training/outputs/qwen-when2call-rpo-15b-seed20261022. W&B run: zmbzjl3h.
 
 Clean development accuracy: 0.7994444444444444. Clean development macro F1: 0.5987393666674012. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## test-qwen-rpo-15b-seed20261022
+
+Timestamp: 2026-10-22T17:58:12.858664+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_qwen_when2call_test", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--checkpoint", "outputs/qwen-when2call-rpo-15b-seed20261022", "--output-dir", "outputs/test-qwen-rpo-15b-seed20261022", "--lora-rank", "16", "--max-length", "4096", "--batch-size", "1"]. Output: /workspace/post-training/outputs/test-qwen-rpo-15b-seed20261022. W&B run: 5eakf32i.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: True. Official test metrics: {"accuracy": 0.5298466593647316, "macro_f1": 0.399156349206227}.
 
 This record was written automatically. Candidate selection must use clean validation only.
