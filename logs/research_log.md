@@ -1298,3 +1298,13 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 Clean development accuracy: 0.9594444444444444. Clean development macro F1: 0.7197261438751257. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## test-clean-validation-lr25e5-smoothing-blend
+
+Timestamp: 2026-10-22T11:11:41.430826+00:00. Status: completed.
+
+Setup: A frozen logit blend used the two fixed-split argument-cue checkpoints with learning rate 2.5e-5 and label smoothing 0.01 or 0.02. Weights were 0.60 and 0.40. Selection was complete before the aggregate-only official test measurement. W&B run: `hlcorjpt`. The official test labels were not used for selection.
+
+Training evidence and clean-validation evidence are recorded in the two component checkpoint records. Aggregate test accuracy was 0.555038 and macro F1 was 0.554319. The blend is below the current aggregate test leader at 0.555859 macro F1 and is not promoted.
+
+This record was written after the non-blocking recorder skipped the JSON-only output. Candidate selection must use clean validation only.
