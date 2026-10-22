@@ -903,6 +903,14 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Aggregate black-box test accuracy was 0.5569550930996714 and macro F1 was 0.5562139387687673. The official test labels were not used for selection. This is the strongest recent aggregate result.
 
+## test-clean-validation-smooth0005-smooth002-weight60-40
+
+Timestamp: 2026-10-22T12:24:29.550277+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0005-seed20261022", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth002-seed20261022", "--weight", "0.60", "--weight", "0.40", "--output", "outputs/test-clean-validation-smooth0005-smooth002-weight60-40.json"]. The weights were fixed from clean-validation evidence before the aggregate-only measurement. Linked training and clean-validation metrics are recorded in the component records. W&B run: `wlblb0ts`.
+
+Aggregate black-box test accuracy was 0.5566812705366923 and macro F1 was 0.5559791573886594. The official test labels were not used for selection. This is below the 50/50 blend and is rejected.
+
 ## deberta-v3-base-candidate-ranker-seed20261022
 
 Timestamp: 2026-10-22T11:52:28.907937+00:00. Status: failed.
