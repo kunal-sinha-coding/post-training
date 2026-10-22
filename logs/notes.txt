@@ -5817,4 +5817,5 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-22 The corrected held-out run completed with training macro F1 0.740222, clean-validation accuracy 0.964444, and clean-validation macro F1 0.723540. Its aggregate black-box test was queued before any new experiment. Selection uses clean validation only.
 2026-10-22 The corrected held-out run completed aggregate testing with accuracy 0.558324 and macro F1 0.557349 from W&B run uxyjvvx1. It is below the current 55/45 ensemble leader. The next hypothesis adds rejected preference examples without changing the seed.
 2026-10-22 The rejected-example encoder completed with training macro F1 0.362358 and clean-validation macro F1 0.682705. It was rejected before aggregate testing. The next distinct encoder probe uses compact tool schemas with the stronger auxiliary pairwise configuration.
+2026-10-22 The compact-schema encoder completed with training macro F1 0.712356 and clean-validation macro F1 0.670749. It was rejected before aggregate testing. The next loss ablation uses pairwise ranking for the main objective and cross-entropy auxiliary training.
 

@@ -4,19 +4,20 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The rejected-example encoder reached clean-validation macro F1 0.682705 and was rejected before aggregate testing. The next hypothesis tests compact tool schemas with the stronger auxiliary pairwise encoder configuration. Selection will use clean validation only.",
+  "current_hypothesis": "The compact-schema encoder reached clean-validation macro F1 0.670749 and was rejected before aggregate testing. The next hypothesis uses pairwise ranking for the main objective with cross-entropy auxiliary training. Selection will use clean validation only.",
   "active_experiment": {
-    "pid": 275575,
+    "pid": 276112,
     "command": [
       "python",
       "-u",
       "-m",
       "experiments.clean_validation_baseline",
       "--output-dir",
-      "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-compact-seed20261022",
-      "--sft-loss-function",
+      "outputs/clean-validation-cues-aux05-mainpairwise-sftce-wd0001-smooth0075-seed20261022",
+      "--loss-function",
       "pairwise_ranking",
-      "--compact-tool-schemas",
+      "--sft-loss-function",
+      "cross_entropy",
       "--add-argument-cues",
       "--sft-aux-samples-per-class",
       "5",
@@ -35,7 +36,7 @@
       "--pref-train-epochs",
       "1"
     ],
-    "started_at": "2026-10-22T22:04:28.172000+00:00"
+    "started_at": "2026-10-22T22:07:02.517345+00:00"
   },
   "worker_command": [
     "python",
@@ -43,11 +44,12 @@
     "-m",
     "experiments.clean_validation_baseline",
     "--output-dir",
-    "outputs/clean-validation-cues-aux05-rejected-sftpairwise-wd0001-smooth0075-seed20261022",
-    "--sft-loss-function",
+    "outputs/clean-validation-cues-aux05-mainpairwise-sftce-wd0001-smooth0075-seed20261022",
+    "--loss-function",
     "pairwise_ranking",
+    "--sft-loss-function",
+    "cross_entropy",
     "--add-argument-cues",
-    "--include-rejected-examples",
     "--sft-aux-samples-per-class",
     "5",
     "--learning-rate",
@@ -96,10 +98,10 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T21:59:20.814471+00:00",
-  "last_action": "Queued a distinct compact tool-schema encoder probe after recording the weak clean-validation result.",
+  "last_heartbeat": "2026-10-22T22:07:02.517357+00:00",
+  "last_action": "Watchdog started validation worker pid 276112.",
   "watchdog_enabled": true,
-  "research_log_size": 338677,
+  "research_log_size": 341864,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -107,10 +109,11 @@
     "-m",
     "experiments.clean_validation_baseline",
     "--output-dir",
-    "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-compact-seed20261022",
-    "--sft-loss-function",
+    "outputs/clean-validation-cues-aux05-mainpairwise-sftce-wd0001-smooth0075-seed20261022",
+    "--loss-function",
     "pairwise_ranking",
-    "--compact-tool-schemas",
+    "--sft-loss-function",
+    "cross_entropy",
     "--add-argument-cues",
     "--sft-aux-samples-per-class",
     "5",
@@ -130,5 +133,7 @@
     "1"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T22:03:26.851573+00:00",
-  "plann
+  "planning_notified_at": "2026-10-22T22:06:00.985785+00:00",
+  "planning_ack_deadline": "2026-10-22T22:08:00.985807+00:00",
+  "planning_attempts": 211
+}
