@@ -2595,6 +2595,20 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 The 95/5 weights were fixed from clean-validation evidence before this aggregate test. No test labels are used for selection.
 
+## test-clean-validation-aux05-smooth0075-weight95-05
+
+Status: completed.
+
+Aggregate official test accuracy: 0.5605147864184009. Aggregate official test macro F1: 0.5600802286664023. W&B run: 6tw86s1h. This is the current best observed aggregate result. The blend uses the 5-example auxiliary encoder and the previous clean-validation leader. Both training and clean-validation evidence were recorded before the frozen aggregate test. Test labels were used only for this aggregate measurement.
+
+## test-clean-validation-aux05-smooth0075-wd0015-weight95-05
+
+Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-wd0015-seed20261022", "--weight", "0.95", "--weight", "0.05", "--output", "outputs/test-clean-validation-aux05-smooth0075-wd0015-weight95-05.json"].
+
+The fixed 95/5 weights are selected from clean-validation evidence only. The auxiliary checkpoint has clean-validation macro F1 0.723951 and the 0.015 weight-decay checkpoint has clean-validation macro F1 0.719733. This test checks whether the new best checkpoint has complementary errors with a previously tested regularized encoder. No test labels are used for selection.
+
 ## test-clean-validation-smooth0075-aux10-weight95-05
 
 Status: completed.

@@ -4,27 +4,8 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 5-example-per-class auxiliary encoder reached training macro F1 0.739703, clean-validation macro F1 0.723951, aggregate test accuracy 0.558598, and aggregate test macro F1 0.558043, currently the best observed test result. A fixed 95/5 blend with the previous clean-validation leader tests complementary errors without changing either frozen checkpoint. Test labels are not used for selection.",
-  "active_experiment": {
-    "pid": 248504,
-    "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_frozen_when2call_ensemble_test",
-      "--checkpoint",
-      "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
-      "--checkpoint",
-      "outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022",
-      "--weight",
-      "0.95",
-      "--weight",
-      "0.05",
-      "--output",
-      "outputs/test-clean-validation-aux05-smooth0075-weight95-05.json"
-    ],
-    "started_at": "2026-10-22T19:18:05.700522+00:00"
-  },
+  "current_hypothesis": "The fixed 95/5 blend of the 5-example-per-class auxiliary encoder and the previous clean-validation leader reached aggregate test accuracy 0.560515 and aggregate test macro F1 0.560080, currently the best observed result. A fixed 95/5 blend with the clean-validation-tested 0.015 weight-decay encoder checks whether a different regularized encoder provides complementary errors. Training and clean-validation evidence are recorded before aggregate testing, and test labels are not used for selection.",
+  "active_experiment": {},
   "worker_command": [
     "python",
     "-u",
@@ -33,15 +14,32 @@
     "--checkpoint",
     "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
     "--checkpoint",
-    "outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022",
+    "outputs/clean-validation-cues-lr25e5-smooth0075-wd0015-seed20261022",
     "--weight",
     "0.95",
     "--weight",
     "0.05",
     "--output",
-    "outputs/test-clean-validation-aux05-smooth0075-weight95-05.json"
+    "outputs/test-clean-validation-aux05-smooth0075-wd0015-weight95-05.json"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_frozen_when2call_ensemble_test",
+      "--checkpoint",
+      "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
+      "--checkpoint",
+      "outputs/clean-validation-cues-lr25e5-smooth0075-wd0015-seed20261022",
+      "--weight",
+      "0.95",
+      "--weight",
+      "0.05",
+      "--output",
+      "outputs/test-clean-validation-aux05-smooth0075-wd0015-weight95-05.json"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -73,28 +71,13 @@
     "artifact": "outputs/clean-validation-calibration.json"
   },
   "last_heartbeat": "2026-10-22T19:18:05.700535+00:00",
-  "last_action": "Watchdog started validation worker pid 248504.",
+  "last_action": "Recorded the completed aggregate blend and queued one distinct clean-validation-selected aggregate test.",
   "watchdog_enabled": true,
   "research_log_size": 237888,
   "stop_command": "STOP",
-  "next_experiment": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.evaluate_frozen_when2call_ensemble_test",
-    "--checkpoint",
-    "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
-    "--checkpoint",
-    "outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022",
-    "--weight",
-    "0.95",
-    "--weight",
-    "0.05",
-    "--output",
-    "outputs/test-clean-validation-aux05-smooth0075-weight95-05.json"
-  ],
+  "next_experiment": "Run the queued 95/5 aggregate test of the 5-example auxiliary encoder with the 0.015 weight-decay encoder.",
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T19:17:35.172950+00:00",
-  "planning_ack_deadline": "2026-10-22T19:19:35.172974+00:00",
-  "planning_attempts": 154
+  "planning_notified_at": "2026-10-22T19:20:10.494535+00:00",
+  "planning_ack_deadline": "2026-10-22T19:22:10.494560+00:00",
+  "planning_attempts": 155
 }
