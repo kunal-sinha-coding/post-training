@@ -4,16 +4,16 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The auxiliary-10 encoder reached test accuracy 0.507393 and test macro F1 0.507783, below the current 55/45 ensemble leader. The next mechanism probe enables full encoder fine-tuning with the stronger auxiliary-5 configuration. Selection will use clean validation only.",
+  "current_hypothesis": "The full encoder fine-tuning probe produced training macro F1 0.738306 but no clean-validation metrics because train-all used development_examples 0. The next command repeats the mechanism with a held-out clean split so selection remains valid.",
   "active_experiment": {
-    "pid": 273486,
+    "pid": 273988,
     "command": [
       "python",
       "-u",
       "-m",
       "experiments.clean_validation_baseline",
       "--output-dir",
-      "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-trainall-seed20261022",
+      "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-trainall-devsplit-seed20261022",
       "--sft-loss-function",
       "pairwise_ranking",
       "--add-argument-cues",
@@ -25,7 +25,6 @@
       "5",
       "--weight-decay",
       "0.001",
-      "--train-all",
       "--seed",
       "20261022",
       "--split-seed",
@@ -35,7 +34,7 @@
       "--pref-train-epochs",
       "1"
     ],
-    "started_at": "2026-10-22T21:48:58.550831+00:00"
+    "started_at": "2026-10-22T21:52:35.369145+00:00"
   },
   "worker_command": [
     "python",
@@ -43,7 +42,7 @@
     "-m",
     "experiments.clean_validation_baseline",
     "--output-dir",
-    "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-trainall-seed20261022",
+    "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-trainall-devsplit-seed20261022",
     "--sft-loss-function",
     "pairwise_ranking",
     "--add-argument-cues",
@@ -55,7 +54,6 @@
     "5",
     "--weight-decay",
     "0.001",
-    "--train-all",
     "--seed",
     "20261022",
     "--split-seed",
@@ -96,10 +94,10 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T21:48:58.550843+00:00",
-  "last_action": "Watchdog started validation worker pid 273486.",
+  "last_heartbeat": "2026-10-22T21:52:35.369159+00:00",
+  "last_action": "Watchdog started validation worker pid 273988.",
   "watchdog_enabled": true,
-  "research_log_size": 328120,
+  "research_log_size": 331254,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -107,7 +105,7 @@
     "-m",
     "experiments.clean_validation_baseline",
     "--output-dir",
-    "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-trainall-seed20261022",
+    "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-trainall-devsplit-seed20261022",
     "--sft-loss-function",
     "pairwise_ranking",
     "--add-argument-cues",
@@ -119,7 +117,6 @@
     "5",
     "--weight-decay",
     "0.001",
-    "--train-all",
     "--seed",
     "20261022",
     "--split-seed",
@@ -130,7 +127,7 @@
     "1"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T21:47:57.464837+00:00",
-  "planning_ack_deadline": "2026-10-22T21:49:57.464861+00:00",
-  "planning_attempts": 206
+  "planning_notified_at": "2026-10-22T21:51:34.370803+00:00",
+  "planning_ack_deadline": "2026-10-22T21:53:34.370830+00:00",
+  "planning_attempts": 207
 }
