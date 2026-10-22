@@ -895,6 +895,24 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-cues-aux05-sftpairwise-wd0001-weight55-45
+
+Timestamp: 2026-10-22T21:25:19.000000+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022", "--weight", "0.55", "--weight", "0.45", "--output", "outputs/test-clean-validation-cues-aux05-sftpairwise-wd0001-weight55-45.json"]. Output: /workspace/post-training/outputs/test-clean-validation-cues-aux05-sftpairwise-wd0001-weight55-45.json. W&B run: 6w5tgee5.
+
+Training macro F1: 0.7397028339750772 and 0.7400150832997929. Clean-validation macro F1: 0.7239512392080304 and 0.7222682597836991. Aggregate ensemble accuracy: 0.5599671412924425. Aggregate ensemble macro F1: 0.5594070224864549. Component checkpoint accuracy: 0.5585980284775466 and 0.5613362541073385. Component checkpoint macro F1: 0.5580430730402365 and 0.5605781292774973. All three evidence types are recorded. The 55/45 weight was fixed from clean validation and test labels were used only for this separate measurement.
+
+## test-clean-validation-cues-aux05-sftpairwise-wd0001-weight50-50
+
+Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022", "--weight", "0.50", "--weight", "0.50", "--output", "outputs/test-clean-validation-cues-aux05-sftpairwise-wd0001-weight50-50.json"].
+
+Hypothesis: The predeclared 50/50 point tests the balanced ensemble after 55/45 produced the strongest aggregate result so far. The weight is fixed without using test labels for selection.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
 ## test-clean-validation-cues-aux05-sftpairwise-wd0001-weight60-40
 
 Timestamp: 2026-10-22T21:22:44.000000+00:00. Status: completed.
