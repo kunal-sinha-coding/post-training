@@ -4,12 +4,17 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The visible rule failed on both recent encoder representations. A previously trained checkpoint using bounded rejected-direct-example augmentation reached 0.943889 clean-validation accuracy and 0.708123 macro F1, so its distinct data-balancing mechanism merits one frozen official test measurement.",
+  "current_hypothesis": "The rejected-direct augmentation checkpoint reached 0.531490 official-test accuracy and 0.531031 macro F1. Before new hypotheses, the evidence audit identified outputs/clean-validation-cues-seed20261022 with clean-validation metrics but no recorded official test measurement.",
   "active_experiment": {},
   "worker_command": [
-    "python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test",
-    "--checkpoint", "outputs/clean-validation-rejected-direct100-seed22-len4096",
-    "--output", "outputs/test-clean-validation-rejected-direct100-seed22.json"
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_frozen_when2call_ensemble_test",
+    "--checkpoint",
+    "outputs/clean-validation-cues-seed20261022",
+    "--output",
+    "outputs/test-clean-validation-cues-seed20261022.json"
   ],
   "worker_queue": [],
   "experiment_queue": [
@@ -26,14 +31,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T09:26:21.868734+00:00",
+  "last_heartbeat": "2026-10-22T09:28:24.215765+00:00",
   "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
   "research_log_size": 94477,
   "stop_command": "STOP",
   "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T09:27:23.683091+00:00",
-  "planning_ack_deadline": "2026-10-22T09:29:23.683114+00:00",
-  "planning_attempts": 14
+  "planning_notified_at": "2026-10-22T09:29:26.620508+00:00",
+  "planning_ack_deadline": "2026-10-22T09:31:26.620535+00:00",
+  "planning_attempts": 15
 }
