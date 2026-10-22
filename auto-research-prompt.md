@@ -362,6 +362,8 @@ The watchdog must inspect the operating-system process state, not only whether t
 
 The watchdog owns execution recovery, not research planning. When the authorized worker queue is empty, it must atomically set status to awaiting_codex_planning, set planning_required to true, clear active_experiment, stop launching workers, and send one queued planning request to the configured parent Codex thread. The primary Codex research process owns the handoff. It must inspect completed clean-validation results, formulate the next hypotheses, append distinct commands to worker_queue, set planning_required to false, set status to active, and verify the next launch. A running Codex planning process is sufficient useful research activity while no worker is expected.
 
+Experiment recording is asynchronous bookkeeping. After a worker exits, start the recorder in a separate process and continue the experiment loop immediately. Recording failure must create durable error evidence and a Codex repair request, but it must not block the next worker or planning handoff.
+
 This must be an actual executable monitoring mechanism, not merely an instruction in your reasoning.
 
 The watchdog should operate independently of the primary research process whenever the environment supports this.

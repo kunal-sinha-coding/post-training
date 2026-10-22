@@ -142,6 +142,37 @@ def start_worker(repo: Path, state_path: Path, log_path: Path) -> int:
     return process.pid
 
 
+def start_recorder(repo: Path, active: dict, log_path: Path) -> None:
+    """Start asynchronous result recording for an exited worker."""
+    # Record completion in parallel so bookkeeping never delays the next experiment launch.
+    command = active.get("command") or []
+    if "--output-dir" not in command:
+        write_log(log_path, "completion recorder skipped because output directory is absent")
+        return
+    output_dir = command[command.index("--output-dir") + 1]
+    experiment_id = Path(output_dir).name
+    recorder_command = [
+        "python",
+        "-u",
+        "-m",
+        "experiments.record_experiment",
+        "--repo",
+        str(repo),
+        "--experiment-id",
+        experiment_id,
+        "--command-json",
+        json.dumps(command),
+        "--output-dir",
+        output_dir,
+        "--started-at",
+        active.get("started_at", "unknown"),
+    ]
+    output = (repo / "logs/experiment_recorder.out").open("a", encoding="utf-8")
+    process = subprocess.Popen(recorder_command, cwd=repo, stdout=output, stderr=subprocess.STDOUT, start_new_session=True)
+    output.close()
+    write_log(log_path, f"started asynchronous recorder pid {process.pid} for {experiment_id}")
+
+
 def advance_worker_command(state_path: Path, state: dict, log_path: Path) -> bool:
     """Promote the next queued experiment before starting recovery."""
     # Consume one predeclared command so a completed experiment cannot repeat indefinitely.
@@ -212,6 +243,7 @@ def main() -> int:
                         temporary.replace(state_path)
                         write_log(log_path, f"adopted existing validation worker pid {active_pid}")
                     else:
+                        start_recorder(args.repo, active, log_path)
                         if advance_worker_command(state_path, state, log_path):
                             start_worker(args.repo, state_path, log_path)
             except Exception as error:
