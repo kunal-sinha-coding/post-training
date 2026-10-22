@@ -152,3 +152,4 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-cues-lr2e5-smooth0075-seed20261022 | 0.5495618838992333 | 0.5509516160776665 | a72cyp4y | Aggregate-only test measurement, 2e-5 learning-rate branch rejected |
 | Candidate | clean-validation-cues-lr25e5-smooth0075-wd002-seed20261022 | 0.9594444444444444 | 0.7197224681075437 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-wd002-seed20261022/metrics.json) | completed |
 | Candidate | clean-validation-cues-lr225e5-smooth0075-seed20261022 | 0.9633333333333334 | 0.7226959616059145 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr225e5-smooth0075-seed20261022/metrics.json) | completed |
+| Candidate | clean-validation-cues-lr25e5-smooth006-seed20261022 | 0.96 | 0.7201317229791517 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth006-seed20261022/metrics.json) | completed |
