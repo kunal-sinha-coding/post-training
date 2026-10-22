@@ -2771,6 +2771,20 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Training macro F1: 0.738338677678336. Clean-validation accuracy: 0.9583333333333334. Clean-validation macro F1: 0.7189225176789794. The candidate has complete training and clean-validation evidence, and its required aggregate black-box measurement is queued before any new experiment. Test labels are not used for selection.
 
+## test-clean-validation-cues-aux04-smooth0075-seed20261022
+
+Status: completed.
+
+Aggregate official test accuracy: 0.5339539978094195. Aggregate official test macro F1: 0.534364572520268. W&B run: li1oewg9. The clean-validation result did not transfer, so the 4-example auxiliary branch is rejected. Test labels were used only for aggregate reporting.
+
+## clean-validation-cues-aux05-rejected10-smooth0075-seed20261022
+
+Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-rejected10-smooth0075-seed20261022", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--sft-aux-samples-per-class", "5", "--rejected-direct-samples", "10", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"].
+
+Hypothesis: The successful 5-example auxiliary encoder leaves the direct class unresolved. Adding only 10 targeted rejected-direct examples tests direct-class repair while preserving the successful auxiliary setup. Selection will use clean validation only. If viable, its aggregate black-box test will be queued before any later experiment.
+
 ## clean-validation-cues-aux05-smooth0075-seed20261022
 
 Timestamp: 2026-10-22T19:15:28.987093+00:00. Status: completed.
