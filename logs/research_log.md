@@ -2815,6 +2815,20 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Training macro F1: 0.7400233897556543. Clean-validation accuracy: 0.9622222222222222. Clean-validation macro F1: 0.7219141885054488. Its required aggregate black-box measurement is queued before any new experiment. Test labels are not used for selection.
 
+## test-clean-validation-cues-aux05-sftpre1-smooth0075-seed20261022
+
+Status: completed.
+
+Aggregate official test accuracy: 0.5328587075575028. Aggregate official test macro F1: 0.5356206814392236. W&B run: zzajivkm. The interaction did not transfer, so the auxiliary plus SFT branch is rejected. Test labels were used only for aggregate reporting.
+
+## clean-validation-cues-aux05-pairwise-smooth0075-seed20261022
+
+Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-pairwise-smooth0075-seed20261022", "--loss-function", "pairwise_ranking", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--sft-aux-samples-per-class", "5", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"].
+
+Hypothesis: Pairwise ranking was weak on the base encoder, but the 5-example auxiliary dose is the strongest observed representation. This bounded interaction tests whether auxiliary examples make pairwise supervision useful. Selection will use clean validation only. Aggregate testing will be queued only if the result is viable.
+
 ## clean-validation-cues-aux05-smooth0075-seed20261022
 
 Timestamp: 2026-10-22T19:15:28.987093+00:00. Status: completed.
