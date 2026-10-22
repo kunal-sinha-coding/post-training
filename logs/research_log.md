@@ -895,6 +895,14 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-cues-aux01-lr15e5-bothpairwise-wd0005-smooth000-seed20261022-result
+
+Timestamp: 2026-10-22T23:21:57Z. Status: completed.
+
+Dataset: nvidia/When2Call, split test/mcq. Selection was complete before this measurement and did not use test labels. W&B run: g7imnnp1. Examples: 3652.
+
+Aggregate black-box accuracy: 0.5427163198247535. Aggregate black-box macro F1: 0.5405188901137395. The result is below the current 55/45 encoder ensemble leader. The watchdog then launched the queued auxiliary-2 training probe as PID 286550.
+
 ## test-clean-validation-cues-aux03-lr15e5-bothpairwise-wd0005-smooth000-seed20261022
 
 Timestamp: 2026-10-22T23:13:00Z. Status: queued.
