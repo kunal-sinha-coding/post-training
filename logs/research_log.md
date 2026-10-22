@@ -941,6 +941,28 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 
 Hypothesis: Weight decay 0.02 lowered clean-validation macro F1 to 0.719722. A smaller 0.01 value may regularize the 0.0075 leader without the larger penalty.
 
+## test-clean-validation-cues-lr25e5-smooth0075-wd001-seed20261022
+
+Timestamp: 2026-10-22T16:34:00+00:00. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-wd001-seed20261022", "--output", "outputs/test-clean-validation-cues-lr25e5-smooth0075-wd001-seed20261022.json"]. Training and clean-validation evidence are complete. Aggregate black-box test measurement is required before further selection. Official test labels are not used for selection.
+
+## test-clean-validation-smooth0075-wd001-weight90-10
+
+Timestamp: 2026-10-22T16:34:00+00:00. Status: queued after the required checkpoint test.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-wd001-seed20261022", "--weight", "0.90", "--weight", "0.10", "--output", "outputs/test-clean-validation-smooth0075-wd001-weight90-10.json"]. The fixed 90/10 weight was chosen before aggregate evaluation from clean-validation evidence. Official test labels are not used for selection.
+
+The weight-decay checkpoint aggregate test accuracy was 0.554217 and macro F1 was 0.553661. The 90/10 blend aggregate test accuracy was 0.556134 and macro F1 was 0.555789. Both were below the single-checkpoint leader.
+
+## clean-validation-cues-lr25e5-smooth0075-compact-schema-seed20261022
+
+Timestamp: 2026-10-22T16:38:00+00:00. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-lr25e5-smooth0075-compact-schema-seed20261022", "--compact-tool-schemas", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Training and candidate selection use the fixed clean split. Official test labels are not used for selection.
+
+Hypothesis: Compact tool schemas may reduce irrelevant prompt length and improve the tool-call versus request-for-info boundary while preserving the leader's optimization settings.
+
 ## test-clean-validation-smooth0075-smooth006-weight90-10
 
 Timestamp: 2026-10-22T16:17:46+00:00. Status: completed.
@@ -2186,5 +2208,15 @@ Timestamp: 2026-10-22T16:28:29.369184+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-lr25e5-smooth00725-seed20261022", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.00725", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth00725-seed20261022. W&B run: not available.
 
 Clean development accuracy: 0.96. Clean development macro F1: 0.7201444171929117. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-cues-lr25e5-smooth0075-wd001-seed20261022
+
+Timestamp: 2026-10-22T16:33:36.324572+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-lr25e5-smooth0075-wd001-seed20261022", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--weight-decay", "0.01", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-wd001-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.9588888888888889. Clean development macro F1: 0.719306410582761. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.

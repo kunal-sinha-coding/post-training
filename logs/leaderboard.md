@@ -162,3 +162,9 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-cues-lr25e5-smooth00725-seed20261022 | 0.5566812705366923 | 0.555875003030042 | t6rlr6av | Aggregate-only test measurement, below leader | completed |
 | Candidate | clean-validation-cues-lr25e5-smooth00725-seed20261022 | 0.96 | 0.7201444171929117 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth00725-seed20261022/metrics.json) | completed |
 | Candidate | clean-validation-cues-lr25e5-smooth0075-wd001-seed20261022 | — | — | [queued](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-wd001-seed20261022) | queued |
+| test-clean-validation-cues-lr25e5-smooth0075-wd001-seed20261022 | — | — | — | Required aggregate black-box test measurement queued | queued |
+| test-clean-validation-smooth0075-wd001-weight90-10 | — | — | — | Fixed clean-validation-selected blend queued after checkpoint test | queued |
+| test-clean-validation-cues-lr25e5-smooth0075-wd001-seed20261022 | 0.5542168674698795 | 0.5536607583564698 | xkcbp7x4 | Aggregate-only test measurement, below leader | completed |
+| test-clean-validation-smooth0075-wd001-weight90-10 | 0.5561336254107339 | 0.5557892391753639 | v1nchcq0 | Aggregate-only blend, below leader | completed |
+| Candidate | clean-validation-cues-lr25e5-smooth0075-compact-schema-seed20261022 | — | — | [queued](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-compact-schema-seed20261022) | queued |
+| Candidate | clean-validation-cues-lr25e5-smooth0075-wd001-seed20261022 | 0.9588888888888889 | 0.719306410582761 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-wd001-seed20261022/metrics.json) | completed |
