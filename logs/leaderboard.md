@@ -350,3 +350,5 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-epochs2-seed20261022 | — | — | — | Aggregate black-box test required after viable clean validation | queued |
 | test-clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-epochs2-seed20261022 | 0.5125958378970427 | 0.5140370991219855 | p29lzu65 | Aggregate-only two-epoch continuation, rejected below current leader | completed |
 | Candidate | clean-validation-cues-aux10-sftpairwise-wd0001-smooth0075-seed20261022 | — | — | [queued](../outputs/clean-validation-cues-aux10-sftpairwise-wd0001-smooth0075-seed20261022) | Queued auxiliary coverage probe with 10 samples per class |
+| Candidate | clean-validation-cues-aux10-sftpairwise-wd0001-smooth0075-seed20261022 | 0.9633333333333334 | 0.7226651041504663 | [metrics](/workspace/post-training/outputs/clean-validation-cues-aux10-sftpairwise-wd0001-smooth0075-seed20261022/metrics.json) | completed |
+| test-clean-validation-cues-aux10-sftpairwise-wd0001-smooth0075-seed20261022 | — | — | — | Aggregate black-box test required after viable clean validation | queued |
