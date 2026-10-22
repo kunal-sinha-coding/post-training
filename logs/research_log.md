@@ -897,6 +897,24 @@ This record was written automatically. Candidate selection must use clean valida
 
 ## test-clean-validation-smooth0075-wd002-weight75-25
 
+Timestamp: 2026-10-22T15:57:08+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-wd002-seed20261022", "--weight", "0.75", "--weight", "0.25", "--output", "outputs/test-clean-validation-smooth0075-wd002-weight75-25.json"]. Output: /workspace/post-training/outputs/test-clean-validation-smooth0075-wd002-weight75-25.json. W&B run: rm839bzs.
+
+The linked checkpoints had complete training and clean-validation evidence. The weights were fixed from clean-validation evidence before the aggregate-only measurement. Aggregate black-box test accuracy was 0.556407447973713 and macro F1 was 0.5560185629339652. Official test labels were used only for this separate measurement. The blend is below the single-checkpoint leader.
+
+This record was written by the primary Codex process because the test-only output has no output directory for the recorder. Candidate selection used clean validation only.
+
+## clean-validation-cues-lr225e5-smooth0075-seed20261022
+
+Timestamp: 2026-10-22T15:57:08+00:00. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-lr225e5-smooth0075-seed20261022", "--add-argument-cues", "--learning-rate", "2.25e-5", "--label-smoothing", "0.0075", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Training and selection use the fixed clean split. Official test labels are not used for selection.
+
+Hypothesis: An intermediate learning rate may retain the clean-validation strength of 2e-5 while avoiding the weaker black-box behavior observed at that endpoint.
+
+## test-clean-validation-smooth0075-wd002-weight75-25
+
 Timestamp: 2026-10-22T15:52:48+00:00. Status: queued.
 
 Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-wd002-seed20261022", "--weight", "0.75", "--weight", "0.25", "--output", "outputs/test-clean-validation-smooth0075-wd002-weight75-25.json"]. The weights were fixed from clean-validation evidence before the aggregate-only measurement. Official test labels are not used for selection.
