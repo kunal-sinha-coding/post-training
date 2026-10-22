@@ -168,6 +168,9 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-smooth0075-wd001-weight90-10 | 0.5561336254107339 | 0.5557892391753639 | v1nchcq0 | Aggregate-only blend, below leader | completed |
 | Candidate | clean-validation-cues-lr25e5-smooth0075-compact-schema-seed20261022 | — | — | [queued](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-compact-schema-seed20261022) | queued |
 | test-clean-validation-cues-lr25e5-smooth0075-compact-schema-seed20261022 | — | — | — | Required aggregate black-box measurement queued | queued |
+| test-clean-validation-cues-lr25e5-smooth0075-compact-schema-seed20261022 | 0.4761774370208105 | 0.46328635761437403 | — | Aggregate-only test measurement, branch rejected | completed |
 | Candidate | qwen-when2call-rpo-15b-seed20261022 | — | — | [queued](/workspace/post-training/outputs/qwen-when2call-rpo-15b-seed20261022) | queued |
+| test-qwen-rpo-15b-seed20261022 | — | — | — | Required aggregate black-box measurement queued | queued |
 | Candidate | clean-validation-cues-lr25e5-smooth0075-wd001-seed20261022 | 0.9588888888888889 | 0.719306410582761 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-wd001-seed20261022/metrics.json) | completed |
 | Candidate | clean-validation-cues-lr25e5-smooth0075-compact-schema-seed20261022 | 0.9016666666666666 | 0.6766769163985007 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-compact-schema-seed20261022/metrics.json) | completed |
+| Candidate | qwen-when2call-rpo-15b-seed20261022 | 0.7994444444444444 | 0.5987393666674012 | [metrics](/workspace/post-training/outputs/qwen-when2call-rpo-15b-seed20261022/metrics.json) | completed |
