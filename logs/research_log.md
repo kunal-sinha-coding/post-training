@@ -989,6 +989,22 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Training macro F1: 0.7406363519812412. Clean-validation accuracy: 0.965. Clean-validation macro F1: 0.723938800663136. The candidate is viable on clean validation, so its required aggregate black-box measurement is queued before any new experiment. Test labels are not used for selection.
 
+## test-clean-validation-cues-aux05-wd0001-smooth0075-seed20261022
+
+Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-wd0001-smooth0075-seed20261022", "--output", "outputs/test-clean-validation-cues-aux05-wd0001-smooth0075-seed20261022.json"]. W&B run: vv2n89m0.
+
+Aggregate official test accuracy: 0.5561336254107339. Aggregate official test macro F1: 0.5553375524492615. The result is below the current best. Test labels were used only for this separate aggregate measurement after candidate selection.
+
+## test-clean-validation-cues-aux05-wd0001-weight95-05
+
+Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-aux05-wd0001-smooth0075-seed20261022", "--weight", "0.95", "--weight", "0.05", "--output", "outputs/test-clean-validation-cues-aux05-wd0001-weight95-05.json"].
+
+Hypothesis: The current best auxiliary checkpoint and the 0.001 weight-decay checkpoint have nearly tied clean-validation scores. A fixed 95/5 blend tests whether the lighter-regularized checkpoint contributes complementary errors. The weight is fixed before aggregate evaluation and test labels are not used for selection.
+
 ## test-clean-validation-cues-lr25e5-smooth0075-wd00125-seed20261022
 
 Timestamp: 2026-10-22T18:52:12.333281+00:00. Status: completed.
