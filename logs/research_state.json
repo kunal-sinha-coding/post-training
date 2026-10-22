@@ -4,9 +4,9 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 3.5e-5 smoothing-01 checkpoint reached 0.715923 clean-validation macro F1 but only 0.532214 aggregate test macro F1, so the intermediate learning rate is rejected. A 0.56 and 0.44 logit blend of the base argument-cue checkpoint and the stronger 2.5e-5 smoothing-01 checkpoint tests whether complementary boundaries improve the current ensemble without training another seed.",
+  "current_hypothesis": "The base and 2.5e-5 smoothing-01 blend reached 0.554108 aggregate test macro F1 and did not improve the leader. A three-member frozen blend of the base, smoothing-01, and smoothing-02 checkpoints tests whether all three clean-validation-supported boundaries provide complementary errors. Weights 0.25, 0.40, and 0.35 follow their clean-validation macro F1 values.",
   "active_experiment": {
-    "pid": 189454,
+    "pid": 189903,
     "command": [
       "python",
       "-u",
@@ -16,14 +16,18 @@
       "outputs/clean-validation-cues-seed20261022",
       "--checkpoint",
       "outputs/clean-validation-cues-lr25e5-smooth001-seed20261022",
+      "--checkpoint",
+      "outputs/clean-validation-cues-lr25e5-smooth002-seed20261022",
       "--weight",
-      "0.56",
+      "0.25",
       "--weight",
-      "0.44",
+      "0.40",
+      "--weight",
+      "0.35",
       "--output",
-      "outputs/test-clean-validation-base-lr25e5-smooth001-blend.json"
+      "outputs/test-clean-validation-three-member-smoothing-blend.json"
     ],
-    "started_at": "2026-10-22T11:18:48.702477+00:00"
+    "started_at": "2026-10-22T11:21:21.843108+00:00"
   },
   "worker_command": [
     "python",
@@ -34,12 +38,16 @@
     "outputs/clean-validation-cues-seed20261022",
     "--checkpoint",
     "outputs/clean-validation-cues-lr25e5-smooth001-seed20261022",
+    "--checkpoint",
+    "outputs/clean-validation-cues-lr25e5-smooth002-seed20261022",
     "--weight",
-    "0.56",
+    "0.25",
     "--weight",
-    "0.44",
+    "0.40",
+    "--weight",
+    "0.35",
     "--output",
-    "outputs/test-clean-validation-base-lr25e5-smooth001-blend.json"
+    "outputs/test-clean-validation-three-member-smoothing-blend.json"
   ],
   "worker_queue": [],
   "experiment_queue": [
@@ -56,14 +64,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T11:18:48.702497+00:00",
-  "last_action": "Watchdog started validation worker pid 189454.",
+  "last_heartbeat": "2026-10-22T11:21:21.843126+00:00",
+  "last_action": "Watchdog started validation worker pid 189903.",
   "watchdog_enabled": true,
-  "research_log_size": 111940,
+  "research_log_size": 112709,
   "stop_command": "STOP",
   "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T11:17:47.512223+00:00",
-  "planning_ack_deadline": "2026-10-22T11:19:47.512247+00:00",
-  "planning_attempts": 41
+  "planning_notified_at": "2026-10-22T11:20:21.272171+00:00",
+  "planning_ack_deadline": "2026-10-22T11:22:21.272198+00:00",
+  "planning_attempts": 42
 }

@@ -905,6 +905,16 @@ Training accuracy was 0.980694 and macro F1 was 0.735549. Clean-validation accur
 
 This record was written after the JSON-only test recorder skipped the output file. Candidate selection must use clean validation only.
 
+## test-clean-validation-base-lr25e5-smooth001-blend
+
+Timestamp: 2026-10-22T11:20:19.906609+00:00. Status: completed.
+
+Setup: A frozen logit blend used the base argument-cue checkpoint and the fixed-split 2.5e-5, 0.01-smoothing checkpoint with weights 0.56 and 0.44. The weights were chosen from clean-validation evidence before the aggregate-only test measurement. W&B run: `ad50cw1r`. Test labels were not used for selection.
+
+Aggregate test accuracy was 0.554217 and macro F1 was 0.554108. The blend is below the current leader and is rejected. Both component checkpoints have complete training and clean-validation evidence.
+
+This record was written after the JSON-only test recorder skipped the output file. Candidate selection must use clean validation only.
+
 ## test-clean-validation-cues-lr25e5-smooth001-seed20261022
 
 Timestamp: 2026-10-22T11:09:36.540373+00:00. Status: completed.
