@@ -34,7 +34,9 @@ Prohibited activities include:
 - Exploiting artifacts that expose test answers.
 - Using external datasets containing duplicates or near-duplicates of test examples.
 
-Use a dedicated development or validation set for ordinary debugging and error analysis. Freeze each candidate configuration before sending it to the black-box test evaluator. Aggregate test accuracy and macro F1 may be used to compare frozen candidates because they do not reveal which examples were correct, but no test-derived change may be made from an individual example or label.
+Use a dedicated development or validation set for ordinary debugging and error analysis. Freeze each candidate configuration before sending it to the black-box test evaluator. Aggregate test accuracy and macro F1 may be used to compare frozen candidates because they do not reveal which examples were correct, but no test-derived change may be made from an individual example or label. Do not repeatedly submit near-identical probes to infer hidden labels.
+
+Test-evaluation frequency is mandatory. Every viable method must receive an aggregate-only official test evaluation after its training and clean-validation result are complete. A viable method is one that completed successfully and is not clearly unusable from training diagnostics or clean validation. A failed run, a crashed run, or a method that clearly collapses on training or clean validation may skip test evaluation, but the research log must record `test skipped` and the concrete reason. A viable method must never be left with an implicit or blank test status.
 
 Inspect the existing project's evaluation practices. If prior work exposed test labels or per-example test outcomes, document the exposure and establish a clean black-box protocol for all new runs.
 
@@ -208,7 +210,7 @@ Measure at minimum:
 - Confusion matrix.
 - Training and inference cost where relevant.
 
-For every candidate that is promoted as a finalist, run the authorized aggregate-only official test evaluation after the candidate is frozen. Record test accuracy and test macro F1 in the persistent research log and in the leaderboard's official test-results section. If a candidate has not been tested, record `not measured` explicitly. Never use a test result to choose, tune, or reorder a new candidate. Use clean development results for selection, then use the frozen test result only as the final benchmark measurement.
+For every viable candidate, run the authorized aggregate-only official test evaluation after the candidate is frozen. Record test accuracy and test macro F1 in the persistent research log and in the leaderboard's official test-results section. If a candidate is clearly unusable and test evaluation is skipped, record `test skipped` and the reason. Never use a test result to change the submitted candidate, its hyperparameters, its prompt, or its training data. Use clean development results to decide whether a method is viable, then use the frozen test result to measure real benchmark performance and compare completed frozen methods.
 
 Investigate unexpected results.
 
@@ -281,7 +283,7 @@ After every experiment, finish the W&B run and record its run ID and URL in the 
 
 Maintain a separate leaderboard of the best configurations, using validation results only.
 
-The leaderboard must show both evaluation states without mixing them. The validation table ranks candidates using clean development accuracy and macro F1. A linked official test-results table records aggregate-only test accuracy and macro F1 for frozen candidates. Every validation row must have a corresponding test status of `measured`, `not measured`, or `failed`. A missing test result must never be represented by an empty field.
+The leaderboard must show both evaluation states without mixing them. The validation table ranks candidates using clean development accuracy and macro F1. A linked official test-results table records aggregate-only test accuracy and macro F1 for frozen candidates. Every validation row must have a corresponding test status of `measured`, `test skipped`, or `failed`, with a reason when test evaluation is not run. A missing test result must never be represented by an empty field. The final research report must identify the best official test result separately from the best validation result.
 
 Preserve sufficient artifacts to reproduce important experiments.
 
