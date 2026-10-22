@@ -1095,6 +1095,16 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: The auxiliary checkpoint has the strongest clean-validation macro F1, but its standalone test transfer is poor. A small fixed contribution may recover complementary errors while preserving the leader.
 
+Aggregate black-box test accuracy was 0.554765 and macro F1 was 0.554464 from W&B run dv40skla. The 95/5 leader-plus-auxiliary blend is rejected.
+
+## test-clean-validation-smooth0075-aux25-weight90-10
+
+Timestamp: 2026-10-22T18:37:00+00:00. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-aux25-smooth0075-seed20261022", "--weight", "0.90", "--weight", "0.10", "--output", "outputs/test-clean-validation-smooth0075-aux25-weight90-10.json"]. The 90/10 weight is fixed before aggregate evaluation. Official test labels are not used for selection.
+
+Hypothesis: A larger auxiliary contribution may expose complementary errors that the 95/5 blend did not capture. This is the final auxiliary ensemble probe.
+
 ## test-clean-validation-smooth0075-smooth006-weight90-10
 
 Timestamp: 2026-10-22T16:17:46+00:00. Status: completed.
