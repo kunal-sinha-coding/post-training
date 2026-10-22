@@ -4,15 +4,39 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The rejected-example augmentation and both rejected-example blends underperformed on aggregate test, so that branch is closed. The existing smoothing-01 and smoothing-02 runs bracket the current lower-rate regularization range. A fixed-split argument-cue run with label smoothing 0.005 tests a milder regularizer using the same clean-validation protocol. Its aggregate test evaluation is queued after training and does not guide selection.",
-  "active_experiment": {},
+  "current_hypothesis": "Label smoothing 0.005 produced the strongest recent single checkpoint with clean-validation macro F1 0.719725 and aggregate test macro F1 0.555276. A two-epoch preference-training continuation at the same fixed split and smoothing tests whether the one-epoch result is still improving or begins to overfit. The aggregate test evaluation is queued after training and does not guide selection.",
+  "active_experiment": {
+    "pid": 197677,
+    "command": [
+      "python",
+      "-u",
+      "-m",
+      "experiments.clean_validation_baseline",
+      "--output-dir",
+      "outputs/clean-validation-cues-lr25e5-smooth0005-pref2-seed20261022",
+      "--add-argument-cues",
+      "--learning-rate",
+      "2.5e-5",
+      "--label-smoothing",
+      "0.005",
+      "--seed",
+      "20261022",
+      "--split-seed",
+      "20261021",
+      "--max-length",
+      "4096",
+      "--pref-train-epochs",
+      "2"
+    ],
+    "started_at": "2026-10-22T12:12:47.099067+00:00"
+  },
   "worker_command": [
     "python",
     "-u",
     "-m",
     "experiments.clean_validation_baseline",
     "--output-dir",
-    "outputs/clean-validation-cues-lr25e5-smooth0005-seed20261022",
+    "outputs/clean-validation-cues-lr25e5-smooth0005-pref2-seed20261022",
     "--add-argument-cues",
     "--learning-rate",
     "2.5e-5",
@@ -25,10 +49,19 @@
     "--max-length",
     "4096",
     "--pref-train-epochs",
-    "1"
+    "2"
   ],
   "worker_queue": [
-    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0005-seed20261022", "--output", "outputs/test-clean-validation-cues-lr25e5-smooth0005-seed20261022.json"]
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_frozen_when2call_ensemble_test",
+      "--checkpoint",
+      "outputs/clean-validation-cues-lr25e5-smooth0005-pref2-seed20261022",
+      "--output",
+      "outputs/test-clean-validation-cues-lr25e5-smooth0005-pref2-seed20261022.json"
+    ]
   ],
   "experiment_queue": [
     "Run one cheap encoder-only alternative on the fixed clean split.",
@@ -44,14 +77,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T12:02:38.379950+00:00",
-  "last_action": "Watchdog handed planning control to the primary Codex process.",
+  "last_heartbeat": "2026-10-22T12:12:47.099088+00:00",
+  "last_action": "Watchdog started validation worker pid 197677.",
   "watchdog_enabled": true,
-  "research_log_size": 125393,
+  "research_log_size": 127178,
   "stop_command": "STOP",
   "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T12:05:10.754580+00:00",
-  "planning_ack_deadline": "2026-10-22T12:07:10.754605+00:00",
-  "planning_attempts": 54
+  "planning_notified_at": "2026-10-22T12:10:45.974811+00:00",
+  "planning_ack_deadline": "2026-10-22T12:12:45.974836+00:00",
+  "planning_attempts": 55
 }
