@@ -5558,3 +5558,4 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-22 Added an evidence gate to the research prompt. Do not run a candidate with a strong predicted negative result unless a new mechanism explains why it could differ.
 2026-10-22 Added the missing official test queue entry for the completed Qwen 1.5B two-epoch checkpoint. The checkpoint had validation metrics but was not previously submitted to the black-box evaluator.
 2026-10-22 Stopped the user-rejected active Qwen 0.5B SFT run and removed its incomplete test command. Preserved the completed Qwen 1.5B two-epoch official test evaluation as the only remaining queue item.
+2026-10-22 The first two encoder probes failed with CUDA out-of-memory at 8,192 tokens while another process used about 10.4 GiB. The next hypothesis uses a 2,048-token compact-schema probe to reduce memory pressure while testing the same input-structure mechanism.
