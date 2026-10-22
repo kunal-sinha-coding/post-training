@@ -4,20 +4,20 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The corrected held-out run reached test accuracy 0.558324 and test macro F1 0.557349, below the current 55/45 ensemble leader. The next hypothesis adds rejected preference examples while keeping the fixed clean split and seed. Selection will use clean validation only.",
+  "current_hypothesis": "The rejected-example encoder reached clean-validation macro F1 0.682705 and was rejected before aggregate testing. The next hypothesis tests compact tool schemas with the stronger auxiliary pairwise encoder configuration. Selection will use clean validation only.",
   "active_experiment": {
-    "pid": 274994,
+    "pid": 275575,
     "command": [
       "python",
       "-u",
       "-m",
       "experiments.clean_validation_baseline",
       "--output-dir",
-      "outputs/clean-validation-cues-aux05-rejected-sftpairwise-wd0001-smooth0075-seed20261022",
+      "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-compact-seed20261022",
       "--sft-loss-function",
       "pairwise_ranking",
+      "--compact-tool-schemas",
       "--add-argument-cues",
-      "--include-rejected-examples",
       "--sft-aux-samples-per-class",
       "5",
       "--learning-rate",
@@ -35,7 +35,7 @@
       "--pref-train-epochs",
       "1"
     ],
-    "started_at": "2026-10-22T21:59:20.814458+00:00"
+    "started_at": "2026-10-22T22:04:28.172000+00:00"
   },
   "worker_command": [
     "python",
@@ -97,9 +97,9 @@
     "artifact": "outputs/clean-validation-calibration.json"
   },
   "last_heartbeat": "2026-10-22T21:59:20.814471+00:00",
-  "last_action": "Watchdog started validation worker pid 274994.",
+  "last_action": "Queued a distinct compact tool-schema encoder probe after recording the weak clean-validation result.",
   "watchdog_enabled": true,
-  "research_log_size": 335476,
+  "research_log_size": 338677,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -107,11 +107,11 @@
     "-m",
     "experiments.clean_validation_baseline",
     "--output-dir",
-    "outputs/clean-validation-cues-aux05-rejected-sftpairwise-wd0001-smooth0075-seed20261022",
+    "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-compact-seed20261022",
     "--sft-loss-function",
     "pairwise_ranking",
+    "--compact-tool-schemas",
     "--add-argument-cues",
-    "--include-rejected-examples",
     "--sft-aux-samples-per-class",
     "5",
     "--learning-rate",
@@ -130,7 +130,5 @@
     "1"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T21:57:49.225373+00:00",
-  "planning_ack_deadline": "2026-10-22T21:59:49.225440+00:00",
-  "planning_attempts": 209
-}
+  "planning_notified_at": "2026-10-22T22:03:26.851573+00:00",
+  "plann

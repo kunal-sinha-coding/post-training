@@ -895,6 +895,24 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## clean-validation-cues-aux05-rejected-sftpairwise-wd0001-smooth0075-seed20261022
+
+Timestamp: 2026-10-22T22:03:35.000000+00:00. Status: completed, aggregate test skipped.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-rejected-sftpairwise-wd0001-smooth0075-seed20261022", "--sft-loss-function", "pairwise_ranking", "--add-argument-cues", "--include-rejected-examples", "--sft-aux-samples-per-class", "5", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--weight-decay", "0.001", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux05-rejected-sftpairwise-wd0001-smooth0075-seed20261022. W&B run: not available.
+
+Training accuracy: 0.44247733020788355. Training macro F1: 0.36235826911842883. Clean-validation accuracy: 0.9088888888888889. Clean-validation macro F1: 0.6827049686852339. Aggregate black-box testing was skipped because clean validation was clearly weaker than the viable encoder candidates. Test labels were not used.
+
+The next hypothesis tests compact tool schemas with the stronger auxiliary pairwise encoder configuration.
+
+## clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-compact-seed20261022
+
+Timestamp: 2026-10-22T22:03:40.000000+00:00. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-compact-seed20261022", "--sft-loss-function", "pairwise_ranking", "--compact-tool-schemas", "--add-argument-cues", "--sft-aux-samples-per-class", "5", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--weight-decay", "0.001", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-compact-seed20261022. W&B run: pending.
+
+Selection will use clean validation only. Aggregate black-box testing will be queued if the clean-validation result is viable.
+
 ## test-clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-trainall-devsplit-seed20261022
 
 Timestamp: 2026-10-22T21:58:05.000000+00:00. Status: completed.
@@ -3636,5 +3654,15 @@ Timestamp: 2026-10-22T21:54:37.813711+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-trainall-devsplit-seed20261022", "--sft-loss-function", "pairwise_ranking", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--sft-aux-samples-per-class", "5", "--weight-decay", "0.001", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-trainall-devsplit-seed20261022. W&B run: not available.
 
 Clean development accuracy: 0.9644444444444444. Clean development macro F1: 0.7235398936480182. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-cues-aux05-rejected-sftpairwise-wd0001-smooth0075-seed20261022
+
+Timestamp: 2026-10-22T22:03:25.776185+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-rejected-sftpairwise-wd0001-smooth0075-seed20261022", "--sft-loss-function", "pairwise_ranking", "--add-argument-cues", "--include-rejected-examples", "--sft-aux-samples-per-class", "5", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--weight-decay", "0.001", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux05-rejected-sftpairwise-wd0001-smooth0075-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.9088888888888889. Clean development macro F1: 0.6827049686852339. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
