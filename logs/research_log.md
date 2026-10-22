@@ -4074,3 +4074,21 @@ Timestamp: 2026-10-22T23:35:36Z. Status: completed.
 Dataset: nvidia/When2Call, split test/mcq. Selection was complete before this measurement and did not use test labels. W&B run: e3lf19cp. Examples: 3652.
 
 Aggregate black-box accuracy: 0.5186199342825849. Aggregate black-box macro F1: 0.5194091402441089. The result is below the current 55/45 encoder ensemble leader. The watchdog then launched the queued auxiliary-1 objective training probe as PID 288365.
+
+## clean-validation-cues-aux01-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022
+
+Timestamp: 2026-10-22T23:40:35.835476+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux01-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022", "--loss-function", "cross_entropy", "--sft-loss-function", "pairwise_ranking", "--add-argument-cues", "--sft-aux-samples-per-class", "1", "--learning-rate", "1.5e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux01-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.9738888888888889. Clean development macro F1: 0.7306161078560158. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## test-clean-validation-cues-aux01-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022-result
+
+Timestamp: 2026-10-22T23:49:13Z. Status: completed.
+
+Dataset: nvidia/When2Call, split test/mcq. Selection was complete before this measurement and did not use test labels. W&B run: dc0bwet6. Examples: 3652.
+
+Aggregate black-box accuracy: 0.5314895947426068. Aggregate black-box macro F1: 0.5313800670249682. The result is below the current 55/45 encoder ensemble leader. The watchdog then launched the queued auxiliary-3 objective training probe as PID 289527.
