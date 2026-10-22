@@ -895,6 +895,14 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-smooth0075-wd002-weight75-25
+
+Timestamp: 2026-10-22T15:52:48+00:00. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-wd002-seed20261022", "--weight", "0.75", "--weight", "0.25", "--output", "outputs/test-clean-validation-smooth0075-wd002-weight75-25.json"]. The weights were fixed from clean-validation evidence before the aggregate-only measurement. Official test labels are not used for selection.
+
+Hypothesis: The weight-decay checkpoint may provide complementary logits while the clean-validation leader receives the larger weight.
+
 ## test-clean-validation-cues-lr2e5-smooth0075-seed20261022
 
 Timestamp: 2026-10-22T15:32:55+00:00. Status: completed.
