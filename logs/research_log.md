@@ -897,6 +897,24 @@ This record was written automatically. Candidate selection must use clean valida
 
 ## test-clean-validation-cues-aux05-mainpairwise-sftce-wd0001-smooth0075-seed20261022
 
+Timestamp: 2026-10-22T22:12:00.000000+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-mainpairwise-sftce-wd0001-smooth0075-seed20261022", "--output", "outputs/test-clean-validation-cues-aux05-mainpairwise-sftce-wd0001-smooth0075-seed20261022.json"]. Output: /workspace/post-training/outputs/test-clean-validation-cues-aux05-mainpairwise-sftce-wd0001-smooth0075-seed20261022.json. W&B run: qmto8eb5.
+
+Training accuracy: 0.969629732353349. Training macro F1: 0.7273840617863755. Clean-validation accuracy: 0.9538888888888889. Clean-validation macro F1: 0.7157634664848138. Aggregate black-box test accuracy: 0.5249178532311063. Aggregate black-box test macro F1: 0.5244355465297964. The test measurement used the frozen checkpoint after clean-validation selection and did not use test labels for selection.
+
+The main-pairwise auxiliary-cross-entropy branch is rejected below the current 55/45 ensemble leader. The next hypothesis adds one SFT pretraining epoch before main pairwise preference training.
+
+## clean-validation-cues-aux05-sftpre1-mainpairwise-smooth0075-seed20261022
+
+Timestamp: 2026-10-22T22:12:05.000000+00:00. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-sftpre1-mainpairwise-smooth0075-seed20261022", "--loss-function", "pairwise_ranking", "--sft-loss-function", "cross_entropy", "--add-argument-cues", "--sft-aux-samples-per-class", "5", "--sft-pretrain-epochs", "1", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--weight-decay", "0.001", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux05-sftpre1-mainpairwise-smooth0075-seed20261022. W&B run: pending.
+
+Selection will use clean validation only. Aggregate black-box testing will be queued if the clean-validation result is viable.
+
+## test-clean-validation-cues-aux05-mainpairwise-sftce-wd0001-smooth0075-seed20261022
+
 Timestamp: 2026-10-22T22:10:00.000000+00:00. Status: queued.
 
 Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-mainpairwise-sftce-wd0001-smooth0075-seed20261022", "--output", "outputs/test-clean-validation-cues-aux05-mainpairwise-sftce-wd0001-smooth0075-seed20261022.json"]. Output: /workspace/post-training/outputs/test-clean-validation-cues-aux05-mainpairwise-sftce-wd0001-smooth0075-seed20261022.json. W&B run: pending.
