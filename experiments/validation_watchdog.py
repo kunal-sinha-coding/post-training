@@ -243,19 +243,6 @@ def check_recording_jobs(repo: Path, state_path: Path, state: dict, log_path: Pa
 def advance_worker_command(state_path: Path, state: dict, log_path: Path) -> bool:
     """Promote the next queued experiment before starting recovery."""
     # Consume one predeclared command so a completed experiment cannot repeat indefinitely.
-    # Hold the queue when an explicit aggregate-test barrier is present so frozen tests run before more training.
-    test_barrier = Path("/tmp/post_training_qwen_test_priority")
-    if test_barrier.exists():
-        state["status"] = "awaiting_test_evaluation"
-        state["planning_required"] = False
-        state["active_experiment"] = {}
-        state["next_experiment"] = None
-        state["last_action"] = "Watchdog held the training queue for prioritized Qwen test evaluation."
-        temporary = state_path.with_suffix(".tmp")
-        temporary.write_text(json.dumps(state, indent=2) + "\n", encoding="utf-8")
-        temporary.replace(state_path)
-        write_log(log_path, "held worker queue for prioritized Qwen test evaluation")
-        return False
     queue = state.get("worker_queue") or []
     if not queue:
         state["status"] = "awaiting_codex_planning"
