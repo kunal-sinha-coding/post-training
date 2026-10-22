@@ -1005,6 +1005,22 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: The current best auxiliary checkpoint and the 0.001 weight-decay checkpoint have nearly tied clean-validation scores. A fixed 95/5 blend tests whether the lighter-regularized checkpoint contributes complementary errors. The weight is fixed before aggregate evaluation and test labels are not used for selection.
 
+## test-clean-validation-cues-aux05-wd0001-weight95-05
+
+Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-aux05-wd0001-smooth0075-seed20261022", "--weight", "0.95", "--weight", "0.05", "--output", "outputs/test-clean-validation-cues-aux05-wd0001-weight95-05.json"]. W&B run: 4mc2dn7l.
+
+Aggregate official test accuracy: 0.5588718510405257. Aggregate official test macro F1: 0.55827081087156. The blend improved over the lighter weight-decay checkpoint but remains below the current best. Test labels were used only for this separate aggregate measurement.
+
+## test-clean-validation-cues-aux05-wd0001-weight90-10
+
+Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-aux05-wd0001-smooth0075-seed20261022", "--weight", "0.90", "--weight", "0.10", "--output", "outputs/test-clean-validation-cues-aux05-wd0001-weight90-10.json"].
+
+Hypothesis: The 95/5 blend improved accuracy but not macro F1. A fixed 90/10 contribution tests whether a larger lighter-regularized component improves class balance. The weight is fixed from clean-validation evidence before aggregate evaluation.
+
 ## test-clean-validation-cues-lr25e5-smooth0075-wd00125-seed20261022
 
 Timestamp: 2026-10-22T18:52:12.333281+00:00. Status: completed.
