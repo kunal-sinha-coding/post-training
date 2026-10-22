@@ -5540,3 +5540,4 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-22 Added an aggregate-only Qwen official-test evaluator for the four completed frozen adapters. It records only accuracy, macro F1, row count, and W&B metadata.
 2026-10-22 Fixed Qwen completion bookkeeping so a successful training run serializes its Path-valued output argument and does not fail while writing metrics.json.
 2026-10-22 Clarified adaptive training decisions: compare within-run checkpoint trends across training, clean validation, and available aggregate test metrics, and do not infer epoch effects from one run-to-run comparison.
+2026-10-22 Added a temporary watchdog test-priority barrier so the four frozen Qwen adapters are evaluated before the remaining training queue resumes.
