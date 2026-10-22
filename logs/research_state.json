@@ -4,69 +4,34 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 0.40 base and 0.60 smoothing-02 blend reached 0.552292 aggregate test macro F1 and did not improve the leader. A lower-rate SFT-pretraining run with smoothing 0.02 tests whether the regularization level interacts favorably with the strongest clean-validation SFT-pretraining mechanism. It is the last bounded SFT-pretraining interaction before shifting away from this branch.",
+  "current_hypothesis": "The lower-rate SFT-pretraining smoothing-02 checkpoint reached 0.719797 clean-validation macro F1 but only 0.550064 aggregate test macro F1, so the SFT branch is rejected. A fixed complete-request-to-tool rule on the strong smoothing-02 checkpoint tests whether visible required-field evidence repairs request versus tool-call errors without tuning on test labels.",
   "active_experiment": {
-    "pid": 192092,
+    "pid": 192970,
     "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.clean_validation_baseline",
-      "--output-dir",
-      "outputs/clean-validation-cues-lr25e5-sftpre1-smooth002-seed20261022",
-      "--add-argument-cues",
-      "--sft-pretrain-epochs",
-      "1",
-      "--learning-rate",
-      "2.5e-5",
-      "--label-smoothing",
-      "0.02",
-      "--seed",
-      "20261022",
-      "--split-seed",
-      "20261021",
-      "--max-length",
-      "4096",
-      "--pref-train-epochs",
-      "1"
-    ],
-    "started_at": "2026-10-22T11:35:37.860428+00:00"
-  },
-  "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.clean_validation_baseline",
-    "--output-dir",
-    "outputs/clean-validation-cues-lr25e5-sftpre1-smooth002-seed20261022",
-    "--add-argument-cues",
-    "--sft-pretrain-epochs",
-    "1",
-    "--learning-rate",
-    "2.5e-5",
-    "--label-smoothing",
-    "0.02",
-    "--seed",
-    "20261022",
-    "--split-seed",
-    "20261021",
-    "--max-length",
-    "4096",
-    "--pref-train-epochs",
-    "1"
-  ],
-  "worker_queue": [
-    [
       "python",
       "-u",
       "-m",
       "experiments.evaluate_frozen_when2call_ensemble_test",
       "--checkpoint",
       "outputs/clean-validation-cues-lr25e5-sftpre1-smooth002-seed20261022",
+      "--complete-request-to-tool",
       "--output",
-      "outputs/test-clean-validation-cues-lr25e5-sftpre1-smooth002-seed20261022.json"
-    ]
+      "outputs/test-clean-validation-cues-lr25e5-smooth002-complete-request.json"
+    ],
+    "started_at": "2026-10-22T11:43:14.779827+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_frozen_when2call_ensemble_test",
+    "--checkpoint",
+    "outputs/clean-validation-cues-lr25e5-sftpre1-smooth002-seed20261022",
+    "--complete-request-to-tool",
+    "--output",
+    "outputs/test-clean-validation-cues-lr25e5-smooth002-complete-request.json"
   ],
+  "worker_queue": [],
   "experiment_queue": [
     "Run one cheap encoder-only alternative on the fixed clean split.",
     "Run one additional Jina encoder training variant with a distinct mechanism.",
@@ -81,14 +46,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T11:35:37.860448+00:00",
-  "last_action": "Watchdog started validation worker pid 192092.",
+  "last_heartbeat": "2026-10-22T11:43:14.779847+00:00",
+  "last_action": "Watchdog started validation worker pid 192970.",
   "watchdog_enabled": true,
-  "research_log_size": 116638,
+  "research_log_size": 118268,
   "stop_command": "STOP",
   "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T11:35:07.336214+00:00",
-  "planning_ack_deadline": "2026-10-22T11:37:07.336238+00:00",
-  "planning_attempts": 46
+  "planning_notified_at": "2026-10-22T11:41:44.204882+00:00",
+  "planning_ack_deadline": "2026-10-22T11:43:44.204903+00:00",
+  "planning_attempts": 47
 }

@@ -895,6 +895,16 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-cues-lr25e5-sftpre1-smooth002-seed20261022
+
+Timestamp: 2026-10-22T11:41:42.477244+00:00. Status: completed.
+
+Setup: The lower-rate, one-epoch SFT-pretraining argument-cue checkpoint used learning rate 2.5e-5 and label smoothing 0.02. It was measured through the aggregate-only official test interface after clean-validation selection. W&B run: `tvs4z19d`. Test labels were not used for selection.
+
+Training macro F1 was 0.739329. Clean-validation macro F1 was 0.719797. Aggregate test accuracy was 0.549836 and macro F1 was 0.550064. The candidate is below the current leader and is rejected.
+
+This record was written after the JSON-only test recorder skipped the output file. Candidate selection must use clean validation only.
+
 ## test-clean-validation-cues-lr25e5-sftpre1-smooth001-seed20261022
 
 Timestamp: 2026-10-22T11:30:27.945367+00:00. Status: completed.
@@ -1386,5 +1396,15 @@ Timestamp: 2026-10-22T11:28:57.443851+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-lr25e5-sftpre1-smooth001-seed20261022", "--add-argument-cues", "--sft-pretrain-epochs", "1", "--learning-rate", "2.5e-5", "--label-smoothing", "0.01", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-lr25e5-sftpre1-smooth001-seed20261022. W&B run: not available.
 
 Clean development accuracy: 0.9611111111111111. Clean development macro F1: 0.7210619055474808. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-cues-lr25e5-sftpre1-smooth002-seed20261022
+
+Timestamp: 2026-10-22T11:40:12.200012+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-lr25e5-sftpre1-smooth002-seed20261022", "--add-argument-cues", "--sft-pretrain-epochs", "1", "--learning-rate", "2.5e-5", "--label-smoothing", "0.02", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-lr25e5-sftpre1-smooth002-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.9594444444444444. Clean development macro F1: 0.7197967367233663. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
