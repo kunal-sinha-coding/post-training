@@ -9,6 +9,7 @@ import argparse
 import fcntl
 import json
 import os
+import shlex
 import subprocess
 import time
 from datetime import datetime, timedelta, timezone
@@ -102,8 +103,17 @@ def process_alive(pid: int) -> bool:
 
 def command_matches(expected: list[str], actual: str) -> bool:
     """Return whether a process command contains the declared worker command."""
-    # Match every declared argument so stale workers from an earlier experiment cannot be adopted.
-    return bool(expected) and all(argument in actual for argument in expected)
+    # Require a Python executable and an exact contiguous argument sequence so shell text cannot impersonate a worker.
+    if not expected:
+        return False
+    try:
+        tokens = shlex.split(actual)
+    except ValueError:
+        return False
+    if not tokens or Path(tokens[0]).name != Path(expected[0]).name:
+        return False
+    expected_tokens = [str(item) for item in expected]
+    return any(tokens[index:index + len(expected_tokens)] == expected_tokens for index in range(len(tokens) - len(expected_tokens) + 1))
 
 
 def running_validation_workers(exclude_pid: int, expected_command: list[str]) -> list[int]:
