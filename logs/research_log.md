@@ -995,6 +995,12 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 
 Hypothesis: A 6,144-token context may retain useful long-schema information while avoiding the memory failure observed at 8,192 tokens.
 
+## test-clean-validation-cues-lr25e5-smooth0075-len6144-seed20261022
+
+Timestamp: 2026-10-22T18:03:00+00:00. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-len6144-seed20261022", "--output", "outputs/test-clean-validation-cues-lr25e5-smooth0075-len6144-seed20261022.json"]. Training macro F1 was 0.737965 and clean-validation macro F1 was 0.719299. This is the required separate aggregate black-box measurement. Official test labels are not used for selection.
+
 ## test-clean-validation-smooth0075-smooth006-weight90-10
 
 Timestamp: 2026-10-22T16:17:46+00:00. Status: completed.
@@ -2280,5 +2286,15 @@ Timestamp: 2026-10-22T17:58:12.858664+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.evaluate_qwen_when2call_test", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--checkpoint", "outputs/qwen-when2call-rpo-15b-seed20261022", "--output-dir", "outputs/test-qwen-rpo-15b-seed20261022", "--lora-rank", "16", "--max-length", "4096", "--batch-size", "1"]. Output: /workspace/post-training/outputs/test-qwen-rpo-15b-seed20261022. W&B run: 5eakf32i.
 
 Clean development accuracy: —. Clean development macro F1: —. Official test loaded: True. Official test metrics: {"accuracy": 0.5298466593647316, "macro_f1": 0.399156349206227}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-cues-lr25e5-smooth0075-len6144-seed20261022
+
+Timestamp: 2026-10-22T18:02:37.508557+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-lr25e5-smooth0075-len6144-seed20261022", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "6144", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-len6144-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.9588888888888889. Clean development macro F1: 0.7192990980821414. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.

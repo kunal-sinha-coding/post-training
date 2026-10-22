@@ -173,9 +173,11 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-qwen-rpo-15b-seed20261022 | — | — | — | Required aggregate black-box measurement queued | queued |
 | test-qwen-rpo-15b-seed20261022 | 0.5298466593647316 | 0.399156349206227 | 5eakf32i | Aggregate-only test measurement, branch rejected | completed |
 | Candidate | clean-validation-cues-lr25e5-smooth0075-len6144-seed20261022 | — | — | [queued](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-len6144-seed20261022) | queued |
+| test-clean-validation-cues-lr25e5-smooth0075-len6144-seed20261022 | — | — | — | Required aggregate black-box measurement queued | queued |
 | Candidate | clean-validation-cues-lr25e5-smooth0075-wd001-seed20261022 | 0.9588888888888889 | 0.719306410582761 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-wd001-seed20261022/metrics.json) | completed |
 | Candidate | clean-validation-cues-lr25e5-smooth0075-compact-schema-seed20261022 | 0.9016666666666666 | 0.6766769163985007 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-compact-schema-seed20261022/metrics.json) | completed |
 | Candidate | qwen-when2call-rpo-15b-seed20261022 | 0.7994444444444444 | 0.5987393666674012 | [metrics](/workspace/post-training/outputs/qwen-when2call-rpo-15b-seed20261022/metrics.json) | completed |
 | Candidate | test-qwen-rpo-15b-seed20261022 | — | — | [metrics](/workspace/post-training/outputs/test-qwen-rpo-15b-seed20261022/metrics.json) | completed |
 
 | test-qwen-rpo-15b-seed20261022 | 0.5298466593647316 | 0.399156349206227 | 5eakf32i | Aggregate-only Qwen test measurement |
+| Candidate | clean-validation-cues-lr25e5-smooth0075-len6144-seed20261022 | 0.9588888888888889 | 0.7192990980821414 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-len6144-seed20261022/metrics.json) | completed |
