@@ -1747,6 +1747,16 @@ The linked checkpoints had complete training and clean-validation evidence. Aggr
 
 This record was written by the primary Codex process because the test-only output has no output directory for the recorder. Candidate selection used clean validation only.
 
+## test-clean-validation-smooth0075-smooth0005-weight75-25
+
+Timestamp: 2026-10-22T13:52:37.000000+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0005-seed20261022", "--weight", "0.75", "--weight", "0.25", "--output", "outputs/test-clean-validation-smooth0075-smooth0005-weight75-25.json"]. Output: /workspace/post-training/outputs/test-clean-validation-smooth0075-smooth0005-weight75-25.json. W&B run: avkgz4sc.
+
+The linked checkpoints had complete training and clean-validation evidence. Aggregate black-box test accuracy was 0.5561336254107339 and macro F1 was 0.5558591419773201. The official test labels were used only for this separate measurement after clean-validation selection. The weighted blend is below the 0.0075 single-checkpoint result and is rejected.
+
+This record was written by the primary Codex process because the test-only output has no output directory for the recorder. Candidate selection used clean validation only.
+
 ## clean-validation-cues-lr25e5-smooth0075-seed20261022
 
 Timestamp: 2026-10-22T13:39:46.706999+00:00. Status: completed.
