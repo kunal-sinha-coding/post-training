@@ -1115,6 +1115,14 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 
 Hypothesis: A midpoint weight decay between the tested 0.01 and 0.02 settings may improve regularization transfer without changing the strong encoder inputs or objective. Aggregate black-box evaluation will follow only if training and clean validation are credible.
 
+Training macro F1 was 0.737860 and clean-validation macro F1 was 0.719733. The result is below the clean leader. Its aggregate black-box measurement is queued before selecting a new direction.
+
+## test-clean-validation-cues-lr25e5-smooth0075-wd0015-seed20261022
+
+Timestamp: 2026-10-22T18:42:00+00:00. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-wd0015-seed20261022", "--output", "outputs/test-clean-validation-cues-lr25e5-smooth0075-wd0015-seed20261022.json"]. This is the separate aggregate black-box measurement. Candidate selection used training and clean validation only. Official test labels are not used for selection.
+
 ## test-clean-validation-smooth0075-smooth006-weight90-10
 
 Timestamp: 2026-10-22T16:17:46+00:00. Status: completed.
@@ -2440,5 +2448,15 @@ Timestamp: 2026-10-22T18:26:00.153537+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-lr25e5-smooth00775-seed20261022", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.00775", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth00775-seed20261022. W&B run: not available.
 
 Clean development accuracy: 0.9583333333333334. Clean development macro F1: 0.7188907319772974. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-cues-lr25e5-smooth0075-wd0015-seed20261022
+
+Timestamp: 2026-10-22T18:41:37.664146+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-lr25e5-smooth0075-wd0015-seed20261022", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--weight-decay", "0.015", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-wd0015-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.9594444444444444. Clean development macro F1: 0.719732511985107. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
