@@ -5,7 +5,20 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "The 0.0075 label-smoothing encoder probe reached training macro F1 0.738069 and clean-validation macro F1 0.720977. Its aggregate black-box measurement is required before judging transfer, so test the frozen checkpoint before any new experiment.",
-  "active_experiment": {},
+  "active_experiment": {
+    "pid": 210443,
+    "command": [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_frozen_when2call_ensemble_test",
+      "--checkpoint",
+      "outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022",
+      "--output",
+      "outputs/test-clean-validation-cues-lr25e5-smooth0075-seed20261022.json"
+    ],
+    "started_at": "2026-10-22T13:40:24.830785+00:00"
+  },
   "worker_command": [
     "python",
     "-u",
@@ -16,18 +29,7 @@
     "--output",
     "outputs/test-clean-validation-cues-lr25e5-smooth0075-seed20261022.json"
   ],
-  "worker_queue": [
-    [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_frozen_when2call_ensemble_test",
-      "--checkpoint",
-      "outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022",
-      "--output",
-      "outputs/test-clean-validation-cues-lr25e5-smooth0075-seed20261022.json"
-    ]
-  ],
+  "worker_queue": [],
   "experiment_queue": [
     "Run one cheap encoder-only alternative on the fixed clean split.",
     "Run one additional Jina encoder training variant with a distinct mechanism.",
@@ -42,18 +44,13 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T13:37:15.890287+00:00",
-  "last_action": "Watchdog handed planning control to the primary Codex process.",
+  "last_heartbeat": "2026-10-22T13:40:24.830799+00:00",
+  "last_action": "Watchdog started validation worker pid 210443.",
   "watchdog_enabled": true,
-  "research_log_size": 150850,
+  "research_log_size": 151674,
   "stop_command": "STOP",
   "next_experiment": null,
-  "recording_jobs": [
-    {
-      "pid": 210313,
-      "experiment_id": "clean-validation-cues-lr25e5-smooth0075-seed20261022"
-    }
-  ],
+  "recording_jobs": [],
   "planning_notified_at": "2026-10-22T13:39:54.296876+00:00",
   "planning_ack_deadline": "2026-10-22T13:41:54.296897+00:00",
   "planning_attempts": 81
