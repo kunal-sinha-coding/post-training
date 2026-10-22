@@ -4,61 +4,10 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The clean-selected three-member ensemble reached 0.550924 aggregate test macro F1, below the two-member leader. Weight decay 0.05 reduced clean-validation and test performance relative to the default 0.01, so weight decay 0.005 tests whether milder regularization preserves the argument-cue representation.",
-  "active_experiment": {
-    "pid": 184433,
-    "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.clean_validation_baseline",
-      "--output-dir",
-      "outputs/clean-validation-cues-wd0005-seed20261022",
-      "--add-argument-cues",
-      "--weight-decay",
-      "0.005",
-      "--seed",
-      "20261022",
-      "--split-seed",
-      "20261021",
-      "--max-length",
-      "4096",
-      "--pref-train-epochs",
-      "1"
-    ],
-    "started_at": "2026-10-22T10:48:19.461537+00:00"
-  },
-  "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.clean_validation_baseline",
-    "--output-dir",
-    "outputs/clean-validation-cues-wd0005-seed20261022",
-    "--add-argument-cues",
-    "--weight-decay",
-    "0.005",
-    "--seed",
-    "20261022",
-    "--split-seed",
-    "20261021",
-    "--max-length",
-    "4096",
-    "--pref-train-epochs",
-    "1"
-  ],
-  "worker_queue": [
-    [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_frozen_when2call_ensemble_test",
-      "--checkpoint",
-      "outputs/clean-validation-cues-wd0005-seed20261022",
-      "--output",
-      "outputs/test-clean-validation-cues-wd0005-seed20261022.json"
-    ]
-  ],
+  "current_hypothesis": "Weight decay 0.005 reached 0.707679 clean-validation macro F1 but only 0.522177 aggregate test macro F1, so the regularization change is rejected. Earlier staged results indicate that a lower learning rate can preserve pretrained representations, so test 2.5e-5 on the fixed clean split before abandoning this optimization axis.",
+  "active_experiment": {},
+  "worker_command": ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-lr25e5-seed20261022", "--add-argument-cues", "--learning-rate", "2.5e-5", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"],
+  "worker_queue": [["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-seed20261022", "--output", "outputs/test-clean-validation-cues-lr25e5-seed20261022.json"]],
   "experiment_queue": [
     "Run one cheap encoder-only alternative on the fixed clean split.",
     "Run one additional Jina encoder training variant with a distinct mechanism.",
@@ -73,14 +22,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T10:48:19.461556+00:00",
-  "last_action": "Watchdog started validation worker pid 184433.",
+  "last_heartbeat": "2026-10-22T10:50:20.030227+00:00",
+  "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
-  "research_log_size": 102733,
+  "research_log_size": 104344,
   "stop_command": "STOP",
   "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T10:47:18.961627+00:00",
-  "planning_ack_deadline": "2026-10-22T10:49:18.961651+00:00",
-  "planning_attempts": 34
+  "planning_notified_at": "2026-10-22T10:51:53.014997+00:00",
+  "planning_ack_deadline": "2026-10-22T10:53:53.015023+00:00",
+  "planning_attempts": 35
 }
