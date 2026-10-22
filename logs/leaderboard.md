@@ -156,3 +156,5 @@ Historical official test results remain detailed in [research_log.md](research_l
 | Candidate | clean-validation-cues-lr25e5-smooth0075-wd002-seed20261022 | 0.9594444444444444 | 0.7197224681075437 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-wd002-seed20261022/metrics.json) | completed |
 | Candidate | clean-validation-cues-lr225e5-smooth0075-seed20261022 | 0.9633333333333334 | 0.7226959616059145 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr225e5-smooth0075-seed20261022/metrics.json) | completed |
 | Candidate | clean-validation-cues-lr25e5-smooth006-seed20261022 | 0.96 | 0.7201317229791517 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth006-seed20261022/metrics.json) | completed |
+| Candidate | clean-validation-cues-lr25e5-smooth00675-seed20261022 | 0.9605555555555556 | 0.7205639354561022 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth00675-seed20261022/metrics.json) | completed |
+| test-clean-validation-cues-lr25e5-smooth00675-seed20261022 | — | — | — | Required aggregate black-box test measurement queued | queued |
