@@ -6,7 +6,7 @@
   "protocol": "clean_validation_v1",
   "current_hypothesis": "The 0.005 weight-decay encoder reached training macro F1 0.738277, clean-validation macro F1 0.720567, aggregate test accuracy 0.554491, and aggregate test macro F1 0.554049. It underperformed the current best. A fixed 90/10 blend with the clean-validation leader tests complementary errors without changing either frozen checkpoint. Test labels are not used for selection.",
   "active_experiment": {
-    "pid": 245183,
+    "pid": 245717,
     "command": [
       "python",
       "-u",
@@ -23,7 +23,7 @@
       "--output",
       "outputs/test-clean-validation-smooth0075-wd0005-weight90-10.json"
     ],
-    "started_at": "2026-10-22T18:59:27.371063+00:00"
+    "started_at": "2026-10-22T19:02:31.571775+00:00"
   },
   "worker_command": [
     "python",
@@ -72,10 +72,10 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T18:59:27.371075+00:00",
-  "last_action": "Watchdog started validation worker pid 245183.",
+  "last_heartbeat": "2026-10-22T19:02:31.571790+00:00",
+  "last_action": "Watchdog started validation worker pid 245717.",
   "watchdog_enabled": true,
-  "research_log_size": 230421,
+  "research_log_size": 231341,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -94,7 +94,7 @@
     "outputs/test-clean-validation-smooth0075-wd0005-weight90-10.json"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T18:58:56.334635+00:00",
-  "planning_ack_deadline": "2026-10-22T19:00:56.334660+00:00",
-  "planning_attempts": 147
+  "planning_notified_at": "2026-10-22T19:01:31.055195+00:00",
+  "planning_ack_deadline": "2026-10-22T19:03:31.055218+00:00",
+  "planning_attempts": 148
 }

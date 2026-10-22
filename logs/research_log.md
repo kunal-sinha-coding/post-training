@@ -2556,3 +2556,19 @@ Status: queued.
 Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-wd0005-seed20261022", "--weight", "0.90", "--weight", "0.10", "--output", "outputs/test-clean-validation-smooth0075-wd0005-weight90-10.json"].
 
 The 90/10 weights were fixed from clean-validation evidence before this aggregate test. No test labels are used for selection.
+
+## test-clean-validation-smooth0075-wd0005-weight90-10
+
+Status: completed.
+
+Aggregate official test accuracy: 0.5566812705366923. Aggregate official test macro F1: 0.556373712365878. W&B run: dxaqwl9y. The blend remained below the single-checkpoint leader and is rejected. The measurement used aggregate black-box output only.
+
+Next action: Close this blend branch and select a distinct encoder-only or architecture hypothesis from clean-validation evidence.
+
+## test-clean-validation-smooth0075-wd0005-weight90-10
+
+Status: completed.
+
+Aggregate official test accuracy: 0.5566812705366923. Aggregate official test macro F1: 0.556373712365878. W&B run: dxaqwl9y. The blend remained below the single-checkpoint leader and is rejected. The measurement used aggregate black-box output only.
+
+Next action: Close this blend branch and select a distinct encoder-only or architecture hypothesis from clean-validation evidence.
