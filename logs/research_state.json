@@ -1,13 +1,22 @@
 {
-  "status": "active",
+  "status": "awaiting_codex_planning",
   "planning_owner": "codex_primary",
-  "planning_required": false,
+  "planning_required": true,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "The two-preference-epoch encoder run has training macro F1 0.743080 and clean-validation macro F1 0.719839. Its aggregate black-box test measurement is missing, so queue that measurement before selecting another experiment.",
   "active_experiment": {},
-  "worker_command": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-epochs2-seed20261022", "--output", "outputs/test-clean-validation-cues-lr25e5-smooth0075-epochs2-seed20261022.json"],
-  "worker_queue": [["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-epochs2-seed20261022", "--output", "outputs/test-clean-validation-cues-lr25e5-smooth0075-epochs2-seed20261022.json"]],
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_frozen_when2call_ensemble_test",
+    "--checkpoint",
+    "outputs/clean-validation-cues-lr25e5-smooth0075-epochs2-seed20261022",
+    "--output",
+    "outputs/test-clean-validation-cues-lr25e5-smooth0075-epochs2-seed20261022.json"
+  ],
+  "worker_queue": [],
   "experiment_queue": [
     "Run one cheap encoder-only alternative on the fixed clean split.",
     "Run one additional Jina encoder training variant with a distinct mechanism.",
@@ -22,19 +31,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T14:34:39.561768+00:00",
+  "last_heartbeat": "2026-10-22T14:39:22.756954+00:00",
   "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
-  "research_log_size": 163866,
+  "research_log_size": 164714,
   "stop_command": "STOP",
   "next_experiment": null,
-  "recording_jobs": [
-    {
-      "pid": 218764,
-      "experiment_id": "clean-validation-cues-lr25e5-smooth0075-epochs2-seed20261022"
-    }
-  ],
-  "planning_notified_at": "2026-10-22T14:38:52.234283+00:00",
-  "planning_ack_deadline": "2026-10-22T14:40:52.234308+00:00",
-  "planning_attempts": 95
+  "recording_jobs": [],
+  "planning_notified_at": "2026-10-22T14:41:58.653868+00:00",
+  "planning_ack_deadline": "2026-10-22T14:43:58.653889+00:00",
+  "planning_attempts": 96
 }
