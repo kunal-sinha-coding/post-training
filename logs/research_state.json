@@ -4,23 +4,14 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The equal-weight seed ensemble underperformed its best members on the official test. Clean validation ranks the full-train seed-20 checkpoint highest, followed by seed-22, so test the strongest frozen checkpoint first and then use validation-derived weights for a second ensemble.",
+  "current_hypothesis": "Both equal-weight and validation-weighted seed ensembles underperformed their best individual member. A distinct argument-cue encoder checkpoint remains strong on clean validation and has not yet received its own official aggregate test measurement.",
   "active_experiment": {},
   "worker_command": [
     "python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test",
-    "--checkpoint", "outputs/clean-validation-fixedsplit-train20",
-    "--output", "outputs/test-clean-validation-fixedsplit-train20.json"
+    "--checkpoint", "outputs/clean-validation-argument-cues-seed21",
+    "--output", "outputs/test-clean-validation-argument-cues-seed21.json"
   ],
-  "worker_queue": [
-    [
-      "python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test",
-      "--checkpoint", "outputs/clean-validation-fixedsplit-seed20-len4096",
-      "--checkpoint", "outputs/clean-validation-fixedsplit-seed21-len4096",
-      "--checkpoint", "outputs/clean-validation-fixedsplit-seed22-len4096",
-      "--weight", "0.333", "--weight", "0.333", "--weight", "0.334",
-      "--output", "outputs/test-clean-validation-fixedsplit-validation-weighted.json"
-    ]
-  ],
+  "worker_queue": [],
   "experiment_queue": [
     "Run one cheap encoder-only alternative on the fixed clean split.",
     "Run one additional Jina encoder training variant with a distinct mechanism.",
@@ -35,14 +26,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T09:11:58.552683+00:00",
+  "last_heartbeat": "2026-10-22T09:16:04.354410+00:00",
   "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
   "research_log_size": 94477,
   "stop_command": "STOP",
   "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T09:14:02.926926+00:00",
-  "planning_ack_deadline": "2026-10-22T09:16:02.926950+00:00",
-  "planning_attempts": 8
+  "planning_notified_at": "2026-10-22T09:18:07.946230+00:00",
+  "planning_ack_deadline": "2026-10-22T09:20:07.946255+00:00",
+  "planning_attempts": 9
 }
