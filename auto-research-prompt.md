@@ -208,6 +208,8 @@ Measure at minimum:
 - Confusion matrix.
 - Training and inference cost where relevant.
 
+For every candidate that is promoted as a finalist, run the authorized aggregate-only official test evaluation after the candidate is frozen. Record test accuracy and test macro F1 in the persistent research log and in the leaderboard's official test-results section. If a candidate has not been tested, record `not measured` explicitly. Never use a test result to choose, tune, or reorder a new candidate. Use clean development results for selection, then use the frozen test result only as the final benchmark measurement.
+
 Investigate unexpected results.
 
 Do not assume a higher training score implies better generalization.
@@ -278,6 +280,8 @@ Every experiment must create a W&B run before data loading or model execution. T
 After every experiment, finish the W&B run and record its run ID and URL in the persistent research log. Use W&B curves and summaries when selecting the next experiment. For black-box test runs, log only aggregate test accuracy and macro F1, never per-example labels or correctness. Do not use hidden test labels or example-level test outcomes for candidate selection.
 
 Maintain a separate leaderboard of the best configurations, using validation results only.
+
+The leaderboard must show both evaluation states without mixing them. The validation table ranks candidates using clean development accuracy and macro F1. A linked official test-results table records aggregate-only test accuracy and macro F1 for frozen candidates. Every validation row must have a corresponding test status of `measured`, `not measured`, or `failed`. A missing test result must never be represented by an empty field.
 
 Preserve sufficient artifacts to reproduce important experiments.
 
