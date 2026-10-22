@@ -284,4 +284,6 @@ Historical official test results remain detailed in [research_log.md](research_l
 | Candidate | clean-validation-cues-aux05-smooth005-wd0005-seed20261022 | — | — | [queued](../outputs/clean-validation-cues-aux05-smooth005-wd0005-seed20261022) | queued |
 | Candidate | clean-validation-cues-aux05-smooth005-wd0005-seed20261022 | 0.9644444444444444 | 0.7235238125271145 | [metrics](/workspace/post-training/outputs/clean-validation-cues-aux05-smooth005-wd0005-seed20261022/metrics.json) | completed |
 | test-clean-validation-cues-aux05-smooth005-wd0005-seed20261022 | — | — | — | Required aggregate black-box measurement queued | queued |
+| test-clean-validation-cues-aux05-smooth005-wd0005-seed20261022 | 0.5577765607886089 | 0.5564803763642715 | mint4pla | Aggregate-only test measurement, below current best | completed |
+| Candidate | clean-validation-cues-aux05-rejected02-wd0005-smooth0075-seed20261022 | — | — | [queued](../outputs/clean-validation-cues-aux05-rejected02-wd0005-smooth0075-seed20261022) | queued |
 | Candidate | clean-validation-cues-aux05-smooth005-wd0005-seed20261022 | 0.9644444444444444 | 0.7235238125271145 | [metrics](/workspace/post-training/outputs/clean-validation-cues-aux05-smooth005-wd0005-seed20261022/metrics.json) | completed |

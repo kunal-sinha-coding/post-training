@@ -927,6 +927,22 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Training macro F1: 0.7401180000956347. Clean-validation accuracy: 0.9644444444444444. Clean-validation macro F1: 0.7235238125271145. The candidate is viable on clean validation, so its required aggregate black-box measurement is queued before any new experiment. Test labels are not used for selection.
 
+## test-clean-validation-cues-aux05-smooth005-wd0005-seed20261022
+
+Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth005-wd0005-seed20261022", "--output", "outputs/test-clean-validation-cues-aux05-smooth005-wd0005-seed20261022.json"]. W&B run: mint4pla.
+
+Aggregate official test accuracy: 0.5577765607886089. Aggregate official test macro F1: 0.5564803763642715. The result is below the current best aggregate result, so this smoothing branch is rejected. Test labels were used only for this separate aggregate measurement after candidate selection.
+
+## clean-validation-cues-aux05-rejected02-wd0005-smooth0075-seed20261022
+
+Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-rejected02-wd0005-smooth0075-seed20261022", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--sft-aux-samples-per-class", "5", "--rejected-direct-samples", "2", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"].
+
+Hypothesis: The ten-example rejected-direct repair reduced aggregate performance despite similar clean validation. A two-example repair tests whether a smaller direct-class correction preserves the successful auxiliary representation and avoids that distribution shift. Selection will use clean validation only. Aggregate testing will be queued only if viable.
+
 ## test-clean-validation-cues-lr25e5-smooth0075-wd00125-seed20261022
 
 Timestamp: 2026-10-22T18:52:12.333281+00:00. Status: completed.
