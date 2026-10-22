@@ -332,8 +332,6 @@ def main() -> int:
                         # Consume a queued command before starting it so it cannot relaunch after completion.
                         if advance_worker_command(state_path, state, log_path):
                             start_worker(args.repo, state_path, log_path)
-                        else:
-                            start_worker(args.repo, state_path, log_path)
                     else:
                         # Record the exited worker and advance exactly once to the next queued command.
                         recorder_job = start_recorder(args.repo, active, log_path)
