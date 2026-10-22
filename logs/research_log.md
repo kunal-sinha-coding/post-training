@@ -3912,3 +3912,11 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 Clean development accuracy: 0.965. Clean development macro F1: 0.7240001814353991. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## test-clean-validation-cues-aux05-lr15e5-mainpairwise-wd0005-smooth005-seed20261022-result
+
+Timestamp: 2026-10-22T23:00:02Z. Status: completed.
+
+Dataset: nvidia/When2Call, split test/mcq. Selection was complete before this measurement and did not use test labels. W&B run: bitb6ga1. Examples: 3652.
+
+Aggregate black-box accuracy: 0.5271084337349398. Aggregate black-box macro F1: 0.5292875466282565. The result is below the current 55/45 encoder ensemble leader.
