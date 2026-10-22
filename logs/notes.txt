@@ -5544,3 +5544,4 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-22 Changed the Qwen official-test evaluator to be a normal watchdog worker with heartbeats and added recorder support for aggregate test metrics.
 2026-10-22 Cleared the remaining Qwen training queue after the user required immediate testing of viable frozen methods before more training.
 2026-10-22 Clarified the queue invariant: prioritize pending test entries, then alternate every viable training candidate with its aggregate-only test evaluation instead of choosing testing or training exclusively.
+2026-10-22 Added user-guidance and ensemble exploration rules to the autonomous research prompt. User suggestions steer research families but do not limit creative hypothesis generation.
