@@ -4,12 +4,14 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "Both equal-weight and validation-weighted seed ensembles underperformed their best individual member. A distinct argument-cue encoder checkpoint remains strong on clean validation and has not yet received its own official aggregate test measurement.",
+  "current_hypothesis": "The argument-cue encoder reached 0.537514 official-test accuracy and 0.539060 macro F1, better than the earlier frozen candidates. Its input representation differs from the standard-schema seed-20 encoder, so a complementary two-member ensemble may improve robustness.",
   "active_experiment": {},
   "worker_command": [
     "python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint", "outputs/clean-validation-argument-cues-seed21",
-    "--output", "outputs/test-clean-validation-argument-cues-seed21.json"
+    "--checkpoint", "outputs/clean-validation-fixedsplit-train20",
+    "--weight", "0.5", "--weight", "0.5",
+    "--output", "outputs/test-clean-validation-argument-cues-plus-train20.json"
   ],
   "worker_queue": [],
   "experiment_queue": [
@@ -26,14 +28,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T09:16:04.354410+00:00",
+  "last_heartbeat": "2026-10-22T09:18:38.492252+00:00",
   "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
   "research_log_size": 94477,
   "stop_command": "STOP",
   "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T09:18:07.946230+00:00",
-  "planning_ack_deadline": "2026-10-22T09:20:07.946255+00:00",
-  "planning_attempts": 9
+  "planning_notified_at": "2026-10-22T09:20:11.205245+00:00",
+  "planning_ack_deadline": "2026-10-22T09:22:11.205269+00:00",
+  "planning_attempts": 10
 }
