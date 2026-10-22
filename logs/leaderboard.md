@@ -203,6 +203,8 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-smooth0075-wd0015-weight95-05 | — | — | — | Fixed 95/5 leader-plus-regularized ensemble queued | queued |
 | test-clean-validation-smooth0075-wd0015-weight95-05 | 0.5572289156626506 | 0.5569750906137408 | 5puzppwx | Aggregate-only blend, below leader | completed |
 | test-clean-validation-smooth0075-wd0015-weight90-10 | — | — | — | Fixed 90/10 leader-plus-regularized ensemble queued | queued |
+| test-clean-validation-smooth0075-wd0015-weight90-10 | 0.5575027382256298 | 0.5572681665498875 | vjw81bvy | Aggregate-only blend, current best observed strategy | completed |
+| Candidate | clean-validation-cues-lr25e5-smooth0075-wd00125-seed20261022 | — | — | [queued](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-wd00125-seed20261022) | queued |
 | test-clean-validation-cues-lr25e5-smooth0075-len6144-seed20261022 | — | — | — | Required aggregate black-box measurement queued | queued |
 | Candidate | clean-validation-cues-lr25e5-smooth0075-wd001-seed20261022 | 0.9588888888888889 | 0.719306410582761 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-wd001-seed20261022/metrics.json) | completed |
 | Candidate | clean-validation-cues-lr25e5-smooth0075-compact-schema-seed20261022 | 0.9016666666666666 | 0.6766769163985007 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-compact-schema-seed20261022/metrics.json) | completed |

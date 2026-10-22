@@ -1143,6 +1143,16 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: A larger midpoint-decay contribution may expose complementary errors that the 95/5 blend did not capture. This is the final regularized ensemble probe.
 
+Aggregate black-box test accuracy was 0.557503 and macro F1 was 0.557268 from W&B run vjw81bvy. This matches the leader accuracy and improves macro F1, so it is the current best observed strategy.
+
+## clean-validation-cues-lr25e5-smooth0075-wd00125-seed20261022
+
+Timestamp: 2026-10-22T18:49:00+00:00. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-lr25e5-smooth0075-wd00125-seed20261022", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--weight-decay", "0.0125", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. This uses the fixed clean split and does not load official test labels.
+
+Hypothesis: A smaller regularization change than 0.015 may preserve clean-validation performance while retaining complementary behavior for a future fixed ensemble with the leader. Aggregate black-box evaluation will follow only if training and clean validation are credible.
+
 ## test-clean-validation-smooth0075-smooth006-weight90-10
 
 Timestamp: 2026-10-22T16:17:46+00:00. Status: completed.
