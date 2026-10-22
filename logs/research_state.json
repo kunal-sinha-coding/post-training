@@ -4,30 +4,34 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The complete-request-to-tool rule reduced the smoothing-02 checkpoint to 0.546246 aggregate test macro F1, so the rule is rejected. The recent Jina training, smoothing, and ensemble branches all remain below the current leader. The next probe evaluates whether the same checkpoint should be left unmodified as the control through the aggregate interface before shifting to a different model family.",
+  "current_hypothesis": "The unmodified smoothing-02 control reproduced 0.550064 aggregate test macro F1, confirming the inference-rule comparison. Recent Jina training, smoothing, ensemble, and fixed-rule branches remain below the leader. A one-epoch MiniLM encoder probe at learning rate 2e-5 tests whether a distinct pretrained representation improves clean validation and aggregate performance. Its black-box test measurement is part of the run and does not guide selection.",
   "active_experiment": {
-    "pid": 193414,
+    "pid": 193873,
     "command": [
       "python",
       "-u",
       "-m",
-      "experiments.evaluate_frozen_when2call_ensemble_test",
-      "--checkpoint",
-      "outputs/clean-validation-cues-lr25e5-sftpre1-smooth002-seed20261022",
+      "experiments.minilm_when2call_blackbox",
+      "--epochs",
+      "1",
+      "--learning-rate",
+      "2e-5",
       "--output",
-      "outputs/test-clean-validation-cues-lr25e5-smooth002-control.json"
+      "outputs/minilm-when2call-blackbox-seed20261022.json"
     ],
-    "started_at": "2026-10-22T11:45:19.534922+00:00"
+    "started_at": "2026-10-22T11:48:24.022881+00:00"
   },
   "worker_command": [
     "python",
     "-u",
     "-m",
-    "experiments.evaluate_frozen_when2call_ensemble_test",
-    "--checkpoint",
-    "outputs/clean-validation-cues-lr25e5-sftpre1-smooth002-seed20261022",
+    "experiments.minilm_when2call_blackbox",
+    "--epochs",
+    "1",
+    "--learning-rate",
+    "2e-5",
     "--output",
-    "outputs/test-clean-validation-cues-lr25e5-smooth002-control.json"
+    "outputs/minilm-when2call-blackbox-seed20261022.json"
   ],
   "worker_queue": [],
   "experiment_queue": [
@@ -44,14 +48,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T11:45:19.534941+00:00",
-  "last_action": "Watchdog started validation worker pid 193414.",
+  "last_heartbeat": "2026-10-22T11:48:24.022901+00:00",
+  "last_action": "Watchdog started validation worker pid 193873.",
   "watchdog_enabled": true,
-  "research_log_size": 119023,
+  "research_log_size": 119786,
   "stop_command": "STOP",
   "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T11:44:18.997741+00:00",
-  "planning_ack_deadline": "2026-10-22T11:46:18.997766+00:00",
-  "planning_attempts": 48
+  "planning_notified_at": "2026-10-22T11:46:23.446949+00:00",
+  "planning_ack_deadline": "2026-10-22T11:48:23.446973+00:00",
+  "planning_attempts": 49
 }

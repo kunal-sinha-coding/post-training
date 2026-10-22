@@ -895,6 +895,14 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-cues-lr25e5-smooth002-control
+
+Timestamp: 2026-10-22T11:46:20.116709+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-sftpre1-smooth002-seed20261022", "--output", "outputs/test-clean-validation-cues-lr25e5-smooth002-control.json"]. The checkpoint was selected before this aggregate-only measurement. Training accuracy was 0.9856944444444444 and training macro F1 was 0.739328745814323. Clean-validation accuracy was 0.9594444444444444 and clean-validation macro F1 was 0.7197967367233663. W&B run: `vcgo7u21`.
+
+Aggregate black-box test accuracy was 0.5498357064622125 and macro F1 was 0.5500642563331813. The official test labels were not used for selection. This unmodified control reproduced the prior checkpoint measurement and closes the inference-rule comparison.
+
 ## test-clean-validation-cues-lr25e5-sftpre1-smooth002-seed20261022
 
 Timestamp: 2026-10-22T11:41:42.477244+00:00. Status: completed.
@@ -904,6 +912,16 @@ Setup: The lower-rate, one-epoch SFT-pretraining argument-cue checkpoint used le
 Training macro F1 was 0.739329. Clean-validation macro F1 was 0.719797. Aggregate test accuracy was 0.549836 and macro F1 was 0.550064. The candidate is below the current leader and is rejected.
 
 This record was written after the JSON-only test recorder skipped the output file. Candidate selection must use clean validation only.
+
+## test-clean-validation-cues-lr25e5-smooth002-control
+
+Timestamp: 2026-10-22T11:46:20.116709+00:00. Status: completed.
+
+Setup: The unmodified frozen 2.5e-5, 0.02-smoothing argument-cue checkpoint was measured through the aggregate-only official test interface as a control for the preceding inference-rule diagnostic. W&B run: `vcgo7u21`. Test labels were not used for selection.
+
+Aggregate test accuracy was 0.549836 and macro F1 was 0.550064, exactly matching the earlier unmodified measurement. The control confirms the diagnostic comparison and is not a new candidate.
+
+Training and clean-validation evidence are recorded in the checkpoint record. This record was written after the JSON-only test recorder skipped the output file.
 
 ## test-clean-validation-cues-lr25e5-smooth002-complete-request
 
