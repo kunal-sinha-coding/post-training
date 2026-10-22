@@ -5828,4 +5828,5 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-22 Commit e07204d4 records the completed lower-weight-decay aggregate test and confirms that the watchdog launched the label-smoothing follow-up after that test. The current state remains active with PID 279403.
 2026-10-22 The label-smoothing SFT-pretraining probe completed with training accuracy 0.974483, training macro F1 0.730967, clean-validation accuracy 0.958333, and clean-validation macro F1 0.718888. Its aggregate black-box test was queued before any new experiment. The next distinct hypothesis uses learning rate 1.5e-5 with the same SFT-pretraining and main-pairwise structure, based on an earlier strong clean-validation signal. Candidate selection uses clean validation only.
 2026-10-22 Commit records the completed label-smoothing probe, its pending aggregate test, and the ordered lower-learning-rate follow-up queue. Test labels are not used for candidate selection.
+2026-10-22 The watchdog verified the required aggregate test launch as PID 280125. The distinct lower-learning-rate training probe remains second in the queue and cannot launch before the test.
 
