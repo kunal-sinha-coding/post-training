@@ -4,22 +4,21 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 5-example auxiliary plus 0.005 weight-decay checkpoint reached aggregate test accuracy 0.559146 and macro F1 0.558516, below the current best. A compact-tool-schema interaction tests whether reducing schema noise preserves the strong auxiliary representation. Selection will use clean validation only, and test labels will not guide selection.",
+  "current_hypothesis": "The compact-schema auxiliary interaction reached training macro F1 0.712358 and clean-validation macro F1 0.670753, so it was rejected without aggregate testing. A nearby standard-schema label-smoothing 0.005 probe tests whether the successful auxiliary and weight-decay representation is sensitive to smoothing. Selection will use clean validation only, and test labels will not guide selection.",
   "active_experiment": {
-    "pid": 256866,
+    "pid": 257332,
     "command": [
       "python",
       "-u",
       "-m",
       "experiments.clean_validation_baseline",
       "--output-dir",
-      "outputs/clean-validation-cues-aux05-compact4096-smooth0075-seed20261022",
-      "--compact-tool-schemas",
+      "outputs/clean-validation-cues-aux05-smooth005-wd0005-seed20261022",
       "--add-argument-cues",
       "--learning-rate",
       "2.5e-5",
       "--label-smoothing",
-      "0.0075",
+      "0.005",
       "--sft-aux-samples-per-class",
       "5",
       "--weight-decay",
@@ -33,7 +32,7 @@
       "--pref-train-epochs",
       "1"
     ],
-    "started_at": "2026-10-22T20:11:29.649556+00:00"
+    "started_at": "2026-10-22T20:14:03.820672+00:00"
   },
   "worker_command": [
     "python",
@@ -41,13 +40,12 @@
     "-m",
     "experiments.clean_validation_baseline",
     "--output-dir",
-    "outputs/clean-validation-cues-aux05-compact4096-smooth0075-seed20261022",
-    "--compact-tool-schemas",
+    "outputs/clean-validation-cues-aux05-smooth005-wd0005-seed20261022",
     "--add-argument-cues",
     "--learning-rate",
     "2.5e-5",
     "--label-smoothing",
-    "0.0075",
+    "0.005",
     "--sft-aux-samples-per-class",
     "5",
     "--weight-decay",
@@ -92,10 +90,10 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T20:11:29.649568+00:00",
-  "last_action": "Watchdog started validation worker pid 256866.",
+  "last_heartbeat": "2026-10-22T20:14:03.820680+00:00",
+  "last_action": "Watchdog started validation worker pid 257332.",
   "watchdog_enabled": true,
-  "research_log_size": 262550,
+  "research_log_size": 264413,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -103,13 +101,12 @@
     "-m",
     "experiments.clean_validation_baseline",
     "--output-dir",
-    "outputs/clean-validation-cues-aux05-compact4096-smooth0075-seed20261022",
-    "--compact-tool-schemas",
+    "outputs/clean-validation-cues-aux05-smooth005-wd0005-seed20261022",
     "--add-argument-cues",
     "--learning-rate",
     "2.5e-5",
     "--label-smoothing",
-    "0.0075",
+    "0.005",
     "--sft-aux-samples-per-class",
     "5",
     "--weight-decay",
@@ -124,7 +121,7 @@
     "1"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T20:09:26.766893+00:00",
-  "planning_ack_deadline": "2026-10-22T20:11:26.766918+00:00",
-  "planning_attempts": 172
+  "planning_notified_at": "2026-10-22T20:13:03.291366+00:00",
+  "planning_ack_deadline": "2026-10-22T20:15:03.291423+00:00",
+  "planning_attempts": 173
 }
