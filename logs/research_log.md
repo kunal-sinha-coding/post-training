@@ -1001,6 +1001,16 @@ Timestamp: 2026-10-22T18:03:00+00:00. Status: queued.
 
 Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-len6144-seed20261022", "--output", "outputs/test-clean-validation-cues-lr25e5-smooth0075-len6144-seed20261022.json"]. Training macro F1 was 0.737965 and clean-validation macro F1 was 0.719299. This is the required separate aggregate black-box measurement. Official test labels are not used for selection.
 
+Aggregate black-box test accuracy was 0.553943 and macro F1 was 0.553513. The standalone context-length branch is below the leader.
+
+## test-clean-validation-smooth0075-len6144-weight95-05
+
+Timestamp: 2026-10-22T18:05:00+00:00. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-len6144-seed20261022", "--weight", "0.95", "--weight", "0.05", "--output", "outputs/test-clean-validation-smooth0075-len6144-weight95-05.json"]. The fixed 95/5 weight is declared before aggregate evaluation. Official test labels are not used for selection.
+
+Hypothesis: A small long-context contribution may preserve the leader while recovering complementary errors that are not visible in the standalone clean-validation score.
+
 ## test-clean-validation-smooth0075-smooth006-weight90-10
 
 Timestamp: 2026-10-22T16:17:46+00:00. Status: completed.
