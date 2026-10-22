@@ -2623,6 +2623,20 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 The 90/10 weights are fixed before aggregate testing from the same clean-validation-selected encoder pair. This is a bounded weight probe after the 95/5 result tied the leader. No test labels are used for selection.
 
+## test-clean-validation-aux05-smooth0075-wd0015-weight90-10
+
+Status: completed.
+
+Aggregate official test accuracy: 0.5602409638554217. Aggregate official test macro F1: 0.5597780607145614. W&B run: 841sdxr9. The result is below the current best, so this regularized blend branch is closed. Training and clean-validation evidence for both frozen checkpoints were recorded before aggregate testing. Test labels were used only for aggregate reporting.
+
+## test-clean-validation-aux05-smooth0075-leader-weight90-10
+
+Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022", "--weight", "0.90", "--weight", "0.10", "--output", "outputs/test-clean-validation-aux05-smooth0075-leader-weight90-10.json"].
+
+The 90/10 weights are fixed from clean-validation evidence before aggregate testing. This tests a larger contribution from the original leader after the 95/5 blend became the best observed result. No test labels are used for selection.
+
 ## test-clean-validation-smooth0075-aux10-weight95-05
 
 Status: completed.
