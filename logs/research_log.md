@@ -2617,6 +2617,20 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Training macro F1: 0.7397028339750772. Clean-validation accuracy: 0.965. Clean-validation macro F1: 0.7239512392080304. The aggregate black-box test measurement is queued before any new experiment. Candidate selection uses clean validation only.
 
+## test-clean-validation-cues-aux05-smooth0075-seed20261022
+
+Status: completed.
+
+Aggregate official test accuracy: 0.5585980284775466. Aggregate official test macro F1: 0.5580430730402365. W&B run: 0fzw5jvq. This is the current best observed aggregate result. The official test was used only after freezing the candidate and returned aggregate metrics only.
+
+## test-clean-validation-aux05-smooth0075-weight95-05
+
+Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022", "--weight", "0.95", "--weight", "0.05", "--output", "outputs/test-clean-validation-aux05-smooth0075-weight95-05.json"].
+
+The 95/5 weights were fixed from clean-validation evidence before this aggregate test. No test labels are used for selection.
+
 ## test-clean-validation-smooth0075-wd0005-weight90-10
 
 Status: completed.
