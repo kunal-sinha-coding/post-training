@@ -5766,3 +5766,7 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-22 The fixed 90/10 blend of the clean-validation leader and the 0.005 weight-decay checkpoint reached aggregate test accuracy 0.556681 and macro F1 0.556374 from W&B run dxaqwl9y. It remained below the single-checkpoint leader. Closed this blend branch and queued the next distinct encoder-only hypothesis.
 2026-10-22 The watchdog launched the distinct predeclared 90/10 ensemble evaluation as PID 266186 at 21:06:10 UTC after Codex recorded the completed 95/5 result. The state is active, planning_required is false, and the queue is empty because the worker is active. The launch was verified from logs/validation_watchdog.log and the live process table.
 
+2026-10-22 The clean-validation-selected 90/10 ensemble completed with aggregate accuracy 0.559419 and macro F1 0.558816 from W&B run lynq3xf8. Training, clean-validation, and aggregate black-box evidence are recorded. The next distinct 85/15 blend was queued from the predeclared bounded sweep without using test labels for selection.
+
+2026-10-22 The watchdog launched the distinct predeclared 85/15 ensemble evaluation as PID 266670 at 21:09:15 UTC after Codex recorded the completed 90/10 result. The state is active, planning_required is false, and the queue is empty because the worker is active. The launch was verified from logs/validation_watchdog.log and the live process table.
+
