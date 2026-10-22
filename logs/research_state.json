@@ -4,23 +4,13 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The argument-cue plus standard-schema seed-20 ensemble underperformed the argument-cue member. Standard-schema seed-22 has the highest clean-validation macro F1 among the fixed-split seeds, so pairing it with the argument-cue model tests whether its errors complement the strongest recent encoder.",
+  "current_hypothesis": "The argument-cue plus seed-22 ensemble also underperformed the argument-cue member. A visible required-field rule may correct tool-call decisions without changing the frozen encoder and without using hidden test labels.",
   "active_experiment": {},
   "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.evaluate_frozen_when2call_ensemble_test",
-    "--checkpoint",
-    "outputs/clean-validation-argument-cues-seed21",
-    "--checkpoint",
-    "outputs/clean-validation-fixedsplit-seed22-len4096",
-    "--weight",
-    "0.5",
-    "--weight",
-    "0.5",
-    "--output",
-    "outputs/test-clean-validation-argument-cues-plus-seed22.json"
+    "python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test",
+    "--checkpoint", "outputs/clean-validation-argument-cues-seed21",
+    "--complete-request-to-tool",
+    "--output", "outputs/test-clean-validation-argument-cues-required-rule.json"
   ],
   "worker_queue": [],
   "experiment_queue": [
@@ -37,14 +27,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T09:20:41.729599+00:00",
+  "last_heartbeat": "2026-10-22T09:22:44.979479+00:00",
   "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
   "research_log_size": 94477,
   "stop_command": "STOP",
   "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T09:22:14.470368+00:00",
-  "planning_ack_deadline": "2026-10-22T09:24:14.470426+00:00",
-  "planning_attempts": 11
+  "planning_notified_at": "2026-10-22T09:24:18.567798+00:00",
+  "planning_ack_deadline": "2026-10-22T09:26:18.567822+00:00",
+  "planning_attempts": 12
 }
