@@ -935,6 +935,14 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Aggregate black-box test accuracy: 0.5460021905805038. Aggregate black-box test macro F1: 0.5466183186540272. Selection was complete before test evaluation. No test labels were used for selection.
 
+## test-clean-validation-lr25e5-three-member
+
+Timestamp: 2026-10-22T10:59:57.721170+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-seed20261022", "--checkpoint", "outputs/clean-validation-cues-seed20261022", "--checkpoint", "outputs/clean-validation-cues-smooth002-seed20261022", "--weight", "0.50", "--weight", "0.25", "--weight", "0.25", "--output", "outputs/test-clean-validation-lr25e5-three-member.json"]. Output: /workspace/post-training/outputs/test-clean-validation-lr25e5-three-member.json. W&B run: u132g828.
+
+Aggregate black-box test accuracy: 0.547645125958379. Aggregate black-box test macro F1: 0.5483385906271478. Selection was complete before test evaluation. No test labels were used for selection.
+
 ## qwen-sft-15b-seed20261022
 
 Timestamp: 2026-10-22T06:14:06.351398+00:00. Status: failed_or_incomplete.
