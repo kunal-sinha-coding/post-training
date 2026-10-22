@@ -93,6 +93,7 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-leader-plus-rejected50-blend | 0.5542168674698795 | 0.5541679027580703 | 62hveeqi | Aggregate-only blend, below current leader |
 | clean-validation-cues-lr25e5-smooth0005-seed20261022 | 0.5555859802847755 | 0.5552756930725257 | 85h192t8 | Clean validation accuracy 0.9594444444444444, macro F1 0.7197254132419473; current recent single-checkpoint leader |
 | clean-validation-cues-lr25e5-smooth0005-pref2-seed20261022 | 0.5377875136911281 | 0.5404529407542796 | x0i0lnpr | Two-epoch continuation, rejected after test drop |
+| test-clean-validation-base-smooth0005-smooth002-blend | 0.553395399780942 | 0.5528914211041531 | wriblioh | Aggregate-only three-member blend, below current leader |
 | test-clean-validation-smooth0005-smooth002-blend | 0.5569550930996714 | 0.5562139387687673 | 3ov2wqzq | Aggregate-only blend; current recent leader |
 | test-clean-validation-smooth0005-smooth002-weight60-40 | 0.5566812705366923 | 0.5559791573886594 | wlblb0ts | Aggregate-only blend, below 50/50 blend |
 | minilm-when2call-blackbox-seed20261022 | 0.5177984665936474 | 0.5131718249758819 | qoang2pf | Clean validation accuracy 0.7433333333333333, macro F1 0.5540514067058107; rejected |

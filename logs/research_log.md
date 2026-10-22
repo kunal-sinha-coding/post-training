@@ -895,6 +895,16 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-base-smooth0005-smooth002-blend
+
+Timestamp: 2026-10-22T12:28:31.000000+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-seed20261022", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0005-seed20261022", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth002-seed20261022", "--weight", "0.20", "--weight", "0.45", "--weight", "0.35", "--output", "outputs/test-clean-validation-base-smooth0005-smooth002-blend.json"]. Output: /workspace/post-training/outputs/test-clean-validation-base-smooth0005-smooth002-blend.json. W&B run: wriblioh.
+
+Linked training and clean-validation evidence was available for all three frozen checkpoints. Aggregate black-box test accuracy was 0.553395399780942 and macro F1 was 0.5528914211041531. The official test labels were used only for this separate measurement after clean-validation selection. The blend is rejected because it is below the 0.5562139387687673 macro F1 two-member leader. The next weight probe gives the higher clean-validation macro F1 checkpoint a 0.75 weight and the other checkpoint a 0.25 weight.
+
+This record was written by the primary Codex process because the test-only output has no training output directory. Candidate selection used clean validation only.
+
 ## test-clean-validation-smooth0005-smooth002-blend
 
 Timestamp: 2026-10-22T12:21:25.861458+00:00. Status: completed.
