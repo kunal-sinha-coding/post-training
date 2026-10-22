@@ -4,16 +4,16 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The main-pairwise auxiliary-cross-entropy probe reached test accuracy 0.524918 and test macro F1 0.524436, below the current 55/45 ensemble leader. The next hypothesis adds one SFT pretraining epoch before main pairwise preference training. Selection will use clean validation only.",
+  "current_hypothesis": "The SFT-pretraining main-pairwise probe reached test accuracy 0.555586 and test macro F1 0.558194, below the current 55/45 ensemble leader. The next hypothesis keeps SFT pretraining and lowers weight decay to 0.005. Selection will use clean validation only.",
   "active_experiment": {
-    "pid": 277089,
+    "pid": 278147,
     "command": [
       "python",
       "-u",
       "-m",
       "experiments.clean_validation_baseline",
       "--output-dir",
-      "outputs/clean-validation-cues-aux05-sftpre1-mainpairwise-smooth0075-seed20261022",
+      "outputs/clean-validation-cues-aux05-sftpre1-mainpairwise-wd0005-smooth0075-seed20261022",
       "--loss-function",
       "pairwise_ranking",
       "--sft-loss-function",
@@ -28,7 +28,7 @@
       "--label-smoothing",
       "0.0075",
       "--weight-decay",
-      "0.001",
+      "0.005",
       "--seed",
       "20261022",
       "--split-seed",
@@ -38,7 +38,7 @@
       "--pref-train-epochs",
       "1"
     ],
-    "started_at": "2026-10-22T22:12:42.494783+00:00"
+    "started_at": "2026-10-22T22:19:57.818028+00:00"
   },
   "worker_command": [
     "python",
@@ -46,7 +46,7 @@
     "-m",
     "experiments.clean_validation_baseline",
     "--output-dir",
-    "outputs/clean-validation-cues-aux05-sftpre1-mainpairwise-smooth0075-seed20261022",
+    "outputs/clean-validation-cues-aux05-sftpre1-mainpairwise-wd0005-smooth0075-seed20261022",
     "--loss-function",
     "pairwise_ranking",
     "--sft-loss-function",
@@ -61,7 +61,7 @@
     "--label-smoothing",
     "0.0075",
     "--weight-decay",
-    "0.001",
+    "0.005",
     "--seed",
     "20261022",
     "--split-seed",
@@ -102,10 +102,10 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T22:12:42.494795+00:00",
-  "last_action": "Watchdog started validation worker pid 277089.",
+  "last_heartbeat": "2026-10-22T22:19:57.818040+00:00",
+  "last_action": "Watchdog started validation worker pid 278147.",
   "watchdog_enabled": true,
-  "research_log_size": 345997,
+  "research_log_size": 350120,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -113,7 +113,7 @@
     "-m",
     "experiments.clean_validation_baseline",
     "--output-dir",
-    "outputs/clean-validation-cues-aux05-sftpre1-mainpairwise-smooth0075-seed20261022",
+    "outputs/clean-validation-cues-aux05-sftpre1-mainpairwise-wd0005-smooth0075-seed20261022",
     "--loss-function",
     "pairwise_ranking",
     "--sft-loss-function",
@@ -128,7 +128,7 @@
     "--label-smoothing",
     "0.0075",
     "--weight-decay",
-    "0.001",
+    "0.005",
     "--seed",
     "20261022",
     "--split-seed",
@@ -139,7 +139,7 @@
     "1"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T22:11:41.325833+00:00",
-  "planning_ack_deadline": "2026-10-22T22:13:41.325852+00:00",
-  "planning_attempts": 213
+  "planning_notified_at": "2026-10-22T22:19:24.933177+00:00",
+  "planning_ack_deadline": "2026-10-22T22:21:24.933201+00:00",
+  "planning_attempts": 215
 }
