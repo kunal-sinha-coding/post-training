@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The rejected-example augmentation improved clean-validation macro F1 to 0.723952 but reached only 0.528909 aggregate test macro F1, so it is rejected alone. A frozen 0.55 rejected-example and 0.45 SFT-smoothing blend tests whether its clean-validation strength represents complementary errors. The weights are fixed before test evaluation and use no test labels.",
+  "current_hypothesis": "The rejected-example augmentation and its 0.55 blend with SFT smoothing both underperformed on aggregate test. A bounded three-member blend adds the rejected-example checkpoint at weight 0.10 to the current two-model leader, with remaining weights 0.50 for the base checkpoint and 0.40 for smoothing-02. This tests whether a small complementary contribution helps without allowing the weak member to dominate. Weights use clean-validation evidence only.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -12,15 +12,19 @@
     "-m",
     "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
-    "outputs/clean-validation-cues-rejected50-seed20261022",
+    "outputs/clean-validation-cues-seed20261022",
     "--checkpoint",
-    "outputs/clean-validation-cues-lr25e5-sftpre1-smooth001-seed20261022",
+    "outputs/clean-validation-cues-lr25e5-smooth002-seed20261022",
+    "--checkpoint",
+    "outputs/clean-validation-cues-rejected50-seed20261022",
     "--weight",
-    "0.55",
+    "0.50",
     "--weight",
-    "0.45",
+    "0.40",
+    "--weight",
+    "0.10",
     "--output",
-    "outputs/test-clean-validation-rejected50-smooth001-blend.json"
+    "outputs/test-clean-validation-leader-plus-rejected50-blend.json"
   ],
   "worker_queue": [],
   "experiment_queue": [
@@ -37,14 +41,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T11:58:02.310654+00:00",
+  "last_heartbeat": "2026-10-22T12:00:35.494432+00:00",
   "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
-  "research_log_size": 123646,
+  "research_log_size": 124535,
   "stop_command": "STOP",
   "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T11:59:04.969598+00:00",
-  "planning_ack_deadline": "2026-10-22T12:01:04.969623+00:00",
-  "planning_attempts": 52
+  "planning_notified_at": "2026-10-22T12:02:07.857899+00:00",
+  "planning_ack_deadline": "2026-10-22T12:04:07.857916+00:00",
+  "planning_attempts": 53
 }

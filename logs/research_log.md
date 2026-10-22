@@ -909,6 +909,14 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 
 Aggregate black-box test accuracy was 0.5268346111719606 and macro F1 was 0.5289088879682503 from W&B run `ejo9u6mi`. The official test labels were not used for selection. The standalone augmentation is rejected.
 
+## test-clean-validation-rejected50-smooth001-blend
+
+Timestamp: 2026-10-22T12:02:00.000000+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-rejected50-seed20261022", "--checkpoint", "outputs/clean-validation-cues-lr25e5-sftpre1-smooth001-seed20261022", "--weight", "0.55", "--weight", "0.45", "--output", "outputs/test-clean-validation-rejected50-smooth001-blend.json"]. Weights were fixed from clean-validation evidence before the aggregate-only measurement. Linked training and clean-validation metrics are recorded in the component checkpoint records. W&B run: `b40bype0`.
+
+Aggregate black-box test accuracy was 0.536144578313253 and macro F1 was 0.5383739195798843. The official test labels were not used for selection. The blend is rejected.
+
 ## test-clean-validation-cues-lr25e5-smooth002-control
 
 Timestamp: 2026-10-22T11:46:20.116709+00:00. Status: completed.
