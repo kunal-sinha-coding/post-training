@@ -4,21 +4,8 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 0.0075 label-smoothing encoder probe reached training macro F1 0.738069 and clean-validation macro F1 0.720977. Its aggregate black-box measurement is required before judging transfer, so test the frozen checkpoint before any new experiment.",
-  "active_experiment": {
-    "pid": 210443,
-    "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_frozen_when2call_ensemble_test",
-      "--checkpoint",
-      "outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022",
-      "--output",
-      "outputs/test-clean-validation-cues-lr25e5-smooth0075-seed20261022.json"
-    ],
-    "started_at": "2026-10-22T13:40:24.830785+00:00"
-  },
+  "current_hypothesis": "The 0.0075 label-smoothing checkpoint reached aggregate test macro F1 0.557200, the strongest recent single result. A 50/50 blend with the 0.005 smoothing checkpoint tests whether the two nearby high-quality encoders provide complementary errors without using test labels for selection.",
+  "active_experiment": {},
   "worker_command": [
     "python",
     "-u",
@@ -26,10 +13,33 @@
     "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
     "outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022",
+    "--checkpoint",
+    "outputs/clean-validation-cues-lr25e5-smooth0005-seed20261022",
+    "--weight",
+    "0.50",
+    "--weight",
+    "0.50",
     "--output",
-    "outputs/test-clean-validation-cues-lr25e5-smooth0075-seed20261022.json"
+    "outputs/test-clean-validation-smooth0075-smooth0005-blend.json"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_frozen_when2call_ensemble_test",
+      "--checkpoint",
+      "outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022",
+      "--checkpoint",
+      "outputs/clean-validation-cues-lr25e5-smooth0005-seed20261022",
+      "--weight",
+      "0.50",
+      "--weight",
+      "0.50",
+      "--output",
+      "outputs/test-clean-validation-smooth0075-smooth0005-blend.json"
+    ]
+  ],
   "experiment_queue": [
     "Run one cheap encoder-only alternative on the fixed clean split.",
     "Run one additional Jina encoder training variant with a distinct mechanism.",
@@ -45,13 +55,13 @@
     "artifact": "outputs/clean-validation-calibration.json"
   },
   "last_heartbeat": "2026-10-22T13:40:24.830799+00:00",
-  "last_action": "Watchdog started validation worker pid 210443.",
+  "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
   "research_log_size": 151674,
   "stop_command": "STOP",
   "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T13:39:54.296876+00:00",
-  "planning_ack_deadline": "2026-10-22T13:41:54.296897+00:00",
-  "planning_attempts": 81
+  "planning_notified_at": "2026-10-22T13:42:57.947163+00:00",
+  "planning_ack_deadline": "2026-10-22T13:44:57.947189+00:00",
+  "planning_attempts": 82
 }
