@@ -901,6 +901,14 @@ Timestamp: 2026-10-22T11:52:28.907937+00:00. Status: failed.
 
 Setup: ["python", "-u", "-m", "experiments.when2call_candidate_ranker", "--epochs", "1", "--encoder-model", "microsoft/deberta-v3-base", "--max-length", "1024", "--max-pairs", "9000", "--lr", "2e-5", "--batch-size", "4", "--objective", "multiclass", "--output", "outputs/deberta-v3-base-candidate-ranker-seed20261022.json"]. The run failed before training because the script requested the unavailable `train_pref` dataset configuration. No metrics or test labels were used.
 
+## clean-validation-cues-rejected50-seed20261022
+
+Timestamp: 2026-10-22T11:58:02.307367+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-rejected50-seed20261022", "--add-argument-cues", "--rejected-direct-samples", "50", "--learning-rate", "2.5e-5", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. The fixed clean split was selected before the aggregate test measurement. Training accuracy was 0.9779310344827586 and macro F1 was 0.7360447518440959. Clean-validation accuracy was 0.965 and macro F1 was 0.7239519914135641.
+
+Aggregate black-box test accuracy was 0.5268346111719606 and macro F1 was 0.5289088879682503 from W&B run `ejo9u6mi`. The official test labels were not used for selection. The standalone augmentation is rejected.
+
 ## test-clean-validation-cues-lr25e5-smooth002-control
 
 Timestamp: 2026-10-22T11:46:20.116709+00:00. Status: completed.
@@ -1448,5 +1456,15 @@ Timestamp: 2026-10-22T11:40:12.200012+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-lr25e5-sftpre1-smooth002-seed20261022", "--add-argument-cues", "--sft-pretrain-epochs", "1", "--learning-rate", "2.5e-5", "--label-smoothing", "0.02", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-lr25e5-sftpre1-smooth002-seed20261022. W&B run: not available.
 
 Clean development accuracy: 0.9594444444444444. Clean development macro F1: 0.7197967367233663. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-cues-rejected50-seed20261022
+
+Timestamp: 2026-10-22T11:58:02.430408+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-rejected50-seed20261022", "--add-argument-cues", "--rejected-direct-samples", "50", "--learning-rate", "2.5e-5", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-rejected50-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.965. Clean development macro F1: 0.7239519914135641. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
