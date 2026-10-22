@@ -911,6 +911,22 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: The two component checkpoints have nearly tied clean-validation macro F1, and the fixed 90/10 probe is the next point in a predeclared bounded blend sweep. The 85/15 weight is fixed from clean-validation evidence before aggregate evaluation. Test labels will not guide selection.
 
+## test-clean-validation-cues-aux05-wd0001-weight85-15
+
+Timestamp: 2026-10-22T20:42:22.000000+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-aux05-wd0001-smooth0075-seed20261022", "--weight", "0.85", "--weight", "0.15", "--output", "outputs/test-clean-validation-cues-aux05-wd0001-weight85-15.json"]. Output: /workspace/post-training/outputs/test-clean-validation-cues-aux05-wd0001-weight85-15.json. W&B run: jj32ge7m.
+
+Training macro F1: 0.7397028339750772 for the base component and 0.7406363519812412 for the 0.001 weight-decay component. Clean-validation accuracy: 0.965 and 0.965. Clean-validation macro F1: 0.7239512392080304 and 0.723938800663136. Aggregate test accuracy: 0.5594194961664841. Aggregate test macro F1: 0.5587547285409012. The component checkpoints and all three evidence types are recorded. Test labels were not used for selection.
+
+## test-clean-validation-cues-aux05-wd0001-weight80-20
+
+Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-aux05-wd0001-smooth0075-seed20261022", "--weight", "0.80", "--weight", "0.20", "--output", "outputs/test-clean-validation-cues-aux05-wd0001-weight80-20.json"].
+
+Hypothesis: The two component checkpoints remain nearly tied on clean-validation macro F1, and the fixed 85/15 probe is one point in a predeclared bounded blend sweep. The 80/20 weight is fixed from clean-validation evidence before aggregate evaluation. Test labels will not guide selection.
+
 ## clean-validation-cues-aux05-smooth005-wd0005-seed20261022
 
 Status: queued.

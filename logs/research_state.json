@@ -4,9 +4,9 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The fixed 90/10 auxiliary plus 0.001 weight-decay blend reached aggregate test accuracy 0.559146 and macro F1 0.558515, below the current best. The two components have nearly tied clean-validation macro F1, so a fixed 85/15 blend completes the next predeclared bounded sweep point. The weight is fixed from clean validation and test labels will not guide selection.",
+  "current_hypothesis": "The fixed 85/15 auxiliary plus 0.001 weight-decay blend reached aggregate test accuracy 0.559419 and macro F1 0.558755, below the current best. The two components remain nearly tied on clean-validation macro F1, so a fixed 80/20 blend continues the predeclared bounded sweep. The weight is fixed from clean validation and test labels will not guide selection.",
   "active_experiment": {
-    "pid": 261786,
+    "pid": 262264,
     "command": [
       "python",
       "-u",
@@ -17,13 +17,13 @@
       "--checkpoint",
       "outputs/clean-validation-cues-aux05-wd0001-smooth0075-seed20261022",
       "--weight",
-      "0.85",
+      "0.80",
       "--weight",
-      "0.15",
+      "0.20",
       "--output",
-      "outputs/test-clean-validation-cues-aux05-wd0001-weight85-15.json"
+      "outputs/test-clean-validation-cues-aux05-wd0001-weight80-20.json"
     ],
-    "started_at": "2026-10-22T20:40:21.123701+00:00"
+    "started_at": "2026-10-22T20:43:24.835859+00:00"
   },
   "worker_command": [
     "python",
@@ -35,11 +35,11 @@
     "--checkpoint",
     "outputs/clean-validation-cues-aux05-wd0001-smooth0075-seed20261022",
     "--weight",
-    "0.85",
+    "0.80",
     "--weight",
-    "0.15",
+    "0.20",
     "--output",
-    "outputs/test-clean-validation-cues-aux05-wd0001-weight85-15.json"
+    "outputs/test-clean-validation-cues-aux05-wd0001-weight80-20.json"
   ],
   "worker_queue": [],
   "_previous_command": [
@@ -72,10 +72,10 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T20:40:21.123713+00:00",
-  "last_action": "Watchdog started validation worker pid 261786.",
+  "last_heartbeat": "2026-10-22T20:43:24.835871+00:00",
+  "last_action": "Watchdog started validation worker pid 262264.",
   "watchdog_enabled": true,
-  "research_log_size": 278987,
+  "research_log_size": 280772,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -87,14 +87,14 @@
     "--checkpoint",
     "outputs/clean-validation-cues-aux05-wd0001-smooth0075-seed20261022",
     "--weight",
-    "0.85",
+    "0.80",
     "--weight",
-    "0.15",
+    "0.20",
     "--output",
-    "outputs/test-clean-validation-cues-aux05-wd0001-weight85-15.json"
+    "outputs/test-clean-validation-cues-aux05-wd0001-weight80-20.json"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T20:39:20.596895+00:00",
-  "planning_ack_deadline": "2026-10-22T20:41:20.596919+00:00",
-  "planning_attempts": 182
+  "planning_notified_at": "2026-10-22T20:42:23.838226+00:00",
+  "planning_ack_deadline": "2026-10-22T20:44:23.838250+00:00",
+  "planning_attempts": 183
 }
