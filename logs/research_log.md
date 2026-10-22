@@ -3217,4 +3217,20 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Training macro F1: 0.7405337865489832. Clean-validation accuracy: 0.9655555555555555. Clean-validation macro F1: 0.724368404037876. This aggregate-only measurement is required before any new experiment. Candidate selection used training and clean validation only. Test labels will not guide selection.
 
+## test-clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-seed20261022
+
+Timestamp: 2026-10-22T20:58:55.000000+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-seed20261022", "--output", "outputs/test-clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-seed20261022.json"]. Output: /workspace/post-training/outputs/test-clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-seed20261022.json. W&B run: ot1l809g.
+
+Training macro F1: 0.7405337865489832. Clean-validation accuracy: 0.9655555555555555. Clean-validation macro F1: 0.724368404037876. Aggregate test accuracy: 0.559145673603505. Aggregate test macro F1: 0.5580418821523457. All three evidence types are recorded. The result is below the current best. Test labels were used only for this separate aggregate measurement after candidate selection.
+
+## clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022
+
+Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022", "--sft-loss-function", "pairwise_ranking", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.005", "--sft-aux-samples-per-class", "5", "--weight-decay", "0.001", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"].
+
+Hypothesis: The pairwise auxiliary plus 0.001 weight-decay variant was viable on clean validation but failed to improve aggregate test performance. A prior auxiliary branch was stable at label smoothing 0.005, so this bounded variant tests lower smoothing while preserving the pairwise objective and mild regularization. Selection will use clean validation only. Test labels will not guide selection.
+
 This record was written automatically. Candidate selection must use clean validation only.
