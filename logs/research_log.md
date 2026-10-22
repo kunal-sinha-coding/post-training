@@ -905,6 +905,16 @@ Linked training and clean-validation evidence was available for all three frozen
 
 This record was written by the primary Codex process because the test-only output has no training output directory. Candidate selection used clean validation only.
 
+## test-clean-validation-smooth0005-smooth002-weight75-25
+
+Timestamp: 2026-10-22T12:31:35.000000+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0005-seed20261022", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth002-seed20261022", "--weight", "0.75", "--weight", "0.25", "--output", "outputs/test-clean-validation-smooth0005-smooth002-weight75-25.json"]. Output: /workspace/post-training/outputs/test-clean-validation-smooth0005-smooth002-weight75-25.json. W&B run: 4fi2zib6.
+
+The linked checkpoints each had training and clean-validation evidence. Aggregate black-box test accuracy was 0.5561336254107339 and macro F1 was 0.5556251509191666. The official test labels were used only for this separate measurement after clean-validation selection. The result was below the 0.5562139387687673 macro F1 50/50 leader, so the simple two-member weight sweep is closed.
+
+This record was written by the primary Codex process because the test-only output has no training output directory. Candidate selection used clean validation only.
+
 ## test-clean-validation-smooth0005-smooth002-blend
 
 Timestamp: 2026-10-22T12:21:25.861458+00:00. Status: completed.
