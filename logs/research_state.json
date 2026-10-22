@@ -5,7 +5,31 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "The 90/10 0.0075 and 0.005 smoothing blend reached aggregate test macro F1 0.556928, below the 0.0075 single checkpoint. A controlled 1.5e-5 learning-rate run keeps the best encoder configuration and fixed split, seed, cues, smoothing, and one preference epoch while testing whether the 2.5e-5 run overfit.",
-  "active_experiment": {},
+  "active_experiment": {
+    "pid": 216893,
+    "command": [
+      "python",
+      "-u",
+      "-m",
+      "experiments.clean_validation_baseline",
+      "--output-dir",
+      "outputs/clean-validation-cues-lr15e5-smooth0075-seed20261022",
+      "--add-argument-cues",
+      "--learning-rate",
+      "1.5e-5",
+      "--label-smoothing",
+      "0.0075",
+      "--seed",
+      "20261022",
+      "--split-seed",
+      "20261021",
+      "--max-length",
+      "4096",
+      "--pref-train-epochs",
+      "1"
+    ],
+    "started_at": "2026-10-22T14:24:52.440083+00:00"
+  },
   "worker_command": [
     "python",
     "-u",
@@ -27,7 +51,7 @@
     "--pref-train-epochs",
     "1"
   ],
-  "worker_queue": [["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-lr15e5-smooth0075-seed20261022", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.0075", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]],
+  "worker_queue": [],
   "experiment_queue": [
     "Run one cheap encoder-only alternative on the fixed clean split.",
     "Run one additional Jina encoder training variant with a distinct mechanism.",
@@ -42,8 +66,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T14:20:07.531293+00:00",
-  "last_action": "Watchdog handed planning control to the primary Codex process.",
+  "last_heartbeat": "2026-10-22T14:24:52.440102+00:00",
+  "last_action": "Watchdog started validation worker pid 216893.",
   "watchdog_enabled": true,
   "research_log_size": 162020,
   "stop_command": "STOP",
