@@ -4,54 +4,28 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 80/20 blend of the 5-example-per-class auxiliary encoder and the original clean-validation leader reached aggregate accuracy 0.560515 and macro F1 0.560037, below the best macro F1. A 2-example-per-class auxiliary encoder tests whether a smaller auxiliary dose retains the 5-example clean-validation and aggregate transfer gain with less distribution shift. Selection will use clean validation only, and test labels will not guide selection.",
+  "current_hypothesis": "The 2-example-per-class auxiliary encoder reached training macro F1 0.737402, clean-validation accuracy 0.966111, and clean-validation macro F1 0.724769. Its aggregate black-box measurement is required before any new experiment because it is viable on clean validation. Selection uses clean validation only, and test labels do not guide selection.",
   "active_experiment": {},
   "worker_command": [
     "python",
     "-u",
     "-m",
-    "experiments.clean_validation_baseline",
-    "--output-dir",
+    "experiments.evaluate_frozen_when2call_ensemble_test",
+    "--checkpoint",
     "outputs/clean-validation-cues-aux02-smooth0075-seed20261022",
-    "--add-argument-cues",
-    "--learning-rate",
-    "2.5e-5",
-    "--label-smoothing",
-    "0.0075",
-    "--sft-aux-samples-per-class",
-    "2",
-    "--seed",
-    "20261022",
-    "--split-seed",
-    "20261021",
-    "--max-length",
-    "4096",
-    "--pref-train-epochs",
-    "1"
+    "--output",
+    "outputs/test-clean-validation-cues-aux02-smooth0075-seed20261022.json"
   ],
   "worker_queue": [
     [
       "python",
       "-u",
       "-m",
-      "experiments.clean_validation_baseline",
-      "--output-dir",
+      "experiments.evaluate_frozen_when2call_ensemble_test",
+      "--checkpoint",
       "outputs/clean-validation-cues-aux02-smooth0075-seed20261022",
-      "--add-argument-cues",
-      "--learning-rate",
-      "2.5e-5",
-      "--label-smoothing",
-      "0.0075",
-      "--sft-aux-samples-per-class",
-      "2",
-      "--seed",
-      "20261022",
-      "--split-seed",
-      "20261021",
-      "--max-length",
-      "4096",
-      "--pref-train-epochs",
-      "1"
+      "--output",
+      "outputs/test-clean-validation-cues-aux02-smooth0075-seed20261022.json"
     ]
   ],
   "_previous_command": [
@@ -84,14 +58,19 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T19:28:23.714143+00:00",
-  "last_action": "Recorded the completed 80/20 blend and queued one distinct 2-example auxiliary encoder training hypothesis.",
+  "last_heartbeat": "2026-10-22T19:30:57.085227+00:00",
+  "last_action": "Recorded complete training and clean-validation evidence for aux02 and queued its required aggregate black-box test.",
   "watchdog_enabled": true,
-  "research_log_size": 242593,
+  "research_log_size": 243891,
   "stop_command": "STOP",
-  "next_experiment": "Run the queued 2-example-per-class auxiliary encoder training probe and evaluate its clean-validation viability before queuing aggregate test.",
-  "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T19:29:56.558890+00:00",
-  "planning_ack_deadline": "2026-10-22T19:31:56.558915+00:00",
-  "planning_attempts": 159
+  "next_experiment": "Run the queued aggregate black-box test for the 2-example-per-class auxiliary encoder before selecting another experiment.",
+  "recording_jobs": [
+    {
+      "pid": 251068,
+      "experiment_id": "clean-validation-cues-aux02-smooth0075-seed20261022"
+    }
+  ],
+  "planning_notified_at": "2026-10-22T19:33:32.045057+00:00",
+  "planning_ack_deadline": "2026-10-22T19:35:32.045083+00:00",
+  "planning_attempts": 160
 }
