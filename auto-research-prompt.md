@@ -38,6 +38,8 @@ Use a dedicated development or validation set for ordinary debugging and error a
 
 Test-evaluation frequency is mandatory. Every viable method must receive an aggregate-only official test evaluation after its training and clean-validation result are complete. A viable method is one that completed successfully and is not clearly unusable from training diagnostics or clean validation. A failed run, a crashed run, or a method that clearly collapses on training or clean validation may skip test evaluation, but the research log must record `test skipped` and the concrete reason. A viable method must never be left with an implicit or blank test status.
 
+Queue ordering is mandatory. For every viable training experiment, append its frozen aggregate-only test evaluation as the next queue entry before appending another training experiment. The normal queue pattern is `training candidate, test evaluation, next training candidate, test evaluation`. Test-only entries for already completed viable candidates may be placed at the front of the queue. After those entries finish, continue with the remaining training candidates and append their test entries in the same alternating pattern. Never delete viable training candidates merely because their test evaluations are being prioritized.
+
 Inspect the existing project's evaluation practices. If prior work exposed test labels or per-example test outcomes, document the exposure and establish a clean black-box protocol for all new runs.
 
 When uncertain about leakage, take the conservative approach and return only aggregate test metrics.
