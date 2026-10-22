@@ -2727,6 +2727,20 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Training macro F1: 0.7374023758245799. Clean-validation accuracy: 0.9661111111111111. Clean-validation macro F1: 0.724769177566841. The candidate is viable on clean validation, so its required aggregate black-box measurement is queued before any new experiment. Test labels are not used for selection.
 
+## test-clean-validation-cues-aux02-smooth0075-seed20261022
+
+Status: completed.
+
+Aggregate official test accuracy: 0.5312157721796276. Aggregate official test macro F1: 0.5313301645353432. W&B run: yi7pwxxn. The clean-validation gain did not transfer, so the 2-example auxiliary branch is rejected. Test labels were used only for aggregate reporting.
+
+## clean-validation-cues-aux03-smooth0075-seed20261022
+
+Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux03-smooth0075-seed20261022", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--sft-aux-samples-per-class", "3", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"].
+
+Hypothesis: The 2-example auxiliary dose failed to transfer while the 5-example dose led the current best aggregate result. A 3-example dose tests the transfer threshold with one bounded intermediate experiment. Selection will use clean validation only. If viable, its aggregate black-box test will be queued before any later experiment.
+
 ## clean-validation-cues-aux05-smooth0075-seed20261022
 
 Timestamp: 2026-10-22T19:15:28.987093+00:00. Status: completed.
