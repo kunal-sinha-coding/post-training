@@ -39,7 +39,7 @@ def notify_codex_planning(repo: Path, state_path: Path, state: dict, log_path: P
         return
     message = message or (
         "The research worker queue is exhausted. Inspect the latest clean-validation results, "
-        "training metrics, and aggregate black-box test metrics. For every recent experiment, "
+        "training metrics, and aggregate black-box test metrics. For the most recent completed experiment, "
         "check whether all three evidence types are recorded. If any required training, clean-validation, "
         "or aggregate black-box test measurement is missing, queue that measurement before any new experiment. "
         "Then form new hypotheses, append distinct commands to logs/research_state.json worker_queue, "
