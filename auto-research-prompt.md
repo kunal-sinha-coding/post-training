@@ -360,6 +360,8 @@ Do not proceed as if the setup works until verification succeeds. Iterate on the
 
 The watchdog must inspect the operating-system process state, not only whether the process identifier exists. Treat zombie, defunct, exited, and unreapable worker states as not running. Validate the research state JSON before each check and write state updates atomically so a malformed state file cannot disable recovery. Test the watchdog by simulating a completed or zombie worker and confirming that it starts the next authorized experiment.
 
+The watchdog owns execution recovery, not research planning. When the authorized worker queue is empty, it must atomically set status to awaiting_codex_planning, set planning_required to true, clear active_experiment, and stop launching workers. The primary Codex research process owns the handoff. It must inspect completed clean-validation results, formulate the next hypotheses, append distinct commands to worker_queue, set planning_required to false, set status to active, and verify the next launch. A running Codex planning process is sufficient useful research activity while no worker is expected.
+
 This must be an actual executable monitoring mechanism, not merely an instruction in your reasoning.
 
 The watchdog should operate independently of the primary research process whenever the environment supports this.

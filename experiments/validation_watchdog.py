@@ -121,13 +121,22 @@ def advance_worker_command(state_path: Path, state: dict, log_path: Path) -> boo
     # Consume one predeclared command so a completed experiment cannot repeat indefinitely.
     queue = state.get("worker_queue") or []
     if not queue:
-        write_log(log_path, "queue exhausted; recovery skipped to prevent command repetition")
+        state["status"] = "awaiting_codex_planning"
+        state["planning_required"] = True
+        state["active_experiment"] = {}
+        state["next_experiment"] = None
+        state["last_action"] = "Watchdog handed planning control to the primary Codex process."
+        temporary = state_path.with_suffix(".tmp")
+        temporary.write_text(json.dumps(state, indent=2) + "\n", encoding="utf-8")
+        temporary.replace(state_path)
+        write_log(log_path, "queue exhausted; handed control to primary Codex for planning")
         return False
     next_command = queue.pop(0)
     previous_command = state.get("worker_command")
     state["worker_queue"] = queue
     state["worker_command"] = next_command
     state["next_experiment"] = next_command
+    state["planning_required"] = False
     state["last_action"] = "Watchdog advanced the experiment queue after worker exit."
     temporary = state_path.with_suffix(".tmp")
     temporary.write_text(json.dumps(state, indent=2) + "\n", encoding="utf-8")
