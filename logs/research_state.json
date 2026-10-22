@@ -4,54 +4,17 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The all-rejected-response probe reached aggregate test macro F1 0.536157 after clean-validation macro F1 collapsed to 0.691498, so the rejected-response branch is closed. Compacting tool schemas while retaining argument cues may reduce input noise without removing task-relevant argument structure. This is a distinct representation probe.",
-  "active_experiment": {
-    "pid": 204185,
-    "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.clean_validation_baseline",
-      "--output-dir",
-      "outputs/clean-validation-compact4096-cues-smooth0005-seed20261022",
-      "--compact-tool-schemas",
-      "--add-argument-cues",
-      "--label-smoothing",
-      "0.005",
-      "--learning-rate",
-      "2.5e-5",
-      "--seed",
-      "20261022",
-      "--split-seed",
-      "20261021",
-      "--max-length",
-      "4096",
-      "--pref-train-epochs",
-      "1"
-    ],
-    "started_at": "2026-10-22T12:58:38.832461+00:00"
-  },
+  "current_hypothesis": "The compact-tool-schema plus argument-cue probe reached clean-validation macro F1 0.674996, far below the strongest encoder candidates. Its aggregate black-box test measurement is required under the strict evidence-completeness rule before any new experiment.",
+  "active_experiment": {},
   "worker_command": [
     "python",
     "-u",
     "-m",
-    "experiments.clean_validation_baseline",
-    "--output-dir",
+    "experiments.evaluate_frozen_when2call_ensemble_test",
+    "--checkpoint",
     "outputs/clean-validation-compact4096-cues-smooth0005-seed20261022",
-    "--compact-tool-schemas",
-    "--add-argument-cues",
-    "--label-smoothing",
-    "0.005",
-    "--learning-rate",
-    "2.5e-5",
-    "--seed",
-    "20261022",
-    "--split-seed",
-    "20261021",
-    "--max-length",
-    "4096",
-    "--pref-train-epochs",
-    "1"
+    "--output",
+    "outputs/test-clean-validation-compact4096-cues-smooth0005-seed20261022.json"
   ],
   "worker_queue": [],
   "experiment_queue": [
@@ -69,13 +32,18 @@
     "artifact": "outputs/clean-validation-calibration.json"
   },
   "last_heartbeat": "2026-10-22T12:58:38.832482+00:00",
-  "last_action": "Watchdog started validation worker pid 204185.",
+  "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
   "research_log_size": 140028,
   "stop_command": "STOP",
   "next_experiment": null,
-  "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T12:58:08.322240+00:00",
-  "planning_ack_deadline": "2026-10-22T13:00:08.322266+00:00",
-  "planning_attempts": 69
+  "recording_jobs": [
+    {
+      "pid": 204509,
+      "experiment_id": "clean-validation-compact4096-cues-smooth0005-seed20261022"
+    }
+  ],
+  "planning_notified_at": "2026-10-22T13:00:40.716862+00:00",
+  "planning_ack_deadline": "2026-10-22T13:02:40.716889+00:00",
+  "planning_attempts": 70
 }
