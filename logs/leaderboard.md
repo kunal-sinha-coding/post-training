@@ -181,6 +181,8 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-cues-aux25-smooth0075-seed20261022 | — | — | — | Required aggregate black-box measurement queued | queued |
 | test-clean-validation-cues-aux25-smooth0075-seed20261022 | 0.5325848849945235 | 0.534250345214821 | x82srywv | Aggregate-only test measurement, auxiliary branch rejected | completed |
 | Candidate | clean-validation-cues-sftpre1-smooth0075-seed20261022 | — | — | [queued](/workspace/post-training/outputs/clean-validation-cues-sftpre1-smooth0075-seed20261022) | queued |
+| Candidate | clean-validation-cues-sftpre1-smooth0075-seed20261022 | 0.9845833333333334 | 0.7210122908834222 | [metrics](/workspace/post-training/outputs/clean-validation-cues-sftpre1-smooth0075-seed20261022/metrics.json) | completed |
+| test-clean-validation-cues-sftpre1-smooth0075-seed20261022 | — | — | — | Required aggregate black-box measurement queued | queued |
 | test-clean-validation-cues-lr25e5-smooth0075-len6144-seed20261022 | — | — | — | Required aggregate black-box measurement queued | queued |
 | Candidate | clean-validation-cues-lr25e5-smooth0075-wd001-seed20261022 | 0.9588888888888889 | 0.719306410582761 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-wd001-seed20261022/metrics.json) | completed |
 | Candidate | clean-validation-cues-lr25e5-smooth0075-compact-schema-seed20261022 | 0.9016666666666666 | 0.6766769163985007 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-compact-schema-seed20261022/metrics.json) | completed |
@@ -190,3 +192,4 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-qwen-rpo-15b-seed20261022 | 0.5298466593647316 | 0.399156349206227 | 5eakf32i | Aggregate-only Qwen test measurement |
 | Candidate | clean-validation-cues-lr25e5-smooth0075-len6144-seed20261022 | 0.9588888888888889 | 0.7192990980821414 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-len6144-seed20261022/metrics.json) | completed |
 | Candidate | clean-validation-cues-aux25-smooth0075-seed20261022 | 0.9627777777777777 | 0.7222726201678867 | [metrics](/workspace/post-training/outputs/clean-validation-cues-aux25-smooth0075-seed20261022/metrics.json) | completed |
+| Candidate | clean-validation-cues-sftpre1-smooth0075-seed20261022 | 0.9611111111111111 | 0.7210122908834222 | [metrics](/workspace/post-training/outputs/clean-validation-cues-sftpre1-smooth0075-seed20261022/metrics.json) | completed |
