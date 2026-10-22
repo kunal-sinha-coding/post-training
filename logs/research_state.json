@@ -41,24 +41,7 @@
     "--output",
     "outputs/test-clean-validation-smooth0075-smooth0005-weight90-10.json"
   ],
-  "worker_queue": [
-    [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_frozen_when2call_ensemble_test",
-      "--checkpoint",
-      "outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022",
-      "--checkpoint",
-      "outputs/clean-validation-cues-lr25e5-smooth0005-seed20261022",
-      "--weight",
-      "0.90",
-      "--weight",
-      "0.10",
-      "--output",
-      "outputs/test-clean-validation-smooth0075-smooth0005-weight90-10.json"
-    ]
-  ],
+  "worker_queue": [],
   "experiment_queue": [
     "Run one cheap encoder-only alternative on the fixed clean split.",
     "Run one additional Jina encoder training variant with a distinct mechanism.",
