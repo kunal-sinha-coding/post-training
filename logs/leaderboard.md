@@ -340,3 +340,5 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-cues-aux05-sftpairwise-wd0001-weight55-45 | — | — | — | Fixed 55/45 ensemble selected from clean validation | queued |
 | test-clean-validation-cues-aux05-sftpairwise-wd0001-weight55-45 | 0.5599671412924425 | 0.5594070224864549 | 6w5tgee5 | Aggregate-only 55/45 ensemble, selected from clean validation | completed |
 | test-clean-validation-cues-aux05-sftpairwise-wd0001-weight50-50 | — | — | — | Fixed 50/50 ensemble selected from clean validation | queued |
+| test-clean-validation-cues-aux05-sftpairwise-wd0001-weight50-50 | 0.5594194961664841 | 0.5588056126323021 | yrgkpw96 | Aggregate-only 50/50 ensemble, selected from clean validation | completed |
+| Candidate | clean-validation-cues-aux05-bothpairwise-wd0001-smooth0075-seed20261022 | — | — | [queued](../outputs/clean-validation-cues-aux05-bothpairwise-wd0001-smooth0075-seed20261022) | Queued combined preference and auxiliary pairwise objective probe |
