@@ -2595,6 +2595,20 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 The 95/5 weights were fixed from clean-validation evidence before this aggregate test. No test labels are used for selection.
 
+## test-clean-validation-smooth0075-aux10-weight95-05
+
+Status: completed.
+
+Aggregate official test accuracy: 0.5539430449069004. Aggregate official test macro F1: 0.5537775161674661. W&B run: i5jn7sll. The blend is below the single-checkpoint leader and is rejected. The measurement used aggregate black-box output only.
+
+## clean-validation-cues-aux05-smooth0075-seed20261022
+
+Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--sft-aux-samples-per-class", "5", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"].
+
+Hypothesis: The 10-example auxiliary candidate and its 95/5 blend failed on test despite clean-validation gains. Five examples per class tests whether a smaller dose avoids the observed transfer failure. If viable, its aggregate test measurement will be queued before any later experiment.
+
 ## test-clean-validation-smooth0075-wd0005-weight90-10
 
 Status: completed.
