@@ -1,7 +1,7 @@
 {
-  "status": "active",
+  "status": "awaiting_codex_planning",
   "planning_owner": "codex_primary",
-  "planning_required": false,
+  "planning_required": true,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "The 8192-token argument-cue encoder reached only 0.495893 official-test accuracy and 0.491659 macro F1. Compacting tool schemas at 4096 tokens may reduce schema noise while avoiding the severe truncation of the earlier 2048-token compact probe.",
@@ -10,19 +10,11 @@
     "python",
     "-u",
     "-m",
-    "experiments.clean_validation_baseline",
-    "--output-dir",
+    "experiments.evaluate_frozen_when2call_ensemble_test",
+    "--checkpoint",
     "outputs/clean-validation-compact-4096-seed20261022",
-    "--compact-tool-schemas",
-    "--add-argument-cues",
-    "--seed",
-    "20261022",
-    "--split-seed",
-    "20261021",
-    "--max-length",
-    "4096",
-    "--pref-train-epochs",
-    "1"
+    "--output",
+    "outputs/test-clean-validation-compact-4096-seed20261022.json"
   ],
   "worker_queue": [],
   "experiment_queue": [
@@ -39,43 +31,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T10:19:24.862853+00:00",
-  "last_action": "Codex queued compact-schema encoder training at max length 4096, followed by its aggregate black-box test.",
+  "last_heartbeat": "2026-10-22T10:24:28.536768+00:00",
+  "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
-  "research_log_size": 98235,
+  "research_log_size": 98995,
   "stop_command": "STOP",
-  "next_experiment": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.clean_validation_baseline",
-    "--output-dir",
-    "outputs/clean-validation-compact-4096-seed20261022",
-    "--compact-tool-schemas",
-    "--add-argument-cues",
-    "--seed",
-    "20261022",
-    "--split-seed",
-    "20261021",
-    "--max-length",
-    "4096",
-    "--pref-train-epochs",
-    "1"
-  ],
-  "worker_queue": [
-    [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_frozen_when2call_ensemble_test",
-      "--checkpoint",
-      "outputs/clean-validation-compact-4096-seed20261022",
-      "--output",
-      "outputs/test-clean-validation-compact-4096-seed20261022.json"
-    ]
-  ],
+  "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T10:20:57.399203+00:00",
-  "planning_ack_deadline": "2026-10-22T10:22:57.399228+00:00",
-  "planning_attempts": 29
+  "planning_notified_at": "2026-10-22T10:25:30.713218+00:00",
+  "planning_ack_deadline": "2026-10-22T10:27:30.713242+00:00",
+  "planning_attempts": 30
 }
