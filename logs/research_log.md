@@ -2565,6 +2565,14 @@ Aggregate official test accuracy: 0.5566812705366923. Aggregate official test ma
 
 Next action: Close this blend branch and select a distinct encoder-only or architecture hypothesis from clean-validation evidence.
 
+## clean-validation-cues-aux10-smooth0075-seed20261022
+
+Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux10-smooth0075-seed20261022", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--sft-aux-samples-per-class", "10", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"].
+
+Hypothesis: The prior 25-example-per-class auxiliary probe improved clean validation but failed on aggregate test. Ten examples per class tests whether a smaller auxiliary dose preserves useful signal with less distribution shift. If viable, its aggregate black-box test measurement will be queued before any later experiment.
+
 ## test-clean-validation-smooth0075-wd0005-weight90-10
 
 Status: completed.
