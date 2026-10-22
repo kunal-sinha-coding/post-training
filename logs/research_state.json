@@ -4,21 +4,20 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The clean-validation-selected 50/50 ensemble reached aggregate accuracy 0.559419 and macro F1 0.558806, below the 55/45 result. The next encoder probe combines pairwise ranking in both the main and auxiliary objectives with weight decay 0.001. Selection will use clean validation only.",
+  "current_hypothesis": "The combined pairwise objective encoder reached clean-validation accuracy 0.957778 and macro F1 0.718645, so aggregate testing is skipped. The next encoder probe omits tool schemas while retaining auxiliary pairwise SFT, argument cues, and weight decay 0.001. Selection will use clean validation only.",
   "active_experiment": {
-    "pid": 270402,
+    "pid": 270932,
     "command": [
       "python",
       "-u",
       "-m",
       "experiments.clean_validation_baseline",
       "--output-dir",
-      "outputs/clean-validation-cues-aux05-bothpairwise-wd0001-smooth0075-seed20261022",
-      "--loss-function",
-      "pairwise_ranking",
+      "outputs/clean-validation-question4096-aux05-sftpairwise-wd0001-smooth0075-seed20261022",
+      "--omit-tool-schemas",
+      "--add-argument-cues",
       "--sft-loss-function",
       "pairwise_ranking",
-      "--add-argument-cues",
       "--learning-rate",
       "2.5e-5",
       "--label-smoothing",
@@ -36,7 +35,7 @@
       "--pref-train-epochs",
       "1"
     ],
-    "started_at": "2026-10-22T21:29:56.977662+00:00"
+    "started_at": "2026-10-22T21:34:02.641864+00:00"
   },
   "worker_command": [
     "python",
@@ -44,12 +43,11 @@
     "-m",
     "experiments.clean_validation_baseline",
     "--output-dir",
-    "outputs/clean-validation-cues-aux05-bothpairwise-wd0001-smooth0075-seed20261022",
-    "--loss-function",
-    "pairwise_ranking",
+    "outputs/clean-validation-question4096-aux05-sftpairwise-wd0001-smooth0075-seed20261022",
+    "--omit-tool-schemas",
+    "--add-argument-cues",
     "--sft-loss-function",
     "pairwise_ranking",
-    "--add-argument-cues",
     "--learning-rate",
     "2.5e-5",
     "--label-smoothing",
@@ -98,10 +96,10 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T21:29:56.977675+00:00",
-  "last_action": "Watchdog started validation worker pid 270402.",
+  "last_heartbeat": "2026-10-22T21:34:02.641879+00:00",
+  "last_action": "Watchdog started validation worker pid 270932.",
   "watchdog_enabled": true,
-  "research_log_size": 315894,
+  "research_log_size": 317931,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -109,12 +107,11 @@
     "-m",
     "experiments.clean_validation_baseline",
     "--output-dir",
-    "outputs/clean-validation-cues-aux05-bothpairwise-wd0001-smooth0075-seed20261022",
-    "--loss-function",
-    "pairwise_ranking",
+    "outputs/clean-validation-question4096-aux05-sftpairwise-wd0001-smooth0075-seed20261022",
+    "--omit-tool-schemas",
+    "--add-argument-cues",
     "--sft-loss-function",
     "pairwise_ranking",
-    "--add-argument-cues",
     "--learning-rate",
     "2.5e-5",
     "--label-smoothing",
@@ -133,7 +130,7 @@
     "1"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T21:27:55.961327+00:00",
-  "planning_ack_deadline": "2026-10-22T21:29:55.961351+00:00",
-  "planning_attempts": 200
+  "planning_notified_at": "2026-10-22T21:32:30.980017+00:00",
+  "planning_ack_deadline": "2026-10-22T21:34:30.980041+00:00",
+  "planning_attempts": 201
 }

@@ -5802,3 +5802,7 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 
 2026-10-22 The watchdog launched the distinct combined pairwise objective encoder training as PID 270402 at 21:29:57 UTC after Codex recorded the completed 50/50 result. The state is active, planning_required is false, and the queue is empty because the worker is active. The launch was verified from logs/validation_watchdog.log and the live process table.
 
+2026-10-22 The combined pairwise objective encoder reached clean-validation accuracy 0.957778 and macro F1 0.718645. It was rejected before aggregate testing because clean validation was weak. The next distinct encoder hypothesis omits tool schemas while retaining auxiliary pairwise SFT, argument cues, and weight decay 0.001. Selection will use clean validation only.
+
+2026-10-22 The watchdog launched the distinct schema-omission auxiliary pairwise encoder training as PID 270932 at 21:34:02 UTC after Codex recorded the completed 50/50 result and rejected the weak combined pairwise probe. The state is active, planning_required is false, and the queue is empty because the worker is active. The launch was verified from logs/validation_watchdog.log and the live process table.
+
