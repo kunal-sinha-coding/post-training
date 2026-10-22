@@ -905,6 +905,14 @@ Training accuracy: 0.9732353349050062. Training macro F1: 0.7300515919658388. Cl
 
 This measurement is required before the next training experiment.
 
+## test-clean-validation-cues-aux05-sftpre1-mainpairwise-wd0005-smooth0075-seed20261022-result
+
+Timestamp: 2026-10-22T22:30:48Z. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-sftpre1-mainpairwise-wd0005-smooth0075-seed20261022", "--output", "outputs/test-clean-validation-cues-aux05-sftpre1-mainpairwise-wd0005-smooth0075-seed20261022.json"]. Dataset: nvidia/When2Call, split test/mcq. Candidate selection was complete before this black-box measurement and did not use test labels. W&B run: 2llolo81.
+
+Aggregate black-box accuracy: 0.5451807228915663. Aggregate black-box macro F1: 0.5483551780500078. Examples: 3652. Test labels were used only for this separate benchmark measurement. The result is below the current 55/45 encoder ensemble leader.
+
 ## test-clean-validation-cues-aux05-sftpre1-mainpairwise-smooth0075-seed20261022
 
 Timestamp: 2026-10-22T22:19:30.000000+00:00. Status: completed.
@@ -3788,5 +3796,15 @@ Timestamp: 2026-10-22T22:24:32.522715+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-sftpre1-mainpairwise-wd0005-smooth0075-seed20261022", "--loss-function", "pairwise_ranking", "--sft-loss-function", "cross_entropy", "--add-argument-cues", "--sft-aux-samples-per-class", "5", "--sft-pretrain-epochs", "1", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux05-sftpre1-mainpairwise-wd0005-smooth0075-seed20261022. W&B run: not available.
 
 Clean development accuracy: 0.9572222222222222. Clean development macro F1: 0.7181507963562535. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-cues-aux05-sftpre1-mainpairwise-wd0005-smooth005-seed20261022
+
+Timestamp: 2026-10-22T22:29:50.388292+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-sftpre1-mainpairwise-wd0005-smooth005-seed20261022", "--loss-function", "pairwise_ranking", "--sft-loss-function", "cross_entropy", "--add-argument-cues", "--sft-aux-samples-per-class", "5", "--sft-pretrain-epochs", "1", "--learning-rate", "2.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux05-sftpre1-mainpairwise-wd0005-smooth005-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.9533333333333334. Clean development macro F1: 0.7151889210079353. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
