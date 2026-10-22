@@ -136,4 +136,6 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-smooth0075-smooth001-weight90-10 | 0.5566812705366923 | 0.5563925899416501 | 46xxgwis | Aggregate-only 90/10 blend, below 0.0075 single checkpoint |
 | test-clean-validation-smooth0075-smooth001-weight95-05 | 0.5569550930996714 | 0.5566899402616389 | cmbgr18w | Aggregate-only 95/5 blend, below 0.0075 single checkpoint |
 | test-clean-validation-smooth0075-smooth001-weight99-01 | 0.5569550930996714 | 0.5566899402616389 | xl8s85g7 | Aggregate-only 99/1 blend, ensemble sweep closed |
+| test-clean-validation-cues-lr25e5-smooth001-seed20261022 | 0.5553121577217963 | 0.5549353324032321 | vazluxzl | Aggregate-only test measurement, below 0.0075 leader |
 | Candidate | clean-validation-cues-lr25e5-smooth0075-epochs2-seed20261022 | 0.9594444444444444 | 0.7198390428947226 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-epochs2-seed20261022/metrics.json) | completed |
+| Candidate | clean-validation-cues-lr25e5-smooth001-seed20261022 | 0.9594444444444444 | 0.7197186472536391 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth001-seed20261022/metrics.json) | completed |
