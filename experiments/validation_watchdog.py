@@ -116,12 +116,13 @@ def start_worker(repo: Path, state_path: Path, log_path: Path) -> int:
     return process.pid
 
 
-def advance_worker_command(state_path: Path, state: dict, log_path: Path) -> None:
+def advance_worker_command(state_path: Path, state: dict, log_path: Path) -> bool:
     """Promote the next queued experiment before starting recovery."""
     # Consume one predeclared command so a completed experiment cannot repeat indefinitely.
     queue = state.get("worker_queue") or []
     if not queue:
-        return
+        write_log(log_path, "queue exhausted; recovery skipped to prevent command repetition")
+        return False
     next_command = queue.pop(0)
     previous_command = state.get("worker_command")
     state["worker_queue"] = queue
@@ -132,6 +133,7 @@ def advance_worker_command(state_path: Path, state: dict, log_path: Path) -> Non
     temporary.write_text(json.dumps(state, indent=2) + "\n", encoding="utf-8")
     temporary.replace(state_path)
     write_log(log_path, f"advanced worker command from {previous_command} to {next_command}")
+    return True
 
 
 def main() -> int:
@@ -174,8 +176,8 @@ def main() -> int:
                         temporary.replace(state_path)
                         write_log(log_path, f"adopted existing validation worker pid {active_pid}")
                     else:
-                        advance_worker_command(state_path, state, log_path)
-                        start_worker(args.repo, state_path, log_path)
+                        if advance_worker_command(state_path, state, log_path):
+                            start_worker(args.repo, state_path, log_path)
             except Exception as error:
                 # Record a tick failure and keep the watchdog alive for the next check.
                 write_log(log_path, f"tick error {type(error).__name__}: {error}")
