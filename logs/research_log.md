@@ -895,6 +895,12 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## deberta-v3-base-candidate-ranker-seed20261022
+
+Timestamp: 2026-10-22T11:52:28.907937+00:00. Status: failed.
+
+Setup: ["python", "-u", "-m", "experiments.when2call_candidate_ranker", "--epochs", "1", "--encoder-model", "microsoft/deberta-v3-base", "--max-length", "1024", "--max-pairs", "9000", "--lr", "2e-5", "--batch-size", "4", "--objective", "multiclass", "--output", "outputs/deberta-v3-base-candidate-ranker-seed20261022.json"]. The run failed before training because the script requested the unavailable `train_pref` dataset configuration. No metrics or test labels were used.
+
 ## test-clean-validation-cues-lr25e5-smooth002-control
 
 Timestamp: 2026-10-22T11:46:20.116709+00:00. Status: completed.
