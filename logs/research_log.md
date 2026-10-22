@@ -1029,6 +1029,16 @@ Timestamp: 2026-10-22T18:13:00+00:00. Status: queued.
 
 Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux25-smooth0075-seed20261022", "--output", "outputs/test-clean-validation-cues-aux25-smooth0075-seed20261022.json"]. This is the required separate aggregate black-box measurement. The checkpoint was selected from training and clean validation only. Official test labels are not used for selection.
 
+Aggregate black-box test accuracy was 0.532585 and macro F1 was 0.534250 from W&B run x82srywv. The auxiliary-data branch is rejected because the aggregate result did not transfer.
+
+## clean-validation-cues-sftpre1-smooth0075-seed20261022
+
+Timestamp: 2026-10-22T18:16:00+00:00. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-sftpre1-smooth0075-seed20261022", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--sft-pretrain-epochs", "1", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. This uses the fixed clean split and does not load official test labels.
+
+Hypothesis: One SFT pretraining epoch may improve encoder representation adaptation when combined with the strongest smoothing configuration, without the rejected-response distribution shift of the auxiliary-data branch. Aggregate black-box evaluation will follow only if training and clean validation are credible.
+
 ## test-clean-validation-smooth0075-smooth006-weight90-10
 
 Timestamp: 2026-10-22T16:17:46+00:00. Status: completed.
