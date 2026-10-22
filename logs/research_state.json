@@ -4,54 +4,28 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 3-example-per-class auxiliary encoder reached aggregate accuracy 0.541895 and macro F1 0.542883, so its clean-validation result did not transfer. A bounded 4-example-per-class auxiliary dose tests the remaining narrow threshold between the failed 3-example dose and the successful 5-example dose. Selection will use clean validation only, and test labels will not guide selection.",
+  "current_hypothesis": "The 4-example-per-class auxiliary encoder reached training macro F1 0.738339 and clean-validation macro F1 0.718923. Its aggregate black-box measurement is required before any new experiment because training and clean-validation evidence are complete. Selection uses clean validation only, and test labels do not guide selection.",
   "active_experiment": {},
   "worker_command": [
     "python",
     "-u",
     "-m",
-    "experiments.clean_validation_baseline",
-    "--output-dir",
+    "experiments.evaluate_frozen_when2call_ensemble_test",
+    "--checkpoint",
     "outputs/clean-validation-cues-aux04-smooth0075-seed20261022",
-    "--add-argument-cues",
-    "--learning-rate",
-    "2.5e-5",
-    "--label-smoothing",
-    "0.0075",
-    "--sft-aux-samples-per-class",
-    "4",
-    "--seed",
-    "20261022",
-    "--split-seed",
-    "20261021",
-    "--max-length",
-    "4096",
-    "--pref-train-epochs",
-    "1"
+    "--output",
+    "outputs/test-clean-validation-cues-aux04-smooth0075-seed20261022.json"
   ],
   "worker_queue": [
     [
       "python",
       "-u",
       "-m",
-      "experiments.clean_validation_baseline",
-      "--output-dir",
+      "experiments.evaluate_frozen_when2call_ensemble_test",
+      "--checkpoint",
       "outputs/clean-validation-cues-aux04-smooth0075-seed20261022",
-      "--add-argument-cues",
-      "--learning-rate",
-      "2.5e-5",
-      "--label-smoothing",
-      "0.0075",
-      "--sft-aux-samples-per-class",
-      "4",
-      "--seed",
-      "20261022",
-      "--split-seed",
-      "20261021",
-      "--max-length",
-      "4096",
-      "--pref-train-epochs",
-      "1"
+      "--output",
+      "outputs/test-clean-validation-cues-aux04-smooth0075-seed20261022.json"
     ]
   ],
   "_previous_command": [
@@ -84,14 +58,19 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T19:39:46.757264+00:00",
-  "last_action": "Recorded the completed aux03 aggregate test and queued one distinct 4-example auxiliary encoder training hypothesis.",
+  "last_heartbeat": "2026-10-22T19:41:50.309596+00:00",
+  "last_action": "Recorded complete aux04 training and clean-validation evidence and queued its required aggregate black-box test.",
   "watchdog_enabled": true,
-  "research_log_size": 248029,
+  "research_log_size": 249175,
   "stop_command": "STOP",
-  "next_experiment": "Run the queued 4-example-per-class auxiliary encoder training probe and evaluate clean-validation viability before queuing aggregate test.",
-  "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T19:40:49.751606+00:00",
-  "planning_ack_deadline": "2026-10-22T19:42:49.751630+00:00",
-  "planning_attempts": 163
+  "next_experiment": "Run the queued aggregate black-box test for the 4-example-per-class auxiliary encoder before selecting another experiment.",
+  "recording_jobs": [
+    {
+      "pid": 252879,
+      "experiment_id": "clean-validation-cues-aux04-smooth0075-seed20261022"
+    }
+  ],
+  "planning_notified_at": "2026-10-22T19:44:26.271296+00:00",
+  "planning_ack_deadline": "2026-10-22T19:46:26.271319+00:00",
+  "planning_attempts": 164
 }
