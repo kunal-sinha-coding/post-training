@@ -4,33 +4,10 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 0.00675-smoothing encoder completed with training macro F1 0.738068 and clean-validation macro F1 0.720564. Its aggregate black-box test evidence is missing, so that measurement must run first. After it, test a distinct 0.00725-smoothing encoder probe to stay near the clean-validation leader without changing the seed.",
+  "current_hypothesis": "The 0.00675-smoothing encoder completed with training macro F1 0.738068, clean-validation macro F1 0.720564, and aggregate test macro F1 0.553379. It is below the leader. The 0.00725-smoothing encoder is active. Its aggregate test measurement must run immediately after training before any further experiment.",
   "active_experiment": {
-    "pid": 230118,
+    "pid": 230429,
     "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_frozen_when2call_ensemble_test",
-      "--checkpoint",
-      "outputs/clean-validation-cues-lr25e5-smooth00675-seed20261022",
-      "--output",
-      "outputs/test-clean-validation-cues-lr25e5-smooth00675-seed20261022.json"
-    ],
-    "started_at": "2026-10-22T16:24:28.080164+00:00"
-  },
-  "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.evaluate_frozen_when2call_ensemble_test",
-    "--checkpoint",
-    "outputs/clean-validation-cues-lr25e5-smooth00675-seed20261022",
-    "--output",
-    "outputs/test-clean-validation-cues-lr25e5-smooth00675-seed20261022.json"
-  ],
-  "worker_queue": [
-    [
       "python",
       "-u",
       "-m",
@@ -50,8 +27,31 @@
       "4096",
       "--pref-train-epochs",
       "1"
-    ]
+    ],
+    "started_at": "2026-10-22T16:25:58.694961+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.clean_validation_baseline",
+    "--output-dir",
+    "outputs/clean-validation-cues-lr25e5-smooth00725-seed20261022",
+    "--add-argument-cues",
+    "--learning-rate",
+    "2.5e-5",
+    "--label-smoothing",
+    "0.00725",
+    "--seed",
+    "20261022",
+    "--split-seed",
+    "20261021",
+    "--max-length",
+    "4096",
+    "--pref-train-epochs",
+    "1"
   ],
+  "worker_queue": [["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth00725-seed20261022", "--output", "outputs/test-clean-validation-cues-lr25e5-smooth00725-seed20261022.json"]],
   "_previous_command": [
     "python",
     "-u",
@@ -82,21 +82,12 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T16:24:28.080175+00:00",
-  "last_action": "Watchdog started validation worker pid 230118.",
+  "last_heartbeat": "2026-10-22T16:25:58.694975+00:00",
+  "last_action": "Primary Codex recorded the completed 0.00675 test measurement and queued the required 0.00725 test evaluation after the active training run.",
   "watchdog_enabled": true,
   "research_log_size": 194311,
   "stop_command": "STOP",
-  "next_experiment": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.evaluate_frozen_when2call_ensemble_test",
-    "--checkpoint",
-    "outputs/clean-validation-cues-lr25e5-smooth00675-seed20261022",
-    "--output",
-    "outputs/test-clean-validation-cues-lr25e5-smooth00675-seed20261022.json"
-  ],
+  "next_experiment": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth00725-seed20261022", "--output", "outputs/test-clean-validation-cues-lr25e5-smooth00725-seed20261022.json"],
   "recording_jobs": [],
   "planning_notified_at": "2026-10-22T16:23:57.619859+00:00",
   "planning_ack_deadline": "2026-10-22T16:25:57.619876+00:00",

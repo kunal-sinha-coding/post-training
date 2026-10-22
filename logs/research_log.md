@@ -915,9 +915,9 @@ Hypothesis: The established 0.0075 setting is strongest, while 0.006 is weaker. 
 
 ## test-clean-validation-cues-lr25e5-smooth00675-seed20261022
 
-Timestamp: 2026-10-22T16:24:00+00:00. Status: queued.
+Timestamp: 2026-10-22T16:25:30+00:00. Status: completed.
 
-Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth00675-seed20261022", "--output", "outputs/test-clean-validation-cues-lr25e5-smooth00675-seed20261022.json"]. Training and clean-validation evidence are complete. This is a separate aggregate black-box measurement. Official test labels are not used for selection.
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth00675-seed20261022", "--output", "outputs/test-clean-validation-cues-lr25e5-smooth00675-seed20261022.json"]. Training and clean-validation evidence are complete. Aggregate black-box test accuracy was 0.5536692223439211 and macro F1 was 0.5533787663092267. W&B run: 1lhdhgp5. Official test labels were used only for this separate measurement.
 
 ## clean-validation-cues-lr25e5-smooth00725-seed20261022
 
@@ -926,6 +926,12 @@ Timestamp: 2026-10-22T16:24:00+00:00. Status: queued after the required test mea
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-lr25e5-smooth00725-seed20261022", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.00725", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Training and candidate selection use the fixed clean split. Official test labels are not used for selection.
 
 Hypothesis: The 0.00675 run has clean-validation macro F1 0.720564, below the 0.0075 leader at 0.724781. A nearby 0.00725 value tests whether the useful smoothing region is narrower without changing the seed or adding a random seed sweep.
+
+## test-clean-validation-cues-lr25e5-smooth00725-seed20261022
+
+Timestamp: 2026-10-22T16:27:00+00:00. Status: queued after the active training run.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth00725-seed20261022", "--output", "outputs/test-clean-validation-cues-lr25e5-smooth00725-seed20261022.json"]. The training and clean-validation run must complete first. This is a separate aggregate black-box measurement. Official test labels are not used for selection.
 
 ## test-clean-validation-smooth0075-smooth006-weight90-10
 
