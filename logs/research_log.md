@@ -1123,6 +1123,16 @@ Timestamp: 2026-10-22T18:42:00+00:00. Status: queued.
 
 Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-wd0015-seed20261022", "--output", "outputs/test-clean-validation-cues-lr25e5-smooth0075-wd0015-seed20261022.json"]. This is the separate aggregate black-box measurement. Candidate selection used training and clean validation only. Official test labels are not used for selection.
 
+Aggregate black-box test accuracy was 0.556134 and macro F1 was 0.555844 from W&B run khwi48u5. The standalone 0.015 weight-decay branch is below the leader.
+
+## test-clean-validation-smooth0075-wd0015-weight95-05
+
+Timestamp: 2026-10-22T18:44:00+00:00. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-wd0015-seed20261022", "--weight", "0.95", "--weight", "0.05", "--output", "outputs/test-clean-validation-smooth0075-wd0015-weight95-05.json"]. The 95/5 weight is fixed before aggregate evaluation. Official test labels are not used for selection.
+
+Hypothesis: A small contribution from the midpoint-decay checkpoint may preserve the leader while correcting a complementary subset of errors.
+
 ## test-clean-validation-smooth0075-smooth006-weight90-10
 
 Timestamp: 2026-10-22T16:17:46+00:00. Status: completed.
