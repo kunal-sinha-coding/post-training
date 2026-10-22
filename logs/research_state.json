@@ -4,10 +4,10 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "Weight decay 0.005 reached 0.707679 clean-validation macro F1 but only 0.522177 aggregate test macro F1, so the regularization change is rejected. Earlier staged results indicate that a lower learning rate can preserve pretrained representations, so test 2.5e-5 on the fixed clean split before abandoning this optimization axis.",
+  "current_hypothesis": "The learning-rate 2.5e-5 checkpoint reached 0.719335 clean-validation macro F1 and 0.546618 aggregate test macro F1, making it the strongest recent clean-validation candidate. A frozen ensemble with the base and smoothed argument-cue checkpoints may combine its stronger boundary with complementary errors without using test labels.",
   "active_experiment": {},
-  "worker_command": ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-lr25e5-seed20261022", "--add-argument-cues", "--learning-rate", "2.5e-5", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"],
-  "worker_queue": [["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-seed20261022", "--output", "outputs/test-clean-validation-cues-lr25e5-seed20261022.json"]],
+  "worker_command": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-seed20261022", "--checkpoint", "outputs/clean-validation-cues-seed20261022", "--checkpoint", "outputs/clean-validation-cues-smooth002-seed20261022", "--weight", "0.50", "--weight", "0.25", "--weight", "0.25", "--output", "outputs/test-clean-validation-lr25e5-three-member.json"],
+  "worker_queue": [],
   "experiment_queue": [
     "Run one cheap encoder-only alternative on the fixed clean split.",
     "Run one additional Jina encoder training variant with a distinct mechanism.",
@@ -22,14 +22,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T10:50:20.030227+00:00",
+  "last_heartbeat": "2026-10-22T10:55:24.147545+00:00",
   "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
-  "research_log_size": 104344,
+  "research_log_size": 105762,
   "stop_command": "STOP",
   "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T10:51:53.014997+00:00",
-  "planning_ack_deadline": "2026-10-22T10:53:53.015023+00:00",
-  "planning_attempts": 35
+  "planning_notified_at": "2026-10-22T10:56:26.479158+00:00",
+  "planning_ack_deadline": "2026-10-22T10:58:26.479183+00:00",
+  "planning_attempts": 36
 }
