@@ -324,7 +324,11 @@ def main() -> int:
                         temporary.write_text(json.dumps(state, indent=2) + "\n", encoding="utf-8")
                         temporary.replace(state_path)
                         write_log(log_path, f"adopted existing validation worker pid {active_pid}")
+                    elif not active:
+                        # Start the declared current command when Codex has refilled an empty active slot.
+                        start_worker(args.repo, state_path, log_path)
                     else:
+                        # Record the exited worker and advance exactly once to the next queued command.
                         recorder_job = start_recorder(args.repo, active, log_path)
                         if recorder_job:
                             state.setdefault("recording_jobs", []).append(recorder_job)
