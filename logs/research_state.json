@@ -4,58 +4,28 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The targeted 5-example auxiliary plus 10 rejected-direct encoder reached aggregate accuracy 0.539704 and macro F1 0.540631, so its clean-validation gain did not transfer. A bounded interaction of the successful 5-example auxiliary setup with one SFT pretraining epoch tests whether SFT improves the auxiliary representation despite being weak alone. Selection will use clean validation only, and test labels will not guide selection.",
+  "current_hypothesis": "The 5-example auxiliary plus one SFT pretraining epoch reached training macro F1 0.740023 and clean-validation macro F1 0.721914. Its aggregate black-box measurement is required before any new experiment because training and clean-validation evidence are complete. Selection uses clean validation only, and test labels do not guide selection.",
   "active_experiment": {},
   "worker_command": [
     "python",
     "-u",
     "-m",
-    "experiments.clean_validation_baseline",
-    "--output-dir",
+    "experiments.evaluate_frozen_when2call_ensemble_test",
+    "--checkpoint",
     "outputs/clean-validation-cues-aux05-sftpre1-smooth0075-seed20261022",
-    "--add-argument-cues",
-    "--learning-rate",
-    "2.5e-5",
-    "--label-smoothing",
-    "0.0075",
-    "--sft-aux-samples-per-class",
-    "5",
-    "--sft-pretrain-epochs",
-    "1",
-    "--seed",
-    "20261022",
-    "--split-seed",
-    "20261021",
-    "--max-length",
-    "4096",
-    "--pref-train-epochs",
-    "1"
+    "--output",
+    "outputs/test-clean-validation-cues-aux05-sftpre1-smooth0075-seed20261022.json"
   ],
   "worker_queue": [
     [
       "python",
       "-u",
       "-m",
-      "experiments.clean_validation_baseline",
-      "--output-dir",
+      "experiments.evaluate_frozen_when2call_ensemble_test",
+      "--checkpoint",
       "outputs/clean-validation-cues-aux05-sftpre1-smooth0075-seed20261022",
-      "--add-argument-cues",
-      "--learning-rate",
-      "2.5e-5",
-      "--label-smoothing",
-      "0.0075",
-      "--sft-aux-samples-per-class",
-      "5",
-      "--sft-pretrain-epochs",
-      "1",
-      "--seed",
-      "20261022",
-      "--split-seed",
-      "20261021",
-      "--max-length",
-      "4096",
-      "--pref-train-epochs",
-      "1"
+      "--output",
+      "outputs/test-clean-validation-cues-aux05-sftpre1-smooth0075-seed20261022.json"
     ]
   ],
   "_previous_command": [
@@ -88,14 +58,19 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T19:50:41.685182+00:00",
-  "last_action": "Recorded the completed targeted aggregate test and queued one distinct auxiliary plus SFT interaction training hypothesis.",
+  "last_heartbeat": "2026-10-22T19:53:44.376164+00:00",
+  "last_action": "Recorded complete auxiliary plus SFT training and clean-validation evidence and queued its required aggregate black-box test.",
   "watchdog_enabled": true,
-  "research_log_size": 253450,
+  "research_log_size": 254701,
   "stop_command": "STOP",
-  "next_experiment": "Run the queued 5-example auxiliary plus one SFT pretraining epoch and evaluate clean-validation viability before queuing aggregate test.",
-  "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T19:52:13.853617+00:00",
-  "planning_ack_deadline": "2026-10-22T19:54:13.853641+00:00",
-  "planning_attempts": 167
+  "next_experiment": "Run the queued aggregate black-box test for the 5-example auxiliary plus one SFT pretraining epoch before selecting another experiment.",
+  "recording_jobs": [
+    {
+      "pid": 254735,
+      "experiment_id": "clean-validation-cues-aux05-sftpre1-smooth0075-seed20261022"
+    }
+  ],
+  "planning_notified_at": "2026-10-22T19:58:27.818505+00:00",
+  "planning_ack_deadline": "2026-10-22T20:00:27.818529+00:00",
+  "planning_attempts": 168
 }
