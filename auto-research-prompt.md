@@ -212,6 +212,8 @@ Measure at minimum:
 
 For every viable candidate, run the authorized aggregate-only official test evaluation after the candidate is frozen. Record test accuracy and test macro F1 in the persistent research log and in the leaderboard's official test-results section. If a candidate is clearly unusable and test evaluation is skipped, record `test skipped` and the reason. Never use a test result to change the submitted candidate, its hyperparameters, its prompt, or its training data. Use clean development results to decide whether a method is viable, then use the frozen test result to measure real benchmark performance and compare completed frozen methods.
 
+Use adaptive training continuation decisions. After each available checkpoint evaluation, compare the trend in training metrics, clean development metrics, and official aggregate test metrics when a frozen test measurement exists. Do not infer a training-dose effect from comparing different runs alone. Compare epoch or checkpoint trends within the same run whenever possible, and use repeated runs to estimate noise. Continue training when the trend is improving or inconclusive and the method remains viable. Stop or reject further training when the trend shows a clear sustained regression, collapse, or plateau that is not justified by a planned experiment. Record the continuation decision and its evidence before launching the next dose.
+
 Investigate unexpected results.
 
 Do not assume a higher training score implies better generalization.
