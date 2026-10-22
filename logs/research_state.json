@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "Label smoothing reached 0.546276 official-test accuracy and 0.546983 macro F1, below the base argument-cue checkpoint in accuracy. The two checkpoints have similar clean-validation performance, so equal-logit blending may reduce complementary errors.",
+  "current_hypothesis": "Equal-logit blending of the base and label-smoothed argument-cue encoders reached 0.551479 official-test accuracy and 0.551867 macro F1. Their clean-validation scores are close, so a small validation-derived weight adjustment may improve the blend.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -15,8 +15,12 @@
     "outputs/clean-validation-cues-seed20261022",
     "--checkpoint",
     "outputs/clean-validation-cues-smooth002-seed20261022",
+    "--weight",
+    "0.56",
+    "--weight",
+    "0.44",
     "--output",
-    "outputs/test-clean-validation-cues-smooth002-ensemble-seed20261022.json"
+    "outputs/test-clean-validation-cues-smooth002-weighted-ensemble-seed20261022.json"
   ],
   "worker_queue": [],
   "experiment_queue": [
@@ -33,8 +37,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T09:46:24.540547+00:00",
-  "last_action": "Codex queued an equal-logit ensemble of the base and label-smoothed argument-cue encoders.",
+  "last_heartbeat": "2026-10-22T09:49:27.380334+00:00",
+  "last_action": "Codex queued a validation-weighted two-checkpoint encoder ensemble.",
   "watchdog_enabled": true,
   "research_log_size": 96009,
   "stop_command": "STOP",
@@ -47,11 +51,15 @@
     "outputs/clean-validation-cues-seed20261022",
     "--checkpoint",
     "outputs/clean-validation-cues-smooth002-seed20261022",
+    "--weight",
+    "0.56",
+    "--weight",
+    "0.44",
     "--output",
-    "outputs/test-clean-validation-cues-smooth002-ensemble-seed20261022.json"
+    "outputs/test-clean-validation-cues-smooth002-weighted-ensemble-seed20261022.json"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T09:47:56.806741+00:00",
-  "planning_ack_deadline": "2026-10-22T09:49:56.806764+00:00",
-  "planning_attempts": 21
+  "planning_notified_at": "2026-10-22T09:50:59.304678+00:00",
+  "planning_ack_deadline": "2026-10-22T09:52:59.304703+00:00",
+  "planning_attempts": 22
 }
