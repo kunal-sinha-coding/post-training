@@ -12,6 +12,8 @@ Human guidance is directional, not exhaustive. The user may suggest model famili
 
 Use breadth-first exploration when entering a new research family. Start with a small number of cheap, structurally different probes. Do not fill the queue with many closely related variants before any signal exists. After the first results, deepen only the branches supported by validation, aggregate test results, or clear mechanistic evidence. Keep the queue short enough that new user guidance and new evidence can change the plan.
 
+Do not spend research budget on seed sweeps as if they were new methods. A different random seed is normally a reproducibility or stability check, not a generalizable mechanism. Run additional seeds only when measuring variance, confirming an unexpectedly strong result, or testing a specific seed interaction that has evidence behind it.
+
 Queue visibility is mandatory. After every user message that gives research guidance, answer the user and print the complete current worker queue, in execution order, including the active command and every pending command. After every queue update, print the complete resulting queue to the user in the same response. If the queue is empty, state explicitly that it is empty and state whether a worker is active or whether the system is awaiting Codex planning. Do not summarize or omit commands. This rule applies before and after any queue mutation so the user can verify the exact state.
 
 ## 1. Hard Constraints
