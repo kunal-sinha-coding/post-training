@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The main-cross-entropy auxiliary-pairwise probe reached clean-validation accuracy 0.968333 and macro F1 0.726477. Its aggregate black-box test is required before any new training experiment. The next distinct hypothesis keeps this objective combination and reduces auxiliary samples per class from 2 to 1. Selection will use clean validation only.",
+  "current_hypothesis": "The main-cross-entropy auxiliary-pairwise auxiliary-1 probe reached clean-validation accuracy 0.973889 and macro F1 0.730616. Its aggregate black-box test is required before any new training experiment. The next distinct hypothesis keeps this objective combination and increases auxiliary samples per class to 3 to test whether the strong auxiliary-1 result generalizes across coverage. Selection will use clean validation only.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -12,14 +12,14 @@
     "-m",
     "experiments.clean_validation_baseline",
     "--output-dir",
-    "outputs/clean-validation-cues-aux02-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022",
+    "outputs/clean-validation-cues-aux01-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022",
     "--loss-function",
     "cross_entropy",
     "--sft-loss-function",
     "pairwise_ranking",
     "--add-argument-cues",
     "--sft-aux-samples-per-class",
-    "2",
+    "1",
     "--learning-rate",
     "1.5e-5",
     "--label-smoothing",
@@ -38,16 +38,16 @@
   "worker_queue": [
     [
       "python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test",
-      "--checkpoint", "outputs/clean-validation-cues-aux02-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022",
-      "--output", "outputs/test-clean-validation-cues-aux02-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022.json"
+      "--checkpoint", "outputs/clean-validation-cues-aux01-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022",
+      "--output", "outputs/test-clean-validation-cues-aux01-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022.json"
     ],
     [
       "python", "-u", "-m", "experiments.clean_validation_baseline",
-      "--output-dir", "outputs/clean-validation-cues-aux01-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022",
+      "--output-dir", "outputs/clean-validation-cues-aux03-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022",
       "--loss-function", "cross_entropy",
       "--sft-loss-function", "pairwise_ranking",
       "--add-argument-cues",
-      "--sft-aux-samples-per-class", "1",
+      "--sft-aux-samples-per-class", "3",
       "--learning-rate", "1.5e-5",
       "--label-smoothing", "0.0",
       "--weight-decay", "0.005",
@@ -87,14 +87,19 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T23:27:34.472635+00:00",
-  "last_action": "Queued the missing main-cross-entropy auxiliary-pairwise aggregate test before the distinct auxiliary-1 objective probe.",
+  "last_heartbeat": "2026-10-22T23:35:36.846598+00:00",
+  "last_action": "Queued the missing auxiliary-1 objective aggregate test before the distinct auxiliary-3 objective probe.",
   "watchdog_enabled": true,
-  "research_log_size": 377244,
+  "research_log_size": 377806,
   "stop_command": "STOP",
   "next_experiment": null,
-  "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T23:30:44.644092+00:00",
-  "planning_ack_deadline": "2026-10-22T23:32:44.644111+00:00",
-  "planning_attempts": 226
+  "recording_jobs": [
+    {
+      "pid": 288938,
+      "experiment_id": "clean-validation-cues-aux01-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022"
+    }
+  ],
+  "planning_notified_at": "2026-10-22T23:40:41.657796+00:00",
+  "planning_ack_deadline": "2026-10-22T23:42:41.657819+00:00",
+  "planning_attempts": 227
 }
