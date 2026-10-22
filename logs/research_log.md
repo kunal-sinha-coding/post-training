@@ -895,6 +895,14 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-smooth0005-smooth002-blend
+
+Timestamp: 2026-10-22T12:21:25.861458+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0005-seed20261022", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth002-seed20261022", "--weight", "0.50", "--weight", "0.50", "--output", "outputs/test-clean-validation-smooth0005-smooth002-blend.json"]. The weights were fixed from clean-validation evidence before the aggregate-only measurement. Linked training and clean-validation metrics are recorded in the component records. W&B run: `3ov2wqzq`.
+
+Aggregate black-box test accuracy was 0.5569550930996714 and macro F1 was 0.5562139387687673. The official test labels were not used for selection. This is the strongest recent aggregate result.
+
 ## deberta-v3-base-candidate-ranker-seed20261022
 
 Timestamp: 2026-10-22T11:52:28.907937+00:00. Status: failed.
