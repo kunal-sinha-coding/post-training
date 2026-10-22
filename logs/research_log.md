@@ -895,6 +895,22 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-cues-aux05-wd0005-smooth0075-seed20261022
+
+Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-wd0005-smooth0075-seed20261022", "--output", "outputs/test-clean-validation-cues-aux05-wd0005-smooth0075-seed20261022.json"]. W&B run: nti51cb2.
+
+Aggregate official test accuracy: 0.559145673603505. Aggregate official test macro F1: 0.558515734370257. The result is below the current best aggregate result, so this branch is rejected. Test labels were used only for this separate aggregate measurement after candidate selection.
+
+## clean-validation-cues-aux05-compact4096-smooth0075-seed20261022
+
+Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-compact4096-smooth0075-seed20261022", "--compact-tool-schemas", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--sft-aux-samples-per-class", "5", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"].
+
+Hypothesis: Compact tool schemas may reduce schema-specific noise while preserving the successful argument-cue and auxiliary signal. Selection will use clean validation only. Its aggregate test will be queued before any later experiment if viable.
+
 ## test-clean-validation-cues-lr25e5-smooth0075-wd00125-seed20261022
 
 Timestamp: 2026-10-22T18:52:12.333281+00:00. Status: completed.
