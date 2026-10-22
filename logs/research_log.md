@@ -1105,6 +1105,16 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: A larger auxiliary contribution may expose complementary errors that the 95/5 blend did not capture. This is the final auxiliary ensemble probe.
 
+Aggregate black-box test accuracy was 0.552026 and macro F1 was 0.551930 from W&B run 2td3h7wv. The auxiliary ensemble branch is closed.
+
+## clean-validation-cues-lr25e5-smooth0075-wd0015-seed20261022
+
+Timestamp: 2026-10-22T18:39:00+00:00. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-lr25e5-smooth0075-wd0015-seed20261022", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--weight-decay", "0.015", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. This uses the fixed clean split and does not load official test labels.
+
+Hypothesis: A midpoint weight decay between the tested 0.01 and 0.02 settings may improve regularization transfer without changing the strong encoder inputs or objective. Aggregate black-box evaluation will follow only if training and clean validation are credible.
+
 ## test-clean-validation-smooth0075-smooth006-weight90-10
 
 Timestamp: 2026-10-22T16:17:46+00:00. Status: completed.

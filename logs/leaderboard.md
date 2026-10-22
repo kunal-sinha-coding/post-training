@@ -195,6 +195,8 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-smooth0075-aux25-weight95-05 | — | — | — | Fixed 95/5 leader-plus-auxiliary ensemble queued | queued |
 | test-clean-validation-smooth0075-aux25-weight95-05 | 0.5547645125958379 | 0.5544640899050918 | dv40skla | Aggregate-only blend, auxiliary branch rejected | completed |
 | test-clean-validation-smooth0075-aux25-weight90-10 | — | — | — | Fixed 90/10 leader-plus-auxiliary ensemble queued | queued |
+| test-clean-validation-smooth0075-aux25-weight90-10 | 0.552026286966046 | 0.5519298401946127 | 2td3h7wv | Aggregate-only blend, auxiliary branch closed | completed |
+| Candidate | clean-validation-cues-lr25e5-smooth0075-wd0015-seed20261022 | — | — | [queued](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-wd0015-seed20261022) | queued |
 | test-clean-validation-cues-lr25e5-smooth0075-len6144-seed20261022 | — | — | — | Required aggregate black-box measurement queued | queued |
 | Candidate | clean-validation-cues-lr25e5-smooth0075-wd001-seed20261022 | 0.9588888888888889 | 0.719306410582761 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-wd001-seed20261022/metrics.json) | completed |
 | Candidate | clean-validation-cues-lr25e5-smooth0075-compact-schema-seed20261022 | 0.9016666666666666 | 0.6766769163985007 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-compact-schema-seed20261022/metrics.json) | completed |
