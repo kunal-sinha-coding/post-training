@@ -4020,3 +4020,13 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 Clean development accuracy: 0.9677777777777777. Clean development macro F1: 0.7260453767575579. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-cues-aux01-lr15e5-bothpairwise-wd0005-smooth000-seed20261022
+
+Timestamp: 2026-10-22T23:18:28.525018+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux01-lr15e5-bothpairwise-wd0005-smooth000-seed20261022", "--loss-function", "pairwise_ranking", "--sft-loss-function", "pairwise_ranking", "--add-argument-cues", "--sft-aux-samples-per-class", "1", "--learning-rate", "1.5e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux01-lr15e5-bothpairwise-wd0005-smooth000-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.9672222222222222. Clean development macro F1: 0.7255957285652732. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
