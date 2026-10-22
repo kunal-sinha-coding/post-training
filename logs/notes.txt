@@ -5806,3 +5806,7 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 
 2026-10-22 The watchdog launched the distinct schema-omission auxiliary pairwise encoder training as PID 270932 at 21:34:02 UTC after Codex recorded the completed 50/50 result and rejected the weak combined pairwise probe. The state is active, planning_required is false, and the queue is empty because the worker is active. The launch was verified from logs/validation_watchdog.log and the live process table.
 
+2026-10-22 The schema-omission auxiliary pairwise encoder reached training macro F1 0.512416 and clean-validation macro F1 0.456876. It was rejected before aggregate testing because clean validation was clearly non-viable. The next distinct hypothesis extends the strongest aggregate component from one to two preference epochs. Selection will use clean validation only.
+
+2026-10-22 The watchdog launched the distinct two-epoch auxiliary pairwise continuation as PID 271523 at 21:37:08 UTC after Codex recorded the schema-omission rejection. The state is active, planning_required is false, and the queue is empty because the worker is active. The launch was verified from logs/validation_watchdog.log and the live process table.
+

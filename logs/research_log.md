@@ -895,6 +895,16 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-epochs2-seed20261022
+
+Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-epochs2-seed20261022", "--sft-loss-function", "pairwise_ranking", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.005", "--sft-aux-samples-per-class", "5", "--weight-decay", "0.001", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "2"].
+
+Hypothesis: The one-epoch auxiliary pairwise checkpoint produced the strongest observed aggregate component, but its clean-validation macro F1 was only 0.722268. A second preference epoch tests whether that component is undertrained. Selection will use clean validation only. Aggregate testing will be queued if the result is viable.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
 ## clean-validation-question4096-aux05-sftpairwise-wd0001-smooth0075-seed20261022
 
 Status: queued.
@@ -3474,5 +3484,15 @@ Timestamp: 2026-10-22T21:32:29.160895+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-bothpairwise-wd0001-smooth0075-seed20261022", "--loss-function", "pairwise_ranking", "--sft-loss-function", "pairwise_ranking", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--sft-aux-samples-per-class", "5", "--weight-decay", "0.001", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux05-bothpairwise-wd0001-smooth0075-seed20261022. W&B run: not available.
 
 Clean development accuracy: 0.9577777777777777. Clean development macro F1: 0.7186446052002866. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-question4096-aux05-sftpairwise-wd0001-smooth0075-seed20261022
+
+Timestamp: 2026-10-22T21:35:33.759055+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-question4096-aux05-sftpairwise-wd0001-smooth0075-seed20261022", "--omit-tool-schemas", "--add-argument-cues", "--sft-loss-function", "pairwise_ranking", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--sft-aux-samples-per-class", "5", "--weight-decay", "0.001", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-question4096-aux05-sftpairwise-wd0001-smooth0075-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.6327777777777778. Clean development macro F1: 0.45687582599314974. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
