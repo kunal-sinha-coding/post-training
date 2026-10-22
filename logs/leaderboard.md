@@ -205,6 +205,10 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-smooth0075-wd0015-weight90-10 | — | — | — | Fixed 90/10 leader-plus-regularized ensemble queued | queued |
 | test-clean-validation-smooth0075-wd0015-weight90-10 | 0.5575027382256298 | 0.5572681665498875 | vjw81bvy | Aggregate-only blend, current best observed strategy | completed |
 | Candidate | clean-validation-cues-lr25e5-smooth0075-wd00125-seed20261022 | — | — | [queued](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-wd00125-seed20261022) | queued |
+| Candidate | clean-validation-cues-lr25e5-smooth0075-wd00125-seed20261022 | 0.9841666666666666 | 0.7197155519436146 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-wd00125-seed20261022/metrics.json) | completed |
+| test-clean-validation-cues-lr25e5-smooth0075-wd00125-seed20261022 | — | — | — | Required aggregate black-box measurement queued | queued |
+| test-clean-validation-cues-lr25e5-smooth0075-wd00125-seed20261022 | 0.5558598028477546 | 0.5553796317398468 | fn20fb3z | Aggregate-only test measurement, below current best | completed |
+| Candidate | clean-validation-cues-lr25e5-smooth0075-wd0005-seed20261022 | — | — | [queued](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-wd0005-seed20261022) | queued |
 | test-clean-validation-cues-lr25e5-smooth0075-len6144-seed20261022 | — | — | — | Required aggregate black-box measurement queued | queued |
 | Candidate | clean-validation-cues-lr25e5-smooth0075-wd001-seed20261022 | 0.9588888888888889 | 0.719306410582761 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-wd001-seed20261022/metrics.json) | completed |
 | Candidate | clean-validation-cues-lr25e5-smooth0075-compact-schema-seed20261022 | 0.9016666666666666 | 0.6766769163985007 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-compact-schema-seed20261022/metrics.json) | completed |
@@ -217,3 +221,4 @@ Historical official test results remain detailed in [research_log.md](research_l
 | Candidate | clean-validation-cues-sftpre1-smooth0075-seed20261022 | 0.9611111111111111 | 0.7210122908834222 | [metrics](/workspace/post-training/outputs/clean-validation-cues-sftpre1-smooth0075-seed20261022/metrics.json) | completed |
 | Candidate | clean-validation-cues-lr25e5-smooth00775-seed20261022 | 0.9583333333333334 | 0.7188907319772974 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth00775-seed20261022/metrics.json) | completed |
 | Candidate | clean-validation-cues-lr25e5-smooth0075-wd0015-seed20261022 | 0.9594444444444444 | 0.719732511985107 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-wd0015-seed20261022/metrics.json) | completed |
+| Candidate | clean-validation-cues-lr25e5-smooth0075-wd00125-seed20261022 | 0.9594444444444444 | 0.7197155519436146 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-wd00125-seed20261022/metrics.json) | completed |
