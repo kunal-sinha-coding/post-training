@@ -919,6 +919,14 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 
 Hypothesis: Compact tool schemas may reduce schema-specific noise while preserving the successful argument-cue and auxiliary signal. Selection will use clean validation only. Its aggregate test will be queued before any later experiment if viable.
 
+## test-clean-validation-cues-aux05-smooth005-wd0005-seed20261022
+
+Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth005-wd0005-seed20261022", "--output", "outputs/test-clean-validation-cues-aux05-smooth005-wd0005-seed20261022.json"].
+
+Training macro F1: 0.7401180000956347. Clean-validation accuracy: 0.9644444444444444. Clean-validation macro F1: 0.7235238125271145. The candidate is viable on clean validation, so its required aggregate black-box measurement is queued before any new experiment. Test labels are not used for selection.
+
 ## test-clean-validation-cues-lr25e5-smooth0075-wd00125-seed20261022
 
 Timestamp: 2026-10-22T18:52:12.333281+00:00. Status: completed.
@@ -2962,5 +2970,15 @@ Timestamp: 2026-10-22T20:13:00.623329+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-compact4096-smooth0075-seed20261022", "--compact-tool-schemas", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--sft-aux-samples-per-class", "5", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux05-compact4096-smooth0075-seed20261022. W&B run: not available.
 
 Clean development accuracy: 0.8938888888888888. Clean development macro F1: 0.6707530462526375. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-cues-aux05-smooth005-wd0005-seed20261022
+
+Timestamp: 2026-10-22T20:16:37.130631+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-smooth005-wd0005-seed20261022", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.005", "--sft-aux-samples-per-class", "5", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux05-smooth005-wd0005-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.9644444444444444. Clean development macro F1: 0.7235238125271145. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
