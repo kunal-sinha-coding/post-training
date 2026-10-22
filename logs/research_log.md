@@ -1085,6 +1085,16 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: A 1 percent contribution may retain the leader while preserving only a small complementary correction. This is the final bounded weight probe for the nearby-smoothing branch.
 
+Aggregate black-box test accuracy was 0.557229 and macro F1 was 0.556954 from W&B run bhnq9j5k. The nearby-smoothing weight sweep is closed because it did not exceed the single-checkpoint leader.
+
+## test-clean-validation-smooth0075-aux25-weight95-05
+
+Timestamp: 2026-10-22T18:35:00+00:00. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-aux25-smooth0075-seed20261022", "--weight", "0.95", "--weight", "0.05", "--output", "outputs/test-clean-validation-smooth0075-aux25-weight95-05.json"]. The 95/5 weight is fixed from clean-validation evidence before aggregate evaluation. Official test labels are not used for selection.
+
+Hypothesis: The auxiliary checkpoint has the strongest clean-validation macro F1, but its standalone test transfer is poor. A small fixed contribution may recover complementary errors while preserving the leader.
+
 ## test-clean-validation-smooth0075-smooth006-weight90-10
 
 Timestamp: 2026-10-22T16:17:46+00:00. Status: completed.
