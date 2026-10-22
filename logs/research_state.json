@@ -1,11 +1,36 @@
 {
-  "status": "awaiting_codex_planning",
+  "status": "active",
   "planning_owner": "codex_primary",
-  "planning_required": true,
+  "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "The 25-example-per-class auxiliary-data probe reached aggregate test macro F1 0.532116, confirming that the auxiliary dosage branch does not transfer. A distinct all-rejected-response supervision probe tests whether rejected examples provide useful boundary information beyond the targeted direct-class subset.",
-  "active_experiment": {},
+  "active_experiment": {
+    "pid": 203054,
+    "command": [
+      "python",
+      "-u",
+      "-m",
+      "experiments.clean_validation_baseline",
+      "--output-dir",
+      "outputs/clean-validation-cues-all-rejected-smooth0005-seed20261022",
+      "--add-argument-cues",
+      "--learning-rate",
+      "2.5e-5",
+      "--label-smoothing",
+      "0.005",
+      "--include-rejected-examples",
+      "--seed",
+      "20261022",
+      "--split-seed",
+      "20261021",
+      "--max-length",
+      "4096",
+      "--pref-train-epochs",
+      "1"
+    ],
+    "started_at": "2026-10-22T12:49:27.960192+00:00"
+  },
   "worker_command": [
     "python",
     "-u",
@@ -43,14 +68,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T12:44:51.015101+00:00",
-  "last_action": "Watchdog handed planning control to the primary Codex process.",
+  "last_heartbeat": "2026-10-22T12:49:27.960211+00:00",
+  "last_action": "Watchdog started validation worker pid 203054.",
   "watchdog_enabled": true,
-  "research_log_size": 137059,
+  "research_log_size": 138077,
   "stop_command": "STOP",
   "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T12:46:25.221105+00:00",
-  "planning_ack_deadline": "2026-10-22T12:48:25.221123+00:00",
-  "planning_attempts": 65
+  "planning_notified_at": "2026-10-22T12:48:26.950229+00:00",
+  "planning_ack_deadline": "2026-10-22T12:50:26.950249+00:00",
+  "planning_attempts": 66
 }
