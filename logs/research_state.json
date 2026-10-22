@@ -4,13 +4,18 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The argument-cue plus seed-22 ensemble also underperformed the argument-cue member. A visible required-field rule may correct tool-call decisions without changing the frozen encoder and without using hidden test labels.",
+  "current_hypothesis": "The visible required-field rule slightly reduced the argument-cue model result. Applying the same frozen rule to the highest clean-validation standard-schema seed-22 checkpoint tests whether the rule depends on the input representation.",
   "active_experiment": {},
   "worker_command": [
-    "python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test",
-    "--checkpoint", "outputs/clean-validation-argument-cues-seed21",
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_frozen_when2call_ensemble_test",
+    "--checkpoint",
+    "outputs/clean-validation-fixedsplit-seed22-len4096",
     "--complete-request-to-tool",
-    "--output", "outputs/test-clean-validation-argument-cues-required-rule.json"
+    "--output",
+    "outputs/test-clean-validation-seed22-required-rule.json"
   ],
   "worker_queue": [],
   "experiment_queue": [
@@ -27,14 +32,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T09:22:44.979479+00:00",
+  "last_heartbeat": "2026-10-22T09:24:49.094592+00:00",
   "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
   "research_log_size": 94477,
   "stop_command": "STOP",
   "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T09:24:18.567798+00:00",
-  "planning_ack_deadline": "2026-10-22T09:26:18.567822+00:00",
-  "planning_attempts": 12
+  "planning_notified_at": "2026-10-22T09:25:51.330996+00:00",
+  "planning_ack_deadline": "2026-10-22T09:27:51.331019+00:00",
+  "planning_attempts": 13
 }
