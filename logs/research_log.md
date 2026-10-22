@@ -1576,3 +1576,23 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 Clean development accuracy: 0.9605555555555556. Clean development macro F1: 0.720571692457166. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-cues-aux25-smooth0005-seed20261022
+
+Timestamp: 2026-10-22T12:44:22.517413+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux25-smooth0005-seed20261022", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.005", "--sft-aux-samples-per-class", "25", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux25-smooth0005-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.9633333333333334. Clean development macro F1: 0.7226758876077004. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## test-clean-validation-cues-aux25-smooth0005-seed20261022
+
+Timestamp: 2026-10-22T12:46:21.000000+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux25-smooth0005-seed20261022", "--output", "outputs/test-clean-validation-cues-aux25-smooth0005-seed20261022.json"]. Output: /workspace/post-training/outputs/test-clean-validation-cues-aux25-smooth0005-seed20261022.json. W&B run: hgxprrio.
+
+The checkpoint had complete training and clean-validation evidence. Aggregate black-box test accuracy was 0.5306681270536692 and macro F1 was 0.5321158070556226. The official test labels were used only for this separate measurement after clean-validation selection. The 25-example auxiliary-data branch is rejected because it did not transfer.
+
+This record was written by the primary Codex process because the test-only output has no output directory for the recorder. Candidate selection used clean validation only.
