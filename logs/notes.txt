@@ -5546,3 +5546,4 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-22 Clarified the queue invariant: prioritize pending test entries, then alternate every viable training candidate with its aggregate-only test evaluation instead of choosing testing or training exclusively.
 2026-10-22 Added user-guidance and ensemble exploration rules to the autonomous research prompt. User suggestions steer research families but do not limit creative hypothesis generation.
 2026-10-22 Added breadth-first queue guidance and a small encoder and ensemble exploration plan. Deeper variants will be added only after initial probes provide signal.
+2026-10-22 Removed the unstarted 1.5B rank-8 SFT training and test pair. The active 0.5B run and its test remain as the final legacy Qwen probe before encoder and ensemble exploration.
