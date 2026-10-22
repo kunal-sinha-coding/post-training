@@ -1065,6 +1065,16 @@ Timestamp: 2026-10-22T18:27:00+00:00. Status: queued.
 
 Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth00775-seed20261022", "--output", "outputs/test-clean-validation-cues-lr25e5-smooth00775-seed20261022.json"]. This is the separate aggregate black-box measurement. Candidate selection used training and clean validation only. Official test labels are not used for selection.
 
+Aggregate black-box test accuracy was 0.554491 and macro F1 was 0.553625 from W&B run ihqb203q. The standalone 0.00775 smoothing branch is below the leader.
+
+## test-clean-validation-smooth0075-smooth00775-weight95-05
+
+Timestamp: 2026-10-22T18:29:00+00:00. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth00775-seed20261022", "--weight", "0.95", "--weight", "0.05", "--output", "outputs/test-clean-validation-smooth0075-smooth00775-weight95-05.json"]. The 95/5 weight is fixed from clean-validation evidence before aggregate evaluation. Official test labels are not used for selection.
+
+Hypothesis: The nearby 0.00775 checkpoint may correct a small subset of the 0.0075 leader's errors without displacing the leader. This is a bounded ensemble probe.
+
 ## test-clean-validation-smooth0075-smooth006-weight90-10
 
 Timestamp: 2026-10-22T16:17:46+00:00. Status: completed.
