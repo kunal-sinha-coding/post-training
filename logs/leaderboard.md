@@ -125,6 +125,7 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-smooth0075-smooth002-blend | 0.5547645125958379 | 0.554072023377059 | nk7ldj3d | Aggregate-only blend, below 0.0075 single checkpoint |
 | test-clean-validation-cues-smooth0075-rejected10-seed20261022 | 0.536144578313253 | 0.5367640610770664 | jf43oot3 | Aggregate-only test measurement, rejected-direct branch rejected |
 | test-clean-validation-smooth0075-smooth0005-smooth002-blend | 0.556407447973713 | 0.5558984492367265 | pah4sxjo | Aggregate-only three-member blend, below 0.0075 single checkpoint |
+| test-clean-validation-smooth0075-smooth0005-weight90-10 | 0.5572289156626506 | 0.5569277893496739 | sle2m1fq | Aggregate-only 90/10 blend, below 0.0075 single checkpoint |
 | Candidate | clean-validation-cues-lr25e5-smooth0075-seed20261022 | 0.9611111111111111 | 0.7209765903359181 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022/metrics.json) | completed |
 | Candidate | clean-validation-cues-wd0001-seed20261022 | 0.9461111111111111 | 0.7096130484776972 | [metrics](/workspace/post-training/outputs/clean-validation-cues-wd0001-seed20261022/metrics.json) | completed |
 | Candidate | clean-validation-cues-smooth0075-rejected10-seed20261022 | 0.9383333333333334 | 0.7038322983019636 | [metrics](/workspace/post-training/outputs/clean-validation-cues-smooth0075-rejected10-seed20261022/metrics.json) | completed |
