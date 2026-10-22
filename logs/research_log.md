@@ -1011,6 +1011,16 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: A small long-context contribution may preserve the leader while recovering complementary errors that are not visible in the standalone clean-validation score.
 
+Aggregate black-box test accuracy was 0.556681 and macro F1 was 0.556403. The blend was below the single 4,096-token leader, so this branch is closed.
+
+## clean-validation-cues-aux25-smooth0075-seed20261022
+
+Timestamp: 2026-10-22T18:09:00+00:00. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux25-smooth0075-seed20261022", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--sft-aux-samples-per-class", "25", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. This uses a fixed clean split and does not load official test labels.
+
+Hypothesis: A small balanced auxiliary SFT sample may improve the underrepresented direct action without the broad distribution shift caused by larger rejected or auxiliary samples. Aggregate black-box evaluation will be queued only if training and clean validation show a credible result.
+
 ## test-clean-validation-smooth0075-smooth006-weight90-10
 
 Timestamp: 2026-10-22T16:17:46+00:00. Status: completed.
