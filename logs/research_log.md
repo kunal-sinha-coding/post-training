@@ -905,6 +905,24 @@ Training evidence: accuracy 0.9868256829843295 and macro F1 0.7402259077403682. 
 
 Candidate selection used clean validation only. Official test labels are not used for selection.
 
+## test-clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-epochs2-seed20261022
+
+Timestamp: 2026-10-22T21:42:50.000000+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-epochs2-seed20261022", "--output", "outputs/test-clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-epochs2-seed20261022.json"]. Output: /workspace/post-training/outputs/test-clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-epochs2-seed20261022.json. W&B run: p29lzu65.
+
+Training accuracy: 0.9868256829843295. Training macro F1: 0.7402259077403682. Clean-validation accuracy: 0.9533333333333334. Clean-validation macro F1: 0.715317237943732. Aggregate black-box test accuracy: 0.5125958378970427. Aggregate black-box test macro F1: 0.5140370991219855. The test measurement used the frozen checkpoint after clean-validation selection and did not use test labels for selection.
+
+The two-epoch continuation is rejected because its aggregate test result is far below the current 55/45 ensemble leader. The next hypothesis increases auxiliary samples per class from 5 to 10 to test whether broader auxiliary coverage improves the encoder without spending another seed.
+
+## clean-validation-cues-aux10-sftpairwise-wd0001-smooth0075-seed20261022
+
+Timestamp: 2026-10-22T21:42:55.000000+00:00. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux10-sftpairwise-wd0001-smooth0075-seed20261022", "--sft-loss-function", "pairwise_ranking", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--sft-aux-samples-per-class", "10", "--weight-decay", "0.001", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux10-sftpairwise-wd0001-smooth0075-seed20261022. W&B run: pending.
+
+Selection will use clean validation only. Aggregate black-box testing will be queued if the clean-validation result is viable.
+
 ## clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-epochs2-seed20261022
 
 Status: queued.

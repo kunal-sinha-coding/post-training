@@ -5810,4 +5810,5 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 
 2026-10-22 The watchdog launched the distinct two-epoch auxiliary pairwise continuation as PID 271523 at 21:37:08 UTC after Codex recorded the schema-omission rejection. The state is active, planning_required is false, and the queue is empty because the worker is active. The launch was verified from logs/validation_watchdog.log and the live process table.
 2026-10-22 The two-epoch auxiliary pairwise continuation completed with training macro F1 0.740226, clean-validation accuracy 0.953333, and clean-validation macro F1 0.715317. The candidate is viable, so its required aggregate black-box test was queued before any new experiment. Selection uses clean validation only.
+2026-10-22 The two-epoch auxiliary pairwise continuation completed aggregate testing with accuracy 0.512596 and macro F1 0.514037 from W&B run p29lzu65. This is rejected below the current 55/45 ensemble leader. The next breadth-first encoder hypothesis increases auxiliary samples per class from 5 to 10, without changing the seed.
 
