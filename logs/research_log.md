@@ -1075,6 +1075,16 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: The nearby 0.00775 checkpoint may correct a small subset of the 0.0075 leader's errors without displacing the leader. This is a bounded ensemble probe.
 
+Aggregate black-box test accuracy was 0.556955 and macro F1 was 0.556656 from W&B run b9jqe6rq. The 95/5 blend is below the single-checkpoint leader.
+
+## test-clean-validation-smooth0075-smooth00775-weight99-01
+
+Timestamp: 2026-10-22T18:32:00+00:00. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth00775-seed20261022", "--weight", "0.99", "--weight", "0.01", "--output", "outputs/test-clean-validation-smooth0075-smooth00775-weight99-01.json"]. The 99/1 weight is fixed before aggregate evaluation. Official test labels are not used for selection.
+
+Hypothesis: A 1 percent contribution may retain the leader while preserving only a small complementary correction. This is the final bounded weight probe for the nearby-smoothing branch.
+
 ## test-clean-validation-smooth0075-smooth006-weight90-10
 
 Timestamp: 2026-10-22T16:17:46+00:00. Status: completed.
