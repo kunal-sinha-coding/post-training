@@ -88,3 +88,4 @@ Historical official test results remain detailed in [research_log.md](research_l
 | Candidate | clean-validation-cues-lr25e5-sftpre1-smooth001-seed20261022 | 0.9611111111111111 | 0.7210619055474808 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-sftpre1-smooth001-seed20261022/metrics.json) | completed |
 | Candidate | clean-validation-cues-lr25e5-sftpre1-smooth002-seed20261022 | 0.9594444444444444 | 0.7197967367233663 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-sftpre1-smooth002-seed20261022/metrics.json) | completed |
 | test-clean-validation-cues-lr25e5-smooth002-control | — | — | vcgo7u21 | 0.5498357064622125 accuracy, 0.5500642563331813 macro F1, aggregate-only control |
+| minilm-when2call-blackbox-seed20261022 | 0.5177984665936474 | 0.5131718249758819 | qoang2pf | Clean validation accuracy 0.7433333333333333, macro F1 0.5540514067058107; rejected |

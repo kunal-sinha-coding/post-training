@@ -903,6 +903,14 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Aggregate black-box test accuracy was 0.5498357064622125 and macro F1 was 0.5500642563331813. The official test labels were not used for selection. This unmodified control reproduced the prior checkpoint measurement and closes the inference-rule comparison.
 
+## minilm-when2call-blackbox-seed20261022
+
+Timestamp: 2026-10-22T11:50:55.970281+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.minilm_when2call_blackbox", "--epochs", "1", "--learning-rate", "2e-5", "--output", "outputs/minilm-when2call-blackbox-seed20261022.json"]. Model: `nreimers/MiniLM-L6-H384-uncased`. Training used the fixed cached `train_pref` split and one epoch. W&B run: `qoang2pf`.
+
+Training loss was 0.9195340747303432. Clean-validation accuracy was 0.7433333333333333 and macro F1 was 0.5540514067058107. Aggregate black-box test accuracy was 0.5177984665936474 and macro F1 was 0.5131718249758819. The official test labels were not used for selection. This distinct encoder-family probe is rejected because clean validation and aggregate test performance are far below the current leader.
+
 ## test-clean-validation-cues-lr25e5-sftpre1-smooth002-seed20261022
 
 Timestamp: 2026-10-22T11:41:42.477244+00:00. Status: completed.
