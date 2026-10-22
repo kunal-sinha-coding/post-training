@@ -2651,6 +2651,20 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 The 80/20 weights are fixed from clean-validation evidence before aggregate testing. This is a bounded final weight probe after the 95/5 and 90/10 results. No test labels are used for selection.
 
+## test-clean-validation-aux05-smooth0075-leader-weight80-20
+
+Status: completed.
+
+Aggregate official test accuracy: 0.5605147864184009. Aggregate official test macro F1: 0.5600370493345466. W&B run: bxfomyu9. The result is below the current best macro F1, so the leader blend weight branch is closed. Training and clean-validation evidence for both frozen checkpoints were recorded before aggregate testing. Test labels were used only for aggregate reporting.
+
+## clean-validation-cues-aux02-smooth0075-seed20261022
+
+Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux02-smooth0075-seed20261022", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--sft-aux-samples-per-class", "2", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"].
+
+Hypothesis: The 5-example auxiliary encoder produced the strongest clean-validation and aggregate results, while larger auxiliary doses failed to transfer. A 2-example dose tests whether a smaller auxiliary signal keeps the gain while reducing distribution shift. Selection will use clean validation only. If viable, its aggregate black-box test will be queued before any later experiment.
+
 ## test-clean-validation-smooth0075-aux10-weight95-05
 
 Status: completed.
