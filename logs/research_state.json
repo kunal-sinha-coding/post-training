@@ -4,10 +4,10 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The full-schema 2,048-token run was invalid because inputs exceeded the encoder limit before training. Removing verbose schemas should make the 2,048-token configuration executable while testing whether question-only features with label smoothing improve over the rejected compact-schema result.",
+  "current_hypothesis": "Both 2,048-token schema ablations performed poorly. The strongest clean-validation evidence remains the fixed-split encoder family, so a frozen equal-weight ensemble of the three strongest seed checkpoints is the next high-signal test.",
   "active_experiment": {},
-  "worker_command": ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-question-2048-smooth005-seed20261022", "--seed", "20261022", "--split-seed", "20261022", "--max-length", "2048", "--omit-tool-schemas", "--label-smoothing", "0.05", "--pref-train-epochs", "1"],
-  "worker_queue": [["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-question-2048-smooth005-seed20261022", "--output", "outputs/test-clean-validation-question-2048-smooth005-seed20261022.json"]],
+  "worker_command": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-fixedsplit-seed20-len4096", "--checkpoint", "outputs/clean-validation-fixedsplit-seed21-len4096", "--checkpoint", "outputs/clean-validation-fixedsplit-seed22-len4096", "--weight", "1", "--weight", "1", "--weight", "1", "--output", "outputs/test-clean-validation-fixedsplit-seed20-21-22-ensemble.json"],
+  "worker_queue": [],
   "experiment_queue": [
     "Run one cheap encoder-only alternative on the fixed clean split.",
     "Run one additional Jina encoder training variant with a distinct mechanism.",
@@ -22,14 +22,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T09:08:22.163597+00:00",
+  "last_heartbeat": "2026-10-22T09:10:25.889769+00:00",
   "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
-  "research_log_size": 93681,
+  "research_log_size": 94477,
   "stop_command": "STOP",
   "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T09:08:54.822496+00:00",
-  "planning_ack_deadline": "2026-10-22T09:10:54.822523+00:00",
-  "planning_attempts": 6
+  "planning_notified_at": "2026-10-22T09:11:28.030713+00:00",
+  "planning_ack_deadline": "2026-10-22T09:13:28.030736+00:00",
+  "planning_attempts": 7
 }
