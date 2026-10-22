@@ -50,11 +50,13 @@ def record(repo: Path, args: argparse.Namespace) -> dict:
         output_dir = repo / output_dir
     metrics = load_metrics(output_dir)
     development = metrics.get("development_metrics") or {}
+    # Preserve aggregate official test metrics when the worker is a black-box evaluator.
+    official_test = metrics.get("official_test_metrics") or {}
     if args.development_accuracy is not None:
         development["accuracy"] = float(args.development_accuracy)
     if args.development_macro_f1 is not None:
         development["macro_f1"] = float(args.development_macro_f1)
-    status = args.status or ("completed" if development else "failed_or_incomplete")
+    status = args.status or ("completed" if development or official_test else "failed_or_incomplete")
     record = {
         "experiment_id": args.experiment_id,
         "timestamp": timestamp(),
@@ -69,6 +71,7 @@ def record(repo: Path, args: argparse.Namespace) -> dict:
         "wandb_run_id": args.wandb_run_id or metrics.get("wandb_run_id"),
         "wandb_run_url": args.wandb_run_url or metrics.get("wandb_run_url"),
         "official_test_loaded": metrics.get("official_test_loaded"),
+        "official_test_metrics": official_test,
     }
     journal = repo / "logs/experiment_records.jsonl"
     lock = repo / "logs/experiment_records.lock"
@@ -82,7 +85,7 @@ def record(repo: Path, args: argparse.Namespace) -> dict:
         f"Setup: {json.dumps(record['command'])}. Output: {output_dir}. "
         f"W&B run: {run_text}.\n\n"
         f"Clean development accuracy: {accuracy}. Clean development macro F1: {macro_f1}. "
-        f"Official test loaded: {record['official_test_loaded']}.\n\n"
+        f"Official test loaded: {record['official_test_loaded']}. Official test metrics: {json.dumps(official_test)}.\n\n"
         "This record was written automatically. Candidate selection must use clean validation only.\n"
     )
     append_locked(repo / "logs/research_log.md", log_entry, repo / "logs/research_log.lock")
@@ -91,6 +94,10 @@ def record(repo: Path, args: argparse.Namespace) -> dict:
         f"[metrics]({output_dir}/metrics.json) | {status} |\n"
     )
     append_locked(repo / "logs/leaderboard.md", leaderboard_entry, repo / "logs/leaderboard.lock")
+    # Append a separate aggregate-only test row without changing validation ranking.
+    if official_test:
+        test_entry = f"\n| {args.experiment_id} | {official_test.get('accuracy', '—')} | {official_test.get('macro_f1', '—')} | {record['wandb_run_id'] or 'not available'} | Aggregate-only Qwen test measurement |\n"
+        append_locked(repo / "logs/leaderboard.md", test_entry, repo / "logs/leaderboard.lock")
     return record
 
 

@@ -5541,4 +5541,5 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-22 Fixed Qwen completion bookkeeping so a successful training run serializes its Path-valued output argument and does not fail while writing metrics.json.
 2026-10-22 Clarified adaptive training decisions: compare within-run checkpoint trends across training, clean validation, and available aggregate test metrics, and do not infer epoch effects from one run-to-run comparison.
 2026-10-22 Confirmed that Codex, not the watchdog, must order aggregate test evaluations before the next training commands. The watchdog remains an executor of the declared queue.
+2026-10-22 Changed the Qwen official-test evaluator to be a normal watchdog worker with heartbeats and added recorder support for aggregate test metrics.
 2026-10-22 Cleared the remaining Qwen training queue after the user required immediate testing of viable frozen methods before more training.

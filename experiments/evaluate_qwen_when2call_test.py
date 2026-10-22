@@ -23,6 +23,7 @@ from experiments.train_qwen_when2call import (
     load_model,
     make_prompt,
     score_rows,
+    write_heartbeat,
 )
 
 
@@ -65,12 +66,19 @@ def main() -> int:
     # Parse the frozen adapter and reproducibility settings before opening the official split.
     parser = argparse.ArgumentParser()
     parser.add_argument("--checkpoint", type=Path, required=True)
-    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--output-dir", type=Path)
+    parser.add_argument("--output", type=Path)
     parser.add_argument("--model", default="Qwen/Qwen2.5-0.5B-Instruct")
     parser.add_argument("--lora-rank", type=int, default=16)
     parser.add_argument("--max-length", type=int, default=4096)
     parser.add_argument("--batch-size", type=int, default=1)
     args = parser.parse_args()
+    # Require a worker output directory so the watchdog can monitor test progress.
+    output_dir = args.output_dir or (args.output.parent if args.output else None)
+    if output_dir is None:
+        raise ValueError("Either --output-dir or --output is required.")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    output_path = output_dir / "metrics.json"
     # Require W&B before loading any official test rows or model weights.
     import wandb
     if not os.getenv("WANDB_API_KEY"):
@@ -79,6 +87,7 @@ def main() -> int:
     atexit.register(run.finish)
     # Load the frozen adapter and official examples only after the measurement run is registered.
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    write_heartbeat(output_dir / "heartbeat.json", "loading")
     model, tokenizer = load_model(args.model, device, args.lora_rank)
     # Load the frozen adapter beside the empty training adapter and activate only the frozen weights.
     if not hasattr(model, "load_adapter"):
@@ -92,6 +101,7 @@ def main() -> int:
     # Score the test rows in small batches and retain predictions only until aggregate reduction completes.
     with torch.no_grad():
         for start in range(0, len(rows), args.batch_size):
+            write_heartbeat(output_dir / "heartbeat.json", "evaluation", start)
             scores = score_rows(model, tokenizer, rows[start:start + args.batch_size], label_ids, device, args.max_length)
             predictions.extend(scores.argmax(dim=-1).cpu().tolist())
     labels = [row.label for row in rows]
@@ -99,9 +109,10 @@ def main() -> int:
     # Log and save only the permitted aggregate metrics and non-label operational metadata.
     run.log({"test/accuracy": metrics["accuracy"], "test/macro_f1": metrics["macro_f1"]})
     run.summary.update({"test_accuracy": metrics["accuracy"], "test_macro_f1": metrics["macro_f1"], "black_box": True, "selection_complete": True})
-    result = {"dataset": DATASET_NAME, "split": "test/mcq", "test_loaded": True, "test_measurement_only": True, "black_box": True, "checkpoint": str(args.checkpoint), "base_model": args.model, "examples": len(rows), "metrics": metrics, "wandb_run_id": run.id, "wandb_run_url": run.url}
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+    result = {"dataset": DATASET_NAME, "split": "test/mcq", "test_loaded": True, "official_test_loaded": True, "test_measurement_only": True, "black_box": True, "checkpoint": str(args.checkpoint), "base_model": args.model, "examples": len(rows), "official_test_metrics": metrics, "metrics": metrics, "wandb_run_id": run.id, "wandb_run_url": run.url}
+    result["output_dir"] = str(output_dir)
+    output_path.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+    write_heartbeat(output_dir / "heartbeat.json", "completed")
     print(json.dumps(metrics, indent=2))
     return 0
 
