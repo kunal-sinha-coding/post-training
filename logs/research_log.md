@@ -897,6 +897,24 @@ This record was written automatically. Candidate selection must use clean valida
 
 ## test-clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-trainall-devsplit-seed20261022
 
+Timestamp: 2026-10-22T21:58:05.000000+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-trainall-devsplit-seed20261022", "--output", "outputs/test-clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-trainall-devsplit-seed20261022.json"]. Output: /workspace/post-training/outputs/test-clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-trainall-devsplit-seed20261022.json. W&B run: uxyjvvx1.
+
+Training accuracy: 0.9868256829843295. Training macro F1: 0.7402221722692512. Clean-validation accuracy: 0.9644444444444444. Clean-validation macro F1: 0.7235398936480182. Aggregate black-box test accuracy: 0.5583242059145673. Aggregate black-box test macro F1: 0.5573493574039065. The test measurement used the frozen checkpoint after clean-validation selection and did not use test labels for selection.
+
+The corrected full-fine-tuning track is below the current 55/45 ensemble leader. The next hypothesis uses rejected preference examples as additional training signal while keeping the fixed clean split and seed.
+
+## clean-validation-cues-aux05-rejected-sftpairwise-wd0001-smooth0075-seed20261022
+
+Timestamp: 2026-10-22T21:58:10.000000+00:00. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-rejected-sftpairwise-wd0001-smooth0075-seed20261022", "--sft-loss-function", "pairwise_ranking", "--add-argument-cues", "--include-rejected-examples", "--sft-aux-samples-per-class", "5", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--weight-decay", "0.001", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux05-rejected-sftpairwise-wd0001-smooth0075-seed20261022. W&B run: pending.
+
+Selection will use clean validation only. Aggregate black-box testing will be queued if the clean-validation result is viable.
+
+## test-clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-trainall-devsplit-seed20261022
+
 Timestamp: 2026-10-22T21:55:00.000000+00:00. Status: queued.
 
 Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-trainall-devsplit-seed20261022", "--output", "outputs/test-clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-trainall-devsplit-seed20261022.json"]. Output: /workspace/post-training/outputs/test-clean-validation-cues-aux05-sftpairwise-wd0001-smooth0075-trainall-devsplit-seed20261022.json. W&B run: pending.
