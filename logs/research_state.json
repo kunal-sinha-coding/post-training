@@ -4,21 +4,21 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The lower-rate three-member ensemble reached 0.548339 aggregate test macro F1, below the two-model leader. Learning rate 2.5e-5 improved clean-validation macro F1 to 0.719335, and label smoothing 0.02 improved the default-rate clean-validation result to 0.705571, so their combination tests whether slower adaptation and mild regularization complement each other.",
+  "current_hypothesis": "Learning rate 2.5e-5 with smoothing 0.02 reached 0.718887 clean-validation macro F1, 0.555860 aggregate test accuracy, and 0.554532 aggregate test macro F1. The accuracy improved but macro F1 did not. A smoothing value of 0.01 tests whether a milder regularizer preserves the accuracy gain while reducing class-boundary distortion.",
   "active_experiment": {
-    "pid": 186401,
+    "pid": 187163,
     "command": [
       "python",
       "-u",
       "-m",
       "experiments.clean_validation_baseline",
       "--output-dir",
-      "outputs/clean-validation-cues-lr25e5-smooth002-seed20261022",
+      "outputs/clean-validation-cues-lr25e5-smooth001-seed20261022",
       "--add-argument-cues",
       "--learning-rate",
       "2.5e-5",
       "--label-smoothing",
-      "0.02",
+      "0.01",
       "--seed",
       "20261022",
       "--split-seed",
@@ -28,7 +28,7 @@
       "--pref-train-epochs",
       "1"
     ],
-    "started_at": "2026-10-22T11:00:59.968469+00:00"
+    "started_at": "2026-10-22T11:05:33.955253+00:00"
   },
   "worker_command": [
     "python",
@@ -36,12 +36,12 @@
     "-m",
     "experiments.clean_validation_baseline",
     "--output-dir",
-    "outputs/clean-validation-cues-lr25e5-smooth002-seed20261022",
+    "outputs/clean-validation-cues-lr25e5-smooth001-seed20261022",
     "--add-argument-cues",
     "--learning-rate",
     "2.5e-5",
     "--label-smoothing",
-    "0.02",
+    "0.01",
     "--seed",
     "20261022",
     "--split-seed",
@@ -58,9 +58,9 @@
       "-m",
       "experiments.evaluate_frozen_when2call_ensemble_test",
       "--checkpoint",
-      "outputs/clean-validation-cues-lr25e5-smooth002-seed20261022",
+      "outputs/clean-validation-cues-lr25e5-smooth001-seed20261022",
       "--output",
-      "outputs/test-clean-validation-cues-lr25e5-smooth002-seed20261022.json"
+      "outputs/test-clean-validation-cues-lr25e5-smooth001-seed20261022.json"
     ]
   ],
   "experiment_queue": [
@@ -77,14 +77,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T11:00:59.968492+00:00",
-  "last_action": "Watchdog started validation worker pid 186401.",
+  "last_heartbeat": "2026-10-22T11:05:33.955272+00:00",
+  "last_action": "Watchdog started validation worker pid 187163.",
   "watchdog_enabled": true,
-  "research_log_size": 106420,
+  "research_log_size": 108074,
   "stop_command": "STOP",
   "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T10:59:59.334717+00:00",
-  "planning_ack_deadline": "2026-10-22T11:01:59.334742+00:00",
-  "planning_attempts": 37
+  "planning_notified_at": "2026-10-22T11:04:33.451995+00:00",
+  "planning_ack_deadline": "2026-10-22T11:06:33.452014+00:00",
+  "planning_attempts": 38
 }
