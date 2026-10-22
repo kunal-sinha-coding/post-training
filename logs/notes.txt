@@ -1,5 +1,9 @@
 # Experiment Notes
 
+## 2026-10-22: Require queue visibility after guidance and queue changes
+
+Updated `auto-research-prompt.md` to require the agent to print the complete active and pending worker queue after every user guidance message and after every queue mutation. The prompt now requires explicit empty-queue and awaiting-planning status so the user can verify the exact execution state.
+
 ## 2026-10-20: Clarify mandatory non-idle execution
 
 Updated `auto-research-prompt.md` to state in explicit terms that the research agent must not remain idle after an experiment, interruption, status request, failure, or result. The agent must immediately analyze, record, and launch the next useful experiment. The loop may wait only for an active process or required external operation and may stop only on an exact top-level `STOP` message.
