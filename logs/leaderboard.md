@@ -334,3 +334,5 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-cues-aux05-sftpairwise-wd0001-weight70-30 | — | — | — | Fixed 70/30 ensemble selected from clean validation | queued |
 | test-clean-validation-cues-aux05-sftpairwise-wd0001-weight70-30 | 0.5594194961664841 | 0.5588328169491765 | dy2dth97 | Aggregate-only 70/30 ensemble, selected from clean validation | completed |
 | test-clean-validation-cues-aux05-sftpairwise-wd0001-weight65-35 | — | — | — | Fixed 65/35 ensemble selected from clean validation | queued |
+| test-clean-validation-cues-aux05-sftpairwise-wd0001-weight65-35 | 0.5594194961664841 | 0.5588328169491765 | wixwp123 | Aggregate-only 65/35 ensemble, selected from clean validation | completed |
+| test-clean-validation-cues-aux05-sftpairwise-wd0001-weight60-40 | — | — | — | Fixed 60/40 ensemble selected from clean validation | queued |
