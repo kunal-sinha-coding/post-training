@@ -298,6 +298,8 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-cues-aux05-wd0001-weight95-05 | — | — | — | Fixed 95/5 blend selected from clean validation | queued |
 | test-clean-validation-cues-aux05-wd0001-weight95-05 | 0.5588718510405257 | 0.55827081087156 | 4mc2dn7l | Aggregate-only 95/5 blend, below current best | completed |
 | test-clean-validation-cues-aux05-wd0001-weight90-10 | — | — | — | Fixed 90/10 blend selected from clean validation | queued |
+| test-clean-validation-cues-aux05-wd0001-weight90-10 | 0.559145673603505 | 0.5585153409384587 | or93dy9k | Aggregate-only 90/10 blend, below current best | completed |
+| test-clean-validation-cues-aux05-wd0001-weight85-15 | — | — | — | Fixed 85/15 blend selected from clean validation | queued |
 | Candidate | clean-validation-cues-aux05-smooth005-wd0005-seed20261022 | 0.9644444444444444 | 0.7235238125271145 | [metrics](/workspace/post-training/outputs/clean-validation-cues-aux05-smooth005-wd0005-seed20261022/metrics.json) | completed |
 | Candidate | clean-validation-cues-aux05-rejected02-wd0005-smooth0075-seed20261022 | 0.955 | 0.7162798048717497 | [metrics](/workspace/post-training/outputs/clean-validation-cues-aux05-rejected02-wd0005-smooth0075-seed20261022/metrics.json) | completed |
 | Candidate | clean-validation-cues-aux05-lr15e5-wd0005-smooth0075-seed20261022 | 0.9733333333333334 | 0.7301869624062053 | [metrics](/workspace/post-training/outputs/clean-validation-cues-aux05-lr15e5-wd0005-smooth0075-seed20261022/metrics.json) | completed |

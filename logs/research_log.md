@@ -895,6 +895,22 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-cues-aux05-wd0001-weight90-10
+
+Timestamp: 2026-10-22T20:39:17.000000+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-aux05-wd0001-smooth0075-seed20261022", "--weight", "0.90", "--weight", "0.10", "--output", "outputs/test-clean-validation-cues-aux05-wd0001-weight90-10.json"]. Output: /workspace/post-training/outputs/test-clean-validation-cues-aux05-wd0001-weight90-10.json. W&B run: or93dy9k.
+
+Training macro F1: 0.7406363519812412 for the 0.001 weight-decay component and 0.7397028339750772 for the base component. Clean-validation accuracy: 0.965 and 0.965. Clean-validation macro F1: 0.723938800663136 and 0.7239512392080304. Aggregate test accuracy: 0.559145673603505. Aggregate test macro F1: 0.5585153409384587. The component checkpoints and all three evidence types are recorded. Test labels were not used for selection.
+
+## test-clean-validation-cues-aux05-wd0001-weight85-15
+
+Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-aux05-wd0001-smooth0075-seed20261022", "--weight", "0.85", "--weight", "0.15", "--output", "outputs/test-clean-validation-cues-aux05-wd0001-weight85-15.json"].
+
+Hypothesis: The two component checkpoints have nearly tied clean-validation macro F1, and the fixed 90/10 probe is the next point in a predeclared bounded blend sweep. The 85/15 weight is fixed from clean-validation evidence before aggregate evaluation. Test labels will not guide selection.
+
 ## clean-validation-cues-aux05-smooth005-wd0005-seed20261022
 
 Status: queued.
