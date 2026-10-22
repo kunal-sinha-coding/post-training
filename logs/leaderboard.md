@@ -159,3 +159,6 @@ Historical official test results remain detailed in [research_log.md](research_l
 | Candidate | clean-validation-cues-lr25e5-smooth00675-seed20261022 | 0.9605555555555556 | 0.7205639354561022 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth00675-seed20261022/metrics.json) | completed |
 | test-clean-validation-cues-lr25e5-smooth00675-seed20261022 | 0.5536692223439211 | 0.5533787663092267 | 1lhdhgp5 | Aggregate-only test measurement, below leader | completed |
 | test-clean-validation-cues-lr25e5-smooth00725-seed20261022 | — | — | — | Required aggregate black-box test measurement queued after training | queued |
+| test-clean-validation-cues-lr25e5-smooth00725-seed20261022 | 0.5566812705366923 | 0.555875003030042 | t6rlr6av | Aggregate-only test measurement, below leader | completed |
+| Candidate | clean-validation-cues-lr25e5-smooth00725-seed20261022 | 0.96 | 0.7201444171929117 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth00725-seed20261022/metrics.json) | completed |
+| Candidate | clean-validation-cues-lr25e5-smooth0075-wd001-seed20261022 | — | — | [queued](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-wd001-seed20261022) | queued |
