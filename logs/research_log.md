@@ -963,6 +963,20 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 
 Hypothesis: Compact tool schemas may reduce irrelevant prompt length and improve the tool-call versus request-for-info boundary while preserving the leader's optimization settings.
 
+## test-clean-validation-cues-lr25e5-smooth0075-compact-schema-seed20261022
+
+Timestamp: 2026-10-22T16:40:00+00:00. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth0075-compact-schema-seed20261022", "--output", "outputs/test-clean-validation-cues-lr25e5-smooth0075-compact-schema-seed20261022.json"]. Training and clean-validation evidence are complete. This aggregate measurement is queued for evidence completeness. Official test labels are not used for selection.
+
+## qwen-when2call-rpo-15b-seed20261022
+
+Timestamp: 2026-10-22T16:40:00+00:00. Status: queued after the required compact-schema test.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--objective", "rpo", "--output-dir", "outputs/qwen-when2call-rpo-15b-seed20261022", "--seed", "20261022", "--split-seed", "20261022", "--epochs", "1", "--batch-size", "1", "--max-length", "4096", "--learning-rate", "1e-5", "--lora-rank", "16"]. Candidate selection will use clean validation only. No seed sweep is used.
+
+Hypothesis: RPO may improve the 1.5B model's preference alignment without repeating the rejected SFT-only path. This is a single breadth probe after the recent encoder branches failed to improve the leader.
+
 ## test-clean-validation-smooth0075-smooth006-weight90-10
 
 Timestamp: 2026-10-22T16:17:46+00:00. Status: completed.
@@ -2218,5 +2232,15 @@ Timestamp: 2026-10-22T16:33:36.324572+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-lr25e5-smooth0075-wd001-seed20261022", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--weight-decay", "0.01", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-wd001-seed20261022. W&B run: not available.
 
 Clean development accuracy: 0.9588888888888889. Clean development macro F1: 0.719306410582761. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-cues-lr25e5-smooth0075-compact-schema-seed20261022
+
+Timestamp: 2026-10-22T16:39:49.836035+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-lr25e5-smooth0075-compact-schema-seed20261022", "--compact-tool-schemas", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.0075", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-compact-schema-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.9016666666666666. Clean development macro F1: 0.6766769163985007. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
