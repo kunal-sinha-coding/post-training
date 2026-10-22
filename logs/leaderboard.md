@@ -146,3 +146,4 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-lr2e5-lr25e5-smooth0075-weight75-25 | 0.5539430449069004 | 0.5550904929380142 | 71db9uah | Aggregate-only blend, below 0.0075 single-checkpoint leader |
 | Candidate | clean-validation-cues-lr25e5-smooth0075-wd002-seed20261022 | — | — | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-wd002-seed20261022/metrics.json) | queued |
 | test-clean-validation-cues-lr2e5-smooth0075-seed20261022 | 0.5495618838992333 | 0.5509516160776665 | a72cyp4y | Aggregate-only test measurement, 2e-5 learning-rate branch rejected |
+| Candidate | clean-validation-cues-lr25e5-smooth0075-wd002-seed20261022 | 0.9594444444444444 | 0.7197224681075437 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-wd002-seed20261022/metrics.json) | completed |
