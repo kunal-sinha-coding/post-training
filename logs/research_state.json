@@ -4,16 +4,16 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The SFT-pretraining main-pairwise probe reached test accuracy 0.555586 and test macro F1 0.558194, below the current 55/45 ensemble leader. The next hypothesis keeps SFT pretraining and lowers weight decay to 0.005. Selection will use clean validation only.",
+  "current_hypothesis": "The lower-weight-decay SFT-pretraining probe reached clean-validation accuracy 0.957222 and macro F1 0.718151, slightly below the prior SFT-pretraining result. Its aggregate black-box test is required before any new training experiment. The next distinct hypothesis reduces label smoothing to 0.005 while preserving SFT pretraining and main-pairwise training. Selection will use clean validation only.",
   "active_experiment": {
-    "pid": 278147,
+    "pid": 278708,
     "command": [
       "python",
       "-u",
       "-m",
       "experiments.clean_validation_baseline",
       "--output-dir",
-      "outputs/clean-validation-cues-aux05-sftpre1-mainpairwise-wd0005-smooth0075-seed20261022",
+      "outputs/clean-validation-cues-aux05-sftpre1-mainpairwise-wd0005-smooth005-seed20261022",
       "--loss-function",
       "pairwise_ranking",
       "--sft-loss-function",
@@ -26,7 +26,7 @@
       "--learning-rate",
       "2.5e-5",
       "--label-smoothing",
-      "0.0075",
+      "0.005",
       "--weight-decay",
       "0.005",
       "--seed",
@@ -38,7 +38,7 @@
       "--pref-train-epochs",
       "1"
     ],
-    "started_at": "2026-10-22T22:19:57.818028+00:00"
+    "started_at": "2026-10-22T22:25:08.154276+00:00"
   },
   "worker_command": [
     "python",
@@ -46,7 +46,7 @@
     "-m",
     "experiments.clean_validation_baseline",
     "--output-dir",
-    "outputs/clean-validation-cues-aux05-sftpre1-mainpairwise-wd0005-smooth0075-seed20261022",
+    "outputs/clean-validation-cues-aux05-sftpre1-mainpairwise-wd0005-smooth005-seed20261022",
     "--loss-function",
     "pairwise_ranking",
     "--sft-loss-function",
@@ -59,7 +59,7 @@
     "--learning-rate",
     "2.5e-5",
     "--label-smoothing",
-    "0.0075",
+    "0.005",
     "--weight-decay",
     "0.005",
     "--seed",
@@ -71,7 +71,7 @@
     "--pref-train-epochs",
     "1"
   ],
-  "worker_queue": [],
+  "worker_queue": [["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-sftpre1-mainpairwise-wd0005-smooth0075-seed20261022", "--output", "outputs/test-clean-validation-cues-aux05-sftpre1-mainpairwise-wd0005-smooth0075-seed20261022.json"], ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-sftpre1-mainpairwise-wd0005-smooth005-seed20261022", "--loss-function", "pairwise_ranking", "--sft-loss-function", "cross_entropy", "--add-argument-cues", "--sft-aux-samples-per-class", "5", "--sft-pretrain-epochs", "1", "--learning-rate", "2.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]],
   "_previous_command": [
     "python",
     "-u",
@@ -102,10 +102,10 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T22:19:57.818040+00:00",
-  "last_action": "Watchdog started validation worker pid 278147.",
+  "last_heartbeat": "2026-10-22T22:25:08.154289+00:00",
+  "last_action": "Watchdog started validation worker pid 278708.",
   "watchdog_enabled": true,
-  "research_log_size": 350120,
+  "research_log_size": 352042,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -113,7 +113,7 @@
     "-m",
     "experiments.clean_validation_baseline",
     "--output-dir",
-    "outputs/clean-validation-cues-aux05-sftpre1-mainpairwise-wd0005-smooth0075-seed20261022",
+    "outputs/clean-validation-cues-aux05-sftpre1-mainpairwise-wd0005-smooth005-seed20261022",
     "--loss-function",
     "pairwise_ranking",
     "--sft-loss-function",
@@ -126,7 +126,7 @@
     "--learning-rate",
     "2.5e-5",
     "--label-smoothing",
-    "0.0075",
+    "0.005",
     "--weight-decay",
     "0.005",
     "--seed",
@@ -139,7 +139,7 @@
     "1"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-22T22:19:24.933177+00:00",
-  "planning_ack_deadline": "2026-10-22T22:21:24.933201+00:00",
-  "planning_attempts": 215
+  "planning_notified_at": "2026-10-22T22:24:37.640626+00:00",
+  "planning_ack_deadline": "2026-10-22T22:26:37.640650+00:00",
+  "planning_attempts": 216
 }
