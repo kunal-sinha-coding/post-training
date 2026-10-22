@@ -132,4 +132,5 @@ Historical official test results remain detailed in [research_log.md](research_l
 | Candidate | clean-validation-cues-lr15e5-smooth0075-seed20261022 | 0.9683333333333334 | 0.72647319449084 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr15e5-smooth0075-seed20261022/metrics.json) | completed |
 | test-clean-validation-cues-lr15e5-smooth0075-seed20261022 | 0.5331325301204819 | 0.5344866023919135 | 70uofqkp | Aggregate-only test measurement, lower-learning-rate branch rejected |
 | test-clean-validation-cues-lr25e5-smooth0075-epochs2-seed20261022 | 0.5292990142387732 | 0.5315920405661482 | pjsb57t1 | Aggregate-only test measurement, two-epoch branch rejected |
+| test-clean-validation-smooth0075-smooth0003-weight80-20 | 0.5558598028477546 | 0.5558197709562884 | ks43uzy0 | Aggregate-only 80/20 blend, below 0.0075 single checkpoint |
 | Candidate | clean-validation-cues-lr25e5-smooth0075-epochs2-seed20261022 | 0.9594444444444444 | 0.7198390428947226 | [metrics](/workspace/post-training/outputs/clean-validation-cues-lr25e5-smooth0075-epochs2-seed20261022/metrics.json) | completed |
