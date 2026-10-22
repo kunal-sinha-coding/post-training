@@ -46,6 +46,7 @@ def notify_codex_planning(repo: Path, state_path: Path, state: dict, log_path: P
         "set planning_required to false, set status to active, and verify the next launch. "
         "Do not use test labels for selection."
     )
+    write_log(log_path, f"planning handoff payload={message}")
     result = subprocess.run(
         ["codex", "queue", "--thread", thread, "--message", message],
         cwd=repo,
