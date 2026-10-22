@@ -1667,6 +1667,16 @@ The checkpoint had complete training macro F1 0.739521 and clean-validation macr
 
 This record was written by the primary Codex process because the test-only output has no output directory for the recorder. Candidate selection used clean validation only.
 
+## test-clean-validation-cues-lr25e5-smooth002-seed20261022
+
+Timestamp: 2026-10-22T15:22:00.000000+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth002-seed20261022", "--output", "outputs/test-clean-validation-cues-lr25e5-smooth002-seed20261022.json"]. Output: /workspace/post-training/outputs/test-clean-validation-cues-lr25e5-smooth002-seed20261022.json. W&B run: 7wpf4t3f.
+
+The checkpoint had complete training and clean-validation evidence. Aggregate black-box test accuracy was 0.5558598028477546 and macro F1 was 0.554532160729826. The official test labels were used only for this separate measurement after clean-validation selection. The isolated 0.002-smoothing candidate is below the 0.0075 leader.
+
+This record was written by the primary Codex process because the test-only output has no output directory for the recorder. Candidate selection used clean validation only.
+
 ## clean-validation-cues-all-rejected-smooth0005-seed20261022
 
 Timestamp: 2026-10-22T12:54:04.205513+00:00. Status: completed.
