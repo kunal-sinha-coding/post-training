@@ -51,29 +51,7 @@
     "--pref-train-epochs",
     "1"
   ],
-  "worker_queue": [
-    [
-      "python",
-      "-u",
-      "-m",
-      "experiments.clean_validation_baseline",
-      "--output-dir",
-      "outputs/clean-validation-cues-wd0001-seed20261022",
-      "--add-argument-cues",
-      "--label-smoothing",
-      "0.0075",
-      "--weight-decay",
-      "0.001",
-      "--seed",
-      "20261022",
-      "--split-seed",
-      "20261021",
-      "--max-length",
-      "4096",
-      "--pref-train-epochs",
-      "1"
-    ]
-  ],
+  "worker_queue": [],
   "experiment_queue": [
     "Run one cheap encoder-only alternative on the fixed clean split.",
     "Run one additional Jina encoder training variant with a distinct mechanism.",
