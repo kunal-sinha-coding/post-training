@@ -90,5 +90,6 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-cues-lr25e5-smooth002-control | — | — | vcgo7u21 | 0.5498357064622125 accuracy, 0.5500642563331813 macro F1, aggregate-only control |
 | clean-validation-cues-rejected50-seed20261022 | 0.5268346111719606 | 0.5289088879682503 | ejo9u6mi | Clean validation accuracy 0.9650000000000000, macro F1 0.7239519914135641; standalone rejected |
 | test-clean-validation-rejected50-smooth001-blend | 0.5361445783132530 | 0.5383739195798843 | b40bype0 | Aggregate-only blend, below current leader |
+| test-clean-validation-leader-plus-rejected50-blend | 0.5542168674698795 | 0.5541679027580703 | 62hveeqi | Aggregate-only blend, below current leader |
 | minilm-when2call-blackbox-seed20261022 | 0.5177984665936474 | 0.5131718249758819 | qoang2pf | Clean validation accuracy 0.7433333333333333, macro F1 0.5540514067058107; rejected |
 | Candidate | clean-validation-cues-rejected50-seed20261022 | 0.965 | 0.7239519914135641 | [metrics](/workspace/post-training/outputs/clean-validation-cues-rejected50-seed20261022/metrics.json) | completed |

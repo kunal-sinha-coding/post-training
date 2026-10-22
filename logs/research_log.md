@@ -917,6 +917,14 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Aggregate black-box test accuracy was 0.536144578313253 and macro F1 was 0.5383739195798843. The official test labels were not used for selection. The blend is rejected.
 
+## test-clean-validation-leader-plus-rejected50-blend
+
+Timestamp: 2026-10-22T12:05:09.121371+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-seed20261022", "--checkpoint", "outputs/clean-validation-cues-lr25e5-smooth002-seed20261022", "--checkpoint", "outputs/clean-validation-cues-rejected50-seed20261022", "--weight", "0.50", "--weight", "0.40", "--weight", "0.10", "--output", "outputs/test-clean-validation-leader-plus-rejected50-blend.json"]. The weights were fixed from clean-validation evidence before the aggregate-only measurement. Linked training and clean-validation metrics are recorded in the component records. W&B run: `62hveeqi`.
+
+Aggregate black-box test accuracy was 0.5542168674698795 and macro F1 was 0.5541679027580703. The official test labels were not used for selection. The blend is below the current leader and is rejected.
+
 ## test-clean-validation-cues-lr25e5-smooth002-control
 
 Timestamp: 2026-10-22T11:46:20.116709+00:00. Status: completed.
