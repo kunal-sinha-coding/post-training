@@ -5,29 +5,54 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "The clean-validation leader is an encoder system, while the latest Qwen test is weak. Two cheap input-structure encoder probes may reveal whether schema compression or explicit argument cues improve generalization before any deeper ensemble work.",
-  "active_experiment": {},
+  "active_experiment": {
+    "pid": 164302,
+    "command": [
+      "python",
+      "-u",
+      "-m",
+      "experiments.clean_validation_baseline",
+      "--output-dir",
+      "outputs/clean-validation-cues-seed20261022",
+      "--seed",
+      "20261022",
+      "--split-seed",
+      "20261022",
+      "--max-length",
+      "4096",
+      "--add-argument-cues",
+      "--pref-train-epochs",
+      "1"
+    ],
+    "started_at": "2026-10-22T08:54:13.102749+00:00"
+  },
   "worker_command": [
-    "python", "-u", "-m", "experiments.clean_validation_baseline",
-    "--output-dir", "outputs/clean-validation-compact-seed20261022",
-    "--seed", "20261022", "--split-seed", "20261022", "--max-length", "4096",
-    "--compact-tool-schemas", "--pref-train-epochs", "1"
+    "python",
+    "-u",
+    "-m",
+    "experiments.clean_validation_baseline",
+    "--output-dir",
+    "outputs/clean-validation-cues-seed20261022",
+    "--seed",
+    "20261022",
+    "--split-seed",
+    "20261022",
+    "--max-length",
+    "4096",
+    "--add-argument-cues",
+    "--pref-train-epochs",
+    "1"
   ],
   "worker_queue": [
     [
-      "python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test",
-      "--checkpoint", "outputs/clean-validation-compact-seed20261022",
-      "--output", "outputs/test-clean-validation-compact-seed20261022.json"
-    ],
-    [
-      "python", "-u", "-m", "experiments.clean_validation_baseline",
-      "--output-dir", "outputs/clean-validation-cues-seed20261022",
-      "--seed", "20261022", "--split-seed", "20261022", "--max-length", "4096",
-      "--add-argument-cues", "--pref-train-epochs", "1"
-    ],
-    [
-      "python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test",
-      "--checkpoint", "outputs/clean-validation-cues-seed20261022",
-      "--output", "outputs/test-clean-validation-cues-seed20261022.json"
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_frozen_when2call_ensemble_test",
+      "--checkpoint",
+      "outputs/clean-validation-cues-seed20261022",
+      "--output",
+      "outputs/test-clean-validation-cues-seed20261022.json"
     ]
   ],
   "experiment_queue": [
@@ -44,16 +69,27 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T08:45:37.176643+00:00",
-  "last_action": "Watchdog handed planning control to the primary Codex process.",
+  "last_heartbeat": "2026-10-22T08:54:13.102762+00:00",
+  "last_action": "Watchdog started validation worker pid 164302.",
   "watchdog_enabled": true,
   "research_log_size": 90776,
   "stop_command": "STOP",
   "next_experiment": [
-    "python", "-u", "-m", "experiments.clean_validation_baseline",
-    "--output-dir", "outputs/clean-validation-compact-seed20261022",
-    "--seed", "20261022", "--split-seed", "20261022", "--max-length", "4096",
-    "--compact-tool-schemas", "--pref-train-epochs", "1"
+    "python",
+    "-u",
+    "-m",
+    "experiments.clean_validation_baseline",
+    "--output-dir",
+    "outputs/clean-validation-cues-seed20261022",
+    "--seed",
+    "20261022",
+    "--split-seed",
+    "20261022",
+    "--max-length",
+    "4096",
+    "--add-argument-cues",
+    "--pref-train-epochs",
+    "1"
   ],
   "recording_jobs": [],
   "planning_notified_at": "2026-10-22T08:52:42.079452+00:00",
