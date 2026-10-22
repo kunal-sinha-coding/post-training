@@ -191,6 +191,8 @@ Examples:
 
 Prioritize hypotheses based on expected improvement, information gained, computational cost, and experimental risk.
 
+Do not run a candidate when existing evidence strongly predicts that it will not improve the system. Before queuing an experiment, state the mechanism that could produce a gain and identify the evidence that supports it. A change in model size, seed, or hyperparameter is not sufficient justification by itself. Revisit a rejected direction only when a new mechanism, data source, objective, or diagnostic explains why the earlier evidence may not apply.
+
 ### Step 3 — Experiment
 
 Design and execute an experiment that tests the hypothesis.
