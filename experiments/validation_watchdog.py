@@ -244,7 +244,7 @@ def advance_worker_command(state_path: Path, state: dict, log_path: Path) -> boo
     """Promote the next queued experiment before starting recovery."""
     # Consume one predeclared command so a completed experiment cannot repeat indefinitely.
     # Hold the queue when an explicit aggregate-test barrier is present so frozen tests run before more training.
-    test_barrier = state_path.parent / "qwen_test_priority"
+    test_barrier = Path("/tmp/post_training_qwen_test_priority")
     if test_barrier.exists():
         state["status"] = "awaiting_test_evaluation"
         state["planning_required"] = False
