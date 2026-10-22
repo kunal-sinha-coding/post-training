@@ -3233,4 +3233,30 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 
 Hypothesis: The pairwise auxiliary plus 0.001 weight-decay variant was viable on clean validation but failed to improve aggregate test performance. A prior auxiliary branch was stable at label smoothing 0.005, so this bounded variant tests lower smoothing while preserving the pairwise objective and mild regularization. Selection will use clean validation only. Test labels will not guide selection.
 
+## clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022
+
+Timestamp: 2026-10-22T21:02:32.000000+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022", "--sft-loss-function", "pairwise_ranking", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.005", "--sft-aux-samples-per-class", "5", "--weight-decay", "0.001", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022. W&B run: not available.
+
+Training macro F1: 0.7400150832997929. Clean-validation accuracy: 0.9627777777777777. Clean-validation macro F1: 0.7222682597836991. The standalone candidate is below the viable clean-validation range, so its standalone aggregate test is skipped. A clean-validation-selected 95/5 ensemble test with the stronger auxiliary checkpoint is queued to test whether complementary errors remain useful. Test labels will not guide selection.
+
+## test-clean-validation-cues-aux05-sftpairwise-wd0001-weight95-05
+
+Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022", "--weight", "0.95", "--weight", "0.05", "--output", "outputs/test-clean-validation-cues-aux05-sftpairwise-wd0001-weight95-05.json"].
+
+Training macro F1: 0.7397028339750772 and 0.7400150832997929. Clean-validation macro F1: 0.7239512392080304 and 0.7222682597836991. The 95/5 weight is fixed from clean-validation evidence before aggregate evaluation. Test labels will not guide selection.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022
+
+Timestamp: 2026-10-22T21:02:36.804538+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022", "--sft-loss-function", "pairwise_ranking", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.005", "--sft-aux-samples-per-class", "5", "--weight-decay", "0.001", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.9627777777777777. Clean development macro F1: 0.7222682597836991. Official test loaded: False. Official test metrics: {}.
+
 This record was written automatically. Candidate selection must use clean validation only.
