@@ -124,8 +124,6 @@ Possible research directions include, but are not limited to:
 - Test-time computation.
 - Output parsing and validation.
 
-When individual model families have different strengths, explore ensembles before abandoning a promising family. Relevant ensemble hypotheses include calibrated logit blending, class-aware weighting, confidence-based gating, disagreement routing, seed ensembles, and a learned stacker trained only on non-test data. Calibrate or normalize model scores before combining unlike architectures. Freeze each ensemble and run its aggregate-only official test evaluation when it is viable.
-
 ### Evaluation
 
 - Per-class precision, recall, and F1.
