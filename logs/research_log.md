@@ -905,6 +905,16 @@ Training accuracy: 0.9798918319234503. Training macro F1: 0.7350237164610465. Cl
 
 Aggregate black-box accuracy: 0.5271084337349398. Aggregate black-box macro F1: 0.5293000417493606. The main-pairwise plus SFT-cross-entropy objective is rejected because it underperformed the recent main-cross-entropy direction on clean validation and the aggregate test. The next probe changes the encoder family to MiniLM instead of spending another run on this objective.
 
+## test-clean-validation-minilm-l6-h384-epochs1-result
+
+Timestamp: 2026-10-23T01:42:10Z. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.minilm_when2call_blackbox", "--epochs", "1", "--learning-rate", "2e-5", "--output", "outputs/test-clean-validation-minilm-l6-h384-epochs1.json"]. Model: `nreimers/MiniLM-L6-H384-uncased`. The fixed cached `train_pref` split was used for one epoch with explicit 512-token truncation. Candidate selection used clean validation only. W&B run: `7x7zs81d`.
+
+Training loss: 0.9195340620146856. Clean-validation accuracy: 0.7438888888888889. Clean-validation macro F1: 0.5544729681248355.
+
+Aggregate black-box accuracy: 0.5169769989047097. Aggregate black-box macro F1: 0.512315225460611. The result confirms the earlier MiniLM failure mode and is rejected. No further MiniLM or seed sweep is justified. The next measurement tests a clean-validation-selected three-checkpoint encoder blend before another training hypothesis.
+
 ## test-clean-validation-cues-aux01-lr15e5-bothpairwise-wd0005-smooth000-seed20261022-result
 
 Timestamp: 2026-10-22T23:21:57Z. Status: completed.
