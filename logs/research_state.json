@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The batch-size-one no-smoothing mixed-objective repair has complete training and clean-validation evidence. Its frozen test measurement is required before testing whether compact tool schemas reduce input-distribution mismatch.",
+  "current_hypothesis": "The compact-schema candidate is weak on clean validation. Its frozen test measurement is required before evaluating a fixed-weight ensemble of the strongest CE and pairwise encoders for complementary errors.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -12,34 +12,35 @@
     "-m",
     "experiments.clean_validation_baseline",
     "--output-dir",
-    "outputs/clean-validation-when2call-only-ce-sftpairwise1-smooth000-lr1e5-max4096-batch1-seed20261023",
+    "outputs/clean-validation-when2call-only-ce-compact-schemas-smooth005-lr1e5-max4096-batch2-seed20261023",
     "--loss-function",
     "cross_entropy",
     "--sft-loss-function",
-    "pairwise_ranking",
+    "cross_entropy",
     "--sft-pretrain-epochs",
     "1",
+    "--compact-tool-schemas",
     "--add-argument-cues",
     "--learning-rate",
     "1e-5",
     "--label-smoothing",
-    "0.0",
+    "0.005",
     "--weight-decay",
     "0.005",
     "--seed",
-    "20261048",
+    "20261049",
     "--split-seed",
     "20261021",
     "--max-length",
     "4096",
     "--batch-size",
-    "1",
+    "2",
     "--pref-train-epochs",
     "1"
   ],
   "worker_queue": [
-    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-sftpairwise1-smooth000-lr1e5-max4096-batch1-seed20261023", "--output", "outputs/test-clean-validation-when2call-only-ce-sftpairwise1-smooth000-lr1e5-max4096-batch1-seed20261023.json"],
-    ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-compact-schemas-smooth005-lr1e5-max4096-batch2-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--compact-tool-schemas", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261049", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]
+    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-compact-schemas-smooth005-lr1e5-max4096-batch2-seed20261023", "--output", "outputs/test-clean-validation-when2call-only-ce-compact-schemas-smooth005-lr1e5-max4096-batch2-seed20261023.json"],
+    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.5", "--weight", "0.5", "--output", "outputs/test-clean-validation-ce-pairwise-equal-weight-ensemble-seed20261023.json"]
   ],
   "_previous_command": [
     "python",
@@ -71,14 +72,19 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T20:15:10.657330+00:00",
-  "last_action": "Codex recorded the batch-size-one repair evidence, queued its missing frozen aggregate test first, and queued a distinct compact-tool-schema encoder hypothesis.",
+  "last_heartbeat": "2026-10-23T20:23:53.045910+00:00",
+  "last_action": "Codex recorded the repair test evidence, queued the missing compact-schema test first, and queued a fixed-weight CE plus pairwise encoder ensemble hypothesis.",
   "watchdog_enabled": true,
-  "research_log_size": 616401,
+  "research_log_size": 618250,
   "stop_command": "STOP",
-  "next_experiment": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-sftpairwise1-smooth000-lr1e5-max4096-batch1-seed20261023", "--output", "outputs/test-clean-validation-when2call-only-ce-sftpairwise1-smooth000-lr1e5-max4096-batch1-seed20261023.json"],
-  "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T20:21:21.139630+00:00",
-  "planning_ack_deadline": "2026-10-23T20:23:21.139655+00:00",
-  "planning_attempts": 382
+  "next_experiment": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-compact-schemas-smooth005-lr1e5-max4096-batch2-seed20261023", "--output", "outputs/test-clean-validation-when2call-only-ce-compact-schemas-smooth005-lr1e5-max4096-batch2-seed20261023.json"],
+  "recording_jobs": [
+    {
+      "pid": 380249,
+      "experiment_id": "clean-validation-when2call-only-ce-compact-schemas-smooth005-lr1e5-max4096-batch2-seed20261023"
+    }
+  ],
+  "planning_notified_at": "2026-10-23T20:30:35.958881+00:00",
+  "planning_ack_deadline": "2026-10-23T20:32:35.958903+00:00",
+  "planning_attempts": 383
 }

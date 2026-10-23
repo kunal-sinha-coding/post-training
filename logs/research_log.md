@@ -6293,6 +6293,22 @@ Hypothesis: Compacting tool schemas may reduce input complexity and improve tran
 
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-compact-schemas-smooth005-lr1e5-max4096-batch2-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--compact-tool-schemas", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261049", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. Candidate selection will use training and clean validation only. Official test labels will not be loaded during selection.
 
+Training accuracy: 0.9577777777777777. Training macro F1: 0.7184367806930193. Clean-validation accuracy: 0.9044444444444445. Clean-validation macro F1: 0.6787603086692516. Aggregate test evidence is missing and is queued before another experiment.
+
+## test-clean-validation-when2call-only-ce-compact-schemas-smooth005-lr1e5-max4096-batch2-seed20261023
+
+Timestamp: 2026-10-23T20:31:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-compact-schemas-smooth005-lr1e5-max4096-batch2-seed20261023", "--output", "outputs/test-clean-validation-when2call-only-ce-compact-schemas-smooth005-lr1e5-max4096-batch2-seed20261023.json"]. The checkpoint was selected using training and clean-validation evidence. Official test labels are reserved for aggregate reporting and will not be used for selection.
+
+## test-clean-validation-ce-pairwise-equal-weight-ensemble-seed20261023
+
+Timestamp: 2026-10-23T20:31:00Z. Status: queued.
+
+Hypothesis: Equal-weight averaging may reduce complementary CE and pairwise encoder errors without retraining.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.5", "--weight", "0.5", "--output", "outputs/test-clean-validation-ce-pairwise-equal-weight-ensemble-seed20261023.json"]. The equal weights are fixed before test evaluation. Official test labels will not be used for selection.
+
 ## clean-validation-when2call-only-ce-sftpairwise1-smooth000-lr1e5-max4096-batch2-seed20261023
 
 Timestamp: 2026-10-23T20:11:00Z. Status: queued.
@@ -6318,5 +6334,15 @@ Timestamp: 2026-10-23T20:21:20.335354+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-sftpairwise1-smooth000-lr1e5-max4096-batch1-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "pairwise_ranking", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261048", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "1", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-when2call-only-ce-sftpairwise1-smooth000-lr1e5-max4096-batch1-seed20261023. W&B run: not available.
 
 Clean development accuracy: 0.9616666666666667. Clean development macro F1: 0.721462283771886. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-only-ce-compact-schemas-smooth005-lr1e5-max4096-batch2-seed20261023
+
+Timestamp: 2026-10-23T20:30:33.545410+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-compact-schemas-smooth005-lr1e5-max4096-batch2-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--compact-tool-schemas", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261049", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-when2call-only-ce-compact-schemas-smooth005-lr1e5-max4096-batch2-seed20261023. W&B run: not available.
+
+Clean development accuracy: 0.9044444444444445. Clean development macro F1: 0.6787603086692516. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
