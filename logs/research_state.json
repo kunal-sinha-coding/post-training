@@ -4,16 +4,16 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 75/20/5 three-encoder blend reached 0.556681 aggregate accuracy and 0.556234 aggregate macro F1, below the strongest encoder component and prior 80/20 pairwise blend. Test labels were used only after selection. A distinct encoder-only 2048-token cross-entropy candidate may improve transfer by reducing irrelevant context while retaining argument cues.",
+  "current_hypothesis": "The 2048-token encoder-only attempt failed before training because input 5267 has 2769 tokens and exceeds the Jina limit. Training and clean-validation evidence are missing, so the required next measurement is a distinct 3072-token corrective retry. Test labels will not be used for selection.",
   "active_experiment": {
-    "pid": 312011,
+    "pid": 312431,
     "command": [
       "python",
       "-u",
       "-m",
       "experiments.clean_validation_baseline",
       "--output-dir",
-      "outputs/clean-validation-encoder-only-ce-cues-max2048-lr15e5-wd0005-smooth000-seed20261023",
+      "outputs/clean-validation-encoder-only-ce-cues-max3072-lr15e5-wd0005-smooth000-seed20261023",
       "--loss-function",
       "cross_entropy",
       "--add-argument-cues",
@@ -28,11 +28,11 @@
       "--split-seed",
       "20261021",
       "--max-length",
-      "2048",
+      "3072",
       "--pref-train-epochs",
       "1"
     ],
-    "started_at": "2026-10-23T03:15:40.862241+00:00"
+    "started_at": "2026-10-23T03:17:15.302082+00:00"
   },
   "worker_command": [
     "python",
@@ -40,7 +40,7 @@
     "-m",
     "experiments.clean_validation_baseline",
     "--output-dir",
-    "outputs/clean-validation-encoder-only-ce-cues-max2048-lr15e5-wd0005-smooth000-seed20261023",
+    "outputs/clean-validation-encoder-only-ce-cues-max3072-lr15e5-wd0005-smooth000-seed20261023",
     "--loss-function",
     "cross_entropy",
     "--add-argument-cues",
@@ -55,7 +55,7 @@
     "--split-seed",
     "20261021",
     "--max-length",
-    "2048",
+    "3072",
     "--pref-train-epochs",
     "1"
   ],
@@ -90,10 +90,10 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T03:15:40.862253+00:00",
-  "last_action": "Watchdog started validation worker pid 312011.",
+  "last_heartbeat": "2026-10-23T03:17:15.302090+00:00",
+  "last_action": "Watchdog started validation worker pid 312431.",
   "watchdog_enabled": true,
-  "research_log_size": 440269,
+  "research_log_size": 442568,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -101,7 +101,7 @@
     "-m",
     "experiments.clean_validation_baseline",
     "--output-dir",
-    "outputs/clean-validation-encoder-only-ce-cues-max2048-lr15e5-wd0005-smooth000-seed20261023",
+    "outputs/clean-validation-encoder-only-ce-cues-max3072-lr15e5-wd0005-smooth000-seed20261023",
     "--loss-function",
     "cross_entropy",
     "--add-argument-cues",
@@ -116,12 +116,12 @@
     "--split-seed",
     "20261021",
     "--max-length",
-    "2048",
+    "3072",
     "--pref-train-epochs",
     "1"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T03:14:40.417186+00:00",
-  "planning_ack_deadline": "2026-10-23T03:16:40.417205+00:00",
-  "planning_attempts": 271
+  "planning_notified_at": "2026-10-23T03:16:44.786114+00:00",
+  "planning_ack_deadline": "2026-10-23T03:18:44.786135+00:00",
+  "planning_attempts": 272
 }

@@ -4665,3 +4665,25 @@ Timestamp: 2026-10-23T03:15:00Z. Status: queued.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-encoder-only-ce-cues-max2048-lr15e5-wd0005-smooth000-seed20261023", "--loss-function", "cross_entropy", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "2048", "--pref-train-epochs", "1"]. Official test labels will not be loaded during training or clean-validation selection. Aggregate black-box evaluation will be queued after training and clean-validation evidence are recorded.
 
 Hypothesis: The 8192-token encoder had strong clean metrics but weak transfer. A 2048-token context may reduce noise and improve generalization without changing the fixed split or seed.
+
+Timestamp: 2026-10-23T03:17:00Z. Status: failed_or_incomplete.
+
+The 2048-token run stopped during tokenization before training and clean validation. Input 5267 contained 2769 tokens, above the configured 2048-token Jina limit. No training metrics, clean-validation metrics, or aggregate test measurement exist for this attempt. The attempt is not eligible for model selection.
+
+## clean-validation-encoder-only-ce-cues-max3072-lr15e5-wd0005-smooth000-seed20261023
+
+Timestamp: 2026-10-23T03:17:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-encoder-only-ce-cues-max3072-lr15e5-wd0005-smooth000-seed20261023", "--loss-function", "cross_entropy", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "3072", "--pref-train-epochs", "1"]. This distinct retry addresses the observed 2769-token input and must produce training and clean-validation evidence before aggregate evaluation. Official test labels will not be loaded during selection.
+
+Hypothesis: A 3072-token limit is sufficient for the observed long input while retaining the shorter-context regularization hypothesis. The retry should complete without changing the seed or split.
+
+## clean-validation-encoder-only-ce-cues-max2048-lr15e5-wd0005-smooth000-seed20261023
+
+Timestamp: 2026-10-23T03:16:42.565810+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-encoder-only-ce-cues-max2048-lr15e5-wd0005-smooth000-seed20261023", "--loss-function", "cross_entropy", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "2048", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-encoder-only-ce-cues-max2048-lr15e5-wd0005-smooth000-seed20261023. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
