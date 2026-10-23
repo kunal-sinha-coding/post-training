@@ -907,6 +907,16 @@ This aggregate measurement was run after candidate selection. The 95/5 weights w
 
 This record was written by the primary Codex process after the watchdog handoff.
 
+## clean-validation-encoder-only-ce-cues-max3072-lr15e5-wd0005-smooth005-seed20261023
+
+Timestamp: 2026-10-23T04:23:44.175415+00:00. Status: completed_training_clean.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-encoder-only-ce-cues-max3072-lr15e5-wd0005-smooth005-seed20261023", "--loss-function", "cross_entropy", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "3072", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-encoder-only-ce-cues-max3072-lr15e5-wd0005-smooth005-seed20261023. W&B run: not available.
+
+Training accuracy: 0.9865277777777778. Training macro F1: 0.739951705928428. Clean-validation accuracy: 0.9688888888888889. Clean-validation macro F1: 0.7268892469181525. Official test loaded: False. Aggregate black-box evidence is missing and was queued before any new experiment.
+
+This record was written by the primary Codex process after the watchdog handoff. Candidate selection uses clean validation only.
+
 ## clean-validation-encoder-calibrated-bias
 
 Timestamp: 2026-10-23T04:20:39.473251+00:00. Status: completed.
@@ -5127,5 +5137,15 @@ Timestamp: 2026-10-23T03:58:43.601851+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth005-seed20261023", "--loss-function", "cross_entropy", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth005-seed20261023. W&B run: not available.
 
 Clean development accuracy: 0.9677777777777777. Clean development macro F1: 0.7260565497211042. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-encoder-only-ce-cues-max3072-lr15e5-wd0005-smooth005-seed20261023
+
+Timestamp: 2026-10-23T04:23:46.873998+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-encoder-only-ce-cues-max3072-lr15e5-wd0005-smooth005-seed20261023", "--loss-function", "cross_entropy", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "3072", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-encoder-only-ce-cues-max3072-lr15e5-wd0005-smooth005-seed20261023. W&B run: not available.
+
+Clean development accuracy: 0.9688888888888889. Clean development macro F1: 0.7268892469181525. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
