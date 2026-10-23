@@ -6051,5 +6051,9 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 
 2026-10-23T05:53Z: Commit `queue sft pretraining aggregate evaluation` records complete SFT-pretraining training and clean-validation evidence and the required aggregate command. The watchdog launched it as PID 337755. Test labels were not used for selection.
 
+2026-10-23T05:55Z: The SFT-pretraining aggregate completed with accuracy 0.53039430449069 and macro F1 0.5330356924511953, below the best ensemble. The standalone branch is closed. The next queued probe adds it at 1% to the best encoder ensemble. Test labels were not used for selection.
+
+2026-10-23T05:55Z: Commit `queue fiveway sft complementary ensemble` records the completed SFT-pretraining aggregate result and the distinct five-way ensemble command. The watchdog launched it as PID 338177. Test labels were not used for selection.
+
 2026-10-23T05:44Z: Commit `queue matched pairwise aggregate evaluation retry` records the required aggregate command after the watchdog handoff. The watchdog launched it as PID 336673. Test labels were not used for selection.
 

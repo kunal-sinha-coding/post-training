@@ -1001,6 +1001,20 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 
 Hypothesis: SFT adaptation before preference training may improve representation alignment without adding the rejected-response distribution shift.
 
+## test-clean-validation-encoder-sftpre1-aux05-cues-max4096-lr15e5-wd0005-smooth005-seed20261023-result
+
+Timestamp: 2026-10-23T05:55:00Z. Status: completed.
+
+Aggregate black-box evidence: W&B run `gz7y9mvl`, accuracy `0.53039430449069` and macro F1 `0.5330356924511953` on 3652 test examples. The test file reports `test_loaded=true`, `selection_complete=true`, and `black_box=true`. Test labels were used only for this separate aggregate measurement. The standalone SFT-pretraining branch is closed.
+
+The clean-validation result remains strong enough to test the SFT-pretrained checkpoint as a small complementary member. The next hypothesis uses weights `0.93, 0.03, 0.02, 0.01, 0.01`, with the SFT-pretrained checkpoint at 1% and the same training-only bias.
+
+## test-clean-validation-encoder-fiveway-93-03-02-01-01-calibrated-bias
+
+Timestamp: 2026-10-23T05:55:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--weight", "0.93", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023", "--weight", "0.03", "--checkpoint", "outputs/clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023", "--weight", "0.02", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth000-seed20261023", "--weight", "0.01", "--checkpoint", "outputs/clean-validation-encoder-sftpre1-aux05-cues-max4096-lr15e5-wd0005-smooth005-seed20261023", "--weight", "0.01", "--class-bias", "0.0", "--class-bias", "-0.3", "--class-bias", "0.0", "--class-bias", "0.0", "--output", "outputs/test-clean-validation-encoder-fiveway-93-03-02-01-01-calibrated-bias.json"]. All component training and clean-validation evidence are complete. Official test labels will not be used for selection.
+
 ## clean-validation-encoder-sftpre1-aux05-cues-max4096-lr15e5-wd0005-smooth005-seed20261023-result
 
 Timestamp: 2026-10-23T05:53:00Z. Status: completed.
