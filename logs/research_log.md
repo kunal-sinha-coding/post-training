@@ -1089,9 +1089,11 @@ Training evidence is inherited from the frozen pairwise checkpoint. Clean-valida
 
 ## test-clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-calibration
 
-Timestamp: 2026-10-23T19:50:00Z. Status: queued.
+Timestamp: 2026-10-23T19:50:00Z. Status: completed.
 
-Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--output", "outputs/test-clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-calibration.json"]. Training and clean-validation evidence are complete. The zero bias was fixed from training-only calibration before aggregate evaluation. Official test labels will not be used for selection.
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--output", "outputs/test-clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-calibration.json"]. Training and clean-validation evidence were complete before this frozen aggregate measurement. The zero bias was fixed from training-only calibration before aggregate evaluation. Official test labels were not used for selection.
+
+Training accuracy: 0.9859722222222222. Training macro F1: 0.7395426488437263. Clean-validation accuracy: 0.9616666666666667. Clean-validation macro F1: 0.7214016499164823. Aggregate test accuracy: 0.5657174151150055. Aggregate test macro F1: 0.5663152829212622. Test examples: 3652. W&B run: 01m50quv. Test artifact: /workspace/post-training/outputs/test-clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-calibration.json.
 
 ## aggregate-test-clean-validation-when2call-only-ce-cues-sftpre2-max4096-batch2-seed20261023
 
