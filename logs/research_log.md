@@ -4488,6 +4488,18 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: The active one-epoch SFT-pretraining composition may transfer better than the rejected cross-entropy SFT-only candidate. Measure its aggregate performance before selecting any later experiment.
 
+Timestamp: 2026-10-23T02:47:35Z. Status: completed.
+
+W&B run: 50txu30g. The candidate had complete training and clean-validation evidence before this aggregate-only measurement. Aggregate black-box accuracy was 0.5238225629791895 and macro F1 was 0.5246346396446349. Official test labels were used only for reporting after selection. The standalone SFT-pretraining branch is rejected.
+
+## test-clean-validation-encoder-sftpre1-blend-80-20
+
+Timestamp: 2026-10-23T02:48:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-aux05-rejected01-sftpre1-sftce-wd0005-smooth005-seed20261023", "--weight", "0.80", "--weight", "0.20", "--output", "outputs/test-clean-validation-encoder-sftpre1-blend-80-20.json"]. The 80/20 weight was fixed from clean-validation evidence before this aggregate-only measurement. Official test labels will not be used for selection.
+
+Hypothesis: The SFT-pretrained checkpoint has complementary clean-validation behavior, but its standalone aggregate result is weak. A conservative 80/20 blend with the strongest encoder may retain encoder transfer while adding useful complementary predictions.
+
 ## clean-validation-cues-aux05-rejected01-sftpairwise-wd0001-smooth005-seed20261023
 
 Timestamp: 2026-10-23T02:28:05.978407+00:00. Status: completed.

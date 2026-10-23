@@ -4,20 +4,26 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The completed cross-entropy SFT rejected-direct probe reached 0.967222 clean accuracy and 0.725658 clean macro F1 but only 0.519168 aggregate accuracy and 0.519900 aggregate macro F1, so that branch is rejected. The active one-epoch SFT-pretraining composition must finish training and clean validation before its aggregate transfer is measured.",
+  "current_hypothesis": "The one-epoch SFT-pretraining composition improved clean validation to 0.972778 accuracy and 0.729812 macro F1 but reached only 0.523823 aggregate accuracy and 0.524635 aggregate macro F1, so it is rejected as a standalone model. The next probe tests a conservative 80/20 blend with the strongest encoder, using weights fixed from clean-validation evidence before aggregate measurement.",
   "active_experiment": {
-    "pid": 307121,
+    "pid": 307564,
     "command": [
       "python",
       "-u",
       "-m",
       "experiments.evaluate_frozen_when2call_ensemble_test",
       "--checkpoint",
+      "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
+      "--checkpoint",
       "outputs/clean-validation-cues-aux05-rejected01-sftpre1-sftce-wd0005-smooth005-seed20261023",
+      "--weight",
+      "0.80",
+      "--weight",
+      "0.20",
       "--output",
-      "outputs/test-clean-validation-cues-aux05-rejected01-sftpre1-sftce-wd0005-smooth005-seed20261023.json"
+      "outputs/test-clean-validation-encoder-sftpre1-blend-80-20.json"
     ],
-    "started_at": "2026-10-23T02:46:34.362933+00:00"
+    "started_at": "2026-10-23T02:48:36.648917+00:00"
   },
   "worker_command": [
     "python",
@@ -25,9 +31,15 @@
     "-m",
     "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
+    "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
+    "--checkpoint",
     "outputs/clean-validation-cues-aux05-rejected01-sftpre1-sftce-wd0005-smooth005-seed20261023",
+    "--weight",
+    "0.80",
+    "--weight",
+    "0.20",
     "--output",
-    "outputs/test-clean-validation-cues-aux05-rejected01-sftpre1-sftce-wd0005-smooth005-seed20261023.json"
+    "outputs/test-clean-validation-encoder-sftpre1-blend-80-20.json"
   ],
   "worker_queue": [],
   "_previous_command": [
@@ -60,10 +72,10 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T02:46:34.362948+00:00",
-  "last_action": "Watchdog started validation worker pid 307121.",
+  "last_heartbeat": "2026-10-23T02:48:36.648924+00:00",
+  "last_action": "Watchdog started validation worker pid 307564.",
   "watchdog_enabled": true,
-  "research_log_size": 424026,
+  "research_log_size": 425323,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -71,12 +83,18 @@
     "-m",
     "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
+    "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
+    "--checkpoint",
     "outputs/clean-validation-cues-aux05-rejected01-sftpre1-sftce-wd0005-smooth005-seed20261023",
+    "--weight",
+    "0.80",
+    "--weight",
+    "0.20",
     "--output",
-    "outputs/test-clean-validation-cues-aux05-rejected01-sftpre1-sftce-wd0005-smooth005-seed20261023.json"
+    "outputs/test-clean-validation-encoder-sftpre1-blend-80-20.json"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T02:40:56.873951+00:00",
-  "planning_ack_deadline": "2026-10-23T02:42:56.873975+00:00",
-  "planning_attempts": 260
+  "planning_notified_at": "2026-10-23T02:47:36.138350+00:00",
+  "planning_ack_deadline": "2026-10-23T02:49:36.138374+00:00",
+  "planning_attempts": 261
 }
