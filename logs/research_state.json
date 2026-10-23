@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The supported +0.3 request-for-info bias does not improve the fixed 5/95 blend. The opposite clean-validation-derived -0.3 bias is the last bounded calibration probe before returning to new training ideas.",
+  "current_hypothesis": "The clean-validation-derived -0.3 request-for-info bias improves the fixed 5/95 blend and is the current leader. A -0.5 bias probe tests whether stronger correction improves transfer further.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -22,15 +22,15 @@
     "--class-bias",
     "0.0",
     "--class-bias",
-    "0.3",
+    "-0.3",
     "--class-bias",
     "0.0",
     "--class-bias",
     "0.0",
     "--output",
-    "outputs/test-clean-validation-ce-pairwise-weight05-95-bias-request03-seed20261023.json"
+    "outputs/test-clean-validation-ce-pairwise-weight05-95-bias-request-minus03-seed20261023.json"
   ],
-  "worker_queue": [["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.05", "--weight", "0.95", "--class-bias", "0.0", "--class-bias", "-0.3", "--class-bias", "0.0", "--class-bias", "0.0", "--output", "outputs/test-clean-validation-ce-pairwise-weight05-95-bias-request-minus03-seed20261023.json"]],
+  "worker_queue": [["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.05", "--weight", "0.95", "--class-bias", "0.0", "--class-bias", "-0.5", "--class-bias", "0.0", "--class-bias", "0.0", "--output", "outputs/test-clean-validation-ce-pairwise-weight05-95-bias-request-minus05-seed20261023.json"]],
   "_previous_command": [
     "python",
     "-u",
@@ -61,14 +61,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T21:04:29.587700+00:00",
-  "last_action": "Codex recorded the supported +0.3 bias result and queued the opposite -0.3 request-for-info bias probe.",
+  "last_heartbeat": "2026-10-23T21:07:34.360647+00:00",
+  "last_action": "Codex recorded the improved -0.3 bias result and queued a fixed -0.5 request-for-info bias probe.",
   "watchdog_enabled": true,
-  "research_log_size": 632789,
+  "research_log_size": 633901,
   "stop_command": "STOP",
-  "next_experiment": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.05", "--weight", "0.95", "--class-bias", "0.0", "--class-bias", "-0.3", "--class-bias", "0.0", "--class-bias", "0.0", "--output", "outputs/test-clean-validation-ce-pairwise-weight05-95-bias-request-minus03-seed20261023.json"],
+  "next_experiment": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.05", "--weight", "0.95", "--class-bias", "0.0", "--class-bias", "-0.5", "--class-bias", "0.0", "--class-bias", "0.0", "--output", "outputs/test-clean-validation-ce-pairwise-weight05-95-bias-request-minus05-seed20261023.json"],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T21:06:33.216529+00:00",
-  "planning_ack_deadline": "2026-10-23T21:08:33.216554+00:00",
-  "planning_attempts": 393
+  "planning_notified_at": "2026-10-23T21:09:36.710699+00:00",
+  "planning_ack_deadline": "2026-10-23T21:11:36.710724+00:00",
+  "planning_attempts": 394
 }
