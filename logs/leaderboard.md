@@ -591,3 +591,5 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-encoder-compact-schema-cues-max4096-lr15e5-wd0005-smooth000-seed20261023 | — | — | — | Queued required aggregate black-box measurement after complete training and clean validation | queued |
 | test-clean-validation-encoder-compact-schema-cues-max4096-lr15e5-wd0005-smooth000-seed20261023 | 0.4665936473165389 | 0.4528272034774154 | chu2a91h | Aggregate-only result. Compact-schema branch is rejected. Test labels were not used for selection. | completed |
 | test-clean-validation-encoder-ce4096lr15-blend-95-05 | — | — | — | Queued distinct conservative blend of the strongest encoder and zero-smoothing encoder | queued |
+| test-clean-validation-encoder-ce4096lr15-blend-95-05 | 0.5599671412924425 | 0.5596229628772144 | zgui3i91 | Aggregate-only result below the current 95/3/2 ensemble. Test labels were not used for selection. | completed |
+| test-clean-validation-encoder-ce4096lr15-blend-97-03 | — | — | — | Queued distinct lower-weight zero-smoothing blend probe | queued |

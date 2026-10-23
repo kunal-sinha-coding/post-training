@@ -5981,3 +5981,5 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 
 2026-10-23T04:38Z: The compact-schema aggregate result completed with accuracy 0.4665936473165389 and macro F1 0.4528272034774154. That branch is closed. The next queued hypothesis is a clean-validation-selected 95/5 blend of the strongest encoder and the distinct 4096-token zero-smoothing encoder. Test labels were not used for selection.
 
+2026-10-23T04:41Z: The 95/5 zero-smoothing blend completed with accuracy 0.5599671412924425 and macro F1 0.5596229628772144. It is below the current 95/3/2 ensemble. The next queued hypothesis reduces the zero-smoothing weight to 3%. Test labels were not used for selection.
+

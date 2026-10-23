@@ -919,6 +919,22 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: A small contribution from the distinct zero-smoothing encoder may preserve complementary signal while retaining the strongest encoder's transfer behavior.
 
+## test-clean-validation-encoder-ce4096lr15-blend-95-05
+
+Timestamp: 2026-10-23T04:41:00Z. Status: completed.
+
+Aggregate black-box evidence: W&B run zgui3i91, accuracy 0.5599671412924425 and macro F1 0.5596229628772144 on 3652 test examples. The component results were 0.5585980284775466 accuracy and 0.5580430730402365 macro F1 for the strongest encoder, and 0.5336801752464403 accuracy and 0.5349871469480049 macro F1 for the zero-smoothing encoder. The test file reports `test_loaded=true`, `selection_complete=true`, `test_measurement_only=true`, and `black_box=true`. Test labels were not used for selection.
+
+The 95/5 blend is below the current 95/3/2 ensemble. The next hypothesis reduces the zero-smoothing contribution to 3% to limit its negative transfer while preserving a possible complementary signal.
+
+## test-clean-validation-encoder-ce4096lr15-blend-97-03
+
+Timestamp: 2026-10-23T04:41:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth000-seed20261023", "--weight", "0.97", "--weight", "0.03", "--output", "outputs/test-clean-validation-encoder-ce4096lr15-blend-97-03.json"]. Both components have complete training and clean-validation evidence. The weight is fixed before aggregate evaluation from clean-validation performance and prior blend behavior. Official test labels will not be used for selection.
+
+Hypothesis: Reducing the weaker component from 5% to 3% may retain complementary signal while reducing negative transfer.
+
 ## test-clean-validation-encoder-rejected-aux-cues-max4096-lr15e5-wd0005-smooth000-seed20261023
 
 Timestamp: 2026-10-23T04:32:00Z. Status: queued.
