@@ -4,12 +4,12 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "Adding one SFT-pretraining epoch to the strong Glaive-free When2Call encoder control may improve generalization while retaining the clean validation gains. Test labels remain reserved for reporting.",
+  "current_hypothesis": "A second SFT-pretraining epoch followed by one preference epoch may extend the generalization gain observed from combining When2Call SFT and preference data. Test labels remain reserved for reporting.",
   "active_experiment": {},
-  "worker_command": ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-max4096-batch2-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261033", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"],
+  "worker_command": ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre2-max4096-batch2-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "2", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261034", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"],
   "worker_queue": [
-    ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-max4096-batch2-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261033", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"],
-    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-max4096-batch2-seed20261023", "--output", "outputs/test-clean-validation-when2call-only-ce-cues-sftpre1-max4096-batch2-seed20261023.json"]
+    ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre2-max4096-batch2-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "2", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261034", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"],
+    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre2-max4096-batch2-seed20261023", "--output", "outputs/test-clean-validation-when2call-only-ce-cues-sftpre2-max4096-batch2-seed20261023.json"]
   ],
   "_previous_command": [
     "python",
@@ -41,14 +41,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T17:08:27.539805+00:00",
-  "last_action": "Codex queued Glaive-free When2Call SFT pretraining followed by its aggregate test.",
+  "last_heartbeat": "2026-10-23T17:18:40.600409+00:00",
+  "last_action": "Codex queued a second SFT-pretraining epoch followed by preference training and aggregate test evaluation.",
   "watchdog_enabled": true,
-  "research_log_size": 565693,
+  "research_log_size": 566726,
   "stop_command": "STOP",
-  "next_experiment": ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-max4096-batch2-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261033", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"],
+  "next_experiment": ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre2-max4096-batch2-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "2", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261034", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T17:10:00.384635+00:00",
-  "planning_ack_deadline": "2026-10-23T17:12:00.384659+00:00",
-  "planning_attempts": 349
+  "planning_notified_at": "2026-10-23T17:20:13.826505+00:00",
+  "planning_ack_deadline": "2026-10-23T17:22:13.826529+00:00",
+  "planning_attempts": 350
 }
