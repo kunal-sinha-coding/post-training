@@ -4790,6 +4790,20 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: The 4096-token zero-smoothing candidate may transfer better than the 3072-token zero-smoothing candidate while retaining sharper class boundaries.
 
+Timestamp: 2026-10-23T03:35:00Z. Status: completed.
+
+Aggregate black-box evidence: W&B run v8cpogur, accuracy 0.5336801752464403 and macro F1 0.5349871469480049 on 3652 test examples. The test file reports `test_loaded=true`, `selection_complete=true`, `test_measurement_only=true`, and `black_box=true`. Training and clean-validation evidence were complete before this measurement. Official test labels were used only for reporting after selection.
+
+The 4096-token zero-smoothing cross-entropy standalone branch is closed. The next hypothesis combines the valid 4096-token context with the pairwise objective and zero smoothing, testing whether the pairwise transfer signal is more useful without smoothing.
+
+## clean-validation-encoder-only-pairwise-cues-max4096-lr15e5-wd0005-smooth000-seed20261023
+
+Timestamp: 2026-10-23T03:35:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-encoder-only-pairwise-cues-max4096-lr15e5-wd0005-smooth000-seed20261023", "--loss-function", "pairwise_ranking", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Official test labels will not be loaded during selection. Aggregate black-box evaluation will be queued after training and clean-validation evidence are recorded.
+
+Hypothesis: Pairwise ranking may improve class-boundary transfer at 4096 tokens when label smoothing is removed.
+
 ## clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023
 
 Timestamp: 2026-10-23T03:23:55.721461+00:00. Status: completed.
