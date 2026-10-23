@@ -595,3 +595,5 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-encoder-ce4096lr15-blend-97-03 | — | — | — | Queued distinct lower-weight zero-smoothing blend probe | queued |
 | test-clean-validation-encoder-ce4096lr15-blend-97-03 | 0.5602409638554217 | 0.5598549823176151 | 7ek5umxy | Aggregate-only result, improved over 95/5 but below 95/3/2. Test labels were not used for selection. | completed |
 | test-clean-validation-encoder-ce4096lr15-blend-98-02 | — | — | — | Queued distinct lower-weight zero-smoothing blend probe | queued |
+| test-clean-validation-encoder-ce4096lr15-blend-98-02 | 0.5599671412924425 | 0.5595347688183022 | 1yf2a4zc | Aggregate-only result, below 97/3. The two-component weight sweep is closed. Test labels were not used for selection. | completed |
+| test-clean-validation-encoder-triple-zero-smoothing-95-03-02 | — | — | — | Queued distinct three-way blend replacing pairwise with zero-smoothing encoder | queued |

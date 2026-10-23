@@ -951,6 +951,22 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: A 2% contribution may preserve a small complementary signal while minimizing negative transfer from the weaker component.
 
+## test-clean-validation-encoder-ce4096lr15-blend-98-02
+
+Timestamp: 2026-10-23T04:47:00Z. Status: completed.
+
+Aggregate black-box evidence: W&B run 1yf2a4zc, accuracy 0.5599671412924425 and macro F1 0.5595347688183022 on 3652 test examples. The test file reports `test_loaded=true`, `selection_complete=true`, `test_measurement_only=true`, and `black_box=true`. Training and clean-validation evidence for both components were complete before this measurement. Test labels were not used for selection.
+
+The 98/2 blend regressed relative to 97/3, so the two-component weight sweep is closed. The next hypothesis tests whether the zero-smoothing encoder is more useful in a three-way blend that replaces the pairwise component.
+
+## test-clean-validation-encoder-triple-zero-smoothing-95-03-02
+
+Timestamp: 2026-10-23T04:47:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth000-seed20261023", "--weight", "0.95", "--weight", "0.03", "--weight", "0.02", "--output", "outputs/test-clean-validation-encoder-triple-zero-smoothing-95-03-02.json"]. All components have complete training and clean-validation evidence. Weights are fixed before aggregate evaluation from clean-validation results and prior ensemble weights. Official test labels will not be used for selection.
+
+Hypothesis: The zero-smoothing encoder may provide useful complementary errors when combined with the tuned cross-entropy encoder, even though its standalone contribution is weak.
+
 ## test-clean-validation-encoder-rejected-aux-cues-max4096-lr15e5-wd0005-smooth000-seed20261023
 
 Timestamp: 2026-10-23T04:32:00Z. Status: queued.
