@@ -945,6 +945,20 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 
 Hypothesis: The successful 5-example auxiliary supervision signal may improve with a modestly larger but still bounded auxiliary sample, without the distribution shift seen in rejected-direct augmentation.
 
+## test-clean-validation-encoder-aux10-cues-max4096-lr15e5-wd0005-smooth005-seed20261023-result
+
+Timestamp: 2026-10-23T05:26:00Z. Status: completed.
+
+Aggregate black-box evidence: W&B run `pnwc6jmj`, accuracy `0.5153340635268346` and macro F1 `0.5164492927502081` on 3652 test examples. The test file reports `test_loaded=true`, `selection_complete=true`, and `black_box=true`. Test labels were used only for this separate aggregate measurement. The auxiliary10 branch is closed.
+
+The next hypothesis applies the training-only bias `[0.0, -0.3, 0.0, 0.0]` that improved the best three-way ensemble to the previously evaluated four-way ensemble. All four checkpoints and their clean-validation evidence are already complete.
+
+## test-clean-validation-encoder-fourway-94-03-02-01-calibrated-bias
+
+Timestamp: 2026-10-23T05:26:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--weight", "0.94", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023", "--weight", "0.03", "--checkpoint", "outputs/clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023", "--weight", "0.02", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth000-seed20261023", "--weight", "0.01", "--class-bias", "0.0", "--class-bias", "-0.3", "--class-bias", "0.0", "--class-bias", "0.0", "--output", "outputs/test-clean-validation-encoder-fourway-94-03-02-01-calibrated-bias.json"]. All components have complete training and clean-validation evidence. The bias was selected from training-only calibration. Official test labels will not be used for selection.
+
 ## clean-validation-encoder-aux10-cues-max4096-lr15e5-wd0005-smooth005-seed20261023-result
 
 Timestamp: 2026-10-23T05:24:00Z. Status: completed.

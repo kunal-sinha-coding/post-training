@@ -6023,3 +6023,7 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 
 2026-10-23T05:24Z: Commit `queue auxiliary10 aggregate evaluation` records complete auxiliary10 training and clean-validation evidence and the required aggregate command. The watchdog launched it as PID 333410. Test labels were not used for selection.
 
+2026-10-23T05:26Z: The auxiliary10 aggregate completed with accuracy 0.5153340635268346 and macro F1 0.5164492927502081, below the best ensemble. The branch is closed. The next queued hypothesis applies the training-only bias [0.0, -0.3, 0.0, 0.0] to the existing four-way ensemble. Test labels were not used for selection.
+
+2026-10-23T05:26Z: Commit `queue calibrated fourway ensemble evaluation` records the completed auxiliary10 aggregate result and the distinct calibrated four-way command. The watchdog launched it as PID 333878. Test labels were not used for selection.
+
