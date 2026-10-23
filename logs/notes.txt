@@ -6083,3 +6083,5 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-23T16:33Z: Diagnosed the failed Glaive-only follow-up. It reached evaluation with no When2Call validation examples because both When2Call sample counts were zero, and the shared metric function divided by zero. The run produced no checkpoint and no test measurement. The failure is recorded, and the next queue uses nonzero samples from all three sources.
 
 2026-10-23T16:33Z: Queued the distinct balanced filtered-Glaive probe with 5,000 Glaive, 5,000 When2Call preference, and 5,000 When2Call SFT examples, followed immediately by its aggregate black-box evaluation. Set planning_required false and status active. The watchdog must consume training first, then test.
+
+2026-10-23T16:34Z: Verification found status had remained awaiting_codex_planning after the queue write, so the watchdog did not launch. Corrected only status to active while preserving planning_required false and the two-command queue.
