@@ -6301,6 +6301,24 @@ Timestamp: 2026-10-23T20:31:00Z. Status: queued.
 
 Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-compact-schemas-smooth005-lr1e5-max4096-batch2-seed20261023", "--output", "outputs/test-clean-validation-when2call-only-ce-compact-schemas-smooth005-lr1e5-max4096-batch2-seed20261023.json"]. The checkpoint was selected using training and clean-validation evidence. Official test labels are reserved for aggregate reporting and will not be used for selection.
 
+Aggregate test accuracy: 0.432092004381161. Aggregate test macro F1: 0.40975841851627526. Test examples: 3652. The compact-schema hypothesis is rejected due to poor transfer.
+
+## test-clean-validation-ce-pairwise-equal-weight-ensemble-seed20261023
+
+Timestamp: 2026-10-23T20:32:00Z. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.5", "--weight", "0.5", "--output", "outputs/test-clean-validation-ce-pairwise-equal-weight-ensemble-seed20261023.json"]. Equal weights were fixed before test evaluation from the complementary-objective hypothesis. Official test labels were not used for selection.
+
+Aggregate test accuracy: 0.5490142387732749. Aggregate test macro F1: 0.5502677466263233. Test examples: 3652.
+
+## test-clean-validation-ce-pairwise-weight75-25-seed20261023
+
+Timestamp: 2026-10-23T20:32:00Z. Status: queued.
+
+Hypothesis: A 75/25 CE-to-pairwise weighting may improve the equal-weight ensemble by favoring the stronger CE clean-validation candidate while retaining complementary pairwise predictions.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.75", "--weight", "0.25", "--output", "outputs/test-clean-validation-ce-pairwise-weight75-25-seed20261023.json"]. The weight was fixed before test evaluation. Official test labels will not be used for selection.
+
 ## test-clean-validation-ce-pairwise-equal-weight-ensemble-seed20261023
 
 Timestamp: 2026-10-23T20:31:00Z. Status: queued.
