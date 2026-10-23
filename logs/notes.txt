@@ -6085,3 +6085,7 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-23T16:33Z: Queued the distinct balanced filtered-Glaive probe with 5,000 Glaive, 5,000 When2Call preference, and 5,000 When2Call SFT examples, followed immediately by its aggregate black-box evaluation. Set planning_required false and status active. The watchdog must consume training first, then test.
 
 2026-10-23T16:34Z: Verification found status had remained awaiting_codex_planning after the queue write, so the watchdog did not launch. Corrected only status to active while preserving planning_required false and the two-command queue.
+
+2026-10-23T16:37Z: The balanced 5,000/5,000/5,000 filtered-Glaive run failed during backpropagation with CUDA out-of-memory at 4,096 tokens. It produced no checkpoint, so its aggregate test measurement was not runnable. The latest completed experiment remains the mixed retry3 pilot, whose training, both clean validations, and aggregate test are complete.
+
+2026-10-23T16:37Z: Queued a distinct smaller balanced probe with 3,000 Glaive, 3,000 When2Call preference, and 3,000 When2Call SFT examples, one epoch, and a 2,048-token context. Its aggregate black-box evaluation is the next queue entry. Set planning_required false and status active. Test labels will not be used for selection.
