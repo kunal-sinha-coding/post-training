@@ -1043,6 +1043,12 @@ Timestamp: 2026-10-23T06:05:00Z. Status: queued.
 
 Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--weight", "0.91", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023", "--weight", "0.03", "--checkpoint", "outputs/clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023", "--weight", "0.02", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth000-seed20261023", "--weight", "0.01", "--checkpoint", "outputs/clean-validation-encoder-sftpre1-aux05-cues-max4096-lr15e5-wd0005-smooth005-seed20261023", "--weight", "0.03", "--class-bias", "0.0", "--class-bias", "-0.3", "--class-bias", "0.0", "--class-bias", "0.0", "--output", "outputs/test-clean-validation-encoder-fiveway-91-03-02-01-03-calibrated-bias.json"]. All component training and clean-validation evidence are complete. Official test labels will not be used for selection.
 
+Timestamp: 2026-10-23T06:10:00Z. Status: completed.
+
+Training evidence: all five component checkpoints have recorded training metrics. Clean-validation evidence: all five component checkpoints have recorded clean-validation metrics. Aggregate black-box evidence: W&B run `qm5zkaom`, ensemble accuracy `0.5635268346111719` and macro F1 `0.5633122642694711` on 3652 test examples. The test file reports `test_loaded=true`, `selection_complete=true`, `test_measurement_only=true`, and `black_box=true`. Test labels were used only for this separate aggregate measurement.
+
+The 3% SFT component improved both aggregate metrics over the 2% probe. The next hypotheses test 4% and 5% SFT contributions with weights fixed before test evaluation.
+
 ## clean-validation-encoder-sftpre1-aux05-cues-max4096-lr15e5-wd0005-smooth005-seed20261023-result
 
 Timestamp: 2026-10-23T05:53:00Z. Status: completed.
