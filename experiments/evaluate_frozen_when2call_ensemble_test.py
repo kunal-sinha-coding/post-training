@@ -68,6 +68,7 @@ def main() -> int:
     parser.add_argument("--complete-request-to-tool", action="store_true", help="Apply a frozen required-field inference rule.")
     parser.add_argument("--omit-tool-schemas", action="store_true", help="Apply the frozen question-only input transform.")
     parser.add_argument("--compact-tool-schemas", action="store_true", help="Keep only tool names and required fields.")
+    parser.add_argument("--class-bias", action="append", type=float, help="Add one frozen class-logit bias per label in LABELS order.")
     args = parser.parse_args()
     # Open W&B before loading official examples so the post-selection measurement is tracked.
     import wandb
@@ -85,12 +86,16 @@ def main() -> int:
     if len(weights) != len(checkpoints) or float(weights.sum()) <= 0:
         raise ValueError("The number of weights must match checkpoints and their sum must be positive.")
     weights = weights / weights.sum()
+    # Validate the clean-validation-selected class bias before loading official inputs.
+    class_bias = torch.tensor(args.class_bias if args.class_bias is not None else [0.0] * len(LABELS), dtype=torch.float32)
+    if len(class_bias) != len(LABELS):
+        raise ValueError(f"--class-bias must contain exactly {len(LABELS)} values in LABELS order.")
     run = wandb.init(
         project=os.getenv("WANDB_PROJECT", "when2call-research"),
         entity=os.getenv("WANDB_ENTITY"),
         name="when2call-blackbox-test-aggregate",
         job_type="official-test-measurement",
-        config={"checkpoints": {key: str(value) for key, value in checkpoints.items()}, "weights": weights.tolist(), "complete_request_to_tool": args.complete_request_to_tool, "omit_tool_schemas": args.omit_tool_schemas, "compact_tool_schemas": args.compact_tool_schemas, "dataset": f"{DATASET_NAME}:test/mcq", "selection_complete": True, "black_box": True, "max_length": 4096},
+        config={"checkpoints": {key: str(value) for key, value in checkpoints.items()}, "weights": weights.tolist(), "class_bias": class_bias.tolist(), "complete_request_to_tool": args.complete_request_to_tool, "omit_tool_schemas": args.omit_tool_schemas, "compact_tool_schemas": args.compact_tool_schemas, "dataset": f"{DATASET_NAME}:test/mcq", "selection_complete": True, "black_box": True, "max_length": 4096},
     )
     atexit.register(run.finish)
     # Freeze the model context and load the official labels only for final measurement.
@@ -120,10 +125,10 @@ def main() -> int:
         # Use small inference batches because complete test inputs can approach the context limit.
         logits, labels = collect_logits(model, tokenizer, examples, device, batch_size=4)
         logits_by_checkpoint.append(logits)
-        result["metrics"][checkpoint_name] = aggregate_metrics(labels.tolist(), logits.argmax(dim=1).tolist())
+        result["metrics"][checkpoint_name] = aggregate_metrics(labels.tolist(), (logits + class_bias.view(1, -1)).argmax(dim=1).tolist())
     # Average frozen seed logits and compute the single official ensemble measurement.
     ensemble_logits = (torch.stack(logits_by_checkpoint) * weights.view(-1, 1, 1).to(logits_by_checkpoint[0].device)).sum(dim=0)
-    ensemble_predictions = ensemble_logits.argmax(dim=1).tolist()
+    ensemble_predictions = (ensemble_logits + class_bias.view(1, -1)).argmax(dim=1).tolist()
     if args.complete_request_to_tool:
         ensemble_predictions = apply_complete_request_rule(examples, ensemble_predictions)
     result["metrics"]["ensemble"] = aggregate_metrics(labels.tolist(), ensemble_predictions)

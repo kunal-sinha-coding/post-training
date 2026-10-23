@@ -949,6 +949,26 @@ Timestamp: 2026-10-23T01:53:59Z. Status: queued.
 
 Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022", "--compact-tool-schemas", "--complete-request-to-tool", "--output", "outputs/test-clean-validation-cues-aux05-sftpairwise-visible-compact-complete-request.json"]. The compact schema and required-field rule use only visible input text. The frozen checkpoint and rule are fixed before testing. No test labels will be used for selection.
 
+## test-clean-validation-cues-aux05-sftpairwise-visible-compact-complete-request-result
+
+Timestamp: 2026-10-23T01:57:43Z. Status: completed.
+
+W&B run: `l417qbuo`. The frozen checkpoint and compact-schema plus complete-request rule scored aggregate accuracy 0.5147864184008762 and macro F1 0.5084505936012416. The compact visible-input branch is rejected. Test labels were used only for this aggregate measurement. The next step is a clean-validation-only calibration diagnostic on the strongest frozen encoder.
+
+## clean-validation-calibration-aux05-sftpairwise
+
+Timestamp: 2026-10-23T01:57:43Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.calibrate_clean_validation", "--checkpoint", "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022", "--output", "outputs/clean-validation-calibration-aux05-sftpairwise.json", "--seed", "20261022", "--split-seed", "20261021", "--calibration-fraction", "0.1", "--max-length", "4096"]. This diagnostic uses only the training and clean-validation partitions. It does not load official test data or test labels.
+
+Training evidence was inherited from the frozen checkpoint. Calibration accuracy was 0.9888888597488403. Clean-validation accuracy was 0.9677777777777777 and macro F1 was 0.7260476348929104 with class bias [0.0, 0.30000001192092896, 0.0, 0.0]. W&B run: `3ktj4n3q`. The clean-only result supports a frozen class-bias test.
+
+## test-clean-validation-cues-aux05-sftpairwise-calibrated-bias
+
+Timestamp: 2026-10-23T02:03:27Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022", "--class-bias", "0.0", "--class-bias", "0.3", "--class-bias", "0.0", "--class-bias", "0.0", "--output", "outputs/test-clean-validation-cues-aux05-sftpairwise-calibrated-bias.json"]. The bias was fit on a training calibration subset and selected using clean validation only. The official test will be used only for aggregate measurement.
+
 ## test-clean-validation-cues-aux01-lr15e5-bothpairwise-wd0005-smooth000-seed20261022-result
 
 Timestamp: 2026-10-22T23:21:57Z. Status: completed.

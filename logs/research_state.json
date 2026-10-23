@@ -4,9 +4,9 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The invalid-tool correction could not be measured because the evaluator rejected its unsupported flag before loading data. A supported compact-schema plus complete-request probe now tests whether shorter visible schemas make the required-field rule more reliable without changing the selected checkpoint or using test labels.",
+  "current_hypothesis": "Clean-validation-only calibration fit class bias [0.0, 0.3, 0.0, 0.0] and improved clean-validation macro F1 to 0.726048. The evaluator now supports this frozen bias, and its aggregate test measurement is queued before any new training.",
   "active_experiment": {
-    "pid": 300978,
+    "pid": 301903,
     "command": [
       "python",
       "-u",
@@ -14,12 +14,18 @@
       "experiments.evaluate_frozen_when2call_ensemble_test",
       "--checkpoint",
       "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022",
-      "--compact-tool-schemas",
-      "--complete-request-to-tool",
+      "--class-bias",
+      "0.0",
+      "--class-bias",
+      "0.3",
+      "--class-bias",
+      "0.0",
+      "--class-bias",
+      "0.0",
       "--output",
-      "outputs/test-clean-validation-cues-aux05-sftpairwise-visible-compact-complete-request.json"
+      "outputs/test-clean-validation-cues-aux05-sftpairwise-calibrated-bias.json"
     ],
-    "started_at": "2026-10-23T01:55:12.373171+00:00"
+    "started_at": "2026-10-23T02:04:12.321951+00:00"
   },
   "worker_command": [
     "python",
@@ -28,10 +34,16 @@
     "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
     "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022",
-    "--compact-tool-schemas",
-    "--complete-request-to-tool",
+    "--class-bias",
+    "0.0",
+    "--class-bias",
+    "0.3",
+    "--class-bias",
+    "0.0",
+    "--class-bias",
+    "0.0",
     "--output",
-    "outputs/test-clean-validation-cues-aux05-sftpairwise-visible-compact-complete-request.json"
+    "outputs/test-clean-validation-cues-aux05-sftpairwise-calibrated-bias.json"
   ],
   "worker_queue": [],
   "_previous_command": [
@@ -64,10 +76,10 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T01:55:12.373184+00:00",
-  "last_action": "Watchdog started validation worker pid 300978.",
+  "last_heartbeat": "2026-10-23T02:04:12.321964+00:00",
+  "last_action": "Watchdog started validation worker pid 301903.",
   "watchdog_enabled": true,
-  "research_log_size": 403383,
+  "research_log_size": 405431,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -76,13 +88,19 @@
     "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
     "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022",
-    "--compact-tool-schemas",
-    "--complete-request-to-tool",
+    "--class-bias",
+    "0.0",
+    "--class-bias",
+    "0.3",
+    "--class-bias",
+    "0.0",
+    "--class-bias",
+    "0.0",
     "--output",
-    "outputs/test-clean-validation-cues-aux05-sftpairwise-visible-compact-complete-request.json"
+    "outputs/test-clean-validation-cues-aux05-sftpairwise-calibrated-bias.json"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T01:54:09.958901+00:00",
-  "planning_ack_deadline": "2026-10-23T01:56:09.958921+00:00",
-  "planning_attempts": 247
+  "planning_notified_at": "2026-10-23T02:03:41.443612+00:00",
+  "planning_ack_deadline": "2026-10-23T02:05:41.443637+00:00",
+  "planning_attempts": 249
 }

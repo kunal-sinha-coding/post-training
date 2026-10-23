@@ -458,3 +458,7 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-cues-aux05-sftpairwise-visible-invalid-tool-cannot | — | — | — | Queued frozen visible invalid-tool correction |
 | test-clean-validation-cues-aux05-sftpairwise-visible-invalid-tool-cannot | — | — | — | Test skipped because the evaluator rejected the unsupported flag before loading data |
 | test-clean-validation-cues-aux05-sftpairwise-visible-compact-complete-request | — | — | — | Queued supported compact-schema plus required-field probe |
+| test-clean-validation-cues-aux05-sftpairwise-visible-compact-complete-request | 0.5147864184008762 | 0.5084505936012416 | l417qbuo | Aggregate-only compact-schema plus required-field rule, rejected |
+| clean-validation-calibration-aux05-sftpairwise | — | — | — | Queued clean-validation-only calibration diagnostic |
+| clean-validation-calibration-aux05-sftpairwise | 0.9677777777777777 | 0.7260476348929104 | 3ktj4n3q | Clean-validation bias calibration. Official test not loaded. |
+| test-clean-validation-cues-aux05-sftpairwise-calibrated-bias | — | — | — | Queued aggregate test of clean-validation-selected class bias |
