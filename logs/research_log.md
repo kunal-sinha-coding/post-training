@@ -4709,3 +4709,17 @@ Timestamp: 2026-10-23T03:20:00Z. Status: queued.
 Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max3072-lr15e5-wd0005-smooth000-seed20261023", "--output", "outputs/test-clean-validation-encoder-only-ce-cues-max3072-lr15e5-wd0005-smooth000-seed20261023.json"]. Training and clean-validation evidence are complete before this aggregate-only measurement. Official test labels will be used only for reporting after selection.
 
 Hypothesis: The 3072-token candidate may retain the shorter-context regularization benefit while supporting the observed 2769-token example. Aggregate evaluation is required before selecting any next experiment.
+
+Timestamp: 2026-10-23T03:21:00Z. Status: completed.
+
+Aggregate black-box evidence: W&B run zkal66uu, accuracy 0.5336801752464403 and macro F1 0.5349815859014216 on 3652 test examples. The test file reports `test_loaded=true`, `selection_complete=true`, `test_measurement_only=true`, and `black_box=true`. Training and clean-validation evidence were complete before this measurement. Official test labels were used only for reporting after selection.
+
+The 3072-token cross-entropy standalone branch is closed because its aggregate result is below the encoder leader. The next hypothesis tests a pairwise objective at the same valid 3072-token context. The prior 4096-token pairwise model was weak alone but improved the strongest encoder in an 80/20 blend, so this is a focused complementary-mechanism probe rather than a seed sweep.
+
+## clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023
+
+Timestamp: 2026-10-23T03:21:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023", "--loss-function", "pairwise_ranking", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "3072", "--pref-train-epochs", "1"]. Official test labels will not be loaded during selection. Aggregate black-box evaluation will be queued only after training and clean-validation evidence are recorded.
+
+Hypothesis: Pairwise ranking may provide complementary class-boundary information at 3072 tokens while avoiding the 2048-token truncation failure.
