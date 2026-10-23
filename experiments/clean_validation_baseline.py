@@ -156,15 +156,15 @@ def load_model(device: torch.device, max_length: int) -> tuple[torch.nn.Module, 
     return model, tokenizer
 
 
-def train_epoch(model: torch.nn.Module, tokenizer: object, examples: list, device: torch.device, optimizer: object, loss_function: str, seed: int, label_smoothing: float = 0.0) -> float:
+def train_epoch(model: torch.nn.Module, tokenizer: object, examples: list, device: torch.device, optimizer: object, loss_function: str, seed: int, label_smoothing: float = 0.0, batch_size: int = 8) -> float:
     """Run one deterministic full batch training epoch and return mean loss."""
     # Shuffle only the training partition and use small batches for the available GPU memory.
     model.train()
     order = list(examples)
     random.Random(seed).shuffle(order)
     losses = []
-    for start in range(0, len(order), 8):
-        batch = collate(order[start:start + 8], tokenizer)
+    for start in range(0, len(order), batch_size):
+        batch = collate(order[start:start + batch_size], tokenizer)
         labels = batch.pop("labels").to(device)
         rejected_labels = batch.pop("rejected_labels").to(device)
         batch.pop("source_ids")

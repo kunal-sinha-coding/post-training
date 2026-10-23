@@ -125,6 +125,7 @@ def main() -> int:
     parser.add_argument("--seed", type=int, default=20261023)
     parser.add_argument("--split-seed", type=int, default=20261023)
     parser.add_argument("--max-length", type=int, default=4096)
+    parser.add_argument("--batch-size", type=int, default=8)
     parser.add_argument("--learning-rate", type=float, default=5e-5)
     parser.add_argument("--weight-decay", type=float, default=0.01)
     args = parser.parse_args()
@@ -152,7 +153,7 @@ def main() -> int:
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay)
     losses = []
     for epoch in range(args.epochs):
-        losses.append(train_epoch(model, tokenizer, train, device, optimizer, "cross_entropy", args.seed + epoch))
+        losses.append(train_epoch(model, tokenizer, train, device, optimizer, "cross_entropy", args.seed + epoch, batch_size=args.batch_size))
     # Measure training and clean held-out performance using all three benchmark classes.
     train_metrics = batch_metrics(model, tokenizer, train, device, list(range(len(LABELS))))
     glaive_validation_metrics = batch_metrics(model, tokenizer, glaive_development, device, list(range(len(LABELS))))
@@ -185,6 +186,7 @@ def main() -> int:
         "seed": args.seed,
         "split_seed": args.split_seed,
         "max_length": args.max_length,
+        "batch_size": args.batch_size,
         "learning_rate": args.learning_rate,
         "weight_decay": args.weight_decay,
         "device": str(device),

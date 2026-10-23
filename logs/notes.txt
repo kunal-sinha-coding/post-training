@@ -6089,3 +6089,5 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-23T16:37Z: The balanced 5,000/5,000/5,000 filtered-Glaive run failed during backpropagation with CUDA out-of-memory at 4,096 tokens. It produced no checkpoint, so its aggregate test measurement was not runnable. The latest completed experiment remains the mixed retry3 pilot, whose training, both clean validations, and aggregate test are complete.
 
 2026-10-23T16:37Z: Queued a distinct smaller balanced probe with 3,000 Glaive, 3,000 When2Call preference, and 3,000 When2Call SFT examples, one epoch, and a 2,048-token context. Its aggregate black-box evaluation is the next queue entry. Set planning_required false and status active. Test labels will not be used for selection.
+
+2026-10-23T16:42Z: The 3,000-example balanced probe also failed from CUDA out-of-memory during the encoder forward pass. Added an explicit batch-size argument to the shared training loop and Glaive trainer. The next retry will use batch size 2.
