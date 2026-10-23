@@ -454,3 +454,7 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-minilm-l6-h384-epochs1 | 0.5169769989047097 | 0.512315225460611 | 7x7zs81d | Aggregate-only MiniLM result. Training loss and clean validation are recorded. The encoder branch is rejected. |
 | test-clean-validation-encoder-triple-blend-45-35-20 | 0.5514786418400877 | 0.5504413258729832 | 9pz9n2t3 | Aggregate-only three-checkpoint blend, below the existing 55/45 encoder leader |
 | test-clean-validation-cues-aux05-sftpairwise-visible-complete-request | — | — | — | Queued frozen visible required-field routing probe |
+| test-clean-validation-cues-aux05-sftpairwise-visible-complete-request | 0.556407447973713 | 0.5557175086932681 | h17ii9wy | Aggregate-only visible required-field rule, below frozen checkpoint |
+| test-clean-validation-cues-aux05-sftpairwise-visible-invalid-tool-cannot | — | — | — | Queued frozen visible invalid-tool correction |
+| test-clean-validation-cues-aux05-sftpairwise-visible-invalid-tool-cannot | — | — | — | Test skipped because the evaluator rejected the unsupported flag before loading data |
+| test-clean-validation-cues-aux05-sftpairwise-visible-compact-complete-request | — | — | — | Queued supported compact-schema plus required-field probe |

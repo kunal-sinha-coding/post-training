@@ -929,6 +929,26 @@ Timestamp: 2026-10-23T01:47:44Z. Status: queued.
 
 Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022", "--complete-request-to-tool", "--output", "outputs/test-clean-validation-cues-aux05-sftpairwise-visible-complete-request.json"]. The required-field rule uses only visible question and tool-schema text. The frozen checkpoint and rule were selected before aggregate testing. No test labels will be used for selection.
 
+## test-clean-validation-cues-aux05-sftpairwise-visible-complete-request-result
+
+Timestamp: 2026-10-23T01:52:47Z. Status: completed.
+
+W&B run: `h17ii9wy`. The frozen checkpoint component scored aggregate accuracy 0.5613362541073385 and macro F1 0.5605781292774973. The complete-request-to-tool rule scored aggregate accuracy 0.556407447973713 and macro F1 0.5557175086932681. The rule did not improve the frozen checkpoint and is rejected. Test labels were used only for this aggregate measurement. The next hypothesis applies visible tool-validity correction to invalid tool-call predictions.
+
+## test-clean-validation-cues-aux05-sftpairwise-visible-invalid-tool-cannot
+
+Timestamp: 2026-10-23T01:52:47Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022", "--invalid-tool-to-cannot", "--output", "outputs/test-clean-validation-cues-aux05-sftpairwise-visible-invalid-tool-cannot.json"]. The correction uses only visible tool schemas and candidate tool names. The checkpoint and rule are frozen before aggregate testing. No test labels will be used for selection.
+
+Failure: The evaluator rejected `--invalid-tool-to-cannot` as an unsupported argument before loading the checkpoint. No test labels were loaded and no aggregate measurement was produced. This measurement is replaced by a supported compact-schema plus complete-request probe.
+
+## test-clean-validation-cues-aux05-sftpairwise-visible-compact-complete-request
+
+Timestamp: 2026-10-23T01:53:59Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022", "--compact-tool-schemas", "--complete-request-to-tool", "--output", "outputs/test-clean-validation-cues-aux05-sftpairwise-visible-compact-complete-request.json"]. The compact schema and required-field rule use only visible input text. The frozen checkpoint and rule are fixed before testing. No test labels will be used for selection.
+
 ## test-clean-validation-cues-aux01-lr15e5-bothpairwise-wd0005-smooth000-seed20261022-result
 
 Timestamp: 2026-10-22T23:21:57Z. Status: completed.
