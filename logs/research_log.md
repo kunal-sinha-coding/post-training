@@ -4145,3 +4145,5 @@ Timestamp: 2026-10-23T00:16:50Z. Status: completed.
 Dataset: nvidia/When2Call, split test/mcq. Selection was complete before this measurement and did not use test labels. W&B run: v0ny6yux. Examples: 3652.
 
 Aggregate black-box accuracy: 0.5147864184008762. Aggregate black-box macro F1: 0.5158168718525531. The result is below the current 55/45 encoder ensemble leader. The watchdog then launched the queued auxiliary-1 label-smoothing probe as PID 292303.
+
+Training accuracy for the preceding candidate: 0.9831048331256059. Training macro F1: 0.7374215942331674. Clean-validation accuracy for the preceding candidate: 0.9666666666666667. Clean-validation macro F1: 0.7252060013087245. All three evidence types are recorded for this candidate. The next distinct command is the auxiliary-1 label-smoothing aggregate test.
