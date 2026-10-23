@@ -4,9 +4,9 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The encoder-only pairwise candidate reached 0.543538 aggregate accuracy and 0.543743 macro F1, below the encoder leader. The next probe tests whether it has complementary errors in a clean-validation-selected 80/20 blend with the strongest encoder.",
+  "current_hypothesis": "The 80/20 encoder pairwise blend reached 0.559146 aggregate accuracy and 0.558725 macro F1, improving over its components but remaining below the encoder leader. The next probe increases the complementary pairwise contribution to 30%.",
   "active_experiment": {
-    "pid": 309736,
+    "pid": 310205,
     "command": [
       "python",
       "-u",
@@ -17,13 +17,13 @@
       "--checkpoint",
       "outputs/clean-validation-encoder-only-pairwise-cues-lr15e5-wd0005-smooth005-seed20261023",
       "--weight",
-      "0.80",
+      "0.70",
       "--weight",
-      "0.20",
+      "0.30",
       "--output",
-      "outputs/test-clean-validation-encoder-pairwise-blend-80-20.json"
+      "outputs/test-clean-validation-encoder-pairwise-blend-70-30.json"
     ],
-    "started_at": "2026-10-23T03:02:25.013180+00:00"
+    "started_at": "2026-10-23T03:04:58.139288+00:00"
   },
   "worker_command": [
     "python",
@@ -35,11 +35,11 @@
     "--checkpoint",
     "outputs/clean-validation-encoder-only-pairwise-cues-lr15e5-wd0005-smooth005-seed20261023",
     "--weight",
-    "0.80",
+    "0.70",
     "--weight",
-    "0.20",
+    "0.30",
     "--output",
-    "outputs/test-clean-validation-encoder-pairwise-blend-80-20.json"
+    "outputs/test-clean-validation-encoder-pairwise-blend-70-30.json"
   ],
   "worker_queue": [],
   "_previous_command": [
@@ -72,10 +72,10 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T03:02:25.013189+00:00",
-  "last_action": "Watchdog started validation worker pid 309736.",
+  "last_heartbeat": "2026-10-23T03:04:58.139296+00:00",
+  "last_action": "Watchdog started validation worker pid 310205.",
   "watchdog_enabled": true,
-  "research_log_size": 432137,
+  "research_log_size": 433379,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -87,14 +87,14 @@
     "--checkpoint",
     "outputs/clean-validation-encoder-only-pairwise-cues-lr15e5-wd0005-smooth005-seed20261023",
     "--weight",
-    "0.80",
+    "0.70",
     "--weight",
-    "0.20",
+    "0.30",
     "--output",
-    "outputs/test-clean-validation-encoder-pairwise-blend-80-20.json"
+    "outputs/test-clean-validation-encoder-pairwise-blend-70-30.json"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T03:01:24.518051+00:00",
-  "planning_ack_deadline": "2026-10-23T03:03:24.518074+00:00",
-  "planning_attempts": 266
+  "planning_notified_at": "2026-10-23T03:04:27.233730+00:00",
+  "planning_ack_deadline": "2026-10-23T03:06:27.233756+00:00",
+  "planning_attempts": 267
 }

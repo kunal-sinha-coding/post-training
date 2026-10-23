@@ -497,3 +497,5 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-encoder-only-pairwise-cues-lr15e5-wd0005-smooth005-seed20261023 | — | — | — | Aggregate black-box measurement queued after training and clean validation | queued |
 | test-clean-validation-encoder-only-pairwise-cues-lr15e5-wd0005-smooth005-seed20261023 | 0.5435377875136911 | 0.5437430863536742 | hntshjxj | Aggregate-only encoder-only pairwise result, below the encoder leader | completed |
 | test-clean-validation-encoder-pairwise-blend-80-20 | — | — | — | Clean-validation-selected encoder pairwise blend queued | queued |
+| test-clean-validation-encoder-pairwise-blend-80-20 | 0.559145673603505 | 0.5587245952347717 | h7kxrgbp | Aggregate-only encoder pairwise blend, below the encoder leader | completed |
+| test-clean-validation-encoder-pairwise-blend-70-30 | — | — | — | Clean-validation-selected stronger pairwise encoder blend queued | queued |

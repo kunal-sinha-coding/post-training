@@ -915,6 +915,18 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: The pairwise encoder may have complementary errors despite weaker standalone transfer. A conservative 20% contribution may improve the strongest encoder without the failed SFT mechanism.
 
+Timestamp: 2026-10-23T03:04:25Z. Status: completed.
+
+W&B run: h7kxrgbp. Component training and clean-validation evidence were complete before this aggregate-only measurement. The 80/20 blend scored aggregate black-box accuracy 0.559145673603505 and macro F1 0.5587245952347717. Official test labels were used only for reporting after selection. The blend is below the current encoder leader.
+
+## test-clean-validation-encoder-pairwise-blend-70-30
+
+Timestamp: 2026-10-23T03:05:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-encoder-only-pairwise-cues-lr15e5-wd0005-smooth005-seed20261023", "--weight", "0.70", "--weight", "0.30", "--output", "outputs/test-clean-validation-encoder-pairwise-blend-70-30.json"]. The 70/30 weight was fixed from clean-validation and the preceding aggregate transfer result before this aggregate-only measurement. Official test labels will not be used for selection.
+
+Hypothesis: Increasing the complementary pairwise encoder contribution from 20% to 30% may improve the near-leader blend if its errors are genuinely complementary.
+
 ## test-clean-validation-cues-aux05-lr15e5-mainpairwise-sftce-wd0005-smooth000-seed20261023-result
 
 Timestamp: 2026-10-23T01:35:28Z. Status: completed.
