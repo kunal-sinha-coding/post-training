@@ -6515,3 +6515,13 @@ Timestamp: 2026-10-23T21:18:00Z. Status: queued.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-sftaux5-sftpre1-lr1e5-max4096-batch2-seed20261051", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--sft-aux-samples-per-class", "5", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261051", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. This clean-only candidate uses the fixed training and clean-validation partitions. Official test data and labels will not be loaded during selection.
 
 Hypothesis: Adding a small balanced auxiliary SFT sample may improve the cross-entropy encoder boundary while preserving the existing one-epoch SFT plus preference-data setup. If training and clean validation remain viable, queue a separate aggregate black-box measurement.
+
+## clean-validation-when2call-only-ce-sftaux5-sftpre1-lr1e5-max4096-batch2-seed20261051
+
+Timestamp: 2026-10-23T21:26:01.127485+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-sftaux5-sftpre1-lr1e5-max4096-batch2-seed20261051", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--sft-aux-samples-per-class", "5", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261051", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-when2call-only-ce-sftaux5-sftpre1-lr1e5-max4096-batch2-seed20261051. W&B run: not available.
+
+Clean development accuracy: 0.9616666666666667. Clean development macro F1: 0.7214774757256511. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
