@@ -907,6 +907,30 @@ This aggregate measurement was run after candidate selection. The 95/5 weights w
 
 This record was written by the primary Codex process after the watchdog handoff.
 
+## test-clean-validation-encoder-ce4096lr25-blend-92p5-07p5
+
+Timestamp: 2026-10-23T03:54:38.004950+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023", "--weight", "0.925", "--weight", "0.075", "--output", "outputs/test-clean-validation-encoder-ce4096lr25-blend-92p5-07p5.json"]. Output: /workspace/post-training/outputs/test-clean-validation-encoder-ce4096lr25-blend-92p5-07p5.json. W&B run: q22jcsvk.
+
+Training evidence existed for both component checkpoints. Clean-validation evidence existed for both component checkpoints. Aggregate black-box accuracy: 0.5602409638554217. Aggregate black-box macro F1: 0.5598149536740639. Official test loaded: True. Selection complete: True. Test measurement only: True. Black box: True.
+
+The 92.5/7.5 weights were selected without test labels as an intermediate probe after the 95/5, 97/3, and 90/10 results. This aggregate measurement was run after selection. Official test labels were not used for selection.
+
+This record was written by the primary Codex process after the watchdog handoff.
+
+## test-clean-validation-encoder-ce4096lr25-blend-92p5-07p5
+
+Timestamp: 2026-10-23T03:54:38.004950+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023", "--weight", "0.925", "--weight", "0.075", "--output", "outputs/test-clean-validation-encoder-ce4096lr25-blend-92p5-07p5.json"]. Output: /workspace/post-training/outputs/test-clean-validation-encoder-ce4096lr25-blend-92p5-07p5.json. W&B run: q22jcsvk.
+
+Training evidence existed for both component checkpoints. Clean-validation evidence existed for both component checkpoints. Aggregate black-box accuracy: 0.5602409638554217. Aggregate black-box macro F1: 0.5598149536740639. Official test loaded: True. Selection complete: True. Test measurement only: True. Black box: True.
+
+The 92.5/7.5 weights were selected without test labels as an intermediate probe after the 95/5, 97/3, and 90/10 results. This aggregate measurement was run after selection. Official test labels were not used for selection.
+
+This record was written by the primary Codex process after the watchdog handoff.
+
 ## test-clean-validation-encoder-ce4096lr25-blend-90-10
 
 Timestamp: 2026-10-23T03:52:35.404658+00:00. Status: completed.
