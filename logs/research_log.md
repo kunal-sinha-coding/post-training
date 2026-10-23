@@ -4420,6 +4420,66 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: One rejected-direct example may improve aggregate transfer without the overcorrection caused by larger rejected-direct augmentations. Compare its aggregate result with the unaugmented strong encoder.
 
+Timestamp: 2026-10-23T02:30:08Z. Status: completed.
+
+W&B run: zojvol8r. The candidate had complete training and clean-validation evidence before this aggregate-only measurement. Aggregate black-box accuracy was 0.5342278203723987 and macro F1 was 0.5357798066362454. Official test labels were used only for reporting after selection. The one-example rejected-direct branch is rejected because it is below the unaugmented strong encoder.
+
+## clean-validation-calibration-rejected01
+
+Timestamp: 2026-10-23T02:32:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.calibrate_clean_validation", "--checkpoint", "outputs/clean-validation-cues-aux05-rejected01-sftpairwise-wd0001-smooth005-seed20261023", "--output", "outputs/clean-validation-calibration-rejected01.json", "--seed", "20261022", "--split-seed", "20261021", "--calibration-fraction", "0.1", "--max-length", "4096"]. This is a clean-only calibration diagnostic. Official test labels will not be loaded.
+
+Hypothesis: The candidate still predicts no direct examples on clean validation. A clean-training calibration bias may repair that boundary, but it will be tested on the same held-out clean split before any aggregate measurement.
+
+Timestamp: 2026-10-23T02:32:41Z. Status: completed.
+
+W&B run: idjwn5n2. The clean-only calibration fit bias [0.0, -0.30000001192092896, 0.0, 0.0]. Calibration accuracy was 0.987500011920929. Clean-validation accuracy was 0.9672222222222222 and macro F1 was 0.7256576578768124, improving the uncalibrated candidate macro F1 of 0.721909943208364. Official test labels were not loaded. The aggregate measurement is queued because the clean metric improved.
+
+## test-clean-validation-cues-aux05-rejected01-calibrated-bias
+
+Timestamp: 2026-10-23T02:34:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-rejected01-sftpairwise-wd0001-smooth005-seed20261023", "--class-bias", "0.0", "--class-bias", "-0.3", "--class-bias", "0.0", "--class-bias", "0.0", "--output", "outputs/test-clean-validation-cues-aux05-rejected01-calibrated-bias.json"]. The bias was fixed from clean validation before this aggregate-only measurement. Official test labels will not be used for selection.
+
+Hypothesis: The clean-validation-selected negative request-for-info bias may transfer to aggregate test and recover the candidate's clean-validation improvement.
+
+Timestamp: 2026-10-23T02:34:45Z. Status: completed.
+
+W&B run: 2zqdiuk4. The candidate had complete training and clean-validation evidence before this aggregate-only measurement. Aggregate black-box accuracy was 0.5388828039430449 and macro F1 was 0.5409725347852389. Official test labels were used only for reporting after selection. Calibration improved the uncalibrated candidate but remained below the encoder leader. The calibrated rejected-direct branch is closed.
+
+## clean-validation-cues-aux05-rejected01-sftce-wd0005-smooth005-seed20261023
+
+Timestamp: 2026-10-23T02:36:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-rejected01-sftce-wd0005-smooth005-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--add-argument-cues", "--sft-aux-samples-per-class", "5", "--rejected-direct-samples", "1", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. This is a clean-validation training candidate. Official test labels will not be loaded during selection.
+
+Hypothesis: The rejected-direct candidate used pairwise SFT and underperformed aggregate test. Replacing pairwise SFT with cross-entropy while retaining the same targeted direct supervision tests whether the SFT objective caused the degradation. This is a mechanism change, not a seed sweep.
+
+Timestamp: 2026-10-23T02:38:19Z. Status: completed.
+
+Output: /workspace/post-training/outputs/clean-validation-cues-aux05-rejected01-sftce-wd0005-smooth005-seed20261023. W&B training run was recorded by the worker. Training accuracy was 0.9868275097060455 with macro F1 0.7402784914876626. Clean-validation accuracy was 0.9672222222222222 with macro F1 0.7256582942236645. Official test loaded: false. The candidate is viable for the planned aggregate measurement.
+
+## test-clean-validation-cues-aux05-rejected01-sftce-wd0005-smooth005-seed20261023
+
+Timestamp: 2026-10-23T02:40:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-rejected01-sftce-wd0005-smooth005-seed20261023", "--output", "outputs/test-clean-validation-cues-aux05-rejected01-sftce-wd0005-smooth005-seed20261023.json"]. Training and clean-validation selection are complete before this aggregate-only measurement. Official test labels will be used only for reporting.
+
+Hypothesis: Changing SFT from pairwise ranking to cross-entropy may improve aggregate transfer while retaining the targeted direct supervision.
+
+Timestamp: 2026-10-23T02:40:53Z. Status: completed.
+
+W&B run: zoach6jo. The candidate had complete training and clean-validation evidence before this aggregate-only measurement. Aggregate black-box accuracy was 0.5191675794085433 and macro F1 was 0.5198998360486463. Official test labels were used only for reporting after selection. The cross-entropy SFT rejected-direct branch is rejected.
+
+## clean-validation-cues-aux05-rejected01-sftpre1-sftce-wd0005-smooth005-seed20261023
+
+Timestamp: 2026-10-23T02:42:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-rejected01-sftpre1-sftce-wd0005-smooth005-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--add-argument-cues", "--sft-aux-samples-per-class", "5", "--sft-pretrain-epochs", "1", "--rejected-direct-samples", "1", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. This is a clean-validation training candidate. Official test labels will not be loaded during selection.
+
+Hypothesis: Earlier one-epoch SFT pretraining showed a small positive aggregate signal in the main cross-entropy branch. Combining that mechanism with the targeted direct example may improve transfer without another seed sweep.
+
 ## clean-validation-cues-aux05-rejected01-sftpairwise-wd0001-smooth005-seed20261023
 
 Timestamp: 2026-10-23T02:28:05.978407+00:00. Status: completed.
@@ -4427,5 +4487,15 @@ Timestamp: 2026-10-23T02:28:05.978407+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-rejected01-sftpairwise-wd0001-smooth005-seed20261023", "--sft-loss-function", "pairwise_ranking", "--add-argument-cues", "--sft-aux-samples-per-class", "5", "--rejected-direct-samples", "1", "--learning-rate", "2.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.001", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux05-rejected01-sftpairwise-wd0001-smooth005-seed20261023. W&B run: not available.
 
 Clean development accuracy: 0.9622222222222222. Clean development macro F1: 0.721909943208364. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-cues-aux05-rejected01-sftce-wd0005-smooth005-seed20261023
+
+Timestamp: 2026-10-23T02:38:20.073248+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-rejected01-sftce-wd0005-smooth005-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--add-argument-cues", "--sft-aux-samples-per-class", "5", "--rejected-direct-samples", "1", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux05-rejected01-sftce-wd0005-smooth005-seed20261023. W&B run: not available.
+
+Clean development accuracy: 0.9672222222222222. Clean development macro F1: 0.7256582942236645. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
