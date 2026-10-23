@@ -6695,3 +6695,15 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 Clean development accuracy: 0.97. Clean development macro F1: 0.7277367977731648. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
+## test-clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr075e5-max4096-batch2-seed20261056
+
+Timestamp: 2026-10-23T22:17:16Z. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr075e5-max4096-batch2-seed20261056", "--output", "outputs/test-clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr075e5-max4096-batch2-seed20261056.json"]. Training accuracy was `0.9891666666666666` with macro F1 `0.7419314652559235`. Clean-validation accuracy was `0.97` with macro F1 `0.7277367977731648`. Aggregate black-box test accuracy was `0.5265607886089814` with macro F1 `0.5287607044888019`. Test labels were used only for this separate frozen measurement and not for selection.
+
+## clean-validation-when2call-only-ce-cues-sftpre1-pref2-smooth005-lr1e5-max4096-batch2-seed20261057
+
+Timestamp: 2026-10-23T22:18:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-pref2-smooth005-lr1e5-max4096-batch2-seed20261057", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261057", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "2"]. This is a clean-validation-only probe of a second CE preference-training epoch. Candidate selection uses clean validation only. The aggregate black-box test measurement will be queued only if this candidate is viable.
+
