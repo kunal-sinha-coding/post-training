@@ -6359,6 +6359,22 @@ Hypothesis: Omitting tool schemas while retaining argument cues may reduce input
 
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-pairwise-omit-schemas-smooth000-lr1e5-max4096-batch1-seed20261023", "--loss-function", "pairwise_ranking", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--omit-tool-schemas", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261050", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "1", "--pref-train-epochs", "1"]. Candidate selection will use training and clean validation only. Official test labels will not be loaded during selection.
 
+Training accuracy: 0.6427777777777778. Training macro F1: 0.4156056791062103. Clean-validation accuracy: 0.6061111111111112. Clean-validation macro F1: 0.38565410688089835. The ablation is rejected, but its aggregate test measurement is queued for evidence completeness.
+
+## test-clean-validation-when2call-only-pairwise-omit-schemas-smooth000-lr1e5-max4096-batch1-seed20261023
+
+Timestamp: 2026-10-23T20:57:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-omit-schemas-smooth000-lr1e5-max4096-batch1-seed20261023", "--output", "outputs/test-clean-validation-when2call-only-pairwise-omit-schemas-smooth000-lr1e5-max4096-batch1-seed20261023.json"]. The weak candidate was selected using training and clean validation only. Official test labels are reserved for aggregate reporting and will not be used for selection.
+
+## test-clean-validation-pairwise-complete-request-rule-seed20261023
+
+Timestamp: 2026-10-23T20:57:00Z. Status: queued.
+
+Hypothesis: A frozen rule that maps requests containing all required tool fields to tool calls may reduce the observed request-for-info versus tool-call error.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--complete-request-to-tool", "--output", "outputs/test-clean-validation-pairwise-complete-request-rule-seed20261023.json"]. The rule is fixed before test evaluation. Official test labels will not be used for selection.
+
 ## test-clean-validation-ce-pairwise-equal-weight-ensemble-seed20261023
 
 Timestamp: 2026-10-23T20:31:00Z. Status: queued.
@@ -6402,5 +6418,15 @@ Timestamp: 2026-10-23T20:30:33.545410+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-compact-schemas-smooth005-lr1e5-max4096-batch2-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--compact-tool-schemas", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261049", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-when2call-only-ce-compact-schemas-smooth005-lr1e5-max4096-batch2-seed20261023. W&B run: not available.
 
 Clean development accuracy: 0.9044444444444445. Clean development macro F1: 0.6787603086692516. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-only-pairwise-omit-schemas-smooth000-lr1e5-max4096-batch1-seed20261023
+
+Timestamp: 2026-10-23T20:56:44.417149+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-pairwise-omit-schemas-smooth000-lr1e5-max4096-batch1-seed20261023", "--loss-function", "pairwise_ranking", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--omit-tool-schemas", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261050", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "1", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-when2call-only-pairwise-omit-schemas-smooth000-lr1e5-max4096-batch1-seed20261023. W&B run: not available.
+
+Clean development accuracy: 0.6061111111111112. Clean development macro F1: 0.38565410688089835. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.

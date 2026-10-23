@@ -4,25 +4,44 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 5/95 ensemble nearly matches the standalone pairwise checkpoint, so further blend weighting is unlikely to add much. Omitting tool schemas while retaining argument cues may test whether schema complexity causes the remaining transfer gap.",
-  "active_experiment": {},
+  "current_hypothesis": "The omit-tool-schemas ablation fails on training and clean validation. Its frozen test measurement is required before testing a clean-validation-motivated complete-required-field-to-tool post-processing rule on the strongest pairwise checkpoint.",
+  "active_experiment": {
+    "pid": 383449,
+    "command": [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_frozen_when2call_ensemble_test",
+      "--checkpoint",
+      "outputs/clean-validation-when2call-only-pairwise-omit-schemas-smooth000-lr1e5-max4096-batch1-seed20261023",
+      "--output",
+      "outputs/test-clean-validation-when2call-only-pairwise-omit-schemas-smooth000-lr1e5-max4096-batch1-seed20261023.json"
+    ],
+    "started_at": "2026-10-23T20:57:17.835867+00:00"
+  },
   "worker_command": [
     "python",
     "-u",
     "-m",
     "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
-    "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023",
-    "--checkpoint",
-    "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023",
-    "--weight",
-    "0.05",
-    "--weight",
-    "0.95",
+    "outputs/clean-validation-when2call-only-pairwise-omit-schemas-smooth000-lr1e5-max4096-batch1-seed20261023",
     "--output",
-    "outputs/test-clean-validation-ce-pairwise-weight05-95-seed20261023.json"
+    "outputs/test-clean-validation-when2call-only-pairwise-omit-schemas-smooth000-lr1e5-max4096-batch1-seed20261023.json"
   ],
-  "worker_queue": [["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-pairwise-omit-schemas-smooth000-lr1e5-max4096-batch1-seed20261023", "--loss-function", "pairwise_ranking", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--omit-tool-schemas", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261050", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "1", "--pref-train-epochs", "1"]],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_frozen_when2call_ensemble_test",
+      "--checkpoint",
+      "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023",
+      "--complete-request-to-tool",
+      "--output",
+      "outputs/test-clean-validation-pairwise-complete-request-rule-seed20261023.json"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -53,14 +72,23 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T20:42:52.881371+00:00",
-  "last_action": "Codex recorded the 5/95 ensemble test result and queued a distinct omit-tool-schemas pairwise encoder ablation.",
+  "last_heartbeat": "2026-10-23T20:57:17.835880+00:00",
+  "last_action": "Watchdog started validation worker pid 383449.",
   "watchdog_enabled": true,
-  "research_log_size": 625738,
+  "research_log_size": 629622,
   "stop_command": "STOP",
-  "next_experiment": ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-pairwise-omit-schemas-smooth000-lr1e5-max4096-batch1-seed20261023", "--loss-function", "pairwise_ranking", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--omit-tool-schemas", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261050", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "1", "--pref-train-epochs", "1"],
+  "next_experiment": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_frozen_when2call_ensemble_test",
+    "--checkpoint",
+    "outputs/clean-validation-when2call-only-pairwise-omit-schemas-smooth000-lr1e5-max4096-batch1-seed20261023",
+    "--output",
+    "outputs/test-clean-validation-when2call-only-pairwise-omit-schemas-smooth000-lr1e5-max4096-batch1-seed20261023.json"
+  ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T20:44:56.108535+00:00",
-  "planning_ack_deadline": "2026-10-23T20:46:56.108558+00:00",
-  "planning_attempts": 388
+  "planning_notified_at": "2026-10-23T20:56:47.295088+00:00",
+  "planning_ack_deadline": "2026-10-23T20:58:47.295113+00:00",
+  "planning_attempts": 389
 }
