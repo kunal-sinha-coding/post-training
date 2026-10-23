@@ -941,6 +941,20 @@ Timestamp: 2026-10-23T18:14:00Z. Status: queued.
 
 Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-max4096-batch2-seed20261023", "--class-bias", "0.0", "--class-bias", "0.3", "--class-bias", "-0.3", "--class-bias", "0.0", "--output", "outputs/test-clean-validation-when2call-only-ce-cues-sftpre1-calibration.json"]. Training and clean-validation evidence are complete. This is an aggregate-only measurement of a frozen candidate. Official test labels will not be used for selection.
 
+## test-clean-validation-when2call-only-ce-cues-sftpre1-calibration-result
+
+Timestamp: 2026-10-23T18:17:00Z. Status: completed.
+
+Aggregate black-box evidence: W&B run `8z91estg`, accuracy `0.5487404162102957` and macro F1 `0.548810600732078` on 3,652 test examples. The calibration candidate was selected using training-only calibration and clean validation. The calibrated result is below the uncalibrated SFT-pretrained checkpoint, so the calibration branch is closed. Test labels were used only for this separate aggregate measurement.
+
+The next hypothesis tests whether the pairwise objective benefits from removing label smoothing, because the current pairwise model's clean-validation errors suggest that smoothing may weaken the preference boundary. The candidate will be selected on clean validation before any aggregate test measurement.
+
+## clean-validation-when2call-only-pairwise-sftpre1-smooth000-max4096-batch2-seed20261023
+
+Timestamp: 2026-10-23T18:17:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-max4096-batch2-seed20261023", "--loss-function", "pairwise_ranking", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261037", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. This uses only the fixed training and clean-validation partitions. Official test labels will not be loaded during selection.
+
 ## aggregate-test-clean-validation-when2call-only-ce-cues-sftpre2-max4096-batch2-seed20261023
 
 Timestamp: 2026-10-23T17:33:31.579723+00:00. Status: completed.
