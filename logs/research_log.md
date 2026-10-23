@@ -961,6 +961,20 @@ Aggregate black-box evidence: W&B run `hujheszq`, ensemble accuracy `0.562979189
 
 This is the strongest recorded aggregate result. The next probe makes a small local weight adjustment to `0.95, 0.02, 0.02, 0.01` while keeping the same frozen checkpoints and training-only bias. Test labels will not be used for selection.
 
+## test-clean-validation-encoder-fourway-95-02-02-01-calibrated-bias-result
+
+Timestamp: 2026-10-23T05:34:00Z. Status: completed.
+
+Aggregate black-box evidence: W&B run `vb7ino69`, ensemble accuracy `0.5627053669222344` and macro F1 `0.5623354632480447` on 3652 test examples. The test file reports `test_loaded=true`, `selection_complete=true`, and `black_box=true`. Test labels were used only for this separate aggregate measurement. This weight setting is below the `94/3/2/1` result and is closed.
+
+The next local probe allocates one additional percentage point to the pairwise checkpoint, using weights `0.94, 0.02, 0.03, 0.01` with the same training-only bias. Test labels will not be used for selection.
+
+## test-clean-validation-encoder-fourway-94-02-03-01-calibrated-bias
+
+Timestamp: 2026-10-23T05:34:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--weight", "0.94", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023", "--weight", "0.02", "--checkpoint", "outputs/clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023", "--weight", "0.03", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth000-seed20261023", "--weight", "0.01", "--class-bias", "0.0", "--class-bias", "-0.3", "--class-bias", "0.0", "--class-bias", "0.0", "--output", "outputs/test-clean-validation-encoder-fourway-94-02-03-01-calibrated-bias.json"]. All component training and clean-validation evidence are complete. Official test labels will not be used for selection.
+
 ## test-clean-validation-encoder-fourway-95-02-02-01-calibrated-bias
 
 Timestamp: 2026-10-23T05:30:00Z. Status: queued.

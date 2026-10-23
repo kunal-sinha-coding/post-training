@@ -6031,3 +6031,7 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 
 2026-10-23T05:30Z: Commit `queue fourway 95 02 02 01 weight probe` records the new best result and the distinct local weight command. The watchdog launched it as PID 334320. Test labels were not used for selection.
 
+2026-10-23T05:34Z: The 95/2/2/1 calibrated weight probe completed with accuracy 0.5627053669222344 and macro F1 0.5623354632480447, below the 94/3/2/1 result. The next queued probe uses weights 94/2/3/1. Test labels were not used for selection.
+
+2026-10-23T05:34Z: Commit `queue fourway 94 02 03 01 weight probe` records the completed 95/2/2/1 result and the distinct pairwise-weight command. The watchdog launched it as PID 334779. Test labels were not used for selection.
+
