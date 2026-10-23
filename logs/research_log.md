@@ -1075,6 +1075,16 @@ Timestamp: 2026-10-23T19:38:00Z. Status: queued.
 
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-rejected-nodirect-lr1e5-max4096-batch2-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--include-rejected-examples", "--exclude-rejected-direct", "--learning-rate", "1e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261043", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. The fixed training and clean-validation partitions are used. Official test labels will not be loaded during selection.
 
+Training evidence: accuracy `0.5295603089720736` and macro F1 `0.3966989355690578`. Clean-validation evidence: accuracy `0.9222222222222223` and macro F1 `0.6916023486616807`. Filtering direct rejected examples did not repair the distribution problem. The branch is rejected and no aggregate test is queued.
+
+The next hypothesis applies training-only class-bias calibration to the strongest recent pairwise transfer candidate. The calibrated candidate will be measured on clean validation before any aggregate test.
+
+## clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-calibration
+
+Timestamp: 2026-10-23T19:48:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.calibrate_clean_validation", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--output", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-calibration.json", "--seed", "20261044", "--split-seed", "20261021", "--calibration-fraction", "0.1", "--max-length", "4096"]. This uses only training-only calibration and the fixed clean-validation split. Official test labels will not be loaded during selection.
+
 ## aggregate-test-clean-validation-when2call-only-ce-cues-sftpre2-max4096-batch2-seed20261023
 
 Timestamp: 2026-10-23T17:33:31.579723+00:00. Status: completed.
@@ -6159,5 +6169,15 @@ Timestamp: 2026-10-23T19:37:05.350673+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-rejected-lr1e5-max4096-batch2-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--include-rejected-examples", "--learning-rate", "1e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261042", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-when2call-only-ce-cues-rejected-lr1e5-max4096-batch2-seed20261023. W&B run: not available.
 
 Clean development accuracy: 0.9361111111111111. Clean development macro F1: 0.702273198160988. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-only-ce-cues-rejected-nodirect-lr1e5-max4096-batch2-seed20261023
+
+Timestamp: 2026-10-23T19:47:24.499547+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-rejected-nodirect-lr1e5-max4096-batch2-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--include-rejected-examples", "--exclude-rejected-direct", "--learning-rate", "1e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261043", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-when2call-only-ce-cues-rejected-nodirect-lr1e5-max4096-batch2-seed20261023. W&B run: not available.
+
+Clean development accuracy: 0.9222222222222223. Clean development macro F1: 0.6916023486616807. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
