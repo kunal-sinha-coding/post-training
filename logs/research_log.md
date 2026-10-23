@@ -4500,6 +4500,18 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: The SFT-pretrained checkpoint has complementary clean-validation behavior, but its standalone aggregate result is weak. A conservative 80/20 blend with the strongest encoder may retain encoder transfer while adding useful complementary predictions.
 
+Timestamp: 2026-10-23T02:50:37Z. Status: completed.
+
+W&B run: e2l830ea. Component training and clean-validation evidence were complete before this aggregate-only measurement. The 80/20 blend scored aggregate black-box accuracy 0.5512048192771084 and macro F1 0.5508041246352324. Official test labels were used only for reporting after selection. The blend is below the current encoder leader.
+
+## test-clean-validation-encoder-sftpre1-blend-90-10
+
+Timestamp: 2026-10-23T02:51:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-aux05-rejected01-sftpre1-sftce-wd0005-smooth005-seed20261023", "--weight", "0.90", "--weight", "0.10", "--output", "outputs/test-clean-validation-encoder-sftpre1-blend-90-10.json"]. The 90/10 weight was fixed from clean-validation and the preceding aggregate transfer result before this aggregate-only measurement. Official test labels will not be used for selection.
+
+Hypothesis: Reducing the weak SFT-pretrained component from 20% to 10% may preserve a small complementary signal while moving the blend closer to the stronger encoder component.
+
 ## clean-validation-cues-aux05-rejected01-sftpairwise-wd0001-smooth005-seed20261023
 
 Timestamp: 2026-10-23T02:28:05.978407+00:00. Status: completed.

@@ -487,3 +487,5 @@ Historical official test results remain detailed in [research_log.md](research_l
 | Candidate | clean-validation-cues-aux05-rejected01-sftpre1-sftce-wd0005-smooth005-seed20261023 | 0.9727777777777777 | 0.7298122586510313 | [metrics](/workspace/post-training/outputs/clean-validation-cues-aux05-rejected01-sftpre1-sftce-wd0005-smooth005-seed20261023/metrics.json) | completed |
 | test-clean-validation-cues-aux05-rejected01-sftpre1-sftce-wd0005-smooth005-seed20261023 | 0.5238225629791895 | 0.5246346396446349 | 50txu30g | Aggregate-only one-epoch SFT-pretraining result, below the encoder leader | completed |
 | test-clean-validation-encoder-sftpre1-blend-80-20 | — | — | — | Clean-validation-selected conservative encoder plus SFT-pretraining blend queued | queued |
+| test-clean-validation-encoder-sftpre1-blend-80-20 | 0.5512048192771084 | 0.5508041246352324 | e2l830ea | Aggregate-only encoder plus SFT-pretraining blend, below the encoder leader | completed |
+| test-clean-validation-encoder-sftpre1-blend-90-10 | — | — | — | Conservative clean-validation-selected encoder plus SFT-pretraining blend queued | queued |
