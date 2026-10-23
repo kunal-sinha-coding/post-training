@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The main-cross-entropy auxiliary-pairwise auxiliary-3 probe reached clean-validation accuracy 0.970556 and macro F1 0.728121. Its aggregate black-box test is required before any new training experiment. The next distinct hypothesis increases auxiliary samples per class to 5 to complete the coverage comparison under this objective. Selection will use clean validation only.",
+  "current_hypothesis": "The main-cross-entropy auxiliary-pairwise auxiliary-5 probe reached clean-validation accuracy 0.974444 and macro F1 0.731030. Its aggregate black-box test is required before any new training experiment. The next distinct hypothesis increases auxiliary samples per class to 10 to test whether the clean-validation gain continues with broader auxiliary coverage. Selection will use clean validation only.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -12,14 +12,14 @@
     "-m",
     "experiments.clean_validation_baseline",
     "--output-dir",
-    "outputs/clean-validation-cues-aux03-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022",
+    "outputs/clean-validation-cues-aux05-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022",
     "--loss-function",
     "cross_entropy",
     "--sft-loss-function",
     "pairwise_ranking",
     "--add-argument-cues",
     "--sft-aux-samples-per-class",
-    "3",
+    "5",
     "--learning-rate",
     "1.5e-5",
     "--label-smoothing",
@@ -38,16 +38,16 @@
   "worker_queue": [
     [
       "python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test",
-      "--checkpoint", "outputs/clean-validation-cues-aux03-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022",
-      "--output", "outputs/test-clean-validation-cues-aux03-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022.json"
+      "--checkpoint", "outputs/clean-validation-cues-aux05-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022",
+      "--output", "outputs/test-clean-validation-cues-aux05-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022.json"
     ],
     [
       "python", "-u", "-m", "experiments.clean_validation_baseline",
-      "--output-dir", "outputs/clean-validation-cues-aux05-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022",
+      "--output-dir", "outputs/clean-validation-cues-aux10-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022",
       "--loss-function", "cross_entropy",
       "--sft-loss-function", "pairwise_ranking",
       "--add-argument-cues",
-      "--sft-aux-samples-per-class", "5",
+      "--sft-aux-samples-per-class", "10",
       "--learning-rate", "1.5e-5",
       "--label-smoothing", "0.0",
       "--weight-decay", "0.005",
@@ -87,19 +87,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-22T23:49:13.635753+00:00",
-  "last_action": "Queued the missing auxiliary-3 objective aggregate test before the distinct auxiliary-5 objective probe.",
+  "last_heartbeat": "2026-10-22T23:57:11.269987+00:00",
+  "last_action": "Queued the missing auxiliary-5 objective aggregate test before the distinct auxiliary-10 objective probe.",
   "watchdog_enabled": true,
-  "research_log_size": 379424,
+  "research_log_size": 382098,
   "stop_command": "STOP",
   "next_experiment": null,
-  "recording_jobs": [
-    {
-      "pid": 289941,
-      "experiment_id": "clean-validation-cues-aux03-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022"
-    }
-  ],
-  "planning_notified_at": "2026-10-22T23:54:39.310593+00:00",
-  "planning_ack_deadline": "2026-10-22T23:56:39.310616+00:00",
-  "planning_attempts": 228
+  "recording_jobs": [],
+  "planning_notified_at": "2026-10-23T00:00:20.554687+00:00",
+  "planning_ack_deadline": "2026-10-23T00:02:20.554711+00:00",
+  "planning_attempts": 229
 }
