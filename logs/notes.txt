@@ -6150,3 +6150,5 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 Recorded the completed fixed 5/95 CE-to-pairwise ensemble with request-for-info bias -1.0. The official test result was 0.5739320920043811 accuracy and 0.5743555891399015 macro F1 on 3,652 examples. Training and clean-validation evidence were already recorded for both frozen components, and test labels were not used for selection. Queued a distinct clean-validation probe that adds five auxiliary SFT examples per class to the one-epoch SFT plus preference setup.
 2026-10-23T21:19:18Z. Watchdog verification.
 The watchdog consumed the queue entry and launched PID 387205 with the auxiliary-SFT clean-validation command. The research state is active, planning_required is false, and the queue is empty because the command is active.
+2026-10-23T21:27:32Z. Watchdog verification.
+The watchdog consumed the required aggregate measurement and launched PID 387843. The research state is active, planning_required is false, and the queue is empty because the frozen test measurement is active.
