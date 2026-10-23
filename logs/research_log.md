@@ -985,6 +985,22 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 
 Hypothesis: Matching pairwise objectives across preference and auxiliary supervision may improve boundary transfer while preserving the useful bounded auxiliary mechanism.
 
+## test-clean-validation-encoder-pairwise-aux05-cues-max4096-lr15e5-wd0005-smooth005-seed20261023-result
+
+Timestamp: 2026-10-23T05:47:00Z. Status: completed.
+
+Aggregate black-box evidence: W&B run `zinn0ffi`, accuracy `0.5306681270536692` and macro F1 `0.5327919459680986` on 3652 test examples. The test file reports `test_loaded=true`, `selection_complete=true`, and `black_box=true`. Test labels were used only for this separate aggregate measurement. The matched-pairwise branch is closed.
+
+The next hypothesis adds one SFT pretraining epoch on the bounded auxiliary data before the established cross-entropy preference objective. The fixed split, cues, smoothing, learning rate, and weight decay remain unchanged.
+
+## clean-validation-encoder-sftpre1-aux05-cues-max4096-lr15e5-wd0005-smooth005-seed20261023
+
+Timestamp: 2026-10-23T05:47:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-encoder-sftpre1-aux05-cues-max4096-lr15e5-wd0005-smooth005-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--add-argument-cues", "--sft-aux-samples-per-class", "5", "--sft-pretrain-epochs", "1", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Official test labels will not be loaded during selection.
+
+Hypothesis: SFT adaptation before preference training may improve representation alignment without adding the rejected-response distribution shift.
+
 ## clean-validation-encoder-pairwise-aux05-cues-max4096-lr15e5-wd0005-smooth005-seed20261023-result
 
 Timestamp: 2026-10-23T05:42:00Z. Status: completed.
