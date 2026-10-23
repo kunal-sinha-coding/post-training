@@ -6707,3 +6707,13 @@ Timestamp: 2026-10-23T22:18:00Z. Status: queued.
 
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-pref2-smooth005-lr1e5-max4096-batch2-seed20261057", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261057", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "2"]. This is a clean-validation-only probe of a second CE preference-training epoch. Candidate selection uses clean validation only. The aggregate black-box test measurement will be queued only if this candidate is viable.
 
+
+## clean-validation-when2call-only-ce-cues-sftpre1-pref2-smooth005-lr1e5-max4096-batch2-seed20261057
+
+Timestamp: 2026-10-23T22:27:01.866164+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-pref2-smooth005-lr1e5-max4096-batch2-seed20261057", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261057", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "2"]. Output: /workspace/post-training/outputs/clean-validation-when2call-only-ce-cues-sftpre1-pref2-smooth005-lr1e5-max4096-batch2-seed20261057. W&B run: not available.
+
+Clean development accuracy: 0.96. Clean development macro F1: 0.7201626695076233. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
