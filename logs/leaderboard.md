@@ -489,3 +489,5 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-encoder-sftpre1-blend-80-20 | — | — | — | Clean-validation-selected conservative encoder plus SFT-pretraining blend queued | queued |
 | test-clean-validation-encoder-sftpre1-blend-80-20 | 0.5512048192771084 | 0.5508041246352324 | e2l830ea | Aggregate-only encoder plus SFT-pretraining blend, below the encoder leader | completed |
 | test-clean-validation-encoder-sftpre1-blend-90-10 | — | — | — | Conservative clean-validation-selected encoder plus SFT-pretraining blend queued | queued |
+| test-clean-validation-encoder-sftpre1-blend-90-10 | 0.5583242059145673 | 0.5578771498088324 | zmzokzgg | Aggregate-only encoder plus SFT-pretraining blend, below the encoder leader | completed |
+| test-clean-validation-encoder-sftpre1-blend-95-05 | — | — | — | Final conservative encoder plus SFT-pretraining blend queued | queued |

@@ -4512,6 +4512,18 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: Reducing the weak SFT-pretrained component from 20% to 10% may preserve a small complementary signal while moving the blend closer to the stronger encoder component.
 
+Timestamp: 2026-10-23T02:52:39Z. Status: completed.
+
+W&B run: zmzokzgg. Component training and clean-validation evidence were complete before this aggregate-only measurement. The 90/10 blend scored aggregate black-box accuracy 0.5583242059145673 and macro F1 0.5578771498088324. Official test labels were used only for reporting after selection. The blend remains below the current encoder leader.
+
+## test-clean-validation-encoder-sftpre1-blend-95-05
+
+Timestamp: 2026-10-23T02:53:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-aux05-rejected01-sftpre1-sftce-wd0005-smooth005-seed20261023", "--weight", "0.95", "--weight", "0.05", "--output", "outputs/test-clean-validation-encoder-sftpre1-blend-95-05.json"]. The 95/5 weight was fixed from clean-validation and the preceding aggregate transfer results before this aggregate-only measurement. Official test labels will not be used for selection.
+
+Hypothesis: A 5% SFT-pretrained contribution may preserve the small complementary signal while recovering the stronger encoder's transfer performance. If it does not improve, this blend branch will close.
+
 ## clean-validation-cues-aux05-rejected01-sftpairwise-wd0001-smooth005-seed20261023
 
 Timestamp: 2026-10-23T02:28:05.978407+00:00. Status: completed.

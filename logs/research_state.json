@@ -4,9 +4,9 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 80/20 encoder plus SFT-pretraining blend reached 0.551205 aggregate accuracy and 0.550804 macro F1, below the encoder leader. The next probe reduces the weak SFT-pretrained component to 10% to test whether a small complementary contribution improves transfer without dominating the encoder.",
+  "current_hypothesis": "The 90/10 encoder plus SFT-pretraining blend reached 0.558324 aggregate accuracy and 0.557877 macro F1, close to but below the encoder leader. The next and final small-contribution probe uses 95/5. If it does not improve, the SFT blend branch will close and planning will return to encoder-only mechanisms.",
   "active_experiment": {
-    "pid": 307987,
+    "pid": 308418,
     "command": [
       "python",
       "-u",
@@ -17,13 +17,13 @@
       "--checkpoint",
       "outputs/clean-validation-cues-aux05-rejected01-sftpre1-sftce-wd0005-smooth005-seed20261023",
       "--weight",
-      "0.90",
+      "0.95",
       "--weight",
-      "0.10",
+      "0.05",
       "--output",
-      "outputs/test-clean-validation-encoder-sftpre1-blend-90-10.json"
+      "outputs/test-clean-validation-encoder-sftpre1-blend-95-05.json"
     ],
-    "started_at": "2026-10-23T02:51:09.285542+00:00"
+    "started_at": "2026-10-23T02:53:41.785328+00:00"
   },
   "worker_command": [
     "python",
@@ -35,11 +35,11 @@
     "--checkpoint",
     "outputs/clean-validation-cues-aux05-rejected01-sftpre1-sftce-wd0005-smooth005-seed20261023",
     "--weight",
-    "0.90",
+    "0.95",
     "--weight",
-    "0.10",
+    "0.05",
     "--output",
-    "outputs/test-clean-validation-encoder-sftpre1-blend-90-10.json"
+    "outputs/test-clean-validation-encoder-sftpre1-blend-95-05.json"
   ],
   "worker_queue": [],
   "_previous_command": [
@@ -72,10 +72,10 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T02:51:09.285555+00:00",
-  "last_action": "Watchdog started validation worker pid 307987.",
+  "last_heartbeat": "2026-10-23T02:53:41.785340+00:00",
+  "last_action": "Watchdog started validation worker pid 308418.",
   "watchdog_enabled": true,
-  "research_log_size": 426580,
+  "research_log_size": 427869,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -87,14 +87,14 @@
     "--checkpoint",
     "outputs/clean-validation-cues-aux05-rejected01-sftpre1-sftce-wd0005-smooth005-seed20261023",
     "--weight",
-    "0.90",
+    "0.95",
     "--weight",
-    "0.10",
+    "0.05",
     "--output",
-    "outputs/test-clean-validation-encoder-sftpre1-blend-90-10.json"
+    "outputs/test-clean-validation-encoder-sftpre1-blend-95-05.json"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T02:50:38.803454+00:00",
-  "planning_ack_deadline": "2026-10-23T02:52:38.803475+00:00",
-  "planning_attempts": 262
+  "planning_notified_at": "2026-10-23T02:52:41.287427+00:00",
+  "planning_ack_deadline": "2026-10-23T02:54:41.287451+00:00",
+  "planning_attempts": 263
 }
