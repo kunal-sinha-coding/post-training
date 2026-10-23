@@ -895,6 +895,14 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-encoder-only-pairwise-cues-lr15e5-wd0005-smooth005-seed20261023
+
+Timestamp: 2026-10-23T03:00:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-encoder-only-pairwise-cues-lr15e5-wd0005-smooth005-seed20261023", "--output", "outputs/test-clean-validation-encoder-only-pairwise-cues-lr15e5-wd0005-smooth005-seed20261023.json"]. Training and clean-validation evidence are complete before this aggregate-only measurement. Official test labels will not be used for selection.
+
+Hypothesis: This encoder-only pairwise objective may improve aggregate transfer without the SFT auxiliary mechanism. Measure it before proposing another training mechanism.
+
 ## test-clean-validation-cues-aux05-lr15e5-mainpairwise-sftce-wd0005-smooth000-seed20261023-result
 
 Timestamp: 2026-10-23T01:35:28Z. Status: completed.
@@ -4563,5 +4571,15 @@ Timestamp: 2026-10-23T02:46:38.984541+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-rejected01-sftpre1-sftce-wd0005-smooth005-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--add-argument-cues", "--sft-aux-samples-per-class", "5", "--sft-pretrain-epochs", "1", "--rejected-direct-samples", "1", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux05-rejected01-sftpre1-sftce-wd0005-smooth005-seed20261023. W&B run: not available.
 
 Clean development accuracy: 0.9727777777777777. Clean development macro F1: 0.7298122586510313. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-encoder-only-pairwise-cues-lr15e5-wd0005-smooth005-seed20261023
+
+Timestamp: 2026-10-23T02:59:17.774303+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-encoder-only-pairwise-cues-lr15e5-wd0005-smooth005-seed20261023", "--loss-function", "pairwise_ranking", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-encoder-only-pairwise-cues-lr15e5-wd0005-smooth005-seed20261023. W&B run: not available.
+
+Clean development accuracy: 0.9688888888888889. Clean development macro F1: 0.7268483507967993. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
