@@ -142,9 +142,13 @@ def load_model(device: torch.device, max_length: int) -> tuple[torch.nn.Module, 
     tokenizer = AutoTokenizer.from_pretrained(checkpoint, trust_remote_code=True)
     tokenizer.model_max_length = max_length
     # Load the saved JSON directly because the artifact uses encoder_config.json instead of config.json.
-    config = AutoConfig.from_dict(json.loads((checkpoint / "encoder_config.json").read_text(encoding="utf-8")))
+    # Reconstruct the architecture from the saved model type and configuration fields.
+    config_data = json.loads((checkpoint / "encoder_config.json").read_text(encoding="utf-8"))
+    config_data.pop("attn_implementation", None)
+    config = AutoConfig.for_model(config_data.pop("model_type"), **config_data)
     config._name_or_path = str(checkpoint.resolve())
-    config.attn_implementation = "torch"
+    # Use the supported local attention implementation for the cached Jina configuration.
+    config.attn_implementation = "eager"
     encoder = AutoModel.from_config(config, trust_remote_code=True)
     model = JinaSequenceClassifier(encoder, len(LABELS)).to(device)
     prior_state = torch.load(checkpoint / "model_state.pt", map_location="cpu")
