@@ -4,9 +4,9 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 95/5 blend remains best at 0.56078860898138 aggregate accuracy and 0.560358959023249 aggregate macro F1. The 97/3 blend scored 0.5599671412924425 accuracy and 0.5594888924484369 macro F1, so reducing the weaker component too far reduced the complementary signal. A distinct 90/10 blend tests whether a broader contribution improves over 95/5. The weight choice is based on clean validation and prior evidence, not test labels.",
+  "current_hypothesis": "The 95/5 blend remains best at 0.56078860898138 aggregate accuracy and 0.560358959023249 aggregate macro F1. The 97/3 blend scored 0.5599671412924425 accuracy and the 90/10 blend scored 0.5602409638554217, so both neighboring settings were weaker. A distinct 92.5/7.5 intermediate probe tests whether the best region lies between the tested settings. The weight choice is based on clean validation and prior evidence, not test labels.",
   "active_experiment": {
-    "pid": 318957,
+    "pid": 319433,
     "command": [
       "python",
       "-u",
@@ -17,13 +17,13 @@
       "--checkpoint",
       "outputs/clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023",
       "--weight",
-      "0.90",
+      "0.925",
       "--weight",
-      "0.10",
+      "0.075",
       "--output",
-      "outputs/test-clean-validation-encoder-ce4096lr25-blend-90-10.json"
+      "outputs/test-clean-validation-encoder-ce4096lr25-blend-92p5-07p5.json"
     ],
-    "started_at": "2026-10-23T03:51:04.888425+00:00"
+    "started_at": "2026-10-23T03:53:07.475586+00:00"
   },
   "worker_command": [
     "python",
@@ -35,11 +35,11 @@
     "--checkpoint",
     "outputs/clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023",
     "--weight",
-    "0.90",
+    "0.925",
     "--weight",
-    "0.10",
+    "0.075",
     "--output",
-    "outputs/test-clean-validation-encoder-ce4096lr25-blend-90-10.json"
+    "outputs/test-clean-validation-encoder-ce4096lr25-blend-92p5-07p5.json"
   ],
   "worker_queue": [],
   "_previous_command": [
@@ -72,10 +72,10 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T03:51:04.888439+00:00",
-  "last_action": "Watchdog started validation worker pid 318957.",
+  "last_heartbeat": "2026-10-23T03:53:07.475601+00:00",
+  "last_action": "Watchdog started validation worker pid 319433.",
   "watchdog_enabled": true,
-  "research_log_size": 470599,
+  "research_log_size": 471863,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -87,14 +87,14 @@
     "--checkpoint",
     "outputs/clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023",
     "--weight",
-    "0.90",
+    "0.925",
     "--weight",
-    "0.10",
+    "0.075",
     "--output",
-    "outputs/test-clean-validation-encoder-ce4096lr25-blend-90-10.json"
+    "outputs/test-clean-validation-encoder-ce4096lr25-blend-92p5-07p5.json"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T03:50:34.359615+00:00",
-  "planning_ack_deadline": "2026-10-23T03:52:34.359638+00:00",
-  "planning_attempts": 287
+  "planning_notified_at": "2026-10-23T03:52:36.971251+00:00",
+  "planning_ack_deadline": "2026-10-23T03:54:36.971270+00:00",
+  "planning_attempts": 288
 }
