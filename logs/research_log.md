@@ -895,6 +895,18 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-when2call-only-ce-cues-sftpre1-pref2-smooth005-lr1e5-max4096-batch2-seed20261057
+
+Timestamp: 2026-10-23T22:27:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-pref2-smooth005-lr1e5-max4096-batch2-seed20261057", "--output", "outputs/test-clean-validation-when2call-only-ce-cues-sftpre1-pref2-smooth005-lr1e5-max4096-batch2-seed20261057.json"]. Training accuracy was `0.98875` with macro F1 `0.7416179583426019`. Clean-validation accuracy was `0.96` with macro F1 `0.7201626695076233`. The aggregate black-box measurement is required before later candidate selection. Test labels are not used for selection.
+
+## clean-validation-when2call-only-ce-compact-cues-sftpre1-smooth005-lr1e5-max4096-batch2-seed20261058
+
+Timestamp: 2026-10-23T22:27:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-compact-cues-sftpre1-smooth005-lr1e5-max4096-batch2-seed20261058", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--compact-tool-schemas", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261058", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. This tests whether shorter structured tool inputs improve clean-validation transfer. Candidate selection uses clean validation only. The aggregate test measurement will follow only if viable.
+
 ## test-clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr075e5-max4096-batch2-seed20261056
 
 Timestamp: 2026-10-23T22:16:00Z. Status: queued.
