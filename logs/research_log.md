@@ -6319,6 +6319,16 @@ Hypothesis: A 75/25 CE-to-pairwise weighting may improve the equal-weight ensemb
 
 Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.75", "--weight", "0.25", "--output", "outputs/test-clean-validation-ce-pairwise-weight75-25-seed20261023.json"]. The weight was fixed before test evaluation. Official test labels will not be used for selection.
 
+Aggregate test accuracy: 0.5372398685651698. Aggregate test macro F1: 0.5386465613419004. Test examples: 3652.
+
+## test-clean-validation-ce-pairwise-weight25-75-seed20261023
+
+Timestamp: 2026-10-23T20:36:00Z. Status: queued.
+
+Hypothesis: The pairwise encoder may carry more transferable signal than the CE encoder, so the complementary 25/75 weighting is a bounded follow-up to the equal-weight and 75/25 probes.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.25", "--weight", "0.75", "--output", "outputs/test-clean-validation-ce-pairwise-weight25-75-seed20261023.json"]. The weight was fixed before test evaluation. Official test labels will not be used for selection.
+
 ## test-clean-validation-ce-pairwise-equal-weight-ensemble-seed20261023
 
 Timestamp: 2026-10-23T20:31:00Z. Status: queued.
