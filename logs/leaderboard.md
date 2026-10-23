@@ -505,3 +505,5 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-encoder-only-ce-cues-max8192-lr15e5-wd0005-smooth005-seed20261023 | — | — | — | Aggregate black-box measurement queued after training and clean validation | queued |
 | test-clean-validation-encoder-only-ce-cues-max8192-lr15e5-wd0005-smooth005-seed20261023 | 0.5336801752464403 | 0.5351042893926498 | ne9fzeh8 | Aggregate-only 8192-token encoder result, below the current encoder leader | completed |
 | test-clean-validation-encoder-triple-current-75-20-05 | — | — | — | Queued clean-validation-selected aggregate measurement of the strongest encoder, pairwise encoder, and 8192-token encoder | queued |
+| test-clean-validation-encoder-triple-current-75-20-05 | 0.5566812705366923 | 0.5562339038642128 | 81dqe37o | Aggregate-only three-encoder blend, below the strongest component and prior 80/20 blend | completed |
+| Candidate | clean-validation-encoder-only-ce-cues-max2048-lr15e5-wd0005-smooth000-seed20261023 | — | — | Queued | Distinct encoder-only 2048-token cross-entropy candidate. Official test labels are not loaded during selection. | queued |

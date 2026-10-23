@@ -4651,3 +4651,17 @@ Timestamp: 2026-10-23T03:12:00Z. Status: queued.
 Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-encoder-only-pairwise-cues-lr15e5-wd0005-smooth005-seed20261023", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max8192-lr15e5-wd0005-smooth005-seed20261023", "--weight", "0.75", "--weight", "0.20", "--weight", "0.05", "--output", "outputs/test-clean-validation-encoder-triple-current-75-20-05.json"]. All component training and clean-validation evidence are complete before this aggregate-only measurement. The weights are fixed from clean-validation results and prior aggregate evidence. Official test labels will not be used for selection.
 
 Hypothesis: A conservative three-way encoder blend may improve transfer through complementary errors while limiting the weak 8192-token candidate to 5%.
+
+Timestamp: 2026-10-23T03:15:00Z. Status: completed.
+
+Aggregate black-box evidence: W&B run 81dqe37o, accuracy 0.5566812705366923 and macro F1 0.5562339038642128 on 3652 test examples. The component checkpoints had complete training and clean-validation evidence before this measurement. The aggregate file reports `test_loaded=true`, `selection_complete=true`, `test_measurement_only=true`, and `black_box=true`. Official test labels were used only for reporting after clean-validation selection.
+
+The three-way blend is below the strongest encoder component and the prior 80/20 pairwise blend. This blend branch is closed. The next hypothesis tests whether a shorter 2048-token context with direct encoder cross-entropy improves transfer by reducing irrelevant context while retaining argument cues. This is a distinct encoder-only mechanism and does not vary the seed.
+
+## clean-validation-encoder-only-ce-cues-max2048-lr15e5-wd0005-smooth000-seed20261023
+
+Timestamp: 2026-10-23T03:15:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-encoder-only-ce-cues-max2048-lr15e5-wd0005-smooth000-seed20261023", "--loss-function", "cross_entropy", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "2048", "--pref-train-epochs", "1"]. Official test labels will not be loaded during training or clean-validation selection. Aggregate black-box evaluation will be queued after training and clean-validation evidence are recorded.
+
+Hypothesis: The 8192-token encoder had strong clean metrics but weak transfer. A 2048-token context may reduce noise and improve generalization without changing the fixed split or seed.
