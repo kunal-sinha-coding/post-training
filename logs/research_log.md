@@ -4750,6 +4750,20 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: The 3072-token pairwise model may improve the strongest encoder through complementary errors, even though its standalone aggregate score is weaker than the 4096-token pairwise model.
 
+Timestamp: 2026-10-23T03:28:00Z. Status: completed.
+
+Aggregate black-box evidence: W&B run 51834xdm, accuracy 0.559145673603505 and macro F1 0.5587381282691113 on 3652 test examples. The test file reports `test_loaded=true`, `selection_complete=true`, `test_measurement_only=true`, and `black_box=true`. Both component training and clean-validation evidence were complete before this measurement. Official test labels were used only for reporting after selection.
+
+The 80/20 blend matches the best aggregate accuracy and slightly improves the prior pairwise blend macro F1. The next hypothesis tests whether reducing the pairwise component to 15% preserves the gain while reducing sensitivity to the weaker standalone checkpoint.
+
+## test-clean-validation-encoder-pairwise3072-blend-85-15
+
+Timestamp: 2026-10-23T03:28:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023", "--weight", "0.85", "--weight", "0.15", "--output", "outputs/test-clean-validation-encoder-pairwise3072-blend-85-15.json"]. Both component training and clean-validation evidence are complete. The 85/15 weights are fixed before aggregate evaluation from clean-validation performance and the 80/20 aggregate result. Official test labels will be used only for reporting after selection.
+
+Hypothesis: A 15% pairwise contribution may retain complementary transfer while moving closer to the stronger encoder.
+
 ## clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023
 
 Timestamp: 2026-10-23T03:23:55.721461+00:00. Status: completed.
