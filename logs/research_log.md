@@ -907,6 +907,18 @@ This aggregate measurement was run after candidate selection. The 95/5 weights w
 
 This record was written by the primary Codex process after the watchdog handoff.
 
+## test-clean-validation-encoder-lr15-blend-95-05
+
+Timestamp: 2026-10-23T04:03:20.163763+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth005-seed20261023", "--weight", "0.95", "--weight", "0.05", "--output", "outputs/test-clean-validation-encoder-lr15-blend-95-05.json"]. Output: /workspace/post-training/outputs/test-clean-validation-encoder-lr15-blend-95-05.json. W&B run: no3b92xq.
+
+Training and clean-validation evidence existed for both component checkpoints. Aggregate black-box accuracy: 0.5599671412924425. Aggregate black-box macro F1: 0.5596229628772144. Official test loaded: True. Selection complete: True. Test measurement only: True. Black box: True.
+
+The blend was selected from clean-validation and prior evidence. It is below the best 95/5 blend using the tuned candidate. A distinct three-member 93/5/2 blend is queued to test a small contribution from the previously measured 3072-token pairwise encoder. Official test labels were not used for selection.
+
+This record was written by the primary Codex process after the watchdog handoff.
+
 ## test-clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth005-seed20261023
 
 Timestamp: 2026-10-23T04:00:16.380022+00:00. Status: completed.
