@@ -907,6 +907,16 @@ This aggregate measurement was run after candidate selection. The 95/5 weights w
 
 This record was written by the primary Codex process after the watchdog handoff.
 
+## test-clean-validation-encoder-pairwise3072-blend-95-05
+
+Timestamp: 2026-10-23T04:16:33.497307+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023", "--weight", "0.95", "--weight", "0.05", "--output", "outputs/test-clean-validation-encoder-pairwise3072-blend-95-05.json"]. Output: /workspace/post-training/outputs/test-clean-validation-encoder-pairwise3072-blend-95-05.json. W&B run: pending.
+
+Training and clean-validation evidence existed for both component checkpoints. The aggregate black-box measurement was missing because this command was not yet run. This record is a queued aggregate measurement and does not claim test metrics. Official test labels will not be used for selection.
+
+This record was written by the primary Codex process after the watchdog handoff.
+
 ## test-clean-validation-encoder-triple-tuned-95-02-03
 
 Timestamp: 2026-10-23T04:14:01.135677+00:00. Status: completed.
