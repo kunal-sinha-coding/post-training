@@ -903,6 +903,22 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: This measurement closes the compact-schema representation branch and checks whether its weaker clean-validation result transfers to the black-box test.
 
+## test-clean-validation-encoder-compact-schema-cues-max4096-lr15e5-wd0005-smooth000-seed20261023
+
+Timestamp: 2026-10-23T04:38:00Z. Status: completed.
+
+Aggregate black-box evidence: W&B run chu2a91h, accuracy 0.4665936473165389 and macro F1 0.4528272034774154 on 3652 test examples. The test file reports `test_loaded=true`, `selection_complete=true`, `test_measurement_only=true`, and `black_box=true`. Training and clean-validation evidence were complete before this measurement. Official test labels were not used for selection.
+
+The compact-schema branch is closed because it transferred substantially worse than the established encoder ensemble. The next hypothesis tests a conservative blend of the strongest encoder and the distinct 4096-token zero-smoothing encoder.
+
+## test-clean-validation-encoder-ce4096lr15-blend-95-05
+
+Timestamp: 2026-10-23T04:38:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth000-seed20261023", "--weight", "0.95", "--weight", "0.05", "--output", "outputs/test-clean-validation-encoder-ce4096lr15-blend-95-05.json"]. Both components have complete training and clean-validation evidence. The weight is fixed before aggregate evaluation from clean-validation performance and prior successful conservative blends. Official test labels will not be used for selection.
+
+Hypothesis: A small contribution from the distinct zero-smoothing encoder may preserve complementary signal while retaining the strongest encoder's transfer behavior.
+
 ## test-clean-validation-encoder-rejected-aux-cues-max4096-lr15e5-wd0005-smooth000-seed20261023
 
 Timestamp: 2026-10-23T04:32:00Z. Status: queued.

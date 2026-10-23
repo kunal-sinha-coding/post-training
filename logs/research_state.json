@@ -4,20 +4,26 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The compact-schema encoder completed with weak clean-validation metrics. Its required aggregate black-box measurement must be completed before selecting a new hypothesis. Candidate selection remains based on clean validation only.",
+  "current_hypothesis": "The compact-schema branch transferred substantially worse than the established encoder ensemble. A conservative 95/5 blend of the strongest encoder and the distinct 4096-token zero-smoothing encoder may preserve complementary signal. Candidate selection remains based on clean validation only.",
   "active_experiment": {
-    "pid": 326590,
+    "pid": 327079,
     "command": [
       "python",
       "-u",
       "-m",
       "experiments.evaluate_frozen_when2call_ensemble_test",
       "--checkpoint",
-      "outputs/clean-validation-encoder-compact-schema-cues-max4096-lr15e5-wd0005-smooth000-seed20261023",
+      "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
+      "--checkpoint",
+      "outputs/clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth000-seed20261023",
+      "--weight",
+      "0.95",
+      "--weight",
+      "0.05",
       "--output",
-      "outputs/test-clean-validation-encoder-compact-schema-cues-max4096-lr15e5-wd0005-smooth000-seed20261023.json"
+      "outputs/test-clean-validation-encoder-ce4096lr15-blend-95-05.json"
     ],
-    "started_at": "2026-10-23T04:36:07.101365+00:00"
+    "started_at": "2026-10-23T04:38:09.830561+00:00"
   },
   "worker_command": [
     "python",
@@ -25,9 +31,15 @@
     "-m",
     "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
-    "outputs/clean-validation-encoder-compact-schema-cues-max4096-lr15e5-wd0005-smooth000-seed20261023",
+    "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
+    "--checkpoint",
+    "outputs/clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth000-seed20261023",
+    "--weight",
+    "0.95",
+    "--weight",
+    "0.05",
     "--output",
-    "outputs/test-clean-validation-encoder-compact-schema-cues-max4096-lr15e5-wd0005-smooth000-seed20261023.json"
+    "outputs/test-clean-validation-encoder-ce4096lr15-blend-95-05.json"
   ],
   "worker_queue": [],
   "_previous_command": [
@@ -60,10 +72,10 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T04:36:07.101380+00:00",
-  "last_action": "Watchdog started validation worker pid 326590.",
+  "last_heartbeat": "2026-10-23T04:38:09.830574+00:00",
+  "last_action": "Watchdog started validation worker pid 327079.",
   "watchdog_enabled": true,
-  "research_log_size": 500468,
+  "research_log_size": 502163,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -71,12 +83,18 @@
     "-m",
     "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
-    "outputs/clean-validation-encoder-compact-schema-cues-max4096-lr15e5-wd0005-smooth000-seed20261023",
+    "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
+    "--checkpoint",
+    "outputs/clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth000-seed20261023",
+    "--weight",
+    "0.95",
+    "--weight",
+    "0.05",
     "--output",
-    "outputs/test-clean-validation-encoder-compact-schema-cues-max4096-lr15e5-wd0005-smooth000-seed20261023.json"
+    "outputs/test-clean-validation-encoder-ce4096lr15-blend-95-05.json"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T04:35:36.587003+00:00",
-  "planning_ack_deadline": "2026-10-23T04:37:36.587028+00:00",
-  "planning_attempts": 304
+  "planning_notified_at": "2026-10-23T04:37:09.258008+00:00",
+  "planning_ack_deadline": "2026-10-23T04:39:09.258031+00:00",
+  "planning_attempts": 305
 }
