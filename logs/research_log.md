@@ -895,6 +895,18 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr125e5-max4096-batch2-seed20261062
+
+Timestamp: 2026-10-23T23:24:46Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr125e5-max4096-batch2-seed20261062", "--output", "outputs/test-clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr125e5-max4096-batch2-seed20261062.json"]. Training accuracy was `0.9883333333333333` with macro F1 `0.7413108938926021`. Clean-validation accuracy was `0.9655555555555555` with macro F1 `0.7244207602514213`. The aggregate black-box measurement is required before later candidate selection. Test labels are not used for selection.
+
+## clean-validation-when2call-only-ce-cues-sftpre1-smooth00375-lr1e5-max4096-batch2-seed20261063
+
+Timestamp: 2026-10-23T23:24:46Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth00375-lr1e5-max4096-batch2-seed20261063", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.00375", "--weight-decay", "0.005", "--seed", "20261063", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. This tests lower label smoothing with the established full-schema CE setup. Candidate selection uses clean validation only. The aggregate test measurement will follow only if viable.
+
 ## test-clean-validation-when2call-fullschema-smooth0075-wd0025-blend80-20
 
 Timestamp: 2026-10-23T23:14:32Z. Status: completed.
@@ -6851,5 +6863,15 @@ Timestamp: 2026-10-23T23:07:22.205909+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd0025-lr1e5-max4096-batch2-seed20261061", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.005", "--weight-decay", "0.0025", "--seed", "20261061", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd0025-lr1e5-max4096-batch2-seed20261061. W&B run: not available.
 
 Clean development accuracy: 0.9677777777777777. Clean development macro F1: 0.7260300331733034. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr125e5-max4096-batch2-seed20261062
+
+Timestamp: 2026-10-23T23:24:48.444782+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr125e5-max4096-batch2-seed20261062", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1.25e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261062", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr125e5-max4096-batch2-seed20261062. W&B run: not available.
+
+Clean development accuracy: 0.9655555555555555. Clean development macro F1: 0.7244207602514213. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
