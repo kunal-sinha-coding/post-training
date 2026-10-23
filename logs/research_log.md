@@ -895,6 +895,22 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-when2call-only-ce-sftaux2-sftpre1-lr1e5-max4096-batch2-seed20261053-result
+
+Timestamp: 2026-10-23T21:50:00Z. Status: completed.
+
+Aggregate black-box evidence: accuracy `0.5210843373493976` and macro F1 `0.5222223126067482` on 3,652 test examples. Training accuracy was `0.9836224843858432` with macro F1 `0.7378186957426632`. Clean-validation accuracy was `0.9583333333333334` with macro F1 `0.718927584896391`. The candidate was selected using training and clean validation only. Test labels were used only for this separate aggregate measurement.
+
+The two-example auxiliary dose reduced clean validation and transfer. The auxiliary branch is closed. The next clean-only hypothesis tests intermediate label smoothing on the no-auxiliary CE control.
+
+## clean-validation-when2call-only-ce-cues-sftpre1-smooth0025-lr1e5-max4096-batch2-seed20261054
+
+Timestamp: 2026-10-23T21:51:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth0025-lr1e5-max4096-batch2-seed20261054", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.0025", "--weight-decay", "0.005", "--seed", "20261054", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. This uses only the fixed training and clean-validation partitions. Official test data and labels will not be loaded during selection.
+
+Hypothesis: The control's 0.005 smoothing may be slightly too strong. A midpoint value of 0.0025 may improve the clean request-for-info and tool-call boundary without adding auxiliary data.
+
 ## test-clean-validation-when2call-only-ce-sftaux2-sftpre1-lr1e5-max4096-batch2-seed20261053
 
 Timestamp: 2026-10-23T21:49:00Z. Status: queued.

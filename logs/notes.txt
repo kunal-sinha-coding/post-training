@@ -6160,6 +6160,7 @@ The candidate completed with training accuracy 0.9884770234624463 and macro F1 0
 2026-10-23T21:41:00Z. The one-example auxiliary-SFT candidate completed aggregate testing at accuracy 0.5443592552026287 and macro F1 0.542210837002069. Training and clean-validation evidence were complete, and test labels were not used for selection. Queued a distinct two-example-per-class clean-validation dose probe.
 2026-10-23T21:49:00Z. Queued required aggregate evidence for the two-example auxiliary-SFT candidate.
 The candidate completed with training accuracy 0.9836224843858432 and macro F1 0.7378186957426632. Clean-validation accuracy was 0.9583333333333334 and macro F1 was 0.718927584896391. Its aggregate black-box measurement was missing, so the frozen test measurement was queued before any new experiment. Test labels were not used for selection.
+2026-10-23T21:51:00Z. The two-example auxiliary-SFT candidate completed aggregate testing at accuracy 0.5210843373493976 and macro F1 0.5222223126067482. Training and clean-validation evidence were complete, and test labels were not used for selection. Closed the auxiliary-dose branch and queued an intermediate label-smoothing clean-validation probe.
 2026-10-23T21:49:04Z. Watchdog verification.
 The watchdog consumed the required aggregate measurement and launched PID 390076. The research state is active, planning_required is false, and the queue is empty because the frozen test measurement is active.
 2026-10-23T21:40:51Z. Watchdog verification.
