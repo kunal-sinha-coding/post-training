@@ -12,7 +12,7 @@
     "-m",
     "experiments.clean_validation_glaive",
     "--output-dir",
-    "outputs/clean-validation-glaive-filtered-two-validation-retry1-seed20261023",
+    "outputs/clean-validation-glaive-filtered-two-validation-retry2-seed20261023",
     "--glaive-sample",
     "10000",
     "--pref-sample",
@@ -35,9 +35,9 @@
       "-m",
       "experiments.evaluate_frozen_when2call_ensemble_test",
       "--checkpoint",
-      "outputs/clean-validation-glaive-filtered-two-validation-retry1-seed20261023",
+      "outputs/clean-validation-glaive-filtered-two-validation-retry2-seed20261023",
       "--output",
-      "outputs/test-clean-validation-glaive-filtered-two-validation-retry1-seed20261023.json"
+      "outputs/test-clean-validation-glaive-filtered-two-validation-retry2-seed20261023.json"
     ]
   ],
   "_previous_command": [
@@ -70,14 +70,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T16:13:43.318351+00:00",
-  "last_action": "Codex queued the checkpoint-loader retry for the dual-validation filtered Glaive pilot.",
+  "last_heartbeat": "2026-10-23T16:15:45.776621+00:00",
+  "last_action": "Codex queued the second checkpoint-loader retry for the dual-validation filtered Glaive pilot.",
   "watchdog_enabled": true,
   "research_log_size": 551638,
   "stop_command": "STOP",
   "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T16:14:45.207865+00:00",
-  "planning_ack_deadline": "2026-10-23T16:16:45.207890+00:00",
-  "planning_attempts": 337
+  "planning_notified_at": "2026-10-23T16:16:48.222177+00:00",
+  "planning_ack_deadline": "2026-10-23T16:18:48.222201+00:00",
+  "planning_attempts": 338
 }
