@@ -1,7 +1,7 @@
 {
-  "status": "active",
+  "status": "awaiting_codex_planning",
   "planning_owner": "codex_primary",
-  "planning_required": false,
+  "planning_required": true,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "The lower-learning-rate pairwise zero-smoothing candidate has improved clean validation and now requires its aggregate test measurement. Test labels remain reserved for reporting, not selection.",
@@ -16,16 +16,7 @@
     "--output",
     "outputs/test-clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023.json"
   ],
-  "worker_queue": [[
-    "python",
-    "-u",
-    "-m",
-    "experiments.evaluate_frozen_when2call_ensemble_test",
-    "--checkpoint",
-    "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023",
-    "--output",
-    "outputs/test-clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023.json"
-  ]],
+  "worker_queue": [],
   "_previous_command": [
     "python",
     "-u",
@@ -56,23 +47,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T18:27:30.835288+00:00",
-  "last_action": "Codex recorded the lower-learning-rate pairwise training and clean-validation evidence and queued its required aggregate test measurement.",
+  "last_heartbeat": "2026-10-23T18:38:16.530698+00:00",
+  "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
-  "research_log_size": 583992,
+  "research_log_size": 584937,
   "stop_command": "STOP",
-  "next_experiment": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.evaluate_frozen_when2call_ensemble_test",
-    "--checkpoint",
-    "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023",
-    "--output",
-    "outputs/test-clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023.json"
-  ],
+  "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T18:36:45.071859+00:00",
-  "planning_ack_deadline": "2026-10-23T18:38:45.071882+00:00",
-  "planning_attempts": 367
+  "planning_notified_at": "2026-10-23T18:41:21.556069+00:00",
+  "planning_ack_deadline": "2026-10-23T18:43:21.556093+00:00",
+  "planning_attempts": 368
 }
