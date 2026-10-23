@@ -909,9 +909,15 @@ Aggregate black-box test accuracy was `0.5449069003285871` with macro F1 `0.5482
 
 ## test-clean-validation-when2call-fullschema-smooth0075-wd0025-wd01-blend70-15-15
 
-Timestamp: 2026-10-23T23:47:19Z. Status: queued.
+Timestamp: 2026-10-23T23:50:53Z. Status: completed.
 
-All component training and clean-validation evidence is complete. The weights are fixed without test labels.
+All three component training and clean-validation evidence records were complete before selection. Aggregate black-box test accuracy was `0.5509309967141293` with macro F1 `0.5540360074127411`. The test labels were used only for this separate aggregate measurement and not for selection.
+
+## test-clean-validation-when2call-fullschema-smooth0075-wd0025-wd01-blend80-10-10
+
+Timestamp: 2026-10-23T23:52:00Z. Status: queued.
+
+All component training and clean-validation evidence is complete. The weights are fixed without test labels. This probe increases the strongest smoothing checkpoint from 70 percent to 80 percent while retaining both weight-decay variants.
 
 ## test-clean-validation-when2call-only-ce-cues-sftpre1-smooth00375-lr1e5-max4096-batch2-seed20261063
 

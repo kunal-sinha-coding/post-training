@@ -2,6 +2,8 @@
 
 2026-10-22 The 0.005 weight-decay encoder completed training and clean validation with training macro F1 0.738277, clean-validation accuracy 0.960556, and clean-validation macro F1 0.720567. Its aggregate black-box test measurement was missing, so it was queued before any new experiment. Selection remains clean-validation-only.
 
+2026-10-23T23:52Z: Backfilled the completed three-member 70/15/15 blend after the watchdog recorder missed its output during the handoff race. Training and clean-validation evidence existed for all components. The aggregate test accuracy was 0.5509309967141293 and macro F1 was 0.5540360074127411. Test labels were not used for selection. Queued a distinct 80/10/10 blend with the same clean-validation-selected components.
+
 ## 2026-10-22: Refill queue after verified exhaustion handoff
 
 The watchdog completed the end-to-end exhaustion transition. It recorded queue exhaustion, set `awaiting_codex_planning`, and sent a planning request to the live Codex thread. Codex reviewed the completed Qwen 1.5B two-epoch official test result of 0.651424 accuracy and 0.460927 macro F1, then replaced the empty queue with two clean-validation encoder probes. Each probe has its aggregate-only official test evaluation immediately after training.
