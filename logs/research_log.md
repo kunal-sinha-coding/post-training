@@ -907,6 +907,18 @@ This aggregate measurement was run after candidate selection. The 95/5 weights w
 
 This record was written by the primary Codex process after the watchdog handoff.
 
+## clean-validation-encoder-calibrated-bias
+
+Timestamp: 2026-10-23T04:20:39.473251+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.calibrate_clean_validation", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--output", "outputs/clean-validation-encoder-calibrated-bias.json", "--seed", "20261022", "--split-seed", "20261021", "--calibration-fraction", "0.1", "--max-length", "4096"]. Output: /workspace/post-training/outputs/clean-validation-encoder-calibrated-bias.json. W&B run: 09074g9p.
+
+Training evidence was inherited from the frozen strongest encoder checkpoint. Calibration accuracy: 0.9888888597488403. Clean-validation accuracy: 0.9666666666666667. Clean-validation macro F1: 0.7252201015998959. Class bias: [0.0, 0.30000001192092896, 0.0, 0.0]. Official test loaded: False.
+
+Calibration reduced clean-validation macro F1 relative to the uncalibrated checkpoint, so no aggregate test measurement was queued for this branch. A distinct 3072-token smoothed cross-entropy encoder is queued for clean-validation screening. Official test labels were not used for selection.
+
+This record was written by the primary Codex process after the watchdog handoff.
+
 ## test-clean-validation-encoder-pairwise3072-blend-95-05
 
 Timestamp: 2026-10-23T04:18:36.678060+00:00. Status: completed.
