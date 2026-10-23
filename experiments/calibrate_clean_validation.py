@@ -26,7 +26,8 @@ def load_checkpoint(checkpoint: Path, device: torch.device, max_length: int) -> 
     # Rebuild the encoder from local configuration so calibration does not require a network call.
     tokenizer = AutoTokenizer.from_pretrained("outputs/when2call-jina-v2-small/latest", trust_remote_code=True)
     tokenizer.model_max_length = max_length
-    config = AutoConfig.from_pretrained(checkpoint / "encoder_config.json", trust_remote_code=True)
+    # Load the saved JSON directly because the artifact uses encoder_config.json instead of config.json.
+    config = AutoConfig.from_dict(json.loads((checkpoint / "encoder_config.json").read_text(encoding="utf-8")))
     config._name_or_path = str(Path("outputs/when2call-jina-v2-small/latest").resolve())
     config.attn_implementation = "torch"
     encoder = AutoModel.from_config(config, trust_remote_code=True)
