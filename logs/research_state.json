@@ -4,9 +4,9 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The SFT-pretraining encoder transferred poorly with aggregate accuracy 0.53039430449069 and macro F1 0.5330356924511953. Its clean-validation result remains strong enough for a 1% complementary ensemble probe. Test labels remain reserved for aggregate reporting.",
+  "current_hypothesis": "The five-way 1% SFT ensemble achieved aggregate accuracy 0.5632530120481928 and macro F1 0.562954541284404, the strongest result. The next probe increases the SFT component to 2% and reduces the strongest encoder component to 92%. Test labels remain reserved for aggregate reporting.",
   "active_experiment": {
-    "pid": 338177,
+    "pid": 338660,
     "command": [
       "python",
       "-u",
@@ -15,7 +15,7 @@
       "--checkpoint",
       "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
       "--weight",
-      "0.93",
+      "0.92",
       "--checkpoint",
       "outputs/clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023",
       "--weight",
@@ -31,7 +31,7 @@
       "--checkpoint",
       "outputs/clean-validation-encoder-sftpre1-aux05-cues-max4096-lr15e5-wd0005-smooth005-seed20261023",
       "--weight",
-      "0.01",
+      "0.02",
       "--class-bias",
       "0.0",
       "--class-bias",
@@ -41,9 +41,9 @@
       "--class-bias",
       "0.0",
       "--output",
-      "outputs/test-clean-validation-encoder-fiveway-93-03-02-01-01-calibrated-bias.json"
+      "outputs/test-clean-validation-encoder-fiveway-92-03-02-01-02-calibrated-bias.json"
     ],
-    "started_at": "2026-10-23T05:55:22.159955+00:00"
+    "started_at": "2026-10-23T06:00:24.956923+00:00"
   },
   "worker_command": [
     "python",
@@ -53,7 +53,7 @@
     "--checkpoint",
     "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
     "--weight",
-    "0.93",
+    "0.92",
     "--checkpoint",
     "outputs/clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023",
     "--weight",
@@ -69,7 +69,7 @@
     "--checkpoint",
     "outputs/clean-validation-encoder-sftpre1-aux05-cues-max4096-lr15e5-wd0005-smooth005-seed20261023",
     "--weight",
-    "0.01",
+    "0.02",
     "--class-bias",
     "0.0",
     "--class-bias",
@@ -79,7 +79,7 @@
     "--class-bias",
     "0.0",
     "--output",
-    "outputs/test-clean-validation-encoder-fiveway-93-03-02-01-01-calibrated-bias.json"
+    "outputs/test-clean-validation-encoder-fiveway-92-03-02-01-02-calibrated-bias.json"
   ],
   "worker_queue": [],
   "_previous_command": [
@@ -112,10 +112,10 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T05:55:22.159962+00:00",
-  "last_action": "Watchdog started validation worker pid 338177.",
+  "last_heartbeat": "2026-10-23T06:00:24.956929+00:00",
+  "last_action": "Watchdog started validation worker pid 338660.",
   "watchdog_enabled": true,
-  "research_log_size": 544207,
+  "research_log_size": 546008,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -125,7 +125,7 @@
     "--checkpoint",
     "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
     "--weight",
-    "0.93",
+    "0.92",
     "--checkpoint",
     "outputs/clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023",
     "--weight",
@@ -141,7 +141,7 @@
     "--checkpoint",
     "outputs/clean-validation-encoder-sftpre1-aux05-cues-max4096-lr15e5-wd0005-smooth005-seed20261023",
     "--weight",
-    "0.01",
+    "0.02",
     "--class-bias",
     "0.0",
     "--class-bias",
@@ -151,10 +151,10 @@
     "--class-bias",
     "0.0",
     "--output",
-    "outputs/test-clean-validation-encoder-fiveway-93-03-02-01-01-calibrated-bias.json"
+    "outputs/test-clean-validation-encoder-fiveway-92-03-02-01-02-calibrated-bias.json"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T05:54:51.662242+00:00",
-  "planning_ack_deadline": "2026-10-23T05:56:51.662260+00:00",
-  "planning_attempts": 330
+  "planning_notified_at": "2026-10-23T05:59:24.551625+00:00",
+  "planning_ack_deadline": "2026-10-23T06:01:24.551649+00:00",
+  "planning_attempts": 331
 }
