@@ -6375,6 +6375,16 @@ Hypothesis: A frozen rule that maps requests containing all required tool fields
 
 Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--complete-request-to-tool", "--output", "outputs/test-clean-validation-pairwise-complete-request-rule-seed20261023.json"]. The rule is fixed before test evaluation. Official test labels will not be used for selection.
 
+Aggregate test accuracy: 0.5613362541073385. Aggregate test macro F1: 0.5616764947494702. Test examples: 3652.
+
+## test-clean-validation-ce-pairwise-weight05-95-complete-rule-seed20261023
+
+Timestamp: 2026-10-23T20:58:00Z. Status: queued.
+
+Hypothesis: Applying the fixed complete-required-field rule to the strongest 5/95 CE-to-pairwise blend may combine complementary improvements.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.05", "--weight", "0.95", "--complete-request-to-tool", "--output", "outputs/test-clean-validation-ce-pairwise-weight05-95-complete-rule-seed20261023.json"]. The weight and rule were fixed before test evaluation. Official test labels will not be used for selection.
+
 ## test-clean-validation-ce-pairwise-equal-weight-ensemble-seed20261023
 
 Timestamp: 2026-10-23T20:31:00Z. Status: queued.
