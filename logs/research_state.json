@@ -4,48 +4,24 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "A training-only class bias may improve the one-epoch SFT-pretrained cross-entropy checkpoint's clean macro F1 and reduce its systematic class bias without changing the encoder. Official test labels remain reserved for a separate aggregate measurement.",
-  "active_experiment": {
-    "pid": 368259,
-    "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.calibrate_clean_validation",
-      "--checkpoint",
-      "outputs/clean-validation-when2call-only-ce-cues-sftpre1-max4096-batch2-seed20261023",
-      "--output",
-      "outputs/clean-validation-when2call-only-ce-cues-sftpre1-calibration.json",
-      "--seed",
-      "20261023",
-      "--split-seed",
-      "20261021",
-      "--calibration-fraction",
-      "0.1",
-      "--max-length",
-      "4096"
-    ],
-    "started_at": "2026-10-23T18:13:05.290222+00:00"
-  },
+  "current_hypothesis": "The calibrated one-epoch SFT-pretrained cross-entropy checkpoint has complete clean evidence but lower clean macro F1 than its uncalibrated parent. Its aggregate measurement is required to close the branch, and official test labels remain reserved for reporting.",
+  "active_experiment": {},
   "worker_command": [
     "python",
     "-u",
     "-m",
-    "experiments.calibrate_clean_validation",
+    "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
     "outputs/clean-validation-when2call-only-ce-cues-sftpre1-max4096-batch2-seed20261023",
-    "--output",
-    "outputs/clean-validation-when2call-only-ce-cues-sftpre1-calibration.json",
-    "--seed",
-    "20261023",
-    "--split-seed",
-    "20261021",
-    "--calibration-fraction",
-    "0.1",
-    "--max-length",
-    "4096"
+    "--class-bias", "0.0", "--class-bias", "0.3", "--class-bias", "-0.3", "--class-bias", "0.0",
+    "--output", "outputs/test-clean-validation-when2call-only-ce-cues-sftpre1-calibration.json"
   ],
-  "worker_queue": [],
+  "worker_queue": [[
+    "python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test",
+    "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-max4096-batch2-seed20261023",
+    "--class-bias", "0.0", "--class-bias", "0.3", "--class-bias", "-0.3", "--class-bias", "0.0",
+    "--output", "outputs/test-clean-validation-when2call-only-ce-cues-sftpre1-calibration.json"
+  ]],
   "_previous_command": [
     "python",
     "-u",
@@ -77,30 +53,18 @@
     "artifact": "outputs/clean-validation-calibration.json"
   },
   "last_heartbeat": "2026-10-23T18:13:05.290230+00:00",
-  "last_action": "Watchdog started validation worker pid 368259.",
+  "last_action": "Codex recorded the calibration clean-validation result and queued its required aggregate test measurement before any new experiment.",
   "watchdog_enabled": true,
   "research_log_size": 576330,
   "stop_command": "STOP",
   "next_experiment": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.calibrate_clean_validation",
-    "--checkpoint",
-    "outputs/clean-validation-when2call-only-ce-cues-sftpre1-max4096-batch2-seed20261023",
-    "--output",
-    "outputs/clean-validation-when2call-only-ce-cues-sftpre1-calibration.json",
-    "--seed",
-    "20261023",
-    "--split-seed",
-    "20261021",
-    "--calibration-fraction",
-    "0.1",
-    "--max-length",
-    "4096"
+    "python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test",
+    "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-max4096-batch2-seed20261023",
+    "--class-bias", "0.0", "--class-bias", "0.3", "--class-bias", "-0.3", "--class-bias", "0.0",
+    "--output", "outputs/test-clean-validation-when2call-only-ce-cues-sftpre1-calibration.json"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T18:12:34.754986+00:00",
-  "planning_ack_deadline": "2026-10-23T18:14:34.755010+00:00",
-  "planning_attempts": 361
+  "planning_notified_at": "2026-10-23T18:14:07.285634+00:00",
+  "planning_ack_deadline": "2026-10-23T18:16:07.285658+00:00",
+  "planning_attempts": 362
 }

@@ -929,6 +929,18 @@ Setup: ["python", "-u", "-m", "experiments.calibrate_clean_validation", "--check
 
 Hypothesis: A training-only class bias may improve the SFT-pretrained checkpoint's clean macro F1 and reduce its systematic class bias without changing the encoder. If clean validation is viable, its frozen aggregate test measurement will be queued next.
 
+## clean-validation-when2call-only-ce-cues-sftpre1-calibration-result
+
+Timestamp: 2026-10-23T18:14:00Z. Status: completed.
+
+Training evidence was inherited from `outputs/clean-validation-when2call-only-ce-cues-sftpre1-max4096-batch2-seed20261023`. The training-only calibration used 720 examples and selected bias `[0.0, 0.3, -0.3, 0.0]`. Clean-validation accuracy was `0.9516666666666667` and macro F1 was `0.7138489635469843`, compared with the uncalibrated accuracy `0.955` and macro F1 `0.7163815353242171`. The calibration reduced clean macro F1, so it is not a clean-validation improvement. Its aggregate measurement is still queued to complete evidence for this frozen candidate before closing the branch.
+
+## test-clean-validation-when2call-only-ce-cues-sftpre1-calibration
+
+Timestamp: 2026-10-23T18:14:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-max4096-batch2-seed20261023", "--class-bias", "0.0", "--class-bias", "0.3", "--class-bias", "-0.3", "--class-bias", "0.0", "--output", "outputs/test-clean-validation-when2call-only-ce-cues-sftpre1-calibration.json"]. Training and clean-validation evidence are complete. This is an aggregate-only measurement of a frozen candidate. Official test labels will not be used for selection.
+
 ## aggregate-test-clean-validation-when2call-only-ce-cues-sftpre2-max4096-batch2-seed20261023
 
 Timestamp: 2026-10-23T17:33:31.579723+00:00. Status: completed.
