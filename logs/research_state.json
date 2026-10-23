@@ -4,10 +4,10 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "A 95/5 pairwise-to-cross-entropy blend may preserve the 90/10 improvement while reducing dilution from the weaker cross-entropy checkpoint. The weight is fixed before aggregate evaluation and test labels remain reserved for reporting.",
+  "current_hypothesis": "Two pairwise preference epochs after one SFT-pretraining epoch may improve the pairwise checkpoint by reducing preference under-training without changing the data distribution. Test labels remain reserved for reporting.",
   "active_experiment": {},
-  "worker_command": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-max4096-batch2-seed20261023", "--weight", "0.95", "--weight", "0.05", "--output", "outputs/test-clean-validation-when2call-only-pairwise-plus-ce-sftpre1-95-05-seed20261023.json"],
-  "worker_queue": [["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-max4096-batch2-seed20261023", "--weight", "0.95", "--weight", "0.05", "--output", "outputs/test-clean-validation-when2call-only-pairwise-plus-ce-sftpre1-95-05-seed20261023.json"]],
+  "worker_command": ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-pairwise-sftpre1-pref2-max4096-batch2-seed20261023", "--loss-function", "pairwise_ranking", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261036", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "2"],
+  "worker_queue": [["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-pairwise-sftpre1-pref2-max4096-batch2-seed20261023", "--loss-function", "pairwise_ranking", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261036", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "2"], ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-pref2-max4096-batch2-seed20261023", "--output", "outputs/test-clean-validation-when2call-only-pairwise-sftpre1-pref2-max4096-batch2-seed20261023.json"]],
   "_previous_command": [
     "python",
     "-u",
@@ -38,14 +38,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T17:50:00.053350+00:00",
-  "last_action": "Codex queued a 95/5 pairwise-to-cross-entropy frozen blend.",
+  "last_heartbeat": "2026-10-23T17:52:35.174630+00:00",
+  "last_action": "Codex queued two pairwise preference epochs after one SFT-pretraining epoch.",
   "watchdog_enabled": true,
   "research_log_size": 571342,
   "stop_command": "STOP",
-  "next_experiment": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-max4096-batch2-seed20261023", "--weight", "0.95", "--weight", "0.05", "--output", "outputs/test-clean-validation-when2call-only-pairwise-plus-ce-sftpre1-95-05-seed20261023.json"],
+  "next_experiment": ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-pairwise-sftpre1-pref2-max4096-batch2-seed20261023", "--loss-function", "pairwise_ranking", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261036", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "2"],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T17:52:04.211865+00:00",
-  "planning_ack_deadline": "2026-10-23T17:54:04.211885+00:00",
-  "planning_attempts": 356
+  "planning_notified_at": "2026-10-23T17:54:37.494725+00:00",
+  "planning_ack_deadline": "2026-10-23T17:56:37.494748+00:00",
+  "planning_attempts": 357
 }
