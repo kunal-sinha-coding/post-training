@@ -5999,3 +5999,7 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 
 2026-10-23T05:05Z: The 1,000-example rejected-direct encoder completed with aggregate accuracy 0.537513691128149 and macro F1 0.5390353276136276. The branch is closed. The next queued hypothesis uses 250 rejected-direct examples to reduce distribution shift. Test labels were not used for selection.
 
+2026-10-23T05:08Z: The 250-example rejected-direct encoder completed with training accuracy 0.954765100671141 and training macro F1 0.7283557084875912. Clean validation was accuracy 0.97 and macro F1 0.7277142243153016. The aggregate black-box measurement was missing, so it was queued before any new experiment. Test labels were not used for selection.
+
+2026-10-23T05:09Z: Commit `queue rejected direct 250 aggregate evaluation` records the required aggregate evaluation queue transition. The watchdog launched the evaluator as PID 330945 from the distinct queued command. Test labels were not used for selection.
+
