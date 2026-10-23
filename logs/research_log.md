@@ -895,6 +895,22 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## aggregate-test-clean-validation-glaive-light-500-pref3k-sft3k-max2048-batch2-seed20261023
+
+Timestamp: 2026-10-23T16:57:07.999634+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-glaive-light-500-pref3k-sft3k-max2048-batch2-seed20261023", "--output", "outputs/test-clean-validation-glaive-light-500-pref3k-sft3k-max2048-batch2-seed20261023.json"]. Test artifact: /workspace/post-training/outputs/test-clean-validation-glaive-light-500-pref3k-sft3k-max2048-batch2-seed20261023.json. W&B run: pqbbc8bd.
+
+Training evidence: accuracy 0.9232692307692307 and macro F1 0.9067540310633128.
+
+Clean validation evidence: Glaive accuracy 0.76 and macro F1 0.6474090498480742. When2Call accuracy 0.895 and macro F1 0.8558206911354053.
+
+Aggregate black-box test evidence: accuracy 0.4720700985761227 and macro F1 0.44844253522669436. Test labels were used only for this final report, not for selection.
+
+## clean-validation-when2call-only-ce-cues-max2048-seed20261023
+
+Status: queued. Hypothesis: a Glaive-free When2Call control will isolate whether recent generic-data mixtures caused the test degradation. The required aggregate black-box test is queued immediately after training. Selection will use training and clean validation only.
+
 ## aggregate-test-clean-validation-glaive-light-1k-pref3k-sft3k-max2048-batch2-seed20261023
 
 Timestamp: 2026-10-23T16:52:00.251181+00:00. Status: completed.
@@ -5791,5 +5807,15 @@ Timestamp: 2026-10-23T16:50:59.874838+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_glaive", "--output-dir", "outputs/clean-validation-glaive-light-1k-pref3k-sft3k-max2048-batch2-seed20261023", "--glaive-sample", "1000", "--pref-sample", "3000", "--sft-sample", "3000", "--epochs", "1", "--seed", "20261028", "--split-seed", "20261028", "--max-length", "2048", "--batch-size", "2"]. Output: /workspace/post-training/outputs/clean-validation-glaive-light-1k-pref3k-sft3k-max2048-batch2-seed20261023. W&B run: not available.
 
 Clean development accuracy: 0.895. Clean development macro F1: 0.8559547635375968. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-glaive-light-500-pref3k-sft3k-max2048-batch2-seed20261023
+
+Timestamp: 2026-10-23T16:55:36.999123+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_glaive", "--output-dir", "outputs/clean-validation-glaive-light-500-pref3k-sft3k-max2048-batch2-seed20261023", "--glaive-sample", "500", "--pref-sample", "3000", "--sft-sample", "3000", "--epochs", "1", "--seed", "20261029", "--split-seed", "20261029", "--max-length", "2048", "--batch-size", "2"]. Output: /workspace/post-training/outputs/clean-validation-glaive-light-500-pref3k-sft3k-max2048-batch2-seed20261023. W&B run: not available.
+
+Clean development accuracy: 0.895. Clean development macro F1: 0.8558206911354053. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
