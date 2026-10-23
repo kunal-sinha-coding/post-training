@@ -895,6 +895,22 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-when2call-only-ce-sftaux5-sftpre1-lr1e5-max4096-batch2-seed20261051-result
+
+Timestamp: 2026-10-23T21:29:00Z. Status: completed.
+
+Aggregate black-box evidence: W&B run `qv63zyo8`, accuracy `0.547645125958379` and macro F1 `0.5506911918638017` on 3,652 test examples. Training accuracy was `0.9869643600055471` with macro F1 `0.7403285515075417`. Clean-validation accuracy was `0.9616666666666667` with macro F1 `0.7214774757256511`. The candidate was selected using training and clean validation only. Test labels were used only for this separate aggregate measurement.
+
+The auxiliary-SFT result is below the no-auxiliary control. The next clean-only hypothesis tests one auxiliary SFT example per class.
+
+## clean-validation-when2call-only-ce-sftaux1-sftpre1-lr1e5-max4096-batch2-seed20261052
+
+Timestamp: 2026-10-23T21:30:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-sftaux1-sftpre1-lr1e5-max4096-batch2-seed20261052", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--sft-aux-samples-per-class", "1", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261052", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. This uses only the fixed training and clean-validation partitions. Official test data and labels will not be loaded during selection.
+
+Hypothesis: The five-example auxiliary SFT dose may be too large. A one-example-per-class dose may retain any useful SFT signal without reducing the clean-validation boundary.
+
 ## test-clean-validation-when2call-only-pairwise-plus-ce-sftpre1-92p5-07p5-seed20261023
 
 Timestamp: 2026-10-23T18:10:00Z. Status: completed.
