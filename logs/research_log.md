@@ -6395,6 +6395,16 @@ Hypothesis: Requiring evidence for every required argument value may correct onl
 
 Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.05", "--weight", "0.95", "--argument-evidence-to-tool", "--output", "outputs/test-clean-validation-ce-pairwise-weight05-95-argument-rule-seed20261023.json"]. The weight and rule were fixed before test evaluation. Official test labels will not be used for selection.
 
+Status: failed before evaluation. The frozen evaluator rejected the unsupported `--argument-evidence-to-tool` option. No test metric was produced and no test labels were loaded.
+
+## test-clean-validation-ce-pairwise-weight05-95-bias-request03-seed20261023
+
+Timestamp: 2026-10-23T21:04:00Z. Status: queued.
+
+Hypothesis: A +0.3 logit bias for request_for_info, previously selected on clean validation, may improve the fixed 5/95 blend without fitting on test labels.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.05", "--weight", "0.95", "--class-bias", "0.0", "--class-bias", "0.3", "--class-bias", "0.0", "--class-bias", "0.0", "--output", "outputs/test-clean-validation-ce-pairwise-weight05-95-bias-request03-seed20261023.json"]. The bias was fixed before test evaluation from clean-validation calibration. Official test labels will not be used for selection.
+
 ## test-clean-validation-ce-pairwise-equal-weight-ensemble-seed20261023
 
 Timestamp: 2026-10-23T20:31:00Z. Status: queued.

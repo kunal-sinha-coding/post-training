@@ -769,3 +769,5 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-ce-pairwise-weight05-95-complete-rule-seed20261023 | — | — | — | Fixed 5/95 blend plus complete-request rule queued. | queued |
 | test-clean-validation-ce-pairwise-weight05-95-complete-rule-seed20261023 | 0.5599671412924425 | 0.560489725289368 | [metrics](/workspace/post-training/outputs/test-clean-validation-ce-pairwise-weight05-95-complete-rule-seed20261023.json) | Fixed blend plus rule test measurement completed. | completed |
 | test-clean-validation-ce-pairwise-weight05-95-argument-rule-seed20261023 | — | — | — | Fixed 5/95 blend plus argument-evidence rule queued. | queued |
+| test-clean-validation-ce-pairwise-weight05-95-argument-rule-seed20261023 | — | — | — | Failed before evaluation because the frozen evaluator does not support the requested option. | failed_or_incomplete |
+| test-clean-validation-ce-pairwise-weight05-95-bias-request03-seed20261023 | — | — | — | Supported class-bias probe queued from clean-validation calibration. | queued |
