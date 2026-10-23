@@ -5,9 +5,31 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "The 7.5e-6 learning-rate candidate has complete training and clean-validation evidence but no aggregate black-box measurement. Complete that frozen measurement before proposing another experiment.",
-  "active_experiment": {},
-  "worker_command": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr075e5-max4096-batch2-seed20261056", "--output", "outputs/test-clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr075e5-max4096-batch2-seed20261056.json"],
-  "worker_queue": [["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr075e5-max4096-batch2-seed20261056", "--output", "outputs/test-clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr075e5-max4096-batch2-seed20261056.json"]],
+  "active_experiment": {
+    "pid": 393213,
+    "command": [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_frozen_when2call_ensemble_test",
+      "--checkpoint",
+      "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr075e5-max4096-batch2-seed20261056",
+      "--output",
+      "outputs/test-clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr075e5-max4096-batch2-seed20261056.json"
+    ],
+    "started_at": "2026-10-23T22:15:45.487745+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_frozen_when2call_ensemble_test",
+    "--checkpoint",
+    "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr075e5-max4096-batch2-seed20261056",
+    "--output",
+    "outputs/test-clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr075e5-max4096-batch2-seed20261056.json"
+  ],
+  "worker_queue": [],
   "_previous_command": [
     "python",
     "-u",
@@ -38,18 +60,22 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T22:09:04.779417+00:00",
-  "last_action": "Recorded 7.5e-6 learning-rate training and clean-validation evidence and queued its required aggregate black-box measurement before any new experiment.",
+  "last_heartbeat": "2026-10-23T22:15:45.487756+00:00",
+  "last_action": "Watchdog started validation worker pid 393213.",
   "watchdog_enabled": true,
-  "research_log_size": 657131,
+  "research_log_size": 659065,
   "stop_command": "STOP",
-  "next_experiment": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr075e5-max4096-batch2-seed20261056", "--output", "outputs/test-clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr075e5-max4096-batch2-seed20261056.json"],
-  "recording_jobs": [
-    {
-      "pid": 393042,
-      "experiment_id": "clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr075e5-max4096-batch2-seed20261056"
-    }
+  "next_experiment": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_frozen_when2call_ensemble_test",
+    "--checkpoint",
+    "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr075e5-max4096-batch2-seed20261056",
+    "--output",
+    "outputs/test-clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr075e5-max4096-batch2-seed20261056.json"
   ],
+  "recording_jobs": [],
   "planning_notified_at": "2026-10-23T22:15:15.020796+00:00",
   "planning_ack_deadline": "2026-10-23T22:17:15.020814+00:00",
   "planning_attempts": 408
