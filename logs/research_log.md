@@ -5721,3 +5721,13 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_glaive", "--output-d
 Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-glaive-balanced-5k-pref5k-sft5k-seed20261023
+
+Timestamp: 2026-10-23T16:35:37.178464+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_glaive", "--output-dir", "outputs/clean-validation-glaive-balanced-5k-pref5k-sft5k-seed20261023", "--glaive-sample", "5000", "--pref-sample", "5000", "--sft-sample", "5000", "--epochs", "1", "--seed", "20261025", "--split-seed", "20261025", "--max-length", "4096"]. Output: /workspace/post-training/outputs/clean-validation-glaive-balanced-5k-pref5k-sft5k-seed20261023. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
