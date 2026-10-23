@@ -6189,3 +6189,10 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 Clean development accuracy: 0.9222222222222223. Clean development macro F1: 0.6916023486616807. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
+## clean-validation-when2call-only-pairwise-sftpairwise1-smooth000-lr1e5-max4096-batch2-seed20261023
+
+Timestamp: 2026-10-23T19:50:30Z. Status: queued.
+
+Hypothesis: Using pairwise ranking during the one-epoch SFT pretraining phase may improve transfer while keeping the fixed When2Call classes and excluding rejected direct examples.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-pairwise-sftpairwise1-smooth000-lr1e5-max4096-batch2-seed20261023", "--loss-function", "pairwise_ranking", "--sft-loss-function", "pairwise_ranking", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261045", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. Candidate selection will use training and clean validation only. Official test labels will not be loaded during selection.
