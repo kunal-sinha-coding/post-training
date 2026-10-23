@@ -897,6 +897,24 @@ This record was written automatically. Candidate selection must use clean valida
 
 ## test-clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr125e5-max4096-batch2-seed20261062
 
+Timestamp: 2026-10-23T23:24:46Z. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr125e5-max4096-batch2-seed20261062", "--output", "outputs/test-clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr125e5-max4096-batch2-seed20261062.json"]. Aggregate black-box test accuracy was `0.5328587075575028` with macro F1 `0.5346928342483569`. Training and clean-validation evidence were recorded separately. Test labels were used only for this separate frozen measurement and not for selection.
+
+## test-clean-validation-when2call-only-ce-cues-sftpre1-smooth00375-lr1e5-max4096-batch2-seed20261063
+
+Timestamp: 2026-10-23T23:34:01Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth00375-lr1e5-max4096-batch2-seed20261063", "--output", "outputs/test-clean-validation-when2call-only-ce-cues-sftpre1-smooth00375-lr1e5-max4096-batch2-seed20261063.json"]. Training accuracy was `0.985` with macro F1 `0.7387895894168517`. Clean-validation accuracy was `0.9627777777777777` with macro F1 `0.7222091054742995`. The aggregate black-box measurement is required before later candidate selection. Test labels are not used for selection.
+
+## clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd01-lr1e5-max4096-batch2-seed20261064
+
+Timestamp: 2026-10-23T23:34:01Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd01-lr1e5-max4096-batch2-seed20261064", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.005", "--weight-decay", "0.01", "--seed", "20261064", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. This tests the default weight decay on the established full-schema CE setup. Candidate selection uses clean validation only. The aggregate test measurement will follow only if viable.
+
+## test-clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr125e5-max4096-batch2-seed20261062
+
 Timestamp: 2026-10-23T23:24:46Z. Status: queued.
 
 Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr125e5-max4096-batch2-seed20261062", "--output", "outputs/test-clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr125e5-max4096-batch2-seed20261062.json"]. Training accuracy was `0.9883333333333333` with macro F1 `0.7413108938926021`. Clean-validation accuracy was `0.9655555555555555` with macro F1 `0.7244207602514213`. The aggregate black-box measurement is required before later candidate selection. Test labels are not used for selection.
@@ -6873,5 +6891,15 @@ Timestamp: 2026-10-23T23:24:48.444782+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr125e5-max4096-batch2-seed20261062", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1.25e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261062", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr125e5-max4096-batch2-seed20261062. W&B run: not available.
 
 Clean development accuracy: 0.9655555555555555. Clean development macro F1: 0.7244207602514213. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-only-ce-cues-sftpre1-smooth00375-lr1e5-max4096-batch2-seed20261063
+
+Timestamp: 2026-10-23T23:34:01.489837+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth00375-lr1e5-max4096-batch2-seed20261063", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.00375", "--weight-decay", "0.005", "--seed", "20261063", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth00375-lr1e5-max4096-batch2-seed20261063. W&B run: not available.
+
+Clean development accuracy: 0.9627777777777777. Clean development macro F1: 0.7222091054742995. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
