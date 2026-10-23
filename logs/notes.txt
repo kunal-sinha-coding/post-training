@@ -6039,3 +6039,7 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 
 2026-10-23T05:39Z: Commit `queue matched pairwise auxiliary encoder` records the completed 94/2/3/1 result and the distinct matched-pairwise training command. The watchdog launched it as PID 335646. Test labels were not used for selection.
 
+2026-10-23T05:42Z: The matched-pairwise encoder completed with training accuracy 0.980307862987103 and training macro F1 0.7353331011527274. Clean validation was accuracy 0.9655555555555555 and macro F1 0.7244162741288008. The required aggregate measurement was queued before any new experiment. Test labels were not used for selection.
+
+2026-10-23T05:42Z: Commit `queue matched pairwise aggregate evaluation` records complete matched-pairwise training and clean-validation evidence and the required aggregate command. The watchdog launched it as PID 336208. Test labels were not used for selection.
+
