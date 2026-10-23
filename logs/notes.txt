@@ -6102,4 +6102,6 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 
 2026-10-23T16:58Z: Queued a distinct Glaive-free When2Call cross-entropy control with argument cues, 2,048-token context, and one preference-training epoch. Its aggregate test evaluation is queued immediately after training. Set planning_required false and status active.
 
+2026-10-23T17:04Z: The repaired Glaive-free 4,096-token control failed during backpropagation with CUDA out-of-memory because the baseline trainer still used its fixed batch size of 8. Added a configurable batch-size argument to the baseline trainer. The next retry will use batch size 2.
+
 2026-10-23T16:42Z: The 3,000-example balanced probe also failed from CUDA out-of-memory during the encoder forward pass. Added an explicit batch-size argument to the shared training loop and Glaive trainer. The next retry will use batch size 2.
