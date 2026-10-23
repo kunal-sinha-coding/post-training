@@ -5977,3 +5977,5 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 
 2026-10-23T04:34Z: The rejected-response aggregate result completed with accuracy 0.5358707557502739 and macro F1 0.5363612731452972. The branch is closed below the established encoder ensemble. The next distinct hypothesis uses compact tool schemas with argument cues and clean-validation-only selection.
 
+2026-10-23T04:36Z: The compact-schema encoder completed with training accuracy 0.9438888888888889 and training macro F1 0.7079855523746826. Clean validation was accuracy 0.9055555555555556 and macro F1 0.6794122948137975. The aggregate black-box measurement was missing, so it was queued before any new experiment. Test labels were not used for selection.
+
