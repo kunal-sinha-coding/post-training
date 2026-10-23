@@ -6729,3 +6729,13 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 Clean development accuracy: 0.96. Clean development macro F1: 0.7201626695076233. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-only-ce-compact-cues-sftpre1-smooth005-lr1e5-max4096-batch2-seed20261058
+
+Timestamp: 2026-10-23T22:35:40.326214+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-compact-cues-sftpre1-smooth005-lr1e5-max4096-batch2-seed20261058", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--compact-tool-schemas", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261058", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-when2call-only-ce-compact-cues-sftpre1-smooth005-lr1e5-max4096-batch2-seed20261058. W&B run: not available.
+
+Clean development accuracy: 0.8977777777777778. Clean development macro F1: 0.6734029005612169. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
