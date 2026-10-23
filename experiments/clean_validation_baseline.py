@@ -199,6 +199,7 @@ def main() -> int:
     parser.add_argument("--seed", type=int, default=20261020)
     parser.add_argument("--split-seed", type=int, default=None)
     parser.add_argument("--max-length", type=int, default=8192)
+    parser.add_argument("--batch-size", type=int, default=8)
     parser.add_argument("--include-rejected-examples", action="store_true")
     parser.add_argument("--rejected-direct-samples", type=int, default=0)
     parser.add_argument("--sft-aux-samples-per-class", type=int, default=0)
@@ -278,7 +279,7 @@ def main() -> int:
         tokenize_examples(sft_pretrain, tokenizer)
         optimizer = torch.optim.AdamW(tokenizer_model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay)
         for epoch in range(args.sft_pretrain_epochs):
-            sft_pretrain_losses.append(train_epoch(tokenizer_model, tokenizer, sft_pretrain, device, optimizer, args.sft_loss_function, seed + epoch, args.label_smoothing))
+            sft_pretrain_losses.append(train_epoch(tokenizer_model, tokenizer, sft_pretrain, device, optimizer, args.sft_loss_function, seed + epoch, args.label_smoothing, args.batch_size))
     tokenize_examples(train, tokenizer)
     tokenize_examples(development, tokenizer)
 
@@ -286,7 +287,7 @@ def main() -> int:
     optimizer = torch.optim.AdamW(tokenizer_model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay)
     preference_losses = []
     for epoch in range(args.pref_train_epochs):
-        preference_losses.append(train_epoch(tokenizer_model, tokenizer, train, device, optimizer, args.loss_function, seed + args.sft_pretrain_epochs + epoch, args.label_smoothing))
+        preference_losses.append(train_epoch(tokenizer_model, tokenizer, train, device, optimizer, args.loss_function, seed + args.sft_pretrain_epochs + epoch, args.label_smoothing, args.batch_size))
     loss = sum(preference_losses) / max(1, len(preference_losses))
     train_metrics = batch_metrics(tokenizer_model, tokenizer, train, device, list(range(len(LABELS))))
     dev_metrics = batch_metrics(tokenizer_model, tokenizer, development, device, list(range(len(LABELS))) if development else []) if development else None
