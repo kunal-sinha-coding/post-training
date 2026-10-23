@@ -895,6 +895,24 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd0025-lr1e5-max4096-batch2-seed20261061
+
+Timestamp: 2026-10-23T23:07:21Z. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd0025-lr1e5-max4096-batch2-seed20261061", "--output", "outputs/test-clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd0025-lr1e5-max4096-batch2-seed20261061.json"]. Training accuracy was `0.9890277777777777` with macro F1 `0.7418265311207592`. Clean-validation accuracy was `0.9677777777777777` with macro F1 `0.7260300331733034`. Aggregate black-box test accuracy was `0.5435377875136911` with macro F1 `0.5463648699752245`. Test labels were used only for this separate frozen measurement and not for selection.
+
+## test-clean-validation-when2call-fullschema-leader-wd0025-blend80-20-retry
+
+Timestamp: 2026-10-23T23:10:00Z. Status: queued.
+
+The original 80/20 aggregate command failed because the leader checkpoint artifact was temporarily missing `encoder_config.json`. The same clean-validation-selected measurement is queued with a distinct retry output path before any new blend. Test labels are not used for selection.
+
+## test-clean-validation-when2call-fullschema-leader-wd0025-blend90-10
+
+Timestamp: 2026-10-23T23:10:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr1e5-max4096-batch2-seed20261056", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd0025-lr1e5-max4096-batch2-seed20261061", "--weight", "0.9", "--weight", "0.1", "--output", "outputs/test-clean-validation-when2call-fullschema-leader-wd0025-blend90-10.json"]. The weights are fixed from clean-validation results before aggregate evaluation. Test labels are not used for selection.
+
 ## test-clean-validation-when2call-only-ce-rejected-sftpre1-exclude-direct-smooth005-lr1e5-max4096-batch2-seed20261060
 
 Timestamp: 2026-10-23T22:59:00Z. Status: completed.
