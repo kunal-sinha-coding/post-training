@@ -1,28 +1,27 @@
 {
-  "status": "awaiting_codex_planning",
+  "status": "active",
   "planning_owner": "codex_primary",
-  "planning_required": true,
+  "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "Both blends using the missing seed20261056 artifact failed before producing measurements. Use the available full-schema smoothing and lower-weight-decay checkpoints for a valid clean-validation-selected blend, then compare a distinct 90/10 weighting.",
+  "current_hypothesis": "The available-checkpoint 80/20 blend reached test macro F1 0.55341 and outperformed the 90/10 blend at 0.55223. The next clean-validation hypothesis is that an intermediate 1.25e-5 learning rate may improve the full-schema CE tradeoff between the 1e-5 and 1.5e-5 probes.",
   "active_experiment": {},
   "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.evaluate_frozen_when2call_ensemble_test",
-    "--checkpoint",
-    "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth0075-lr1e5-max4096-batch2-seed20261059",
-    "--checkpoint",
-    "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd0025-lr1e5-max4096-batch2-seed20261061",
-    "--weight",
-    "0.9",
-    "--weight",
-    "0.1",
-    "--output",
-    "outputs/test-clean-validation-when2call-fullschema-smooth0075-wd0025-blend90-10.json"
+    "python", "-u", "-m", "experiments.clean_validation_baseline",
+    "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr125e5-max4096-batch2-seed20261062",
+    "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1",
+    "--add-argument-cues", "--learning-rate", "1.25e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005",
+    "--seed", "20261062", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python", "-u", "-m", "experiments.clean_validation_baseline",
+      "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr125e5-max4096-batch2-seed20261062",
+      "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1",
+      "--add-argument-cues", "--learning-rate", "1.25e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005",
+      "--seed", "20261062", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -54,11 +53,17 @@
     "artifact": "outputs/clean-validation-calibration.json"
   },
   "last_heartbeat": "2026-10-23T23:14:33.261487+00:00",
-  "last_action": "Watchdog handed planning control to the primary Codex process.",
+  "last_action": "Recorded the completed 80/20 and 90/10 blends and queued an intermediate learning-rate clean-validation probe.",
   "watchdog_enabled": true,
   "research_log_size": 676163,
   "stop_command": "STOP",
-  "next_experiment": null,
+  "next_experiment": [
+    "python", "-u", "-m", "experiments.clean_validation_baseline",
+    "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr125e5-max4096-batch2-seed20261062",
+    "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1",
+    "--add-argument-cues", "--learning-rate", "1.25e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005",
+    "--seed", "20261062", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"
+  ],
   "recording_jobs": [],
   "planning_notified_at": "2026-10-23T23:16:05.517496+00:00",
   "planning_ack_deadline": "2026-10-23T23:18:05.517522+00:00",

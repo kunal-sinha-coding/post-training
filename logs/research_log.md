@@ -897,6 +897,24 @@ This record was written automatically. Candidate selection must use clean valida
 
 ## test-clean-validation-when2call-fullschema-smooth0075-wd0025-blend80-20
 
+Timestamp: 2026-10-23T23:14:32Z. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth0075-lr1e5-max4096-batch2-seed20261059", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd0025-lr1e5-max4096-batch2-seed20261061", "--weight", "0.8", "--weight", "0.2", "--output", "outputs/test-clean-validation-when2call-fullschema-smooth0075-wd0025-blend80-20.json"]. Aggregate black-box test accuracy was `0.5503833515881709` with macro F1 `0.5534086831487406`. The component checkpoints were selected using clean validation only. Test labels were not used for selection.
+
+## test-clean-validation-when2call-fullschema-smooth0075-wd0025-blend90-10
+
+Timestamp: 2026-10-23T23:16:03Z. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth0075-lr1e5-max4096-batch2-seed20261059", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd0025-lr1e5-max4096-batch2-seed20261061", "--weight", "0.9", "--weight", "0.1", "--output", "outputs/test-clean-validation-when2call-fullschema-smooth0075-wd0025-blend90-10.json"]. Aggregate black-box test accuracy was `0.5492880613362541` with macro F1 `0.5522279239668421`. The component checkpoints were selected using clean validation only. Test labels were not used for selection.
+
+## clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr125e5-max4096-batch2-seed20261062
+
+Timestamp: 2026-10-23T23:16:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr125e5-max4096-batch2-seed20261062", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1.25e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261062", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. This tests an intermediate learning rate on the established full-schema CE setup. Candidate selection uses clean validation only. The aggregate test measurement will follow only if viable.
+
+## test-clean-validation-when2call-fullschema-smooth0075-wd0025-blend80-20
+
 Timestamp: 2026-10-23T23:13:00Z. Status: queued.
 
 The prior 80/20 and 90/10 commands referenced the unavailable seed20261056 checkpoint and failed before measurement. This repaired aggregate command uses the available full-schema smoothing seed20261059 and lower-weight-decay seed20261061 checkpoints. Weights are fixed without test labels.
