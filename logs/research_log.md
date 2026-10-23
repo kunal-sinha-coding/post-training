@@ -895,6 +895,22 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-when2call-only-ce-cues-sftpre1-smooth0025-lr1e5-max4096-batch2-seed20261054-result
+
+Timestamp: 2026-10-23T22:00:00Z. Status: completed.
+
+Aggregate black-box evidence: accuracy `0.5569550930996714` and macro F1 `0.5580623772649892` on 3,652 test examples. Training accuracy was `0.98875` with macro F1 `0.7416153000448706`. Clean-validation accuracy was `0.9644444444444444` with macro F1 `0.7234783114719538`. The candidate was selected using training and clean validation only. Test labels were used only for this separate aggregate measurement.
+
+The smoothing midpoint did not improve clean validation. The next hypothesis is selected from clean-validation evidence and tests a 1.5e-5 learning rate on the no-auxiliary CE setup.
+
+## clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr15e5-max4096-batch2-seed20261055
+
+Timestamp: 2026-10-23T22:01:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr15e5-max4096-batch2-seed20261055", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261055", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. This uses only the fixed training and clean-validation partitions. Official test data and labels will not be loaded during selection.
+
+Hypothesis: The no-auxiliary CE setup may be under-updated at 1e-5. A 1.5e-5 learning rate may improve the clean request-for-info and tool-call boundary without changing the data or objective.
+
 ## test-clean-validation-when2call-only-ce-cues-sftpre1-smooth0025-lr1e5-max4096-batch2-seed20261054
 
 Timestamp: 2026-10-23T21:58:00Z. Status: queued.
