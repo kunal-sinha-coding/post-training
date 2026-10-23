@@ -491,3 +491,5 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-encoder-sftpre1-blend-90-10 | — | — | — | Conservative clean-validation-selected encoder plus SFT-pretraining blend queued | queued |
 | test-clean-validation-encoder-sftpre1-blend-90-10 | 0.5583242059145673 | 0.5578771498088324 | zmzokzgg | Aggregate-only encoder plus SFT-pretraining blend, below the encoder leader | completed |
 | test-clean-validation-encoder-sftpre1-blend-95-05 | — | — | — | Final conservative encoder plus SFT-pretraining blend queued | queued |
+| test-clean-validation-encoder-sftpre1-blend-95-05 | 0.5585980284775466 | 0.5581215309058692 | 9xa7vosn | Aggregate-only encoder plus SFT-pretraining blend, below the encoder leader | completed |
+| Candidate | clean-validation-encoder-only-pairwise-cues-lr15e5-wd0005-smooth005-seed20261023 | — | — | [queued](../outputs/clean-validation-encoder-only-pairwise-cues-lr15e5-wd0005-smooth005-seed20261023) | Distinct encoder-only pairwise objective candidate | queued |

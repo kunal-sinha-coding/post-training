@@ -4524,6 +4524,18 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: A 5% SFT-pretrained contribution may preserve the small complementary signal while recovering the stronger encoder's transfer performance. If it does not improve, this blend branch will close.
 
+Timestamp: 2026-10-23T02:55:42Z. Status: completed.
+
+W&B run: 9xa7vosn. Component training and clean-validation evidence were complete before this aggregate-only measurement. The 95/5 blend scored aggregate black-box accuracy 0.5585980284775466 and macro F1 0.5581215309058692. Official test labels were used only for reporting after selection. The SFT blend branch is closed.
+
+## clean-validation-encoder-only-pairwise-cues-lr15e5-wd0005-smooth005-seed20261023
+
+Timestamp: 2026-10-23T02:56:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-encoder-only-pairwise-cues-lr15e5-wd0005-smooth005-seed20261023", "--loss-function", "pairwise_ranking", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. This is an encoder-only training candidate. Official test labels will not be loaded during selection.
+
+Hypothesis: The strongest recent encoder used a cross-entropy-style objective. A direct pairwise encoder-only objective may improve class-boundary separation without the SFT mechanism that repeatedly transferred poorly.
+
 ## clean-validation-cues-aux05-rejected01-sftpairwise-wd0001-smooth005-seed20261023
 
 Timestamp: 2026-10-23T02:28:05.978407+00:00. Status: completed.
