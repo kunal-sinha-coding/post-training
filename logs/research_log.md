@@ -895,6 +895,24 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-encoder-rejected-direct-250-cues-max4096-lr15e5-wd0005-smooth000-seed20261023
+
+Timestamp: 2026-10-23T05:10:00Z. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-encoder-rejected-direct-250-cues-max4096-lr15e5-wd0005-smooth000-seed20261023", "--output", "outputs/test-clean-validation-encoder-rejected-direct-250-cues-max4096-lr15e5-wd0005-smooth000-seed20261023.json"]. This was an aggregate-only measurement after complete training and clean validation. Candidate selection used clean validation before this test measurement. Official test labels were not used for selection.
+
+Aggregate black-box evidence: W&B run `3dg7oti5`, accuracy `0.5268346111719606` and macro F1 `0.5270084919910073` on 3652 test examples. The test file reports `test_loaded=true`, `selection_complete=true`, `test_measurement_only=true`, and `black_box=true`. The branch is closed because transfer was below the established encoder ensemble.
+
+The next hypothesis tests whether a class bias selected from the training-only calibration artifact transfers to the established best three-encoder ensemble. The fixed bias is `[0.0, -0.3, 0.0, 0.0]` in label order. Test labels will not be used for selection.
+
+## test-clean-validation-encoder-triple-95-03-02-calibrated-bias
+
+Timestamp: 2026-10-23T05:10:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023", "--checkpoint", "outputs/clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023", "--weight", "0.95", "--weight", "0.03", "--weight", "0.02", "--class-bias", "0.0", "--class-bias", "-0.3", "--class-bias", "0.0", "--class-bias", "0.0", "--output", "outputs/test-clean-validation-encoder-triple-95-03-02-calibrated-bias.json"]. All checkpoints have complete training and clean-validation evidence. The bias was selected from the training-only calibration artifact before this aggregate-only measurement. Official test labels will not be used for selection.
+
+Hypothesis: A small training-only negative bias for `request_for_info` may improve transfer of the current best three-encoder ensemble without changing the learned representations.
+
 ## test-clean-validation-encoder-rejected-direct-1000-cues-max4096-lr15e5-wd0005-smooth000-seed20261023
 
 Timestamp: 2026-10-23T05:03:00Z. Status: queued.

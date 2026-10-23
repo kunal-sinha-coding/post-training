@@ -6003,3 +6003,7 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 
 2026-10-23T05:09Z: Commit `queue rejected direct 250 aggregate evaluation` records the required aggregate evaluation queue transition. The watchdog launched the evaluator as PID 330945 from the distinct queued command. Test labels were not used for selection.
 
+2026-10-23T05:10Z: The 250-example rejected-direct encoder completed aggregate evaluation with accuracy 0.5268346111719606 and macro F1 0.5270084919910073. The branch is closed. The next queued hypothesis applies the training-only class bias [0.0, -0.3, 0.0, 0.0] to the current best three-encoder ensemble. Test labels were not used for selection.
+
+2026-10-23T05:11Z: Commit `queue calibrated triple ensemble test` records the completed rejected-direct measurement and the distinct calibrated-bias aggregate evaluation. The watchdog launched the new evaluator as PID 331513. Test labels were not used for selection.
+
