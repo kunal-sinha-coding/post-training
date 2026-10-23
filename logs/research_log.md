@@ -895,6 +895,16 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-cues-aux05-lr15e5-mainpairwise-sftce-wd0005-smooth000-seed20261023-result
+
+Timestamp: 2026-10-23T01:35:28Z. Status: completed.
+
+Dataset: nvidia/When2Call, split test/mcq. Selection was complete before this measurement and did not use test labels. W&B run: tb75w4ok. Examples: 3652.
+
+Training accuracy: 0.9798918319234503. Training macro F1: 0.7350237164610465. Clean-validation accuracy: 0.9644444444444444. Clean-validation macro F1: 0.7235840969816869.
+
+Aggregate black-box accuracy: 0.5271084337349398. Aggregate black-box macro F1: 0.5293000417493606. The main-pairwise plus SFT-cross-entropy objective is rejected because it underperformed the recent main-cross-entropy direction on clean validation and the aggregate test. The next probe changes the encoder family to MiniLM instead of spending another run on this objective.
+
 ## test-clean-validation-cues-aux01-lr15e5-bothpairwise-wd0005-smooth000-seed20261022-result
 
 Timestamp: 2026-10-22T23:21:57Z. Status: completed.
@@ -4085,6 +4095,14 @@ Clean development accuracy: 0.9738888888888889. Clean development macro F1: 0.73
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-cues-aux01-lr15e5-maince-auxpairwise-wd0005-smooth005-seed20261022-result
+
+Timestamp: 2026-10-23T00:26:07Z. Status: completed.
+
+Dataset: nvidia/When2Call, split test/mcq. Selection was complete before this measurement and did not use test labels. W&B run: ydrq9wad. Examples: 3652.
+
+Aggregate black-box accuracy: 0.53039430449069. Aggregate black-box macro F1: 0.5303860968784115. The result is below the current 55/45 encoder ensemble leader. The next hypothesis is a clean-validation-selected 50/50 blend with the auxiliary-5 main-cross-entropy checkpoint.
+
 ## test-clean-validation-cues-aux01-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022-result
 
 Timestamp: 2026-10-22T23:49:13Z. Status: completed.
@@ -4147,3 +4165,132 @@ Dataset: nvidia/When2Call, split test/mcq. Selection was complete before this me
 Aggregate black-box accuracy: 0.5147864184008762. Aggregate black-box macro F1: 0.5158168718525531. The result is below the current 55/45 encoder ensemble leader. The watchdog then launched the queued auxiliary-1 label-smoothing probe as PID 292303.
 
 Training accuracy for the preceding candidate: 0.9831048331256059. Training macro F1: 0.7374215942331674. Clean-validation accuracy for the preceding candidate: 0.9666666666666667. Clean-validation macro F1: 0.7252060013087245. All three evidence types are recorded for this candidate. The next distinct command is the auxiliary-1 label-smoothing aggregate test.
+
+## clean-validation-cues-aux01-lr15e5-maince-auxpairwise-wd0005-smooth005-seed20261022
+
+Timestamp: 2026-10-23T00:21:37.160054+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux01-lr15e5-maince-auxpairwise-wd0005-smooth005-seed20261022", "--loss-function", "cross_entropy", "--sft-loss-function", "pairwise_ranking", "--add-argument-cues", "--sft-aux-samples-per-class", "1", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux01-lr15e5-maince-auxpairwise-wd0005-smooth005-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.9738888888888889. Clean development macro F1: 0.7306161078560158. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+## test-clean-validation-cues-aux05-aux01-maince-auxpairwise-weight50-50-result
+
+Timestamp: 2026-10-23T00:26:07Z. Status: queued and launched.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022", "--checkpoint", "outputs/clean-validation-cues-aux01-lr15e5-maince-auxpairwise-wd0005-smooth005-seed20261022", "--weight", "0.5", "--weight", "0.5", "--output", "outputs/test-clean-validation-cues-aux05-aux01-maince-auxpairwise-weight50-50.json"]. The weights were fixed from clean-validation evidence. No test labels were used for selection. The aggregate black-box measurement is active as PID 293402.
+
+## test-clean-validation-cues-aux01-lr15e5-maince-auxpairwise-wd0005-smooth005-seed20261022-result
+
+Timestamp: 2026-10-23T00:26:07Z. Status: completed.
+
+Dataset: nvidia/When2Call, split test/mcq. Selection was complete before this measurement and did not use test labels. W&B run: ydrq9wad. Examples: 3652.
+
+Aggregate black-box accuracy: 0.53039430449069. Aggregate black-box macro F1: 0.5303860968784115. The result is below the current 55/45 encoder ensemble leader. The next hypothesis is a clean-validation-selected 50/50 blend with the auxiliary-5 main-cross-entropy checkpoint.
+## test-clean-validation-cues-aux05-aux01-maince-auxpairwise-weight50-50-result
+
+Timestamp: 2026-10-23T00:32:54Z. Status: completed.
+
+Dataset: nvidia/When2Call, split test/mcq. The 50/50 weight was fixed from clean-validation evidence before measurement. No test labels were used for selection. W&B run: iom7kq3i. Examples: 3652.
+
+Aggregate black-box accuracy: 0.5292990142387732. Aggregate black-box macro F1: 0.5277891102201943. The blend is below both component results and the current encoder leader. The blend branch is rejected.
+
+## clean-validation-cues-aux05-lr15e5-sftpre1-maince-auxpairwise-wd0005-smooth005-seed20261023
+
+Timestamp: 2026-10-23T00:39:59.299233+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-lr15e5-sftpre1-maince-auxpairwise-wd0005-smooth005-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--add-argument-cues", "--sft-aux-samples-per-class", "5", "--sft-pretrain-epochs", "1", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux05-lr15e5-sftpre1-maince-auxpairwise-wd0005-smooth005-seed20261023. W&B run: not available.
+
+Clean development accuracy: 0.97. Clean development macro F1: 0.7277311278367431. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+## test-clean-validation-cues-aux05-lr15e5-sftpre1-maince-auxpairwise-wd0005-smooth005-seed20261023-result
+
+Timestamp: 2026-10-23T00:45:31Z. Status: completed.
+
+Dataset: nvidia/When2Call, split test/mcq. Selection was complete before this measurement and did not use test labels. W&B run: fkphuv6x. Examples: 3652.
+
+Training accuracy: 0.9889058383025933. Training macro F1: 0.7417888735598335. Clean-validation accuracy: 0.97. Clean-validation macro F1: 0.7277311278367431.
+
+Aggregate black-box accuracy: 0.5306681270536692. Aggregate black-box macro F1: 0.533294647943663. The result is below the current encoder leader. The next controlled hypothesis removes label smoothing while preserving the one-epoch SFT pretraining mechanism.
+
+## clean-validation-cues-aux05-lr15e5-sftpre1-maince-auxpairwise-wd0005-smooth000-seed20261023
+
+Timestamp: 2026-10-23T00:56:18.956697+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-lr15e5-sftpre1-maince-auxpairwise-wd0005-smooth000-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--add-argument-cues", "--sft-aux-samples-per-class", "5", "--sft-pretrain-epochs", "1", "--learning-rate", "1.5e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux05-lr15e5-sftpre1-maince-auxpairwise-wd0005-smooth000-seed20261023. W&B run: not available.
+
+Clean development accuracy: 0.9705555555555555. Clean development macro F1: 0.7281473526936322. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+## test-clean-validation-cues-aux05-lr15e5-sftpre1-maince-auxpairwise-wd0005-smooth000-seed20261023-result
+
+Timestamp: 2026-10-23T01:01:35Z. Status: completed.
+
+Dataset: nvidia/When2Call, split test/mcq. Selection was complete before this measurement and did not use test labels. W&B run: 2qyc0hk8. Examples: 3652.
+
+Training accuracy: 0.9889058383025933. Training macro F1: 0.7417888735598335. Clean-validation accuracy: 0.9705555555555555. Clean-validation macro F1: 0.7281473526936322.
+
+Aggregate black-box accuracy: 0.5295728368017525. Aggregate black-box macro F1: 0.5323460025135156. The no-smoothing result did not improve over the smoothed SFT variant. The next hypothesis removes auxiliary examples while preserving one SFT pretraining epoch.
+
+## clean-validation-cues-sftpre1-maince-smooth000-seed20261023
+
+Timestamp: 2026-10-23T01:08:38.705106+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-sftpre1-maince-smooth000-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--add-argument-cues", "--sft-pretrain-epochs", "1", "--learning-rate", "1.5e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-sftpre1-maince-smooth000-seed20261023. W&B run: not available.
+
+Clean development accuracy: 0.9694444444444444. Clean development macro F1: 0.7272825349559454. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+## test-clean-validation-cues-sftpre1-maince-smooth000-result
+
+Timestamp: 2026-10-23T01:12:13Z. Status: completed.
+
+Dataset: nvidia/When2Call, split test/mcq. Selection was complete before this measurement and did not use test labels. W&B run: 1dxlhsja. Examples: 3652.
+
+Training accuracy: 0.9890277777777777. Training macro F1: 0.7418264920693814. Clean-validation accuracy: 0.9694444444444444. Clean-validation macro F1: 0.7272825349559454.
+
+Aggregate black-box accuracy: 0.5265607886089814. Aggregate black-box macro F1: 0.5268316759020513. The no-auxiliary SFT result is below the encoder leader and the SFT branch is closed. The next hypothesis tests a clean-validation-selected cross-mechanism blend with the auxiliary encoder.
+
+## test-clean-validation-cues-sftpre1-maince-smooth000-aux05-smooth0075-weight50-50
+
+Timestamp: 2026-10-23T01:12:13Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-sftpre1-maince-smooth000-seed20261023", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--weight", "0.5", "--weight", "0.5", "--output", "outputs/test-clean-validation-cues-sftpre1-maince-smooth000-aux05-smooth0075-weight50-50.json"]. The weights were fixed from clean-validation evidence. No test labels were used for selection.
+## test-clean-validation-cues-sftpre1-maince-smooth000-aux05-smooth0075-weight50-50-result
+
+Timestamp: 2026-10-23T01:16:21Z. Status: completed.
+
+Dataset: nvidia/When2Call, split test/mcq. The 50/50 weight was fixed from clean-validation evidence before measurement. No test labels were used for selection. W&B run: 3jikyxb3. Examples: 3652.
+
+Aggregate black-box accuracy: 0.5416210295728368. Aggregate black-box macro F1: 0.5416479577393998. The blend is below the stronger auxiliary encoder component and the current leader. The cross-mechanism blend branch is closed.
+
+## clean-validation-cues-aux05-lr15e5-maince-auxpairwise-wd0005-smooth000-max8192-seed20261023
+
+Timestamp: 2026-10-23T01:22:21.897230+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-lr15e5-maince-auxpairwise-wd0005-smooth000-max8192-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "pairwise_ranking", "--add-argument-cues", "--sft-aux-samples-per-class", "5", "--learning-rate", "1.5e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "8192", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux05-lr15e5-maince-auxpairwise-wd0005-smooth000-max8192-seed20261023. W&B run: not available.
+
+Clean development accuracy: 0.9733333333333334. Clean development macro F1: 0.7301850603020084. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+## test-clean-validation-cues-aux05-lr15e5-maince-auxpairwise-wd0005-smooth000-max8192-seed20261023-result
+
+Timestamp: 2026-10-23T01:28:01Z. Status: completed.
+
+Dataset: nvidia/When2Call, split test/mcq. Selection was complete before this measurement and did not use test labels. W&B run: 9un8skyo. Examples: 3652.
+
+Training accuracy: 0.985993620857024. Training macro F1: 0.7395864118573152. Clean-validation accuracy: 0.9733333333333334. Clean-validation macro F1: 0.7301850603020084.
+
+Aggregate black-box accuracy: 0.5331325301204819. Aggregate black-box macro F1: 0.5298993254928811. The 8192-token result did not improve the recent 4096-token direction. The context-length branch is closed.
+
+## clean-validation-cues-aux05-lr15e5-mainpairwise-sftce-wd0005-smooth000-seed20261023
+
+Timestamp: 2026-10-23T01:32:50.161723+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-lr15e5-mainpairwise-sftce-wd0005-smooth000-seed20261023", "--loss-function", "pairwise_ranking", "--sft-loss-function", "cross_entropy", "--add-argument-cues", "--sft-aux-samples-per-class", "5", "--learning-rate", "1.5e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux05-lr15e5-mainpairwise-sftce-wd0005-smooth000-seed20261023. W&B run: not available.
+
+Clean development accuracy: 0.9644444444444444. Clean development macro F1: 0.7235840969816869. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
