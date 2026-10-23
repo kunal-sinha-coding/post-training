@@ -5995,3 +5995,5 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 
 2026-10-23T04:58Z: The 0.5% zero-smoothing four-way blend completed with accuracy 0.56078860898138 and macro F1 0.560347428969524. The local weight sweep is closed below the current best. The next queued hypothesis adds 1000 bounded rejected-direct examples to address direct-class collapse. Test labels were not used for selection.
 
+2026-10-23T05:03Z: The bounded rejected-direct encoder completed with training accuracy 0.8680487804878049 and training macro F1 0.693407092411345. Clean validation was accuracy 0.9672222222222222 and macro F1 0.7256571122310739. The aggregate black-box measurement was missing, so it was queued before any new experiment. Test labels were not used for selection.
+

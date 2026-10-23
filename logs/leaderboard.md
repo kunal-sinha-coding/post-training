@@ -605,3 +605,5 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-encoder-fourway-94p5-03-02-0p5 | — | — | — | Queued final local probe with a 0.5% zero-smoothing contribution | queued |
 | test-clean-validation-encoder-fourway-94p5-03-02-0p5 | 0.56078860898138 | 0.560347428969524 | — | Aggregate-only result below the current best 95/3/2 ensemble. Test labels were not used for selection. | completed |
 | Candidate | clean-validation-encoder-rejected-direct-1000-cues-max4096-lr15e5-wd0005-smooth000-seed20261023 | — | — | Queued bounded rejected-direct supervision encoder probe | queued |
+| Candidate | clean-validation-encoder-rejected-direct-1000-cues-max4096-lr15e5-wd0005-smooth000-seed20261023 | 0.9672222222222222 | 0.7256571122310739 | [metrics](/workspace/post-training/outputs/clean-validation-encoder-rejected-direct-1000-cues-max4096-lr15e5-wd0005-smooth000-seed20261023/metrics.json) | completed |
+| test-clean-validation-encoder-rejected-direct-1000-cues-max4096-lr15e5-wd0005-smooth000-seed20261023 | — | — | — | Queued required aggregate black-box measurement after complete training and clean validation | queued |

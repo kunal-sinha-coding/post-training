@@ -895,6 +895,14 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-encoder-rejected-direct-1000-cues-max4096-lr15e5-wd0005-smooth000-seed20261023
+
+Timestamp: 2026-10-23T05:03:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-encoder-rejected-direct-1000-cues-max4096-lr15e5-wd0005-smooth000-seed20261023", "--output", "outputs/test-clean-validation-encoder-rejected-direct-1000-cues-max4096-lr15e5-wd0005-smooth000-seed20261023.json"]. Training and clean-validation evidence are complete before this aggregate-only measurement. Candidate selection used clean validation only. Official test labels will not be used for selection.
+
+Hypothesis: This measurement closes the bounded rejected-direct augmentation branch and tests whether its clean-validation behavior transfers to the black-box test.
+
 ## test-clean-validation-encoder-compact-schema-cues-max4096-lr15e5-wd0005-smooth000-seed20261023
 
 Timestamp: 2026-10-23T04:36:00Z. Status: queued.
@@ -5345,5 +5353,15 @@ Timestamp: 2026-10-23T04:35:33.672077+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-encoder-compact-schema-cues-max4096-lr15e5-wd0005-smooth000-seed20261023", "--loss-function", "cross_entropy", "--compact-tool-schemas", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-encoder-compact-schema-cues-max4096-lr15e5-wd0005-smooth000-seed20261023. W&B run: not available.
 
 Clean development accuracy: 0.9055555555555556. Clean development macro F1: 0.6794122948137975. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-encoder-rejected-direct-1000-cues-max4096-lr15e5-wd0005-smooth000-seed20261023
+
+Timestamp: 2026-10-23T05:02:09.722966+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-encoder-rejected-direct-1000-cues-max4096-lr15e5-wd0005-smooth000-seed20261023", "--loss-function", "cross_entropy", "--add-argument-cues", "--rejected-direct-samples", "1000", "--learning-rate", "1.5e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-encoder-rejected-direct-1000-cues-max4096-lr15e5-wd0005-smooth000-seed20261023. W&B run: not available.
+
+Clean development accuracy: 0.9672222222222222. Clean development macro F1: 0.7256571122310739. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
