@@ -6019,3 +6019,7 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 
 2026-10-23T05:20Z: Commit `queue auxiliary10 encoder training` records the completed calibration aggregate result and the distinct auxiliary10 training command. The watchdog launched it as PID 332965. Test labels were not used for selection.
 
+2026-10-23T05:24Z: The auxiliary10 encoder completed with training accuracy 0.9835202880487467 and training macro F1 0.7377333829802235. Clean validation was accuracy 0.9666666666666667 and macro F1 0.7252060013087245. The required aggregate measurement was queued before any new experiment. Test labels were not used for selection.
+
+2026-10-23T05:24Z: Commit `queue auxiliary10 aggregate evaluation` records complete auxiliary10 training and clean-validation evidence and the required aggregate command. The watchdog launched it as PID 333410. Test labels were not used for selection.
+
