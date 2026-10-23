@@ -6248,3 +6248,29 @@ Timestamp: 2026-10-23T20:03:00Z. Status: queued.
 Hypothesis: Cross-entropy preference training may benefit from pairwise ranking during the SFT pretraining phase, combining the strongest final objective with a distinct pretraining signal.
 
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-sftpairwise1-smooth005-lr1e5-max4096-batch2-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "pairwise_ranking", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261047", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. Candidate selection will use training and clean validation only. Official test labels will not be loaded during selection.
+
+## clean-validation-when2call-only-ce-sftpairwise1-smooth005-lr1e5-max4096-batch2-seed20261023
+
+Timestamp: 2026-10-23T20:10:00.884577+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-sftpairwise1-smooth005-lr1e5-max4096-batch2-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "pairwise_ranking", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261047", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-when2call-only-ce-sftpairwise1-smooth005-lr1e5-max4096-batch2-seed20261023. W&B run: not available.
+
+Clean development accuracy: 0.9627777777777777. Clean development macro F1: 0.7222357812566309. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+Training accuracy: 0.9861111111111112. Training macro F1: 0.7396359469478354. The candidate is viable but below the strongest clean-validation CE control, so its frozen aggregate test measurement is required before further selection.
+
+## test-clean-validation-when2call-only-ce-sftpairwise1-smooth005-lr1e5-max4096-batch2-seed20261023
+
+Timestamp: 2026-10-23T20:11:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-sftpairwise1-smooth005-lr1e5-max4096-batch2-seed20261023", "--output", "outputs/test-clean-validation-when2call-only-ce-sftpairwise1-smooth005-lr1e5-max4096-batch2-seed20261023.json"]. The checkpoint was selected using training and clean-validation evidence. Official test labels are reserved for aggregate reporting and will not be used for selection.
+
+## clean-validation-when2call-only-ce-sftpairwise1-smooth000-lr1e5-max4096-batch2-seed20261023
+
+Timestamp: 2026-10-23T20:11:00Z. Status: queued.
+
+Hypothesis: Removing label smoothing may recover the clean-validation performance lost by the mixed cross-entropy plus pairwise-SFT objective.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-sftpairwise1-smooth000-lr1e5-max4096-batch2-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "pairwise_ranking", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261048", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. Candidate selection will use training and clean validation only. Official test labels will not be loaded during selection.
