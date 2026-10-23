@@ -1049,6 +1049,20 @@ Training evidence: all five component checkpoints have recorded training metrics
 
 The 3% SFT component improved both aggregate metrics over the 2% probe. The next hypotheses test 4% and 5% SFT contributions with weights fixed before test evaluation.
 
+## test-clean-validation-encoder-fiveway-90-04-02-01-03-calibrated-bias-result
+
+Timestamp: 2026-10-23T06:18:00Z. Status: completed.
+
+Training evidence: all five component checkpoints have recorded training metrics. Clean-validation evidence: all five component checkpoints have recorded clean-validation metrics. Aggregate black-box evidence: W&B run `slm68h7j`, ensemble accuracy `0.5635268346111719` and macro F1 `0.5633644330301558` on 3652 test examples. The test file reports `test_loaded=true`, `selection_complete=true`, `test_measurement_only=true`, and `black_box=true`. Test labels were used only for this separate aggregate measurement. This is the current best macro F1.
+
+## test-clean-validation-encoder-fiveway-89-05-02-01-03-calibrated-bias-result
+
+Timestamp: 2026-10-23T06:18:00Z. Status: completed.
+
+Training evidence: all five component checkpoints have recorded training metrics. Clean-validation evidence: all five component checkpoints have recorded clean-validation metrics. Aggregate black-box evidence: W&B run `lgdcezh6`, ensemble accuracy `0.5627053669222344` and macro F1 `0.5625261517171829` on 3652 test examples. The test file reports `test_loaded=true`, `selection_complete=true`, `test_measurement_only=true`, and `black_box=true`. Test labels were used only for this separate aggregate measurement. The 5% SFT probe is below the 4% probe and is closed.
+
+The next hypotheses keep the 4% SFT weight and redistribute the two auxiliary encoder weights. The weights are fixed before aggregate evaluation.
+
 ## clean-validation-encoder-sftpre1-aux05-cues-max4096-lr15e5-wd0005-smooth005-seed20261023-result
 
 Timestamp: 2026-10-23T05:53:00Z. Status: completed.
