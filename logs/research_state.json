@@ -1,44 +1,30 @@
 {
-  "status": "awaiting_codex_planning",
+  "status": "active",
   "planning_owner": "codex_primary",
-  "planning_required": true,
+  "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The two-epoch CE preference probe completed training and clean validation but reduced clean macro F1 to 0.72016. Complete its required frozen test measurement first. Then test compact tool schemas with argument cues to reduce input-complexity noise while preserving required-field information.",
+  "current_hypothesis": "The compact-schema probe completed all training and clean-validation evidence but reduced clean macro F1 to 0.67340. Complete its required frozen test measurement first. The next hypothesis is that full tool schemas are useful and stronger label smoothing may improve transfer without removing schema detail.",
   "active_experiment": {},
   "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.clean_validation_baseline",
-    "--output-dir",
-    "outputs/clean-validation-when2call-only-ce-compact-cues-sftpre1-smooth005-lr1e5-max4096-batch2-seed20261058",
-    "--loss-function",
-    "cross_entropy",
-    "--sft-loss-function",
-    "cross_entropy",
-    "--sft-pretrain-epochs",
-    "1",
-    "--compact-tool-schemas",
-    "--add-argument-cues",
-    "--learning-rate",
-    "1e-5",
-    "--label-smoothing",
-    "0.005",
-    "--weight-decay",
-    "0.005",
-    "--seed",
-    "20261058",
-    "--split-seed",
-    "20261021",
-    "--max-length",
-    "4096",
-    "--batch-size",
-    "2",
-    "--pref-train-epochs",
-    "1"
+    "python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test",
+    "--checkpoint", "outputs/clean-validation-when2call-only-ce-compact-cues-sftpre1-smooth005-lr1e5-max4096-batch2-seed20261058",
+    "--output", "outputs/test-clean-validation-when2call-only-ce-compact-cues-sftpre1-smooth005-lr1e5-max4096-batch2-seed20261058.json"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test",
+      "--checkpoint", "outputs/clean-validation-when2call-only-ce-compact-cues-sftpre1-smooth005-lr1e5-max4096-batch2-seed20261058",
+      "--output", "outputs/test-clean-validation-when2call-only-ce-compact-cues-sftpre1-smooth005-lr1e5-max4096-batch2-seed20261058.json"
+    ],
+    [
+      "python", "-u", "-m", "experiments.clean_validation_baseline",
+      "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth0075-lr1e5-max4096-batch2-seed20261059",
+      "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1",
+      "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.0075", "--weight-decay", "0.005",
+      "--seed", "20261059", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -70,17 +56,16 @@
     "artifact": "outputs/clean-validation-calibration.json"
   },
   "last_heartbeat": "2026-10-23T22:30:33.651660+00:00",
-  "last_action": "Watchdog handed planning control to the primary Codex process.",
+  "last_action": "Queued the missing compact-schema aggregate measurement before a full-schema CE smoothing probe.",
   "watchdog_enabled": true,
-  "research_log_size": 663561,
+  "research_log_size": 664703,
   "stop_command": "STOP",
-  "next_experiment": null,
-  "recording_jobs": [
-    {
-      "pid": 395123,
-      "experiment_id": "clean-validation-when2call-only-ce-compact-cues-sftpre1-smooth005-lr1e5-max4096-batch2-seed20261058"
-    }
+  "next_experiment": [
+    "python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test",
+    "--checkpoint", "outputs/clean-validation-when2call-only-ce-compact-cues-sftpre1-smooth005-lr1e5-max4096-batch2-seed20261058",
+    "--output", "outputs/test-clean-validation-when2call-only-ce-compact-cues-sftpre1-smooth005-lr1e5-max4096-batch2-seed20261058.json"
   ],
+  "recording_jobs": [],
   "planning_notified_at": "2026-10-23T22:35:43.369811+00:00",
   "planning_ack_deadline": "2026-10-23T22:37:43.369834+00:00",
   "planning_attempts": 411
