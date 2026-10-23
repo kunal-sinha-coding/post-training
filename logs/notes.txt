@@ -6035,3 +6035,7 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 
 2026-10-23T05:34Z: Commit `queue fourway 94 02 03 01 weight probe` records the completed 95/2/2/1 result and the distinct pairwise-weight command. The watchdog launched it as PID 334779. Test labels were not used for selection.
 
+2026-10-23T05:39Z: The 94/2/3/1 calibrated probe completed with accuracy 0.5629791894852135 and macro F1 0.5626026600976674. It matched the best accuracy but was below the best macro F1, so the weight sweep is closed. The next queued experiment uses matched pairwise objectives with 5 auxiliary examples per class. Test labels were not used for selection.
+
+2026-10-23T05:39Z: Commit `queue matched pairwise auxiliary encoder` records the completed 94/2/3/1 result and the distinct matched-pairwise training command. The watchdog launched it as PID 335646. Test labels were not used for selection.
+

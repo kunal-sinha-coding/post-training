@@ -969,6 +969,22 @@ Aggregate black-box evidence: W&B run `vb7ino69`, ensemble accuracy `0.562705366
 
 The next local probe allocates one additional percentage point to the pairwise checkpoint, using weights `0.94, 0.02, 0.03, 0.01` with the same training-only bias. Test labels will not be used for selection.
 
+## test-clean-validation-encoder-fourway-94-02-03-01-calibrated-bias-result
+
+Timestamp: 2026-10-23T05:39:00Z. Status: completed.
+
+Aggregate black-box evidence: W&B run `u3t5ilqj`, ensemble accuracy `0.5629791894852135` and macro F1 `0.5626026600976674` on 3652 test examples. The result matches the best accuracy but is below the best macro F1 `0.5626354730459683`, so this local weight sweep is closed. Test labels were used only for this separate aggregate measurement.
+
+The next hypothesis tests pairwise ranking for both preference training and bounded auxiliary supervision. It keeps the fixed split, argument cues, learning rate, smoothing, and weight decay unchanged.
+
+## clean-validation-encoder-pairwise-aux05-cues-max4096-lr15e5-wd0005-smooth005-seed20261023
+
+Timestamp: 2026-10-23T05:39:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-encoder-pairwise-aux05-cues-max4096-lr15e5-wd0005-smooth005-seed20261023", "--loss-function", "pairwise_ranking", "--sft-loss-function", "pairwise_ranking", "--add-argument-cues", "--sft-aux-samples-per-class", "5", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Official test labels will not be loaded during selection.
+
+Hypothesis: Matching pairwise objectives across preference and auxiliary supervision may improve boundary transfer while preserving the useful bounded auxiliary mechanism.
+
 ## test-clean-validation-encoder-fourway-94-02-03-01-calibrated-bias
 
 Timestamp: 2026-10-23T05:34:00Z. Status: queued.
