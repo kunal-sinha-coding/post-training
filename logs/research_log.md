@@ -4830,6 +4830,20 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: The 4096-token pairwise zero-smoothing checkpoint may provide complementary errors at 20% weight, despite its weaker standalone score.
 
+Timestamp: 2026-10-23T03:42:00Z. Status: completed.
+
+Aggregate black-box evidence: W&B run r82llnzd, accuracy 0.5588718510405257 and macro F1 0.5583750210988511 on 3652 test examples. The test file reports `test_loaded=true`, `selection_complete=true`, `test_measurement_only=true`, and `black_box=true`. Both component training and clean-validation evidence were complete before this measurement. Official test labels were used only for reporting after selection.
+
+The 4096-token pairwise blend is below the best 3072-token pairwise 80/20 blend, so this context branch is closed. The next hypothesis tests a direct cross-entropy encoder at 4096 tokens with the historically stronger 2.5e-5 learning rate and moderate 0.005 smoothing.
+
+## clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023
+
+Timestamp: 2026-10-23T03:42:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023", "--loss-function", "cross_entropy", "--add-argument-cues", "--learning-rate", "2.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Official test labels will not be loaded during selection. Aggregate black-box evaluation will be queued after training and clean-validation evidence are recorded.
+
+Hypothesis: The 2.5e-5 learning rate performed well in earlier encoder exploration. Combining it with 4096-token context and moderate smoothing may improve transfer over the recent 1.5e-5 zero-smoothing run.
+
 ## clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023
 
 Timestamp: 2026-10-23T03:23:55.721461+00:00. Status: completed.
