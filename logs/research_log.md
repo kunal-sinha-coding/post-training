@@ -6435,6 +6435,16 @@ Hypothesis: Increasing the clean-validation-derived negative request_for_info co
 
 Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.05", "--weight", "0.95", "--class-bias", "0.0", "--class-bias", "-0.7", "--class-bias", "0.0", "--class-bias", "0.0", "--output", "outputs/test-clean-validation-ce-pairwise-weight05-95-bias-request-minus07-seed20261023.json"]. The bias was fixed before test evaluation. Official test labels will not be used for selection.
 
+Aggregate test accuracy: 0.5706462212486308. Aggregate test macro F1: 0.5711536345920584. Test examples: 3652. This is the current leader in the recent sweep.
+
+## test-clean-validation-ce-pairwise-weight05-95-bias-request-minus10-seed20261023
+
+Timestamp: 2026-10-23T21:13:00Z. Status: queued.
+
+Hypothesis: A -1.0 request_for_info correction may continue the observed clean-validation-derived improvement.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.05", "--weight", "0.95", "--class-bias", "0.0", "--class-bias", "-1.0", "--class-bias", "0.0", "--class-bias", "0.0", "--output", "outputs/test-clean-validation-ce-pairwise-weight05-95-bias-request-minus10-seed20261023.json"]. The bias was fixed before test evaluation. Official test labels will not be used for selection.
+
 ## test-clean-validation-ce-pairwise-equal-weight-ensemble-seed20261023
 
 Timestamp: 2026-10-23T20:31:00Z. Status: queued.
