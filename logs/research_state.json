@@ -4,20 +4,26 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 4096-token cross-entropy candidate with learning rate 2.5e-5 completed training at 0.983472 accuracy and 0.737651 macro F1, with clean validation at 0.959444 accuracy and 0.719725 macro F1. Its aggregate black-box measurement is missing, so queue that measurement before selecting any new experiment. Test labels will be used only for reporting after selection.",
+  "current_hypothesis": "The tuned 4096-token cross-entropy candidate reached 0.556407 aggregate accuracy and 0.555602 aggregate macro F1, below the best encoder strategies. Test labels were used only after selection. A conservative 95/5 blend with the strongest encoder may preserve complementary signal while limiting the weaker candidate's effect.",
   "active_experiment": {
-    "pid": 317649,
+    "pid": 318059,
     "command": [
       "python",
       "-u",
       "-m",
       "experiments.evaluate_frozen_when2call_ensemble_test",
       "--checkpoint",
+      "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
+      "--checkpoint",
       "outputs/clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023",
+      "--weight",
+      "0.95",
+      "--weight",
+      "0.05",
       "--output",
-      "outputs/test-clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023.json"
+      "outputs/test-clean-validation-encoder-ce4096lr25-blend-95-05.json"
     ],
-    "started_at": "2026-10-23T03:44:27.530082+00:00"
+    "started_at": "2026-10-23T03:45:59.874252+00:00"
   },
   "worker_command": [
     "python",
@@ -25,9 +31,15 @@
     "-m",
     "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
+    "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
+    "--checkpoint",
     "outputs/clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023",
+    "--weight",
+    "0.95",
+    "--weight",
+    "0.05",
     "--output",
-    "outputs/test-clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023.json"
+    "outputs/test-clean-validation-encoder-ce4096lr25-blend-95-05.json"
   ],
   "worker_queue": [],
   "_previous_command": [
@@ -60,10 +72,10 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T03:44:27.530090+00:00",
-  "last_action": "Watchdog started validation worker pid 317649.",
+  "last_heartbeat": "2026-10-23T03:45:59.874265+00:00",
+  "last_action": "Watchdog started validation worker pid 318059.",
   "watchdog_enabled": true,
-  "research_log_size": 465238,
+  "research_log_size": 466880,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -71,12 +83,18 @@
     "-m",
     "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
+    "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
+    "--checkpoint",
     "outputs/clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023",
+    "--weight",
+    "0.95",
+    "--weight",
+    "0.05",
     "--output",
-    "outputs/test-clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023.json"
+    "outputs/test-clean-validation-encoder-ce4096lr25-blend-95-05.json"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T03:43:56.991269+00:00",
-  "planning_ack_deadline": "2026-10-23T03:45:56.991294+00:00",
-  "planning_attempts": 284
+  "planning_notified_at": "2026-10-23T03:45:29.347534+00:00",
+  "planning_ack_deadline": "2026-10-23T03:47:29.347559+00:00",
+  "planning_attempts": 285
 }

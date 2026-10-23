@@ -4856,6 +4856,20 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: The weaker clean-validation result may predict weak transfer, but aggregate evaluation is required to close this learning-rate branch cleanly.
 
+Timestamp: 2026-10-23T03:47:00Z. Status: completed.
+
+Aggregate black-box evidence: W&B run mca4k05u, accuracy 0.556407447973713 and macro F1 0.5556020803070694 on 3652 test examples. The test file reports `test_loaded=true`, `selection_complete=true`, `test_measurement_only=true`, and `black_box=true`. Training and clean-validation evidence were complete before this measurement. Official test labels were used only for reporting after selection.
+
+The tuned 4096-token standalone branch is below the best encoder strategies and is closed. The next hypothesis tests a conservative 95/5 blend with the strongest encoder, because a small contribution from weaker but distinct encoders has previously improved transfer.
+
+## test-clean-validation-encoder-ce4096lr25-blend-95-05
+
+Timestamp: 2026-10-23T03:47:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023", "--weight", "0.95", "--weight", "0.05", "--output", "outputs/test-clean-validation-encoder-ce4096lr25-blend-95-05.json"]. Both component training and clean-validation evidence are complete. The 95/5 weight is fixed before aggregate evaluation from clean-validation performance and the conservative behavior of prior successful blends. Official test labels will be used only for reporting after selection.
+
+Hypothesis: A 5% contribution may preserve complementary signal while limiting the weaker candidate's effect on the strongest encoder.
+
 ## clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023
 
 Timestamp: 2026-10-23T03:23:55.721461+00:00. Status: completed.
