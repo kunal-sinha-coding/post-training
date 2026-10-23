@@ -4687,3 +4687,25 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-encoder-only-ce-cues-max3072-lr15e5-wd0005-smooth000-seed20261023
+
+Timestamp: 2026-10-23T03:19:16.918793+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-encoder-only-ce-cues-max3072-lr15e5-wd0005-smooth000-seed20261023", "--loss-function", "cross_entropy", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "3072", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-encoder-only-ce-cues-max3072-lr15e5-wd0005-smooth000-seed20261023. W&B run: not available.
+
+Clean development accuracy: 0.9688888888888889. Clean development macro F1: 0.7268892469181525. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+Timestamp: 2026-10-23T03:20:00Z. Status: completed_training_clean.
+
+Training evidence: accuracy 0.9866666666666667 and macro F1 0.7400558981443391 from the candidate metrics file. Clean-validation evidence: accuracy 0.9688888888888889 and macro F1 0.7268892469181525. The aggregate black-box measurement is missing. Official test labels were not used during training or clean-validation selection.
+
+## test-clean-validation-encoder-only-ce-cues-max3072-lr15e5-wd0005-smooth000-seed20261023
+
+Timestamp: 2026-10-23T03:20:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max3072-lr15e5-wd0005-smooth000-seed20261023", "--output", "outputs/test-clean-validation-encoder-only-ce-cues-max3072-lr15e5-wd0005-smooth000-seed20261023.json"]. Training and clean-validation evidence are complete before this aggregate-only measurement. Official test labels will be used only for reporting after selection.
+
+Hypothesis: The 3072-token candidate may retain the shorter-context regularization benefit while supporting the observed 2769-token example. Aggregate evaluation is required before selecting any next experiment.
