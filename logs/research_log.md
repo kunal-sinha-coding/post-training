@@ -5829,3 +5829,23 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-only-ce-cues-max4096-control-seed20261023
+
+Timestamp: 2026-10-23T17:02:20.483416+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-max4096-control-seed20261023", "--loss-function", "cross_entropy", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261031", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-when2call-only-ce-cues-max4096-control-seed20261023. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-only-ce-cues-max4096-control-batch2-seed20261023
+
+Timestamp: 2026-10-23T17:08:31.652972+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-max4096-control-batch2-seed20261023", "--loss-function", "cross_entropy", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261032", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-when2call-only-ce-cues-max4096-control-batch2-seed20261023. W&B run: not available.
+
+Clean development accuracy: 0.9583333333333334. Clean development macro F1: 0.718916488998112. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.

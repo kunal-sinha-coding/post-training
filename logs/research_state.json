@@ -1,16 +1,22 @@
 {
-  "status": "active",
+  "status": "awaiting_codex_planning",
   "planning_owner": "codex_primary",
-  "planning_required": false,
+  "planning_required": true,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "A Glaive-free When2Call encoder control at the supported 4,096-token limit with batch size 2 will isolate the source-distribution effect without exceeding GPU memory. Test labels remain reserved for reporting.",
   "active_experiment": {},
-  "worker_command": ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-max4096-control-batch2-seed20261023", "--loss-function", "cross_entropy", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261032", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"],
-  "worker_queue": [
-    ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-max4096-control-batch2-seed20261023", "--loss-function", "cross_entropy", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261032", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"],
-    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-max4096-control-batch2-seed20261023", "--output", "outputs/test-clean-validation-when2call-only-ce-cues-max4096-control-batch2-seed20261023.json"]
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_frozen_when2call_ensemble_test",
+    "--checkpoint",
+    "outputs/clean-validation-when2call-only-ce-cues-max4096-control-batch2-seed20261023",
+    "--output",
+    "outputs/test-clean-validation-when2call-only-ce-cues-max4096-control-batch2-seed20261023.json"
   ],
+  "worker_queue": [],
   "_previous_command": [
     "python",
     "-u",
@@ -41,14 +47,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T17:02:19.622732+00:00",
-  "last_action": "Codex queued the batch-size-2 repaired Glaive-free When2Call control followed by its aggregate test.",
+  "last_heartbeat": "2026-10-23T17:08:27.539805+00:00",
+  "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
-  "research_log_size": 564718,
+  "research_log_size": 565693,
   "stop_command": "STOP",
-  "next_experiment": ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-max4096-control-batch2-seed20261023", "--loss-function", "cross_entropy", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261032", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"],
+  "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T17:03:21.702905+00:00",
-  "planning_ack_deadline": "2026-10-23T17:05:21.702929+00:00",
-  "planning_attempts": 348
+  "planning_notified_at": "2026-10-23T17:10:00.384635+00:00",
+  "planning_ack_deadline": "2026-10-23T17:12:00.384659+00:00",
+  "planning_attempts": 349
 }
