@@ -4,13 +4,10 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "A second SFT-pretraining epoch followed by one preference epoch may extend the generalization gain observed from combining When2Call SFT and preference data. Test labels remain reserved for reporting.",
+  "current_hypothesis": "The preference-only and one-epoch SFT-plus-preference checkpoints may have complementary errors, so a clean-validation-motivated equal logit blend may improve aggregate generalization. Test labels remain reserved for reporting.",
   "active_experiment": {},
-  "worker_command": ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre2-max4096-batch2-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "2", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261034", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"],
-  "worker_queue": [
-    ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre2-max4096-batch2-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "2", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261034", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"],
-    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre2-max4096-batch2-seed20261023", "--output", "outputs/test-clean-validation-when2call-only-ce-cues-sftpre2-max4096-batch2-seed20261023.json"]
-  ],
+  "worker_command": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-max4096-control-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-max4096-batch2-seed20261023", "--weight", "0.5", "--weight", "0.5", "--output", "outputs/test-clean-validation-when2call-only-ce-sftpre1-plus-control-50-50-seed20261023.json"],
+  "worker_queue": [["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-max4096-control-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-max4096-batch2-seed20261023", "--weight", "0.5", "--weight", "0.5", "--output", "outputs/test-clean-validation-when2call-only-ce-sftpre1-plus-control-50-50-seed20261023.json"]],
   "_previous_command": [
     "python",
     "-u",
@@ -41,14 +38,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T17:18:40.600409+00:00",
-  "last_action": "Codex queued a second SFT-pretraining epoch followed by preference training and aggregate test evaluation.",
+  "last_heartbeat": "2026-10-23T17:32:00.981786+00:00",
+  "last_action": "Codex queued a 50/50 frozen blend of the preference-only and one-epoch SFT checkpoints.",
   "watchdog_enabled": true,
-  "research_log_size": 566726,
+  "research_log_size": 569053,
   "stop_command": "STOP",
-  "next_experiment": ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre2-max4096-batch2-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "2", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261034", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"],
+  "next_experiment": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-max4096-control-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-max4096-batch2-seed20261023", "--weight", "0.5", "--weight", "0.5", "--output", "outputs/test-clean-validation-when2call-only-ce-sftpre1-plus-control-50-50-seed20261023.json"],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T17:20:13.826505+00:00",
-  "planning_ack_deadline": "2026-10-23T17:22:13.826529+00:00",
-  "planning_attempts": 350
+  "planning_notified_at": "2026-10-23T17:33:34.157886+00:00",
+  "planning_ack_deadline": "2026-10-23T17:35:34.157909+00:00",
+  "planning_attempts": 351
 }
