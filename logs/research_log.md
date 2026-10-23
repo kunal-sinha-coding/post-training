@@ -927,6 +927,18 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: Increasing the complementary pairwise encoder contribution from 20% to 30% may improve the near-leader blend if its errors are genuinely complementary.
 
+Timestamp: 2026-10-23T03:06:28Z. Status: completed.
+
+W&B run: eirf1qye. Component training and clean-validation evidence were complete before this aggregate-only measurement. The 70/30 blend scored aggregate black-box accuracy 0.5558598028477546 and macro F1 0.555328138678698. Official test labels were used only for reporting after selection. The pairwise blend weight branch is closed, with 80/20 retained as its best tested weight.
+
+## clean-validation-encoder-only-ce-cues-max8192-lr15e5-wd0005-smooth005-seed20261023
+
+Timestamp: 2026-10-23T03:07:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-encoder-only-ce-cues-max8192-lr15e5-wd0005-smooth005-seed20261023", "--loss-function", "cross_entropy", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "8192", "--pref-train-epochs", "1"]. This is an encoder-only context-length candidate. Official test labels will not be loaded during selection.
+
+Hypothesis: The encoder-only pairwise objective underperformed despite strong clean validation. Longer context coverage with the more stable cross-entropy objective may capture useful tool-schema information without SFT auxiliary supervision.
+
 ## test-clean-validation-cues-aux05-lr15e5-mainpairwise-sftce-wd0005-smooth000-seed20261023-result
 
 Timestamp: 2026-10-23T01:35:28Z. Status: completed.

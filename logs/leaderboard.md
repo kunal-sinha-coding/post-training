@@ -499,3 +499,5 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-encoder-pairwise-blend-80-20 | — | — | — | Clean-validation-selected encoder pairwise blend queued | queued |
 | test-clean-validation-encoder-pairwise-blend-80-20 | 0.559145673603505 | 0.5587245952347717 | h7kxrgbp | Aggregate-only encoder pairwise blend, below the encoder leader | completed |
 | test-clean-validation-encoder-pairwise-blend-70-30 | — | — | — | Clean-validation-selected stronger pairwise encoder blend queued | queued |
+| test-clean-validation-encoder-pairwise-blend-70-30 | 0.5558598028477546 | 0.555328138678698 | eirf1qye | Aggregate-only encoder pairwise blend, below 80/20 and the encoder leader | completed |
+| Candidate | clean-validation-encoder-only-ce-cues-max8192-lr15e5-wd0005-smooth005-seed20261023 | — | — | [queued](../outputs/clean-validation-encoder-only-ce-cues-max8192-lr15e5-wd0005-smooth005-seed20261023) | Distinct encoder-only 8192-token cross-entropy candidate | queued |
