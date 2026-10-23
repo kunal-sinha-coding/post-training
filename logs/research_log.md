@@ -4778,6 +4778,18 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 
 Hypothesis: Zero label smoothing at 4096 tokens may improve transfer by preserving sharper class boundaries while avoiding the 2048-token input failure.
 
+Timestamp: 2026-10-23T03:33:00Z. Status: completed_training_clean.
+
+Training evidence: accuracy 0.9868055555555556 and macro F1 0.7401598728668729 from the candidate metrics file. Clean-validation evidence: accuracy 0.9688888888888889 and macro F1 0.7268897976861949. The aggregate black-box measurement is missing. Official test labels were not used during training or clean-validation selection.
+
+## test-clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth000-seed20261023
+
+Timestamp: 2026-10-23T03:33:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth000-seed20261023", "--output", "outputs/test-clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth000-seed20261023.json"]. Training and clean-validation evidence are complete before this aggregate-only measurement. Official test labels will be used only for reporting after selection.
+
+Hypothesis: The 4096-token zero-smoothing candidate may transfer better than the 3072-token zero-smoothing candidate while retaining sharper class boundaries.
+
 ## clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023
 
 Timestamp: 2026-10-23T03:23:55.721461+00:00. Status: completed.
@@ -4785,5 +4797,15 @@ Timestamp: 2026-10-23T03:23:55.721461+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023", "--loss-function", "pairwise_ranking", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "3072", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023. W&B run: not available.
 
 Clean development accuracy: 0.9683333333333334. Clean development macro F1: 0.7264314442790553. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth000-seed20261023
+
+Timestamp: 2026-10-23T03:32:38.731854+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth000-seed20261023", "--loss-function", "cross_entropy", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth000-seed20261023. W&B run: not available.
+
+Clean development accuracy: 0.9688888888888889. Clean development macro F1: 0.7268897976861949. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
