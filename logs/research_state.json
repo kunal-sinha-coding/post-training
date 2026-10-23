@@ -1,7 +1,7 @@
 {
-  "status": "active",
+  "status": "awaiting_codex_planning",
   "planning_owner": "codex_primary",
-  "planning_required": false,
+  "planning_required": true,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "Filtering the direct class from Glaive Function Calling v2 and combining a bounded sample with non-direct When2Call preference and SFT data will improve the encoder's clean-validation behavior without introducing the benchmark-absent direct class. Test labels remain reserved for reporting.",
@@ -10,36 +10,13 @@
     "python",
     "-u",
     "-m",
-    "experiments.clean_validation_glaive",
-    "--output-dir",
+    "experiments.evaluate_frozen_when2call_ensemble_test",
+    "--checkpoint",
     "outputs/clean-validation-glaive-filtered-two-validation-retry2-seed20261023",
-    "--glaive-sample",
-    "10000",
-    "--pref-sample",
-    "3000",
-    "--sft-sample",
-    "3000",
-    "--epochs",
-    "1",
-    "--seed",
-    "20261023",
-    "--split-seed",
-    "20261023",
-    "--max-length",
-    "4096"
+    "--output",
+    "outputs/test-clean-validation-glaive-filtered-two-validation-retry2-seed20261023.json"
   ],
-  "worker_queue": [
-    [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_frozen_when2call_ensemble_test",
-      "--checkpoint",
-      "outputs/clean-validation-glaive-filtered-two-validation-retry2-seed20261023",
-      "--output",
-      "outputs/test-clean-validation-glaive-filtered-two-validation-retry2-seed20261023.json"
-    ]
-  ],
+  "worker_queue": [],
   "_previous_command": [
     "python",
     "-u",
@@ -70,14 +47,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T16:15:45.776621+00:00",
-  "last_action": "Codex queued the second checkpoint-loader retry for the dual-validation filtered Glaive pilot.",
+  "last_heartbeat": "2026-10-23T16:18:48.866081+00:00",
+  "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
   "research_log_size": 551638,
   "stop_command": "STOP",
   "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T16:16:48.222177+00:00",
-  "planning_ack_deadline": "2026-10-23T16:18:48.222201+00:00",
-  "planning_attempts": 338
+  "planning_notified_at": "2026-10-23T16:19:20.609446+00:00",
+  "planning_ack_deadline": "2026-10-23T16:21:20.609469+00:00",
+  "planning_attempts": 339
 }
