@@ -895,6 +895,22 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## aggregate-test-clean-validation-glaive-balanced-3k-pref3k-sft3k-max2048-batch2-seed20261023
+
+Timestamp: 2026-10-23T16:47:24.079571+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-glaive-balanced-3k-pref3k-sft3k-max2048-batch2-seed20261023", "--output", "outputs/test-clean-validation-glaive-balanced-3k-pref3k-sft3k-max2048-batch2-seed20261023.json"]. Test artifact: /workspace/post-training/outputs/test-clean-validation-glaive-balanced-3k-pref3k-sft3k-max2048-batch2-seed20261023.json. W&B run: xk6jfdvy.
+
+Training evidence: accuracy 0.9493055555555555 and macro F1 0.9492066391001845.
+
+Clean validation evidence: Glaive accuracy 0.9533333333333334 and macro F1 0.9289621106354174. When2Call accuracy 0.8925 and macro F1 0.85419297602685.
+
+Aggregate black-box test evidence: accuracy 0.49890470974808326 and macro F1 0.47918438185462153. Test labels were used only for this final report, not for selection.
+
+## clean-validation-glaive-light-1k-pref3k-sft3k-max2048-batch2-seed20261023
+
+Status: queued. Hypothesis: a light Glaive contribution may retain generic-data benefit without the larger validation degradation seen in the balanced mixture. The required aggregate black-box test is queued immediately after training. Selection will use training and clean validation only.
+
 ## aggregate-test-clean-validation-glaive-filtered-two-validation-retry3-seed20261023
 
 Timestamp: 2026-10-23T16:27:26.982927+00:00. Status: completed.
@@ -5729,5 +5745,25 @@ Timestamp: 2026-10-23T16:35:37.178464+00:00. Status: failed_or_incomplete.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_glaive", "--output-dir", "outputs/clean-validation-glaive-balanced-5k-pref5k-sft5k-seed20261023", "--glaive-sample", "5000", "--pref-sample", "5000", "--sft-sample", "5000", "--epochs", "1", "--seed", "20261025", "--split-seed", "20261025", "--max-length", "4096"]. Output: /workspace/post-training/outputs/clean-validation-glaive-balanced-5k-pref5k-sft5k-seed20261023. W&B run: not available.
 
 Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-glaive-balanced-3k-pref3k-sft3k-max2048-seed20261023
+
+Timestamp: 2026-10-23T16:40:46.476826+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_glaive", "--output-dir", "outputs/clean-validation-glaive-balanced-3k-pref3k-sft3k-max2048-seed20261023", "--glaive-sample", "3000", "--pref-sample", "3000", "--sft-sample", "3000", "--epochs", "1", "--seed", "20261026", "--split-seed", "20261026", "--max-length", "2048"]. Output: /workspace/post-training/outputs/clean-validation-glaive-balanced-3k-pref3k-sft3k-max2048-seed20261023. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-glaive-balanced-3k-pref3k-sft3k-max2048-batch2-seed20261023
+
+Timestamp: 2026-10-23T16:46:24.052588+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_glaive", "--output-dir", "outputs/clean-validation-glaive-balanced-3k-pref3k-sft3k-max2048-batch2-seed20261023", "--glaive-sample", "3000", "--pref-sample", "3000", "--sft-sample", "3000", "--epochs", "1", "--seed", "20261027", "--split-seed", "20261027", "--max-length", "2048", "--batch-size", "2"]. Output: /workspace/post-training/outputs/clean-validation-glaive-balanced-3k-pref3k-sft3k-max2048-batch2-seed20261023. W&B run: not available.
+
+Clean development accuracy: 0.8925. Clean development macro F1: 0.85419297602685. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.

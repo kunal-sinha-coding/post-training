@@ -6090,4 +6090,8 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 
 2026-10-23T16:37Z: Queued a distinct smaller balanced probe with 3,000 Glaive, 3,000 When2Call preference, and 3,000 When2Call SFT examples, one epoch, and a 2,048-token context. Its aggregate black-box evaluation is the next queue entry. Set planning_required false and status active. Test labels will not be used for selection.
 
+2026-10-23T16:48Z: Verified complete evidence for the batch-size-2 balanced probe. Training accuracy 0.9493055555555555 and macro F1 0.9492066391001845. Glaive validation accuracy 0.9533333333333334 and macro F1 0.9289621106354174. When2Call validation accuracy 0.8925 and macro F1 0.85419297602685. Aggregate test accuracy 0.49890470974808326 and macro F1 0.47918438185462153 from W&B run xk6jfdvy. Test labels were not used for selection.
+
+2026-10-23T16:48Z: Queued a distinct light-Glaive probe with 1,000 Glaive, 3,000 When2Call preference, and 3,000 When2Call SFT examples, batch size 2, and a 2,048-token context. Its aggregate test evaluation is queued immediately after training. Set planning_required false and status active.
+
 2026-10-23T16:42Z: The 3,000-example balanced probe also failed from CUDA out-of-memory during the encoder forward pass. Added an explicit batch-size argument to the shared training loop and Glaive trainer. The next retry will use batch size 2.

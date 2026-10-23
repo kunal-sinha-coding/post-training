@@ -4,12 +4,12 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "A smaller balanced filtered-Glaive, When2Call preference, and When2Call SFT mixture with a 2,048-token context and batch size 2 may fit GPU memory while preserving the source-balance signal. Test labels remain reserved for reporting.",
+  "current_hypothesis": "A light 1,000-example filtered-Glaive contribution combined with 3,000 When2Call preference and 3,000 When2Call SFT examples may retain useful generic coverage while reducing the validation degradation from the balanced mixture. Test labels remain reserved for reporting.",
   "active_experiment": {},
-  "worker_command": ["python", "-u", "-m", "experiments.clean_validation_glaive", "--output-dir", "outputs/clean-validation-glaive-balanced-3k-pref3k-sft3k-max2048-batch2-seed20261023", "--glaive-sample", "3000", "--pref-sample", "3000", "--sft-sample", "3000", "--epochs", "1", "--seed", "20261027", "--split-seed", "20261027", "--max-length", "2048", "--batch-size", "2"],
+  "worker_command": ["python", "-u", "-m", "experiments.clean_validation_glaive", "--output-dir", "outputs/clean-validation-glaive-light-1k-pref3k-sft3k-max2048-batch2-seed20261023", "--glaive-sample", "1000", "--pref-sample", "3000", "--sft-sample", "3000", "--epochs", "1", "--seed", "20261028", "--split-seed", "20261028", "--max-length", "2048", "--batch-size", "2"],
   "worker_queue": [
-    ["python", "-u", "-m", "experiments.clean_validation_glaive", "--output-dir", "outputs/clean-validation-glaive-balanced-3k-pref3k-sft3k-max2048-batch2-seed20261023", "--glaive-sample", "3000", "--pref-sample", "3000", "--sft-sample", "3000", "--epochs", "1", "--seed", "20261027", "--split-seed", "20261027", "--max-length", "2048", "--batch-size", "2"],
-    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-glaive-balanced-3k-pref3k-sft3k-max2048-batch2-seed20261023", "--output", "outputs/test-clean-validation-glaive-balanced-3k-pref3k-sft3k-max2048-batch2-seed20261023.json"]
+    ["python", "-u", "-m", "experiments.clean_validation_glaive", "--output-dir", "outputs/clean-validation-glaive-light-1k-pref3k-sft3k-max2048-batch2-seed20261023", "--glaive-sample", "1000", "--pref-sample", "3000", "--sft-sample", "3000", "--epochs", "1", "--seed", "20261028", "--split-seed", "20261028", "--max-length", "2048", "--batch-size", "2"],
+    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-glaive-light-1k-pref3k-sft3k-max2048-batch2-seed20261023", "--output", "outputs/test-clean-validation-glaive-light-1k-pref3k-sft3k-max2048-batch2-seed20261023.json"]
   ],
   "_previous_command": [
     "python",
@@ -41,14 +41,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T16:40:45.425979+00:00",
-  "last_action": "Codex queued a batch-size-2 balanced filtered-Glaive training run followed by its required aggregate black-box evaluation.",
+  "last_heartbeat": "2026-10-23T16:46:23.522829+00:00",
+  "last_action": "Codex queued a light-Glaive training run followed by its required aggregate black-box evaluation.",
   "watchdog_enabled": true,
-  "research_log_size": 556223,
+  "research_log_size": 557106,
   "stop_command": "STOP",
-  "next_experiment": ["python", "-u", "-m", "experiments.clean_validation_glaive", "--output-dir", "outputs/clean-validation-glaive-balanced-3k-pref3k-sft3k-max2048-batch2-seed20261023", "--glaive-sample", "3000", "--pref-sample", "3000", "--sft-sample", "3000", "--epochs", "1", "--seed", "20261027", "--split-seed", "20261027", "--max-length", "2048", "--batch-size", "2"],
+  "next_experiment": ["python", "-u", "-m", "experiments.clean_validation_glaive", "--output-dir", "outputs/clean-validation-glaive-light-1k-pref3k-sft3k-max2048-batch2-seed20261023", "--glaive-sample", "1000", "--pref-sample", "3000", "--sft-sample", "3000", "--epochs", "1", "--seed", "20261028", "--split-seed", "20261028", "--max-length", "2048", "--batch-size", "2"],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T16:41:18.214636+00:00",
-  "planning_ack_deadline": "2026-10-23T16:43:18.214659+00:00",
-  "planning_attempts": 343
+  "planning_notified_at": "2026-10-23T16:47:25.664064+00:00",
+  "planning_ack_deadline": "2026-10-23T16:49:25.664085+00:00",
+  "planning_attempts": 344
 }
