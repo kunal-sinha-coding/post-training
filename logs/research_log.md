@@ -1001,6 +1001,20 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 
 Hypothesis: SFT adaptation before preference training may improve representation alignment without adding the rejected-response distribution shift.
 
+## clean-validation-encoder-sftpre1-aux05-cues-max4096-lr15e5-wd0005-smooth005-seed20261023-result
+
+Timestamp: 2026-10-23T05:53:00Z. Status: completed.
+
+Training evidence: accuracy `0.9889058383025933` and macro F1 `0.7417888735598335`. Clean-validation evidence: accuracy `0.9705555555555555` and macro F1 `0.7281473526936322`. The metrics file reports `test_loaded=false`, and selection used only the fixed clean split.
+
+The candidate is viable for aggregate measurement. Its aggregate test evaluation is queued before any new training experiment. Official test labels will not be used for selection.
+
+## test-clean-validation-encoder-sftpre1-aux05-cues-max4096-lr15e5-wd0005-smooth005-seed20261023
+
+Timestamp: 2026-10-23T05:53:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-encoder-sftpre1-aux05-cues-max4096-lr15e5-wd0005-smooth005-seed20261023", "--output", "outputs/test-clean-validation-encoder-sftpre1-aux05-cues-max4096-lr15e5-wd0005-smooth005-seed20261023.json"]. Training and clean-validation evidence are complete. This is an aggregate-only measurement. Official test labels will not be used for selection.
+
 ## clean-validation-encoder-pairwise-aux05-cues-max4096-lr15e5-wd0005-smooth005-seed20261023-result
 
 Timestamp: 2026-10-23T05:42:00Z. Status: completed.
@@ -5583,5 +5597,15 @@ Timestamp: 2026-10-23T05:41:28.159740+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-encoder-pairwise-aux05-cues-max4096-lr15e5-wd0005-smooth005-seed20261023", "--loss-function", "pairwise_ranking", "--sft-loss-function", "pairwise_ranking", "--add-argument-cues", "--sft-aux-samples-per-class", "5", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-encoder-pairwise-aux05-cues-max4096-lr15e5-wd0005-smooth005-seed20261023. W&B run: not available.
 
 Clean development accuracy: 0.9655555555555555. Clean development macro F1: 0.7244162741288008. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-encoder-sftpre1-aux05-cues-max4096-lr15e5-wd0005-smooth005-seed20261023
+
+Timestamp: 2026-10-23T05:52:47.640228+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-encoder-sftpre1-aux05-cues-max4096-lr15e5-wd0005-smooth005-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--add-argument-cues", "--sft-aux-samples-per-class", "5", "--sft-pretrain-epochs", "1", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-encoder-sftpre1-aux05-cues-max4096-lr15e5-wd0005-smooth005-seed20261023. W&B run: not available.
+
+Clean development accuracy: 0.9705555555555555. Clean development macro F1: 0.7281473526936322. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.

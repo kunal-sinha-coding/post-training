@@ -6047,5 +6047,9 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 
 2026-10-23T05:47Z: Commit `queue sft pretraining auxiliary encoder` records the completed matched-pairwise aggregate result and the distinct SFT-pretraining command. The watchdog launched it as PID 337235. Test labels were not used for selection.
 
+2026-10-23T05:53Z: The SFT-pretraining encoder completed with training accuracy 0.9889058383025933 and training macro F1 0.7417888735598335. Clean validation was accuracy 0.9705555555555555 and macro F1 0.7281473526936322. The required aggregate measurement was queued before any new experiment. Test labels were not used for selection.
+
+2026-10-23T05:53Z: Commit `queue sft pretraining aggregate evaluation` records complete SFT-pretraining training and clean-validation evidence and the required aggregate command. The watchdog launched it as PID 337755. Test labels were not used for selection.
+
 2026-10-23T05:44Z: Commit `queue matched pairwise aggregate evaluation retry` records the required aggregate command after the watchdog handoff. The watchdog launched it as PID 336673. Test labels were not used for selection.
 
