@@ -895,6 +895,18 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-when2call-fullschema-smooth0075-wd0025-blend80-20
+
+Timestamp: 2026-10-23T23:13:00Z. Status: queued.
+
+The prior 80/20 and 90/10 commands referenced the unavailable seed20261056 checkpoint and failed before measurement. This repaired aggregate command uses the available full-schema smoothing seed20261059 and lower-weight-decay seed20261061 checkpoints. Weights are fixed without test labels.
+
+## test-clean-validation-when2call-fullschema-smooth0075-wd0025-blend90-10
+
+Timestamp: 2026-10-23T23:13:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth0075-lr1e5-max4096-batch2-seed20261059", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd0025-lr1e5-max4096-batch2-seed20261061", "--weight", "0.9", "--weight", "0.1", "--output", "outputs/test-clean-validation-when2call-fullschema-smooth0075-wd0025-blend90-10.json"]. The weights are fixed from clean-validation results before aggregate evaluation. Test labels are not used for selection.
+
 ## test-clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd0025-lr1e5-max4096-batch2-seed20261061
 
 Timestamp: 2026-10-23T23:07:21Z. Status: completed.
