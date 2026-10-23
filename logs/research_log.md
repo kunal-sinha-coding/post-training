@@ -895,6 +895,22 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-when2call-only-ce-sftaux1-sftpre1-lr1e5-max4096-batch2-seed20261052-result
+
+Timestamp: 2026-10-23T21:40:00Z. Status: completed.
+
+Aggregate black-box evidence: accuracy `0.5443592552026287` and macro F1 `0.542210837002069` on 3,652 test examples. Training accuracy was `0.9884770234624463` with macro F1 `0.7414568389013401`. Clean-validation accuracy was `0.9733333333333334` with macro F1 `0.7301875370002818`. The candidate was selected using training and clean validation only. Test labels were used only for this separate aggregate measurement.
+
+The one-example dose did not improve transfer. The next hypothesis is selected from clean-validation evidence and tests two auxiliary SFT examples per class.
+
+## clean-validation-when2call-only-ce-sftaux2-sftpre1-lr1e5-max4096-batch2-seed20261053
+
+Timestamp: 2026-10-23T21:41:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-sftaux2-sftpre1-lr1e5-max4096-batch2-seed20261053", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--sft-aux-samples-per-class", "2", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261053", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. This uses only the fixed training and clean-validation partitions. Official test data and labels will not be loaded during selection.
+
+Hypothesis: The one-example dose was close to the control. Two auxiliary examples per class may reveal a useful low-dose region without the degradation seen at five examples.
+
 ## test-clean-validation-when2call-only-ce-sftaux1-sftpre1-lr1e5-max4096-batch2-seed20261052
 
 Timestamp: 2026-10-23T21:38:00Z. Status: queued.
