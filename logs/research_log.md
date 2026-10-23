@@ -1085,6 +1085,14 @@ Timestamp: 2026-10-23T19:48:00Z. Status: queued.
 
 Setup: ["python", "-u", "-m", "experiments.calibrate_clean_validation", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--output", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-calibration.json", "--seed", "20261044", "--split-seed", "20261021", "--calibration-fraction", "0.1", "--max-length", "4096"]. This uses only training-only calibration and the fixed clean-validation split. Official test labels will not be loaded during selection.
 
+Training evidence is inherited from the frozen pairwise checkpoint. Clean-validation accuracy was `0.9616666666666667` and macro F1 was `0.7214016499164823`. The fitted bias was `[0.0, 0.0, 0.0, 0.0]`, so calibration did not improve the uncalibrated candidate, but the candidate remains viable for aggregate evidence completion.
+
+## test-clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-calibration
+
+Timestamp: 2026-10-23T19:50:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--output", "outputs/test-clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-calibration.json"]. Training and clean-validation evidence are complete. The zero bias was fixed from training-only calibration before aggregate evaluation. Official test labels will not be used for selection.
+
 ## aggregate-test-clean-validation-when2call-only-ce-cues-sftpre2-max4096-batch2-seed20261023
 
 Timestamp: 2026-10-23T17:33:31.579723+00:00. Status: completed.
