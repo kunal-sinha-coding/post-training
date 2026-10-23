@@ -6385,6 +6385,16 @@ Hypothesis: Applying the fixed complete-required-field rule to the strongest 5/9
 
 Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.05", "--weight", "0.95", "--complete-request-to-tool", "--output", "outputs/test-clean-validation-ce-pairwise-weight05-95-complete-rule-seed20261023.json"]. The weight and rule were fixed before test evaluation. Official test labels will not be used for selection.
 
+Aggregate test accuracy: 0.5599671412924425. Aggregate test macro F1: 0.560489725289368. Test examples: 3652. The complete-request rule did not improve the fixed blend.
+
+## test-clean-validation-ce-pairwise-weight05-95-argument-rule-seed20261023
+
+Timestamp: 2026-10-23T21:01:00Z. Status: queued.
+
+Hypothesis: Requiring evidence for every required argument value may correct only high-confidence request-for-info cases, reducing false tool calls.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.05", "--weight", "0.95", "--argument-evidence-to-tool", "--output", "outputs/test-clean-validation-ce-pairwise-weight05-95-argument-rule-seed20261023.json"]. The weight and rule were fixed before test evaluation. Official test labels will not be used for selection.
+
 ## test-clean-validation-ce-pairwise-equal-weight-ensemble-seed20261023
 
 Timestamp: 2026-10-23T20:31:00Z. Status: queued.

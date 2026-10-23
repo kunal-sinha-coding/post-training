@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The complete-required-field rule is viable but below the best 5/95 blend. Applying that fixed rule to the 5/95 CE-to-pairwise ensemble may combine complementary improvements without test-driven selection.",
+  "current_hypothesis": "The complete-required-field rule does not improve the 5/95 blend. A narrower rule that requires evidence for every required argument value may better target request-for-info versus tool-call errors.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -12,12 +12,18 @@
     "-m",
     "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
+    "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023",
+    "--checkpoint",
     "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023",
+    "--weight",
+    "0.05",
+    "--weight",
+    "0.95",
     "--complete-request-to-tool",
     "--output",
-    "outputs/test-clean-validation-pairwise-complete-request-rule-seed20261023.json"
+    "outputs/test-clean-validation-ce-pairwise-weight05-95-complete-rule-seed20261023.json"
   ],
-  "worker_queue": [["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.05", "--weight", "0.95", "--complete-request-to-tool", "--output", "outputs/test-clean-validation-ce-pairwise-weight05-95-complete-rule-seed20261023.json"]],
+  "worker_queue": [["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.05", "--weight", "0.95", "--argument-evidence-to-tool", "--output", "outputs/test-clean-validation-ce-pairwise-weight05-95-argument-rule-seed20261023.json"]],
   "_previous_command": [
     "python",
     "-u",
@@ -48,14 +54,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T20:58:48.415266+00:00",
-  "last_action": "Codex recorded the omit-schema and complete-request rule test results, then queued their fixed combined 5/95 ensemble probe.",
+  "last_heartbeat": "2026-10-23T21:00:52.132572+00:00",
+  "last_action": "Codex recorded the combined-rule test result and queued an argument-evidence-to-tool probe on the fixed 5/95 ensemble.",
   "watchdog_enabled": true,
-  "research_log_size": 629622,
+  "research_log_size": 630600,
   "stop_command": "STOP",
-  "next_experiment": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.05", "--weight", "0.95", "--complete-request-to-tool", "--output", "outputs/test-clean-validation-ce-pairwise-weight05-95-complete-rule-seed20261023.json"],
+  "next_experiment": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.05", "--weight", "0.95", "--argument-evidence-to-tool", "--output", "outputs/test-clean-validation-ce-pairwise-weight05-95-argument-rule-seed20261023.json"],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T21:00:21.172175+00:00",
-  "planning_ack_deadline": "2026-10-23T21:02:21.172201+00:00",
-  "planning_attempts": 390
+  "planning_notified_at": "2026-10-23T21:02:54.626234+00:00",
+  "planning_ack_deadline": "2026-10-23T21:04:54.626258+00:00",
+  "planning_attempts": 391
 }
