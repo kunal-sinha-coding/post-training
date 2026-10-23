@@ -123,13 +123,15 @@ def add_argument_cues(examples: list) -> list:
     return examples
 
 
-def prepare_rejected_examples(rows: object) -> list[Example]:
+def prepare_rejected_examples(rows: object, exclude_direct: bool = False) -> list[Example]:
     """Create training-only examples labeled from rejected response content."""
     # Reuse the same question and tool context while testing whether rejected labels repair direct-class sparsity.
     examples = []
     for index, row in enumerate(rows):
         user_text = "\n".join(message["content"] for message in row["messages"] if message["role"] == "user")
         label = LABEL_TO_ID[response_label(row["rejected_response"]["content"])]
+        if exclude_direct and label == LABEL_TO_ID["direct"]:
+            continue
         text = f"Question: {user_text}\nAvailable tools:\n{tools_text(row['tools'])}"
         examples.append(Example(text, label, f"rejected-{index}"))
     return examples
@@ -201,6 +203,7 @@ def main() -> int:
     parser.add_argument("--max-length", type=int, default=8192)
     parser.add_argument("--batch-size", type=int, default=8)
     parser.add_argument("--include-rejected-examples", action="store_true")
+    parser.add_argument("--exclude-rejected-direct", action="store_true")
     parser.add_argument("--rejected-direct-samples", type=int, default=0)
     parser.add_argument("--sft-aux-samples-per-class", type=int, default=0)
     parser.add_argument("--sft-pretrain-epochs", type=int, default=0)
@@ -238,7 +241,7 @@ def main() -> int:
         train, development = examples, []
     # Add rejected-response supervision only to training after the development split is frozen.
     if args.include_rejected_examples:
-        train.extend(prepare_rejected_examples(rows))
+        train.extend(prepare_rejected_examples(rows, exclude_direct=args.exclude_rejected_direct))
     # Add only a bounded direct subset when testing targeted label repair.
     if args.rejected_direct_samples > 0:
         rejected_direct = [item for item in prepare_rejected_examples(rows) if item.label == LABEL_TO_ID["direct"]]

@@ -1065,6 +1065,16 @@ Timestamp: 2026-10-23T19:28:00Z. Status: queued.
 
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-rejected-lr1e5-max4096-batch2-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--include-rejected-examples", "--learning-rate", "1e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261042", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. This uses only the fixed training and clean-validation partitions. Official test labels will not be loaded during selection.
 
+Training evidence: accuracy `0.44419753086419755` and macro F1 `0.3638753579651636`. Clean-validation evidence: accuracy `0.9361111111111111` and macro F1 `0.702273198160988`. The rejected examples added 2,737 direct-class training rows, while the clean split contains one direct example. The probe is rejected and no aggregate test is queued.
+
+The next hypothesis filters direct-class rejected examples while retaining the other rejected-response supervision. This tests the identified class-distribution failure without using official test labels.
+
+## clean-validation-when2call-only-ce-cues-rejected-nodirect-lr1e5-max4096-batch2-seed20261023
+
+Timestamp: 2026-10-23T19:38:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-rejected-nodirect-lr1e5-max4096-batch2-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--include-rejected-examples", "--exclude-rejected-direct", "--learning-rate", "1e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261043", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. The fixed training and clean-validation partitions are used. Official test labels will not be loaded during selection.
+
 ## aggregate-test-clean-validation-when2call-only-ce-cues-sftpre2-max4096-batch2-seed20261023
 
 Timestamp: 2026-10-23T17:33:31.579723+00:00. Status: completed.
@@ -6139,5 +6149,15 @@ Timestamp: 2026-10-23T19:24:41.804336+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth005-lr1e5-max4096-batch2-seed20261023", "--loss-function", "pairwise_ranking", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261041", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth005-lr1e5-max4096-batch2-seed20261023. W&B run: not available.
 
 Clean development accuracy: 0.9638888888888889. Clean development macro F1: 0.7231485859715967. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-only-ce-cues-rejected-lr1e5-max4096-batch2-seed20261023
+
+Timestamp: 2026-10-23T19:37:05.350673+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-rejected-lr1e5-max4096-batch2-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--include-rejected-examples", "--learning-rate", "1e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261042", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-when2call-only-ce-cues-rejected-lr1e5-max4096-batch2-seed20261023. W&B run: not available.
+
+Clean development accuracy: 0.9361111111111111. Clean development macro F1: 0.702273198160988. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
