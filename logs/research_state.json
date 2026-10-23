@@ -1,7 +1,7 @@
 {
-  "status": "active",
+  "status": "awaiting_codex_planning",
   "planning_owner": "codex_primary",
-  "planning_required": false,
+  "planning_required": true,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "The three-member 70/15/15 blend reached test macro F1 0.55404, slightly above the earlier two-member blend. Test whether increasing the strongest smoothing checkpoint to 80 percent while retaining both weight-decay variants improves the blend.",
@@ -26,28 +26,7 @@
     "--output",
     "outputs/test-clean-validation-when2call-fullschema-smooth0075-wd0025-wd01-blend80-10-10.json"
   ],
-  "worker_queue": [
-    [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_frozen_when2call_ensemble_test",
-      "--checkpoint",
-      "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth0075-lr1e5-max4096-batch2-seed20261059",
-      "--checkpoint",
-      "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd0025-lr1e5-max4096-batch2-seed20261061",
-      "--checkpoint",
-      "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd01-lr1e5-max4096-batch2-seed20261064",
-      "--weight",
-      "0.8",
-      "--weight",
-      "0.1",
-      "--weight",
-      "0.1",
-      "--output",
-      "outputs/test-clean-validation-when2call-fullschema-smooth0075-wd0025-wd01-blend80-10-10.json"
-    ]
-  ],
+  "worker_queue": [],
   "_previous_command": [
     "python",
     "-u",
@@ -78,33 +57,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T23:48:52.812747+00:00",
-  "last_action": "Backfilled the completed 70/15/15 aggregate measurement and queued the distinct 80/10/10 blend. Test labels were not used for selection.",
+  "last_heartbeat": "2026-10-23T23:52:56.911685+00:00",
+  "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
-  "research_log_size": 689067,
+  "research_log_size": 689623,
   "stop_command": "STOP",
-  "next_experiment": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.evaluate_frozen_when2call_ensemble_test",
-    "--checkpoint",
-    "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth0075-lr1e5-max4096-batch2-seed20261059",
-    "--checkpoint",
-    "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd0025-lr1e5-max4096-batch2-seed20261061",
-    "--checkpoint",
-    "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd01-lr1e5-max4096-batch2-seed20261064",
-    "--weight",
-    "0.8",
-    "--weight",
-    "0.1",
-    "--weight",
-    "0.1",
-    "--output",
-    "outputs/test-clean-validation-when2call-fullschema-smooth0075-wd0025-wd01-blend80-10-10.json"
-  ],
+  "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T23:50:56.251189+00:00",
-  "planning_ack_deadline": "2026-10-23T23:52:56.251212+00:00",
-  "planning_attempts": 422
+  "planning_notified_at": "2026-10-23T23:55:30.958350+00:00",
+  "planning_ack_deadline": "2026-10-23T23:57:30.958375+00:00",
+  "planning_attempts": 423
 }
