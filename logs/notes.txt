@@ -5997,3 +5997,5 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 
 2026-10-23T05:03Z: The bounded rejected-direct encoder completed with training accuracy 0.8680487804878049 and training macro F1 0.693407092411345. Clean validation was accuracy 0.9672222222222222 and macro F1 0.7256571122310739. The aggregate black-box measurement was missing, so it was queued before any new experiment. Test labels were not used for selection.
 
+2026-10-23T05:05Z: The 1,000-example rejected-direct encoder completed with aggregate accuracy 0.537513691128149 and macro F1 0.5390353276136276. The branch is closed. The next queued hypothesis uses 250 rejected-direct examples to reduce distribution shift. Test labels were not used for selection.
+

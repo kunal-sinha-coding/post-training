@@ -903,6 +903,22 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: This measurement closes the bounded rejected-direct augmentation branch and tests whether its clean-validation behavior transfers to the black-box test.
 
+## test-clean-validation-encoder-rejected-direct-1000-cues-max4096-lr15e5-wd0005-smooth000-seed20261023
+
+Timestamp: 2026-10-23T05:05:00Z. Status: completed.
+
+Aggregate black-box evidence: W&B run yyibwnqx, accuracy 0.537513691128149 and macro F1 0.5390353276136276 on 3652 test examples. The test file reports `test_loaded=true`, `selection_complete=true`, `test_measurement_only=true`, and `black_box=true`. Training and clean-validation evidence were complete before this measurement. Test labels were not used for selection.
+
+The 1,000-example direct augmentation branch is closed because it transferred poorly. The next hypothesis uses a smaller 250-example direct augmentation to reduce distribution shift while retaining targeted direct-class supervision.
+
+## clean-validation-encoder-rejected-direct-250-cues-max4096-lr15e5-wd0005-smooth000-seed20261023
+
+Timestamp: 2026-10-23T05:05:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-encoder-rejected-direct-250-cues-max4096-lr15e5-wd0005-smooth000-seed20261023", "--loss-function", "cross_entropy", "--add-argument-cues", "--rejected-direct-samples", "250", "--learning-rate", "1.5e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Candidate selection will use the fixed clean-validation split only. Aggregate black-box evaluation will follow if the clean result is viable. Official test labels will not be used for selection.
+
+Hypothesis: A smaller targeted rejected-direct sample may improve direct-class coverage without the negative transfer caused by 1,000 extra examples.
+
 ## test-clean-validation-encoder-compact-schema-cues-max4096-lr15e5-wd0005-smooth000-seed20261023
 
 Timestamp: 2026-10-23T04:36:00Z. Status: queued.
