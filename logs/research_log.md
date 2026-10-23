@@ -895,6 +895,14 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-encoder-rejected-aux-cues-max4096-lr15e5-wd0005-smooth000-seed20261023
+
+Timestamp: 2026-10-23T04:32:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-encoder-rejected-aux-cues-max4096-lr15e5-wd0005-smooth000-seed20261023", "--output", "outputs/test-clean-validation-encoder-rejected-aux-cues-max4096-lr15e5-wd0005-smooth000-seed20261023.json"]. Training and clean-validation evidence are complete before this aggregate-only measurement. The candidate was selected using clean validation only. Official test labels will not be used for selection.
+
+Hypothesis: This measurement closes the rejected-response supervision branch and tests whether its weak clean-validation result transfers to the black-box test.
+
 ## test-clean-validation-encoder-ce4096lr25-blend-95-05
 
 Timestamp: 2026-10-23T03:47:30.400565+00:00. Status: completed.
@@ -5167,3 +5175,13 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 
 Hypothesis: Adding rejected-response supervision may improve transfer by exposing the encoder to explicit negative alternatives, while preserving the established 4096-token cross-entropy recipe.
 
+
+## clean-validation-encoder-rejected-aux-cues-max4096-lr15e5-wd0005-smooth000-seed20261023
+
+Timestamp: 2026-10-23T04:31:28.181509+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-encoder-rejected-aux-cues-max4096-lr15e5-wd0005-smooth000-seed20261023", "--loss-function", "cross_entropy", "--add-argument-cues", "--include-rejected-examples", "--learning-rate", "1.5e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-encoder-rejected-aux-cues-max4096-lr15e5-wd0005-smooth000-seed20261023. W&B run: not available.
+
+Clean development accuracy: 0.9411111111111111. Clean development macro F1: 0.7064406791345121. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.

@@ -583,3 +583,5 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-encoder-only-ce-cues-max3072-lr15e5-wd0005-smooth005-seed20261023 | 0.5323110624315444 | 0.5336281510244701 | an3bshwr | Aggregate-only result after clean-validation selection. The candidate transferred poorly. Test labels were not used for selection. | completed |
 | Candidate | clean-validation-encoder-rejected-aux-cues-max4096-lr15e5-wd0005-smooth000-seed20261023 | — | — | Queued distinct encoder-only rejected-response supervision probe. Aggregate evaluation follows viable clean validation. | queued |
 
+| Candidate | clean-validation-encoder-rejected-aux-cues-max4096-lr15e5-wd0005-smooth000-seed20261023 | 0.9411111111111111 | 0.7064406791345121 | [metrics](/workspace/post-training/outputs/clean-validation-encoder-rejected-aux-cues-max4096-lr15e5-wd0005-smooth000-seed20261023/metrics.json) | completed |
+| test-clean-validation-encoder-rejected-aux-cues-max4096-lr15e5-wd0005-smooth000-seed20261023 | — | — | — | Queued required aggregate black-box measurement after complete training and clean validation | queued |
