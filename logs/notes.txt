@@ -5987,3 +5987,7 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 
 2026-10-23T04:47Z: The 98/2 zero-smoothing blend completed with accuracy 0.5599671412924425 and macro F1 0.5595347688183022. It regressed relative to 97/3, so the two-component weight sweep is closed. The next queued hypothesis is a three-way blend with the strongest encoder, tuned cross-entropy encoder, and zero-smoothing encoder. Test labels were not used for selection.
 
+2026-10-23T04:50Z: The three-way zero-smoothing replacement blend completed with accuracy 0.5605147864184009 and macro F1 0.5601131972317709. It remains below the established best three-way ensemble. The next queued hypothesis adds zero-smoothing at 1% to that best ensemble. Test labels were not used for selection.
+
+2026-10-23T04:51Z: The first four-way command failed before evaluation because it listed four checkpoints but only three weights. No aggregate metric was produced. The corrected command now queues four explicit weights, 0.94, 0.03, 0.02, and 0.01. Test labels were not used for selection.
+

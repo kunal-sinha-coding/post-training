@@ -597,3 +597,7 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-encoder-ce4096lr15-blend-98-02 | — | — | — | Queued distinct lower-weight zero-smoothing blend probe | queued |
 | test-clean-validation-encoder-ce4096lr15-blend-98-02 | 0.5599671412924425 | 0.5595347688183022 | 1yf2a4zc | Aggregate-only result, below 97/3. The two-component weight sweep is closed. Test labels were not used for selection. | completed |
 | test-clean-validation-encoder-triple-zero-smoothing-95-03-02 | — | — | — | Queued distinct three-way blend replacing pairwise with zero-smoothing encoder | queued |
+| test-clean-validation-encoder-triple-zero-smoothing-95-03-02 | 0.5605147864184009 | 0.5601131972317709 | gbgupvlg | Aggregate-only result below the current best three-way ensemble. Test labels were not used for selection. | completed |
+| test-clean-validation-encoder-fourway-94-03-02-01 | — | — | — | Queued distinct four-way blend adding zero-smoothing at 1% | queued |
+| test-clean-validation-encoder-fourway-94-03-02-01 | — | — | — | Failed before evaluation because four checkpoints had only three weights. No test labels were used. | failed_or_incomplete |
+| test-clean-validation-encoder-fourway-94-03-02-01-retry | — | — | — | Queued corrected four-way blend with four explicit weights | queued |

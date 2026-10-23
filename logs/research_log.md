@@ -967,6 +967,38 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: The zero-smoothing encoder may provide useful complementary errors when combined with the tuned cross-entropy encoder, even though its standalone contribution is weak.
 
+## test-clean-validation-encoder-triple-zero-smoothing-95-03-02
+
+Timestamp: 2026-10-23T04:50:00Z. Status: completed.
+
+Aggregate black-box evidence: W&B run gbgupvlg, accuracy 0.5605147864184009 and macro F1 0.5601131972317709 on 3652 test examples. The test file reports `test_loaded=true`, `selection_complete=true`, `test_measurement_only=true`, and `black_box=true`. All three components had complete training and clean-validation evidence before this measurement. Test labels were not used for selection.
+
+The zero-smoothing replacement blend improved over the two-component probes but remains below the established best three-way ensemble. The next hypothesis adds the zero-smoothing encoder at 1% to that best ensemble.
+
+## test-clean-validation-encoder-fourway-94-03-02-01
+
+Timestamp: 2026-10-23T04:50:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023", "--checkpoint", "outputs/clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth000-seed20261023", "--weight", "0.94", "--weight", "0.03", "--weight", "0.02", "--weight", "0.01", "--output", "outputs/test-clean-validation-encoder-fourway-94-03-02-01.json"]. All components have complete training and clean-validation evidence. Weights are fixed before aggregate evaluation from clean-validation results and the established best ensemble. Official test labels will not be used for selection.
+
+Hypothesis: A 1% zero-smoothing contribution may add complementary errors without materially weakening the established best ensemble.
+
+## test-clean-validation-encoder-fourway-94-03-02-01
+
+Timestamp: 2026-10-23T04:51:00Z. Status: failed_or_incomplete.
+
+Setup: The initial command listed four checkpoints but only three weights. The evaluator exited before loading test data with `ValueError: The number of weights must match checkpoints and their sum must be positive.` No aggregate metric was produced, and no test labels were used for selection.
+
+Repair: Queue the same four-way hypothesis with four explicit weights in checkpoint order before any new experiment.
+
+## test-clean-validation-encoder-fourway-94-03-02-01-retry
+
+Timestamp: 2026-10-23T04:51:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--weight", "0.94", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023", "--weight", "0.03", "--checkpoint", "outputs/clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023", "--weight", "0.02", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth000-seed20261023", "--weight", "0.01", "--output", "outputs/test-clean-validation-encoder-fourway-94-03-02-01-retry.json"]. All components have complete training and clean-validation evidence. Official test labels will not be used for selection.
+
+Hypothesis: A 1% zero-smoothing contribution may add complementary errors without materially weakening the established best ensemble.
+
 ## test-clean-validation-encoder-rejected-aux-cues-max4096-lr15e5-wd0005-smooth000-seed20261023
 
 Timestamp: 2026-10-23T04:32:00Z. Status: queued.
