@@ -929,6 +929,22 @@ Setup: ["python", "-u", "-m", "experiments.calibrate_clean_validation", "--check
 
 Hypothesis: A larger training-only calibration slice may reduce bias variance and improve clean-validation macro F1 before an aggregate test measurement.
 
+## test-clean-validation-cues-aux05-smooth0075-fraction20-calibrated-bias-result
+
+Timestamp: 2026-10-23T05:20:00Z. Status: completed.
+
+Aggregate black-box evidence: W&B run `7n4erm71`, accuracy `0.552026286966046` and macro F1 `0.5506102223382278` on 3652 test examples. The bias `[0.0, 0.3, -0.1, 0.0]` was selected using training-only calibration. The test file reports `test_loaded=true`, `selection_complete=true`, and `black_box=true`. Test labels were used only for this separate aggregate measurement. The branch is closed because transfer was below the established best ensemble.
+
+The next hypothesis scales the successful auxiliary supervision mechanism from 5 to 10 examples per class while keeping the fixed clean split, encoder, loss, and regularization settings unchanged. Aggregate evaluation will follow only if clean validation is viable.
+
+## clean-validation-encoder-aux10-cues-max4096-lr15e5-wd0005-smooth005-seed20261023
+
+Timestamp: 2026-10-23T05:20:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-encoder-aux10-cues-max4096-lr15e5-wd0005-smooth005-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--add-argument-cues", "--sft-aux-samples-per-class", "10", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. This uses only the fixed training and clean-validation partitions. Official test labels will not be loaded during selection.
+
+Hypothesis: The successful 5-example auxiliary supervision signal may improve with a modestly larger but still bounded auxiliary sample, without the distribution shift seen in rejected-direct augmentation.
+
 ## clean-validation-calibration-aux05-smooth0075-fraction20-result
 
 Timestamp: 2026-10-23T05:18:00Z. Status: completed.

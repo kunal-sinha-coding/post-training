@@ -6015,3 +6015,7 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 
 2026-10-23T05:18Z: Commit `queue fraction20 calibrated aggregate evaluation` records the complete calibration evidence and the required aggregate command. The watchdog launched it as PID 332519. Test labels were not used for selection.
 
+2026-10-23T05:20Z: The 20% calibration aggregate completed with accuracy 0.552026286966046 and macro F1 0.5506102223382278, below the best ensemble. The branch is closed. The next queued experiment scales the successful auxiliary supervision from 5 to 10 examples per class. Test labels were not used for selection.
+
+2026-10-23T05:20Z: Commit `queue auxiliary10 encoder training` records the completed calibration aggregate result and the distinct auxiliary10 training command. The watchdog launched it as PID 332965. Test labels were not used for selection.
+
