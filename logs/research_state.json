@@ -6,7 +6,7 @@
   "protocol": "clean_validation_v1",
   "current_hypothesis": "The matched-pairwise encoder completed with clean-validation macro F1 0.7244162741288008 and complete training evidence. Its required aggregate measurement must run before any new hypothesis. Test labels remain reserved for aggregate reporting.",
   "active_experiment": {
-    "pid": 336208,
+    "pid": 336673,
     "command": [
       "python",
       "-u",
@@ -17,7 +17,7 @@
       "--output",
       "outputs/test-clean-validation-encoder-pairwise-aux05-cues-max4096-lr15e5-wd0005-smooth005-seed20261023.json"
     ],
-    "started_at": "2026-10-23T05:42:00.304815+00:00"
+    "started_at": "2026-10-23T05:44:33.192452+00:00"
   },
   "worker_command": [
     "python",
@@ -60,8 +60,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T05:42:00.304827+00:00",
-  "last_action": "Watchdog started validation worker pid 336208.",
+  "last_heartbeat": "2026-10-23T05:44:33.192458+00:00",
+  "last_action": "Watchdog started validation worker pid 336673.",
   "watchdog_enabled": true,
   "research_log_size": 538359,
   "stop_command": "STOP",
@@ -76,7 +76,7 @@
     "outputs/test-clean-validation-encoder-pairwise-aux05-cues-max4096-lr15e5-wd0005-smooth005-seed20261023.json"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T05:41:29.821321+00:00",
-  "planning_ack_deadline": "2026-10-23T05:43:29.821345+00:00",
-  "planning_attempts": 325
+  "planning_notified_at": "2026-10-23T05:44:02.624159+00:00",
+  "planning_ack_deadline": "2026-10-23T05:46:02.624185+00:00",
+  "planning_attempts": 326
 }

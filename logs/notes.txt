@@ -6043,3 +6043,5 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 
 2026-10-23T05:42Z: Commit `queue matched pairwise aggregate evaluation` records complete matched-pairwise training and clean-validation evidence and the required aggregate command. The watchdog launched it as PID 336208. Test labels were not used for selection.
 
+2026-10-23T05:44Z: Commit `queue matched pairwise aggregate evaluation retry` records the required aggregate command after the watchdog handoff. The watchdog launched it as PID 336673. Test labels were not used for selection.
+
