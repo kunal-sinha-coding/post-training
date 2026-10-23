@@ -907,6 +907,18 @@ This aggregate measurement was run after candidate selection. The 95/5 weights w
 
 This record was written by the primary Codex process after the watchdog handoff.
 
+## test-clean-validation-encoder-triple-tuned-95-03-02
+
+Timestamp: 2026-10-23T04:08:56.040985+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023", "--checkpoint", "outputs/clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023", "--weight", "0.95", "--weight", "0.03", "--weight", "0.02", "--output", "outputs/test-clean-validation-encoder-triple-tuned-95-03-02.json"]. Output: /workspace/post-training/outputs/test-clean-validation-encoder-triple-tuned-95-03-02.json. W&B run: hgegyt6v.
+
+Training and clean-validation evidence existed for all three component checkpoints. Aggregate black-box accuracy: 0.5613362541073385. Aggregate black-box macro F1: 0.5608957297389593. Official test loaded: True. Selection complete: True. Test measurement only: True. Black box: True.
+
+This is the current best aggregate result. The 95/3/2 weights were selected without test labels from clean-validation and prior evidence. A distinct 96/2/2 blend is queued to reduce the weaker tuned component while retaining the pairwise contribution. Official test labels were not used for selection.
+
+This record was written by the primary Codex process after the watchdog handoff.
+
 ## test-clean-validation-encoder-triple-tuned-93-05-02
 
 Timestamp: 2026-10-23T04:06:23.398489+00:00. Status: completed.

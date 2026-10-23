@@ -4,9 +4,9 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 93/5/2 three-member blend reached 0.5605147864184009 aggregate accuracy and 0.5600266655819356 aggregate macro F1, improving over the lower-learning-rate blend but remaining below the tuned 95/5 blend. A distinct 95/3/2 blend may preserve the strongest encoder's advantage while retaining small complementary contributions. The weights are selected from clean-validation and prior evidence, not test labels.",
+  "current_hypothesis": "The 95/3/2 three-member blend reached 0.5613362541073385 aggregate accuracy and 0.5608957297389593 aggregate macro F1, becoming the current best. A distinct 96/2/2 blend may improve further by reducing the weaker tuned component while retaining the useful 3072-token pairwise contribution. The weights are selected from clean-validation and prior evidence, not test labels.",
   "active_experiment": {
-    "pid": 321669,
+    "pid": 322096,
     "command": [
       "python",
       "-u",
@@ -19,15 +19,15 @@
       "--checkpoint",
       "outputs/clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023",
       "--weight",
-      "0.95",
+      "0.96",
       "--weight",
-      "0.03",
+      "0.02",
       "--weight",
       "0.02",
       "--output",
-      "outputs/test-clean-validation-encoder-triple-tuned-95-03-02.json"
+      "outputs/test-clean-validation-encoder-triple-tuned-96-02-02.json"
     ],
-    "started_at": "2026-10-23T04:06:55.492306+00:00"
+    "started_at": "2026-10-23T04:09:28.210662+00:00"
   },
   "worker_command": [
     "python",
@@ -41,13 +41,13 @@
     "--checkpoint",
     "outputs/clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023",
     "--weight",
-    "0.95",
+    "0.96",
     "--weight",
-    "0.03",
+    "0.02",
     "--weight",
     "0.02",
     "--output",
-    "outputs/test-clean-validation-encoder-triple-tuned-95-03-02.json"
+    "outputs/test-clean-validation-encoder-triple-tuned-96-02-02.json"
   ],
   "worker_queue": [],
   "_previous_command": [
@@ -80,10 +80,10 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T04:06:55.492314+00:00",
-  "last_action": "Watchdog started validation worker pid 321669.",
+  "last_heartbeat": "2026-10-23T04:09:28.210676+00:00",
+  "last_action": "Watchdog started validation worker pid 322096.",
   "watchdog_enabled": true,
-  "research_log_size": 483018,
+  "research_log_size": 484459,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -97,16 +97,16 @@
     "--checkpoint",
     "outputs/clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023",
     "--weight",
-    "0.95",
+    "0.96",
     "--weight",
-    "0.03",
+    "0.02",
     "--weight",
     "0.02",
     "--output",
-    "outputs/test-clean-validation-encoder-triple-tuned-95-03-02.json"
+    "outputs/test-clean-validation-encoder-triple-tuned-96-02-02.json"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T04:06:24.973464+00:00",
-  "planning_ack_deadline": "2026-10-23T04:08:24.973490+00:00",
-  "planning_attempts": 293
+  "planning_notified_at": "2026-10-23T04:08:57.690195+00:00",
+  "planning_ack_deadline": "2026-10-23T04:10:57.690218+00:00",
+  "planning_attempts": 294
 }
