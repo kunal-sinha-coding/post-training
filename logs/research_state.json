@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 10/90 CE-to-pairwise ensemble improves the 25/75 result and approaches the pairwise checkpoint. A 5/95 weighting tests the remaining trend without retraining.",
+  "current_hypothesis": "The 5/95 ensemble nearly matches the standalone pairwise checkpoint, so further blend weighting is unlikely to add much. Omitting tool schemas while retaining argument cues may test whether schema complexity causes the remaining transfer gap.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -16,13 +16,13 @@
     "--checkpoint",
     "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023",
     "--weight",
-    "0.1",
+    "0.05",
     "--weight",
-    "0.9",
+    "0.95",
     "--output",
-    "outputs/test-clean-validation-ce-pairwise-weight10-90-seed20261023.json"
+    "outputs/test-clean-validation-ce-pairwise-weight05-95-seed20261023.json"
   ],
-  "worker_queue": [["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.05", "--weight", "0.95", "--output", "outputs/test-clean-validation-ce-pairwise-weight05-95-seed20261023.json"]],
+  "worker_queue": [["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-pairwise-omit-schemas-smooth000-lr1e5-max4096-batch1-seed20261023", "--loss-function", "pairwise_ranking", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--omit-tool-schemas", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261050", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "1", "--pref-train-epochs", "1"]],
   "_previous_command": [
     "python",
     "-u",
@@ -53,14 +53,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T20:40:17.693992+00:00",
-  "last_action": "Codex recorded the 10/90 ensemble test result and queued a fixed 5/95 CE-to-pairwise interpolation probe.",
+  "last_heartbeat": "2026-10-23T20:42:52.881371+00:00",
+  "last_action": "Codex recorded the 5/95 ensemble test result and queued a distinct omit-tool-schemas pairwise encoder ablation.",
   "watchdog_enabled": true,
-  "research_log_size": 624834,
+  "research_log_size": 625738,
   "stop_command": "STOP",
-  "next_experiment": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.05", "--weight", "0.95", "--output", "outputs/test-clean-validation-ce-pairwise-weight05-95-seed20261023.json"],
+  "next_experiment": ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-pairwise-omit-schemas-smooth000-lr1e5-max4096-batch1-seed20261023", "--loss-function", "pairwise_ranking", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--omit-tool-schemas", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261050", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "1", "--pref-train-epochs", "1"],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T20:42:22.287730+00:00",
-  "planning_ack_deadline": "2026-10-23T20:44:22.287751+00:00",
-  "planning_attempts": 387
+  "planning_notified_at": "2026-10-23T20:44:56.108535+00:00",
+  "planning_ack_deadline": "2026-10-23T20:46:56.108558+00:00",
+  "planning_attempts": 388
 }

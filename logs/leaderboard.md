@@ -759,3 +759,5 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-ce-pairwise-weight10-90-seed20261023 | — | — | — | Fixed-weight ensemble queued from the bounded blend trend. | queued |
 | test-clean-validation-ce-pairwise-weight10-90-seed20261023 | 0.5624315443592552 | 0.5632714824035759 | [metrics](/workspace/post-training/outputs/test-clean-validation-ce-pairwise-weight10-90-seed20261023.json) | Fixed-weight ensemble test measurement completed. | completed |
 | test-clean-validation-ce-pairwise-weight05-95-seed20261023 | — | — | — | Fixed-weight ensemble queued from the pairwise-heavy trend. | queued |
+| test-clean-validation-ce-pairwise-weight05-95-seed20261023 | 0.5643483023001096 | 0.5650782759220844 | [metrics](/workspace/post-training/outputs/test-clean-validation-ce-pairwise-weight05-95-seed20261023.json) | Fixed-weight ensemble test measurement completed. | completed |
+| Candidate | clean-validation-when2call-only-pairwise-omit-schemas-smooth000-lr1e5-max4096-batch1-seed20261023 | — | — | Omit-tool-schemas encoder ablation queued after the bounded blend sweep. | queued |

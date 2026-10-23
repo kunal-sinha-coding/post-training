@@ -6349,6 +6349,16 @@ Hypothesis: The improving pairwise-heavy trend may continue at a 5/95 CE-to-pair
 
 Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.05", "--weight", "0.95", "--output", "outputs/test-clean-validation-ce-pairwise-weight05-95-seed20261023.json"]. The weight was fixed before test evaluation. Official test labels will not be used for selection.
 
+Aggregate test accuracy: 0.5643483023001096. Aggregate test macro F1: 0.5650782759220844. Test examples: 3652.
+
+## clean-validation-when2call-only-pairwise-omit-schemas-smooth000-lr1e5-max4096-batch1-seed20261023
+
+Timestamp: 2026-10-23T20:43:00Z. Status: queued.
+
+Hypothesis: Omitting tool schemas while retaining argument cues may reduce input complexity and test whether schema details contribute to the transfer gap.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-pairwise-omit-schemas-smooth000-lr1e5-max4096-batch1-seed20261023", "--loss-function", "pairwise_ranking", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--omit-tool-schemas", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261050", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "1", "--pref-train-epochs", "1"]. Candidate selection will use training and clean validation only. Official test labels will not be loaded during selection.
+
 ## test-clean-validation-ce-pairwise-equal-weight-ensemble-seed20261023
 
 Timestamp: 2026-10-23T20:31:00Z. Status: queued.
