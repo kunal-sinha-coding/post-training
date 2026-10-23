@@ -4,30 +4,21 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The one-epoch MiniLM probe reproduced the earlier weak encoder-family result with training loss 0.919534, clean-validation macro F1 0.554473, aggregate test accuracy 0.516977, and aggregate test macro F1 0.512315. MiniLM is rejected. A three-checkpoint Jina encoder blend tests whether clean-validation-selected diversity improves the strongest individual encoder without using test labels for selection.",
+  "current_hypothesis": "The three-checkpoint Jina blend reached aggregate test accuracy 0.551479 and macro F1 0.550441, below the existing two-model leader. The blend branch is closed. A frozen visible required-field rule now tests whether visible schema evidence can correct request-for-information predictions without changing the selected checkpoint or using test labels.",
   "active_experiment": {
-    "pid": 299676,
+    "pid": 300218,
     "command": [
       "python",
       "-u",
       "-m",
       "experiments.evaluate_frozen_when2call_ensemble_test",
       "--checkpoint",
-      "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
-      "--checkpoint",
       "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022",
-      "--checkpoint",
-      "outputs/clean-validation-cues-aux05-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022",
-      "--weight",
-      "0.45",
-      "--weight",
-      "0.35",
-      "--weight",
-      "0.20",
+      "--complete-request-to-tool",
       "--output",
-      "outputs/test-clean-validation-encoder-triple-blend-45-35-20.json"
+      "outputs/test-clean-validation-cues-aux05-sftpairwise-visible-complete-request.json"
     ],
-    "started_at": "2026-10-23T01:43:43.810463+00:00"
+    "started_at": "2026-10-23T01:48:45.331484+00:00"
   },
   "worker_command": [
     "python",
@@ -35,19 +26,10 @@
     "-m",
     "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
-    "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
-    "--checkpoint",
     "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022",
-    "--checkpoint",
-    "outputs/clean-validation-cues-aux05-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022",
-    "--weight",
-    "0.45",
-    "--weight",
-    "0.35",
-    "--weight",
-    "0.20",
+    "--complete-request-to-tool",
     "--output",
-    "outputs/test-clean-validation-encoder-triple-blend-45-35-20.json"
+    "outputs/test-clean-validation-cues-aux05-sftpairwise-visible-complete-request.json"
   ],
   "worker_queue": [],
   "_previous_command": [
@@ -80,10 +62,10 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T01:43:43.810476+00:00",
-  "last_action": "Watchdog started validation worker pid 299676.",
+  "last_heartbeat": "2026-10-23T01:48:45.331497+00:00",
+  "last_action": "Watchdog started validation worker pid 300218.",
   "watchdog_enabled": true,
-  "research_log_size": 399406,
+  "research_log_size": 401246,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -91,22 +73,13 @@
     "-m",
     "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
-    "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
-    "--checkpoint",
     "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022",
-    "--checkpoint",
-    "outputs/clean-validation-cues-aux05-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022",
-    "--weight",
-    "0.45",
-    "--weight",
-    "0.35",
-    "--weight",
-    "0.20",
+    "--complete-request-to-tool",
     "--output",
-    "outputs/test-clean-validation-encoder-triple-blend-45-35-20.json"
+    "outputs/test-clean-validation-cues-aux05-sftpairwise-visible-complete-request.json"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T01:42:12.165160+00:00",
-  "planning_ack_deadline": "2026-10-23T01:44:12.165184+00:00",
-  "planning_attempts": 244
+  "planning_notified_at": "2026-10-23T01:48:10.556572+00:00",
+  "planning_ack_deadline": "2026-10-23T01:50:10.556597+00:00",
+  "planning_attempts": 245
 }

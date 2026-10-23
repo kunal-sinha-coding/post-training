@@ -915,6 +915,20 @@ Training loss: 0.9195340620146856. Clean-validation accuracy: 0.7438888888888889
 
 Aggregate black-box accuracy: 0.5169769989047097. Aggregate black-box macro F1: 0.512315225460611. The result confirms the earlier MiniLM failure mode and is rejected. No further MiniLM or seed sweep is justified. The next measurement tests a clean-validation-selected three-checkpoint encoder blend before another training hypothesis.
 
+## test-clean-validation-encoder-triple-blend-45-35-20-result
+
+Timestamp: 2026-10-23T01:47:44Z. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022", "--checkpoint", "outputs/clean-validation-cues-aux05-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022", "--weight", "0.45", "--weight", "0.35", "--weight", "0.20", "--output", "outputs/test-clean-validation-encoder-triple-blend-45-35-20.json"]. The weights were fixed before testing from clean-validation evidence. W&B run: `9pz9n2t3`.
+
+Component aggregate metrics were 0.558598 accuracy and 0.558043 macro F1, 0.561336 accuracy and 0.560578 macro F1, and 0.533406 accuracy and 0.530238 macro F1. The ensemble aggregate accuracy was 0.5514786418400877 and macro F1 was 0.5504413258729832. Test labels were used only for this separate aggregate measurement. The three-way blend is rejected because it is below the existing two-model leader. The next probe applies a fixed visible required-field rule to the strongest frozen encoder.
+
+## test-clean-validation-cues-aux05-sftpairwise-visible-complete-request
+
+Timestamp: 2026-10-23T01:47:44Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022", "--complete-request-to-tool", "--output", "outputs/test-clean-validation-cues-aux05-sftpairwise-visible-complete-request.json"]. The required-field rule uses only visible question and tool-schema text. The frozen checkpoint and rule were selected before aggregate testing. No test labels will be used for selection.
+
 ## test-clean-validation-cues-aux01-lr15e5-bothpairwise-wd0005-smooth000-seed20261022-result
 
 Timestamp: 2026-10-22T23:21:57Z. Status: completed.
