@@ -935,6 +935,22 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: Reducing the weaker component from 5% to 3% may retain complementary signal while reducing negative transfer.
 
+## test-clean-validation-encoder-ce4096lr15-blend-97-03
+
+Timestamp: 2026-10-23T04:44:00Z. Status: completed.
+
+Aggregate black-box evidence: W&B run 7ek5umxy, accuracy 0.5602409638554217 and macro F1 0.5598549823176151 on 3652 test examples. The test file reports `test_loaded=true`, `selection_complete=true`, `test_measurement_only=true`, and `black_box=true`. Training and clean-validation evidence for both components were complete before this measurement. Test labels were not used for selection.
+
+The 97/3 blend improved over 95/5 but remains below the current 95/3/2 ensemble. The next hypothesis reduces the weaker component to 2% to test whether the benefit is concentrated near the strongest encoder.
+
+## test-clean-validation-encoder-ce4096lr15-blend-98-02
+
+Timestamp: 2026-10-23T04:44:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth000-seed20261023", "--weight", "0.98", "--weight", "0.02", "--output", "outputs/test-clean-validation-encoder-ce4096lr15-blend-98-02.json"]. Both components have complete training and clean-validation evidence. The weight is fixed before aggregate evaluation from clean-validation performance and prior blend behavior. Official test labels will not be used for selection.
+
+Hypothesis: A 2% contribution may preserve a small complementary signal while minimizing negative transfer from the weaker component.
+
 ## test-clean-validation-encoder-rejected-aux-cues-max4096-lr15e5-wd0005-smooth000-seed20261023
 
 Timestamp: 2026-10-23T04:32:00Z. Status: queued.

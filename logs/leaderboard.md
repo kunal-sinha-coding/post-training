@@ -593,3 +593,5 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-encoder-ce4096lr15-blend-95-05 | — | — | — | Queued distinct conservative blend of the strongest encoder and zero-smoothing encoder | queued |
 | test-clean-validation-encoder-ce4096lr15-blend-95-05 | 0.5599671412924425 | 0.5596229628772144 | zgui3i91 | Aggregate-only result below the current 95/3/2 ensemble. Test labels were not used for selection. | completed |
 | test-clean-validation-encoder-ce4096lr15-blend-97-03 | — | — | — | Queued distinct lower-weight zero-smoothing blend probe | queued |
+| test-clean-validation-encoder-ce4096lr15-blend-97-03 | 0.5602409638554217 | 0.5598549823176151 | 7ek5umxy | Aggregate-only result, improved over 95/5 but below 95/3/2. Test labels were not used for selection. | completed |
+| test-clean-validation-encoder-ce4096lr15-blend-98-02 | — | — | — | Queued distinct lower-weight zero-smoothing blend probe | queued |
