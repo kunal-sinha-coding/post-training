@@ -895,6 +895,22 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr15e5-max4096-batch2-seed20261055-result
+
+Timestamp: 2026-10-23T22:08:00Z. Status: completed.
+
+Aggregate black-box evidence: accuracy `0.5451807228915663` and macro F1 `0.5375558156483417` on 3,652 test examples. Training accuracy was `0.9851388888888889` with macro F1 `0.7388974705368601`. Clean-validation accuracy was `0.9677777777777777` with macro F1 `0.7259453749068197`. The candidate was selected using training and clean validation only. Test labels were used only for this separate aggregate measurement.
+
+The 1.5e-5 learning rate reduced clean validation. The next clean-only hypothesis tests the lower side of the learning-rate bracket at 7.5e-6.
+
+## clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr075e5-max4096-batch2-seed20261056
+
+Timestamp: 2026-10-23T22:09:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr075e5-max4096-batch2-seed20261056", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "7.5e-6", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261056", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. This uses only the fixed training and clean-validation partitions. Official test data and labels will not be loaded during selection.
+
+Hypothesis: The 1e-5 control may be near but not at the best optimization point. A 7.5e-6 learning rate may improve the clean boundary without changing the data or objective.
+
 ## test-clean-validation-when2call-only-ce-cues-sftpre1-smooth005-lr15e5-max4096-batch2-seed20261055
 
 Timestamp: 2026-10-23T22:07:00Z. Status: queued.
