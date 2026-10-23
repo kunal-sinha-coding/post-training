@@ -1,30 +1,11 @@
 {
-  "status": "active",
+  "status": "awaiting_codex_planning",
   "planning_owner": "codex_primary",
-  "planning_required": false,
+  "planning_required": true,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "Both blends using the missing seed20261056 artifact failed before producing measurements. Use the available full-schema smoothing and lower-weight-decay checkpoints for a valid clean-validation-selected blend, then compare a distinct 90/10 weighting.",
-  "active_experiment": {
-    "pid": 399092,
-    "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_frozen_when2call_ensemble_test",
-      "--checkpoint",
-      "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth0075-lr1e5-max4096-batch2-seed20261059",
-      "--checkpoint",
-      "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd0025-lr1e5-max4096-batch2-seed20261061",
-      "--weight",
-      "0.8",
-      "--weight",
-      "0.2",
-      "--output",
-      "outputs/test-clean-validation-when2call-fullschema-smooth0075-wd0025-blend80-20.json"
-    ],
-    "started_at": "2026-10-23T23:13:02.745428+00:00"
-  },
+  "active_experiment": {},
   "worker_command": [
     "python",
     "-u",
@@ -35,30 +16,13 @@
     "--checkpoint",
     "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd0025-lr1e5-max4096-batch2-seed20261061",
     "--weight",
-    "0.8",
+    "0.9",
     "--weight",
-    "0.2",
+    "0.1",
     "--output",
-    "outputs/test-clean-validation-when2call-fullschema-smooth0075-wd0025-blend80-20.json"
+    "outputs/test-clean-validation-when2call-fullschema-smooth0075-wd0025-blend90-10.json"
   ],
-  "worker_queue": [
-    [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_frozen_when2call_ensemble_test",
-      "--checkpoint",
-      "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth0075-lr1e5-max4096-batch2-seed20261059",
-      "--checkpoint",
-      "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd0025-lr1e5-max4096-batch2-seed20261061",
-      "--weight",
-      "0.9",
-      "--weight",
-      "0.1",
-      "--output",
-      "outputs/test-clean-validation-when2call-fullschema-smooth0075-wd0025-blend90-10.json"
-    ]
-  ],
+  "worker_queue": [],
   "_previous_command": [
     "python",
     "-u",
@@ -89,29 +53,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T23:13:02.745436+00:00",
-  "last_action": "Watchdog started validation worker pid 399092.",
+  "last_heartbeat": "2026-10-23T23:14:33.261487+00:00",
+  "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
   "research_log_size": 676163,
   "stop_command": "STOP",
-  "next_experiment": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.evaluate_frozen_when2call_ensemble_test",
-    "--checkpoint",
-    "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth0075-lr1e5-max4096-batch2-seed20261059",
-    "--checkpoint",
-    "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd0025-lr1e5-max4096-batch2-seed20261061",
-    "--weight",
-    "0.8",
-    "--weight",
-    "0.2",
-    "--output",
-    "outputs/test-clean-validation-when2call-fullschema-smooth0075-wd0025-blend80-20.json"
-  ],
+  "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T23:12:32.177587+00:00",
-  "planning_ack_deadline": "2026-10-23T23:14:32.177610+00:00",
-  "planning_attempts": 416
+  "planning_notified_at": "2026-10-23T23:16:05.517496+00:00",
+  "planning_ack_deadline": "2026-10-23T23:18:05.517522+00:00",
+  "planning_attempts": 417
 }
