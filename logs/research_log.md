@@ -4128,3 +4128,20 @@ Timestamp: 2026-10-23T00:05:26Z. Status: completed.
 Dataset: nvidia/When2Call, split test/mcq. Selection was complete before this measurement and did not use test labels. W&B run: q6bpnmj2. Examples: 3652.
 
 Aggregate black-box accuracy: 0.5334063526834611. Aggregate black-box macro F1: 0.5302380582391016. The result is below the current 55/45 encoder ensemble leader. The watchdog then launched the queued auxiliary-10 objective training probe as PID 291236.
+
+## clean-validation-cues-aux10-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022
+
+Timestamp: 2026-10-23T00:13:14.604465+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux10-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022", "--loss-function", "cross_entropy", "--sft-loss-function", "pairwise_ranking", "--add-argument-cues", "--sft-aux-samples-per-class", "10", "--learning-rate", "1.5e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux10-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022. W&B run: not available.
+
+Clean development accuracy: 0.9666666666666667. Clean development macro F1: 0.7252060013087245. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+## test-clean-validation-cues-aux10-lr15e5-maince-auxpairwise-wd0005-smooth000-seed20261022-result
+
+Timestamp: 2026-10-23T00:16:50Z. Status: completed.
+
+Dataset: nvidia/When2Call, split test/mcq. Selection was complete before this measurement and did not use test labels. W&B run: v0ny6yux. Examples: 3652.
+
+Aggregate black-box accuracy: 0.5147864184008762. Aggregate black-box macro F1: 0.5158168718525531. The result is below the current 55/45 encoder ensemble leader. The watchdog then launched the queued auxiliary-1 label-smoothing probe as PID 292303.

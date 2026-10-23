@@ -5858,3 +5858,4 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 2026-10-22 The main-cross-entropy auxiliary-3 aggregate test completed with accuracy 0.521632 and macro F1 0.519830 from W&B run u039pfvj. It is below the current 55/45 encoder ensemble leader. The watchdog launched the queued auxiliary-5 objective probe as PID 290380.
 2026-10-23 The main-cross-entropy auxiliary-5 aggregate test completed with accuracy 0.533406 and macro F1 0.530238 from W&B run q6bpnmj2. It is below the current 55/45 encoder ensemble leader. The watchdog launched the queued auxiliary-10 objective probe as PID 291236.
 
+2026-10-23 The main-cross-entropy auxiliary-10 aggregate test completed with accuracy 0.514786 and macro F1 0.515817 from W&B run v0ny6yux. It is below the current 55/45 encoder ensemble leader. The watchdog launched the queued auxiliary-1 label-smoothing probe as PID 292303.
