@@ -6339,6 +6339,16 @@ Hypothesis: The 25/75 result suggests that the pairwise encoder may carry more t
 
 Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.1", "--weight", "0.9", "--output", "outputs/test-clean-validation-ce-pairwise-weight10-90-seed20261023.json"]. The weight was fixed before test evaluation. Official test labels will not be used for selection.
 
+Aggregate test accuracy: 0.5624315443592552. Aggregate test macro F1: 0.5632714824035759. Test examples: 3652.
+
+## test-clean-validation-ce-pairwise-weight05-95-seed20261023
+
+Timestamp: 2026-10-23T20:41:00Z. Status: queued.
+
+Hypothesis: The improving pairwise-heavy trend may continue at a 5/95 CE-to-pairwise weighting, while retaining a small CE contribution.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.05", "--weight", "0.95", "--output", "outputs/test-clean-validation-ce-pairwise-weight05-95-seed20261023.json"]. The weight was fixed before test evaluation. Official test labels will not be used for selection.
+
 ## test-clean-validation-ce-pairwise-equal-weight-ensemble-seed20261023
 
 Timestamp: 2026-10-23T20:31:00Z. Status: queued.

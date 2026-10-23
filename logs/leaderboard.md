@@ -757,3 +757,5 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-ce-pairwise-weight25-75-seed20261023 | — | — | — | Complementary fixed-weight ensemble queued. | queued |
 | test-clean-validation-ce-pairwise-weight25-75-seed20261023 | 0.5558598028477546 | 0.5568745860901934 | [metrics](/workspace/post-training/outputs/test-clean-validation-ce-pairwise-weight25-75-seed20261023.json) | Fixed-weight ensemble test measurement completed. | completed |
 | test-clean-validation-ce-pairwise-weight10-90-seed20261023 | — | — | — | Fixed-weight ensemble queued from the bounded blend trend. | queued |
+| test-clean-validation-ce-pairwise-weight10-90-seed20261023 | 0.5624315443592552 | 0.5632714824035759 | [metrics](/workspace/post-training/outputs/test-clean-validation-ce-pairwise-weight10-90-seed20261023.json) | Fixed-weight ensemble test measurement completed. | completed |
+| test-clean-validation-ce-pairwise-weight05-95-seed20261023 | — | — | — | Fixed-weight ensemble queued from the pairwise-heavy trend. | queued |

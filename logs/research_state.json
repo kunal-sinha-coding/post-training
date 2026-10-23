@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 25/75 CE-to-pairwise ensemble is the strongest recent bounded blend. A 10/90 weighting tests whether further emphasis on the pairwise encoder improves transfer without retraining.",
+  "current_hypothesis": "The 10/90 CE-to-pairwise ensemble improves the 25/75 result and approaches the pairwise checkpoint. A 5/95 weighting tests the remaining trend without retraining.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -16,13 +16,13 @@
     "--checkpoint",
     "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023",
     "--weight",
-    "0.25",
+    "0.1",
     "--weight",
-    "0.75",
+    "0.9",
     "--output",
-    "outputs/test-clean-validation-ce-pairwise-weight25-75-seed20261023.json"
+    "outputs/test-clean-validation-ce-pairwise-weight10-90-seed20261023.json"
   ],
-  "worker_queue": [["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.1", "--weight", "0.9", "--output", "outputs/test-clean-validation-ce-pairwise-weight10-90-seed20261023.json"]],
+  "worker_queue": [["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.05", "--weight", "0.95", "--output", "outputs/test-clean-validation-ce-pairwise-weight05-95-seed20261023.json"]],
   "_previous_command": [
     "python",
     "-u",
@@ -53,14 +53,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T20:37:44.025973+00:00",
-  "last_action": "Codex recorded the 25/75 ensemble test result and queued a fixed 10/90 CE-to-pairwise blend probe.",
+  "last_heartbeat": "2026-10-23T20:40:17.693992+00:00",
+  "last_action": "Codex recorded the 10/90 ensemble test result and queued a fixed 5/95 CE-to-pairwise interpolation probe.",
   "watchdog_enabled": true,
-  "research_log_size": 623883,
+  "research_log_size": 624834,
   "stop_command": "STOP",
-  "next_experiment": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.1", "--weight", "0.9", "--output", "outputs/test-clean-validation-ce-pairwise-weight10-90-seed20261023.json"],
+  "next_experiment": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.05", "--weight", "0.95", "--output", "outputs/test-clean-validation-ce-pairwise-weight05-95-seed20261023.json"],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T20:39:46.943540+00:00",
-  "planning_ack_deadline": "2026-10-23T20:41:46.943565+00:00",
-  "planning_attempts": 386
+  "planning_notified_at": "2026-10-23T20:42:22.287730+00:00",
+  "planning_ack_deadline": "2026-10-23T20:44:22.287751+00:00",
+  "planning_attempts": 387
 }
