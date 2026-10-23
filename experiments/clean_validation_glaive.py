@@ -22,6 +22,8 @@ from datasets import load_dataset
 from experiments.clean_validation_baseline import (
     batch_metrics,
     load_model,
+    load_sft_training_rows,
+    load_training_rows,
     split_examples,
     train_epoch,
 )
@@ -92,14 +94,23 @@ def sample_glaive_examples(sample_size: int, seed: int) -> list[Example]:
 def load_when2call_examples(pref_sample: int, sft_sample: int, seed: int) -> list[Example]:
     """Load bounded non-direct When2Call preference and SFT examples."""
     # Keep both sources available while removing the benchmark-absent direct class.
-    pref = prepare_train_examples(load_dataset(WHEN2CALL_DATASET, "train_pref", split="train"))
-    sft = prepare_train_examples(load_dataset(WHEN2CALL_DATASET, "train_sft", split="train"))
+    pref = prepare_train_examples(load_training_rows())
+    sft = prepare_train_examples(load_sft_training_rows())
     pref = [item for item in pref if LABELS[item.label] != "direct"]
     sft = [item for item in sft if LABELS[item.label] != "direct"]
     rng = random.Random(seed)
     rng.shuffle(pref)
     rng.shuffle(sft)
     return pref[:pref_sample] + sft[:sft_sample]
+
+
+def split_source_examples(examples: list[Example], fraction: float, seed: int) -> tuple[list[Example], list[Example]]:
+    """Split one source into deterministic training and validation partitions."""
+    # Shuffle only within the source so both validation sets remain source-specific.
+    items = list(examples)
+    random.Random(seed).shuffle(items)
+    cut = max(1, round(len(items) * fraction))
+    return items[cut:], items[:cut]
 
 
 def main() -> int:
@@ -128,20 +139,24 @@ def main() -> int:
     torch.manual_seed(args.seed)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     # Build the filtered generic and benchmark training pool without loading official labels.
-    examples = sample_glaive_examples(args.glaive_sample, args.seed)
-    examples.extend(load_when2call_examples(args.pref_sample, args.sft_sample, args.seed + 1))
-    train, development = split_examples(examples, 0.2, args.split_seed)
+    glaive_examples = sample_glaive_examples(args.glaive_sample, args.seed)
+    when2call_examples = load_when2call_examples(args.pref_sample, args.sft_sample, args.seed + 1)
+    glaive_train, glaive_development = split_source_examples(glaive_examples, 0.2, args.split_seed)
+    when2call_train, when2call_development = split_source_examples(when2call_examples, 0.2, args.split_seed + 1)
+    train = glaive_train + when2call_train
     # Load the existing compact encoder and tokenize only the clean training partitions.
     model, tokenizer = load_model(device, args.max_length)
     tokenize_examples(train, tokenizer)
-    tokenize_examples(development, tokenizer)
+    tokenize_examples(glaive_development, tokenizer)
+    tokenize_examples(when2call_development, tokenizer)
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay)
     losses = []
     for epoch in range(args.epochs):
         losses.append(train_epoch(model, tokenizer, train, device, optimizer, "cross_entropy", args.seed + epoch))
     # Measure training and clean held-out performance using all three benchmark classes.
     train_metrics = batch_metrics(model, tokenizer, train, device, list(range(len(LABELS))))
-    development_metrics = batch_metrics(model, tokenizer, development, device, list(range(len(LABELS))))
+    glaive_validation_metrics = batch_metrics(model, tokenizer, glaive_development, device, list(range(len(LABELS))))
+    when2call_validation_metrics = batch_metrics(model, tokenizer, when2call_development, device, list(range(len(LABELS))))
     # Persist the candidate, composition, and clean evidence for asynchronous recording.
     args.output_dir.mkdir(parents=True, exist_ok=True)
     model.save_pretrained(args.output_dir)
@@ -153,12 +168,19 @@ def main() -> int:
         "pref_sample": args.pref_sample,
         "sft_sample": args.sft_sample,
         "train_examples": len(train),
-        "development_examples": len(development),
+        "development_examples": len(glaive_development) + len(when2call_development),
+        "glaive_training_examples": len(glaive_train),
+        "glaive_validation_examples": len(glaive_development),
+        "when2call_training_examples": len(when2call_train),
+        "when2call_validation_examples": len(when2call_development),
         "train_label_counts": dict(Counter(LABELS[item.label] for item in train)),
-        "development_label_counts": dict(Counter(LABELS[item.label] for item in development)),
+        "glaive_validation_label_counts": dict(Counter(LABELS[item.label] for item in glaive_development)),
+        "when2call_validation_label_counts": dict(Counter(LABELS[item.label] for item in when2call_development)),
         "losses": losses,
         "train_metrics": train_metrics,
-        "development_metrics": development_metrics,
+        "development_metrics": when2call_validation_metrics,
+        "glaive_validation_metrics": glaive_validation_metrics,
+        "when2call_validation_metrics": when2call_validation_metrics,
         "model": "jinaai/jina-embeddings-v2-small-en",
         "seed": args.seed,
         "split_seed": args.split_seed,
@@ -169,9 +191,9 @@ def main() -> int:
     }
     (args.output_dir / "metrics.json").write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
     # Log the complete clean evidence while keeping official test labels out of the run.
-    run.log({"train/accuracy": train_metrics["accuracy"], "train/macro_f1": train_metrics["macro_f1"], "development/accuracy": development_metrics["accuracy"], "development/macro_f1": development_metrics["macro_f1"], "training/loss": sum(losses) / max(1, len(losses))})
-    run.summary.update({"development_accuracy": development_metrics["accuracy"], "development_macro_f1": development_metrics["macro_f1"], "output_dir": str(args.output_dir)})
-    print(json.dumps({"train": train_metrics, "development": development_metrics, "losses": losses}, indent=2))
+    run.log({"train/accuracy": train_metrics["accuracy"], "train/macro_f1": train_metrics["macro_f1"], "validation/glaive_accuracy": glaive_validation_metrics["accuracy"], "validation/glaive_macro_f1": glaive_validation_metrics["macro_f1"], "validation/when2call_accuracy": when2call_validation_metrics["accuracy"], "validation/when2call_macro_f1": when2call_validation_metrics["macro_f1"], "training/loss": sum(losses) / max(1, len(losses))})
+    run.summary.update({"glaive_validation_accuracy": glaive_validation_metrics["accuracy"], "glaive_validation_macro_f1": glaive_validation_metrics["macro_f1"], "when2call_validation_accuracy": when2call_validation_metrics["accuracy"], "when2call_validation_macro_f1": when2call_validation_metrics["macro_f1"], "output_dir": str(args.output_dir)})
+    print(json.dumps({"train": train_metrics, "glaive_validation": glaive_validation_metrics, "when2call_validation": when2call_validation_metrics, "losses": losses}, indent=2))
     return 0
 
 
