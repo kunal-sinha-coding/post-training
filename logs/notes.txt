@@ -6164,6 +6164,8 @@ The candidate completed with training accuracy 0.9836224843858432 and macro F1 0
 2026-10-23T21:58:00Z. Queued required aggregate evidence for the intermediate-smoothing candidate.
 The candidate completed with training accuracy 0.98875 and macro F1 0.7416153000448706. Clean-validation accuracy was 0.9644444444444444 and macro F1 was 0.7234783114719538. Its aggregate black-box measurement was missing, so the frozen test measurement was queued before any new experiment. Test labels were not used for selection.
 2026-10-23T22:01:00Z. The intermediate-smoothing candidate completed aggregate testing at accuracy 0.5569550930996714 and macro F1 0.5580623772649892. Training and clean-validation evidence were complete, and test labels were not used for selection. Queued a distinct 1.5e-5 learning-rate clean-validation probe.
+2026-10-23T22:00:20Z. Watchdog verification.
+The watchdog consumed the 1.5e-5 learning-rate probe and launched PID 391622. The research state is active, planning_required is false, and the queue is empty because the probe is active.
 2026-10-23T21:58:18Z. Watchdog verification.
 The watchdog consumed the required aggregate measurement and launched PID 391135. The research state is active, planning_required is false, and the queue is empty because the frozen test measurement is active.
 2026-10-23T21:51:06Z. Watchdog verification.
