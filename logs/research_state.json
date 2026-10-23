@@ -1,7 +1,7 @@
 {
-  "status": "awaiting_codex_planning",
+  "status": "active",
   "planning_owner": "codex_primary",
-  "planning_required": true,
+  "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "Filtering the direct class from Glaive Function Calling v2 and combining a bounded sample with non-direct When2Call preference and SFT data will improve the encoder's clean-validation behavior without introducing the benchmark-absent direct class. Test labels remain reserved for reporting.",
@@ -16,7 +16,40 @@
     "--output",
     "outputs/test-clean-validation-glaive-filtered-two-validation-retry2-seed20261023.json"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.clean_validation_glaive",
+      "--output-dir",
+      "outputs/clean-validation-glaive-filtered-two-validation-retry3-seed20261023",
+      "--glaive-sample",
+      "10000",
+      "--pref-sample",
+      "3000",
+      "--sft-sample",
+      "3000",
+      "--epochs",
+      "1",
+      "--seed",
+      "20261023",
+      "--split-seed",
+      "20261023",
+      "--max-length",
+      "4096"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_frozen_when2call_ensemble_test",
+      "--checkpoint",
+      "outputs/clean-validation-glaive-filtered-two-validation-retry3-seed20261023",
+      "--output",
+      "outputs/test-clean-validation-glaive-filtered-two-validation-retry3-seed20261023.json"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -48,13 +81,13 @@
     "artifact": "outputs/clean-validation-calibration.json"
   },
   "last_heartbeat": "2026-10-23T16:18:48.866081+00:00",
-  "last_action": "Watchdog handed planning control to the primary Codex process.",
+  "last_action": "Codex corrected queue ordering so the watchdog will launch training before its required test evaluation.",
   "watchdog_enabled": true,
   "research_log_size": 551638,
   "stop_command": "STOP",
   "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T16:19:20.609446+00:00",
-  "planning_ack_deadline": "2026-10-23T16:21:20.609469+00:00",
-  "planning_attempts": 339
+  "planning_notified_at": "2026-10-23T16:21:22.095928+00:00",
+  "planning_ack_deadline": "2026-10-23T16:23:22.095953+00:00",
+  "planning_attempts": 340
 }
