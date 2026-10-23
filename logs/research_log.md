@@ -895,6 +895,22 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## aggregate-test-clean-validation-glaive-filtered-two-validation-retry3-seed20261023
+
+Timestamp: 2026-10-23T16:27:26.982927+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-glaive-filtered-two-validation-retry3-seed20261023", "--output", "outputs/test-clean-validation-glaive-filtered-two-validation-retry3-seed20261023.json"]. Test artifact: /workspace/post-training/outputs/test-clean-validation-glaive-filtered-two-validation-retry3-seed20261023.json. W&B run: ortq9650.
+
+Training evidence: accuracy 0.960234375 and macro F1 0.957298662670537.
+
+Clean validation evidence: Glaive accuracy 0.9585 and macro F1 0.937395904536634. When2Call accuracy 0.9133333333333333 and macro F1 0.8883391074907575.
+
+Aggregate black-box test evidence: accuracy 0.4611171960569551 and macro F1 0.440151205642681. Test labels were used only for this final report, not for selection.
+
+## clean-validation-glaive-balanced-5k-pref5k-sft5k-seed20261023
+
+Status: queued. Hypothesis: a balanced 5,000-example sample from each filtered source may reduce the Glaive-heavy distribution shift while retaining generic-data coverage. The required aggregate black-box test is queued immediately after training. Selection will use training and clean validation only.
+
 ## test-clean-validation-encoder-rejected-direct-250-cues-max4096-lr15e5-wd0005-smooth000-seed20261023
 
 Timestamp: 2026-10-23T05:10:00Z. Status: completed.
@@ -5683,5 +5699,25 @@ Timestamp: 2026-10-23T05:52:47.640228+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-encoder-sftpre1-aux05-cues-max4096-lr15e5-wd0005-smooth005-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--add-argument-cues", "--sft-aux-samples-per-class", "5", "--sft-pretrain-epochs", "1", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-encoder-sftpre1-aux05-cues-max4096-lr15e5-wd0005-smooth005-seed20261023. W&B run: not available.
 
 Clean development accuracy: 0.9705555555555555. Clean development macro F1: 0.7281473526936322. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-glaive-filtered-two-validation-retry3-seed20261023
+
+Timestamp: 2026-10-23T16:26:00.463845+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_glaive", "--output-dir", "outputs/clean-validation-glaive-filtered-two-validation-retry3-seed20261023", "--glaive-sample", "10000", "--pref-sample", "3000", "--sft-sample", "3000", "--epochs", "1", "--seed", "20261023", "--split-seed", "20261023", "--max-length", "4096"]. Output: /workspace/post-training/outputs/clean-validation-glaive-filtered-two-validation-retry3-seed20261023. W&B run: not available.
+
+Clean development accuracy: 0.9133333333333333. Clean development macro F1: 0.8883391074907575. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-glaive-only-seed20261023
+
+Timestamp: 2026-10-23T16:30:01.177686+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_glaive", "--output-dir", "outputs/clean-validation-glaive-only-seed20261023", "--glaive-sample", "10000", "--pref-sample", "0", "--sft-sample", "0", "--epochs", "1", "--seed", "20261024", "--split-seed", "20261024", "--max-length", "4096"]. Output: /workspace/post-training/outputs/clean-validation-glaive-only-seed20261023. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
