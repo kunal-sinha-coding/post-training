@@ -20,7 +20,7 @@ from datasets import load_dataset
 from peft import LoraConfig, get_peft_model
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from experiments.train_when2call_jina import LABELS, LABEL_TO_ID, infer_action_label, tools_text
+from experiments.train_when2call_jina import LABELS, LABEL_TO_ID, response_label, tools_text
 
 
 DATASET_NAME = "nvidia/When2Call"
@@ -64,8 +64,8 @@ def prepare_rows(rows: object) -> list[ClassificationRow]:
     # Infer labels from training responses and retain rejected labels only for preference objectives.
     prepared = []
     for row in rows:
-        chosen = LABEL_TO_ID[infer_action_label(row["chosen_response"]["content"])]
-        rejected = LABEL_TO_ID[infer_action_label(row["rejected_response"]["content"])]
+        chosen = LABEL_TO_ID[response_label(row["chosen_response"]["content"])]
+        rejected = LABEL_TO_ID[response_label(row["rejected_response"]["content"])]
         prepared.append(ClassificationRow(make_prompt(row), chosen, rejected))
     return prepared
 

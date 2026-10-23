@@ -94,10 +94,20 @@ class ExampleDataset(Dataset[Example]):
         return self.examples[index]
 
 
-def infer_action_label(response: str) -> str:
+def response_label(response: str) -> str:
     """Map a preferred response to its action class for the benchmark classifier."""
+    # Normalize response text before applying either tool-call format or language rules.
+    text = str(response).strip()
+    # Recognize raw JSON tool calls before checking natural-language answers.
+    if text.startswith("{") or text.startswith("["):
+        try:
+            value = json.loads(text)
+            if (isinstance(value, dict) and "name" in value) or (isinstance(value, list) and value and all(isinstance(item, dict) and "name" in item for item in value)):
+                return "tool_call"
+        except json.JSONDecodeError:
+            pass
     # Recognize the dataset's tagged tool-call format before checking natural-language answers.
-    match = re.fullmatch(r"\s*<TOOLCALL>\s*(.*?)\s*</TOOLCALL>\s*", response, re.IGNORECASE | re.DOTALL)
+    match = re.fullmatch(r"\s*<TOOLCALL>\s*(.*?)\s*</TOOLCALL>\s*", text, re.IGNORECASE | re.DOTALL)
     if match:
         try:
             calls = json.loads(match.group(1))
@@ -106,10 +116,10 @@ def infer_action_label(response: str) -> str:
         except json.JSONDecodeError:
             return "tool_call"
     # Treat explicit questions and requests for missing information as clarification targets.
-    if "?" in response or re.search(r"(?i)\b(i'll need|i need|please provide|please specify|could you|would you|let me know)\b", response):
+    if "?" in text or re.search(r"(?i)\b(i'll need|i need|please provide|please specify|could you|would you|let me know)\b", text):
         return "request_for_info"
     # Separate explicit refusals from the few preferred responses that answer directly.
-    if re.search(r"(?i)\b(unable|cannot|can't|can not|don't have|do not have|no access|not able|apolog|beyond my|lack|not within my capabilities|designed to .* not)\b", response):
+    if re.search(r"(?i)\b(unable|cannot|can't|can not|don't have|do not have|no access|not able|apolog|beyond my|lack|not within my capabilities|designed to .* not)\b", text):
         return "cannot_answer"
     return "direct"
 
@@ -129,14 +139,14 @@ def prepare_train_examples(rows: Any, source_offset: int = 0) -> list[Example]:
         user_text = "\n".join(message["content"] for message in messages if message["role"] == "user")
         if "chosen_response" in row:
             response = row["chosen_response"]["content"]
-            rejected_label = LABEL_TO_ID[infer_action_label(row["rejected_response"]["content"])]
+            rejected_label = LABEL_TO_ID[response_label(row["rejected_response"]["content"])]
         else:
             assistant_messages = [message for message in messages if message["role"] == "assistant"]
             if not assistant_messages:
                 raise ValueError(f"Training row {index} has no assistant response.")
             response = assistant_messages[-1]["content"]
             rejected_label = None
-        action = infer_action_label(response)
+        action = response_label(response)
         examples.append(Example(f"Question: {user_text}\nAvailable tools:\n{tools_text(row['tools'])}", LABEL_TO_ID[action], str(source_offset + index), rejected_label))
     return examples
 

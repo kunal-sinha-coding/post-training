@@ -27,7 +27,7 @@ from experiments.train_when2call_jina import (
     autocast_context,
     batch_metrics,
     collate,
-    infer_action_label,
+    response_label,
     prepare_train_examples,
     tokenize_examples,
     tools_text,
@@ -129,7 +129,7 @@ def prepare_rejected_examples(rows: object) -> list[Example]:
     examples = []
     for index, row in enumerate(rows):
         user_text = "\n".join(message["content"] for message in row["messages"] if message["role"] == "user")
-        label = LABEL_TO_ID[infer_action_label(row["rejected_response"]["content"])]
+        label = LABEL_TO_ID[response_label(row["rejected_response"]["content"])]
         text = f"Question: {user_text}\nAvailable tools:\n{tools_text(row['tools'])}"
         examples.append(Example(text, label, f"rejected-{index}"))
     return examples

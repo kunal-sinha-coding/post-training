@@ -17,7 +17,7 @@ import torch
 from datasets import load_dataset
 from transformers import AutoModel, AutoTokenizer
 
-from experiments.train_when2call_jina import DATASET_NAME, LABELS, LABEL_TO_ID, infer_action_label, tools_text
+from experiments.train_when2call_jina import DATASET_NAME, LABELS, LABEL_TO_ID, response_label, tools_text
 
 
 @dataclass
@@ -33,20 +33,6 @@ def question_text(row):
     # Preserve the same user and tool context for all candidate responses.
     user = "\n".join(message["content"] for message in row["messages"] if message["role"] == "user")
     return f"Question: {user}\nAvailable tools:\n{tools_text(row['tools'])}"
-
-
-def response_label(response):
-    """Infer a four-way class from a candidate response including raw JSON calls."""
-    # Normalize raw and tagged tool-call responses before applying the shared response heuristic.
-    text = str(response).strip()
-    if text.startswith("{") or text.startswith("["):
-        try:
-            value = json.loads(text)
-            if (isinstance(value, dict) and "name" in value) or (isinstance(value, list) and value and all(isinstance(item, dict) and "name" in item for item in value)):
-                return "tool_call"
-        except json.JSONDecodeError:
-            pass
-    return infer_action_label(text)
 
 
 def pair_text(context, response):

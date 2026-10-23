@@ -23,7 +23,6 @@ from experiments.train_when2call_jina import (
     LABEL_TO_ID,
     autocast_context,
     collate,
-    infer_action_label,
     length_aware_batches,
     load_train_examples,
     prepare_train_examples,
