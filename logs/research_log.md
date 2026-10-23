@@ -4816,6 +4816,20 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: The 4096-token pairwise zero-smoothing candidate may improve transfer over the 3072-token pairwise candidate by restoring the full valid context.
 
+Timestamp: 2026-10-23T03:40:00Z. Status: completed.
+
+Aggregate black-box evidence: W&B run vzlgbbvl, accuracy 0.5440854326396495 and macro F1 0.5439831759033688 on 3652 test examples. The test file reports `test_loaded=true`, `selection_complete=true`, `test_measurement_only=true`, and `black_box=true`. Training and clean-validation evidence were complete before this measurement. Official test labels were used only for reporting after selection.
+
+The 4096-token pairwise zero-smoothing standalone branch is below the encoder leader and is closed. The next hypothesis tests a clean-validation-selected 80/20 blend with the strongest encoder, using the pairwise mechanism that has shown complementary transfer in prior blends.
+
+## test-clean-validation-encoder-pairwise4096-blend-80-20
+
+Timestamp: 2026-10-23T03:40:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-encoder-only-pairwise-cues-max4096-lr15e5-wd0005-smooth000-seed20261023", "--weight", "0.80", "--weight", "0.20", "--output", "outputs/test-clean-validation-encoder-pairwise4096-blend-80-20.json"]. Both component training and clean-validation evidence are complete. The 80/20 weights are fixed before aggregate evaluation from prior pairwise blend evidence. Official test labels will be used only for reporting after selection.
+
+Hypothesis: The 4096-token pairwise zero-smoothing checkpoint may provide complementary errors at 20% weight, despite its weaker standalone score.
+
 ## clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023
 
 Timestamp: 2026-10-23T03:23:55.721461+00:00. Status: completed.

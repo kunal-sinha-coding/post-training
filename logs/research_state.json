@@ -4,20 +4,26 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 4096-token pairwise zero-smoothing candidate completed training at 0.979583 accuracy and 0.734727 macro F1, with clean validation at 0.968333 accuracy and 0.726431 macro F1. Its aggregate black-box measurement is missing, so queue that measurement before selecting any new experiment. Test labels will be used only for reporting after selection.",
+  "current_hypothesis": "The 4096-token pairwise zero-smoothing candidate reached 0.544085 aggregate accuracy and 0.543983 aggregate macro F1, below the encoder leader. Test labels were used only after selection. An 80/20 blend with the strongest encoder may recover complementary transfer from the pairwise mechanism.",
   "active_experiment": {
-    "pid": 316379,
+    "pid": 316789,
     "command": [
       "python",
       "-u",
       "-m",
       "experiments.evaluate_frozen_when2call_ensemble_test",
       "--checkpoint",
+      "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
+      "--checkpoint",
       "outputs/clean-validation-encoder-only-pairwise-cues-max4096-lr15e5-wd0005-smooth000-seed20261023",
+      "--weight",
+      "0.80",
+      "--weight",
+      "0.20",
       "--output",
-      "outputs/test-clean-validation-encoder-only-pairwise-cues-max4096-lr15e5-wd0005-smooth000-seed20261023.json"
+      "outputs/test-clean-validation-encoder-pairwise4096-blend-80-20.json"
     ],
-    "started_at": "2026-10-23T03:37:47.885197+00:00"
+    "started_at": "2026-10-23T03:39:20.135386+00:00"
   },
   "worker_command": [
     "python",
@@ -25,9 +31,15 @@
     "-m",
     "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
+    "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
+    "--checkpoint",
     "outputs/clean-validation-encoder-only-pairwise-cues-max4096-lr15e5-wd0005-smooth000-seed20261023",
+    "--weight",
+    "0.80",
+    "--weight",
+    "0.20",
     "--output",
-    "outputs/test-clean-validation-encoder-only-pairwise-cues-max4096-lr15e5-wd0005-smooth000-seed20261023.json"
+    "outputs/test-clean-validation-encoder-pairwise4096-blend-80-20.json"
   ],
   "worker_queue": [],
   "_previous_command": [
@@ -60,10 +72,10 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T03:37:47.885205+00:00",
-  "last_action": "Watchdog started validation worker pid 316379.",
+  "last_heartbeat": "2026-10-23T03:39:20.135415+00:00",
+  "last_action": "Watchdog started validation worker pid 316789.",
   "watchdog_enabled": true,
-  "research_log_size": 459713,
+  "research_log_size": 461335,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -71,12 +83,18 @@
     "-m",
     "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
+    "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
+    "--checkpoint",
     "outputs/clean-validation-encoder-only-pairwise-cues-max4096-lr15e5-wd0005-smooth000-seed20261023",
+    "--weight",
+    "0.80",
+    "--weight",
+    "0.20",
     "--output",
-    "outputs/test-clean-validation-encoder-only-pairwise-cues-max4096-lr15e5-wd0005-smooth000-seed20261023.json"
+    "outputs/test-clean-validation-encoder-pairwise4096-blend-80-20.json"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T03:37:17.337963+00:00",
-  "planning_ack_deadline": "2026-10-23T03:39:17.337989+00:00",
-  "planning_attempts": 281
+  "planning_notified_at": "2026-10-23T03:38:49.615717+00:00",
+  "planning_ack_deadline": "2026-10-23T03:40:49.615742+00:00",
+  "planning_attempts": 282
 }
