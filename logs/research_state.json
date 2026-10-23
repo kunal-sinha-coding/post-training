@@ -4,9 +4,9 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The auxiliary10 encoder transferred poorly with aggregate accuracy 0.5153340635268346 and macro F1 0.5164492927502081. The next hypothesis applies the training-only bias [0.0, -0.3, 0.0, 0.0] to the existing four-way ensemble. Test labels remain reserved for aggregate reporting.",
+  "current_hypothesis": "The calibrated four-way ensemble achieved aggregate accuracy 0.5629791894852135 and macro F1 0.5626354730459683, the strongest result. The next hypothesis makes a small local weight adjustment to 0.95, 0.02, 0.02, 0.01 with the same training-only bias. Test labels remain reserved for aggregate reporting.",
   "active_experiment": {
-    "pid": 333878,
+    "pid": 334320,
     "command": [
       "python",
       "-u",
@@ -15,11 +15,11 @@
       "--checkpoint",
       "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
       "--weight",
-      "0.94",
+      "0.95",
       "--checkpoint",
       "outputs/clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023",
       "--weight",
-      "0.03",
+      "0.02",
       "--checkpoint",
       "outputs/clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023",
       "--weight",
@@ -37,9 +37,9 @@
       "--class-bias",
       "0.0",
       "--output",
-      "outputs/test-clean-validation-encoder-fourway-94-03-02-01-calibrated-bias.json"
+      "outputs/test-clean-validation-encoder-fourway-95-02-02-01-calibrated-bias.json"
     ],
-    "started_at": "2026-10-23T05:26:45.112190+00:00"
+    "started_at": "2026-10-23T05:30:19.563330+00:00"
   },
   "worker_command": [
     "python",
@@ -49,11 +49,11 @@
     "--checkpoint",
     "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
     "--weight",
-    "0.94",
+    "0.95",
     "--checkpoint",
     "outputs/clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023",
     "--weight",
-    "0.03",
+    "0.02",
     "--checkpoint",
     "outputs/clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023",
     "--weight",
@@ -71,7 +71,7 @@
     "--class-bias",
     "0.0",
     "--output",
-    "outputs/test-clean-validation-encoder-fourway-94-03-02-01-calibrated-bias.json"
+    "outputs/test-clean-validation-encoder-fourway-95-02-02-01-calibrated-bias.json"
   ],
   "worker_queue": [],
   "_previous_command": [
@@ -104,10 +104,10 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T05:26:45.112209+00:00",
-  "last_action": "Watchdog started validation worker pid 333878.",
+  "last_heartbeat": "2026-10-23T05:30:19.563337+00:00",
+  "last_action": "Watchdog started validation worker pid 334320.",
   "watchdog_enabled": true,
-  "research_log_size": 530912,
+  "research_log_size": 532756,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -117,11 +117,11 @@
     "--checkpoint",
     "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
     "--weight",
-    "0.94",
+    "0.95",
     "--checkpoint",
     "outputs/clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023",
     "--weight",
-    "0.03",
+    "0.02",
     "--checkpoint",
     "outputs/clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023",
     "--weight",
@@ -139,10 +139,10 @@
     "--class-bias",
     "0.0",
     "--output",
-    "outputs/test-clean-validation-encoder-fourway-94-03-02-01-calibrated-bias.json"
+    "outputs/test-clean-validation-encoder-fourway-95-02-02-01-calibrated-bias.json"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T05:25:44.649791+00:00",
-  "planning_ack_deadline": "2026-10-23T05:27:44.649811+00:00",
-  "planning_attempts": 321
+  "planning_notified_at": "2026-10-23T05:29:49.046016+00:00",
+  "planning_ack_deadline": "2026-10-23T05:31:49.046039+00:00",
+  "planning_attempts": 322
 }

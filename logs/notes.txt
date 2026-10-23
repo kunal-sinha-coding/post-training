@@ -6027,3 +6027,7 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 
 2026-10-23T05:26Z: Commit `queue calibrated fourway ensemble evaluation` records the completed auxiliary10 aggregate result and the distinct calibrated four-way command. The watchdog launched it as PID 333878. Test labels were not used for selection.
 
+2026-10-23T05:30Z: The calibrated four-way ensemble completed with accuracy 0.5629791894852135 and macro F1 0.5626354730459683, the new best aggregate result. The next queued command tests weights 0.95, 0.02, 0.02, 0.01 with the same training-only bias. Test labels were not used for selection.
+
+2026-10-23T05:30Z: Commit `queue fourway 95 02 02 01 weight probe` records the new best result and the distinct local weight command. The watchdog launched it as PID 334320. Test labels were not used for selection.
+
