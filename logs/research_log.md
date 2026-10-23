@@ -895,6 +895,24 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd01-lr1e5-max4096-batch2-seed20261064
+
+Timestamp: 2026-10-23T23:43:15Z. Status: completed.
+
+Aggregate black-box test accuracy was `0.5402519167579408` with macro F1 `0.5437378902650508`. Training and clean-validation evidence were recorded separately. Test labels were not used for selection.
+
+## test-clean-validation-when2call-wd01-wd0025-blend80-20
+
+Timestamp: 2026-10-23T23:47:19Z. Status: completed.
+
+Aggregate black-box test accuracy was `0.5449069003285871` with macro F1 `0.5482858737508969`. Weights were fixed from clean-validation results. Test labels were not used for selection.
+
+## test-clean-validation-when2call-fullschema-smooth0075-wd0025-wd01-blend70-15-15
+
+Timestamp: 2026-10-23T23:47:19Z. Status: queued.
+
+All component training and clean-validation evidence is complete. The weights are fixed without test labels.
+
 ## test-clean-validation-when2call-only-ce-cues-sftpre1-smooth00375-lr1e5-max4096-batch2-seed20261063
 
 Timestamp: 2026-10-23T23:34:01Z. Status: completed.
