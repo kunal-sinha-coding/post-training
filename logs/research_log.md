@@ -4480,6 +4480,14 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 
 Hypothesis: Earlier one-epoch SFT pretraining showed a small positive aggregate signal in the main cross-entropy branch. Combining that mechanism with the targeted direct example may improve transfer without another seed sweep.
 
+## test-clean-validation-cues-aux05-rejected01-sftpre1-sftce-wd0005-smooth005-seed20261023
+
+Timestamp: 2026-10-23T02:43:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-rejected01-sftpre1-sftce-wd0005-smooth005-seed20261023", "--output", "outputs/test-clean-validation-cues-aux05-rejected01-sftpre1-sftce-wd0005-smooth005-seed20261023.json"]. This aggregate measurement will run only after the active training process records its training and clean-validation evidence. Official test labels will not be used for selection.
+
+Hypothesis: The active one-epoch SFT-pretraining composition may transfer better than the rejected cross-entropy SFT-only candidate. Measure its aggregate performance before selecting any later experiment.
+
 ## clean-validation-cues-aux05-rejected01-sftpairwise-wd0001-smooth005-seed20261023
 
 Timestamp: 2026-10-23T02:28:05.978407+00:00. Status: completed.
@@ -4497,5 +4505,15 @@ Timestamp: 2026-10-23T02:38:20.073248+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-rejected01-sftce-wd0005-smooth005-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--add-argument-cues", "--sft-aux-samples-per-class", "5", "--rejected-direct-samples", "1", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux05-rejected01-sftce-wd0005-smooth005-seed20261023. W&B run: not available.
 
 Clean development accuracy: 0.9672222222222222. Clean development macro F1: 0.7256582942236645. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-cues-aux05-rejected01-sftpre1-sftce-wd0005-smooth005-seed20261023
+
+Timestamp: 2026-10-23T02:46:38.984541+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-rejected01-sftpre1-sftce-wd0005-smooth005-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--add-argument-cues", "--sft-aux-samples-per-class", "5", "--sft-pretrain-epochs", "1", "--rejected-direct-samples", "1", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux05-rejected01-sftpre1-sftce-wd0005-smooth005-seed20261023. W&B run: not available.
+
+Clean development accuracy: 0.9727777777777777. Clean development macro F1: 0.7298122586510313. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
