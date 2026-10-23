@@ -999,6 +999,22 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: Reducing the zero-smoothing contribution from 1% to 0.5% may retain its small complementary signal while reducing negative transfer.
 
+## test-clean-validation-encoder-fourway-94p5-03-02-0p5
+
+Timestamp: 2026-10-23T04:58:00Z. Status: completed.
+
+Aggregate black-box evidence: W&B run not separately queried in this handoff, accuracy 0.56078860898138 and macro F1 0.560347428969524 on 3652 test examples. The aggregate output reports `test_loaded=true`, `selection_complete=true`, `test_measurement_only=true`, and `black_box=true`. All four components had complete training and clean-validation evidence before this measurement. Test labels were not used for selection.
+
+The zero-smoothing weight sweep is closed because the 0.5% probe remains below the current best 95/3/2 ensemble. The next hypothesis addresses the direct-class collapse observed when rejected-response supervision was added.
+
+## clean-validation-encoder-rejected-direct-1000-cues-max4096-lr15e5-wd0005-smooth000-seed20261023
+
+Timestamp: 2026-10-23T04:58:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-encoder-rejected-direct-1000-cues-max4096-lr15e5-wd0005-smooth000-seed20261023", "--loss-function", "cross_entropy", "--add-argument-cues", "--rejected-direct-samples", "1000", "--learning-rate", "1.5e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Candidate selection will use the fixed clean-validation split only. Aggregate black-box evaluation will follow if the clean result is viable. Official test labels will not be used for selection.
+
+Hypothesis: A bounded rejected-direct sample may repair direct-class underrepresentation without the broad negative effect of adding all rejected examples.
+
 ## test-clean-validation-encoder-fourway-94-03-02-01
 
 Timestamp: 2026-10-23T04:51:00Z. Status: failed_or_incomplete.

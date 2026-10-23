@@ -5993,3 +5993,5 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 
 2026-10-23T04:55Z: The corrected four-way blend completed with accuracy 0.5610624315443593 and macro F1 0.5606314630690752. It remains below the current best 95/3/2 ensemble. The next queued final local probe reduces the zero-smoothing weight to 0.5%. Test labels were not used for selection.
 
+2026-10-23T04:58Z: The 0.5% zero-smoothing four-way blend completed with accuracy 0.56078860898138 and macro F1 0.560347428969524. The local weight sweep is closed below the current best. The next queued hypothesis adds 1000 bounded rejected-direct examples to address direct-class collapse. Test labels were not used for selection.
+

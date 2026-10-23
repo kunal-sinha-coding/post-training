@@ -603,3 +603,5 @@ Historical official test results remain detailed in [research_log.md](research_l
 | test-clean-validation-encoder-fourway-94-03-02-01-retry | — | — | — | Queued corrected four-way blend with four explicit weights | queued |
 | test-clean-validation-encoder-fourway-94-03-02-01-retry | 0.5610624315443593 | 0.5606314630690752 | 93itt3fa | Corrected aggregate-only four-way result, below the current best 95/3/2 ensemble. Test labels were not used for selection. | completed |
 | test-clean-validation-encoder-fourway-94p5-03-02-0p5 | — | — | — | Queued final local probe with a 0.5% zero-smoothing contribution | queued |
+| test-clean-validation-encoder-fourway-94p5-03-02-0p5 | 0.56078860898138 | 0.560347428969524 | — | Aggregate-only result below the current best 95/3/2 ensemble. Test labels were not used for selection. | completed |
+| Candidate | clean-validation-encoder-rejected-direct-1000-cues-max4096-lr15e5-wd0005-smooth000-seed20261023 | — | — | Queued bounded rejected-direct supervision encoder probe | queued |
