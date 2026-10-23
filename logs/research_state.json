@@ -4,24 +4,20 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The pairwise objective may transfer better at the lower learning rate when the original label smoothing is restored. Candidate selection will use clean validation only, with official test labels reserved for later reporting.",
+  "current_hypothesis": "The smoothed lower-learning-rate pairwise candidate has viable clean evidence and now requires its aggregate test measurement. Test labels remain reserved for reporting, not selection.",
   "active_experiment": {},
   "worker_command": [
     "python",
     "-u",
     "-m",
-    "experiments.clean_validation_baseline",
-    "--output-dir", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth005-lr1e5-max4096-batch2-seed20261023",
-    "--loss-function", "pairwise_ranking", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1",
-    "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005",
-    "--seed", "20261041", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"
+    "experiments.evaluate_frozen_when2call_ensemble_test",
+    "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth005-lr1e5-max4096-batch2-seed20261023",
+    "--output", "outputs/test-clean-validation-when2call-only-pairwise-sftpre1-smooth005-lr1e5-max4096-batch2-seed20261023.json"
   ],
   "worker_queue": [[
-    "python", "-u", "-m", "experiments.clean_validation_baseline",
-    "--output-dir", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth005-lr1e5-max4096-batch2-seed20261023",
-    "--loss-function", "pairwise_ranking", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1",
-    "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005",
-    "--seed", "20261041", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"
+    "python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test",
+    "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth005-lr1e5-max4096-batch2-seed20261023",
+    "--output", "outputs/test-clean-validation-when2call-only-pairwise-sftpre1-smooth005-lr1e5-max4096-batch2-seed20261023.json"
   ]],
   "_previous_command": [
     "python",
@@ -53,20 +49,23 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T19:15:18.041674+00:00",
-  "last_action": "Codex recorded the zero-smoothing cross-entropy aggregate evidence and queued a matched lower-learning-rate pairwise control with smoothing restored.",
+  "last_heartbeat": "2026-10-23T19:17:25.823807+00:00",
+  "last_action": "Codex recorded the smoothed lower-learning-rate pairwise evidence and queued its required aggregate test measurement.",
   "watchdog_enabled": true,
-  "research_log_size": 591914,
+  "research_log_size": 593435,
   "stop_command": "STOP",
   "next_experiment": [
-    "python", "-u", "-m", "experiments.clean_validation_baseline",
-    "--output-dir", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth005-lr1e5-max4096-batch2-seed20261023",
-    "--loss-function", "pairwise_ranking", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1",
-    "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005",
-    "--seed", "20261041", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"
+    "python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test",
+    "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth005-lr1e5-max4096-batch2-seed20261023",
+    "--output", "outputs/test-clean-validation-when2call-only-pairwise-sftpre1-smooth005-lr1e5-max4096-batch2-seed20261023.json"
   ],
-  "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T19:16:54.421812+00:00",
-  "planning_ack_deadline": "2026-10-23T19:18:54.421831+00:00",
-  "planning_attempts": 372
+  "recording_jobs": [
+    {
+      "pid": 373861,
+      "experiment_id": "clean-validation-when2call-only-pairwise-sftpre1-smooth005-lr1e5-max4096-batch2-seed20261023"
+    }
+  ],
+  "planning_notified_at": "2026-10-23T19:24:45.084925+00:00",
+  "planning_ack_deadline": "2026-10-23T19:26:45.084949+00:00",
+  "planning_attempts": 373
 }
