@@ -4,20 +4,26 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 3072-token pairwise candidate completed training at 0.979444 accuracy and 0.734623 macro F1, with clean validation at 0.968333 accuracy and 0.726431 macro F1. Its aggregate black-box measurement is missing, so queue that measurement before selecting any blend or new training experiment. Test labels will be used only for reporting after selection.",
+  "current_hypothesis": "The 3072-token pairwise candidate reached 0.542990 aggregate accuracy and 0.543514 aggregate macro F1, below the encoder leader and prior 4096-token pairwise result. Test labels were used only after selection. An 80/20 blend with the strongest encoder may still benefit from complementary errors, matching the best prior pairwise blend weight.",
   "active_experiment": {
-    "pid": 313716,
+    "pid": 314134,
     "command": [
       "python",
       "-u",
       "-m",
       "experiments.evaluate_frozen_when2call_ensemble_test",
       "--checkpoint",
+      "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
+      "--checkpoint",
       "outputs/clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023",
+      "--weight",
+      "0.80",
+      "--weight",
+      "0.20",
       "--output",
-      "outputs/test-clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023.json"
+      "outputs/test-clean-validation-encoder-pairwise3072-blend-80-20.json"
     ],
-    "started_at": "2026-10-23T03:24:29.030855+00:00"
+    "started_at": "2026-10-23T03:26:01.654130+00:00"
   },
   "worker_command": [
     "python",
@@ -25,9 +31,15 @@
     "-m",
     "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
+    "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
+    "--checkpoint",
     "outputs/clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023",
+    "--weight",
+    "0.80",
+    "--weight",
+    "0.20",
     "--output",
-    "outputs/test-clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023.json"
+    "outputs/test-clean-validation-encoder-pairwise3072-blend-80-20.json"
   ],
   "worker_queue": [],
   "_previous_command": [
@@ -60,10 +72,10 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T03:24:29.030866+00:00",
-  "last_action": "Watchdog started validation worker pid 313716.",
+  "last_heartbeat": "2026-10-23T03:26:01.654138+00:00",
+  "last_action": "Watchdog started validation worker pid 314134.",
   "watchdog_enabled": true,
-  "research_log_size": 448802,
+  "research_log_size": 450497,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -71,12 +83,18 @@
     "-m",
     "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
+    "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
+    "--checkpoint",
     "outputs/clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023",
+    "--weight",
+    "0.80",
+    "--weight",
+    "0.20",
     "--output",
-    "outputs/test-clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023.json"
+    "outputs/test-clean-validation-encoder-pairwise3072-blend-80-20.json"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T03:23:58.556859+00:00",
-  "planning_ack_deadline": "2026-10-23T03:25:58.556882+00:00",
-  "planning_attempts": 275
+  "planning_notified_at": "2026-10-23T03:25:30.991645+00:00",
+  "planning_ack_deadline": "2026-10-23T03:27:30.991668+00:00",
+  "planning_attempts": 276
 }

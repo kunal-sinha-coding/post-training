@@ -4736,6 +4736,20 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 
 Hypothesis: Pairwise ranking may provide complementary class-boundary information at 3072 tokens while avoiding the 2048-token truncation failure.
 
+Timestamp: 2026-10-23T03:26:00Z. Status: completed.
+
+Aggregate black-box evidence: W&B run 1vkzh0tl, accuracy 0.5429901423877328 and macro F1 0.5435140630776886 on 3652 test examples. The test file reports `test_loaded=true`, `selection_complete=true`, `test_measurement_only=true`, and `black_box=true`. Training and clean-validation evidence were complete before this measurement. Official test labels were used only for reporting after selection.
+
+The 3072-token pairwise standalone result is below the encoder leader and the prior 4096-token pairwise result. The next hypothesis tests whether it provides complementary errors in the same conservative 80/20 blend that worked best for the prior pairwise checkpoint.
+
+## test-clean-validation-encoder-pairwise3072-blend-80-20
+
+Timestamp: 2026-10-23T03:26:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023", "--weight", "0.80", "--weight", "0.20", "--output", "outputs/test-clean-validation-encoder-pairwise3072-blend-80-20.json"]. Both component training and clean-validation evidence are complete. The 80/20 weights are fixed before aggregate evaluation from the prior pairwise blend result and clean-validation performance. Official test labels will be used only for reporting after selection.
+
+Hypothesis: The 3072-token pairwise model may improve the strongest encoder through complementary errors, even though its standalone aggregate score is weaker than the 4096-token pairwise model.
+
 ## clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023
 
 Timestamp: 2026-10-23T03:23:55.721461+00:00. Status: completed.
