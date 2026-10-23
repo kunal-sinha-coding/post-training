@@ -1,16 +1,22 @@
 {
-  "status": "active",
+  "status": "awaiting_codex_planning",
   "planning_owner": "codex_primary",
-  "planning_required": false,
+  "planning_required": true,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "A smaller balanced filtered-Glaive, When2Call preference, and When2Call SFT mixture with a 2,048-token context may preserve the source-balance signal while fitting the available GPU memory. Test labels remain reserved for reporting.",
   "active_experiment": {},
-  "worker_command": ["python", "-u", "-m", "experiments.clean_validation_glaive", "--output-dir", "outputs/clean-validation-glaive-balanced-3k-pref3k-sft3k-max2048-seed20261023", "--glaive-sample", "3000", "--pref-sample", "3000", "--sft-sample", "3000", "--epochs", "1", "--seed", "20261026", "--split-seed", "20261026", "--max-length", "2048"],
-  "worker_queue": [
-    ["python", "-u", "-m", "experiments.clean_validation_glaive", "--output-dir", "outputs/clean-validation-glaive-balanced-3k-pref3k-sft3k-max2048-seed20261023", "--glaive-sample", "3000", "--pref-sample", "3000", "--sft-sample", "3000", "--epochs", "1", "--seed", "20261026", "--split-seed", "20261026", "--max-length", "2048"],
-    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-glaive-balanced-3k-pref3k-sft3k-max2048-seed20261023", "--output", "outputs/test-clean-validation-glaive-balanced-3k-pref3k-sft3k-max2048-seed20261023.json"]
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_frozen_when2call_ensemble_test",
+    "--checkpoint",
+    "outputs/clean-validation-glaive-balanced-3k-pref3k-sft3k-max2048-seed20261023",
+    "--output",
+    "outputs/test-clean-validation-glaive-balanced-3k-pref3k-sft3k-max2048-seed20261023.json"
   ],
+  "worker_queue": [],
   "_previous_command": [
     "python",
     "-u",
@@ -41,14 +47,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T16:35:36.285761+00:00",
-  "last_action": "Codex queued a smaller balanced filtered-Glaive training run followed by its required aggregate black-box evaluation.",
+  "last_heartbeat": "2026-10-23T16:40:45.425979+00:00",
+  "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
-  "research_log_size": 555388,
+  "research_log_size": 556223,
   "stop_command": "STOP",
-  "next_experiment": ["python", "-u", "-m", "experiments.clean_validation_glaive", "--output-dir", "outputs/clean-validation-glaive-balanced-3k-pref3k-sft3k-max2048-seed20261023", "--glaive-sample", "3000", "--pref-sample", "3000", "--sft-sample", "3000", "--epochs", "1", "--seed", "20261026", "--split-seed", "20261026", "--max-length", "2048"],
+  "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T16:36:41.278383+00:00",
-  "planning_ack_deadline": "2026-10-23T16:38:41.278434+00:00",
-  "planning_attempts": 342
+  "planning_notified_at": "2026-10-23T16:41:18.214636+00:00",
+  "planning_ack_deadline": "2026-10-23T16:43:18.214659+00:00",
+  "planning_attempts": 343
 }
