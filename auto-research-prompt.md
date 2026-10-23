@@ -103,6 +103,7 @@ Possible research directions include, but are not limited to:
 ### Training
 
 - Training dataset composition.
+- For the current When2Call benchmark, prioritize a filtered subset of Glaive Function Calling v2 with all `direct` examples removed, optionally combined with When2Call SFT and preference data. Treat this as user guidance for the next data-composition hypotheses, not as an exhaustive restriction on future research.
 - Dataset cleaning and filtering.
 - Label quality improvements.
 - Additional public training datasets.
@@ -221,6 +222,8 @@ Measure at minimum:
 - Per-class precision, recall, and F1.
 - Confusion matrix.
 - Training and inference cost where relevant.
+
+For every viable experiment, inspect and report all three evidence sets together: training metrics, clean held-out validation metrics, and aggregate black-box test metrics. Use the pattern to diagnose the failure mode. Poor training metrics indicate a training or optimization problem. Strong training metrics with poor clean validation indicate overfitting. Strong training and clean validation metrics with poor aggregate test metrics indicate a generalization or distribution-shift problem, so investigate the training data and its match to the evaluation distribution. Do not report one metric set without checking the other available sets, and do not treat a high validation score as evidence of good test generalization by itself.
 
 For every viable candidate, run the authorized aggregate-only official test evaluation after the candidate is frozen. Record test accuracy and test macro F1 in the persistent research log and in the leaderboard's official test-results section. If a candidate is clearly unusable and test evaluation is skipped, record `test skipped` and the reason. Never use a test result to change the submitted candidate, its hyperparameters, its prompt, or its training data. Use clean development results to decide whether a method is viable, then use the frozen test result to measure real benchmark performance and compare completed frozen methods.
 
