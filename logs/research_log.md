@@ -983,6 +983,22 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: A 1% zero-smoothing contribution may add complementary errors without materially weakening the established best ensemble.
 
+## test-clean-validation-encoder-fourway-94-03-02-01-retry
+
+Timestamp: 2026-10-23T04:55:00Z. Status: completed.
+
+Aggregate black-box evidence: W&B run 93itt3fa, accuracy 0.5610624315443593 and macro F1 0.5606314630690752 on 3652 test examples. The test file reports `test_loaded=true`, `selection_complete=true`, `test_measurement_only=true`, and `black_box=true`. All four components had complete training and clean-validation evidence before this measurement. Test labels were not used for selection.
+
+The corrected four-way blend is below the current best 95/3/2 ensemble but above the earlier two-component blends. The next and final local probe reduces the zero-smoothing contribution to 0.5%.
+
+## test-clean-validation-encoder-fourway-94p5-03-02-0p5
+
+Timestamp: 2026-10-23T04:55:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--weight", "0.945", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023", "--weight", "0.03", "--checkpoint", "outputs/clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023", "--weight", "0.02", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth000-seed20261023", "--weight", "0.005", "--output", "outputs/test-clean-validation-encoder-fourway-94p5-03-02-0p5.json"]. All components have complete training and clean-validation evidence. Weights are fixed before aggregate evaluation. Official test labels will not be used for selection.
+
+Hypothesis: Reducing the zero-smoothing contribution from 1% to 0.5% may retain its small complementary signal while reducing negative transfer.
+
 ## test-clean-validation-encoder-fourway-94-03-02-01
 
 Timestamp: 2026-10-23T04:51:00Z. Status: failed_or_incomplete.

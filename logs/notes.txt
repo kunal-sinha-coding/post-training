@@ -5991,3 +5991,5 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 
 2026-10-23T04:51Z: The first four-way command failed before evaluation because it listed four checkpoints but only three weights. No aggregate metric was produced. The corrected command now queues four explicit weights, 0.94, 0.03, 0.02, and 0.01. Test labels were not used for selection.
 
+2026-10-23T04:55Z: The corrected four-way blend completed with accuracy 0.5610624315443593 and macro F1 0.5606314630690752. It remains below the current best 95/3/2 ensemble. The next queued final local probe reduces the zero-smoothing weight to 0.5%. Test labels were not used for selection.
+
