@@ -969,6 +969,18 @@ Timestamp: 2026-10-23T02:03:27Z. Status: queued.
 
 Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022", "--class-bias", "0.0", "--class-bias", "0.3", "--class-bias", "0.0", "--class-bias", "0.0", "--output", "outputs/test-clean-validation-cues-aux05-sftpairwise-calibrated-bias.json"]. The bias was fit on a training calibration subset and selected using clean validation only. The official test will be used only for aggregate measurement.
 
+## test-clean-validation-cues-aux05-sftpairwise-calibrated-bias-result
+
+Timestamp: 2026-10-23T02:06:43Z. Status: completed.
+
+W&B run: `4acqvkdp`. The clean-validation-selected class bias produced aggregate accuracy 0.5539430449069004 and macro F1 0.5528258873540205, below the uncalibrated frozen checkpoint. The single-checkpoint bias branch is rejected. Test labels were used only for this aggregate measurement. The next probe tests transfer of the same frozen bias to the existing 55/45 encoder ensemble.
+
+## test-clean-validation-encoder-55-45-calibrated-bias
+
+Timestamp: 2026-10-23T02:06:43Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022", "--weight", "0.55", "--weight", "0.45", "--class-bias", "0.0", "--class-bias", "0.3", "--class-bias", "0.0", "--class-bias", "0.0", "--output", "outputs/test-clean-validation-encoder-55-45-calibrated-bias.json"]. The ensemble weights and bias were fixed before testing from clean-validation evidence. No test labels will be used for selection.
+
 ## test-clean-validation-cues-aux01-lr15e5-bothpairwise-wd0005-smooth000-seed20261022-result
 
 Timestamp: 2026-10-22T23:21:57Z. Status: completed.
@@ -4356,5 +4368,64 @@ Timestamp: 2026-10-23T01:32:50.161723+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-lr15e5-mainpairwise-sftce-wd0005-smooth000-seed20261023", "--loss-function", "pairwise_ranking", "--sft-loss-function", "cross_entropy", "--add-argument-cues", "--sft-aux-samples-per-class", "5", "--learning-rate", "1.5e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux05-lr15e5-mainpairwise-sftce-wd0005-smooth000-seed20261023. W&B run: not available.
 
 Clean development accuracy: 0.9644444444444444. Clean development macro F1: 0.7235840969816869. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+Timestamp: 2026-10-23T02:13:30Z. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-cues-aux05-sftpairwise-wd0001-smooth005-seed20261022", "--weight", "0.55", "--weight", "0.45", "--class-bias", "0.0", "--class-bias", "0.3", "--class-bias", "0.0", "--class-bias", "0.0", "--output", "outputs/test-clean-validation-encoder-55-45-calibrated-bias.json"]. Output: /workspace/post-training/outputs/test-clean-validation-encoder-55-45-calibrated-bias.json. W&B run: cfj52o0g.
+
+The two linked checkpoints had complete training and clean-validation evidence. The clean-validation-selected bias was fixed before this aggregate-only measurement. Checkpoint 0 accuracy was 0.5536692223439211 with macro F1 0.5527299348445316. Checkpoint 1 accuracy was 0.5539430449069004 with macro F1 0.5528258873540205. The ensemble accuracy was 0.5539430449069004 with macro F1 0.5529591183433326. Official test labels were used only for this separate aggregate measurement. The bias transfer is rejected because it is below the uncalibrated 55/45 leader.
+
+## clean-validation-split-stability-diagnostic
+
+Timestamp: 2026-10-23T02:15:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.audit_split_stability"]. Output: /workspace/post-training/outputs/clean-validation-split-stability.json. This clean-only diagnostic evaluates fixed development partitions and does not load official test labels.
+
+Hypothesis: The recent clean-validation gains may be split-sensitive. Measure cross-partition stability of the existing fixed encoder checkpoints before selecting another training mechanism. No test labels will be used for selection.
+
+Timestamp: 2026-10-23T02:18:47Z. Status: completed.
+
+W&B run: 0rrk7ono. Official test loaded: false. On the fixed development partition, seed20 scored 0.9477777777777778 accuracy and 0.7110762533395301 macro F1. Seed21 scored 0.9455555555555556 accuracy and 0.7095132624335938 macro F1. Seed22 scored 0.9483333333333334 accuracy and 0.7114481368502341 macro F1. The equal-weight clean ensemble scored 0.9627777777777777 accuracy and 0.7223372865404912 macro F1. The direct-class fallback scored 0.9177777777777778 accuracy and 0.7037170678123976 macro F1 and is rejected. The ensemble signal is sufficient to queue its separate aggregate black-box measurement. Existing source checkpoints have training and clean-validation records. No test labels were used for selection.
+
+## test-clean-validation-fixedsplit-seed-ensemble
+
+Timestamp: 2026-10-23T02:20:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-fixedsplit-seed20-len4096", "--checkpoint", "outputs/clean-validation-fixedsplit-seed21-len4096", "--checkpoint", "outputs/clean-validation-fixedsplit-seed22-len4096", "--weight", "0.3333333333", "--weight", "0.3333333333", "--weight", "0.3333333334", "--output", "outputs/test-clean-validation-fixedsplit-seed-ensemble.json"]. The weights are fixed before the aggregate measurement from the clean-only diagnostic. The official test is used only as a separate black-box measurement.
+
+Hypothesis: The clean-validation gain from averaging the three fixed encoder checkpoints may transfer to the official aggregate test. The result will be compared with the existing single-checkpoint and 55/45 encoder leaders without using test labels for selection.
+
+Timestamp: 2026-10-23T02:23:53Z. Status: completed.
+
+W&B run: x4o4uja4. Dataset: nvidia/When2Call, split test/mcq, 3652 examples. The three source checkpoints had complete training and clean-validation evidence, and the equal weights were fixed before this aggregate-only measurement. Checkpoint 0 scored 0.5295728368017525 accuracy and 0.5314955216304863 macro F1. Checkpoint 1 scored 0.5323110624315444 accuracy and 0.5346130640663763 macro F1. Checkpoint 2 scored 0.5169769989047097 accuracy and 0.5169672846533107 macro F1. The ensemble scored 0.5282037239868566 accuracy and 0.5305783080495249 macro F1. Official test labels were used only for this separate aggregate measurement. The clean ensemble branch is rejected.
+
+## clean-validation-cues-aux05-rejected01-sftpairwise-wd0001-smooth005-seed20261023
+
+Timestamp: 2026-10-23T02:25:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-rejected01-sftpairwise-wd0001-smooth005-seed20261023", "--sft-loss-function", "pairwise_ranking", "--add-argument-cues", "--sft-aux-samples-per-class", "5", "--rejected-direct-samples", "1", "--learning-rate", "2.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.001", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. This is a clean-validation training candidate. Official test labels will not be loaded during selection.
+
+Hypothesis: The clean diagnostics expose only one direct-class example in the fixed development partition. A single rejected-direct training example may repair the direct-class boundary without the overcorrection seen with larger rejected-direct augmentations. This is a targeted mechanism test, not a seed sweep.
+
+Timestamp: 2026-10-23T02:28:05Z. Status: completed.
+
+Output: /workspace/post-training/outputs/clean-validation-cues-aux05-rejected01-sftpairwise-wd0001-smooth005-seed20261023. W&B training run was recorded by the worker. Training accuracy was 0.985718247365502 with macro F1 0.7394467379899274. Clean-validation accuracy was 0.9622222222222222 with macro F1 0.721909943208364. The direct class remained unresolved, but the result is not a catastrophic clean-validation failure. The aggregate black-box measurement is queued before any new training.
+
+## test-clean-validation-cues-aux05-rejected01-sftpairwise-wd0001-smooth005-seed20261023
+
+Timestamp: 2026-10-23T02:30:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-rejected01-sftpairwise-wd0001-smooth005-seed20261023", "--output", "outputs/test-clean-validation-cues-aux05-rejected01-sftpairwise-wd0001-smooth005-seed20261023.json"]. Training and clean-validation selection are complete before this aggregate-only measurement. Official test labels will be used only for reporting, not selection.
+
+Hypothesis: One rejected-direct example may improve aggregate transfer without the overcorrection caused by larger rejected-direct augmentations. Compare its aggregate result with the unaugmented strong encoder.
+
+## clean-validation-cues-aux05-rejected01-sftpairwise-wd0001-smooth005-seed20261023
+
+Timestamp: 2026-10-23T02:28:05.978407+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-cues-aux05-rejected01-sftpairwise-wd0001-smooth005-seed20261023", "--sft-loss-function", "pairwise_ranking", "--add-argument-cues", "--sft-aux-samples-per-class", "5", "--rejected-direct-samples", "1", "--learning-rate", "2.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.001", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-cues-aux05-rejected01-sftpairwise-wd0001-smooth005-seed20261023. W&B run: not available.
+
+Clean development accuracy: 0.9622222222222222. Clean development macro F1: 0.721909943208364. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
