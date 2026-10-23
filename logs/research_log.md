@@ -5149,3 +5149,21 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 Clean development accuracy: 0.9688888888888889. Clean development macro F1: 0.7268892469181525. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
+## test-clean-validation-encoder-only-ce-cues-max3072-lr15e5-wd0005-smooth005-seed20261023
+
+Timestamp: 2026-10-23T04:26:00Z. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max3072-lr15e5-wd0005-smooth005-seed20261023", "--output", "outputs/test-clean-validation-encoder-only-ce-cues-max3072-lr15e5-wd0005-smooth005-seed20261023.json"]. This was an aggregate-only measurement after complete training and clean validation. Candidate selection used clean validation before this test measurement. Official test labels were not used for selection.
+
+Aggregate black-box evidence: W&B run an3bshwr, accuracy 0.5323110624315444 and macro F1 0.5336281510244701 on 3652 test examples. The test file reports `test_loaded=true`, `selection_complete=true`, `test_measurement_only=true`, and `black_box=true`.
+
+The candidate transferred poorly despite strong clean validation, so the next hypothesis adds rejected-response supervision to improve boundary robustness. This is a distinct encoder-only mechanism, not a seed probe.
+
+## clean-validation-encoder-rejected-aux-cues-max4096-lr15e5-wd0005-smooth000-seed20261023
+
+Timestamp: 2026-10-23T04:26:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-encoder-rejected-aux-cues-max4096-lr15e5-wd0005-smooth000-seed20261023", "--loss-function", "cross_entropy", "--add-argument-cues", "--include-rejected-examples", "--learning-rate", "1.5e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Training and clean validation will use the fixed non-test split. Aggregate black-box evaluation will follow if clean validation is viable. Official test labels will not be used for selection.
+
+Hypothesis: Adding rejected-response supervision may improve transfer by exposing the encoder to explicit negative alternatives, while preserving the established 4096-token cross-entropy recipe.
+
