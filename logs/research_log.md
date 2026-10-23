@@ -6267,6 +6267,16 @@ Timestamp: 2026-10-23T20:11:00Z. Status: queued.
 
 Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-sftpairwise1-smooth005-lr1e5-max4096-batch2-seed20261023", "--output", "outputs/test-clean-validation-when2call-only-ce-sftpairwise1-smooth005-lr1e5-max4096-batch2-seed20261023.json"]. The checkpoint was selected using training and clean-validation evidence. Official test labels are reserved for aggregate reporting and will not be used for selection.
 
+Aggregate test accuracy: 0.547645125958379. Aggregate test macro F1: 0.5489644267666139. Test examples: 3652. W&B run: t2mj7pcl. Test artifact: /workspace/post-training/outputs/test-clean-validation-when2call-only-ce-sftpairwise1-smooth005-lr1e5-max4096-batch2-seed20261023.json.
+
+## clean-validation-when2call-only-ce-sftpairwise1-smooth000-lr1e5-max4096-batch1-seed20261023
+
+Timestamp: 2026-10-23T20:15:00Z. Status: queued.
+
+Repair: The batch-size-two command failed with CUDA out-of-memory before producing training or clean-validation metrics. This batch-size-one rerun completes the same no-smoothing mixed-objective measurement before any new hypothesis is selected.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-sftpairwise1-smooth000-lr1e5-max4096-batch1-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "pairwise_ranking", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261048", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "1", "--pref-train-epochs", "1"]. Candidate selection will use training and clean validation only. Official test labels will not be loaded during selection.
+
 ## clean-validation-when2call-only-ce-sftpairwise1-smooth000-lr1e5-max4096-batch2-seed20261023
 
 Timestamp: 2026-10-23T20:11:00Z. Status: queued.
@@ -6274,3 +6284,13 @@ Timestamp: 2026-10-23T20:11:00Z. Status: queued.
 Hypothesis: Removing label smoothing may recover the clean-validation performance lost by the mixed cross-entropy plus pairwise-SFT objective.
 
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-sftpairwise1-smooth000-lr1e5-max4096-batch2-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "pairwise_ranking", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261048", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. Candidate selection will use training and clean validation only. Official test labels will not be loaded during selection.
+
+## clean-validation-when2call-only-ce-sftpairwise1-smooth000-lr1e5-max4096-batch2-seed20261023
+
+Timestamp: 2026-10-23T20:14:08.295851+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-sftpairwise1-smooth000-lr1e5-max4096-batch2-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "pairwise_ranking", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261048", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-when2call-only-ce-sftpairwise1-smooth000-lr1e5-max4096-batch2-seed20261023. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
