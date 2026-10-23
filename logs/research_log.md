@@ -895,6 +895,24 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-when2call-only-pairwise-plus-ce-sftpre1-92p5-07p5-seed20261023
+
+Timestamp: 2026-10-23T18:10:00Z. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-max4096-batch2-seed20261023", "--weight", "0.925", "--weight", "0.075", "--output", "outputs/test-clean-validation-when2call-only-pairwise-plus-ce-sftpre1-92p5-07p5-seed20261023.json"]. The pairwise and cross-entropy checkpoints had complete training and clean-validation evidence before this aggregate-only measurement. The weights were fixed before evaluation. Official test labels were not used for selection.
+
+Aggregate black-box evidence: W&B run `xo8crjog`, accuracy `0.5657174151150055` and macro F1 `0.5689455057384841` on 3,652 test examples. The test file reports `test_loaded=true`, `selection_complete=true`, `test_measurement_only=true`, and `black_box=true`. The result is below the previously tested 90/10 blend, so this local blend branch is closed.
+
+The next queued measurement evaluates the current clean-validation leader with its training-only class bias. Test labels will be used only for that separate aggregate measurement.
+
+## test-clean-validation-argument-cues-seed21-calibrated-bias
+
+Timestamp: 2026-10-23T18:10:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-argument-cues-seed21", "--class-bias", "0.0", "--class-bias", "-0.3", "--class-bias", "0.0", "--class-bias", "0.0", "--output", "outputs/test-clean-validation-argument-cues-seed21-calibrated-bias.json"]. Training and clean-validation evidence are complete. The bias was selected using a training-only calibration subset and the clean-validation split. This is an aggregate-only measurement. Official test labels will not be used for selection.
+
+Hypothesis: The current clean-validation leader and its training-only bias may transfer better than the recent When2Call-only pairwise and cross-entropy blend. The result will be recorded without using test labels to select a later candidate.
+
 ## aggregate-test-clean-validation-when2call-only-ce-cues-sftpre2-max4096-batch2-seed20261023
 
 Timestamp: 2026-10-23T17:33:31.579723+00:00. Status: completed.
@@ -5899,5 +5917,25 @@ Timestamp: 2026-10-23T17:32:01.308142+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre2-max4096-batch2-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "2", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261034", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-when2call-only-ce-cues-sftpre2-max4096-batch2-seed20261023. W&B run: not available.
 
 Clean development accuracy: 0.9483333333333334. Clean development macro F1: 0.7114306739607181. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-only-pairwise-sftpre1-max4096-batch2-seed20261023
+
+Timestamp: 2026-10-23T17:45:27.212370+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-pairwise-sftpre1-max4096-batch2-seed20261023", "--loss-function", "pairwise_ranking", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261035", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-when2call-only-pairwise-sftpre1-max4096-batch2-seed20261023. W&B run: not available.
+
+Clean development accuracy: 0.9422222222222222. Clean development macro F1: 0.7069193026678082. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-only-pairwise-sftpre1-pref2-max4096-batch2-seed20261023
+
+Timestamp: 2026-10-23T18:03:50.548937+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-pairwise-sftpre1-pref2-max4096-batch2-seed20261023", "--loss-function", "pairwise_ranking", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261036", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "2"]. Output: /workspace/post-training/outputs/clean-validation-when2call-only-pairwise-sftpre1-pref2-max4096-batch2-seed20261023. W&B run: not available.
+
+Clean development accuracy: 0.9388888888888889. Clean development macro F1: 0.7042902835647263. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
