@@ -6155,3 +6155,5 @@ The watchdog consumed the required aggregate measurement and launched PID 387843
 2026-10-23T21:30:00Z. The auxiliary-SFT candidate completed aggregate testing at accuracy 0.547645125958379 and macro F1 0.5506911918638017. Training and clean-validation evidence were complete, and test labels were not used for selection. Because the five-example auxiliary dose reduced clean validation and test transfer, a distinct one-example-per-class clean-validation probe was queued.
 2026-10-23T21:30:05Z. Watchdog verification.
 The watchdog consumed the one-example-per-class dose probe and launched PID 388324. The research state is active, planning_required is false, and the queue is empty because the probe is active.
+2026-10-23T21:38:00Z. Queued required aggregate evidence for the one-example auxiliary-SFT candidate.
+The candidate completed with training accuracy 0.9884770234624463 and macro F1 0.7414568389013401. Clean-validation accuracy was 0.9733333333333334 and macro F1 was 0.7301875370002818. Its aggregate black-box measurement was missing, so the frozen test measurement was queued before any new experiment. Test labels were not used for selection.

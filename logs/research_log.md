@@ -895,6 +895,14 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-when2call-only-ce-sftaux1-sftpre1-lr1e5-max4096-batch2-seed20261052
+
+Timestamp: 2026-10-23T21:38:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-sftaux1-sftpre1-lr1e5-max4096-batch2-seed20261052", "--output", "outputs/test-clean-validation-when2call-only-ce-sftaux1-sftpre1-lr1e5-max4096-batch2-seed20261052.json"]. Training accuracy was `0.9884770234624463` with macro F1 `0.7414568389013401`. Clean-validation accuracy was `0.9733333333333334` with macro F1 `0.7301875370002818`. This is an aggregate-only measurement of a frozen viable candidate. Official test labels will not be used for selection.
+
+The aggregate measurement is required before another experiment is selected.
+
 ## test-clean-validation-when2call-only-ce-sftaux5-sftpre1-lr1e5-max4096-batch2-seed20261051-result
 
 Timestamp: 2026-10-23T21:29:00Z. Status: completed.
@@ -6539,5 +6547,15 @@ Timestamp: 2026-10-23T21:26:01.127485+00:00. Status: completed.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-sftaux5-sftpre1-lr1e5-max4096-batch2-seed20261051", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--sft-aux-samples-per-class", "5", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261051", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-when2call-only-ce-sftaux5-sftpre1-lr1e5-max4096-batch2-seed20261051. W&B run: not available.
 
 Clean development accuracy: 0.9616666666666667. Clean development macro F1: 0.7214774757256511. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-only-ce-sftaux1-sftpre1-lr1e5-max4096-batch2-seed20261052
+
+Timestamp: 2026-10-23T21:37:15.781862+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-sftaux1-sftpre1-lr1e5-max4096-batch2-seed20261052", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--sft-aux-samples-per-class", "1", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261052", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. Output: /workspace/post-training/outputs/clean-validation-when2call-only-ce-sftaux1-sftpre1-lr1e5-max4096-batch2-seed20261052. W&B run: not available.
+
+Clean development accuracy: 0.9733333333333334. Clean development macro F1: 0.7301875370002818. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
