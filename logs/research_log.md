@@ -895,6 +895,30 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 
 This record was written automatically. Candidate selection must use clean validation only.
 
+## test-clean-validation-encoder-ce4096lr25-blend-95-05
+
+Timestamp: 2026-10-23T03:47:30.400565+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023", "--weight", "0.95", "--weight", "0.05", "--output", "outputs/test-clean-validation-encoder-ce4096lr25-blend-95-05.json"]. Output: /workspace/post-training/outputs/test-clean-validation-encoder-ce4096lr25-blend-95-05.json. W&B run: jm93mx40.
+
+Training evidence existed for both component checkpoints. Clean-validation evidence existed for both component checkpoints. Aggregate black-box accuracy: 0.56078860898138. Aggregate black-box macro F1: 0.560358959023249. Official test loaded: True. Selection complete: True. Test measurement only: True. Black box: True.
+
+This aggregate measurement was run after candidate selection. The 95/5 weights were selected from clean-validation and prior non-test evidence. Official test labels were not used for selection.
+
+This record was written by the primary Codex process after the watchdog handoff.
+
+## test-clean-validation-encoder-ce4096lr25-blend-95-05
+
+Timestamp: 2026-10-23T03:47:30.400565+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023", "--weight", "0.95", "--weight", "0.05", "--output", "outputs/test-clean-validation-encoder-ce4096lr25-blend-95-05.json"]. Output: /workspace/post-training/outputs/test-clean-validation-encoder-ce4096lr25-blend-95-05.json. W&B run: jm93mx40.
+
+Training evidence existed for both component checkpoints. Clean-validation evidence existed for both component checkpoints. Aggregate black-box accuracy: 0.56078860898138. Aggregate black-box macro F1: 0.560358959023249. Official test loaded: True. Selection complete: True. Test measurement only: True. Black box: True.
+
+This aggregate measurement was run after candidate selection. The 95/5 weights were selected from clean-validation and prior non-test evidence. Official test labels were not used for selection.
+
+This record was written by the primary Codex process after the watchdog handoff.
+
 Timestamp: 2026-10-23T03:24:00Z. Status: completed_training_clean.
 
 Training evidence: accuracy 0.9794444444444445 and macro F1 0.7346231583867571 from the candidate metrics file. Clean-validation evidence: accuracy 0.9683333333333334 and macro F1 0.7264314442790553. The aggregate black-box measurement is missing. Official test labels were not used during training or clean-validation selection.
