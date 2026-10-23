@@ -4,20 +4,26 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The encoder-only pairwise candidate reached 0.968889 clean accuracy and 0.726848 clean macro F1. Training and clean-validation evidence are complete, but its aggregate measurement is missing. Queue that measurement before selecting any later experiment.",
+  "current_hypothesis": "The encoder-only pairwise candidate reached 0.543538 aggregate accuracy and 0.543743 macro F1, below the encoder leader. The next probe tests whether it has complementary errors in a clean-validation-selected 80/20 blend with the strongest encoder.",
   "active_experiment": {
-    "pid": 309299,
+    "pid": 309736,
     "command": [
       "python",
       "-u",
       "-m",
       "experiments.evaluate_frozen_when2call_ensemble_test",
       "--checkpoint",
+      "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
+      "--checkpoint",
       "outputs/clean-validation-encoder-only-pairwise-cues-lr15e5-wd0005-smooth005-seed20261023",
+      "--weight",
+      "0.80",
+      "--weight",
+      "0.20",
       "--output",
-      "outputs/test-clean-validation-encoder-only-pairwise-cues-lr15e5-wd0005-smooth005-seed20261023.json"
+      "outputs/test-clean-validation-encoder-pairwise-blend-80-20.json"
     ],
-    "started_at": "2026-10-23T02:59:51.050418+00:00"
+    "started_at": "2026-10-23T03:02:25.013180+00:00"
   },
   "worker_command": [
     "python",
@@ -25,9 +31,15 @@
     "-m",
     "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
+    "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
+    "--checkpoint",
     "outputs/clean-validation-encoder-only-pairwise-cues-lr15e5-wd0005-smooth005-seed20261023",
+    "--weight",
+    "0.80",
+    "--weight",
+    "0.20",
     "--output",
-    "outputs/test-clean-validation-encoder-only-pairwise-cues-lr15e5-wd0005-smooth005-seed20261023.json"
+    "outputs/test-clean-validation-encoder-pairwise-blend-80-20.json"
   ],
   "worker_queue": [],
   "_previous_command": [
@@ -60,10 +72,10 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T02:59:51.050434+00:00",
-  "last_action": "Watchdog started validation worker pid 309299.",
+  "last_heartbeat": "2026-10-23T03:02:25.013189+00:00",
+  "last_action": "Watchdog started validation worker pid 309736.",
   "watchdog_enabled": true,
-  "research_log_size": 430877,
+  "research_log_size": 432137,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -71,12 +83,18 @@
     "-m",
     "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
+    "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
+    "--checkpoint",
     "outputs/clean-validation-encoder-only-pairwise-cues-lr15e5-wd0005-smooth005-seed20261023",
+    "--weight",
+    "0.80",
+    "--weight",
+    "0.20",
     "--output",
-    "outputs/test-clean-validation-encoder-only-pairwise-cues-lr15e5-wd0005-smooth005-seed20261023.json"
+    "outputs/test-clean-validation-encoder-pairwise-blend-80-20.json"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T02:59:20.557933+00:00",
-  "planning_ack_deadline": "2026-10-23T03:01:20.557958+00:00",
-  "planning_attempts": 265
+  "planning_notified_at": "2026-10-23T03:01:24.518051+00:00",
+  "planning_ack_deadline": "2026-10-23T03:03:24.518074+00:00",
+  "planning_attempts": 266
 }

@@ -903,6 +903,18 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: This encoder-only pairwise objective may improve aggregate transfer without the SFT auxiliary mechanism. Measure it before proposing another training mechanism.
 
+Timestamp: 2026-10-23T03:01:21Z. Status: completed.
+
+W&B run: hntshjxj. The encoder-only candidate had complete training and clean-validation evidence before this aggregate-only measurement. Aggregate black-box accuracy was 0.5435377875136911 and macro F1 was 0.5437430863536742. Official test labels were used only for reporting after selection. The standalone pairwise candidate is below the encoder leader.
+
+## test-clean-validation-encoder-pairwise-blend-80-20
+
+Timestamp: 2026-10-23T03:02:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-encoder-only-pairwise-cues-lr15e5-wd0005-smooth005-seed20261023", "--weight", "0.80", "--weight", "0.20", "--output", "outputs/test-clean-validation-encoder-pairwise-blend-80-20.json"]. The 80/20 weight was fixed from clean-validation evidence before this aggregate-only measurement. Official test labels will not be used for selection.
+
+Hypothesis: The pairwise encoder may have complementary errors despite weaker standalone transfer. A conservative 20% contribution may improve the strongest encoder without the failed SFT mechanism.
+
 ## test-clean-validation-cues-aux05-lr15e5-mainpairwise-sftce-wd0005-smooth000-seed20261023-result
 
 Timestamp: 2026-10-23T01:35:28Z. Status: completed.
