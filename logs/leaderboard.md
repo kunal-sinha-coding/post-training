@@ -585,3 +585,5 @@ Historical official test results remain detailed in [research_log.md](research_l
 
 | Candidate | clean-validation-encoder-rejected-aux-cues-max4096-lr15e5-wd0005-smooth000-seed20261023 | 0.9411111111111111 | 0.7064406791345121 | [metrics](/workspace/post-training/outputs/clean-validation-encoder-rejected-aux-cues-max4096-lr15e5-wd0005-smooth000-seed20261023/metrics.json) | completed |
 | test-clean-validation-encoder-rejected-aux-cues-max4096-lr15e5-wd0005-smooth000-seed20261023 | — | — | — | Queued required aggregate black-box measurement after complete training and clean validation | queued |
+| test-clean-validation-encoder-rejected-aux-cues-max4096-lr15e5-wd0005-smooth000-seed20261023 | 0.5358707557502739 | 0.5363612731452972 | ukp994nh | Aggregate-only result. The rejected-response branch is below the established encoder ensemble. Test labels were not used for selection. | completed |
+| Candidate | clean-validation-encoder-compact-schema-cues-max4096-lr15e5-wd0005-smooth000-seed20261023 | — | — | Queued distinct compact-tool-schema encoder representation probe. Aggregate evaluation follows viable clean validation. | queued |

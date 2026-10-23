@@ -903,6 +903,22 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: This measurement closes the rejected-response supervision branch and tests whether its weak clean-validation result transfers to the black-box test.
 
+## test-clean-validation-encoder-rejected-aux-cues-max4096-lr15e5-wd0005-smooth000-seed20261023
+
+Timestamp: 2026-10-23T04:34:00Z. Status: completed.
+
+Aggregate black-box evidence: W&B run ukp994nh, accuracy 0.5358707557502739 and macro F1 0.5363612731452972 on 3652 test examples. The test file reports `test_loaded=true`, `selection_complete=true`, `test_measurement_only=true`, and `black_box=true`. Training and clean-validation evidence were complete before this measurement. Official test labels were not used for selection.
+
+The rejected-response branch is closed because its clean validation and aggregate transfer were below the established encoder ensemble. The next hypothesis tests compact tool schemas as a distinct input representation.
+
+## clean-validation-encoder-compact-schema-cues-max4096-lr15e5-wd0005-smooth000-seed20261023
+
+Timestamp: 2026-10-23T04:34:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-encoder-compact-schema-cues-max4096-lr15e5-wd0005-smooth000-seed20261023", "--loss-function", "cross_entropy", "--compact-tool-schemas", "--add-argument-cues", "--learning-rate", "1.5e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261022", "--split-seed", "20261021", "--max-length", "4096", "--pref-train-epochs", "1"]. Candidate selection will use the fixed clean-validation split only. Aggregate black-box evaluation will follow if the clean result is viable. Official test labels will not be used for selection.
+
+Hypothesis: Compacting tool schemas may reduce irrelevant token variation and improve transfer while preserving the argument cues that helped the strongest encoder.
+
 ## test-clean-validation-encoder-ce4096lr25-blend-95-05
 
 Timestamp: 2026-10-23T03:47:30.400565+00:00. Status: completed.
