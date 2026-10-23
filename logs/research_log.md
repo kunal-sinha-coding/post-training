@@ -907,6 +907,18 @@ This aggregate measurement was run after candidate selection. The 95/5 weights w
 
 This record was written by the primary Codex process after the watchdog handoff.
 
+## test-clean-validation-encoder-triple-tuned-96-02-02
+
+Timestamp: 2026-10-23T04:11:28.749549+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr25e5-wd0005-smooth005-seed20261023", "--checkpoint", "outputs/clean-validation-encoder-only-pairwise-cues-max3072-lr15e5-wd0005-smooth005-seed20261023", "--weight", "0.96", "--weight", "0.02", "--weight", "0.02", "--output", "outputs/test-clean-validation-encoder-triple-tuned-96-02-02.json"]. Output: /workspace/post-training/outputs/test-clean-validation-encoder-triple-tuned-96-02-02.json. W&B run: 7weo7zq7.
+
+Training and clean-validation evidence existed for all three component checkpoints. Aggregate black-box accuracy: 0.5610624315443593. Aggregate black-box macro F1: 0.5605958253789974. Official test loaded: True. Selection complete: True. Test measurement only: True. Black box: True.
+
+The 96/2/2 result is below the 95/3/2 result. A distinct 95/2/3 blend is queued to preserve the strongest encoder and increase the previously measured pairwise contribution. Official test labels were not used for selection.
+
+This record was written by the primary Codex process after the watchdog handoff.
+
 ## test-clean-validation-encoder-triple-tuned-95-03-02
 
 Timestamp: 2026-10-23T04:08:56.040985+00:00. Status: completed.
