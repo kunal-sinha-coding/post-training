@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The no-smoothing mixed-objective command failed from CUDA out-of-memory before producing training or clean-validation metrics. A batch-size-one rerun is required before selecting another hypothesis.",
+  "current_hypothesis": "The batch-size-one no-smoothing mixed-objective repair has complete training and clean-validation evidence. Its frozen test measurement is required before testing whether compact tool schemas reduce input-distribution mismatch.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -12,7 +12,7 @@
     "-m",
     "experiments.clean_validation_baseline",
     "--output-dir",
-    "outputs/clean-validation-when2call-only-ce-sftpairwise1-smooth000-lr1e5-max4096-batch2-seed20261023",
+    "outputs/clean-validation-when2call-only-ce-sftpairwise1-smooth000-lr1e5-max4096-batch1-seed20261023",
     "--loss-function",
     "cross_entropy",
     "--sft-loss-function",
@@ -33,19 +33,14 @@
     "--max-length",
     "4096",
     "--batch-size",
-    "2",
+    "1",
     "--pref-train-epochs",
     "1"
   ],
-  "worker_queue": [[
-    "python", "-u", "-m", "experiments.clean_validation_baseline",
-    "--output-dir", "outputs/clean-validation-when2call-only-ce-sftpairwise1-smooth000-lr1e5-max4096-batch1-seed20261023",
-    "--loss-function", "cross_entropy", "--sft-loss-function", "pairwise_ranking",
-    "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1e-5",
-    "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261048",
-    "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "1",
-    "--pref-train-epochs", "1"
-  ]],
+  "worker_queue": [
+    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-sftpairwise1-smooth000-lr1e5-max4096-batch1-seed20261023", "--output", "outputs/test-clean-validation-when2call-only-ce-sftpairwise1-smooth000-lr1e5-max4096-batch1-seed20261023.json"],
+    ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-compact-schemas-smooth005-lr1e5-max4096-batch2-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--compact-tool-schemas", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261049", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -76,22 +71,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T20:12:05.180197+00:00",
-  "last_action": "Codex recorded the completed mixed-objective test result and queued a batch-size-one repair for the failed no-smoothing mixed-objective measurement.",
+  "last_heartbeat": "2026-10-23T20:15:10.657330+00:00",
+  "last_action": "Codex recorded the batch-size-one repair evidence, queued its missing frozen aggregate test first, and queued a distinct compact-tool-schema encoder hypothesis.",
   "watchdog_enabled": true,
-  "research_log_size": 613983,
+  "research_log_size": 616401,
   "stop_command": "STOP",
-  "next_experiment": [
-    "python", "-u", "-m", "experiments.clean_validation_baseline",
-    "--output-dir", "outputs/clean-validation-when2call-only-ce-sftpairwise1-smooth000-lr1e5-max4096-batch1-seed20261023",
-    "--loss-function", "cross_entropy", "--sft-loss-function", "pairwise_ranking",
-    "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1e-5",
-    "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261048",
-    "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "1",
-    "--pref-train-epochs", "1"
-  ],
+  "next_experiment": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-sftpairwise1-smooth000-lr1e5-max4096-batch1-seed20261023", "--output", "outputs/test-clean-validation-when2call-only-ce-sftpairwise1-smooth000-lr1e5-max4096-batch1-seed20261023.json"],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T20:14:10.063036+00:00",
-  "planning_ack_deadline": "2026-10-23T20:16:10.063053+00:00",
-  "planning_attempts": 381
+  "planning_notified_at": "2026-10-23T20:21:21.139630+00:00",
+  "planning_ack_deadline": "2026-10-23T20:23:21.139655+00:00",
+  "planning_attempts": 382
 }
