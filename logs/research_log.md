@@ -6500,3 +6500,18 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 Clean development accuracy: 0.6061111111111112. Clean development macro F1: 0.38565410688089835. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
+## test-clean-validation-ce-pairwise-weight05-95-bias-request-minus10-seed20261023-result
+
+Timestamp: 2026-10-23T21:17:00Z. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.05", "--weight", "0.95", "--class-bias", "0.0", "--class-bias", "-1.0", "--class-bias", "0.0", "--class-bias", "0.0", "--output", "outputs/test-clean-validation-ce-pairwise-weight05-95-bias-request-minus10-seed20261023.json"]. Training evidence and clean-validation evidence were complete for both frozen component checkpoints before this aggregate-only measurement. The bias and weights were fixed before official evaluation. Official test labels were not used for selection.
+
+Aggregate black-box evidence: W&B run `42yy50eh`, accuracy `0.5739320920043811` and macro F1 `0.5743555891399015` on 3,652 test examples. The result improved the preceding -0.7 bias probe. The next hypothesis is a clean-validation training probe with five auxiliary SFT examples per class.
+
+## clean-validation-when2call-only-ce-sftaux5-sftpre1-lr1e5-max4096-batch2-seed20261051
+
+Timestamp: 2026-10-23T21:18:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-sftaux5-sftpre1-lr1e5-max4096-batch2-seed20261051", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--sft-aux-samples-per-class", "5", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.005", "--weight-decay", "0.005", "--seed", "20261051", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. This clean-only candidate uses the fixed training and clean-validation partitions. Official test data and labels will not be loaded during selection.
+
+Hypothesis: Adding a small balanced auxiliary SFT sample may improve the cross-entropy encoder boundary while preserving the existing one-epoch SFT plus preference-data setup. If training and clean validation remain viable, queue a separate aggregate black-box measurement.
