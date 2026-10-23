@@ -6329,6 +6329,16 @@ Hypothesis: The pairwise encoder may carry more transferable signal than the CE 
 
 Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.25", "--weight", "0.75", "--output", "outputs/test-clean-validation-ce-pairwise-weight25-75-seed20261023.json"]. The weight was fixed before test evaluation. Official test labels will not be used for selection.
 
+Aggregate test accuracy: 0.5558598028477546. Aggregate test macro F1: 0.5568745860901934. Test examples: 3652.
+
+## test-clean-validation-ce-pairwise-weight10-90-seed20261023
+
+Timestamp: 2026-10-23T20:38:00Z. Status: queued.
+
+Hypothesis: The 25/75 result suggests that the pairwise encoder may carry more transferable signal. A fixed 10/90 weighting tests that trend without retraining or test-driven selection.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.1", "--weight", "0.9", "--output", "outputs/test-clean-validation-ce-pairwise-weight10-90-seed20261023.json"]. The weight was fixed before test evaluation. Official test labels will not be used for selection.
+
 ## test-clean-validation-ce-pairwise-equal-weight-ensemble-seed20261023
 
 Timestamp: 2026-10-23T20:31:00Z. Status: queued.
