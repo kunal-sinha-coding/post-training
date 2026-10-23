@@ -907,6 +907,30 @@ This aggregate measurement was run after candidate selection. The 95/5 weights w
 
 This record was written by the primary Codex process after the watchdog handoff.
 
+## test-clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth005-seed20261023
+
+Timestamp: 2026-10-23T04:00:16.380022+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth005-seed20261023", "--output", "outputs/test-clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth005-seed20261023.json"]. Output: /workspace/post-training/outputs/test-clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth005-seed20261023.json. W&B run: hgojbzw6.
+
+Training accuracy: 0.9866666666666667. Training macro F1: 0.7400555394549166. Clean-validation accuracy: 0.9677777777777777. Clean-validation macro F1: 0.7260565497211042. Aggregate black-box accuracy: 0.5334063526834611. Aggregate black-box macro F1: 0.53483238803356. Official test loaded: True. Selection complete: True. Test measurement only: True. Black box: True.
+
+The standalone result is below the encoder leader. A conservative blend with the strongest encoder is queued as a complementary-error probe. Official test labels were not used for selection.
+
+This record was written by the primary Codex process after the watchdog handoff.
+
+## test-clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth005-seed20261023
+
+Timestamp: 2026-10-23T04:00:16.380022+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth005-seed20261023", "--output", "outputs/test-clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth005-seed20261023.json"]. Output: /workspace/post-training/outputs/test-clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth005-seed20261023.json. W&B run: hgojbzw6.
+
+Training accuracy: 0.9866666666666667. Training macro F1: 0.7400555394549166. Clean-validation accuracy: 0.9677777777777777. Clean-validation macro F1: 0.7260565497211042. Aggregate black-box accuracy: 0.5334063526834611. Aggregate black-box macro F1: 0.53483238803356. Official test loaded: True. Selection complete: True. Test measurement only: True. Black box: True.
+
+The standalone result is below the encoder leader. A conservative blend with the strongest encoder is queued as a complementary-error probe. Official test labels were not used for selection.
+
+This record was written by the primary Codex process after the watchdog handoff.
+
 ## clean-validation-encoder-only-ce-cues-max4096-lr15e5-wd0005-smooth005-seed20261023
 
 Timestamp: 2026-10-23T03:58:43.412923+00:00. Status: completed_training_clean.
