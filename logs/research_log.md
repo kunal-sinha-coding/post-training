@@ -1007,6 +1007,20 @@ Timestamp: 2026-10-23T19:02:00Z. Status: queued.
 
 Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--output", "outputs/test-clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023.json"]. Training and clean-validation evidence are complete. This is an aggregate-only measurement of a frozen candidate. Official test labels will not be used for selection.
 
+## test-clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023-result
+
+Timestamp: 2026-10-23T19:08:00Z. Status: completed.
+
+Aggregate black-box evidence: W&B run `8zraisc4`, accuracy `0.5257393209200438` and macro F1 `0.5263447476373279` on 3,652 test examples. Training and clean-validation evidence were complete before this measurement. The candidate showed a strong clean-validation result but poor aggregate transfer, so this branch is closed. Test labels were used only for this separate aggregate measurement.
+
+The next hypothesis tests the same lower-learning-rate cross-entropy recipe with zero label smoothing. Selection will use clean validation only.
+
+## clean-validation-when2call-only-ce-cues-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023
+
+Timestamp: 2026-10-23T19:08:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005", "--seed", "20261040", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]. This uses only the fixed training and clean-validation partitions. Official test labels will not be loaded during selection.
+
 ## aggregate-test-clean-validation-when2call-only-ce-cues-sftpre2-max4096-batch2-seed20261023
 
 Timestamp: 2026-10-23T17:33:31.579723+00:00. Status: completed.

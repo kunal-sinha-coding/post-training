@@ -4,32 +4,25 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The lower-learning-rate cross-entropy candidate has clearly improved clean validation and now requires its aggregate test measurement. Test labels remain reserved for reporting, not selection.",
-  "active_experiment": {
-    "pid": 372052,
-    "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_frozen_when2call_ensemble_test",
-      "--checkpoint",
-      "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023",
-      "--output",
-      "outputs/test-clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023.json"
-    ],
-    "started_at": "2026-10-23T19:04:21.111892+00:00"
-  },
+  "current_hypothesis": "The lower-learning-rate cross-entropy result may depend on label smoothing. A matched zero-smoothing control will test this on clean validation only, with official test labels reserved for later reporting.",
+  "active_experiment": {},
   "worker_command": [
     "python",
     "-u",
     "-m",
-    "experiments.evaluate_frozen_when2call_ensemble_test",
-    "--checkpoint",
-    "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023",
-    "--output",
-    "outputs/test-clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023.json"
+    "experiments.clean_validation_baseline",
+    "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023",
+    "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1",
+    "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005",
+    "--seed", "20261040", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"
   ],
-  "worker_queue": [],
+  "worker_queue": [[
+    "python", "-u", "-m", "experiments.clean_validation_baseline",
+    "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023",
+    "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1",
+    "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005",
+    "--seed", "20261040", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"
+  ]],
   "_previous_command": [
     "python",
     "-u",
@@ -61,22 +54,19 @@
     "artifact": "outputs/clean-validation-calibration.json"
   },
   "last_heartbeat": "2026-10-23T19:04:21.111905+00:00",
-  "last_action": "Watchdog started validation worker pid 372052.",
+  "last_action": "Codex recorded the lower-learning-rate cross-entropy aggregate evidence and queued a matched zero-smoothing clean-validation control.",
   "watchdog_enabled": true,
   "research_log_size": 588442,
   "stop_command": "STOP",
   "next_experiment": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.evaluate_frozen_when2call_ensemble_test",
-    "--checkpoint",
-    "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023",
-    "--output",
-    "outputs/test-clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023.json"
+    "python", "-u", "-m", "experiments.clean_validation_baseline",
+    "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023",
+    "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1",
+    "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.0", "--weight-decay", "0.005",
+    "--seed", "20261040", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T19:02:13.409603+00:00",
-  "planning_ack_deadline": "2026-10-23T19:04:13.409627+00:00",
-  "planning_attempts": 369
+  "planning_notified_at": "2026-10-23T19:06:31.126780+00:00",
+  "planning_ack_deadline": "2026-10-23T19:08:31.126805+00:00",
+  "planning_attempts": 370
 }
