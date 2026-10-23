@@ -1063,6 +1063,20 @@ Training evidence: all five component checkpoints have recorded training metrics
 
 The next hypotheses keep the 4% SFT weight and redistribute the two auxiliary encoder weights. The weights are fixed before aggregate evaluation.
 
+## test-clean-validation-encoder-fiveway-90-04-03-01-02-calibrated-bias-result
+
+Timestamp: 2026-10-23T06:25:00Z. Status: completed.
+
+Training evidence: all five component checkpoints have recorded training metrics. Clean-validation evidence: all five component checkpoints have recorded clean-validation metrics. Aggregate black-box evidence: W&B run `4ocnj012`, ensemble accuracy `0.5638006571741512` and macro F1 `0.563527020080583` on 3652 test examples. The test file reports `test_loaded=true`, `selection_complete=true`, `test_measurement_only=true`, and `black_box=true`. Test labels were used only for this separate aggregate measurement. This is the current best result.
+
+## test-clean-validation-encoder-fiveway-90-04-02-02-02-calibrated-bias-result
+
+Timestamp: 2026-10-23T06:25:00Z. Status: completed.
+
+Training evidence: all five component checkpoints have recorded training metrics. Clean-validation evidence: all five component checkpoints have recorded clean-validation metrics. Aggregate black-box evidence: W&B run `h0il69yh`, ensemble accuracy `0.5632530120481928` and macro F1 `0.563067219968446` on 3652 test examples. The test file reports `test_loaded=true`, `selection_complete=true`, `test_measurement_only=true`, and `black_box=true`. Test labels were used only for this separate aggregate measurement. This is below the pairwise-heavy probe.
+
+The next hypotheses test whether the pairwise component should receive another 1% and whether the SFT and zero-smoothing weights should be swapped. The weights are fixed before aggregate evaluation.
+
 ## clean-validation-encoder-sftpre1-aux05-cues-max4096-lr15e5-wd0005-smooth005-seed20261023-result
 
 Timestamp: 2026-10-23T05:53:00Z. Status: completed.
