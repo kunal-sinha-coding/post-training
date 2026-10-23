@@ -6405,6 +6405,16 @@ Hypothesis: A +0.3 logit bias for request_for_info, previously selected on clean
 
 Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.05", "--weight", "0.95", "--class-bias", "0.0", "--class-bias", "0.3", "--class-bias", "0.0", "--class-bias", "0.0", "--output", "outputs/test-clean-validation-ce-pairwise-weight05-95-bias-request03-seed20261023.json"]. The bias was fixed before test evaluation from clean-validation calibration. Official test labels will not be used for selection.
 
+Aggregate test accuracy: 0.5599671412924425. Aggregate test macro F1: 0.5606613572043238. Test examples: 3652. The positive request-for-info bias did not improve the plain 5/95 blend.
+
+## test-clean-validation-ce-pairwise-weight05-95-bias-request-minus03-seed20261023
+
+Timestamp: 2026-10-23T21:06:00Z. Status: queued.
+
+Hypothesis: The opposite request_for_info bias may correct a different calibration direction while remaining fixed before test evaluation.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-lr1e5-max4096-batch2-seed20261023", "--checkpoint", "outputs/clean-validation-when2call-only-pairwise-sftpre1-smooth000-lr1e5-max4096-batch2-seed20261023", "--weight", "0.05", "--weight", "0.95", "--class-bias", "0.0", "--class-bias", "-0.3", "--class-bias", "0.0", "--class-bias", "0.0", "--output", "outputs/test-clean-validation-ce-pairwise-weight05-95-bias-request-minus03-seed20261023.json"]. The bias was fixed before test evaluation. Official test labels will not be used for selection.
+
 ## test-clean-validation-ce-pairwise-equal-weight-ensemble-seed20261023
 
 Timestamp: 2026-10-23T20:31:00Z. Status: queued.
