@@ -6007,3 +6007,7 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 
 2026-10-23T05:11Z: Commit `queue calibrated triple ensemble test` records the completed rejected-direct measurement and the distinct calibrated-bias aggregate evaluation. The watchdog launched the new evaluator as PID 331513. Test labels were not used for selection.
 
+2026-10-23T05:15Z: The calibrated three-encoder ensemble completed with aggregate accuracy 0.5618838992332968 and macro F1 0.561487512284392, the strongest recorded result. The next queued command is a training-only 20% calibration diagnostic on the strongest encoder. Test labels were not used for selection.
+
+2026-10-23T05:15Z: Commit `queue 20 percent calibration diagnostic` records the strongest aggregate result and the distinct calibration command. The watchdog launched it as PID 332081. Test labels were not used for selection.
+

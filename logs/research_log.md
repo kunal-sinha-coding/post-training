@@ -913,6 +913,22 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: A small training-only negative bias for `request_for_info` may improve transfer of the current best three-encoder ensemble without changing the learned representations.
 
+## test-clean-validation-encoder-triple-95-03-02-calibrated-bias-result
+
+Timestamp: 2026-10-23T05:15:00Z. Status: completed.
+
+Aggregate black-box evidence: W&B run `95xbrku0`, accuracy `0.5618838992332968` and macro F1 `0.561487512284392` on 3652 test examples. The ensemble used weights `0.95, 0.03, 0.02` and the training-only bias `[0.0, -0.3, 0.0, 0.0]`. The test file reports `test_loaded=true`, `selection_complete=true`, and `black_box=true`. Test labels were used only for this separate aggregate measurement.
+
+Analysis: This is the strongest recorded aggregate result. The bias improved the prior uncalibrated ensemble, so calibration remains a supported direction. The next probe increases the training-only calibration fraction from 10% to 20% on the strongest encoder. Clean-validation evidence will be checked before any further aggregate measurement.
+
+## clean-validation-calibration-aux05-smooth0075-fraction20
+
+Timestamp: 2026-10-23T05:15:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.calibrate_clean_validation", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--output", "outputs/clean-validation-calibration-aux05-smooth0075-fraction20.json", "--seed", "20261022", "--split-seed", "20261021", "--calibration-fraction", "0.2", "--max-length", "4096"]. This diagnostic uses only the training and clean-validation partitions. Official test data and labels will not be loaded.
+
+Hypothesis: A larger training-only calibration slice may reduce bias variance and improve clean-validation macro F1 before an aggregate test measurement.
+
 ## test-clean-validation-encoder-rejected-direct-1000-cues-max4096-lr15e5-wd0005-smooth000-seed20261023
 
 Timestamp: 2026-10-23T05:03:00Z. Status: queued.
