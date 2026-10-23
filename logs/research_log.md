@@ -913,6 +913,22 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 
 Hypothesis: The current clean-validation leader and its training-only bias may transfer better than the recent When2Call-only pairwise and cross-entropy blend. The result will be recorded without using test labels to select a later candidate.
 
+## test-clean-validation-argument-cues-seed21-calibrated-bias-result
+
+Timestamp: 2026-10-23T18:13:00Z. Status: completed.
+
+Aggregate black-box evidence: W&B run `mqti8uyr`, accuracy `0.5407995618838992` and macro F1 `0.5421155608731126` on 3,652 test examples. The candidate and bias were selected using training-only calibration and clean validation. The test file reports `test_loaded=true`, `selection_complete=true`, `test_measurement_only=true`, and `black_box=true`. The clean-validation leader did not transfer, so this bias branch is closed.
+
+The next hypothesis tests training-only calibration on the stronger one-epoch SFT-pretrained cross-entropy checkpoint. The aggregate test measurement will follow only if clean validation improves or remains viable.
+
+## clean-validation-when2call-only-ce-cues-sftpre1-calibration
+
+Timestamp: 2026-10-23T18:13:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.calibrate_clean_validation", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-max4096-batch2-seed20261023", "--output", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-calibration.json", "--seed", "20261023", "--split-seed", "20261021", "--calibration-fraction", "0.1", "--max-length", "4096"]. This uses only the training and clean-validation partitions. Official test data and labels will not be loaded during selection.
+
+Hypothesis: A training-only class bias may improve the SFT-pretrained checkpoint's clean macro F1 and reduce its systematic class bias without changing the encoder. If clean validation is viable, its frozen aggregate test measurement will be queued next.
+
 ## aggregate-test-clean-validation-when2call-only-ce-cues-sftpre2-max4096-batch2-seed20261023
 
 Timestamp: 2026-10-23T17:33:31.579723+00:00. Status: completed.
