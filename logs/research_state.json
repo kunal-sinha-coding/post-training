@@ -5,11 +5,62 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "The 1.25e-5 aggregate test reached macro F1 0.53469. The 0.00375 smoothing probe also underperformed on clean validation at macro F1 0.72221. Complete its required frozen test measurement first. Then test the default 0.01 weight decay on the established full-schema CE setup.",
-  "active_experiment": {},
-  "worker_command": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth00375-lr1e5-max4096-batch2-seed20261063", "--output", "outputs/test-clean-validation-when2call-only-ce-cues-sftpre1-smooth00375-lr1e5-max4096-batch2-seed20261063.json"],
+  "active_experiment": {
+    "pid": 401274,
+    "command": [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_frozen_when2call_ensemble_test",
+      "--checkpoint",
+      "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth00375-lr1e5-max4096-batch2-seed20261063",
+      "--output",
+      "outputs/test-clean-validation-when2call-only-ce-cues-sftpre1-smooth00375-lr1e5-max4096-batch2-seed20261063.json"
+    ],
+    "started_at": "2026-10-23T23:34:34.231527+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_frozen_when2call_ensemble_test",
+    "--checkpoint",
+    "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth00375-lr1e5-max4096-batch2-seed20261063",
+    "--output",
+    "outputs/test-clean-validation-when2call-only-ce-cues-sftpre1-smooth00375-lr1e5-max4096-batch2-seed20261063.json"
+  ],
   "worker_queue": [
-    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth00375-lr1e5-max4096-batch2-seed20261063", "--output", "outputs/test-clean-validation-when2call-only-ce-cues-sftpre1-smooth00375-lr1e5-max4096-batch2-seed20261063.json"],
-    ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output-dir", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd01-lr1e5-max4096-batch2-seed20261064", "--loss-function", "cross_entropy", "--sft-loss-function", "cross_entropy", "--sft-pretrain-epochs", "1", "--add-argument-cues", "--learning-rate", "1e-5", "--label-smoothing", "0.005", "--weight-decay", "0.01", "--seed", "20261064", "--split-seed", "20261021", "--max-length", "4096", "--batch-size", "2", "--pref-train-epochs", "1"]
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.clean_validation_baseline",
+      "--output-dir",
+      "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd01-lr1e5-max4096-batch2-seed20261064",
+      "--loss-function",
+      "cross_entropy",
+      "--sft-loss-function",
+      "cross_entropy",
+      "--sft-pretrain-epochs",
+      "1",
+      "--add-argument-cues",
+      "--learning-rate",
+      "1e-5",
+      "--label-smoothing",
+      "0.005",
+      "--weight-decay",
+      "0.01",
+      "--seed",
+      "20261064",
+      "--split-seed",
+      "20261021",
+      "--max-length",
+      "4096",
+      "--batch-size",
+      "2",
+      "--pref-train-epochs",
+      "1"
+    ]
   ],
   "_previous_command": [
     "python",
@@ -41,18 +92,22 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T23:26:50.289621+00:00",
-  "last_action": "Queued the missing lower-smoothing aggregate measurement before a default-weight-decay full-schema CE probe.",
+  "last_heartbeat": "2026-10-23T23:34:34.231540+00:00",
+  "last_action": "Watchdog started validation worker pid 401274.",
   "watchdog_enabled": true,
-  "research_log_size": 681383,
+  "research_log_size": 684851,
   "stop_command": "STOP",
-  "next_experiment": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth00375-lr1e5-max4096-batch2-seed20261063", "--output", "outputs/test-clean-validation-when2call-only-ce-cues-sftpre1-smooth00375-lr1e5-max4096-batch2-seed20261063.json"],
-  "recording_jobs": [
-    {
-      "pid": 401127,
-      "experiment_id": "clean-validation-when2call-only-ce-cues-sftpre1-smooth00375-lr1e5-max4096-batch2-seed20261063"
-    }
+  "next_experiment": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_frozen_when2call_ensemble_test",
+    "--checkpoint",
+    "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth00375-lr1e5-max4096-batch2-seed20261063",
+    "--output",
+    "outputs/test-clean-validation-when2call-only-ce-cues-sftpre1-smooth00375-lr1e5-max4096-batch2-seed20261063.json"
   ],
+  "recording_jobs": [],
   "planning_notified_at": "2026-10-23T23:34:03.644511+00:00",
   "planning_ack_deadline": "2026-10-23T23:36:03.644536+00:00",
   "planning_attempts": 419
