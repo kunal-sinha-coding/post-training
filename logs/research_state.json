@@ -4,20 +4,30 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The encoder-only 8192-token cross-entropy candidate reached 0.970000 clean accuracy and 0.727722 clean macro F1. Training and clean-validation evidence are complete, but its aggregate measurement is missing. Queue that measurement before selecting any later experiment.",
+  "current_hypothesis": "The encoder-only 8192-token cross-entropy candidate reached 0.970000 clean accuracy and 0.727722 clean macro F1, but its aggregate result was only 0.533680 accuracy and 0.535104 macro F1. Test labels were used only after selection. A conservative 75/20/5 blend of the strongest encoder, the pairwise encoder, and this candidate may use complementary errors without allowing the weak candidate to dominate.",
   "active_experiment": {
-    "pid": 311076,
+    "pid": 311540,
     "command": [
       "python",
       "-u",
       "-m",
       "experiments.evaluate_frozen_when2call_ensemble_test",
       "--checkpoint",
+      "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
+      "--checkpoint",
+      "outputs/clean-validation-encoder-only-pairwise-cues-lr15e5-wd0005-smooth005-seed20261023",
+      "--checkpoint",
       "outputs/clean-validation-encoder-only-ce-cues-max8192-lr15e5-wd0005-smooth005-seed20261023",
+      "--weight",
+      "0.75",
+      "--weight",
+      "0.20",
+      "--weight",
+      "0.05",
       "--output",
-      "outputs/test-clean-validation-encoder-only-ce-cues-max8192-lr15e5-wd0005-smooth005-seed20261023.json"
+      "outputs/test-clean-validation-encoder-triple-current-75-20-05.json"
     ],
-    "started_at": "2026-10-23T03:10:05.458446+00:00"
+    "started_at": "2026-10-23T03:12:07.687108+00:00"
   },
   "worker_command": [
     "python",
@@ -25,9 +35,19 @@
     "-m",
     "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
+    "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
+    "--checkpoint",
+    "outputs/clean-validation-encoder-only-pairwise-cues-lr15e5-wd0005-smooth005-seed20261023",
+    "--checkpoint",
     "outputs/clean-validation-encoder-only-ce-cues-max8192-lr15e5-wd0005-smooth005-seed20261023",
+    "--weight",
+    "0.75",
+    "--weight",
+    "0.20",
+    "--weight",
+    "0.05",
     "--output",
-    "outputs/test-clean-validation-encoder-only-ce-cues-max8192-lr15e5-wd0005-smooth005-seed20261023.json"
+    "outputs/test-clean-validation-encoder-triple-current-75-20-05.json"
   ],
   "worker_queue": [],
   "_previous_command": [
@@ -60,10 +80,10 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-23T03:10:05.458462+00:00",
-  "last_action": "Watchdog started validation worker pid 311076.",
+  "last_heartbeat": "2026-10-23T03:12:07.687121+00:00",
+  "last_action": "Watchdog started validation worker pid 311540.",
   "watchdog_enabled": true,
-  "research_log_size": 436474,
+  "research_log_size": 438453,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -71,12 +91,22 @@
     "-m",
     "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
+    "outputs/clean-validation-cues-aux05-smooth0075-seed20261022",
+    "--checkpoint",
+    "outputs/clean-validation-encoder-only-pairwise-cues-lr15e5-wd0005-smooth005-seed20261023",
+    "--checkpoint",
     "outputs/clean-validation-encoder-only-ce-cues-max8192-lr15e5-wd0005-smooth005-seed20261023",
+    "--weight",
+    "0.75",
+    "--weight",
+    "0.20",
+    "--weight",
+    "0.05",
     "--output",
-    "outputs/test-clean-validation-encoder-only-ce-cues-max8192-lr15e5-wd0005-smooth005-seed20261023.json"
+    "outputs/test-clean-validation-encoder-triple-current-75-20-05.json"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-23T03:09:34.941857+00:00",
-  "planning_ack_deadline": "2026-10-23T03:11:34.941877+00:00",
-  "planning_attempts": 269
+  "planning_notified_at": "2026-10-23T03:11:07.158776+00:00",
+  "planning_ack_deadline": "2026-10-23T03:13:07.158800+00:00",
+  "planning_attempts": 270
 }

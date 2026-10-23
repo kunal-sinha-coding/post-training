@@ -4637,3 +4637,17 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 Clean development accuracy: 0.97. Clean development macro F1: 0.7277224740995435. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+Timestamp: 2026-10-23T03:12:00Z. Status: completed.
+
+Training evidence: accuracy 0.9866666666666667 and macro F1 0.7400555394549166 from the candidate metrics file. Clean-validation evidence: accuracy 0.97 and macro F1 0.7277224740995435. Aggregate black-box evidence: W&B run ne9fzeh8, accuracy 0.5336801752464403 and macro F1 0.5351042893926498 on 3652 test examples. The test file reports `test_loaded=true`, `selection_complete=true`, `test_measurement_only=true`, and `black_box=true`. Official test labels were used only for reporting after clean-validation selection.
+
+The standalone 8192-token candidate is below the current encoder leader and is not selected for further standalone exploration. The next hypothesis is that a small 5% contribution from this candidate may add complementary signal to the strongest encoder and the pairwise encoder, while the 75/20 weights preserve the stronger clean-validation and prior aggregate behavior.
+
+## test-clean-validation-encoder-triple-current-75-20-05
+
+Timestamp: 2026-10-23T03:12:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--checkpoint", "outputs/clean-validation-encoder-only-pairwise-cues-lr15e5-wd0005-smooth005-seed20261023", "--checkpoint", "outputs/clean-validation-encoder-only-ce-cues-max8192-lr15e5-wd0005-smooth005-seed20261023", "--weight", "0.75", "--weight", "0.20", "--weight", "0.05", "--output", "outputs/test-clean-validation-encoder-triple-current-75-20-05.json"]. All component training and clean-validation evidence are complete before this aggregate-only measurement. The weights are fixed from clean-validation results and prior aggregate evidence. Official test labels will not be used for selection.
+
+Hypothesis: A conservative three-way encoder blend may improve transfer through complementary errors while limiting the weak 8192-token candidate to 5%.
