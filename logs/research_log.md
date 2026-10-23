@@ -929,6 +929,20 @@ Setup: ["python", "-u", "-m", "experiments.calibrate_clean_validation", "--check
 
 Hypothesis: A larger training-only calibration slice may reduce bias variance and improve clean-validation macro F1 before an aggregate test measurement.
 
+## clean-validation-calibration-aux05-smooth0075-fraction20-result
+
+Timestamp: 2026-10-23T05:18:00Z. Status: completed.
+
+Training evidence was inherited from the frozen checkpoint `outputs/clean-validation-cues-aux05-smooth0075-seed20261022`. The 20% training-only calibration used 1,440 examples and selected bias `[0.0, 0.3, -0.1, 0.0]`. Clean-validation accuracy was `0.9677777777777777` and macro F1 was `0.7260529397384011`. Official test data and labels were not loaded.
+
+The clean-validation result is viable. The selected bias is now queued for a separate aggregate black-box measurement on the frozen checkpoint. Test labels will not be used for selection.
+
+## test-clean-validation-cues-aux05-smooth0075-fraction20-calibrated-bias
+
+Timestamp: 2026-10-23T05:18:00Z. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-cues-aux05-smooth0075-seed20261022", "--class-bias", "0.0", "--class-bias", "0.3", "--class-bias", "-0.1", "--class-bias", "0.0", "--output", "outputs/test-clean-validation-cues-aux05-smooth0075-fraction20-calibrated-bias.json"]. Training and clean-validation evidence are complete. The bias was selected from training-only calibration before this aggregate-only measurement. Official test labels will not be used for selection.
+
 ## test-clean-validation-encoder-rejected-direct-1000-cues-max4096-lr15e5-wd0005-smooth000-seed20261023
 
 Timestamp: 2026-10-23T05:03:00Z. Status: queued.

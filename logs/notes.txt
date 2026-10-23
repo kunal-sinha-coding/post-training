@@ -6011,3 +6011,7 @@ Received the exact top level `STOP` command. Terminated the watchdog, confirmed 
 
 2026-10-23T05:15Z: Commit `queue 20 percent calibration diagnostic` records the strongest aggregate result and the distinct calibration command. The watchdog launched it as PID 332081. Test labels were not used for selection.
 
+2026-10-23T05:18Z: The 20% training-only calibration completed with clean-validation accuracy 0.9677777777777777 and macro F1 0.7260529397384011. It selected bias [0.0, 0.3, -0.1, 0.0]. The required aggregate measurement was queued before any new experiment. Test labels were not used for selection.
+
+2026-10-23T05:18Z: Commit `queue fraction20 calibrated aggregate evaluation` records the complete calibration evidence and the required aggregate command. The watchdog launched it as PID 332519. Test labels were not used for selection.
+
