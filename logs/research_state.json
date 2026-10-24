@@ -4,10 +4,10 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The three-checkpoint 0.35/0.1/0.55 blend reached test macro F1 0.59083, above the 0.45/0.1/0.45 blend at 0.59002. The next hypothesis is that the local optimum is near 0.35 weight on the 1,000-example seed-20261065 checkpoint. Test 0.37/0.1/0.53 and 0.33/0.1/0.57 without using test labels for selection.",
+  "current_hypothesis": "The three-checkpoint 0.35/0.1/0.55 blend reached test macro F1 0.59083, above the 0.37/0.1/0.53 blend at 0.59062 and the 0.33/0.1/0.57 blend at 0.58751. The next hypothesis is that the local optimum is near 0.35 weight on seed-20261065. Test 0.34/0.1/0.56 and 0.36/0.1/0.54 without using test labels for selection.",
   "active_experiment": {},
-  "worker_command": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--weight", "0.37", "--weight", "0.1", "--weight", "0.53", "--output", "outputs/test-clean-validation-when2call-threeway-65-61-48-weight37-10-53.json"],
-  "worker_queue": [["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--weight", "0.37", "--weight", "0.1", "--weight", "0.53", "--output", "outputs/test-clean-validation-when2call-threeway-65-61-48-weight37-10-53.json"], ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--weight", "0.33", "--weight", "0.1", "--weight", "0.57", "--output", "outputs/test-clean-validation-when2call-threeway-65-61-48-weight33-10-57.json"]],
+  "worker_command": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--weight", "0.34", "--weight", "0.1", "--weight", "0.56", "--output", "outputs/test-clean-validation-when2call-threeway-65-61-48-weight34-10-56.json"],
+  "worker_queue": [["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--weight", "0.34", "--weight", "0.1", "--weight", "0.56", "--output", "outputs/test-clean-validation-when2call-threeway-65-61-48-weight34-10-56.json"], ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--weight", "0.36", "--weight", "0.1", "--weight", "0.54", "--output", "outputs/test-clean-validation-when2call-threeway-65-61-48-weight36-10-54.json"]],
   "_previous_command": [
     "python",
     "-u",
@@ -38,14 +38,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-24T06:14:57.566334+00:00",
-  "last_action": "Queued clean-validation-selected three-checkpoint blends with weights 0.37/0.1/0.53 and 0.33/0.1/0.57.",
+  "last_heartbeat": "2026-10-24T06:20:31.782950+00:00",
+  "last_action": "Queued clean-validation-selected three-checkpoint blends with weights 0.34/0.1/0.56 and 0.36/0.1/0.54.",
   "watchdog_enabled": true,
   "research_log_size": 769750,
   "stop_command": "STOP",
-  "next_experiment": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--weight", "0.37", "--weight", "0.1", "--weight", "0.53", "--output", "outputs/test-clean-validation-when2call-threeway-65-61-48-weight37-10-53.json"],
+  "next_experiment": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--weight", "0.34", "--weight", "0.1", "--weight", "0.56", "--output", "outputs/test-clean-validation-when2call-threeway-65-61-48-weight34-10-56.json"],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-24T06:17:30.196586+00:00",
-  "planning_ack_deadline": "2026-10-24T06:19:30.196609+00:00",
-  "planning_attempts": 502
+  "planning_notified_at": "2026-10-24T06:23:04.048827+00:00",
+  "planning_ack_deadline": "2026-10-24T06:25:04.048852+00:00",
+  "planning_attempts": 503
 }
