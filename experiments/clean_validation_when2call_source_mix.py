@@ -68,12 +68,14 @@ def load_pool_examples(sample_size: int, seed: int) -> list[Example]:
     return sample_source(filter_direct(examples), sample_size, seed)
 
 
-def load_bfcl_examples(sample_size: int, seed: int) -> list[Example]:
+def load_bfcl_examples(sample_size: int, seed: int, call_only: bool = False) -> list[Example]:
     """Load a bounded BFCL Live source sample with conservative action labels."""
     # Use only public BFCL source categories and map irrelevance to refusal and all explicit call categories to tool use.
     examples = []
     for filename in BFCL_FILES:
         category = filename.removeprefix("BFCL_v4_live_").removesuffix(".json")
+        if call_only and category == "irrelevance":
+            continue
         rows = requests.get(BFCL_BASE + filename, timeout=30).text.splitlines()
         for index, line in enumerate(rows):
             row = json.loads(line)
@@ -100,6 +102,7 @@ def main() -> int:
     parser.add_argument("--sft-sample", type=int, required=True)
     parser.add_argument("--pool-sample", type=int, default=0)
     parser.add_argument("--bfcl-sample", type=int, default=0)
+    parser.add_argument("--bfcl-call-only", action="store_true")
     parser.add_argument("--epochs", type=int, default=1)
     parser.add_argument("--seed", type=int, default=20261031)
     parser.add_argument("--split-seed", type=int, default=20261031)
@@ -122,7 +125,7 @@ def main() -> int:
     pref = sample_source(filter_direct(prepare_train_examples(load_training_rows())), args.pref_sample, args.seed)
     sft = sample_source(filter_direct(prepare_train_examples(load_sft_training_rows())), args.sft_sample, args.seed + 1)
     pool = load_pool_examples(args.pool_sample, args.seed + 2) if args.pool_sample else []
-    bfcl = load_bfcl_examples(args.bfcl_sample, args.seed + 3) if args.bfcl_sample else []
+    bfcl = load_bfcl_examples(args.bfcl_sample, args.seed + 3, args.bfcl_call_only) if args.bfcl_sample else []
     # Split each source independently so both clean validation sets remain interpretable.
     pref_train, pref_validation = split_examples(pref, 0.2, args.split_seed)
     sft_train, sft_validation = split_examples(sft, 0.2, args.split_seed + 1)
