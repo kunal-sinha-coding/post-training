@@ -4,12 +4,64 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The SFT mixture has complete evidence and test macro F1 0.54904, while the BFCL-only seed-20261061 replication has complete training and clean-validation evidence but its aggregate test measurement is missing. Queue that measurement first. Then test whether reducing the filtered BFCL dose to 500 examples preserves clean validation while reducing source shift.",
-  "active_experiment": {},
-  "worker_command": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061", "--output", "outputs/test-clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061.json"],
+  "current_hypothesis": "The BFCL-only seed-20261061 replication has complete test macro F1 0.55593. The newer 500-example filtered-BFCL run has complete training and clean-validation evidence but its aggregate test measurement is missing. Queue that measurement first. Then test whether a 250-example dose further reduces source shift while preserving clean validation.",
+  "active_experiment": {
+    "pid": 450534,
+    "command": [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_frozen_when2call_ensemble_test",
+      "--checkpoint",
+      "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-500-seed20261062",
+      "--output",
+      "outputs/test-clean-validation-when2call-pref6000-bfcl-simple-multiple-500-seed20261062.json"
+    ],
+    "started_at": "2026-10-24T05:08:14.795791+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_frozen_when2call_ensemble_test",
+    "--checkpoint",
+    "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-500-seed20261062",
+    "--output",
+    "outputs/test-clean-validation-when2call-pref6000-bfcl-simple-multiple-500-seed20261062.json"
+  ],
   "worker_queue": [
-    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061", "--output", "outputs/test-clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061.json"],
-    ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-500-seed20261062", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "500", "--bfcl-call-only", "--bfcl-simple-multiple-only", "--epochs", "1", "--seed", "20261062", "--split-seed", "20261062", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"]
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.clean_validation_when2call_source_mix",
+      "--output-dir",
+      "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-250-seed20261063",
+      "--pref-sample",
+      "6000",
+      "--sft-sample",
+      "0",
+      "--pool-sample",
+      "0",
+      "--bfcl-sample",
+      "250",
+      "--bfcl-call-only",
+      "--bfcl-simple-multiple-only",
+      "--epochs",
+      "1",
+      "--seed",
+      "20261063",
+      "--split-seed",
+      "20261063",
+      "--max-length",
+      "2048",
+      "--batch-size",
+      "1",
+      "--learning-rate",
+      "1e-5",
+      "--weight-decay",
+      "0.005"
+    ]
   ],
   "_previous_command": [
     "python",
@@ -41,14 +93,23 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-24T04:57:58.293699+00:00",
-  "last_action": "Queued the missing BFCL-only seed-20261061 aggregate test measurement first, followed by a distinct 500-example filtered BFCL dose experiment.",
+  "last_heartbeat": "2026-10-24T05:08:14.795800+00:00",
+  "last_action": "Watchdog started validation worker pid 450534.",
   "watchdog_enabled": true,
-  "research_log_size": 765730,
+  "research_log_size": 766734,
   "stop_command": "STOP",
-  "next_experiment": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061", "--output", "outputs/test-clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061.json"],
+  "next_experiment": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_frozen_when2call_ensemble_test",
+    "--checkpoint",
+    "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-500-seed20261062",
+    "--output",
+    "outputs/test-clean-validation-when2call-pref6000-bfcl-simple-multiple-500-seed20261062.json"
+  ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-24T05:01:34.536012+00:00",
-  "planning_ack_deadline": "2026-10-24T05:03:34.536036+00:00",
-  "planning_attempts": 488
+  "planning_notified_at": "2026-10-24T05:07:44.181700+00:00",
+  "planning_ack_deadline": "2026-10-24T05:09:44.181722+00:00",
+  "planning_attempts": 489
 }
