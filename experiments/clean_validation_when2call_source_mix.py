@@ -114,7 +114,7 @@ def main() -> int:
     # Measure training performance and both source-specific held-out validation sets.
     train_metrics = batch_metrics(model, tokenizer, train, device, list(range(len(LABELS))))
     pref_metrics = batch_metrics(model, tokenizer, pref_validation, device, list(range(len(LABELS))))
-    sft_metrics = batch_metrics(model, tokenizer, sft_validation, device, list(range(len(LABELS))))
+    sft_metrics = batch_metrics(model, tokenizer, sft_validation, device, list(range(len(LABELS)))) if sft_validation else None
     pool_metrics = batch_metrics(model, tokenizer, pool_validation, device, list(range(len(LABELS)))) if pool_validation else None
     # Save the candidate and complete clean evidence without loading official test labels.
     args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -156,7 +156,10 @@ def main() -> int:
     if pool_metrics:
         log_record.update({"validation/pool_accuracy": pool_metrics["accuracy"], "validation/pool_macro_f1": pool_metrics["macro_f1"]})
     run.log(log_record)
-    run.summary.update({"pref_validation_accuracy": pref_metrics["accuracy"], "pref_validation_macro_f1": pref_metrics["macro_f1"], "sft_validation_accuracy": sft_metrics["accuracy"], "sft_validation_macro_f1": sft_metrics["macro_f1"], "output_dir": str(args.output_dir)})
+    summary = {"pref_validation_accuracy": pref_metrics["accuracy"], "pref_validation_macro_f1": pref_metrics["macro_f1"], "output_dir": str(args.output_dir)}
+    if sft_metrics:
+        summary.update({"sft_validation_accuracy": sft_metrics["accuracy"], "sft_validation_macro_f1": sft_metrics["macro_f1"]})
+    run.summary.update(summary)
     print(json.dumps({"train": train_metrics, "pref_validation": pref_metrics, "sft_validation": sft_metrics, "pool_validation": pool_metrics, "losses": losses}, indent=2))
     return 0
 
