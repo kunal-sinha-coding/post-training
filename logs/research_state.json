@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The BFCL hypothesis is not yet measured because both workers exhausted GPU memory on long contexts. First repeat the same 1,000-row and 2,000-row BFCL mixtures with explicit 2,048-token truncation and batch size 1. Do not form a new data hypothesis until the required evidence exists.",
+  "current_hypothesis": "The bounded 1,000-row BFCL mixture improved test accuracy to 0.5654 but reached macro F1 0.5470, while 2,000 rows collapsed to 0.4891. The next hypothesis is that BFCL helps only at a narrow auxiliary weight. Test 500 and 750 BFCL rows with the same 2,048-token mapping before changing sources.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -12,15 +12,15 @@
     "-m",
     "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
-    "outputs/clean-validation-when2call-pref6000-bfcl2000-seed20261043",
+    "outputs/clean-validation-when2call-pref6000-bfcl2000-retry-seed20261043",
     "--output",
-    "outputs/test-clean-validation-when2call-pref6000-bfcl2000-seed20261043.json"
+    "outputs/test-clean-validation-when2call-pref6000-bfcl2000-retry-seed20261043.json"
   ],
   "worker_queue": [
-    ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl1000-retry-seed20261042", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1000", "--epochs", "1", "--seed", "20261042", "--split-seed", "20261042", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
-    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1000-retry-seed20261042", "--output", "outputs/test-clean-validation-when2call-pref6000-bfcl1000-retry-seed20261042.json"],
-    ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl2000-retry-seed20261043", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "2000", "--epochs", "1", "--seed", "20261043", "--split-seed", "20261043", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
-    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl2000-retry-seed20261043", "--output", "outputs/test-clean-validation-when2call-pref6000-bfcl2000-retry-seed20261043.json"]
+    ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl500-seed20261044", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "500", "--epochs", "1", "--seed", "20261044", "--split-seed", "20261044", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
+    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl500-seed20261044", "--output", "outputs/test-clean-validation-when2call-pref6000-bfcl500-seed20261044.json"],
+    ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl750-seed20261045", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "750", "--epochs", "1", "--seed", "20261045", "--split-seed", "20261045", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
+    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl750-seed20261045", "--output", "outputs/test-clean-validation-when2call-pref6000-bfcl750-seed20261045.json"]
   ],
   "_previous_command": [
     "python",
@@ -52,14 +52,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-24T02:53:29.196615+00:00",
-  "last_action": "Requeued incomplete BFCL measurements with bounded 2,048-token inputs and batch size 1 after CUDA out-of-memory failures.",
+  "last_heartbeat": "2026-10-24T03:04:13.175349+00:00",
+  "last_action": "Queued 500 and 750 BFCL auxiliary examples after the 1,000-row accuracy gain and 2,000-row regression.",
   "watchdog_enabled": true,
-  "research_log_size": 745468,
+  "research_log_size": 747316,
   "stop_command": "STOP",
-  "next_experiment": ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl1000-retry-seed20261042", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1000", "--epochs", "1", "--seed", "20261042", "--split-seed", "20261042", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
+  "next_experiment": ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl500-seed20261044", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "500", "--epochs", "1", "--seed", "20261044", "--split-seed", "20261044", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-24T02:54:02.643650+00:00",
-  "planning_ack_deadline": "2026-10-24T02:56:02.643675+00:00",
-  "planning_attempts": 469
+  "planning_notified_at": "2026-10-24T03:05:15.284964+00:00",
+  "planning_ack_deadline": "2026-10-24T03:07:15.284984+00:00",
+  "planning_attempts": 470
 }
