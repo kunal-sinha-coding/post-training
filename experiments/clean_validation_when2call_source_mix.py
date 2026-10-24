@@ -84,6 +84,13 @@ def load_bfcl_examples(sample_size: int, seed: int) -> list[Example]:
     return sample_source(examples, sample_size, seed)
 
 
+def tokenize_bounded(examples: list[Example], tokenizer: object, max_length: int) -> None:
+    """Tokenize source examples with an explicit memory-safe maximum length."""
+    # Truncate only this mixed-source experiment so long BFCL contexts cannot exhaust GPU memory.
+    for item in examples:
+        item.token_ids = tokenizer(item.text, add_special_tokens=True, truncation=True, max_length=max_length, verbose=False)["input_ids"]
+
+
 def main() -> int:
     """Train one source-matched mixture and persist clean evidence."""
     # Parse the mixture, split, and optimization settings before loading model state.
@@ -124,11 +131,11 @@ def main() -> int:
     train = pref_train + sft_train + pool_train + bfcl_train
     # Load and tokenize only the training and clean validation partitions.
     model, tokenizer = load_model(device, args.max_length)
-    tokenize_examples(train, tokenizer)
-    tokenize_examples(pref_validation, tokenizer)
-    tokenize_examples(sft_validation, tokenizer)
-    tokenize_examples(pool_validation, tokenizer)
-    tokenize_examples(bfcl_validation, tokenizer)
+    tokenize_bounded(train, tokenizer, args.max_length)
+    tokenize_bounded(pref_validation, tokenizer, args.max_length)
+    tokenize_bounded(sft_validation, tokenizer, args.max_length)
+    tokenize_bounded(pool_validation, tokenizer, args.max_length)
+    tokenize_bounded(bfcl_validation, tokenizer, args.max_length)
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay)
     losses = []
     # Run the requested number of complete training epochs over the mixed source pool.
