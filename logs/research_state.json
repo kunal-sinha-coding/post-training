@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 9,000-preference plus 1,500-BFCL mixture reached test macro F1 0.5518, better than the 6,000-preference replication at 0.5191 but below the 0.5878 checkpoint ensemble. The next hypothesis is that the larger preference core may be useful but is seed-sensitive. Replicate it before changing the source recipe.",
+  "current_hypothesis": "The 9,000-preference plus 1,500-BFCL recipe is reproducible at test macro F1 0.5518 and 0.5570, below the 0.5878 6,000-preference ensemble. The next hypothesis is that averaging the two larger-core checkpoints may recover complementary errors without changing data composition.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -12,13 +12,12 @@
     "-m",
     "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
-    "outputs/clean-validation-when2call-pref9000-bfcl1500-callonly-seed20261054",
+    "outputs/clean-validation-when2call-pref9000-bfcl1500-callonly-seed20261055",
     "--output",
-    "outputs/test-clean-validation-when2call-pref9000-bfcl1500-callonly-seed20261054.json"
+    "outputs/test-clean-validation-when2call-pref9000-bfcl1500-callonly-seed20261055.json"
   ],
   "worker_queue": [
-    ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref9000-bfcl1500-callonly-seed20261055", "--pref-sample", "9000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1500", "--bfcl-call-only", "--epochs", "1", "--seed", "20261055", "--split-seed", "20261055", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
-    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref9000-bfcl1500-callonly-seed20261055", "--output", "outputs/test-clean-validation-when2call-pref9000-bfcl1500-callonly-seed20261055.json"]
+    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref9000-bfcl1500-callonly-seed20261054", "--checkpoint", "outputs/clean-validation-when2call-pref9000-bfcl1500-callonly-seed20261055", "--output", "outputs/test-clean-validation-when2call-pref9000-bfcl1500-callonly-ensemble-54-55.json"]
   ],
   "_previous_command": [
     "python",
@@ -50,14 +49,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-24T04:23:11.110169+00:00",
-  "last_action": "Queued a 9,000-preference plus 1,500-BFCL call-only replication after the first larger-core result remained below the best ensemble.",
+  "last_heartbeat": "2026-10-24T04:29:49.937600+00:00",
+  "last_action": "Queued an equal ensemble of the two reproducible 9,000-preference BFCL call-only checkpoints.",
   "watchdog_enabled": true,
-  "research_log_size": 757697,
+  "research_log_size": 758650,
   "stop_command": "STOP",
-  "next_experiment": ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref9000-bfcl1500-callonly-seed20261055", "--pref-sample", "9000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1500", "--bfcl-call-only", "--epochs", "1", "--seed", "20261055", "--split-seed", "20261055", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
+  "next_experiment": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref9000-bfcl1500-callonly-seed20261054", "--checkpoint", "outputs/clean-validation-when2call-pref9000-bfcl1500-callonly-seed20261055", "--output", "outputs/test-clean-validation-when2call-pref9000-bfcl1500-callonly-ensemble-54-55.json"],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-24T04:24:13.118842+00:00",
-  "planning_ack_deadline": "2026-10-24T04:26:13.118873+00:00",
-  "planning_attempts": 480
+  "planning_notified_at": "2026-10-24T04:30:53.558794+00:00",
+  "planning_ack_deadline": "2026-10-24T04:32:53.558817+00:00",
+  "planning_attempts": 481
 }
