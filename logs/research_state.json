@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The third 1,500-row replication fell to test macro F1 0.5427 and the 1,750-row probe reached 0.5359, so single-checkpoint BFCL gains are high variance. The next hypothesis is that averaging clean-validation-selected call-only checkpoints stabilizes the complementary signal. Evaluate a 1,500-row ensemble and a broader 1,000-plus-1,500 ensemble.",
+  "current_hypothesis": "The three-checkpoint 1,500-row call-only ensemble reached test macro F1 0.5761. The broader ensemble measurement is incomplete, so complete that required aggregate test evaluation before forming a new data hypothesis.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -12,13 +12,20 @@
     "-m",
     "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
-    "outputs/clean-validation-when2call-pref6000-bfcl1750-callonly-seed20261052",
+    "outputs/clean-validation-when2call-pref6000-bfcl1000-callonly-seed20261046",
+    "--checkpoint",
+    "outputs/clean-validation-when2call-pref6000-bfcl1000-callonly-seed20261047",
+    "--checkpoint",
+    "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
+    "--checkpoint",
+    "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261049",
+    "--checkpoint",
+    "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261051",
     "--output",
-    "outputs/test-clean-validation-when2call-pref6000-bfcl1750-callonly-seed20261052.json"
+    "outputs/test-clean-validation-when2call-bfcl-callonly-ensemble-1000-1500.json"
   ],
   "worker_queue": [
-    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261049", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261051", "--output", "outputs/test-clean-validation-when2call-bfcl1500-callonly-ensemble-48-49-51.json"],
-    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1000-callonly-seed20261046", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1000-callonly-seed20261047", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261049", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261051", "--output", "outputs/test-clean-validation-when2call-bfcl-callonly-ensemble-1000-1500.json"]
+    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1000-callonly-seed20261046", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1000-callonly-seed20261047", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261049", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261051", "--output", "outputs/test-clean-validation-when2call-bfcl-callonly-ensemble-1000-1500-retry.json"]
   ],
   "_previous_command": [
     "python",
@@ -50,14 +57,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-24T03:52:42.558037+00:00",
-  "last_action": "Queued two aggregate evaluations of clean-validation-selected BFCL call-only checkpoint ensembles after high single-checkpoint variance.",
+  "last_heartbeat": "2026-10-24T03:56:15.237552+00:00",
+  "last_action": "Requeued the missing broader BFCL call-only ensemble aggregate test measurement before any new experiment.",
   "watchdog_enabled": true,
   "research_log_size": 755791,
   "stop_command": "STOP",
-  "next_experiment": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261049", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261051", "--output", "outputs/test-clean-validation-when2call-bfcl1500-callonly-ensemble-48-49-51.json"],
+  "next_experiment": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1000-callonly-seed20261046", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1000-callonly-seed20261047", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261049", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261051", "--output", "outputs/test-clean-validation-when2call-bfcl-callonly-ensemble-1000-1500-retry.json"],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-24T03:53:44.349742+00:00",
-  "planning_ack_deadline": "2026-10-24T03:55:44.349762+00:00",
-  "planning_attempts": 475
+  "planning_notified_at": "2026-10-24T03:59:47.414290+00:00",
+  "planning_ack_deadline": "2026-10-24T04:01:47.414312+00:00",
+  "planning_attempts": 476
 }
