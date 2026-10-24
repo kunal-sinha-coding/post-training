@@ -4,9 +4,9 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 0.35/0.15/0.50 probe was slightly below the earlier 0.36/0.14/0.52 region. Test whether a stronger second checkpoint at 0.35/0.14/0.51 or a balanced reduction of the first checkpoint at 0.34/0.15/0.51 improves clean-validation selection. Use aggregate black-box labels only for post-selection measurement.",
+  "current_hypothesis": "The 0.35/0.14/0.51 probe matched the current best aggregate result, while the 0.34/0.15/0.51 probe regressed. Test whether restoring more third-checkpoint weight at 0.34/0.14/0.52 or reducing the first checkpoint further at 0.35/0.13/0.52 improves clean-validation selection. Use aggregate black-box labels only for post-selection measurement.",
   "active_experiment": {
-    "pid": 550188,
+    "pid": 550903,
     "command": [
       "python",
       "-u",
@@ -19,15 +19,15 @@
       "--checkpoint",
       "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
       "--weight",
-      "0.34",
+      "0.35",
       "--weight",
-      "0.15",
+      "0.13",
       "--weight",
-      "0.51",
+      "0.52",
       "--output",
-      "outputs/test-clean-validation-when2call-threeway-65-61-48-weight34-15-51.json"
+      "outputs/test-clean-validation-when2call-threeway-65-61-48-weight35-13-52.json"
     ],
-    "started_at": "2026-10-24T16:44:45.252534+00:00"
+    "started_at": "2026-10-24T16:50:19.284240+00:00"
   },
   "worker_command": [
     "python",
@@ -41,13 +41,13 @@
     "--checkpoint",
     "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
     "--weight",
-    "0.34",
+    "0.35",
     "--weight",
-    "0.15",
+    "0.13",
     "--weight",
-    "0.51",
+    "0.52",
     "--output",
-    "outputs/test-clean-validation-when2call-threeway-65-61-48-weight34-15-51.json"
+    "outputs/test-clean-validation-when2call-threeway-65-61-48-weight35-13-52.json"
   ],
   "worker_queue": [
     [
@@ -55,8 +55,8 @@
       "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065",
       "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061",
       "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
-      "--weight", "0.35", "--weight", "0.14", "--weight", "0.51",
-      "--output", "outputs/test-clean-validation-when2call-threeway-65-61-48-weight35-14-51.json"
+      "--weight", "0.34", "--weight", "0.14", "--weight", "0.52",
+      "--output", "outputs/test-clean-validation-when2call-threeway-65-61-48-weight34-14-52.json"
     ]
   ],
   "_previous_command": [
@@ -89,8 +89,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-24T16:44:45.252546+00:00",
-  "last_action": "Watchdog started validation worker pid 550188. Codex preserved the distinct 0.35/0.14/0.51 follow-up for the next launch.",
+  "last_heartbeat": "2026-10-24T16:50:19.284247+00:00",
+  "last_action": "Watchdog started validation worker pid 550903. Codex preserved the distinct 0.34/0.14/0.52 follow-up for the next launch.",
   "watchdog_enabled": true,
   "research_log_size": 769750,
   "stop_command": "STOP",
@@ -106,16 +106,16 @@
     "--checkpoint",
     "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
     "--weight",
-    "0.35",
+    "0.34",
     "--weight",
     "0.14",
     "--weight",
-    "0.51",
+    "0.52",
     "--output",
-    "outputs/test-clean-validation-when2call-threeway-65-61-48-weight35-14-51.json"
+    "outputs/test-clean-validation-when2call-threeway-65-61-48-weight34-14-52.json"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-24T16:44:14.685687+00:00",
-  "planning_ack_deadline": "2026-10-24T16:46:14.685710+00:00",
-  "planning_attempts": 641
+  "planning_notified_at": "2026-10-24T16:49:48.714880+00:00",
+  "planning_ack_deadline": "2026-10-24T16:51:48.714904+00:00",
+  "planning_attempts": 642
 }
