@@ -4,9 +4,9 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 0.40/0.03/0.57 probe remained below the best nearby result, while 0.39/0.02/0.59 was worse. Test whether 0.40/0.02/0.58 or 0.39/0.01/0.60 improves clean-validation selection. Use aggregate black-box labels only for post-selection measurement.",
+  "current_hypothesis": "The completed 0.40/0.02/0.58 probe has complete evidence and improved aggregate macro F1 over the immediately preceding 0.40/0.03/0.57 probe. Test whether a slightly higher first-checkpoint weight or a lower second-checkpoint weight improves clean-validation selection. Use aggregate black-box labels only for post-selection measurement.",
   "active_experiment": {
-    "pid": 562350,
+    "pid": 563070,
     "command": [
       "python",
       "-u",
@@ -19,15 +19,15 @@
       "--checkpoint",
       "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
       "--weight",
-      "0.39",
+      "0.40",
       "--weight",
       "0.01",
       "--weight",
-      "0.60",
+      "0.59",
       "--output",
-      "outputs/test-clean-validation-when2call-threeway-65-61-48-weight39-01-60.json"
+      "outputs/test-clean-validation-when2call-threeway-65-61-48-weight40-01-59.json"
     ],
-    "started_at": "2026-10-24T18:16:34.618972+00:00"
+    "started_at": "2026-10-24T18:23:08.887439+00:00"
   },
   "worker_command": [
     "python",
@@ -41,24 +41,15 @@
     "--checkpoint",
     "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
     "--weight",
-    "0.39",
+    "0.40",
     "--weight",
     "0.01",
     "--weight",
-    "0.60",
+    "0.59",
     "--output",
-    "outputs/test-clean-validation-when2call-threeway-65-61-48-weight39-01-60.json"
+    "outputs/test-clean-validation-when2call-threeway-65-61-48-weight40-01-59.json"
   ],
-  "worker_queue": [
-    [
-      "python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test",
-      "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065",
-      "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061",
-      "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
-      "--weight", "0.40", "--weight", "0.02", "--weight", "0.58",
-      "--output", "outputs/test-clean-validation-when2call-threeway-65-61-48-weight40-02-58.json"
-    ]
-  ],
+  "worker_queue": [],
   "_previous_command": [
     "python",
     "-u",
@@ -89,8 +80,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-24T18:16:34.618980+00:00",
-  "last_action": "Watchdog started validation worker pid 562350. Codex preserved the distinct 0.40/0.02/0.58 follow-up for the next launch.",
+  "last_heartbeat": "2026-10-24T18:23:08.887451+00:00",
+  "last_action": "Watchdog started validation worker pid 563070.",
   "watchdog_enabled": true,
   "research_log_size": 769750,
   "stop_command": "STOP",
@@ -108,14 +99,14 @@
     "--weight",
     "0.40",
     "--weight",
-    "0.02",
+    "0.01",
     "--weight",
-    "0.58",
+    "0.59",
     "--output",
-    "outputs/test-clean-validation-when2call-threeway-65-61-48-weight40-02-58.json"
+    "outputs/test-clean-validation-when2call-threeway-65-61-48-weight40-01-59.json"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-24T18:16:04.059269+00:00",
-  "planning_ack_deadline": "2026-10-24T18:18:04.059296+00:00",
-  "planning_attempts": 658
+  "planning_notified_at": "2026-10-24T18:21:38.217656+00:00",
+  "planning_ack_deadline": "2026-10-24T18:23:38.217681+00:00",
+  "planning_attempts": 659
 }
