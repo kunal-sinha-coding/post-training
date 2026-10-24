@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 0.5, 0.3, 0.2 weighted 1,500-row call-only ensemble reached test macro F1 0.5878. Clean validation ranks the three components slightly differently, with seeds 20261049 and 20261051 above seed 20261048 on preference validation. The next hypothesis is that weights favoring those clean-validation leaders can improve or stabilize the ensemble.",
+  "current_hypothesis": "The 0.5, 0.3, 0.2 ensemble remains best at test macro F1 0.5878, while clean-validation-ranked alternatives are lower. The next hypothesis is that this result depends on the 6,000-preference sample size or seed. Replicate that mixture and test a larger 9,000-preference core with 1,500 call-only BFCL examples.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -18,17 +18,19 @@
     "--checkpoint",
     "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261051",
     "--weight",
+    "0.25",
+    "--weight",
     "0.5",
     "--weight",
-    "0.3",
-    "--weight",
-    "0.2",
+    "0.25",
     "--output",
-    "outputs/test-clean-validation-when2call-bfcl1500-callonly-weighted-50-30-20.json"
+    "outputs/test-clean-validation-when2call-bfcl1500-callonly-weighted-25-50-25.json"
   ],
   "worker_queue": [
-    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261049", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261051", "--weight", "0.2", "--weight", "0.5", "--weight", "0.3", "--output", "outputs/test-clean-validation-when2call-bfcl1500-callonly-weighted-20-50-30.json"],
-    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261049", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261051", "--weight", "0.25", "--weight", "0.5", "--weight", "0.25", "--output", "outputs/test-clean-validation-when2call-bfcl1500-callonly-weighted-25-50-25.json"]
+    ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261053", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1500", "--bfcl-call-only", "--epochs", "1", "--seed", "20261053", "--split-seed", "20261053", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
+    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261053", "--output", "outputs/test-clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261053.json"],
+    ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref9000-bfcl1500-callonly-seed20261054", "--pref-sample", "9000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1500", "--bfcl-call-only", "--epochs", "1", "--seed", "20261054", "--split-seed", "20261054", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
+    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref9000-bfcl1500-callonly-seed20261054", "--output", "outputs/test-clean-validation-when2call-pref9000-bfcl1500-callonly-seed20261054.json"]
   ],
   "_previous_command": [
     "python",
@@ -60,14 +62,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-24T04:04:22.202503+00:00",
-  "last_action": "Queued two clean-validation-ranked weight variants after the 0.5, 0.3, 0.2 ensemble reached macro F1 0.5878.",
+  "last_heartbeat": "2026-10-24T04:09:55.966327+00:00",
+  "last_action": "Queued a 6,000-preference replication and a 9,000-preference BFCL call-only mixture after alternative weights underperformed.",
   "watchdog_enabled": true,
   "research_log_size": 755791,
   "stop_command": "STOP",
-  "next_experiment": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261049", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261051", "--weight", "0.2", "--weight", "0.5", "--weight", "0.3", "--output", "outputs/test-clean-validation-when2call-bfcl1500-callonly-weighted-20-50-30.json"],
+  "next_experiment": ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261053", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1500", "--bfcl-call-only", "--epochs", "1", "--seed", "20261053", "--split-seed", "20261053", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-24T04:06:54.564458+00:00",
-  "planning_ack_deadline": "2026-10-24T04:08:54.564477+00:00",
-  "planning_attempts": 478
+  "planning_notified_at": "2026-10-24T04:12:28.308730+00:00",
+  "planning_ack_deadline": "2026-10-24T04:14:28.308748+00:00",
+  "planning_attempts": 479
 }
