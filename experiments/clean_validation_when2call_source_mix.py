@@ -103,6 +103,7 @@ def main() -> int:
     parser.add_argument("--pool-sample", type=int, default=0)
     parser.add_argument("--bfcl-sample", type=int, default=0)
     parser.add_argument("--bfcl-call-only", action="store_true")
+    parser.add_argument("--bfcl-simple-multiple-only", action="store_true")
     parser.add_argument("--epochs", type=int, default=1)
     parser.add_argument("--seed", type=int, default=20261031)
     parser.add_argument("--split-seed", type=int, default=20261031)
@@ -126,6 +127,8 @@ def main() -> int:
     sft = sample_source(filter_direct(prepare_train_examples(load_sft_training_rows())), args.sft_sample, args.seed + 1)
     pool = load_pool_examples(args.pool_sample, args.seed + 2) if args.pool_sample else []
     bfcl = load_bfcl_examples(args.bfcl_sample, args.seed + 3, args.bfcl_call_only) if args.bfcl_sample else []
+    if args.bfcl_simple_multiple_only:
+        bfcl = [item for item in bfcl if item.source_id.startswith("bfcl-simple-") or item.source_id.startswith("bfcl-multiple-")]
     # Split each source independently so both clean validation sets remain interpretable.
     pref_train, pref_validation = split_examples(pref, 0.2, args.split_seed)
     sft_train, sft_validation = split_examples(sft, 0.2, args.split_seed + 1)
