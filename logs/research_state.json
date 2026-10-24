@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 69/21/10 blend tied 70/20/10 and remained below 68/22/10. Test a 70/22/8 blend to increase the lower weight-decay contribution while reducing the weaker default component.",
+  "current_hypothesis": "The 70/22/8 blend is the current local best. Test a nearby 71/22/7 blend to slightly increase the smoothing contribution while reducing the weaker default component.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -18,15 +18,15 @@
     "--checkpoint",
     "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd01-lr1e5-max4096-batch2-seed20261064",
     "--weight",
-    "0.7",
+    "0.71",
     "--weight",
     "0.22",
     "--weight",
-    "0.08",
+    "0.07",
     "--output",
-    "outputs/test-clean-validation-when2call-fullschema-smooth0075-wd0025-wd01-blend70-22-08.json"
+    "outputs/test-clean-validation-when2call-fullschema-smooth0075-wd0025-wd01-blend71-22-07.json"
   ],
-  "worker_queue": [["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth0075-lr1e5-max4096-batch2-seed20261059", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd0025-lr1e5-max4096-batch2-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd01-lr1e5-max4096-batch2-seed20261064", "--weight", "0.7", "--weight", "0.22", "--weight", "0.08", "--output", "outputs/test-clean-validation-when2call-fullschema-smooth0075-wd0025-wd01-blend70-22-08.json"]],
+  "worker_queue": [["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth0075-lr1e5-max4096-batch2-seed20261059", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd0025-lr1e5-max4096-batch2-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd01-lr1e5-max4096-batch2-seed20261064", "--weight", "0.71", "--weight", "0.22", "--weight", "0.07", "--output", "outputs/test-clean-validation-when2call-fullschema-smooth0075-wd0025-wd01-blend71-22-07.json"]],
   "_previous_command": [
     "python",
     "-u",
@@ -57,14 +57,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-24T00:20:41.674141+00:00",
-  "last_action": "Backfilled the completed 69/21/10 aggregate measurement and queued the distinct 70/22/8 blend. Test labels were not used for selection.",
+  "last_heartbeat": "2026-10-24T00:23:44.872619+00:00",
+  "last_action": "Backfilled the completed 70/22/8 aggregate measurement and queued the distinct 71/22/7 blend. Test labels were not used for selection.",
   "watchdog_enabled": true,
-  "research_log_size": 693459,
+  "research_log_size": 693862,
   "stop_command": "STOP",
-  "next_experiment": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth0075-lr1e5-max4096-batch2-seed20261059", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd0025-lr1e5-max4096-batch2-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd01-lr1e5-max4096-batch2-seed20261064", "--weight", "0.7", "--weight", "0.22", "--weight", "0.08", "--output", "outputs/test-clean-validation-when2call-fullschema-smooth0075-wd0025-wd01-blend70-22-08.json"],
+  "next_experiment": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth0075-lr1e5-max4096-batch2-seed20261059", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd0025-lr1e5-max4096-batch2-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd01-lr1e5-max4096-batch2-seed20261064", "--weight", "0.71", "--weight", "0.22", "--weight", "0.07", "--output", "outputs/test-clean-validation-when2call-fullschema-smooth0075-wd0025-wd01-blend71-22-07.json"],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-24T00:23:14.303510+00:00",
-  "planning_ack_deadline": "2026-10-24T00:25:14.303533+00:00",
-  "planning_attempts": 432
+  "planning_notified_at": "2026-10-24T00:25:48.617389+00:00",
+  "planning_ack_deadline": "2026-10-24T00:27:48.617448+00:00",
+  "planning_attempts": 433
 }
