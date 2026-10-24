@@ -1,7 +1,7 @@
 {
-  "status": "awaiting_codex_planning",
+  "status": "active",
   "planning_owner": "codex_primary",
-  "planning_required": true,
+  "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
   "current_hypothesis": "The latest completed local blend has complete training, clean-validation, and aggregate black-box evidence. Continue a narrow clean-validation-selected probe around the established 0.355 to 0.359 first-checkpoint weight. Do not use test labels for selection.",
