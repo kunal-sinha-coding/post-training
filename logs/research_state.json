@@ -1,10 +1,10 @@
 {
-  "status": "awaiting_codex_planning",
+  "status": "active",
   "planning_owner": "codex_primary",
-  "planning_required": true,
+  "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The completed fine first-checkpoint bracket is tied and has complete evidence. Test cross-balanced weights of 0.3595/0.1355 and 0.3605/0.1345 while keeping the third checkpoint at 0.505. Do not use test labels for selection.",
+  "current_hypothesis": "The completed cross-balanced weight probes are tied and have complete evidence. Test finer tradeoffs of 0.35975/0.13525 and 0.36025/0.13475 while keeping the third checkpoint at 0.505. Do not use test labels for selection.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -18,15 +18,18 @@
     "--checkpoint",
     "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
     "--weight",
-    "0.3605",
+    "0.35975",
     "--weight",
-    "0.1345",
+    "0.13525",
     "--weight",
     "0.505",
     "--output",
-    "outputs/test-clean-validation-when2call-threeway-65-61-48-weight3605-1345-505.json"
+    "outputs/test-clean-validation-when2call-threeway-65-61-48-weight35975-13525-505.json"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--weight", "0.35975", "--weight", "0.13525", "--weight", "0.505", "--output", "outputs/test-clean-validation-when2call-threeway-65-61-48-weight35975-13525-505.json"],
+    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--weight", "0.36025", "--weight", "0.13475", "--weight", "0.505", "--output", "outputs/test-clean-validation-when2call-threeway-65-61-48-weight36025-13475-505.json"]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -58,11 +61,11 @@
     "artifact": "outputs/clean-validation-calibration.json"
   },
   "last_heartbeat": "2026-10-24T09:46:30.839442+00:00",
-  "last_action": "Watchdog handed planning control to the primary Codex process.",
+  "last_action": "Queued two distinct finer cross-balanced weight probes after confirming complete evidence for the latest completed experiment.",
   "watchdog_enabled": true,
   "research_log_size": 769750,
   "stop_command": "STOP",
-  "next_experiment": null,
+  "next_experiment": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--weight", "0.35975", "--weight", "0.13525", "--weight", "0.505", "--output", "outputs/test-clean-validation-when2call-threeway-65-61-48-weight35975-13525-505.json"],
   "recording_jobs": [],
   "planning_notified_at": "2026-10-24T09:49:03.807598+00:00",
   "planning_ack_deadline": "2026-10-24T09:51:03.807622+00:00",
