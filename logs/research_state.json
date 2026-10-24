@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 500-example pool probe reached test macro F1 0.5491, while the 100-example probe reached 0.5464 and the preference-only control reached 0.5257. The next hypothesis is that the apparent 500-example gain may be stochastic. Replicate the 500-example mixture with two independent seeds before changing data sources.",
+  "current_hypothesis": "Two independent 500-example pool replications remain below the When2Call-only control, so the decision-training pool is not the missing distribution match. The next step is an access and schema audit of the previously identified BFCL Live and APIGen sources. Do not assign their categories to When2Call classes until the audit is complete.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -12,15 +12,12 @@
     "-m",
     "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
-    "outputs/clean-validation-when2call-pref6000-pool100-sft0-seed20261039",
+    "outputs/clean-validation-when2call-pref6000-pool500-sft0-seed20261041",
     "--output",
-    "outputs/test-clean-validation-when2call-pref6000-pool100-sft0-seed20261039.json"
+    "outputs/test-clean-validation-when2call-pref6000-pool500-sft0-seed20261041.json"
   ],
   "worker_queue": [
-    ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-pool500-sft0-seed20261040", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "500", "--epochs", "1", "--seed", "20261040", "--split-seed", "20261040", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
-    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-pool500-sft0-seed20261040", "--output", "outputs/test-clean-validation-when2call-pref6000-pool500-sft0-seed20261040.json"],
-    ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-pool500-sft0-seed20261041", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "500", "--epochs", "1", "--seed", "20261041", "--split-seed", "20261041", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
-    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-pool500-sft0-seed20261041", "--output", "outputs/test-clean-validation-when2call-pref6000-pool500-sft0-seed20261041.json"]
+    ["python", "-u", "-m", "experiments.audit_external_decision_sources", "--output", "outputs/audit-external-decision-sources-20261024.json"]
   ],
   "_previous_command": [
     "python",
@@ -52,14 +49,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-24T02:36:38.348336+00:00",
-  "last_action": "Queued two independent 500-example pool replications after the exact preference control and 100-example probe varied substantially.",
+  "last_heartbeat": "2026-10-24T02:44:47.476106+00:00",
+  "last_action": "Queued BFCL Live and APIGen access and schema audit after two 500-pool replications remained below control.",
   "watchdog_enabled": true,
-  "research_log_size": 741868,
+  "research_log_size": 743658,
   "stop_command": "STOP",
-  "next_experiment": ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-pool500-sft0-seed20261040", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "500", "--epochs", "1", "--seed", "20261040", "--split-seed", "20261040", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
+  "next_experiment": ["python", "-u", "-m", "experiments.audit_external_decision_sources", "--output", "outputs/audit-external-decision-sources-20261024.json"],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-24T02:38:10.607492+00:00",
-  "planning_ack_deadline": "2026-10-24T02:40:10.607510+00:00",
-  "planning_attempts": 466
+  "planning_notified_at": "2026-10-24T02:45:49.505554+00:00",
+  "planning_ack_deadline": "2026-10-24T02:47:49.505576+00:00",
+  "planning_attempts": 467
 }
