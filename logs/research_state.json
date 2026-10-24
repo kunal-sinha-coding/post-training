@@ -4,9 +4,9 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The wider cross-balanced probes show a small clean-validation-independent plateau with complete evidence. Test a second wider bracket at 0.3575/0.136/0.5065 and 0.3625/0.134/0.5035. Select only from clean-validation evidence and use aggregate black-box labels only for post-selection measurement.",
+  "current_hypothesis": "The second wider bracket remains on the same performance plateau with complete evidence. Test a further symmetric bracket at 0.35625/0.1365/0.50725 and 0.36375/0.1335/0.50275. Select only from clean-validation evidence and use aggregate black-box labels only for post-selection measurement.",
   "active_experiment": {
-    "pid": 492359,
+    "pid": 493134,
     "command": [
       "python",
       "-u",
@@ -19,15 +19,15 @@
       "--checkpoint",
       "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
       "--weight",
-      "0.3575",
+      "0.35625",
       "--weight",
-      "0.136",
+      "0.1365",
       "--weight",
-      "0.5065",
+      "0.50725",
       "--output",
-      "outputs/test-clean-validation-when2call-threeway-65-61-48-weight3575-136-5065.json"
+      "outputs/test-clean-validation-when2call-threeway-65-61-48-weight35625-1365-50725.json"
     ],
-    "started_at": "2026-10-24T10:08:16.917921+00:00"
+    "started_at": "2026-10-24T10:13:50.897625+00:00"
   },
   "worker_command": [
     "python",
@@ -41,13 +41,13 @@
     "--checkpoint",
     "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
     "--weight",
-    "0.3575",
+    "0.35625",
     "--weight",
-    "0.136",
+    "0.1365",
     "--weight",
-    "0.5065",
+    "0.50725",
     "--output",
-    "outputs/test-clean-validation-when2call-threeway-65-61-48-weight3575-136-5065.json"
+    "outputs/test-clean-validation-when2call-threeway-65-61-48-weight35625-1365-50725.json"
   ],
   "worker_queue": [
     [
@@ -62,13 +62,13 @@
       "--checkpoint",
       "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
       "--weight",
-      "0.3625",
+      "0.36375",
       "--weight",
-      "0.134",
+      "0.1335",
       "--weight",
-      "0.5035",
+      "0.50275",
       "--output",
-      "outputs/test-clean-validation-when2call-threeway-65-61-48-weight3625-134-5035.json"
+      "outputs/test-clean-validation-when2call-threeway-65-61-48-weight36375-1335-50275.json"
     ]
   ],
   "_previous_command": [
@@ -101,8 +101,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-24T10:08:16.917935+00:00",
-  "last_action": "Watchdog started validation worker pid 492359.",
+  "last_heartbeat": "2026-10-24T10:13:50.897638+00:00",
+  "last_action": "Watchdog started validation worker pid 493134.",
   "watchdog_enabled": true,
   "research_log_size": 769750,
   "stop_command": "STOP",
@@ -118,16 +118,16 @@
     "--checkpoint",
     "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
     "--weight",
-    "0.3575",
+    "0.35625",
     "--weight",
-    "0.136",
+    "0.1365",
     "--weight",
-    "0.5065",
+    "0.50725",
     "--output",
-    "outputs/test-clean-validation-when2call-threeway-65-61-48-weight3575-136-5065.json"
+    "outputs/test-clean-validation-when2call-threeway-65-61-48-weight35625-1365-50725.json"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-24T10:07:46.368647+00:00",
-  "planning_ack_deadline": "2026-10-24T10:09:46.368674+00:00",
-  "planning_attempts": 541
+  "planning_notified_at": "2026-10-24T10:13:20.321646+00:00",
+  "planning_ack_deadline": "2026-10-24T10:15:20.321669+00:00",
+  "planning_attempts": 542
 }
