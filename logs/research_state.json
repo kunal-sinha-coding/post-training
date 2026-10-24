@@ -4,20 +4,21 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "Two independent 500-example pool replications remain below the When2Call-only control, so the decision-training pool is not the missing distribution match. The next step is an access and schema audit of the previously identified BFCL Live and APIGen sources. Do not assign their categories to When2Call classes until the audit is complete.",
+  "current_hypothesis": "The decision pool is not sufficient, while BFCL Live is public and has explicit call and irrelevance categories that match two When2Call decisions. The next hypothesis is that adding a controlled BFCL call and irrelevance sample to the preference core improves schema and relevance coverage without using ambiguous categories as labels.",
   "active_experiment": {},
   "worker_command": [
     "python",
     "-u",
     "-m",
-    "experiments.evaluate_frozen_when2call_ensemble_test",
-    "--checkpoint",
-    "outputs/clean-validation-when2call-pref6000-pool500-sft0-seed20261041",
+    "experiments.audit_external_decision_sources",
     "--output",
-    "outputs/test-clean-validation-when2call-pref6000-pool500-sft0-seed20261041.json"
+    "outputs/audit-external-decision-sources-20261024.json"
   ],
   "worker_queue": [
-    ["python", "-u", "-m", "experiments.audit_external_decision_sources", "--output", "outputs/audit-external-decision-sources-20261024.json"]
+    ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl1000-seed20261042", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1000", "--epochs", "1", "--seed", "20261042", "--split-seed", "20261042", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
+    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1000-seed20261042", "--output", "outputs/test-clean-validation-when2call-pref6000-bfcl1000-seed20261042.json"],
+    ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl2000-seed20261043", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "2000", "--epochs", "1", "--seed", "20261043", "--split-seed", "20261043", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
+    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl2000-seed20261043", "--output", "outputs/test-clean-validation-when2call-pref6000-bfcl2000-seed20261043.json"]
   ],
   "_previous_command": [
     "python",
@@ -49,14 +50,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-24T02:44:47.476106+00:00",
-  "last_action": "Queued BFCL Live and APIGen access and schema audit after two 500-pool replications remained below control.",
+  "last_heartbeat": "2026-10-24T02:46:20.069869+00:00",
+  "last_action": "Queued controlled BFCL Live mixtures after the source audit confirmed public explicit call and irrelevance categories.",
   "watchdog_enabled": true,
   "research_log_size": 743658,
   "stop_command": "STOP",
-  "next_experiment": ["python", "-u", "-m", "experiments.audit_external_decision_sources", "--output", "outputs/audit-external-decision-sources-20261024.json"],
+  "next_experiment": ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl1000-seed20261042", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1000", "--epochs", "1", "--seed", "20261042", "--split-seed", "20261042", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-24T02:45:49.505554+00:00",
-  "planning_ack_deadline": "2026-10-24T02:47:49.505576+00:00",
-  "planning_attempts": 467
+  "planning_notified_at": "2026-10-24T02:46:52.526216+00:00",
+  "planning_ack_deadline": "2026-10-24T02:48:52.526240+00:00",
+  "planning_attempts": 468
 }
