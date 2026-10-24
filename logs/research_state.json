@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The completed second-checkpoint comparison has complete evidence. Test second-checkpoint weights of 0.125 and 0.135 at a central first-checkpoint weight of 0.36. Do not use test labels for selection.",
+  "current_hypothesis": "The completed second-checkpoint comparison has complete evidence. After the current 0.125 and 0.135 probes, test 0.1325 at a central first-checkpoint weight of 0.36. Do not use test labels for selection.",
   "active_experiment": {
     "pid": 477976,
     "command": [
@@ -69,6 +69,26 @@
       "0.505",
       "--output",
       "outputs/test-clean-validation-when2call-threeway-65-61-48-weight36-135-505.json"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_frozen_when2call_ensemble_test",
+      "--checkpoint",
+      "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065",
+      "--checkpoint",
+      "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061",
+      "--checkpoint",
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
+      "--weight",
+      "0.36",
+      "--weight",
+      "0.1325",
+      "--weight",
+      "0.5075",
+      "--output",
+      "outputs/test-clean-validation-when2call-threeway-65-61-48-weight36-1325-5075.json"
     ]
   ],
   "_previous_command": [
