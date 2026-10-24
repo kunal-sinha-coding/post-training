@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 0.54 third-checkpoint slice remains below the best 0.53 result, while the 0.43/0.03/0.54 probe recovered slightly. Test two wider first-checkpoint shifts within the 0.54 slice at 0.37/0.09/0.54 and 0.45/0.01/0.54. Select only from clean-validation evidence and use aggregate black-box labels only for post-selection measurement.",
+  "current_hypothesis": "The 0.54 third-checkpoint slice remains below the best 0.53 result, and the 0.45/0.01/0.54 probe degraded. Test two moderate first-checkpoint shifts within the 0.54 slice at 0.35/0.11/0.54 and 0.37/0.09/0.54. Select only from clean-validation evidence and use aggregate black-box labels only for post-selection measurement.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -18,16 +18,16 @@
     "--checkpoint",
     "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
     "--weight",
-    "0.37",
+    "0.35",
     "--weight",
-    "0.09",
+    "0.11",
     "--weight",
     "0.54",
     "--output",
-    "outputs/test-clean-validation-when2call-threeway-65-61-48-weight37-09-54.json"
+    "outputs/test-clean-validation-when2call-threeway-65-61-48-weight35-11-54.json"
   ],
   "worker_queue": [
-    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--weight", "0.45", "--weight", "0.01", "--weight", "0.54", "--output", "outputs/test-clean-validation-when2call-threeway-65-61-48-weight45-01-54.json"]
+    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--weight", "0.37", "--weight", "0.09", "--weight", "0.54", "--output", "outputs/test-clean-validation-when2call-threeway-65-61-48-weight37-09-54.json"]
   ],
   "_previous_command": [
     "python",
@@ -59,14 +59,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-24T14:08:09.707276+00:00",
-  "last_action": "Verified complete evidence for the latest 0.43/0.03/0.54 probe and queued distinct wider 0.54 probes at 0.37/0.09/0.54 and 0.45/0.01/0.54.",
+  "last_heartbeat": "2026-10-24T14:11:13.515190+00:00",
+  "last_action": "Verified complete evidence for the latest 0.45/0.01/0.54 probe and queued distinct moderate 0.54 probes at 0.35/0.11/0.54 and 0.37/0.09/0.54.",
   "watchdog_enabled": true,
   "research_log_size": 769750,
   "stop_command": "STOP",
-  "next_experiment": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--weight", "0.37", "--weight", "0.09", "--weight", "0.54", "--output", "outputs/test-clean-validation-when2call-threeway-65-61-48-weight37-09-54.json"],
+  "next_experiment": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--weight", "0.35", "--weight", "0.11", "--weight", "0.54", "--output", "outputs/test-clean-validation-when2call-threeway-65-61-48-weight35-11-54.json"],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-24T14:10:42.522061+00:00",
-  "planning_ack_deadline": "2026-10-24T14:12:42.522084+00:00",
-  "planning_attempts": 593
+  "planning_notified_at": "2026-10-24T14:13:46.833095+00:00",
+  "planning_ack_deadline": "2026-10-24T14:15:46.833116+00:00",
+  "planning_attempts": 594
 }
