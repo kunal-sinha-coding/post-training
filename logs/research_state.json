@@ -1,10 +1,10 @@
 {
-  "status": "awaiting_codex_planning",
+  "status": "active",
   "planning_owner": "codex_primary",
-  "planning_required": true,
+  "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The completed first-checkpoint perturbation probes have complete evidence. Narrow the clean-validation-selected first-checkpoint search around 0.359375 with 0.3578125 and 0.3609375 while holding the second weight near 0.135. Do not use test labels for selection.",
+  "current_hypothesis": "The completed first-checkpoint perturbation probes have complete evidence. Narrow the clean-validation-selected first-checkpoint search between 0.359375 and 0.3609375 with 0.3596875 and 0.3603125 while holding the second weight near 0.135. Do not use test labels for selection.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -18,15 +18,18 @@
     "--checkpoint",
     "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
     "--weight",
-    "0.3609375",
+    "0.3596875",
     "--weight",
     "0.135",
     "--weight",
-    "0.5040625",
+    "0.5053125",
     "--output",
-    "outputs/test-clean-validation-when2call-threeway-65-61-48-weight3609375-135-5040625.json"
+    "outputs/test-clean-validation-when2call-threeway-65-61-48-weight3596875-135-5053125.json"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--weight", "0.3596875", "--weight", "0.135", "--weight", "0.5053125", "--output", "outputs/test-clean-validation-when2call-threeway-65-61-48-weight3596875-135-5053125.json"],
+    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--weight", "0.3603125", "--weight", "0.135", "--weight", "0.5046875", "--output", "outputs/test-clean-validation-when2call-threeway-65-61-48-weight3603125-135-5046875.json"]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -58,11 +61,11 @@
     "artifact": "outputs/clean-validation-calibration.json"
   },
   "last_heartbeat": "2026-10-24T08:02:42.716855+00:00",
-  "last_action": "Watchdog handed planning control to the primary Codex process.",
+  "last_action": "Queued two distinct fine first-checkpoint weight probes after confirming complete evidence for the latest completed experiment.",
   "watchdog_enabled": true,
   "research_log_size": 769750,
   "stop_command": "STOP",
-  "next_experiment": null,
+  "next_experiment": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--weight", "0.3596875", "--weight", "0.135", "--weight", "0.5053125", "--output", "outputs/test-clean-validation-when2call-threeway-65-61-48-weight3596875-135-5053125.json"],
   "recording_jobs": [],
   "planning_notified_at": "2026-10-24T08:05:16.238644+00:00",
   "planning_ack_deadline": "2026-10-24T08:07:16.238668+00:00",
