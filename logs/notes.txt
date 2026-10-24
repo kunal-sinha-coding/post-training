@@ -6291,4 +6291,6 @@ The watchdog consumed the required aggregate measurement and launched PID 388938
 
 2026-10-24T01:43Z: Updated auto-research-prompt.md with the explicit saturation rule. When training and clean-validation metrics saturate while aggregate black-box metrics remain lower, the loop must prioritize distribution and data-mixture investigation, including permitted data analysis and web research on relevant datasets, licenses, provenance, contamination risk, and training mixtures. Test labels remain prohibited for selection.
 
+2026-10-24T01:46Z: The saturated training and clean-validation metrics with lower aggregate test performance triggered the data-mismatch rule. Queued filtered Glaive plus When2Call SFT and preference training, followed by its aggregate-only test evaluation. Test labels are not used for selection.
+
 2026-10-24T01:28Z: Corrected the recorded metrics path for the 69.35/22.05/8.6 experiment. The result and selection record were unchanged.

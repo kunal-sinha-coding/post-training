@@ -7222,3 +7222,10 @@ Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_te
 Training metrics: all three component training records are complete. Clean-validation metrics: all three component clean-validation records are complete. Aggregate black-box test accuracy: 0.5539430449069004. Aggregate black-box test macro F1: 0.5569796004672152. Candidate selection used clean-validation evidence only. Test labels were used only for this separate aggregate measurement.
 
 Next queued command: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth0075-lr1e5-max4096-batch2-seed20261059", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd0025-lr1e5-max4096-batch2-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd01-lr1e5-max4096-batch2-seed20261064", "--weight", "0.695", "--weight", "0.22", "--weight", "0.085", "--output", "outputs/test-clean-validation-when2call-fullschema-smooth0075-wd0025-wd01-blend69p5-22-8p5.json"].
+## clean-validation-glaive-filtered-light1k-pref3k-sft3k-seed20261030
+
+Timestamp: 2026-10-24T01:46:00+00:00. Status: queued.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_glaive", "--output-dir", "outputs/clean-validation-glaive-filtered-light1k-pref3k-sft3k-seed20261030", "--glaive-sample", "1000", "--pref-sample", "3000", "--sft-sample", "3000", "--epochs", "1", "--seed", "20261030", "--split-seed", "20261030", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"].
+
+Hypothesis: A small filtered Glaive mixture with equal When2Call SFT and preference samples may improve class-conditional coverage and generalization while limiting distribution shift. Clean validation will be measured on the Glaive and When2Call held-out splits. A frozen aggregate-only test evaluation is queued after training.
