@@ -6278,3 +6278,5 @@ The watchdog consumed the required aggregate measurement and launched PID 388938
 2026-10-24T01:25Z: Backfilled the completed 69.3/22.05/8.65 blend. Training and clean-validation evidence existed for all components. The aggregate test accuracy was 0.5539430449069004 and macro F1 was 0.5569634422637827. Test labels were not used for selection. Queued a distinct 69.35/22.05/8.6 blend based on the clean-validation-selected component set.
 
 2026-10-24T01:27Z: Backfilled the completed 69.35/22.05/8.6 blend. Training and clean-validation evidence existed for all components. The aggregate test accuracy was 0.5539430449069004 and macro F1 was 0.5569909121379709. Test labels were not used for selection. Queued a distinct 69.4/22.05/8.55 blend based on the clean-validation-selected component set.
+
+2026-10-24T01:28Z: Corrected the recorded metrics path for the 69.35/22.05/8.6 experiment. The result and selection record were unchanged.
