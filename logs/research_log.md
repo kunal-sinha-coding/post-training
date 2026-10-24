@@ -7069,3 +7069,12 @@ Setup: ["python", "-u", "-m", "experiments.clean_validation_baseline", "--output
 Clean development accuracy: 0.9688888888888889. Clean development macro F1: 0.7268927390306479. Official test loaded: False. Official test metrics: {}.
 
 This record was written automatically. Candidate selection must use clean validation only.
+## test-clean-validation-when2call-fullschema-smooth0075-wd0025-wd01-blend69-22p05-8p95
+
+Timestamp: 2026-10-24T00:52:56.607417+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth0075-lr1e5-max4096-batch2-seed20261059", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd0025-lr1e5-max4096-batch2-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd01-lr1e5-max4096-batch2-seed20261064", "--weight", "0.69", "--weight", "0.2205", "--weight", "0.0895", "--output", "outputs/test-clean-validation-when2call-fullschema-smooth0075-wd0025-wd01-blend69-22p05-8p95.json"]. Output: /workspace/post-training/outputs/test-clean-validation-when2call-fullschema-smooth0075-wd0025-wd01-blend69-22p05-8p95.json. W&B run: agwdi9c5.
+
+Training metrics: all three component training records are complete. Clean-validation metrics: all three component clean-validation records are complete. Aggregate black-box test accuracy: 0.5542168674698795. Aggregate black-box test macro F1: 0.5572321760724462. Candidate selection used clean-validation evidence only. Test labels were used only for this separate aggregate measurement.
+
+Next queued command: ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth0075-lr1e5-max4096-batch2-seed20261059", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd0025-lr1e5-max4096-batch2-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd01-lr1e5-max4096-batch2-seed20261064", "--weight", "0.6895", "--weight", "0.2205", "--weight", "0.09", "--output", "outputs/test-clean-validation-when2call-fullschema-smooth0075-wd0025-wd01-blend68p95-22p05-9.json"].

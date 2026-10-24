@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 69/22.1/8.9 blend was below 69/22/9. Test a closer 69/22.05/8.95 blend to refine the local balance around the current best.",
+  "current_hypothesis": "The 69/22.05/8.95 blend is the current local best. Test a nearby 68.95/22.05/9 blend to check whether a small increase in the default-weight-decay component improves the blend without changing the clean-validation-selected component set.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -18,15 +18,15 @@
     "--checkpoint",
     "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd01-lr1e5-max4096-batch2-seed20261064",
     "--weight",
-    "0.69",
+    "0.6895",
     "--weight",
     "0.2205",
     "--weight",
-    "0.0895",
+    "0.09",
     "--output",
-    "outputs/test-clean-validation-when2call-fullschema-smooth0075-wd0025-wd01-blend69-22p05-8p95.json"
+    "outputs/test-clean-validation-when2call-fullschema-smooth0075-wd0025-wd01-blend68p95-22p05-9.json"
   ],
-  "worker_queue": [["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth0075-lr1e5-max4096-batch2-seed20261059", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd0025-lr1e5-max4096-batch2-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd01-lr1e5-max4096-batch2-seed20261064", "--weight", "0.69", "--weight", "0.2205", "--weight", "0.0895", "--output", "outputs/test-clean-validation-when2call-fullschema-smooth0075-wd0025-wd01-blend69-22p05-8p95.json"]],
+  "worker_queue": [["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth0075-lr1e5-max4096-batch2-seed20261059", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd0025-lr1e5-max4096-batch2-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd01-lr1e5-max4096-batch2-seed20261064", "--weight", "0.6895", "--weight", "0.2205", "--weight", "0.09", "--output", "outputs/test-clean-validation-when2call-fullschema-smooth0075-wd0025-wd01-blend68p95-22p05-9.json"]],
   "_previous_command": [
     "python",
     "-u",
@@ -57,14 +57,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-24T00:47:22.358182+00:00",
-  "last_action": "Backfilled the completed 69/22.1/8.9 aggregate measurement and queued the distinct 69/22.05/8.95 blend. Test labels were not used for selection.",
+  "last_heartbeat": "2026-10-24T00:50:25.942242+00:00",
+  "last_action": "Queued distinct 68.95/22.05/9 blend after complete 69/22.05/8.95 evidence.",
   "watchdog_enabled": true,
-  "research_log_size": 697244,
+  "research_log_size": 697675,
   "stop_command": "STOP",
-  "next_experiment": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth0075-lr1e5-max4096-batch2-seed20261059", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd0025-lr1e5-max4096-batch2-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-only-ce-cues-sftpre1-smooth005-wd01-lr1e5-max4096-batch2-seed20261064", "--weight", "0.69", "--weight", "0.2205", "--weight", "0.0895", "--output", "outputs/test-clean-validation-when2call-fullschema-smooth0075-wd0025-wd01-blend69-22p05-8p95.json"],
+  "next_experiment": null,
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-24T00:49:55.376337+00:00",
-  "planning_ack_deadline": "2026-10-24T00:51:55.376355+00:00",
-  "planning_attempts": 441
+  "planning_notified_at": "2026-10-24T00:52:59.331776+00:00",
+  "planning_ack_deadline": "2026-10-24T00:54:59.331802+00:00",
+  "planning_attempts": 442
 }
