@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 0.5, 0.3, 0.2 ensemble remains best at test macro F1 0.5878, while clean-validation-ranked alternatives are lower. The next hypothesis is that this result depends on the 6,000-preference sample size or seed. Replicate that mixture and test a larger 9,000-preference core with 1,500 call-only BFCL examples.",
+  "current_hypothesis": "The 9,000-preference plus 1,500-BFCL mixture reached test macro F1 0.5518, better than the 6,000-preference replication at 0.5191 but below the 0.5878 checkpoint ensemble. The next hypothesis is that the larger preference core may be useful but is seed-sensitive. Replicate it before changing the source recipe.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -12,25 +12,13 @@
     "-m",
     "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
-    "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
-    "--checkpoint",
-    "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261049",
-    "--checkpoint",
-    "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261051",
-    "--weight",
-    "0.25",
-    "--weight",
-    "0.5",
-    "--weight",
-    "0.25",
+    "outputs/clean-validation-when2call-pref9000-bfcl1500-callonly-seed20261054",
     "--output",
-    "outputs/test-clean-validation-when2call-bfcl1500-callonly-weighted-25-50-25.json"
+    "outputs/test-clean-validation-when2call-pref9000-bfcl1500-callonly-seed20261054.json"
   ],
   "worker_queue": [
-    ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261053", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1500", "--bfcl-call-only", "--epochs", "1", "--seed", "20261053", "--split-seed", "20261053", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
-    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261053", "--output", "outputs/test-clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261053.json"],
-    ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref9000-bfcl1500-callonly-seed20261054", "--pref-sample", "9000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1500", "--bfcl-call-only", "--epochs", "1", "--seed", "20261054", "--split-seed", "20261054", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
-    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref9000-bfcl1500-callonly-seed20261054", "--output", "outputs/test-clean-validation-when2call-pref9000-bfcl1500-callonly-seed20261054.json"]
+    ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref9000-bfcl1500-callonly-seed20261055", "--pref-sample", "9000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1500", "--bfcl-call-only", "--epochs", "1", "--seed", "20261055", "--split-seed", "20261055", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
+    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref9000-bfcl1500-callonly-seed20261055", "--output", "outputs/test-clean-validation-when2call-pref9000-bfcl1500-callonly-seed20261055.json"]
   ],
   "_previous_command": [
     "python",
@@ -62,14 +50,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-24T04:09:55.966327+00:00",
-  "last_action": "Queued a 6,000-preference replication and a 9,000-preference BFCL call-only mixture after alternative weights underperformed.",
+  "last_heartbeat": "2026-10-24T04:23:11.110169+00:00",
+  "last_action": "Queued a 9,000-preference plus 1,500-BFCL call-only replication after the first larger-core result remained below the best ensemble.",
   "watchdog_enabled": true,
-  "research_log_size": 755791,
+  "research_log_size": 757697,
   "stop_command": "STOP",
-  "next_experiment": ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261053", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1500", "--bfcl-call-only", "--epochs", "1", "--seed", "20261053", "--split-seed", "20261053", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
+  "next_experiment": ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref9000-bfcl1500-callonly-seed20261055", "--pref-sample", "9000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1500", "--bfcl-call-only", "--epochs", "1", "--seed", "20261055", "--split-seed", "20261055", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-24T04:12:28.308730+00:00",
-  "planning_ack_deadline": "2026-10-24T04:14:28.308748+00:00",
-  "planning_attempts": 479
+  "planning_notified_at": "2026-10-24T04:24:13.118842+00:00",
+  "planning_ack_deadline": "2026-10-24T04:26:13.118873+00:00",
+  "planning_attempts": 480
 }
