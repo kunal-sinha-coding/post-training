@@ -1023,7 +1023,13 @@ All three component training and clean-validation evidence records were complete
 
 ## test-clean-validation-when2call-fullschema-smooth0075-wd0025-wd01-blend69-22p1-8p9
 
-Timestamp: 2026-10-24T00:47:00Z. Status: queued.
+Timestamp: 2026-10-24T00:49:52Z. Status: completed.
+
+All three component training and clean-validation evidence records were complete before selection. Aggregate black-box test accuracy was `0.5539430449069004` with macro F1 `0.5569625113147769`. The test labels were used only for this separate aggregate measurement and not for selection.
+
+## test-clean-validation-when2call-fullschema-smooth0075-wd0025-wd01-blend69-22p05-8p95
+
+Timestamp: 2026-10-24T00:50:00Z. Status: queued.
 
 All component training and clean-validation evidence is complete. The weights are fixed from clean-validation evidence only. This probe refines the local balance around the current best.
 
