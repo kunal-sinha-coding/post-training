@@ -4,10 +4,37 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "Training and clean validation are saturated while the frozen ensemble remains below the benchmark ceiling. A small filtered Glaive mixture with equal When2Call SFT and preference samples may improve class-conditional coverage and generalization without overwhelming the benchmark distribution. Evaluate clean validation first, then run the frozen aggregate test if viable.",
-  "active_experiment": {},
-  "worker_command": ["python", "-u", "-m", "experiments.clean_validation_glaive", "--output-dir", "outputs/clean-validation-glaive-filtered-light1k-pref3k-sft3k-seed20261030", "--glaive-sample", "1000", "--pref-sample", "3000", "--sft-sample", "3000", "--epochs", "1", "--seed", "20261030", "--split-seed", "20261030", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
-  "worker_queue": [["python", "-u", "-m", "experiments.clean_validation_glaive", "--output-dir", "outputs/clean-validation-glaive-filtered-light1k-pref3k-sft3k-seed20261030", "--glaive-sample", "1000", "--pref-sample", "3000", "--sft-sample", "3000", "--epochs", "1", "--seed", "20261030", "--split-seed", "20261030", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"], ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-glaive-filtered-light1k-pref3k-sft3k-seed20261030", "--output", "outputs/test-clean-validation-glaive-filtered-light1k-pref3k-sft3k-seed20261030.json"]],
+  "current_hypothesis": "Training and clean validation are saturated while the frozen ensemble remains below the benchmark ceiling. The next controlled comparison uses the released When2Call sources with the paper's preference-heavy composition and an SFT-heavy composition. Each source receives its own held-out validation split. BFCL and APIGen remain research candidates, but their raw categories require a separate label-mapping audit before training.",
+  "active_experiment": {
+    "pid": 422324,
+    "command": [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_frozen_when2call_ensemble_test",
+      "--checkpoint",
+      "outputs/clean-validation-glaive-filtered-light1k-pref3k-sft3k-seed20261030",
+      "--output",
+      "outputs/test-clean-validation-glaive-filtered-light1k-pref3k-sft3k-seed20261030.json"
+    ],
+    "started_at": "2026-10-24T01:50:10.121991+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_frozen_when2call_ensemble_test",
+    "--checkpoint",
+    "outputs/clean-validation-glaive-filtered-light1k-pref3k-sft3k-seed20261030",
+    "--output",
+    "outputs/test-clean-validation-glaive-filtered-light1k-pref3k-sft3k-seed20261030.json"
+  ],
+  "worker_queue": [
+    ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-paper-mix-pref4500-sft3000-seed20261031", "--pref-sample", "4500", "--sft-sample", "3000", "--epochs", "1", "--seed", "20261031", "--split-seed", "20261031", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
+    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-paper-mix-pref4500-sft3000-seed20261031", "--output", "outputs/test-clean-validation-when2call-paper-mix-pref4500-sft3000-seed20261031.json"],
+    ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-sft-heavy-pref3000-sft4500-seed20261032", "--pref-sample", "3000", "--sft-sample", "4500", "--epochs", "1", "--seed", "20261032", "--split-seed", "20261032", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
+    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-sft-heavy-pref3000-sft4500-seed20261032", "--output", "outputs/test-clean-validation-when2call-sft-heavy-pref3000-sft4500-seed20261032.json"]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -38,12 +65,21 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-24T01:42:31.636107+00:00",
-  "last_action": "Queued filtered Glaive plus When2Call SFT and preference data-mixture training, followed by aggregate test evaluation.",
+  "last_heartbeat": "2026-10-24T01:50:10.122005+00:00",
+  "last_action": "Watchdog started validation worker pid 422324.",
   "watchdog_enabled": true,
-  "research_log_size": 731097,
+  "research_log_size": 732881,
   "stop_command": "STOP",
-  "next_experiment": null,
+  "next_experiment": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_frozen_when2call_ensemble_test",
+    "--checkpoint",
+    "outputs/clean-validation-glaive-filtered-light1k-pref3k-sft3k-seed20261030",
+    "--output",
+    "outputs/test-clean-validation-glaive-filtered-light1k-pref3k-sft3k-seed20261030.json"
+  ],
   "recording_jobs": [],
   "planning_notified_at": "2026-10-24T01:44:35.151600+00:00",
   "planning_ack_deadline": "2026-10-24T01:46:35.151622+00:00",
