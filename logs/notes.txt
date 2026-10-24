@@ -18,6 +18,8 @@
 
 2026-10-24T00:15Z: Backfilled the completed 65/25/10 blend. Training and clean-validation evidence existed for all components. The aggregate test accuracy was 0.552026286966046 and macro F1 was 0.5550459168114297. Test labels were not used for selection. Queued a distinct 68/22/10 blend based on clean-validation evidence.
 
+2026-10-24T00:18Z: Backfilled the completed 68/22/10 blend. Training and clean-validation evidence existed for all components. The aggregate test accuracy was 0.553395399780942 and macro F1 was 0.5564152526173848. Test labels were not used for selection. Queued a distinct 67/23/10 blend based on clean-validation evidence.
+
 ## 2026-10-22: Refill queue after verified exhaustion handoff
 
 The watchdog completed the end-to-end exhaustion transition. It recorded queue exhaustion, set `awaiting_codex_planning`, and sent a planning request to the live Codex thread. Codex reviewed the completed Qwen 1.5B two-epoch official test result of 0.651424 accuracy and 0.460927 macro F1, then replaced the empty queue with two clean-validation encoder probes. Each probe has its aggregate-only official test evaluation immediately after training.
