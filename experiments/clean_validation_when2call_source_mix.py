@@ -192,8 +192,11 @@ def main() -> int:
         "device": str(device),
     }
     (args.output_dir / "metrics.json").write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
-    # Log all evidence categories while keeping official test labels out of selection.
-    log_record = {"train/accuracy": train_metrics["accuracy"], "train/macro_f1": train_metrics["macro_f1"], "validation/pref_accuracy": pref_metrics["accuracy"], "validation/pref_macro_f1": pref_metrics["macro_f1"], "validation/sft_accuracy": sft_metrics["accuracy"], "validation/sft_macro_f1": sft_metrics["macro_f1"], "training/loss": sum(losses) / max(1, len(losses))}
+    # Log available evidence categories while keeping official test labels out of selection.
+    log_record = {"train/accuracy": train_metrics["accuracy"], "train/macro_f1": train_metrics["macro_f1"], "validation/pref_accuracy": pref_metrics["accuracy"], "validation/pref_macro_f1": pref_metrics["macro_f1"], "training/loss": sum(losses) / max(1, len(losses))}
+    # Add SFT validation metrics only when the selected mixture contains SFT examples.
+    if sft_metrics:
+        log_record.update({"validation/sft_accuracy": sft_metrics["accuracy"], "validation/sft_macro_f1": sft_metrics["macro_f1"]})
     if pool_metrics:
         log_record.update({"validation/pool_accuracy": pool_metrics["accuracy"], "validation/pool_macro_f1": pool_metrics["macro_f1"]})
     if bfcl_metrics:
