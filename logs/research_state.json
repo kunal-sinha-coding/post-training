@@ -1,10 +1,10 @@
 {
-  "status": "awaiting_codex_planning",
+  "status": "active",
   "planning_owner": "codex_primary",
-  "planning_required": true,
+  "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The latest fine first-checkpoint probes are tied and have complete evidence. Test whether the second checkpoint weight of 0.1 is locally optimal by comparing clean-validation-selected weights of 0.05 and 0.15. Do not use test labels for selection.",
+  "current_hypothesis": "The completed second-checkpoint weight probes have complete evidence. Continue the planned clean-validation-selected sweep by bracketing the 0.15 weight with 0.125 and 0.175. Do not use test labels for selection.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -20,13 +20,16 @@
     "--weight",
     "0.35625",
     "--weight",
-    "0.15",
+    "0.125",
     "--weight",
-    "0.49375",
+    "0.51875",
     "--output",
-    "outputs/test-clean-validation-when2call-threeway-65-61-48-weight35625-15-49375.json"
+    "outputs/test-clean-validation-when2call-threeway-65-61-48-weight35625-125-51875.json"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--weight", "0.35625", "--weight", "0.125", "--weight", "0.51875", "--output", "outputs/test-clean-validation-when2call-threeway-65-61-48-weight35625-125-51875.json"],
+    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--weight", "0.35625", "--weight", "0.175", "--weight", "0.46875", "--output", "outputs/test-clean-validation-when2call-threeway-65-61-48-weight35625-175-46875.json"]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -58,11 +61,11 @@
     "artifact": "outputs/clean-validation-calibration.json"
   },
   "last_heartbeat": "2026-10-24T07:01:33.354000+00:00",
-  "last_action": "Watchdog handed planning control to the primary Codex process.",
+  "last_action": "Queued two distinct second-checkpoint weight probes after confirming complete evidence for the latest completed experiment.",
   "watchdog_enabled": true,
   "research_log_size": 769750,
   "stop_command": "STOP",
-  "next_experiment": null,
+  "next_experiment": ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061", "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--weight", "0.35625", "--weight", "0.125", "--weight", "0.51875", "--output", "outputs/test-clean-validation-when2call-threeway-65-61-48-weight35625-125-51875.json"],
   "recording_jobs": [],
   "planning_notified_at": "2026-10-24T07:04:06.293658+00:00",
   "planning_ack_deadline": "2026-10-24T07:06:06.293683+00:00",
