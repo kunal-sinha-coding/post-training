@@ -49,7 +49,16 @@
     "--output",
     "outputs/test-clean-validation-when2call-threeway-65-61-48-weight39-02-59.json"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test",
+      "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065",
+      "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061",
+      "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
+      "--weight", "0.40", "--weight", "0.03", "--weight", "0.57",
+      "--output", "outputs/test-clean-validation-when2call-threeway-65-61-48-weight40-03-57.json"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -81,7 +90,7 @@
     "artifact": "outputs/clean-validation-calibration.json"
   },
   "last_heartbeat": "2026-10-24T18:11:30.998517+00:00",
-  "last_action": "Watchdog started validation worker pid 561597.",
+  "last_action": "Watchdog started validation worker pid 561597. Codex preserved the distinct 0.40/0.03/0.57 follow-up for the next launch.",
   "watchdog_enabled": true,
   "research_log_size": 769750,
   "stop_command": "STOP",
@@ -97,13 +106,13 @@
     "--checkpoint",
     "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
     "--weight",
-    "0.39",
+    "0.40",
     "--weight",
-    "0.02",
+    "0.03",
     "--weight",
-    "0.59",
+    "0.57",
     "--output",
-    "outputs/test-clean-validation-when2call-threeway-65-61-48-weight39-02-59.json"
+    "outputs/test-clean-validation-when2call-threeway-65-61-48-weight40-03-57.json"
   ],
   "recording_jobs": [],
   "planning_notified_at": "2026-10-24T18:11:00.459317+00:00",
