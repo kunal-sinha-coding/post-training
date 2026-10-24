@@ -110,7 +110,7 @@
     "--weight",
     "0.01",
     "--weight",
-    "0.58",
+    "0.57",
     "--output",
     "outputs/test-clean-validation-when2call-threeway-65-61-48-weight42-01-57.json"
   ],
