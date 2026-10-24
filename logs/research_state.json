@@ -4,9 +4,9 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 0.40/0.06/0.54 probe regressed, while 0.39/0.05/0.56 was also weak. Test whether 0.40/0.05/0.55 or 0.39/0.04/0.57 improves clean-validation selection. Use aggregate black-box labels only for post-selection measurement.",
+  "current_hypothesis": "The 0.40/0.05/0.55 probe remained below the best nearby result, while 0.39/0.04/0.57 was worse. Test whether 0.40/0.04/0.56 or 0.39/0.03/0.58 improves clean-validation selection. Use aggregate black-box labels only for post-selection measurement.",
   "active_experiment": {
-    "pid": 560185,
+    "pid": 560883,
     "command": [
       "python",
       "-u",
@@ -21,13 +21,13 @@
       "--weight",
       "0.39",
       "--weight",
-      "0.04",
+      "0.03",
       "--weight",
-      "0.57",
+      "0.58",
       "--output",
-      "outputs/test-clean-validation-when2call-threeway-65-61-48-weight39-04-57.json"
+      "outputs/test-clean-validation-when2call-threeway-65-61-48-weight39-03-58.json"
     ],
-    "started_at": "2026-10-24T18:00:22.067942+00:00"
+    "started_at": "2026-10-24T18:05:57.335940+00:00"
   },
   "worker_command": [
     "python",
@@ -43,11 +43,11 @@
     "--weight",
     "0.39",
     "--weight",
-    "0.04",
+    "0.03",
     "--weight",
-    "0.57",
+    "0.58",
     "--output",
-    "outputs/test-clean-validation-when2call-threeway-65-61-48-weight39-04-57.json"
+    "outputs/test-clean-validation-when2call-threeway-65-61-48-weight39-03-58.json"
   ],
   "worker_queue": [
     [
@@ -55,8 +55,8 @@
       "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065",
       "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061",
       "--checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
-      "--weight", "0.40", "--weight", "0.05", "--weight", "0.55",
-      "--output", "outputs/test-clean-validation-when2call-threeway-65-61-48-weight40-05-55.json"
+      "--weight", "0.40", "--weight", "0.04", "--weight", "0.56",
+      "--output", "outputs/test-clean-validation-when2call-threeway-65-61-48-weight40-04-56.json"
     ]
   ],
   "_previous_command": [
@@ -89,8 +89,8 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-24T18:00:22.067958+00:00",
-  "last_action": "Watchdog started validation worker pid 560185. Codex preserved the distinct 0.40/0.05/0.55 follow-up for the next launch.",
+  "last_heartbeat": "2026-10-24T18:05:57.335948+00:00",
+  "last_action": "Watchdog started validation worker pid 560883. Codex preserved the distinct 0.40/0.04/0.56 follow-up for the next launch.",
   "watchdog_enabled": true,
   "research_log_size": 769750,
   "stop_command": "STOP",
@@ -108,14 +108,14 @@
     "--weight",
     "0.40",
     "--weight",
-    "0.05",
+    "0.04",
     "--weight",
-    "0.55",
+    "0.56",
     "--output",
-    "outputs/test-clean-validation-when2call-threeway-65-61-48-weight40-05-55.json"
+    "outputs/test-clean-validation-when2call-threeway-65-61-48-weight40-04-56.json"
   ],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-24T17:59:51.251568+00:00",
-  "planning_ack_deadline": "2026-10-24T18:01:51.251588+00:00",
-  "planning_attempts": 655
+  "planning_notified_at": "2026-10-24T18:05:26.765682+00:00",
+  "planning_ack_deadline": "2026-10-24T18:07:26.765703+00:00",
+  "planning_attempts": 656
 }
