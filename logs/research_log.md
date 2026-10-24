@@ -945,9 +945,15 @@ All three component training and clean-validation evidence records were complete
 
 ## test-clean-validation-when2call-fullschema-smooth0075-wd0025-wd01-blend70-10-20
 
-Timestamp: 2026-10-24T00:09:00Z. Status: queued.
+Timestamp: 2026-10-24T00:11:21Z. Status: completed.
 
-All component training and clean-validation evidence is complete. The weights are fixed from clean-validation evidence only. This probe retains 70 percent of the smoothing component and increases the default weight-decay component to 20 percent.
+All three component training and clean-validation evidence records were complete before selection. Aggregate black-box test accuracy was `0.5501095290251917` with macro F1 `0.5533042836362271`. The test labels were used only for this separate aggregate measurement and not for selection.
+
+## test-clean-validation-when2call-fullschema-smooth0075-wd0025-wd01-blend65-25-10
+
+Timestamp: 2026-10-24T00:12:00Z. Status: queued.
+
+All component training and clean-validation evidence is complete. The weights are fixed from clean-validation evidence only. This probe increases the lower weight-decay component to 25 percent while retaining 65 percent of the smoothing component.
 
 ## test-clean-validation-when2call-only-ce-cues-sftpre1-smooth00375-lr1e5-max4096-batch2-seed20261063
 
