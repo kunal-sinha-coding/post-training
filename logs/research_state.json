@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "clean_validation_v1",
-  "current_hypothesis": "The 500-example pool probe reached test macro F1 0.5491, closer to but still below the When2Call-only control. The next hypothesis is that the small apparent gain may be variance or may peak near zero auxiliary data. Run an exact preference-only control and a 100-example pool probe with the same trainer and source-specific validation.",
+  "current_hypothesis": "The 500-example pool probe reached test macro F1 0.5491, while the 100-example probe reached 0.5464 and the preference-only control reached 0.5257. The next hypothesis is that the apparent 500-example gain may be stochastic. Replicate the 500-example mixture with two independent seeds before changing data sources.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -12,15 +12,15 @@
     "-m",
     "experiments.evaluate_frozen_when2call_ensemble_test",
     "--checkpoint",
-    "outputs/clean-validation-when2call-pref6000-pool500-sft0-seed20261037",
+    "outputs/clean-validation-when2call-pref6000-pool100-sft0-seed20261039",
     "--output",
-    "outputs/test-clean-validation-when2call-pref6000-pool500-sft0-seed20261037.json"
+    "outputs/test-clean-validation-when2call-pref6000-pool100-sft0-seed20261039.json"
   ],
   "worker_queue": [
-    ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-pool0-sft0-seed20261038", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--epochs", "1", "--seed", "20261038", "--split-seed", "20261038", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
-    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-pool0-sft0-seed20261038", "--output", "outputs/test-clean-validation-when2call-pref6000-pool0-sft0-seed20261038.json"],
-    ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-pool100-sft0-seed20261039", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "100", "--epochs", "1", "--seed", "20261039", "--split-seed", "20261039", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
-    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-pool100-sft0-seed20261039", "--output", "outputs/test-clean-validation-when2call-pref6000-pool100-sft0-seed20261039.json"]
+    ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-pool500-sft0-seed20261040", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "500", "--epochs", "1", "--seed", "20261040", "--split-seed", "20261040", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
+    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-pool500-sft0-seed20261040", "--output", "outputs/test-clean-validation-when2call-pref6000-pool500-sft0-seed20261040.json"],
+    ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-pool500-sft0-seed20261041", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "500", "--epochs", "1", "--seed", "20261041", "--split-seed", "20261041", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
+    ["python", "-u", "-m", "experiments.evaluate_frozen_when2call_ensemble_test", "--checkpoint", "outputs/clean-validation-when2call-pref6000-pool500-sft0-seed20261041", "--output", "outputs/test-clean-validation-when2call-pref6000-pool500-sft0-seed20261041.json"]
   ],
   "_previous_command": [
     "python",
@@ -52,14 +52,14 @@
     "macro_f1": 0.7122671588915738,
     "artifact": "outputs/clean-validation-calibration.json"
   },
-  "last_heartbeat": "2026-10-24T02:28:55.929167+00:00",
-  "last_action": "Queued an exact preference-only control and a 100-example pool probe after the 500-example pool probe remained below control.",
+  "last_heartbeat": "2026-10-24T02:36:38.348336+00:00",
+  "last_action": "Queued two independent 500-example pool replications after the exact preference control and 100-example probe varied substantially.",
   "watchdog_enabled": true,
-  "research_log_size": 740086,
+  "research_log_size": 741868,
   "stop_command": "STOP",
-  "next_experiment": ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-pool0-sft0-seed20261038", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--epochs", "1", "--seed", "20261038", "--split-seed", "20261038", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
+  "next_experiment": ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-pool500-sft0-seed20261040", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "500", "--epochs", "1", "--seed", "20261040", "--split-seed", "20261040", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"],
   "recording_jobs": [],
-  "planning_notified_at": "2026-10-24T02:29:59.093693+00:00",
-  "planning_ack_deadline": "2026-10-24T02:31:59.093717+00:00",
-  "planning_attempts": 465
+  "planning_notified_at": "2026-10-24T02:38:10.607492+00:00",
+  "planning_ack_deadline": "2026-10-24T02:40:10.607510+00:00",
+  "planning_attempts": 466
 }
