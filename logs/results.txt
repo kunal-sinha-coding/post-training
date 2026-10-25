@@ -40167,3 +40167,213 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/hvbpjfyb"
 }
 ```
+
+## qwen-when2call-qwen25-15b-pref-full-control-seed20261031
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.train_qwen_when2call",
+    "--model",
+    "Qwen/Qwen2.5-1.5B-Instruct",
+    "--objective",
+    "sft",
+    "--output-dir",
+    "outputs/qwen-when2call-qwen25-15b-pref-full-control-seed20261031",
+    "--seed",
+    "20261029",
+    "--split-seed",
+    "20261029",
+    "--epochs",
+    "1",
+    "--batch-size",
+    "1",
+    "--max-length",
+    "4096",
+    "--learning-rate",
+    "2e-5",
+    "--weight-decay",
+    "0.01",
+    "--lora-rank",
+    "16"
+  ],
+  "development_metrics": {
+    "accuracy": 0.8961111111111111,
+    "confusion_matrix": [
+      [
+        564,
+        9,
+        26,
+        0
+      ],
+      [
+        4,
+        490,
+        106,
+        0
+      ],
+      [
+        2,
+        39,
+        559,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0
+      ]
+    ],
+    "examples": 1800,
+    "macro_f1": 0.6728144615609408
+  },
+  "exit_code": "unknown",
+  "experiment_id": "qwen-when2call-qwen25-15b-pref-full-control-seed20261031",
+  "failure_reason": null,
+  "metadata": {
+    "config": {
+      "batch_size": 1,
+      "beta": 0.1,
+      "epochs": 1,
+      "learning_rate": 2e-05,
+      "lora_rank": 16,
+      "max_length": 4096,
+      "model": "Qwen/Qwen2.5-1.5B-Instruct",
+      "objective": "sft",
+      "output_dir": "outputs/qwen-when2call-qwen25-15b-pref-full-control-seed20261031",
+      "seed": 20261029,
+      "split_seed": 20261029,
+      "weight_decay": 0.01
+    },
+    "dataset": "nvidia/When2Call",
+    "development_examples": 1800,
+    "development_metrics": {
+      "accuracy": 0.8961111111111111,
+      "confusion_matrix": [
+        [
+          564,
+          9,
+          26,
+          0
+        ],
+        [
+          4,
+          490,
+          106,
+          0
+        ],
+        [
+          2,
+          39,
+          559,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0
+        ]
+      ],
+      "examples": 1800,
+      "macro_f1": 0.6728144615609408
+    },
+    "device": "cuda",
+    "label_source": "inferred from chosen response content",
+    "label_tokens": [
+      362,
+      425,
+      356,
+      422
+    ],
+    "losses": [
+      0.7383161266576482
+    ],
+    "model": "Qwen/Qwen2.5-1.5B-Instruct",
+    "objective": "sft",
+    "official_test_loaded": false,
+    "train_examples": 7200,
+    "train_metrics": {
+      "accuracy": 0.9169444444444445,
+      "confusion_matrix": [
+        [
+          2278,
+          23,
+          97,
+          0
+        ],
+        [
+          23,
+          2025,
+          353,
+          0
+        ],
+        [
+          6,
+          95,
+          2299,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0
+        ]
+      ],
+      "examples": 7200,
+      "macro_f1": 0.6880999845029958
+    },
+    "wandb_run_id": "n8qhbsob",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/n8qhbsob"
+  },
+  "metrics_path": "/workspace/post-training/outputs/qwen-when2call-qwen25-15b-pref-full-control-seed20261031/metrics.json",
+  "official_test_loaded": false,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/qwen-when2call-qwen25-15b-pref-full-control-seed20261031",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-25T06:42:57.338851+00:00",
+  "status": "completed",
+  "test_status": "not measured",
+  "timestamp": "2026-10-25T07:39:06.890361+00:00",
+  "train_metrics": {
+    "accuracy": 0.9169444444444445,
+    "confusion_matrix": [
+      [
+        2278,
+        23,
+        97,
+        0
+      ],
+      [
+        23,
+        2025,
+        353,
+        0
+      ],
+      [
+        6,
+        95,
+        2299,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0
+      ]
+    ],
+    "examples": 7200,
+    "macro_f1": 0.6880999845029958
+  },
+  "wandb_run_id": "n8qhbsob",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/n8qhbsob"
+}
+```

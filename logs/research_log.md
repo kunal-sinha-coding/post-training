@@ -8050,3 +8050,15 @@ The 100-example candidate trained on 7,200 preference and 80 Glaive examples. Tr
 All three evidence types are recorded for the latest completed 100-example experiment and linked in `logs/experiment_records.jsonl`, `logs/results.txt`, and the output metrics artifacts. For example, its training and clean-validation metrics are in `outputs/qwen-when2call-qwen25-15b-pref-full-glaive100-seed20261030/metrics.json`; its aggregate-only test metrics are in `outputs/test-qwen-glaive100-pref-full-15b-seed20261030/metrics.json`.
 
 The 250-example dose had the strongest clean preference-validation accuracy in this dose series. The next experiment is a matched preference-only control using the same initialization seed, preference split, and optimization settings as the 250-example condition. This will test the clean-validation hypothesis that adding Glaive examples is unnecessary or harmful. Test labels are excluded from selection; aggregate test is queued only after training and clean validation.
+
+## qwen-when2call-qwen25-15b-pref-full-control-seed20261031
+
+Timestamp: 2026-10-25T07:39:06.890361+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--objective", "sft", "--output-dir", "outputs/qwen-when2call-qwen25-15b-pref-full-control-seed20261031", "--seed", "20261029", "--split-seed", "20261029", "--epochs", "1", "--batch-size", "1", "--max-length", "4096", "--learning-rate", "2e-5", "--weight-decay", "0.01", "--lora-rank", "16"]. Output: /workspace/post-training/outputs/qwen-when2call-qwen25-15b-pref-full-control-seed20261031. W&B run: n8qhbsob.
+
+Clean development accuracy: 0.8961111111111111. Clean development macro F1: 0.6728144615609408. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
