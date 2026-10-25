@@ -1259,3 +1259,12 @@ Source-specific result `qwen-when2call-qwen25-15b-pref-full-glaive250-toolcall-s
 | Candidate | test-qwen-glaive250-toolcall-pref-full-15b-seed20261037 | — | — | [metrics](/workspace/post-training/outputs/test-qwen-glaive250-toolcall-pref-full-15b-seed20261037/metrics.json) | completed |
 
 | test-qwen-glaive250-toolcall-pref-full-15b-seed20261037 | 0.6073384446878423 | 0.4397278163962362 | sb9mqv2x | Aggregate-only frozen test measurement |
+
+
+| Candidate | qwen-when2call-qwen25-15b-pref-full-glaive250-toolcall-seed20261037 | 0.910000 | 0.683180 | [metrics](/workspace/post-training/outputs/qwen-when2call-qwen25-15b-pref-full-glaive250-toolcall-seed20261037/metrics.json) | completed |
+| Aggregate test | test-qwen-glaive250-toolcall-pref-full-15b-seed20261037 | 0.607338 | 0.439728 | [metrics](/workspace/post-training/outputs/test-qwen-glaive250-toolcall-pref-full-15b-seed20261037/metrics.json) | aggregate-only |
+
+Training accuracy and macro F1 were 0.919148 and 0.690043. Its 31-example Glaive validation partition contains only tool_call labels. Clean preference validation is comparable to the 500-decision explicit-call candidate. The queued experiment adds 500 in-domain SFT examples and measures clean validation by source. Aggregate test values remain reporting-only.
+
+| Candidate | qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-sft500-seed20261038 | — | — | Queued in-domain SFT plus explicit-call Glaive mix. Selection uses clean validation only. | queued |
+| Aggregate test | test-qwen-glaive500-toolcall-sft500-pref-full-15b-seed20261038 | — | — | Queued after training and clean validation. Aggregate-only report. | queued |

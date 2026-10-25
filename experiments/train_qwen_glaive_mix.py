@@ -1,8 +1,8 @@
-"""Train Qwen SFT on preference data plus filtered Glaive decisions.
+"""Train Qwen SFT on preference data with optional filtered Glaive and When2Call SFT examples.
 
-The flow loads the When2Call preference training split and a deterministic Glaive sample,
-creates separate source validation partitions, trains a fresh LoRA adapter, and records
-training and clean validation metrics. The official test split is never loaded here.
+The flow samples each training source deterministically, creates separate source validation
+partitions, trains a fresh LoRA adapter, and records training and clean validation metrics.
+The official test split is never loaded here.
 """
 from __future__ import annotations
 
@@ -16,6 +16,7 @@ from pathlib import Path
 import torch
 
 from experiments.clean_validation_glaive import sample_glaive_examples
+from experiments.clean_validation_baseline import load_sft_training_rows
 from experiments.train_qwen_when2call import (
     ClassificationRow,
     DATASET_NAME,
@@ -29,7 +30,7 @@ from experiments.train_qwen_when2call import (
     train_epoch,
     write_heartbeat,
 )
-from experiments.train_when2call_jina import LABELS
+from experiments.train_when2call_jina import LABELS, LABEL_TO_ID, response_label
 
 
 def prepare_glaive_rows(sample_size: int, seed: int, label_filter: str) -> list[ClassificationRow]:
@@ -41,12 +42,30 @@ def prepare_glaive_rows(sample_size: int, seed: int, label_filter: str) -> list[
     return [ClassificationRow(make_prompt({"messages": [{"role": "user", "content": item.text}], "tools": []}), item.label, None) for item in examples]
 
 
+def prepare_sft_rows(sample_size: int, seed: int) -> list[ClassificationRow]:
+    # Convert a deterministic sample of in-domain SFT responses to Qwen action rows.
+    if sample_size <= 0:
+        return []
+    rows = load_sft_training_rows()
+    examples = []
+    for row in rows:
+        assistant_messages = [message for message in row["messages"] if message["role"] == "assistant"]
+        if not assistant_messages:
+            continue
+        label = LABEL_TO_ID[response_label(assistant_messages[-1]["content"])]
+        if label != LABEL_TO_ID["direct"]:
+            examples.append(ClassificationRow(make_prompt(row), label, None))
+    random.Random(seed).shuffle(examples)
+    return examples[:sample_size]
+
+
 def main() -> int:
     # Freeze dataset, split, and optimization settings before initializing the tracked run.
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", default="Qwen/Qwen2.5-1.5B-Instruct")
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--glaive-sample", type=int, default=1000)
+    parser.add_argument("--sft-sample", type=int, default=0)
     parser.add_argument("--glaive-label", choices=("all", *LABELS), default="all")
     parser.add_argument("--seed", type=int, default=20261028)
     parser.add_argument("--split-seed", type=int, default=20261028)
@@ -57,6 +76,9 @@ def main() -> int:
     parser.add_argument("--weight-decay", type=float, default=0.01)
     parser.add_argument("--lora-rank", type=int, default=16)
     args = parser.parse_args()
+    dataset_names = [DATASET_NAME + ":train_pref", "glaiveai/glaive-function-calling-v2"]
+    if args.sft_sample > 0:
+        dataset_names.append(DATASET_NAME + ":train_sft")
     import wandb
     if not os.getenv("WANDB_API_KEY"):
         raise RuntimeError("WANDB_API_KEY is required for Qwen experiments.")
@@ -66,7 +88,7 @@ def main() -> int:
         entity=os.getenv("WANDB_ENTITY"),
         name=f"qwen-glaive{args.glaive_sample}-pref-full-{args.output_dir.name}",
         job_type="qwen-when2call-clean-validation",
-        config={**vars(args), "dataset": [DATASET_NAME + ":train_pref", "glaiveai/glaive-function-calling-v2"], "glaive_direct_filtered": True, "official_test_loaded": False},
+        config={**vars(args), "dataset": dataset_names, "glaive_direct_filtered": True, "official_test_loaded": False},
     )
     atexit.register(run.finish)
     random.seed(args.seed)
@@ -75,20 +97,23 @@ def main() -> int:
         # Split the full preference source and Glaive source independently to preserve source-specific validation.
         pref_train, pref_validation = split_rows(prepare_rows(load_rows()), args.split_seed)
         glaive_train, glaive_validation = split_rows(prepare_glaive_rows(args.glaive_sample, args.seed + 1, args.glaive_label), args.split_seed + 1)
-        training_rows = pref_train + glaive_train
+        sft_rows = prepare_sft_rows(args.sft_sample, args.seed + 2)
+        sft_train, sft_validation = split_rows(sft_rows, args.split_seed + 2) if sft_rows else ([], [])
+        training_rows = pref_train + glaive_train + sft_train
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         write_heartbeat(args.output_dir / "heartbeat.json", "model-loading")
         model, tokenizer = load_model(args.model, device, args.lora_rank)
         token_ids = label_token_ids(tokenizer)
         optimizer = torch.optim.AdamW((parameter for parameter in model.parameters() if parameter.requires_grad), lr=args.learning_rate, weight_decay=args.weight_decay)
         losses = []
-        # Train a fresh adapter for the requested epochs over both predeclared sources.
+        # Train a fresh adapter for the requested epochs over every selected source.
         for epoch in range(args.epochs):
             losses.append(train_epoch(model, tokenizer, training_rows, token_ids, "sft", device, optimizer, args.max_length, args.batch_size, 0.1, args.seed + epoch, args.output_dir / "heartbeat.json"))
-        # Measure training and both source-specific clean validation partitions.
+        # Measure training and each source-specific clean validation partition.
         train_metrics = evaluate(model, tokenizer, training_rows, token_ids, device, args.max_length, args.batch_size, args.output_dir / "heartbeat.json")
         pref_metrics = evaluate(model, tokenizer, pref_validation, token_ids, device, args.max_length, args.batch_size, args.output_dir / "heartbeat.json")
         glaive_metrics = evaluate(model, tokenizer, glaive_validation, token_ids, device, args.max_length, args.batch_size, args.output_dir / "heartbeat.json")
+        sft_metrics = evaluate(model, tokenizer, sft_validation, token_ids, device, args.max_length, args.batch_size, args.output_dir / "heartbeat.json") if sft_validation else None
         model.save_pretrained(args.output_dir)
         tokenizer.save_pretrained(args.output_dir)
         # Persist exact source sizes and aggregate metrics without official benchmark access.
@@ -96,7 +121,7 @@ def main() -> int:
         metadata = {
             "model": args.model,
             "objective": "sft",
-            "dataset": [DATASET_NAME + ":train_pref", "glaiveai/glaive-function-calling-v2"],
+            "dataset": dataset_names,
             "official_test_loaded": False,
             "glaive_direct_filtered": True,
             "glaive_label_filter": args.glaive_label,
@@ -104,10 +129,13 @@ def main() -> int:
             "preference_validation_examples": len(pref_validation),
             "glaive_training_examples": len(glaive_train),
             "glaive_validation_examples": len(glaive_validation),
+            "sft_training_examples": len(sft_train),
+            "sft_validation_examples": len(sft_validation),
             "train_examples": len(training_rows),
             "train_metrics": train_metrics,
             "preference_validation_metrics": pref_metrics,
             "glaive_validation_metrics": glaive_metrics,
+            "sft_validation_metrics": sft_metrics,
             "losses": losses,
             "label_order": LABELS,
             "label_tokens": token_ids,
@@ -117,9 +145,9 @@ def main() -> int:
             "wandb_run_url": run.url,
         }
         (args.output_dir / "metrics.json").write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
-        run.summary.update({"status": "completed", "train_accuracy": train_metrics["accuracy"], "pref_validation_accuracy": pref_metrics["accuracy"], "glaive_validation_accuracy": glaive_metrics["accuracy"], "output_dir": str(args.output_dir)})
+        run.summary.update({"status": "completed", "train_accuracy": train_metrics["accuracy"], "pref_validation_accuracy": pref_metrics["accuracy"], "glaive_validation_accuracy": glaive_metrics["accuracy"], "sft_validation_accuracy": sft_metrics["accuracy"] if sft_metrics else None, "output_dir": str(args.output_dir)})
         write_heartbeat(args.output_dir / "heartbeat.json", "completed")
-        print(json.dumps({"train": train_metrics, "preference_validation": pref_metrics, "glaive_validation": glaive_metrics}, indent=2))
+        print(json.dumps({"train": train_metrics, "preference_validation": pref_metrics, "glaive_validation": glaive_metrics, "sft_validation": sft_metrics}, indent=2))
     except BaseException as error:
         run.summary.update({"status": "failed", "error": repr(error)})
         write_heartbeat(args.output_dir / "heartbeat.json", "failed")

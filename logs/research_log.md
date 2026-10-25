@@ -8231,3 +8231,10 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+## Smaller explicit-call Glaive dose completed
+
+The 250-decision explicit tool_call candidate trained on 7,200 preference examples and 122 filtered Glaive examples, with 31 Glaive validation examples. It used Qwen2.5-1.5B-Instruct, seed 20261037, preference split seed 20261029, one epoch, batch size 1, max length 4096, learning rate 2e-5, weight decay 0.01, and LoRA rank 16. Training metrics on 7,322 examples were 0.919148 accuracy and 0.690043 macro F1. Clean preference validation on 1,800 examples was 0.910000 accuracy and 0.683180 macro F1. The Glaive holdout contained only 31 tool_call examples. Aggregate-only test metrics on 3,652 rows were 0.607338 accuracy and 0.439728 macro F1. Training, clean validation, and aggregate test evidence are recorded in the output artifacts and experiment records. Test metrics are report-only.
+
+The 250-decision explicit-call mixture matched the 500-decision run on clean preference accuracy (0.910000 versus 0.910000) and had similar macro F1 (0.683180 versus 0.682307). The 1,000-decision mixture was slightly lower at 0.906667 accuracy and 0.680433 macro F1. The next hypothesis adds 500 in-domain train_sft examples to 500 explicit-call Glaive decisions. It tests whether additional in-domain non-call coverage improves clean preference and SFT validation while retaining tool-call examples. Test labels will not be used for selection.
