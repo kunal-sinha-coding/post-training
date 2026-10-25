@@ -38244,3 +38244,135 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/iqcd2xw0"
 }
 ```
+
+## existing-when2call-single-request-confidence-prepare-20261025
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "prepare",
+    "--suite",
+    "single-request-confidence",
+    "--work-dir",
+    "outputs/existing-when2call-single-request-confidence-20261025",
+    "--output-dir",
+    "outputs/existing-when2call-single-request-confidence-prepare-20261025"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "existing-when2call-single-request-confidence-prepare-20261025",
+  "failure_reason": null,
+  "metadata": {
+    "command": [
+      "/usr/local/bin/python",
+      "/workspace/post-training/experiments/existing_when2call_hybrid.py",
+      "prepare",
+      "--suite",
+      "single-request-confidence",
+      "--work-dir",
+      "outputs/existing-when2call-single-request-confidence-20261025",
+      "--output-dir",
+      "outputs/existing-when2call-single-request-confidence-prepare-20261025"
+    ],
+    "configuration": {
+      "batch_size": 1,
+      "mode": "prepare",
+      "output_dir": "outputs/existing-when2call-single-request-confidence-prepare-20261025",
+      "suite": "single-request-confidence",
+      "work_dir": "outputs/existing-when2call-single-request-confidence-20261025"
+    },
+    "encoder_logit_weights": [
+      1.0
+    ],
+    "encoders": [
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+    ],
+    "frozen_configuration": {
+      "artifact_sha256": {
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/encoder_config.json": "0616e72a787934ed1fa3bec80e5da45239be1a1c267525c92960b83e9c44c12f",
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/model_state.pt": "815459d76b8c2e9fb7ba44e2f3867379ab096766cf9f1c807a08921be26593b5",
+        "outputs/qwen-when2call-sft-15b-seed20261022/adapter_config.json": "73b427067b3c4385f48db97011e5e48a25a6b0ea1291e096c2b6e53d8d90588e",
+        "outputs/qwen-when2call-sft-15b-seed20261022/adapter_model.safetensors": "6ecc1863fe7e7eeb995a2588e106e45bfa66f21d36605c93c1ad7f41b3fbe9de",
+        "outputs/when2call-jina-v2-small/latest/tokenizer.json": "e9f999ac74497843ed9f4303246a8f43d9f100ee8aab8e133667903f447ceb48"
+      },
+      "development_selection_performed": false,
+      "encoder_logit_weights": [
+        1.0
+      ],
+      "encoders": [
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+      ],
+      "family_probability_weights": [
+        0.5,
+        0.5
+      ],
+      "fusion_rules": {
+        "request_conf_40": "Use encoder probabilities when its top class is request_for_info and its top probability is at least 0.40. Use Qwen otherwise.",
+        "request_conf_60": "Use encoder probabilities when its top class is request_for_info and its top probability is at least 0.60. Use Qwen otherwise.",
+        "request_conf_80": "Use encoder probabilities when its top class is request_for_info and its top probability is at least 0.80. Use Qwen otherwise."
+      },
+      "historical_selection_limitation": "Existing encoder approaches were identified in prior research with repeated official benchmark inspection. This fixed comparison is a benchmark measurement, not a new independent generalization estimate.",
+      "hypothesis": "Clean validation favored the encoder request_for_info region, while the fixed class route did not improve aggregate test accuracy. Confidence filtering tests whether restricting that route to more certain encoder predictions improves validation transfer. Thresholds are fixed before scoring.",
+      "label_order": [
+        "cannot_answer",
+        "request_for_info",
+        "tool_call",
+        "direct"
+      ],
+      "max_length": 4096,
+      "methods": [
+        "single_average",
+        "single_gate",
+        "single_request_conf_40",
+        "single_request_conf_60",
+        "single_request_conf_80"
+      ],
+      "metric_definition": "Primary macro F1 includes all four declared classes. The present-class macro F1 diagnostic permits comparison with historical encoder reports.",
+      "primary_method": "single_request_conf_60",
+      "qwen_base": "Qwen/Qwen2.5-1.5B-Instruct",
+      "qwen_checkpoint": "outputs/qwen-when2call-sft-15b-seed20261022",
+      "qwen_mapping": "Historical adapter training used LABEL_TO_ID directly despite reversed ABCD descriptions in its prompt. Preserve learned identity indices.",
+      "qwen_output_permutation": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "selection_complete": true,
+      "single_encoder_index": 0,
+      "suite": "single-request-confidence",
+      "test_status": "queued",
+      "training_performed": false,
+      "validation_limitation": "Existing encoder warm starts saw all train_pref rows. No clean preference validation is claimed or used for selection."
+    },
+    "git_commit": "ad63bb254703a162ad1ccd87d14cdb38ed6fc136",
+    "max_length": 4096,
+    "primary_method": "single_request_conf_60",
+    "qwen_checkpoint": "outputs/qwen-when2call-sft-15b-seed20261022",
+    "runtime_seconds": 3.3713624477386475,
+    "status": "completed",
+    "suite": "single-request-confidence",
+    "test_status": "queued",
+    "wandb_run_id": "31348qs7",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/31348qs7"
+  },
+  "metrics_path": "/workspace/post-training/outputs/existing-when2call-single-request-confidence-prepare-20261025/metrics.json",
+  "official_test_loaded": null,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/existing-when2call-single-request-confidence-prepare-20261025",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-25T02:55:17.422476+00:00",
+  "status": "completed",
+  "test_status": "queued",
+  "timestamp": "2026-10-25T02:56:17.869685+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "31348qs7",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/31348qs7"
+}
+```

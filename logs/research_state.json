@@ -6,37 +6,8 @@
   "protocol": "existing_frozen_encoder_llm_comparison_v1",
   "current_hypothesis": "The encoder request_for_info region helped on held-out train_sft but not on the official benchmark. Requiring higher encoder confidence may preserve useful corrections and reduce harmful overrides.",
   "active_experiment": {
-    "pid": 24120,
+    "pid": 24378,
     "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.existing_when2call_hybrid",
-      "prepare",
-      "--suite",
-      "single-request-confidence",
-      "--work-dir",
-      "outputs/existing-when2call-single-request-confidence-20261025",
-      "--output-dir",
-      "outputs/existing-when2call-single-request-confidence-prepare-20261025"
-    ],
-    "started_at": "2026-10-25T02:55:17.422476+00:00"
-  },
-  "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.existing_when2call_hybrid",
-    "prepare",
-    "--suite",
-    "single-request-confidence",
-    "--work-dir",
-    "outputs/existing-when2call-single-request-confidence-20261025",
-    "--output-dir",
-    "outputs/existing-when2call-single-request-confidence-prepare-20261025"
-  ],
-  "worker_queue": [
-    [
       "python",
       "-u",
       "-m",
@@ -48,8 +19,23 @@
       "outputs/existing-when2call-single-request-confidence-20261025",
       "--output-dir",
       "outputs/existing-when2call-single-request-confidence-test-20261025"
-    ]
+    ],
+    "started_at": "2026-10-25T02:56:17.672658+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "test",
+    "--suite",
+    "single-request-confidence",
+    "--work-dir",
+    "outputs/existing-when2call-single-request-confidence-20261025",
+    "--output-dir",
+    "outputs/existing-when2call-single-request-confidence-test-20261025"
   ],
+  "worker_queue": [],
   "_previous_command": [
     "python",
     "-u",
@@ -74,28 +60,28 @@
     "status": "historical scores are incomparable",
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
-  "last_heartbeat": "2026-10-25T02:55:17.422489+00:00",
-  "last_action": "Watchdog started validation worker pid 24120.",
+  "last_heartbeat": "2026-10-25T02:56:17.672673+00:00",
+  "last_action": "Watchdog started validation worker pid 24378.",
   "watchdog_enabled": true,
-  "research_log_size": 788853,
+  "research_log_size": 791830,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
     "-u",
     "-m",
     "experiments.existing_when2call_hybrid",
-    "prepare",
+    "test",
     "--suite",
     "single-request-confidence",
     "--work-dir",
     "outputs/existing-when2call-single-request-confidence-20261025",
     "--output-dir",
-    "outputs/existing-when2call-single-request-confidence-prepare-20261025"
+    "outputs/existing-when2call-single-request-confidence-test-20261025"
   ],
   "recording_jobs": [
     {
-      "pid": 24119,
-      "experiment_id": "existing-when2call-hybrid-request-confidence-validation-20261025"
+      "pid": 24377,
+      "experiment_id": "existing-when2call-single-request-confidence-prepare-20261025"
     }
   ],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
