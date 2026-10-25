@@ -165,6 +165,7 @@ def train_encoder(args: object, run: object, device: torch.device) -> dict:
     train_metrics = metrics(torch.tensor([row.label for row in training]), train_probabilities)
     probabilities = encoder_probabilities(model, tokenizer, development, args, device)
     result = {"train_metrics": train_metrics, "provenance": provenance, "parameter_count": count, "initialization": BASE_ENCODER, "task_warmstart": False, "epochs": args.epochs, "max_length": args.max_length, "learning_rate": args.learning_rate, "development_metrics": metrics(torch.tensor([row.label for row in development]), probabilities), "mean_training_loss": sum(losses) / len(losses), "checkpoint": str(checkpoint)}
+    result["checkpoint_sha256"] = artifact_digest(checkpoint / "model_state.pt")
     run.log({"train/accuracy": train_metrics["accuracy"], "train/macro_f1": train_metrics["macro_f1"], "train/confusion_matrix": train_metrics["confusion_matrix"], "development/accuracy": result["development_metrics"]["accuracy"], "development/macro_f1": result["development_metrics"]["macro_f1"], "development/confusion_matrix": result["development_metrics"]["confusion_matrix"], "train/per_class": train_metrics["per_class"], "development/per_class": result["development_metrics"]["per_class"]})
     save_json(args.work_dir / "encoder-metrics.json", result)
     del model, tokenizer, optimizer
@@ -275,6 +276,30 @@ def select(args: object, run: object, device: torch.device) -> dict:
     return config
 
 
+def test_encoder(args: object, run: object, device: torch.device) -> dict:
+    # Measure the newly frozen encoder alone before heterogeneous selection begins.
+    record = json.loads((args.work_dir / "encoder-metrics.json").read_text())
+    checkpoint = Path(record["checkpoint"])
+    if artifact_digest(checkpoint / "model_state.pt") != record["checkpoint_sha256"]:
+        raise ValueError("The frozen standalone encoder weights changed.")
+    model, tokenizer = raw_encoder(device)
+    model.load_state_dict(torch.load(checkpoint / "model_state.pt", map_location="cpu", weights_only=True))
+    assert_size(model)
+    from experiments.evaluate_qwen_when2call_test import load_official_rows, aggregate_metrics
+    from experiments.train_when2call_jina import Example, LABEL_TO_ID
+    rows = list(load_official_rows())
+    examples = [Example("Question: " + row["question"] + "\nAvailable tools:\n" + ("\n".join(row["tools"]) if row["tools"] else "No tools are available."), 0, str(index)) for index, row in enumerate(rows)]
+    args.max_length = record["max_length"]
+    probabilities = encoder_probabilities(model, tokenizer, examples, args, device)
+    aggregate = aggregate_metrics([LABEL_TO_ID[str(row["correct_answer"])] for row in rows], probabilities.argmax(-1).tolist())
+    result = {"candidate": "encoder", "test_measurement_only": True, "black_box": True, "selection_complete": True, "examples": len(rows), "metrics": aggregate, "checkpoint_sha256": record["checkpoint_sha256"], "metric_definition": "Macro F1 includes all four classes."}
+    save_json(args.output_dir / "test-encoder.json", result)
+    run.log({"test/accuracy": aggregate["accuracy"], "test/macro_f1": aggregate["macro_f1"]})
+    del model, tokenizer
+    free_gpu()
+    return result
+
+
 def test(args: object, run: object, device: torch.device) -> dict:
     # Load official labels only inside a separate frozen aggregate measurement worker.
     config = json.loads((args.work_dir / "frozen-config.json").read_text())
@@ -301,7 +326,7 @@ def test(args: object, run: object, device: torch.device) -> dict:
 def main() -> int:
     # Register W&B before loading data or models and persist every failure with reproducibility metadata.
     parser = argparse.ArgumentParser()
-    parser.add_argument("mode", choices=("train-encoder", "select", "test"))
+    parser.add_argument("mode", choices=("train-encoder", "test-encoder", "select", "test"))
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--work-dir", type=Path)
     parser.add_argument("--candidate", choices=("uniform", "gate", "stacker"), default="uniform")
@@ -333,7 +358,7 @@ def main() -> int:
     try:
         write_heartbeat(args.output_dir / "heartbeat.json", "loading")
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        result = {"train-encoder": train_encoder, "select": select, "test": test}[args.mode](args, run, device)
+        result = {"train-encoder": train_encoder, "test-encoder": test_encoder, "select": select, "test": test}[args.mode](args, run, device)
         metadata.update({"status": "completed", "runtime_seconds": time.time() - started, "wandb_run_id": run.id, "wandb_run_url": run.url, "result": result})
         save_json(path, metadata)
         save_json(args.output_dir / "metrics.json", {**metadata, **result})
