@@ -1074,3 +1074,6 @@ No input-feature route beat the equal average.
 Equal probability averaging remains the best fixed fusion. The 40% encoder candidate is the strongest unequal arithmetic mixture but does not beat the equal average. This aggregate-only test comparison used the frozen candidates in one shared model-scoring pass.
 | Candidate | existing-when2call-single-disagree-test-20261025 | — | — | [metrics](/workspace/post-training/outputs/existing-when2call-single-disagree-test-20261025/metrics.json) | failed |
 | Candidate | existing-when2call-single-disagree-prepare-20261025 | — | — | [metrics](/workspace/post-training/outputs/existing-when2call-single-disagree-prepare-20261025/metrics.json) | completed |
+| Candidate | existing-when2call-single-disagree-test-20261025 | — | — | [metrics](/workspace/post-training/outputs/existing-when2call-single-disagree-test-20261025/metrics.json) | completed |
+
+| existing-when2call-single-disagree-test-20261025 | 0.690854326396495 | 0.5130923967907243 | sudruvnp | Aggregate-only frozen test measurement |
