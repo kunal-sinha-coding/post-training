@@ -993,3 +993,4 @@ Accuracy ranks these aggregate-only benchmark measurements. The routing hypothes
 | single_encoder_refusal | 0.658269441 | 0.488136876 | 0.650849169 | [dkkgq6x9](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/dkkgq6x9) |
 
 The class-specialist rule trails both Qwen alone and equal averaging.
+| Candidate | existing-when2call-single-weighted-prepare-20261025 | — | — | [metrics](/workspace/post-training/outputs/existing-when2call-single-weighted-prepare-20261025/metrics.json) | completed |

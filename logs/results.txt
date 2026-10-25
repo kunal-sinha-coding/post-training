@@ -35866,3 +35866,131 @@ Exact commands:
 python -u -m experiments.existing_when2call_hybrid prepare --suite single-weighted --work-dir outputs/existing-when2call-single-weighted-20261025 --output-dir outputs/existing-when2call-single-weighted-prepare-20261025
 python -u -m experiments.existing_when2call_hybrid test --suite single-weighted --work-dir outputs/existing-when2call-single-weighted-20261025 --output-dir outputs/existing-when2call-single-weighted-test-20261025
 ```
+
+## existing-when2call-single-weighted-prepare-20261025
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "prepare",
+    "--suite",
+    "single-weighted",
+    "--work-dir",
+    "outputs/existing-when2call-single-weighted-20261025",
+    "--output-dir",
+    "outputs/existing-when2call-single-weighted-prepare-20261025"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "existing-when2call-single-weighted-prepare-20261025",
+  "failure_reason": null,
+  "metadata": {
+    "command": [
+      "/usr/local/bin/python",
+      "/workspace/post-training/experiments/existing_when2call_hybrid.py",
+      "prepare",
+      "--suite",
+      "single-weighted",
+      "--work-dir",
+      "outputs/existing-when2call-single-weighted-20261025",
+      "--output-dir",
+      "outputs/existing-when2call-single-weighted-prepare-20261025"
+    ],
+    "configuration": {
+      "batch_size": 1,
+      "mode": "prepare",
+      "output_dir": "outputs/existing-when2call-single-weighted-prepare-20261025",
+      "suite": "single-weighted",
+      "work_dir": "outputs/existing-when2call-single-weighted-20261025"
+    },
+    "encoder_logit_weights": [
+      1.0
+    ],
+    "encoders": [
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+    ],
+    "frozen_configuration": {
+      "artifact_sha256": {
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/encoder_config.json": "0616e72a787934ed1fa3bec80e5da45239be1a1c267525c92960b83e9c44c12f",
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/model_state.pt": "815459d76b8c2e9fb7ba44e2f3867379ab096766cf9f1c807a08921be26593b5",
+        "outputs/qwen-when2call-sft-15b-seed20261022/adapter_config.json": "73b427067b3c4385f48db97011e5e48a25a6b0ea1291e096c2b6e53d8d90588e",
+        "outputs/qwen-when2call-sft-15b-seed20261022/adapter_model.safetensors": "6ecc1863fe7e7eeb995a2588e106e45bfa66f21d36605c93c1ad7f41b3fbe9de",
+        "outputs/when2call-jina-v2-small/latest/tokenizer.json": "e9f999ac74497843ed9f4303246a8f43d9f100ee8aab8e133667903f447ceb48"
+      },
+      "development_selection_performed": false,
+      "encoder_logit_weights": [
+        1.0
+      ],
+      "encoders": [
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+      ],
+      "family_probability_weights": [
+        0.5,
+        0.5
+      ],
+      "fusion_rules": {
+        "qwen_weighted": "Combine 0.25 encoder probability with 0.75 Qwen probability. These weights are fixed before test loading."
+      },
+      "historical_selection_limitation": "Existing encoder approaches were identified in prior research with repeated official benchmark inspection. This fixed comparison is a benchmark measurement, not a new independent generalization estimate.",
+      "hypothesis": "The encoder improves the Qwen baseline when averaged equally, but has lower standalone accuracy. A fixed 25 percent encoder and 75 percent Qwen blend tests whether shrinkage toward the stronger Qwen baseline improves accuracy. Compare with equal averaging and minimum-entropy gating. The fixed weight is not fitted.",
+      "label_order": [
+        "cannot_answer",
+        "request_for_info",
+        "tool_call",
+        "direct"
+      ],
+      "max_length": 4096,
+      "methods": [
+        "single_average",
+        "single_gate",
+        "single_qwen_weighted"
+      ],
+      "metric_definition": "Primary macro F1 includes all four declared classes. The present-class macro F1 diagnostic permits comparison with historical encoder reports.",
+      "primary_method": "single_qwen_weighted",
+      "qwen_base": "Qwen/Qwen2.5-1.5B-Instruct",
+      "qwen_checkpoint": "outputs/qwen-when2call-sft-15b-seed20261022",
+      "qwen_mapping": "Historical adapter training used LABEL_TO_ID directly despite reversed ABCD descriptions in its prompt. Preserve learned identity indices.",
+      "qwen_output_permutation": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "selection_complete": true,
+      "single_encoder_index": 0,
+      "suite": "single-weighted",
+      "test_status": "queued",
+      "training_performed": false,
+      "validation_limitation": "Existing encoder warm starts saw all train_pref rows. No clean preference validation is claimed or used for selection."
+    },
+    "git_commit": "3c2d624100559734d1756ae5bd138c58e0791621",
+    "max_length": 4096,
+    "primary_method": "single_qwen_weighted",
+    "qwen_checkpoint": "outputs/qwen-when2call-sft-15b-seed20261022",
+    "runtime_seconds": 5.558066368103027,
+    "status": "completed",
+    "suite": "single-weighted",
+    "test_status": "queued",
+    "wandb_run_id": "3zuy8ur0",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/3zuy8ur0"
+  },
+  "metrics_path": "/workspace/post-training/outputs/existing-when2call-single-weighted-prepare-20261025/metrics.json",
+  "official_test_loaded": null,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/existing-when2call-single-weighted-prepare-20261025",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-25T01:44:10.009590+00:00",
+  "status": "completed",
+  "test_status": "queued",
+  "timestamp": "2026-10-25T01:45:10.340546+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "3zuy8ur0",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/3zuy8ur0"
+}
+```

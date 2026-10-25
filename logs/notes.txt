@@ -6686,3 +6686,5 @@ remove the file manually to continue.
 
 
 2026-10-25: Commit `Record class routing result and queue asymmetric blend` records the frozen Jina refusal-specialist route outcome. It scored 0.658269441 accuracy and 0.488136876 all-four-class macro F1, below Qwen SFT alone and equal probability averaging. The transferred Jina plus Jev route did not work for Jina plus Qwen. The next fixed experiment compares 25 percent encoder plus 75 percent Qwen against equal averaging and entropy gating. Accuracy is primary and macro F1 remains reported. Complete setup and table are in logs/results.txt.
+
+2026-10-25T01:45:12.781597+00:00: Commit `Record research experiment existing-when2call-single-weighted-prepare-20261025` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
