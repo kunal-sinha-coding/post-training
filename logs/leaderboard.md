@@ -1282,3 +1282,12 @@ Source-specific result `qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-s
 | Candidate | test-qwen-glaive500-toolcall-sft1k-pref-full-15b-seed20261039 | — | — | [metrics](/workspace/post-training/outputs/test-qwen-glaive500-toolcall-sft1k-pref-full-15b-seed20261039/metrics.json) | completed |
 
 | test-qwen-glaive500-toolcall-sft1k-pref-full-15b-seed20261039 | 0.671960569550931 | 0.49167791088602153 | up5eqkis | Aggregate-only frozen test measurement |
+
+
+| Candidate | qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-sft1k-seed20261039 | 0.914444 | 0.686113 | [metrics](/workspace/post-training/outputs/qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-sft1k-seed20261039/metrics.json) | completed |
+| Aggregate test | test-qwen-glaive500-toolcall-sft1k-pref-full-15b-seed20261039 | 0.671961 | 0.491678 | [metrics](/workspace/post-training/outputs/test-qwen-glaive500-toolcall-sft1k-pref-full-15b-seed20261039/metrics.json) | aggregate-only |
+
+Training accuracy and macro F1 were 0.926770 and 0.694903. SFT validation accuracy and macro F1 were 0.925000 and 0.476777 on 200 examples, with no tool_call or direct examples. Glaive validation contained 62 tool_call-only examples. The next candidate raises SFT sample size to 2,000 based on the small improvement on the shared preference validation split. Test metrics are reporting-only.
+
+| Candidate | qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-sft2k-seed20261040 | — | — | Queued 2,000-example in-domain SFT dose. Selection uses clean validation only. | queued |
+| Aggregate test | test-qwen-glaive500-toolcall-sft2k-pref-full-15b-seed20261040 | — | — | Queued after training and clean validation. Aggregate-only report. | queued |

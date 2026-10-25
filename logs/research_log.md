@@ -8293,3 +8293,10 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+## In-domain SFT dose series update
+
+The completed 1,000-example SFT candidate trained on 7,200 preference examples, 248 explicit tool_call Glaive examples, and 800 train_sft examples. Training metrics on 8,248 examples were 0.926770 accuracy and 0.694903 macro F1. Clean preference validation on 1,800 examples was 0.914444 accuracy and 0.686113 macro F1. Clean SFT validation on 200 examples was 0.925000 accuracy and 0.476777 four-class macro F1; this source validation has no tool_call or direct examples. Glaive validation contained 62 tool_call-only examples. Aggregate-only test metrics on 3,652 examples were 0.671961 accuracy and 0.491678 macro F1. All three evidence types are recorded in the artifacts and experiment records. Test metrics are report-only.
+
+Compared with the 500-example SFT candidate, the 1,000-example candidate increased clean preference validation from 0.913333/0.685105 to 0.914444/0.686113. The next hypothesis increases the SFT sample to 2,000 while holding the explicit Glaive sample and preference split fixed. Selection uses clean validation only.
