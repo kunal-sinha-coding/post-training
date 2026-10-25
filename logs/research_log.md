@@ -8083,3 +8083,15 @@ The matched control used Qwen2.5-1.5B-Instruct, SFT, the full train_pref trainin
 All three evidence types are recorded. The validation metric is in `development_metrics` in `outputs/qwen-when2call-qwen25-15b-pref-full-control-seed20261031/metrics.json`; the aggregate test metrics are in `outputs/test-qwen-pref-full-control-15b-seed20261031/metrics.json`. The training experiment record stores training metrics, and the same results artifact stores the clean development metrics.
 
 On the shared clean preference holdout, the matched control is 1.67 percentage points lower in accuracy and 1.23 points lower in macro F1 than the 250-example Glaive mix. The next hypothesis is that a 500-example Glaive sample may retain that clean-validation gain while expanding source coverage. The next experiment is selected from clean validation only. Its aggregate test measurement follows training and clean validation.
+
+## qwen-when2call-qwen25-15b-pref-full-glaive500-matched-seed20261029
+
+Timestamp: 2026-10-25T08:44:20.247843+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_glaive_mix", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--output-dir", "outputs/qwen-when2call-qwen25-15b-pref-full-glaive500-matched-seed20261029", "--glaive-sample", "500", "--seed", "20261029", "--split-seed", "20261029", "--epochs", "1", "--batch-size", "1", "--max-length", "4096", "--learning-rate", "2e-5", "--weight-decay", "0.01", "--lora-rank", "16"]. Output: /workspace/post-training/outputs/qwen-when2call-qwen25-15b-pref-full-glaive500-matched-seed20261029. W&B run: ekm7uxk3.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {"preference_validation_metrics": {"accuracy": 0.8944444444444445, "macro_f1": 0.6718326346731825, "confusion_matrix": [[554, 21, 24, 0], [0, 505, 95, 0], [1, 48, 551, 0], [1, 0, 0, 0]], "examples": 1800}, "glaive_validation_metrics": {"accuracy": 0.91, "macro_f1": 0.6489298580207671, "confusion_matrix": [[16, 0, 0, 0], [6, 16, 2, 0], [1, 0, 59, 0], [0, 0, 0, 0]], "examples": 100}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
