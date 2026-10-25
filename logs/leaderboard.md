@@ -1167,3 +1167,17 @@ Source-specific result `qwen-when2call-qwen25-15b-pref-full-glaive100-seed202610
 | Candidate | test-qwen-glaive100-pref-full-15b-seed20261030 | — | — | [metrics](/workspace/post-training/outputs/test-qwen-glaive100-pref-full-15b-seed20261030/metrics.json) | completed |
 
 | test-qwen-glaive100-pref-full-15b-seed20261030 | 0.6292442497261774 | 0.4609264279659694 | hvbpjfyb | Aggregate-only frozen test measurement |
+
+
+### Qwen preference plus Glaive dose series
+
+| Glaive sample | Training accuracy | Training macro F1 | Preference validation accuracy | Preference validation macro F1 | Glaive validation accuracy | Glaive validation macro F1 | Aggregate test accuracy | Aggregate test macro F1 |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1,000 | 0.919125 | 0.690275 | 0.893889 | 0.671443 | 0.910000 | 0.666983 | 0.631435 | 0.470737 |
+| 250 | 0.925125 | 0.694092 | 0.912778 | 0.685114 | 0.921569 | 0.676055 | 0.622946 | 0.447941 |
+| 100 | 0.925412 | 0.694604 | 0.893333 | 0.671178 | 0.800000 | 0.447273 | 0.629244 | 0.460926 |
+
+All test columns are aggregate-only reports and were not used for candidate selection. The latest completed 100-example experiment has training, clean-validation, and aggregate test evidence recorded. A matched preference-only control is queued using the same seed, split, and optimization settings as the 250-example condition.
+
+| Candidate | qwen-when2call-qwen25-15b-pref-full-control-seed20261031 | — | — | Queued matched full-preference-only control. Use clean validation for selection. | queued |
+| Aggregate test | test-qwen-pref-full-control-15b-seed20261031 | — | — | Queued after training and clean validation. Aggregate-only report. | queued |

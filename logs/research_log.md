@@ -8039,3 +8039,14 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+## Qwen Glaive dose series result and matched control hypothesis
+
+The 250-example candidate trained on 7,200 preference and 199 Glaive examples. Training accuracy and macro F1 were 0.925125 and 0.694092. Preference validation on 1,800 examples was 0.912778 accuracy and 0.685114 macro F1. Glaive validation on 51 examples was 0.921569 accuracy and 0.676055 macro F1. Its aggregate-only test result on 3,652 examples was 0.622946 accuracy and 0.447941 macro F1.
+
+The 100-example candidate trained on 7,200 preference and 80 Glaive examples. Training accuracy and macro F1 were 0.925412 and 0.694604. Preference validation on the 1,800-example holdout was 0.893333 accuracy and 0.671178 macro F1. Glaive validation on 20 examples was 0.800000 accuracy and 0.447273 macro F1. Its aggregate-only test result on 3,652 examples was 0.629244 accuracy and 0.460926 macro F1. The 1,000-example candidate's matching preference validation was 0.893889 accuracy and 0.671443 macro F1, with Glaive validation 0.910000 accuracy and 0.666983 macro F1; aggregate test was 0.631435 accuracy and 0.470737 macro F1.
+
+All three evidence types are recorded for the latest completed 100-example experiment and linked in `logs/experiment_records.jsonl`, `logs/results.txt`, and the output metrics artifacts. For example, its training and clean-validation metrics are in `outputs/qwen-when2call-qwen25-15b-pref-full-glaive100-seed20261030/metrics.json`; its aggregate-only test metrics are in `outputs/test-qwen-glaive100-pref-full-15b-seed20261030/metrics.json`.
+
+The 250-example dose had the strongest clean preference-validation accuracy in this dose series. The next experiment is a matched preference-only control using the same initialization seed, preference split, and optimization settings as the 250-example condition. This will test the clean-validation hypothesis that adding Glaive examples is unnecessary or harmful. Test labels are excluded from selection; aggregate test is queued only after training and clean validation.
