@@ -19,6 +19,7 @@ from experiments.clean_validation_baseline import load_sft_training_rows, split_
 from experiments.existing_when2call_hybrid import (
     DISAGREE_METHODS,
     POOL_GRID_METHODS,
+    REQUEST_CONFIDENCE_METHODS,
     encoder_logits,
     hybrid_probabilities,
 )
@@ -64,7 +65,7 @@ def evaluate(args: argparse.Namespace, run: object) -> dict:
     qwen = torch.cat(scores)
     labels = torch.tensor([item.label for item in validation_examples])
     candidates = {"encoder_single": encoder, "qwen_sft": qwen, "single_average": (encoder + qwen) / 2, "single_gate": hybrid_probabilities(encoder, qwen, "gate")}
-    methods = tuple(dict.fromkeys((*POOL_GRID_METHODS, *DISAGREE_METHODS)))
+    methods = tuple(dict.fromkeys((*POOL_GRID_METHODS, *DISAGREE_METHODS, *REQUEST_CONFIDENCE_METHODS)))
     for method in methods:
         if method in candidates or method in ("single_average", "single_gate"):
             continue

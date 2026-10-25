@@ -1079,3 +1079,23 @@ Equal probability averaging remains the best fixed fusion. The 40% encoder candi
 | existing-when2call-single-disagree-test-20261025 | 0.690854326396495 | 0.5130923967907243 | sudruvnp | Aggregate-only frozen test measurement |
 
 Source-specific result `existing-when2call-hybrid-sft-validation-20261025` has status completed. Its separate validation metrics are {"aggregate_validation_metrics": {"encoder_single": {"accuracy": 0.9180273242252582, "macro_f1": 0.6334781599415462}, "qwen_sft": {"accuracy": 0.9160279906697767, "macro_f1": 0.6320945519953636}, "single_average": {"accuracy": 0.9380206597800733, "macro_f1": 0.6411356258348212}, "single_gate": {"accuracy": 0.9390203265578141, "macro_f1": 0.6417046441200522}, "single_qwen_w10": {"accuracy": 0.9163612129290236, "macro_f1": 0.6323461091753774}, "single_qwen_w25": {"accuracy": 0.9166944351882705, "macro_f1": 0.6323658463740127}, "single_qwen_w40": {"accuracy": 0.9203598800399867, "macro_f1": 0.6339371571227258}, "single_qwen_w60": {"accuracy": 0.9286904365211596, "macro_f1": 0.6373213107076686}, "single_qwen_w75": {"accuracy": 0.923025658113962, "macro_f1": 0.6353482674897822}, "single_qwen_w90": {"accuracy": 0.9216927690769744, "macro_f1": 0.6348639143011521}, "single_geometric": {"accuracy": 0.9376874375208264, "macro_f1": 0.6417174584338398}, "single_geometric_qwen": {"accuracy": 0.9203598800399867, "macro_f1": 0.6340732496547744}, "single_geometric_encoder": {"accuracy": 0.9340219926691103, "macro_f1": 0.639512226713352}, "single_standardized_logits": {"accuracy": 0.9400199933355549, "macro_f1": 0.6424513730725935}, "single_disagreement_qwen": {"accuracy": 0.9160279906697767, "macro_f1": 0.6320945519953636}, "single_disagreement_encoder": {"accuracy": 0.9180273242252582, "macro_f1": 0.6334781599415462}, "single_disagreement_margin": {"accuracy": 0.9390203265578141, "macro_f1": 0.6414760015987967}, "single_encoder_cannot_answer": {"accuracy": 0.9203598800399867, "macro_f1": 0.6324321646301714}, "single_encoder_request_for_info": {"accuracy": 0.9556814395201599, "macro_f1": 0.6475521622753945}, "single_encoder_tool_call": {"accuracy": 0.8740419860046651, "macro_f1": 0.61646300842802}, "single_encoder_direct": {"accuracy": 0.9160279906697767, "macro_f1": 0.6320945519953636}}}. These values are not ranked against other splits.
+
+
+### Output disagreement and class route comparison
+
+Official test measurement, aggregate-only, 3,652 examples:
+
+| Method | Accuracy | Four-class macro F1 |
+|---|---:|---:|
+| Equal probability average | 0.694687842 | 0.515704143 |
+| Entropy gate | 0.693044907 | 0.514422081 |
+| Larger-margin expert on disagreement | 0.690854326 | 0.513092397 |
+| Encoder for request_for_info | 0.681544359 | 0.510851758 |
+| Qwen SFT | 0.678806134 | 0.505011686 |
+| Encoder for cannot_answer | 0.658269441 | 0.488136876 |
+| Encoder for tool_call | 0.610076670 | 0.443205916 |
+| Encoder alone | 0.592278204 | 0.439754957 |
+
+None of the fixed disagreement or class-specialist routes beat equal averaging.
+
+The frozen candidate methods were also measured on a separate 3,001-example stratified holdout from `nvidia/When2Call:train_sft`, a source not used by either member checkpoint. Encoder-for-request_for_info routing reached 0.955680 accuracy and 0.647552 macro F1, compared with 0.938021 and 0.641136 for equal averaging. This validation gain did not transfer to official test accuracy. The validation report is a separate source-domain diagnostic and was not used to select from test labels.

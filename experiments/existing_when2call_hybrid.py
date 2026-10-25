@@ -4,7 +4,7 @@ Preparation freezes existing checkpoint hashes and four predeclared hybrid rules
 training or development selection. One aggregate measurement scores each model once,
 restores source row order after encoder batching, and compares fixed hybrids and baselines.
 The initial suite preserves both encoder families. The single-fusion suite compares fixed pooling rules.
-The single-route suite tests a class-specialized encoder route. The single-weighted suite tests a fixed asymmetric blend. The single-adaptive suite tests confidence-weighted pooling and selective overrides. The single-rules suite routes by visible question and tool features. The single-pool-grid suite compares broad fixed weights and standardized log-score pooling. The single-disagree suite tests model-output disagreement and class-specialist routing.
+The single-route suite tests a class-specialized encoder route. The single-weighted suite tests a fixed asymmetric blend. The single-adaptive suite tests confidence-weighted pooling and selective overrides. The single-rules suite routes by visible question and tool features. The single-pool-grid suite compares broad fixed weights and standardized log-score pooling. The single-disagree suite tests model-output disagreement and class-specialist routing. The single-request-confidence suite tests confidence-filtered request_for_info routing.
 Official predictions, labels, probabilities, and per-class statistics remain in memory only.
 """
 from __future__ import annotations
@@ -49,6 +49,8 @@ RULES = {"no_tools": "Use the encoder when no tools are available.", "many_tools
 POOL_GRID_METHODS = ("single_average", "single_gate", "single_qwen_w10", "single_qwen_w25", "single_qwen_w40", "single_qwen_w60", "single_qwen_w75", "single_qwen_w90", "single_geometric", "single_geometric_qwen", "single_geometric_encoder", "single_standardized_logits")
 POOL_GRID_RULES = {"qwen_w10": "Use 0.10 encoder probability and 0.90 Qwen probability.", "qwen_w25": "Use 0.25 encoder probability and 0.75 Qwen probability.", "qwen_w40": "Use 0.40 encoder probability and 0.60 Qwen probability.", "qwen_w60": "Use 0.60 encoder probability and 0.40 Qwen probability.", "qwen_w75": "Use 0.75 encoder probability and 0.25 Qwen probability.", "qwen_w90": "Use 0.90 encoder probability and 0.10 Qwen probability.", "geometric_qwen": "Softmax of 0.25 encoder plus 0.75 Qwen log probabilities.", "geometric_encoder": "Softmax of 0.75 encoder plus 0.25 Qwen log probabilities.", "standardized_logits": "Center and standardize each expert's log probabilities across classes, average the standardized scores equally, then softmax."}
 DISAGREE_METHODS = ("single_average", "single_gate", "single_disagreement_qwen", "single_disagreement_encoder", "single_disagreement_margin", "single_encoder_cannot_answer", "single_encoder_request_for_info", "single_encoder_tool_call", "single_encoder_direct")
+REQUEST_CONFIDENCE_METHODS = ("single_average", "single_gate", "single_request_conf_40", "single_request_conf_60", "single_request_conf_80")
+REQUEST_CONFIDENCE_RULES = {"request_conf_40": "Use encoder probabilities when its top class is request_for_info and its top probability is at least 0.40. Use Qwen otherwise.", "request_conf_60": "Use encoder probabilities when its top class is request_for_info and its top probability is at least 0.60. Use Qwen otherwise.", "request_conf_80": "Use encoder probabilities when its top class is request_for_info and its top probability is at least 0.80. Use Qwen otherwise."}
 DISAGREE_RULES = {"disagreement_qwen": "Average when top classes agree. Use Qwen probabilities when top classes disagree.", "disagreement_encoder": "Average when top classes agree. Use encoder probabilities when top classes disagree.", "disagreement_margin": "Average when top classes agree. On disagreement use the expert with the larger top-two probability margin, with Qwen on ties.", "encoder_cannot_answer": "Use encoder probabilities when its top class is cannot_answer and Qwen otherwise.", "encoder_request_for_info": "Use encoder probabilities when its top class is request_for_info and Qwen otherwise.", "encoder_tool_call": "Use encoder probabilities when its top class is tool_call and Qwen otherwise.", "encoder_direct": "Use encoder probabilities when its top class is direct and Qwen otherwise."}
 
 
@@ -70,6 +72,8 @@ def suite_definition(name: str) -> dict:
         return {"encoders": [ENCODERS[2]], "weights": [1.0], "single_index": 0, "methods": list(POOL_GRID_METHODS), "primary": "single_average"}
     if name == "single-disagree":
         return {"encoders": [ENCODERS[2]], "weights": [1.0], "single_index": 0, "methods": list(DISAGREE_METHODS), "primary": "single_disagreement_margin"}
+    if name == "single-request-confidence":
+        return {"encoders": [ENCODERS[2]], "weights": [1.0], "single_index": 0, "methods": list(REQUEST_CONFIDENCE_METHODS), "primary": "single_request_conf_60"}
     raise ValueError("Unknown frozen suite: " + name)
 
 
@@ -136,6 +140,12 @@ def hybrid_probabilities(encoder: torch.Tensor, qwen: torch.Tensor, rule: str) -
         centered = scores - scores.mean(-1, keepdim=True)
         scaled = centered / centered.std(-1, keepdim=True, unbiased=False).clamp_min(1e-8)
         return scaled.mean(1).softmax(-1)
+    if rule.startswith("request_conf_"):
+        # Route only confident encoder predictions for the class with strong clean-source complementarity.
+        threshold = float(rule.removeprefix("request_conf_")) / 100
+        confidence, prediction = encoder.max(-1)
+        use_encoder = prediction.eq(LABELS.index("request_for_info")) & confidence.ge(threshold)
+        return torch.where(use_encoder.unsqueeze(-1), encoder, qwen)
     if rule.startswith("disagreement_"):
         # Apply the declared expert selection only when top classes disagree.
         agreement = encoder.argmax(-1).eq(qwen.argmax(-1))
@@ -202,6 +212,9 @@ def prepare(args: object, run: object) -> dict:
     if suite_name == "single-disagree":
         config["fusion_rules"] = DISAGREE_RULES
         config["hypothesis"] = "Test direct disagreement routing and each encoder-predicted class as a specialist region in one frozen pass. Compare with average and entropy gate. The rules use model outputs only, with no fitting or threshold search."
+    if suite_name == "single-request-confidence":
+        config["fusion_rules"] = REQUEST_CONFIDENCE_RULES
+        config["hypothesis"] = "Clean validation favored the encoder request_for_info region, while the fixed class route did not improve aggregate test accuracy. Confidence filtering tests whether restricting that route to more certain encoder predictions improves validation transfer. Thresholds are fixed before scoring."
     save_json(args.work_dir / "frozen-config.json", config)
     run.summary.update({"selection_complete": True, "training_performed": False, "test_status": "queued"})
     return {"status": "completed", "test_status": "queued", "frozen_configuration": config}
@@ -227,6 +240,8 @@ def verify_frozen(config: dict) -> None:
         raise ValueError("Frozen single-pool-grid rules changed.")
     if suite_name == "single-disagree" and (config.get("fusion_rules") != DISAGREE_RULES or config.get("single_encoder_index") != 0 or config.get("qwen_base") != QWEN_BASE or config.get("max_length") != 4096 or config.get("qwen_output_permutation") != [0, 1, 2, 3] or config.get("family_probability_weights") != [0.5, 0.5]):
         raise ValueError("Frozen disagreement rules changed.")
+    if suite_name == "single-request-confidence" and (config.get("fusion_rules") != REQUEST_CONFIDENCE_RULES or config.get("single_encoder_index") != 0 or config.get("qwen_base") != QWEN_BASE or config.get("max_length") != 4096 or config.get("qwen_output_permutation") != [0, 1, 2, 3] or config.get("family_probability_weights") != [0.5, 0.5]):
+        raise ValueError("Frozen request confidence rules changed.")
     for path, expected in config["artifact_sha256"].items():
         if artifact_digest(Path(path)) != expected:
             raise ValueError("Frozen comparison artifact changed: " + path)
@@ -319,7 +334,7 @@ def main() -> int:
     parser.add_argument("mode", choices=("prepare", "test"))
     parser.add_argument("--work-dir", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
-    parser.add_argument("--suite", choices=("initial", "single-fusion", "single-route", "single-weighted", "single-adaptive", "single-rules", "single-pool-grid", "single-disagree"), default="initial")
+    parser.add_argument("--suite", choices=("initial", "single-fusion", "single-route", "single-weighted", "single-adaptive", "single-rules", "single-pool-grid", "single-disagree", "single-request-confidence"), default="initial")
     parser.add_argument("--batch-size", type=int, default=1)
     args = parser.parse_args()
     import wandb
