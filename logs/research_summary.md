@@ -1,11 +1,9 @@
 # When2Call research status
 
-The October 25 restart prioritizes a heterogeneous ensemble. The members are the existing Qwen RPO 0.5B adapter, existing Qwen SFT 1.5B adapter, and a fresh upstream Jina encoder.
+The current user direction is to combine the best existing trained encoder approaches and the best existing trained LLM approach. The next comparison reuses Qwen2.5 1.5B SFT and the saved Jina models.
 
-The encoder uses the exact 7,200-row Qwen training partition. The shared validation excludes 214 questions present in training and contains 1,586 rows. Question groups stay together in the stacker fitting and selection halves. The initial methods are equal probability blending, minimum entropy gating, and a fixed regularized linear stacker.
+The encoder experts are the best single Jina checkpoint at seed 20261048 and the historical three-Jina ensemble at seeds 20261065, 20261061, and 20261048. The latter preserves raw-logit weights 0.35625, 0.1375, and 0.50625. Each expert is combined with Qwen through equal probability averaging and minimum entropy gating. All four methods are frozen before one shared aggregate-only test pass. The same forward passes produce the three baseline measurements.
 
-The old encoder is excluded from clean validation because its warm start saw all preference rows. Saved Qwen adapters retain their learned label index order despite the historical prompt mismatch. All new primary macro F1 scores include four classes. Historical encoder scores often excluded absent classes and cannot be compared directly.
+No new training or combination fitting is part of this comparison. The old preference partition is not clean validation for the saved encoders because their warm start saw all preference rows. No weights or router will be fitted on those labels. Historical repeated benchmark inspection also limits generalization claims. All new primary macro F1 measurements include four classes. A present-class aggregate diagnostic is reported separately for historical comparisons.
 
-The old best observed aggregate accuracy was 0.678806 from Qwen SFT 1.5B. The old best observed ensemble macro F1 was 0.592015 under a different metric convention and a repeated test comparison protocol. These remain historical references. No new ensemble result is available yet.
-
-The six exact commands and live process are stored in logs/research_state.json. The first worker trains the fresh encoder. It is followed by standalone testing, ensemble selection, and one aggregate measurement per frozen method. A supervised watchdog checks every 30 seconds and returns planning to the current Codex thread when the queue is empty.
+The fresh-encoder detour has been recorded and is outside the requested comparison. Its three pending ensemble tests were removed. The already running validation worker is allowed to exit. The exact active and pending commands are stored in logs/research_state.json. A supervised 30-second watchdog dispatches the pending existing-model commands and returns planning to this Codex thread when the queue is empty.

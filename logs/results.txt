@@ -23487,3 +23487,42 @@ The complete setup and observed results are recorded below. Source validation sp
 The fresh encoder detour completed with training accuracy 0.7654166666666666 and four-class macro F1 0.5789121013489201. Shared validation accuracy was 0.7288776796973518 and macro F1 was 0.5531984106517907. Its aggregate official test accuracy was 0.5150602409638554 and macro F1 was 0.38017244624352736 from W&B run rpyhutbi. These results remain recorded, but the user clarified that the next comparison must reuse the best existing trained approaches. The active old validation worker is left running. Its three pending fresh-encoder ensemble tests are skipped because they are outside the clarified requested comparison.
 
 The new predeclared comparison uses existing Qwen SFT 1.5B plus either existing Jina seed20261048 or the historical weighted Jina65/61/48 ensemble. Equal probability averaging and minimum entropy gating yield four frozen methods. No combination parameter will be fitted on contaminated preference validation. Baselines and all four methods will share one aggregate-only test pass, with no per-example test outputs saved.
+
+## Existing best encoder and LLM frozen hybrid setup
+
+Purpose: Measure whether the best saved encoder approaches complement the best saved LLM approach. No new model is trained. No combination parameters are fitted.
+
+LLM member: Qwen/Qwen2.5-1.5B-Instruct with rank-16 adapter outputs/qwen-when2call-sft-15b-seed20261022. The learned output indices are preserved despite the historical prompt description mismatch.
+
+Encoder members: outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065, outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061, and outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048. The single expert uses checkpoint 48. The ensemble expert averages raw logits with weights 0.35625, 0.1375, and 0.50625 before softmax. All contexts are bounded at 4096 tokens to preserve historical inference settings. Each individual member is checked against the two-billion-parameter limit.
+
+Four methods are predeclared: single encoder with Qwen through equal probability averaging, single encoder with Qwen through minimum entropy gating, ensemble encoder with Qwen through equal probability averaging, and ensemble encoder with Qwen through minimum entropy gating. The primary method is ensemble_average and is declared before any new official test data loads. The single encoder, encoder ensemble, and Qwen baselines share the same model forward passes. Encoder rows are restored to source order after length sorting before they are combined with Qwen.
+
+Preparation freezes checkpoint and tokenizer hashes. The official evaluator verifies those hashes before loading nvidia/When2Call test/mcq revision 0582f7749df63a96fdc3070932e83e72396ace53. It saves aggregate accuracy, four-class macro F1, and an explicitly named present-class macro F1 diagnostic for the seven methods and baselines. It saves no individual test outputs, labels, probabilities, or per-class statistics. Candidate freezing is independent of the new test ground truth. Historical candidate identification involved repeated aggregate benchmark inspection and does not establish an independent generalization estimate. The old preference validation cannot fit these combinations because the encoder warm start saw that source.
+
+Environment: NVIDIA RTX A4500 with 20470 MiB memory. Each model runs sequentially. W&B starts before data or model loading. Code is committed through ebfeff9f before these commands are queued. Four focused tests passed, including restoration of unequal-length encoder rows to the original common row order. Exact commands follow.
+
+[
+  [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "prepare",
+    "--work-dir",
+    "outputs/existing-when2call-hybrid-20261025",
+    "--output-dir",
+    "outputs/existing-when2call-hybrid-prepare-20261025"
+  ],
+  [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "test",
+    "--work-dir",
+    "outputs/existing-when2call-hybrid-20261025",
+    "--output-dir",
+    "outputs/existing-when2call-hybrid-test-20261025"
+  ]
+]
