@@ -14,7 +14,7 @@ HUB_SOURCES = (
     ("Salesforce/APIGen-MT-5k", "default", "Candidate with measured tool-call and clarification decisions."),
     ("Team-ACE/ToolACE", "default", "Candidate with irrelevant-tool and missing-argument cases."),
     ("MadeAgents/xlam-irrelevance-7.5k", "default", "Synthetic no-relevant-tool cases; verify whether targets mean abstain or answer directly."),
-    ("NousResearch/hermes-function-calling-v1", "default", "Small call-generation source; audit overlap with Glaive."),
+    ("NousResearch/hermes-function-calling-v1", "func_calling_singleturn", "Small call-generation source; audit overlap with Glaive."),
     ("Salesforce/xlam-function-calling-60k", "default", "Gated and mostly positive tool-call examples."),
     ("ddehun/ICT", "default", "Benchmark-derived incomplete-tool cases; license and overlap need review."),
     ("narrative-io/narrative-function-calling-v1", "default", "Likely combines Glaive and xLAM content; audit duplication."),
@@ -52,7 +52,11 @@ def audit_hub_source(repo_id: str, config: str, rationale: str) -> dict:
     except Exception as error:
         result["metadata_error"] = f"{type(error).__name__}: {str(error)[:300]}"
     try:
-        from datasets import load_dataset
+        from datasets import get_dataset_config_names, load_dataset
+        try:
+            result["hub_configs"] = get_dataset_config_names(repo_id)
+        except Exception as error:
+            result["config_list_error"] = f"{type(error).__name__}: {str(error)[:300]}"
         row = next(iter(load_dataset(repo_id, config, split="train", streaming=True)))
         result["train_row_schema"] = schema_summary(row)
         messages = row.get("conversations", row.get("messages", [])) if isinstance(row, dict) else []
