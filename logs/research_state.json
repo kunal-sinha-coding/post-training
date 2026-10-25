@@ -1,10 +1,10 @@
 {
-  "status": "awaiting_codex_planning",
+  "status": "active",
   "planning_owner": "codex_primary",
-  "planning_required": true,
+  "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "existing_frozen_encoder_llm_comparison_v1",
-  "current_hypothesis": "Visible task type may identify regions where the encoder or Qwen SFT is more accurate. Compare fixed routes by tool availability and question length against probability averaging and entropy gating.",
+  "current_hypothesis": "A broad fixed probability-weight grid may locate a useful encoder contribution, while weighted geometric and standardized log-score pooling may handle confidence-scale mismatch better than averaging. Compare all candidates in one frozen prediction pass with equal averaging and entropy gating.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -19,7 +19,34 @@
     "--output-dir",
     "outputs/existing-when2call-single-rules-test-20261025"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.existing_when2call_hybrid",
+      "prepare",
+      "--suite",
+      "single-pool-grid",
+      "--work-dir",
+      "outputs/existing-when2call-single-pool-grid-20261025",
+      "--output-dir",
+      "outputs/existing-when2call-single-pool-grid-prepare-20261025"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.existing_when2call_hybrid",
+      "test",
+      "--suite",
+      "single-pool-grid",
+      "--work-dir",
+      "outputs/existing-when2call-single-pool-grid-20261025",
+      "--output-dir",
+      "outputs/existing-when2call-single-pool-grid-test-20261025"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -46,21 +73,28 @@
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
   "last_heartbeat": "2026-10-25T02:05:50.190168+00:00",
-  "last_action": "Watchdog handed planning control to the primary Codex process.",
+  "last_action": "Recorded the negative input-feature routing comparison and queued broad fixed weight and score pooling methods.",
   "watchdog_enabled": true,
-  "research_log_size": 781108,
+  "research_log_size": 781987,
   "stop_command": "STOP",
-  "next_experiment": null,
-  "recording_jobs": [
-    {
-      "pid": 19040,
-      "experiment_id": "existing-when2call-single-rules-test-20261025"
-    }
+  "next_experiment": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "prepare",
+    "--suite",
+    "single-pool-grid",
+    "--work-dir",
+    "outputs/existing-when2call-single-pool-grid-20261025",
+    "--output-dir",
+    "outputs/existing-when2call-single-pool-grid-prepare-20261025"
   ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-25T02:13:54.865203+00:00",
-  "planning_ack_deadline": "2026-10-25T02:15:54.865225+00:00",
-  "planning_attempts": 1,
+  "planning_notified_at": "2026-10-25T02:15:57.826459+00:00",
+  "planning_ack_deadline": null,
+  "planning_attempts": 0,
   "best_observed_test": {
     "method": "single_average",
     "accuracy": 0.6946878422782037,

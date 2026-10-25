@@ -36879,3 +36879,32 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/7h1eswyz"
 }
 ```
+
+
+## Input-feature rule routing comparison, October 25
+
+Purpose: Test whether visible question and tool structure can select the Jina encoder for a subset of inputs while Qwen handles the rest. The four rules were frozen before official test loading. The benchmark has prior repeated inspections, so this is exploratory aggregate evidence.
+
+Setup: Jina checkpoint `outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048`, Qwen SFT adapter `outputs/qwen-when2call-sft-15b-seed20261022`, base `Qwen/Qwen2.5-1.5B-Instruct`, max length 4096, batch size 1, dataset revision `0582f7749df63a96fdc3070932e83e72396ace53`, test/mcq, 3652 rows. Rules route to Jina when there are no available tools, when there are at least two tools, when the question has at most 20 words, or when it has more than 20 words; Qwen handles other rows. Controls are equal probability averaging and minimum-entropy gating. Rules use visible inputs only, never labels. Aggregate metrics only. RTX A4500, runtime 429.926 seconds. Test W&B run `7h1eswyz`: https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/7h1eswyz. The asynchronous recorder reported a temporary Git index lock; the result and its failure note are preserved in local commit `3b647a14`.
+
+| Method | Accuracy | Macro F1 across four classes | Present-class macro F1 diagnostic |
+| --- | ---: | ---: | ---: |
+| equal average | 0.694687842 | 0.515704143 | 0.687605524 |
+| entropy gate | 0.693044907 | 0.514422081 | 0.685896107 |
+| encoder on no-tools rows | 0.679079956 | 0.505149525 | 0.673532700 |
+| Qwen SFT | 0.678806134 | 0.505011686 | 0.673348915 |
+| encoder on long questions | 0.652245345 | 0.484299297 | 0.645732397 |
+| encoder on short questions | 0.618838992 | 0.460578096 | 0.614104128 |
+| encoder on many-tools rows | 0.604874042 | 0.449079079 | 0.598772106 |
+| encoder alone | 0.592278204 | 0.439754957 | 0.586339943 |
+
+Analysis: No simple input-type rule improved on averaging. The no-tools route was only one example above Qwen alone. All other rules reduced accuracy. These partitions do not support a broad input-based expert switch. More specific structured disagreement and tool-count combinations remain untested.
+
+Next fixed comparison: Score encoder probability weights 0.10, 0.25, 0.40, 0.60, 0.75, and 0.90, alongside equal averaging and entropy gating. Also compare 25/75 and 75/25 weighted geometric pooling and standardized log-probability averaging. All weights and rules are frozen before data loading. This batch tests probability weighting, product pooling, and score-scale normalization in one pair of model passes. Accuracy is primary and macro F1 remains reported.
+
+Commands:
+
+```text
+python -u -m experiments.existing_when2call_hybrid prepare --suite single-pool-grid --work-dir outputs/existing-when2call-single-pool-grid-20261025 --output-dir outputs/existing-when2call-single-pool-grid-prepare-20261025
+python -u -m experiments.existing_when2call_hybrid test --suite single-pool-grid --work-dir outputs/existing-when2call-single-pool-grid-20261025 --output-dir outputs/existing-when2call-single-pool-grid-test-20261025
+```

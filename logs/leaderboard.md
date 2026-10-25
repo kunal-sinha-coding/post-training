@@ -1032,3 +1032,20 @@ Accuracy leader remains equal probability averaging.
 | Candidate | existing-when2call-single-rules-test-20261025 | — | — | [metrics](/workspace/post-training/outputs/existing-when2call-single-rules-test-20261025/metrics.json) | completed |
 
 | existing-when2call-single-rules-test-20261025 | 0.6790799561883899 | 0.5051495247819181 | 7h1eswyz | Aggregate-only frozen test measurement |
+
+
+## October 25 input-rule routing aggregate test results
+
+Rules used only visible question and tool fields. Accuracy ranks these exploratory aggregate benchmark results.
+
+| Method | Accuracy | Macro F1 across four classes | Present-class macro F1 diagnostic | W&B |
+| --- | ---: | ---: | ---: | --- |
+| equal average | 0.694687842 | 0.515704143 | 0.687605524 | [7h1eswyz](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/7h1eswyz) |
+| entropy gate | 0.693044907 | 0.514422081 | 0.685896107 | [7h1eswyz](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/7h1eswyz) |
+| encoder on no-tools rows | 0.679079956 | 0.505149525 | 0.673532700 | [7h1eswyz](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/7h1eswyz) |
+| Qwen SFT | 0.678806134 | 0.505011686 | 0.673348915 | [7h1eswyz](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/7h1eswyz) |
+| encoder on long questions | 0.652245345 | 0.484299297 | 0.645732397 | [7h1eswyz](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/7h1eswyz) |
+| encoder on short questions | 0.618838992 | 0.460578096 | 0.614104128 | [7h1eswyz](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/7h1eswyz) |
+| encoder on many-tools rows | 0.604874042 | 0.449079079 | 0.598772106 | [7h1eswyz](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/7h1eswyz) |
+
+No input-feature route beat the equal average.
