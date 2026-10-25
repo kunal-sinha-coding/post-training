@@ -8138,3 +8138,10 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+## Alternate 250-example Glaive sample completed
+
+The second 250-example sample used Qwen2.5-1.5B-Instruct, 7,200 preference training examples and 200 Glaive training examples, seed 20261034, fixed preference split seed 20261029, one epoch, batch size 1, max length 4096, learning rate 2e-5, weight decay 0.01, and LoRA rank 16. Training metrics on 7,400 examples were 0.926216 accuracy and 0.695185 macro F1. Preference validation on the fixed 1,800-example holdout was 0.909444 accuracy and 0.682642 macro F1. Glaive validation on 50 examples was 0.920000 accuracy and 0.674547 macro F1. The aggregate-only test result on 3,652 examples was 0.654984 accuracy and 0.483830 macro F1. All three evidence types are in the candidate training and aggregate test artifacts and experiment records. The test report is not used for selection.
+
+Two 250-example draws have similar preference validation (0.912778 and 0.909444 accuracy), while the 500-example all-label mixture had 0.894444. This supports testing source quality rather than adding more all-label examples. The next candidate samples 500 Glaive decisions and filters to explicit `tool_call` labels, then evaluates the same preference holdout. Candidate selection will use clean validation only.

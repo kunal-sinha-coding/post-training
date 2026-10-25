@@ -1217,3 +1217,12 @@ Source-specific result `qwen-when2call-qwen25-15b-pref-full-glaive250-seed202610
 | Candidate | test-qwen-glaive250-pref-full-15b-seed20261034 | — | — | [metrics](/workspace/post-training/outputs/test-qwen-glaive250-pref-full-15b-seed20261034/metrics.json) | completed |
 
 | test-qwen-glaive250-pref-full-15b-seed20261034 | 0.6549835706462213 | 0.4838298886058729 | i69ax9le | Aggregate-only frozen test measurement |
+
+
+| Candidate | qwen-when2call-qwen25-15b-pref-full-glaive250-seed20261034 | 0.909444 | 0.682642 | [metrics](/workspace/post-training/outputs/qwen-when2call-qwen25-15b-pref-full-glaive250-seed20261034/metrics.json) | completed |
+| Aggregate test | test-qwen-glaive250-pref-full-15b-seed20261034 | 0.654984 | 0.483830 | [metrics](/workspace/post-training/outputs/test-qwen-glaive250-pref-full-15b-seed20261034/metrics.json) | aggregate-only |
+
+Training accuracy and macro F1 were 0.926216 and 0.695185. Glaive validation accuracy and macro F1 were 0.920000 and 0.674547 on 50 examples. The 250-example preference validation result is close to the prior draw on the same clean split. The next queued candidate filters a 500-example Glaive sample to explicit tool_call decisions. Test results above are aggregate reports only.
+
+| Candidate | qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-seed20261035 | — | — | Queued Glaive source-quality probe. Selection uses clean validation only. | queued |
+| Aggregate test | test-qwen-glaive500-toolcall-pref-full-15b-seed20261035 | — | — | Queued after training and clean validation. Aggregate-only report. | queued |

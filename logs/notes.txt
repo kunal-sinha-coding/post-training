@@ -6825,3 +6825,6 @@ remove the file manually to continue.
 2026-10-25T09:43:06.438542+00:00: Commit `Record research experiment qwen-when2call-qwen25-15b-pref-full-glaive250-seed20261034` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
 
 2026-10-25T09:50:38.036330+00:00: Commit `Record research experiment test-qwen-glaive250-pref-full-15b-seed20261034` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+
+2026-10-25: The alternate 250-example Glaive sample completed with training metrics, preference and Glaive clean validations, and an aggregate-only test measurement. Its preference validation was 0.909444 accuracy and 0.682642 macro F1, similar to the first 250-example draw. Queue a Glaive source-quality probe that retains only explicit tool_call decisions from a 500-decision sample. Keep the preference validation split fixed and select only with clean validation.

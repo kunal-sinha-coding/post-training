@@ -32,9 +32,12 @@ from experiments.train_qwen_when2call import (
 from experiments.train_when2call_jina import LABELS
 
 
-def prepare_glaive_rows(sample_size: int, seed: int) -> list[ClassificationRow]:
-    # Convert non-direct Glaive assistant decisions to the existing Qwen action prompt.
+def prepare_glaive_rows(sample_size: int, seed: int, label_filter: str) -> list[ClassificationRow]:
+    # Convert sampled Glaive decisions to the existing Qwen action prompt.
     examples = sample_glaive_examples(sample_size, seed)
+    # Keep only the requested label when the experiment tests a cleaner source subset.
+    if label_filter != "all":
+        examples = [item for item in examples if LABELS[item.label] == label_filter]
     return [ClassificationRow(make_prompt({"messages": [{"role": "user", "content": item.text}], "tools": []}), item.label, None) for item in examples]
 
 
@@ -44,6 +47,7 @@ def main() -> int:
     parser.add_argument("--model", default="Qwen/Qwen2.5-1.5B-Instruct")
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--glaive-sample", type=int, default=1000)
+    parser.add_argument("--glaive-label", choices=("all", *LABELS), default="all")
     parser.add_argument("--seed", type=int, default=20261028)
     parser.add_argument("--split-seed", type=int, default=20261028)
     parser.add_argument("--epochs", type=int, default=1)
@@ -70,7 +74,7 @@ def main() -> int:
     try:
         # Split the full preference source and Glaive source independently to preserve source-specific validation.
         pref_train, pref_validation = split_rows(prepare_rows(load_rows()), args.split_seed)
-        glaive_train, glaive_validation = split_rows(prepare_glaive_rows(args.glaive_sample, args.seed + 1), args.split_seed + 1)
+        glaive_train, glaive_validation = split_rows(prepare_glaive_rows(args.glaive_sample, args.seed + 1, args.glaive_label), args.split_seed + 1)
         training_rows = pref_train + glaive_train
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         write_heartbeat(args.output_dir / "heartbeat.json", "model-loading")
@@ -95,6 +99,7 @@ def main() -> int:
             "dataset": [DATASET_NAME + ":train_pref", "glaiveai/glaive-function-calling-v2"],
             "official_test_loaded": False,
             "glaive_direct_filtered": True,
+            "glaive_label_filter": args.glaive_label,
             "preference_training_examples": len(pref_train),
             "preference_validation_examples": len(pref_validation),
             "glaive_training_examples": len(glaive_train),
