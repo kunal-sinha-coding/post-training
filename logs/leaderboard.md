@@ -1313,3 +1313,5 @@ Source-specific result `qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-s
 | Candidate | qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-sft750-wd005-seed20261041 | — | — | [metrics](/workspace/post-training/outputs/qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-sft750-wd005-seed20261041/metrics.json) | failed_or_incomplete |
 | Candidate | test-qwen-glaive500-toolcall-sft750-wd005-pref-full-15b-seed20261041 | — | — | [metrics](/workspace/post-training/outputs/test-qwen-glaive500-toolcall-sft750-wd005-pref-full-15b-seed20261041/metrics.json) | failed_or_incomplete |
 | Candidate | qwen-when2call-qwen25-15b-pref-full-glaive-all-nondirect-ckpt1k-seed20261045 | — | — | [metrics](/workspace/post-training/outputs/qwen-when2call-qwen25-15b-pref-full-glaive-all-nondirect-ckpt1k-seed20261045/metrics.json) | failed_or_incomplete |
+
+| qwen-when2call-qwen25-15b-pref-full-glaive-all-nondirect-ckpt1k-seed20261045 step 2000 | 0.487404 | 0.359198 | 7hndm0r6 | Aggregate-only frozen test measurement, user-requested continuation rule |

@@ -8391,3 +8391,7 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-when2call-qwen25-15b-pref-full-glaive-all-nondirect-ckpt1k-seed20261045 checkpoint completion correction
+
+The run completed evaluations at steps 1,000 and 2,000, then stopped under the user-requested continuation rule. Training probe at step 2,000: accuracy 0.935000, macro F1 0.685573. Clean preference validation: accuracy 0.575000, macro F1 0.421500. Aggregate black-box test at step 2,000: accuracy 0.487404, macro F1 0.359198, down from step 1,000 accuracy 0.543264. The test metric was used only for that continuation decision; labels were not exposed.
