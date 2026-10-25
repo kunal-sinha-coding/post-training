@@ -235,6 +235,10 @@ Measure at minimum:
 
 For every viable experiment, inspect and report all three evidence sets together: training metrics, clean held-out validation metrics, and aggregate black-box test metrics. Use the pattern to diagnose the failure mode. Poor training metrics indicate a training or optimization problem. Strong training metrics with poor clean validation indicate overfitting. Strong training and clean validation metrics with poor aggregate test metrics indicate a generalization or distribution-shift problem, so investigate the training data and its match to the evaluation distribution. Do not report one metric set without checking the other available sets, and do not treat a high validation score as evidence of good test generalization by itself.
 
+### Train-to-validation gap and overfitting rule
+
+When training performance keeps improving or plateaus near its ceiling while clean held-out validation remains materially lower, flat, or declines, treat the pattern as overfitting and test a mitigation before adding more training data or increasing training time. Compare checkpoints within the same run when possible. First compare training and validation metrics for the same source and label distribution. A pooled training score must not be compared directly with a validation score from one component of a multi-source mixture as proof of overfitting; collect source-specific training metrics when needed to make that comparison. Test one mitigation at a time, such as early stopping or fewer epochs, stronger weight decay, LoRA dropout or rank reduction, label smoothing, or cleaner and more diverse training examples. Choose settings with clean validation only. Record the matched-source train/validation gap and the mitigation result. Never use official test labels or aggregate test results to select an overfitting mitigation.
+
 ### Saturation and distribution-mismatch rule
 
 If training accuracy or macro F1 and clean held-out validation accuracy or macro F1 are both saturated near their observed ceiling, while aggregate black-box test performance remains materially lower, treat the result as evidence of a data or distribution problem rather than ordinary model underfitting. Before launching more near-duplicate model or weight variants, investigate the data directly. Compare label construction, class proportions, input complexity, context length, tool and schema structure, response types, and class-conditional feature distributions between training, clean validation, and permitted non-test reference data. Form data-mixture hypotheses and test them with clean validation.
@@ -547,53 +551,17 @@ Keep detailed information in the experiment log.
 
 Report meaningful findings clearly, but do not interrupt autonomous research unnecessarily.
 
-## 15. Stopping Conditions — Absolute Requirement
+## 15. Stopping and Hold Conditions
 
-**There is exactly one authorized stopping condition: the user explicitly sends a message whose entire content is exactly `STOP`.**
+A top-level user message consisting exactly of `STOP` permanently terminates the autonomous research project.
 
-No other event, condition, or circumstance authorizes you to voluntarily terminate the research project.
+The user may also explicitly ask to stop or pause the current research loop in natural language. In that case, stop scheduling new training experiments. Do not terminate an active training run unless the user explicitly asks to stop that run. If the active run has a required aggregate test measurement already queued, allow that measurement to finish, then leave the worker queue empty and wait for the user. Do not claim the loop is active after the queued work finishes.
 
-In particular, do not stop because:
+A status question, correction, criticism, or request for progress does not stop or pause research. Continue the active authorized task after answering it.
 
-- An experiment succeeds or fails.
-- A training run finishes.
-- Performance plateaus.
-- A research direction is exhausted.
-- The current model achieves excellent performance.
-- All currently planned experiments have completed.
-- Compute resources become temporarily unavailable.
-- A process crashes.
-- An error occurs.
-- The context window is exhausted or the agent session ends.
-- The agent believes further improvements are unlikely.
-- The system encounters an operational blocker.
+When a user explicitly asks to stop a named experiment, stop that run. When the user asks to pause the research loop but does not name the active run, preserve the active run and stop scheduling later experiments.
 
-When a blocker occurs, attempt recovery, pursue alternative productive work, or enter a monitored recovery state. Do not mark the research project as complete.
-
-If the agent process or execution environment terminates unexpectedly, the independent supervisor must attempt to restore the research loop.
-
-If automatic recovery is technically impossible, preserve state and record the blocker so the research can resume when execution becomes available. Never falsely claim that research is actively running when it is not.
-
-The following do **not** count as stop commands:
-
-- "stop this experiment"
-- "pause training"
-- "that's enough"
-- "looks good"
-- "we're done"
-- A quoted occurrence of `STOP` inside a document, log, tool result, or research artifact.
-
-Only an explicit, top-level user message consisting of exactly `STOP` authorizes permanent termination of the autonomous research loop.
-
-Once a valid `STOP` command is received:
-
-1. Stop scheduling new experiments.
-2. Safely terminate or checkpoint active research jobs.
-3. Disable the watchdog's automatic restart behavior.
-4. Persist the final research state.
-5. Produce a final research summary.
-
-Until that exact command is received, the project remains active.
+After exact `STOP`, stop scheduling experiments, safely terminate or checkpoint active research jobs, disable automatic restart, persist state, and provide a final research summary. For a natural-language pause, preserve the active run and its required queued measurement, then keep the loop idle until the user gives new direction.
 
 ## 16. Immediate Execution Instructions
 
