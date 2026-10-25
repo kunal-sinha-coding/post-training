@@ -1,32 +1,11 @@
 {
-  "status": "active",
+  "status": "awaiting_codex_planning",
   "planning_owner": "codex_primary",
-  "planning_required": false,
+  "planning_required": true,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "existing_frozen_encoder_llm_comparison_v1",
   "current_hypothesis": "The 500-decision sample filtered to explicit tool_call labels retained 0.910000 accuracy and 0.682307 macro F1 on the clean preference holdout. Increasing the filtered source sample to 1,000 decisions may provide broader high-confidence tool-call coverage while avoiding the weaker clean-validation result from the 500-example all-label mixture. Selection will use the fixed clean preference validation split only.",
-  "active_experiment": {
-    "pid": 44400,
-    "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_qwen_when2call_test",
-      "--model",
-      "Qwen/Qwen2.5-1.5B-Instruct",
-      "--checkpoint",
-      "outputs/qwen-when2call-qwen25-15b-pref-full-glaive1k-toolcall-seed20261036",
-      "--output-dir",
-      "outputs/test-qwen-glaive1k-toolcall-pref-full-15b-seed20261036",
-      "--lora-rank",
-      "16",
-      "--max-length",
-      "4096",
-      "--batch-size",
-      "1"
-    ],
-    "started_at": "2026-10-25T11:43:26.122674+00:00"
-  },
+  "active_experiment": {},
   "worker_command": [
     "python",
     "-u",
@@ -72,38 +51,21 @@
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
   "last_heartbeat": "2026-10-25T11:43:26.122693+00:00",
-  "last_action": "Watchdog started validation worker pid 44400.",
+  "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
-  "research_log_size": 821232,
+  "research_log_size": 822614,
   "stop_command": "STOP",
-  "next_experiment": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.evaluate_qwen_when2call_test",
-    "--model",
-    "Qwen/Qwen2.5-1.5B-Instruct",
-    "--checkpoint",
-    "outputs/qwen-when2call-qwen25-15b-pref-full-glaive1k-toolcall-seed20261036",
-    "--output-dir",
-    "outputs/test-qwen-glaive1k-toolcall-pref-full-15b-seed20261036",
-    "--lora-rank",
-    "16",
-    "--max-length",
-    "4096",
-    "--batch-size",
-    "1"
-  ],
+  "next_experiment": null,
   "recording_jobs": [
     {
-      "pid": 44399,
-      "experiment_id": "qwen-when2call-qwen25-15b-pref-full-glaive1k-toolcall-seed20261036"
+      "pid": 44785,
+      "experiment_id": "test-qwen-glaive1k-toolcall-pref-full-15b-seed20261036"
     }
   ],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-25T10:50:19.517462+00:00",
-  "planning_ack_deadline": "2026-10-25T10:52:19.517483+00:00",
-  "planning_attempts": 16,
+  "planning_notified_at": "2026-10-25T11:50:29.823224+00:00",
+  "planning_ack_deadline": "2026-10-25T11:52:29.823248+00:00",
+  "planning_attempts": 17,
   "best_observed_test": {
     "method": "single_average",
     "accuracy": 0.6946878422782037,
