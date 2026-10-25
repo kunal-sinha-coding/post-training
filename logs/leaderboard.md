@@ -1203,3 +1203,12 @@ Source-specific result `qwen-when2call-qwen25-15b-pref-full-glaive500-matched-se
 | Candidate | test-qwen-glaive500-pref-full-15b-matched-seed20261029 | — | — | [metrics](/workspace/post-training/outputs/test-qwen-glaive500-pref-full-15b-matched-seed20261029/metrics.json) | completed |
 
 | test-qwen-glaive500-pref-full-15b-matched-seed20261029 | 0.6262322015334063 | 0.45849601545418894 | cx198mpx | Aggregate-only frozen test measurement |
+
+
+| Candidate | qwen-when2call-qwen25-15b-pref-full-glaive500-matched-seed20261029 | 0.894444 | 0.671833 | [metrics](/workspace/post-training/outputs/qwen-when2call-qwen25-15b-pref-full-glaive500-matched-seed20261029/metrics.json) | completed |
+| Aggregate test | test-qwen-glaive500-pref-full-15b-matched-seed20261029 | 0.626232 | 0.458496 | [metrics](/workspace/post-training/outputs/test-qwen-glaive500-pref-full-15b-matched-seed20261029/metrics.json) | aggregate-only |
+
+The 500-example candidate recorded training accuracy 0.918553 and macro F1 0.689551. Its clean Glaive validation was 0.910000 accuracy and 0.648930 macro F1 on 100 examples. The next candidate repeats the 250-example dose with a new sample and training seed while holding the preference validation split fixed. Test metrics are for reporting only.
+
+| Candidate | qwen-when2call-qwen25-15b-pref-full-glaive250-seed20261034 | — | — | Queued alternate 250-example draw. Selection uses source-specific clean validation only. | queued |
+| Aggregate test | test-qwen-glaive250-pref-full-15b-seed20261034 | — | — | Queued after training and clean validation. Aggregate-only report. | queued |

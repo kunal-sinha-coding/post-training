@@ -8107,3 +8107,10 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+## Matched 500-example Glaive dose completed
+
+The candidate used Qwen2.5-1.5B-Instruct, full train_pref training partition, 500 direct-filtered Glaive decisions, seed and split seed 20261029, one epoch, batch size 1, max length 4096, learning rate 2e-5, weight decay 0.01, and LoRA rank 16. It recorded training accuracy 0.918553 and macro F1 0.689551 on 7,600 examples. Clean preference validation on 1,800 examples was 0.894444 accuracy and 0.671833 macro F1. Clean Glaive validation on 100 examples was 0.910000 accuracy and 0.648930 macro F1. The aggregate-only test result on 3,652 When2Call test/mcq examples was 0.626232 accuracy and 0.458496 macro F1. The complete training, validation, and test artifacts are recorded; test metrics are aggregate-only and did not inform candidate selection.
+
+The 500-example preference validation is below the 250-example candidate's 0.912778 accuracy and 0.685114 macro F1, and below the matched preference-only control's 0.896111 accuracy and 0.672814 macro F1 by small margins. The next hypothesis tests whether the 250-example validation gain is robust across a different Glaive sample and training seed. It keeps the preference split fixed and selects using clean validation only.
