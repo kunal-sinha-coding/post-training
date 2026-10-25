@@ -44700,21 +44700,95 @@ The complete setup and observed results are recorded below. Source validation sp
     "--final-test-evaluation"
   ],
   "development_metrics": {},
-  "exit_code": "unknown",
+  "exit_code": "terminated_by_user",
   "experiment_id": "qwen-when2call-pref-full-glaive500-toolcall-apigenmt500-seed20261047",
-  "failure_reason": null,
-  "metadata": {},
+  "failure_reason": "User stopped this base-model retraining run to replace it with candidate-only continuation from the full-preference adapter. The run reached optimizer step 4,332. No clean validation or aggregate test evaluation was completed.",
+  "metadata": {
+    "interruption_reason": "Replaced by user-directed adapter-continuation protocol.",
+    "partial_optimizer_steps": 4332
+  },
   "metrics_path": "/workspace/post-training/outputs/qwen-when2call-pref-full-glaive500-toolcall-apigenmt500-seed20261047/metrics.json",
-  "official_test_loaded": null,
+  "official_test_loaded": false,
   "official_test_metrics": {},
   "output_dir": "/workspace/post-training/outputs/qwen-when2call-pref-full-glaive500-toolcall-apigenmt500-seed20261047",
   "source_validation_metrics": {},
   "started_at": "2026-10-25T18:30:44.842131+00:00",
-  "status": "failed_or_incomplete",
+  "status": "interrupted_by_user",
   "test_status": "not measured",
   "timestamp": "2026-10-25T19:08:50.359434+00:00",
   "train_metrics": {},
   "wandb_run_id": null,
   "wandb_run_url": null
+}
+```
+
+## qwen-when2call-pref-full-glaive500-toolcall-toolace500-seed20261047
+
+User interruption record. The base-retraining run stopped during model loading before any optimizer update or evaluation.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.train_qwen_glaive_mix",
+    "--output-dir",
+    "outputs/qwen-when2call-pref-full-glaive500-toolcall-toolace500-seed20261047",
+    "--model",
+    "Qwen/Qwen2.5-1.5B-Instruct",
+    "--glaive-sample",
+    "500",
+    "--glaive-label",
+    "tool_call",
+    "--seed",
+    "20261047",
+    "--split-seed",
+    "20261029",
+    "--epochs",
+    "1",
+    "--batch-size",
+    "1",
+    "--max-length",
+    "4096",
+    "--learning-rate",
+    "2e-5",
+    "--weight-decay",
+    "0.01",
+    "--lora-rank",
+    "16",
+    "--training-log-steps",
+    "1",
+    "--toolace-sample",
+    "500",
+    "--checkpoint-eval-steps",
+    "1000",
+    "--checkpoint-test-evaluation"
+  ],
+  "development_metrics": {},
+  "exit_code": "terminated_by_user",
+  "experiment_id": "qwen-when2call-pref-full-glaive500-toolcall-toolace500-seed20261047",
+  "failure_reason": "User stopped this watchdog-started run while it was loading the base model. No optimizer updates or evaluations were completed.",
+  "metadata": {
+    "dataset": [
+      "nvidia/When2Call:train_pref",
+      "glaiveai/glaive-function-calling-v2",
+      "Team-ACE/ToolACE"
+    ],
+    "interruption_reason": "Replaced by user-directed adapter-continuation protocol.",
+    "partial_optimizer_steps": 0
+  },
+  "metrics_path": "/workspace/post-training/outputs/qwen-when2call-pref-full-glaive500-toolcall-toolace500-seed20261047/metrics.json",
+  "official_test_loaded": false,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/qwen-when2call-pref-full-glaive500-toolcall-toolace500-seed20261047",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-25T19:08:49.789118+00:00",
+  "status": "interrupted_by_user",
+  "test_status": "not measured",
+  "timestamp": "2026-10-25T19:14:00+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "e4a03k56",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/e4a03k56"
 }
 ```

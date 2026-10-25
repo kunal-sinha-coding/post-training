@@ -6919,3 +6919,5 @@ remove the file manually to continue.
 2026-10-25: Verified the new continuation runner exposes the required adapter, source, interval, and patience arguments. Activated the five-candidate queue with APIGen-MT 500 first. The validation watchdog is responsible for the single next launch.
 
 2026-10-25: Updated auto-research instructions to match the new adapter-continuation policy. Candidate trials now train only on the new source while continuing the common full-preference adapter, evaluate at epoch end or each 1,000 updates, stop after two consecutive clean-validation accuracy regressions, and run aggregate-only test measurement at each evaluation. Integrated checkpoint tests do not require separate queue entries.
+
+2026-10-25: Recorded the two superseded base-retraining attempts as user-interrupted rather than completed candidates. The APIGen-MT attempt stopped at optimizer step 4,332 without validation or test evaluation. The watchdog briefly launched the old ToolACE command during the handoff; it stopped at model loading with zero optimizer updates. Neither run is ranked or used for candidate selection.

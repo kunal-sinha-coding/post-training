@@ -8407,3 +8407,7 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## Base-retraining candidates stopped by user
+
+APIGen-MT base-model retraining stopped at optimizer step 4,332 without clean validation or test evaluation. The watchdog had started the old ToolACE base-model command during the handoff; it was stopped at model loading before any optimizer update. Both attempts were replaced by the adapter-continuation design. No test results were used.
