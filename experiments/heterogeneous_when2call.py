@@ -269,6 +269,9 @@ def select(args: object, run: object, device: torch.device) -> dict:
     # Freeze all three predeclared methods before any official measurement is allowed.
     config = {"selection_complete": True, "provenance": provenance, "members": MEMBERS, "encoder": encoder_record, "label_order": LABELS, "qwen_output_permutation": [0, 1, 2, 3], "qwen_prompt_mismatch": "Prompt describes ABCD in reverse order, but training and historical evaluation use LABEL_TO_ID indices directly. Preserve learned identity order.", "metric_definition": "Macro F1 includes all four classes. Some historical encoder metrics excluded direct.", "fitting_indices": fitting.tolist(), "selection_indices": selection.tolist(), "stacker": stacker, "candidates": candidates, "selection_criterion": "Report all predeclared methods. Prefer highest selection macro F1 with accuracy as tie breaker.", "member_selection_metrics": {MEMBERS[index]["name"] if index < 2 else "encoder": metrics(labels[selection], probabilities[selection, index]) for index in range(3)}}
     best = max(candidates, key=lambda name: (candidates[name]["selection_metrics"]["macro_f1"], candidates[name]["selection_metrics"]["accuracy"]))
+    # Preserve archived member training evidence beside the new shared validation results.
+    evidence_path = args.work_dir / "member-training-evidence.json"
+    config["member_training_evidence"] = json.loads(evidence_path.read_text()) if evidence_path.exists() else {}
     config["artifact_sha256"] = artifacts
     config["best_selection_candidate"] = best
     config["development_metrics"] = candidates[best]["selection_metrics"]

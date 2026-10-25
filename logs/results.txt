@@ -23319,3 +23319,58 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/b3m9znrw"
 }
 ```
+
+## Archived Qwen member training evidence for October 25 ensembles
+
+The original training summaries were recovered through the read-only W&B API. These are original member training and validation measurements, not new shared validation measurements. All original Qwen macro F1 values use the four-class convention.
+
+{
+  "rpo": {
+    "source": "archived original W&B training summary",
+    "wandb_run_id": "0ok4nguk",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/0ok4nguk",
+    "metrics": {
+      "train/accuracy": 0.8533333333333334,
+      "train/macro_f1": 0.6407216845382726,
+      "training/loss": 0.2782556293950418,
+      "development/accuracy": 0.8322222222222222,
+      "development/macro_f1": 0.624838261530625
+    },
+    "configuration": {
+      "seed": 20261022,
+      "model": "Qwen/Qwen2.5-0.5B-Instruct",
+      "epochs": 1,
+      "lora_rank": 16,
+      "objective": "rpo",
+      "batch_size": 2,
+      "max_length": 4096,
+      "split_seed": 20261022,
+      "learning_rate": 2e-05
+    },
+    "limitation": "Original development partition before the new question overlap filter. Shared validation will be scored separately."
+  },
+  "sft": {
+    "source": "archived original W&B training summary",
+    "wandb_run_id": "m1rg8d6l",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/m1rg8d6l",
+    "metrics": {
+      "train/accuracy": 0.9273611111111112,
+      "train/macro_f1": 0.6954643345541457,
+      "training/loss": 0.759669898949897,
+      "development/accuracy": 0.8944444444444445,
+      "development/macro_f1": 0.6709858298333738
+    },
+    "configuration": {
+      "seed": 20261022,
+      "model": "Qwen/Qwen2.5-1.5B-Instruct",
+      "epochs": 1,
+      "lora_rank": 16,
+      "objective": "sft",
+      "batch_size": 1,
+      "max_length": 4096,
+      "split_seed": 20261022,
+      "learning_rate": 2e-05
+    },
+    "limitation": "Original development partition before the new question overlap filter. Shared validation will be scored separately."
+  }
+}
