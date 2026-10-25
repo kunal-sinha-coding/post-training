@@ -1153,3 +1153,7 @@ The completed experiment used Qwen2.5-1.5B-Instruct with LoRA rank 16, one epoch
 Training metrics on the 8,000 training examples were 91.91% accuracy and 69.03% four-class macro F1. Preference validation was 89.39% accuracy and 67.14% macro F1. Glaive validation was 91.00% accuracy and 66.70% macro F1. The frozen aggregate-only evaluation on all 3,652 examples in `nvidia/When2Call` `test/mcq` was 63.14% accuracy and 47.07% macro F1 (W&B run `svr250hb`). The result is below Qwen SFT alone (67.88% accuracy) and the current encoder+Qwen average (69.47%). Training metrics, both clean validation metrics, and aggregate test metrics are present in their linked artifacts and experiment records. Test labels were used only for this aggregate report, not for candidate selection.
 
 Hypothesis for the next experiment: 250 rather than 1,000 Glaive examples may reduce the out-of-domain mixture penalty while retaining useful tool-call coverage. Select using training and source-specific clean validation only. The worker queue contains the distinct training and aggregate test commands.
+
+
+| Candidate | qwen-when2call-qwen25-15b-pref-full-glaive100-seed20261030 | — | — | Queued 100-example Glaive dose probe. Selection uses training and source-specific clean validation only. | queued |
+| Aggregate test | test-qwen-glaive100-pref-full-15b-seed20261030 | — | — | Queued after candidate training and clean validation. Aggregate-only measurement. | queued |

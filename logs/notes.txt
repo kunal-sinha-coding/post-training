@@ -6793,3 +6793,6 @@ remove the file manually to continue.
 
 
 2026-10-25: Record the Qwen preference plus 1,000 filtered Glaive result. It reached 0.631435 aggregate test accuracy and 0.470737 macro F1 on 3,652 When2Call test/mcq examples, below Qwen SFT alone and the current equal-average encoder+Qwen ensemble. The 8,000-example training metrics and separate preference and Glaive clean-validation metrics are in the linked training artifact and experiment record. Queue a 250-example Glaive dose probe, then its frozen aggregate-only test measurement. Choose with training and clean validation only.
+
+
+2026-10-25: Queue the 100-example Glaive dose probe after the active 250-example probe and its required aggregate test measurement. This tests whether reducing out-of-domain data further improves source-specific clean validation while retaining a small Glaive contribution. Candidate selection will not use test labels.

@@ -83,6 +83,52 @@
       "4096",
       "--batch-size",
       "1"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_glaive_mix",
+      "--model",
+      "Qwen/Qwen2.5-1.5B-Instruct",
+      "--output-dir",
+      "outputs/qwen-when2call-qwen25-15b-pref-full-glaive100-seed20261030",
+      "--glaive-sample",
+      "100",
+      "--seed",
+      "20261030",
+      "--split-seed",
+      "20261030",
+      "--epochs",
+      "1",
+      "--batch-size",
+      "1",
+      "--max-length",
+      "4096",
+      "--learning-rate",
+      "2e-5",
+      "--weight-decay",
+      "0.01",
+      "--lora-rank",
+      "16"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_qwen_when2call_test",
+      "--model",
+      "Qwen/Qwen2.5-1.5B-Instruct",
+      "--checkpoint",
+      "outputs/qwen-when2call-qwen25-15b-pref-full-glaive100-seed20261030",
+      "--output-dir",
+      "outputs/test-qwen-glaive100-pref-full-15b-seed20261030",
+      "--lora-rank",
+      "16",
+      "--max-length",
+      "4096",
+      "--batch-size",
+      "1"
     ]
   ],
   "_previous_command": [
@@ -111,7 +157,7 @@
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
   "last_heartbeat": "2026-10-25T04:36:28.205772+00:00",
-  "last_action": "Watchdog started validation worker pid 30401.",
+  "last_action": "Queued a 100-example Glaive dose probe and its aggregate-only test measurement after the active 250-example experiment measurement.",
   "watchdog_enabled": true,
   "research_log_size": 799463,
   "stop_command": "STOP",
@@ -157,5 +203,6 @@
     "frozen_config": "outputs/existing-when2call-hybrid-20261025/frozen-config.json",
     "wandb_run_id": "0m0zb20q",
     "selection": "Best observed result among four methods frozen before this benchmark measurement. This does not establish independent generalization."
-  }
+  },
+  "next_hypothesis": "A 100-example direct-filtered Glaive dose may reduce out-of-domain interference further than the 250-example dose while retaining a small amount of tool-call coverage. Compare candidates with source-specific clean validation, then run aggregate-only test measurement after freezing each candidate."
 }
