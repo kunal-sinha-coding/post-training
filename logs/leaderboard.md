@@ -1105,3 +1105,18 @@ Source-specific result `existing-when2call-hybrid-request-confidence-validation-
 | Candidate | existing-when2call-single-request-confidence-test-20261025 | — | — | [metrics](/workspace/post-training/outputs/existing-when2call-single-request-confidence-test-20261025/metrics.json) | completed |
 
 | existing-when2call-single-request-confidence-test-20261025 | 0.6812705366922235 | 0.5101340922289233 | bgzbop64 | Aggregate-only frozen test measurement |
+
+
+### Confidence-filtered request_for_info routes
+
+The held-out train_sft validation comparison used 3,001 examples.
+
+| Method | Validation accuracy | Validation macro F1 | Official test accuracy | Official test macro F1 |
+|---|---:|---:|---:|---:|
+| Equal probability average | 0.938021 | 0.641136 | 0.694688 | 0.515704 |
+| Encoder request_for_info route | 0.955681 | 0.647552 | 0.681544 | 0.510852 |
+| Request route, confidence at least 0.40 | 0.955681 | 0.647552 | 0.681818 | 0.511038 |
+| Request route, confidence at least 0.60 | 0.953016 | 0.646713 | 0.681271 | 0.510134 |
+| Request route, confidence at least 0.80 | 0.948017 | 0.645030 | 0.682913 | 0.510368 |
+
+Confidence filtering did not recover the benchmark performance. Equal averaging remains best on test. The source-domain validation gain should not be treated as benchmark generalization.

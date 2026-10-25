@@ -4,7 +4,7 @@ Preparation freezes existing checkpoint hashes and four predeclared hybrid rules
 training or development selection. One aggregate measurement scores each model once,
 restores source row order after encoder batching, and compares fixed hybrids and baselines.
 The initial suite preserves both encoder families. The single-fusion suite compares fixed pooling rules.
-The single-route suite tests a class-specialized encoder route. The single-weighted suite tests a fixed asymmetric blend. The single-adaptive suite tests confidence-weighted pooling and selective overrides. The single-rules suite routes by visible question and tool features. The single-pool-grid suite compares broad fixed weights and standardized log-score pooling. The single-disagree suite tests model-output disagreement and class-specialist routing. The single-request-confidence suite tests confidence-filtered request_for_info routing.
+The single-route suite tests a class-specialized encoder route. The single-weighted suite tests a fixed asymmetric blend. The single-adaptive suite tests confidence-weighted pooling and selective overrides. The single-rules suite routes by visible question and tool features. The single-pool-grid suite compares broad fixed weights and standardized log-score pooling. The single-disagree suite tests model-output disagreement and class-specialist routing. The single-request-confidence suite tests confidence-filtered request_for_info routing. The single-stacker suite tests a clean-validation-fitted linear meta-classifier.
 Official predictions, labels, probabilities, and per-class statistics remain in memory only.
 """
 from __future__ import annotations
@@ -35,6 +35,7 @@ ENCODERS = [
 WEIGHTS = [0.35625, 0.1375, 0.50625]
 QWEN = "outputs/qwen-when2call-sft-15b-seed20261022"
 QWEN_BASE = "Qwen/Qwen2.5-1.5B-Instruct"
+STACKER_ARTIFACT = "outputs/existing-when2call-stacker-20261025/stacker.json"
 METHODS = ("single_average", "single_gate", "ensemble_average", "ensemble_gate")
 SINGLE_METHODS = ("single_average", "single_gate", "single_geometric", "single_rank")
 SINGLE_RULES = {"average": "Arithmetic mean of the two probability vectors with equal weights.", "gate": "Choose the lower-entropy probability vector with encoder first on exact ties.", "geometric": "Softmax of the equal mean of log probabilities clamped below at 1e-8.", "rank": "Sum equal Borda rank points from both experts. Average rank points for tied probabilities. Add 1e-6 times arithmetic mean probability, clamp below at 1e-12, and normalize."}
@@ -50,6 +51,8 @@ POOL_GRID_METHODS = ("single_average", "single_gate", "single_qwen_w10", "single
 POOL_GRID_RULES = {"qwen_w10": "Use 0.10 encoder probability and 0.90 Qwen probability.", "qwen_w25": "Use 0.25 encoder probability and 0.75 Qwen probability.", "qwen_w40": "Use 0.40 encoder probability and 0.60 Qwen probability.", "qwen_w60": "Use 0.60 encoder probability and 0.40 Qwen probability.", "qwen_w75": "Use 0.75 encoder probability and 0.25 Qwen probability.", "qwen_w90": "Use 0.90 encoder probability and 0.10 Qwen probability.", "geometric_qwen": "Softmax of 0.25 encoder plus 0.75 Qwen log probabilities.", "geometric_encoder": "Softmax of 0.75 encoder plus 0.25 Qwen log probabilities.", "standardized_logits": "Center and standardize each expert's log probabilities across classes, average the standardized scores equally, then softmax."}
 DISAGREE_METHODS = ("single_average", "single_gate", "single_disagreement_qwen", "single_disagreement_encoder", "single_disagreement_margin", "single_encoder_cannot_answer", "single_encoder_request_for_info", "single_encoder_tool_call", "single_encoder_direct")
 REQUEST_CONFIDENCE_METHODS = ("single_average", "single_gate", "single_request_conf_40", "single_request_conf_60", "single_request_conf_80")
+STACKER_METHODS = ("single_average", "single_gate", "single_stacker")
+STACKER_RULES = {"stacker": "Apply a four-class linear meta-classifier fitted only on the declared clean train_sft meta-training partition. The coefficients are frozen before official test loading."}
 REQUEST_CONFIDENCE_RULES = {"request_conf_40": "Use encoder probabilities when its top class is request_for_info and its top probability is at least 0.40. Use Qwen otherwise.", "request_conf_60": "Use encoder probabilities when its top class is request_for_info and its top probability is at least 0.60. Use Qwen otherwise.", "request_conf_80": "Use encoder probabilities when its top class is request_for_info and its top probability is at least 0.80. Use Qwen otherwise."}
 DISAGREE_RULES = {"disagreement_qwen": "Average when top classes agree. Use Qwen probabilities when top classes disagree.", "disagreement_encoder": "Average when top classes agree. Use encoder probabilities when top classes disagree.", "disagreement_margin": "Average when top classes agree. On disagreement use the expert with the larger top-two probability margin, with Qwen on ties.", "encoder_cannot_answer": "Use encoder probabilities when its top class is cannot_answer and Qwen otherwise.", "encoder_request_for_info": "Use encoder probabilities when its top class is request_for_info and Qwen otherwise.", "encoder_tool_call": "Use encoder probabilities when its top class is tool_call and Qwen otherwise.", "encoder_direct": "Use encoder probabilities when its top class is direct and Qwen otherwise."}
 
@@ -74,6 +77,8 @@ def suite_definition(name: str) -> dict:
         return {"encoders": [ENCODERS[2]], "weights": [1.0], "single_index": 0, "methods": list(DISAGREE_METHODS), "primary": "single_disagreement_margin"}
     if name == "single-request-confidence":
         return {"encoders": [ENCODERS[2]], "weights": [1.0], "single_index": 0, "methods": list(REQUEST_CONFIDENCE_METHODS), "primary": "single_request_conf_60"}
+    if name == "single-stacker":
+        return {"encoders": [ENCODERS[2]], "weights": [1.0], "single_index": 0, "methods": list(STACKER_METHODS), "primary": "single_stacker"}
     raise ValueError("Unknown frozen suite: " + name)
 
 
@@ -83,10 +88,17 @@ def encoder_families(logits: torch.Tensor, weights: list[float]) -> tuple[torch.
     return logits[2].softmax(-1), (logits * weight).sum(0).softmax(-1)
 
 
-def hybrid_probabilities(encoder: torch.Tensor, qwen: torch.Tensor, rule: str) -> torch.Tensor:
+def hybrid_probabilities(encoder: torch.Tensor, qwen: torch.Tensor, rule: str, stacker_parameters: dict | None = None) -> torch.Tensor:
     # Apply the predeclared probability, entropy, geometric, or ordinal fusion rule.
     if rule == "average":
         return (encoder + qwen) / 2
+    if rule == "stacker":
+        # Apply the frozen linear meta-classifier over both experts probability features.
+        if stacker_parameters is None:
+            raise ValueError("Frozen stacker parameters are required.")
+        coefficients = torch.tensor(stacker_parameters["coefficients"], dtype=encoder.dtype, device=encoder.device)
+        intercepts = torch.tensor(stacker_parameters["intercepts"], dtype=encoder.dtype, device=encoder.device)
+        return (torch.cat((encoder, qwen), dim=-1) @ coefficients.T + intercepts).softmax(-1)
     probabilities = torch.stack((encoder, qwen), dim=1)
     if rule == "geometric":
         return probabilities.clamp_min(1e-8).log().mean(1).softmax(-1)
@@ -190,6 +202,8 @@ def prepare(args: object, run: object) -> dict:
         artifacts.extend(Path(checkpoint) / name for name in ("model_state.pt", "encoder_config.json"))
     artifacts.extend(Path(QWEN) / name for name in ("adapter_model.safetensors", "adapter_config.json"))
     artifacts.append(Path("outputs/when2call-jina-v2-small/latest/tokenizer.json"))
+    if suite_name == "single-stacker":
+        artifacts.append(Path(STACKER_ARTIFACT))
     config = {"selection_complete": True, "training_performed": False, "development_selection_performed": False, "suite": suite_name, "encoders": suite["encoders"], "encoder_logit_weights": suite["weights"], "single_encoder_index": suite["single_index"], "qwen_checkpoint": QWEN, "qwen_base": QWEN_BASE, "qwen_output_permutation": [0, 1, 2, 3], "label_order": LABELS, "max_length": 4096, "methods": suite["methods"], "primary_method": suite["primary"], "family_probability_weights": [0.5, 0.5], "artifact_sha256": {str(path): artifact_digest(path) for path in artifacts}, "validation_limitation": "Existing encoder warm starts saw all train_pref rows. No clean preference validation is claimed or used for selection.", "historical_selection_limitation": "Existing encoder approaches were identified in prior research with repeated official benchmark inspection. This fixed comparison is a benchmark measurement, not a new independent generalization estimate.", "metric_definition": "Primary macro F1 includes all four declared classes. The present-class macro F1 diagnostic permits comparison with historical encoder reports.", "qwen_mapping": "Historical adapter training used LABEL_TO_ID directly despite reversed ABCD descriptions in its prompt. Preserve learned identity indices.", "test_status": "queued"}
     if suite_name == "single-fusion":
         config["fusion_rules"] = SINGLE_RULES
@@ -215,6 +229,12 @@ def prepare(args: object, run: object) -> dict:
     if suite_name == "single-request-confidence":
         config["fusion_rules"] = REQUEST_CONFIDENCE_RULES
         config["hypothesis"] = "Clean validation favored the encoder request_for_info region, while the fixed class route did not improve aggregate test accuracy. Confidence filtering tests whether restricting that route to more certain encoder predictions improves validation transfer. Thresholds are fixed before scoring."
+    if suite_name == "single-stacker":
+        stacker = json.loads(Path(STACKER_ARTIFACT).read_text())
+        config["fusion_rules"] = STACKER_RULES
+        config["stacker_artifact"] = STACKER_ARTIFACT
+        config["stacker_parameters"] = {"coefficients": stacker["coefficients"], "intercepts": stacker["intercepts"]}
+        config["hypothesis"] = "A linear meta-classifier can learn which probability features are useful from the independent SFT-source meta-training partition. It is fitted and measured on disjoint clean source partitions before its coefficients are frozen for official scoring."
     save_json(args.work_dir / "frozen-config.json", config)
     run.summary.update({"selection_complete": True, "training_performed": False, "test_status": "queued"})
     return {"status": "completed", "test_status": "queued", "frozen_configuration": config}
@@ -242,6 +262,11 @@ def verify_frozen(config: dict) -> None:
         raise ValueError("Frozen disagreement rules changed.")
     if suite_name == "single-request-confidence" and (config.get("fusion_rules") != REQUEST_CONFIDENCE_RULES or config.get("single_encoder_index") != 0 or config.get("qwen_base") != QWEN_BASE or config.get("max_length") != 4096 or config.get("qwen_output_permutation") != [0, 1, 2, 3] or config.get("family_probability_weights") != [0.5, 0.5]):
         raise ValueError("Frozen request confidence rules changed.")
+    if suite_name == "single-stacker":
+        stacker = json.loads(Path(STACKER_ARTIFACT).read_text())
+        expected_parameters = {"coefficients": stacker["coefficients"], "intercepts": stacker["intercepts"]}
+        if config.get("fusion_rules") != STACKER_RULES or config.get("stacker_parameters") != expected_parameters or config.get("stacker_artifact") != STACKER_ARTIFACT:
+            raise ValueError("Frozen stacker parameters changed.")
     for path, expected in config["artifact_sha256"].items():
         if artifact_digest(Path(path)) != expected:
             raise ValueError("Frozen comparison artifact changed: " + path)
@@ -316,7 +341,7 @@ def test(args: object, run: object) -> dict:
             mask = input_route_mask(rows, rule.removeprefix("encoder_"), single.device)
             probabilities[method] = torch.where(mask.unsqueeze(-1), single, qwen)
         else:
-            probabilities[method] = hybrid_probabilities(family, qwen, rule)
+            probabilities[method] = hybrid_probabilities(family, qwen, rule, config.get("stacker_parameters"))
     labels = torch.tensor([row.label for row in qwen_rows])
     aggregate = {}
     for name, probability in probabilities.items():
@@ -334,7 +359,7 @@ def main() -> int:
     parser.add_argument("mode", choices=("prepare", "test"))
     parser.add_argument("--work-dir", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
-    parser.add_argument("--suite", choices=("initial", "single-fusion", "single-route", "single-weighted", "single-adaptive", "single-rules", "single-pool-grid", "single-disagree", "single-request-confidence"), default="initial")
+    parser.add_argument("--suite", choices=("initial", "single-fusion", "single-route", "single-weighted", "single-adaptive", "single-rules", "single-pool-grid", "single-disagree", "single-request-confidence", "single-stacker"), default="initial")
     parser.add_argument("--batch-size", type=int, default=1)
     args = parser.parse_args()
     import wandb
