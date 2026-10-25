@@ -34961,3 +34961,15 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/e66r927g"
 }
 ```
+
+## Validation provenance audit during the existing-model comparison
+
+Purpose: Identify whether a later learned combiner could use a genuinely unseen non-test calibration source without retraining the existing members. This was a read-only source and code audit. No dataset rows, official test examples, model scoring, or label generation were performed.
+
+The original unqualified Jina checkpoint has epoch 6 and optimizer step 3378. Its original log identifies W&B run a7bwo46l and 9000 preference training rows. The step count matches six epochs at effective batch size 16. The notes state that SFT label extraction did not alter that active preference run. This supports preference-only warm-start provenance, although a cryptographic training-data manifest was not saved.
+
+A candidate later validation source would combine question-disjoint released SFT cases and non-Live BFCL cases. It is not ready as gold calibration data. Exact question exclusions do not remove all rewritten APIGen ancestry. Combining SFT-only refusal and clarification cases with BFCL-only tool cases also confounds class and source. Non-Live BFCL examples can have been seen during upstream public pretraining even if our task training excluded them.
+
+The When2Call paper describes filtering for questions that require tools. A BFCL function-call category therefore does not automatically establish the When2Call tool_call target. Questions answerable from ordinary knowledge require a separate capability-necessity check. The current released generation scripts also have inconsistencies and cannot establish the exact label provenance of the already released SFT data without further verification. These findings rule out fitting a combiner immediately on heuristic SFT plus BFCL labels. The current fixed comparison remains unchanged.
+
+Sources: https://aclanthology.org/anthology-files/pdf/naacl/2025.naacl-long.174.pdf . https://raw.githubusercontent.com/ShishirPatil/gorilla/main/berkeley-function-call-leaderboard/bfcl_eval/constants/category_mapping.py . https://raw.githubusercontent.com/NVIDIA/When2Call/main/synthetic_data_gen/convert_raw_train_data_to_sft.py .
