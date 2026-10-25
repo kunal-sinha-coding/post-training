@@ -8074,3 +8074,12 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+## Matched preference-only control completed
+
+The matched control used Qwen2.5-1.5B-Instruct, SFT, the full train_pref training partition, seed 20261029, split seed 20261029, one epoch, batch size 1, max length 4096, learning rate 2e-5, weight decay 0.01, and LoRA rank 16. It recorded training metrics on 7,200 examples: accuracy 0.916944 and macro F1 0.688100. Clean validation on the separate 1,800-example preference development partition was 0.896111 accuracy and 0.672814 macro F1. The aggregate-only test measurement on 3,652 When2Call test/mcq examples was 0.666210 accuracy and 0.492468 macro F1.
+
+All three evidence types are recorded. The validation metric is in `development_metrics` in `outputs/qwen-when2call-qwen25-15b-pref-full-control-seed20261031/metrics.json`; the aggregate test metrics are in `outputs/test-qwen-pref-full-control-15b-seed20261031/metrics.json`. The training experiment record stores training metrics, and the same results artifact stores the clean development metrics.
+
+On the shared clean preference holdout, the matched control is 1.67 percentage points lower in accuracy and 1.23 points lower in macro F1 than the 250-example Glaive mix. The next hypothesis is that a 500-example Glaive sample may retain that clean-validation gain while expanding source coverage. The next experiment is selected from clean validation only. Its aggregate test measurement follows training and clean validation.

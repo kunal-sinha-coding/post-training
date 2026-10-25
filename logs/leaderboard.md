@@ -1185,3 +1185,16 @@ All test columns are aggregate-only reports and were not used for candidate sele
 | Candidate | test-qwen-pref-full-control-15b-seed20261031 | — | — | [metrics](/workspace/post-training/outputs/test-qwen-pref-full-control-15b-seed20261031/metrics.json) | completed |
 
 | test-qwen-pref-full-control-15b-seed20261031 | 0.666210295728368 | 0.4924675618502121 | 4rxxwtzk | Aggregate-only frozen test measurement |
+
+
+### Matched preference-only control and clean-validation comparison
+
+| Candidate | Training accuracy | Training macro F1 | Clean preference validation accuracy | Clean preference validation macro F1 | Aggregate test accuracy | Aggregate test macro F1 |
+|---|---:|---:|---:|---:|---:|---:|
+| Preference-only control | 0.916944 | 0.688100 | 0.896111 | 0.672814 | 0.666210 | 0.492468 |
+| Preference plus 250 Glaive | 0.925125 | 0.694092 | 0.912778 | 0.685114 | 0.622946 | 0.447941 |
+
+The next candidate uses 500 Glaive decisions. Candidate selection uses the shared clean preference holdout, not test metrics. Test figures above are retained as aggregate reports only.
+
+| Candidate | qwen-when2call-qwen25-15b-pref-full-glaive500-matched-seed20261029 | — | — | Queued matched 500-example Glaive dose probe. Selection uses clean validation only. | queued |
+| Aggregate test | test-qwen-glaive500-pref-full-15b-matched-seed20261029 | — | — | Queued after training and clean validation. Aggregate-only report. | queued |

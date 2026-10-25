@@ -1,10 +1,10 @@
 {
-  "status": "awaiting_codex_planning",
+  "status": "active",
   "planning_owner": "codex_primary",
-  "planning_required": true,
+  "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "existing_frozen_encoder_llm_comparison_v1",
-  "current_hypothesis": "A matched full-train_pref-only Qwen SFT control, using the same initialization seed, preference split, and optimizer settings as the 250-example Glaive candidate, will isolate whether a Glaive contribution improves source-specific clean validation. Candidate selection will use clean validation only. The frozen aggregate-only official test measurement will follow training and validation.",
+  "current_hypothesis": "A 500-example direct-filtered Glaive dose may preserve the clean preference-validation improvement observed at 250 examples while giving wider coverage of Glaive decisions. The matched preference-only control scored 0.896111 accuracy and 0.672814 macro F1 on the same 1,800-example clean preference holdout, below the 250-example mix at 0.912778 and 0.685114. Candidate selection will use source-specific clean validation only.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -24,7 +24,54 @@
     "--batch-size",
     "1"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_glaive_mix",
+      "--model",
+      "Qwen/Qwen2.5-1.5B-Instruct",
+      "--output-dir",
+      "outputs/qwen-when2call-qwen25-15b-pref-full-glaive500-matched-seed20261029",
+      "--glaive-sample",
+      "500",
+      "--seed",
+      "20261029",
+      "--split-seed",
+      "20261029",
+      "--epochs",
+      "1",
+      "--batch-size",
+      "1",
+      "--max-length",
+      "4096",
+      "--learning-rate",
+      "2e-5",
+      "--weight-decay",
+      "0.01",
+      "--lora-rank",
+      "16"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_qwen_when2call_test",
+      "--model",
+      "Qwen/Qwen2.5-1.5B-Instruct",
+      "--checkpoint",
+      "outputs/qwen-when2call-qwen25-15b-pref-full-glaive500-matched-seed20261029",
+      "--output-dir",
+      "outputs/test-qwen-glaive500-pref-full-15b-matched-seed20261029",
+      "--lora-rank",
+      "16",
+      "--max-length",
+      "4096",
+      "--batch-size",
+      "1"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -42,26 +89,48 @@
     "outputs/test-clean-validation-smooth0075-wd002-weight75-25.json"
   ],
   "experiment_queue": [
-    "Train a matched Qwen2.5-1.5B SFT control on the full train_pref training partition only. Match the 250-example Glaive experiment seed, preference split, optimization settings, and LoRA rank.",
-    "Record training and clean preference validation before any test measurement.",
-    "Run one aggregate-only test evaluation after the candidate is frozen."
+    "Train Qwen2.5-1.5B SFT on the full train_pref training partition plus 500 direct-filtered Glaive decisions, using the 250-example seed and preference split for a dose comparison.",
+    "Record training metrics and separate preference and Glaive clean validation before test measurement.",
+    "Run one aggregate-only official test measurement after freezing the candidate."
   ],
   "best_validation": {
     "status": "historical scores are incomparable",
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
-  "last_heartbeat": "2026-10-25T07:39:05.632583+00:00",
-  "last_action": "Watchdog handed planning control to the primary Codex process.",
+  "last_heartbeat": null,
+  "last_action": "Queued the matched 500-example Glaive dose experiment and its aggregate-only test measurement.",
   "watchdog_enabled": true,
-  "research_log_size": 808139,
+  "research_log_size": 809059,
   "stop_command": "STOP",
-  "next_experiment": null,
-  "recording_jobs": [
-    {
-      "pid": 37051,
-      "experiment_id": "test-qwen-pref-full-control-15b-seed20261031"
-    }
+  "next_experiment": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.train_qwen_glaive_mix",
+    "--model",
+    "Qwen/Qwen2.5-1.5B-Instruct",
+    "--output-dir",
+    "outputs/qwen-when2call-qwen25-15b-pref-full-glaive500-matched-seed20261029",
+    "--glaive-sample",
+    "500",
+    "--seed",
+    "20261029",
+    "--split-seed",
+    "20261029",
+    "--epochs",
+    "1",
+    "--batch-size",
+    "1",
+    "--max-length",
+    "4096",
+    "--learning-rate",
+    "2e-5",
+    "--weight-decay",
+    "0.01",
+    "--lora-rank",
+    "16"
   ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-25T07:48:10.763941+00:00",
   "planning_ack_deadline": "2026-10-25T07:50:10.763960+00:00",
@@ -76,5 +145,5 @@
     "wandb_run_id": "0m0zb20q",
     "selection": "Best observed result among four methods frozen before this benchmark measurement. This does not establish independent generalization."
   },
-  "next_hypothesis": "After the matched control is recorded, use source-specific clean validation to decide whether to test a different in-domain data mixture or abandon Glaive additions."
+  "next_hypothesis": "Compare the 500-example candidate with the matched preference-only and 250-example candidates on their shared clean preference holdout. Run its frozen aggregate-only test evaluation after training and clean validation."
 }
