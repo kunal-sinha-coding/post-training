@@ -6,33 +6,8 @@
   "protocol": "existing_frozen_encoder_llm_comparison_v1",
   "current_hypothesis": "User clarified that research must combine the best EXISTING trained encoder and LLM approaches. Use Qwen SFT 1.5B with Jina checkpoint48 or the historical weighted Jina65/61/48 approach. Predeclare probability averaging and entropy gating. No fresh encoder or RPO in the initial comparison.",
   "active_experiment": {
-    "pid": 10953,
+    "pid": 11274,
     "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.existing_when2call_hybrid",
-      "prepare",
-      "--work-dir",
-      "outputs/existing-when2call-hybrid-20261025",
-      "--output-dir",
-      "outputs/existing-when2call-hybrid-prepare-20261025"
-    ],
-    "started_at": "2026-10-25T01:00:43.088314+00:00"
-  },
-  "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.existing_when2call_hybrid",
-    "prepare",
-    "--work-dir",
-    "outputs/existing-when2call-hybrid-20261025",
-    "--output-dir",
-    "outputs/existing-when2call-hybrid-prepare-20261025"
-  ],
-  "worker_queue": [
-    [
       "python",
       "-u",
       "-m",
@@ -42,8 +17,21 @@
       "outputs/existing-when2call-hybrid-20261025",
       "--output-dir",
       "outputs/existing-when2call-hybrid-test-20261025"
-    ]
+    ],
+    "started_at": "2026-10-25T01:02:13.922705+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "test",
+    "--work-dir",
+    "outputs/existing-when2call-hybrid-20261025",
+    "--output-dir",
+    "outputs/existing-when2call-hybrid-test-20261025"
   ],
+  "worker_queue": [],
   "_previous_command": [
     "python",
     "-u",
@@ -69,26 +57,26 @@
     "status": "historical scores are incomparable",
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
-  "last_heartbeat": "2026-10-25T01:00:43.088329+00:00",
-  "last_action": "Watchdog started validation worker pid 10953.",
+  "last_heartbeat": "2026-10-25T01:02:13.922718+00:00",
+  "last_action": "Watchdog started validation worker pid 11274.",
   "watchdog_enabled": true,
-  "research_log_size": 771313,
+  "research_log_size": 772072,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
     "-u",
     "-m",
     "experiments.existing_when2call_hybrid",
-    "prepare",
+    "test",
     "--work-dir",
     "outputs/existing-when2call-hybrid-20261025",
     "--output-dir",
-    "outputs/existing-when2call-hybrid-prepare-20261025"
+    "outputs/existing-when2call-hybrid-test-20261025"
   ],
   "recording_jobs": [
     {
-      "pid": 10952,
-      "experiment_id": "heterogeneous-when2call-selection-20261025"
+      "pid": 11273,
+      "experiment_id": "existing-when2call-hybrid-prepare-20261025"
     }
   ],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a"

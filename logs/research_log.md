@@ -7665,3 +7665,15 @@ Clean development accuracy: 0.8940731399747793. Clean development macro F1: 0.67
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## existing-when2call-hybrid-prepare-20261025
+
+Timestamp: 2026-10-25T01:02:13.968934+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.existing_when2call_hybrid", "prepare", "--work-dir", "outputs/existing-when2call-hybrid-20261025", "--output-dir", "outputs/existing-when2call-hybrid-prepare-20261025"]. Output: /workspace/post-training/outputs/existing-when2call-hybrid-prepare-20261025. W&B run: e66r927g.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Test status: queued. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

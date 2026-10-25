@@ -34831,3 +34831,133 @@ The complete setup and observed results are recorded below. Source validation sp
 ## Existing encoder inference preservation
 
 The hybrid evaluator preserves the historical encoder policy of tokenizing with special tokens and then taking the first 4096 token IDs. It does not replace the last retained token through tokenizer truncation. The fresh-encoder combination records are marked test skipped with the user scope correction as the reason. Existing-model preparation and aggregate comparison remain the authorized pending commands.
+
+## existing-when2call-hybrid-prepare-20261025
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "prepare",
+    "--work-dir",
+    "outputs/existing-when2call-hybrid-20261025",
+    "--output-dir",
+    "outputs/existing-when2call-hybrid-prepare-20261025"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "existing-when2call-hybrid-prepare-20261025",
+  "failure_reason": null,
+  "metadata": {
+    "command": [
+      "/usr/local/bin/python",
+      "/workspace/post-training/experiments/existing_when2call_hybrid.py",
+      "prepare",
+      "--work-dir",
+      "outputs/existing-when2call-hybrid-20261025",
+      "--output-dir",
+      "outputs/existing-when2call-hybrid-prepare-20261025"
+    ],
+    "configuration": {
+      "batch_size": 1,
+      "mode": "prepare",
+      "output_dir": "outputs/existing-when2call-hybrid-prepare-20261025",
+      "work_dir": "outputs/existing-when2call-hybrid-20261025"
+    },
+    "encoder_logit_weights": [
+      0.35625,
+      0.1375,
+      0.50625
+    ],
+    "encoders": [
+      "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065",
+      "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061",
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+    ],
+    "frozen_configuration": {
+      "artifact_sha256": {
+        "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061/encoder_config.json": "0616e72a787934ed1fa3bec80e5da45239be1a1c267525c92960b83e9c44c12f",
+        "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061/model_state.pt": "ebafcdeaf992bd5e3a47eeee615f9b84e0de8a405229f350690d3eef92fbdfde",
+        "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065/encoder_config.json": "0616e72a787934ed1fa3bec80e5da45239be1a1c267525c92960b83e9c44c12f",
+        "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065/model_state.pt": "765fadef1e7f5fb87a972066bd2c67a75e4f274194112540527538b0c011bf52",
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/encoder_config.json": "0616e72a787934ed1fa3bec80e5da45239be1a1c267525c92960b83e9c44c12f",
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/model_state.pt": "815459d76b8c2e9fb7ba44e2f3867379ab096766cf9f1c807a08921be26593b5",
+        "outputs/qwen-when2call-sft-15b-seed20261022/adapter_config.json": "73b427067b3c4385f48db97011e5e48a25a6b0ea1291e096c2b6e53d8d90588e",
+        "outputs/qwen-when2call-sft-15b-seed20261022/adapter_model.safetensors": "6ecc1863fe7e7eeb995a2588e106e45bfa66f21d36605c93c1ad7f41b3fbe9de",
+        "outputs/when2call-jina-v2-small/latest/tokenizer.json": "e9f999ac74497843ed9f4303246a8f43d9f100ee8aab8e133667903f447ceb48"
+      },
+      "development_selection_performed": false,
+      "encoder_logit_weights": [
+        0.35625,
+        0.1375,
+        0.50625
+      ],
+      "encoders": [
+        "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065",
+        "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061",
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+      ],
+      "family_probability_weights": [
+        0.5,
+        0.5
+      ],
+      "historical_selection_limitation": "Existing encoder approaches were identified in prior research with repeated official benchmark inspection. This fixed comparison is a benchmark measurement, not a new independent generalization estimate.",
+      "label_order": [
+        "cannot_answer",
+        "request_for_info",
+        "tool_call",
+        "direct"
+      ],
+      "max_length": 4096,
+      "methods": [
+        "single_average",
+        "single_gate",
+        "ensemble_average",
+        "ensemble_gate"
+      ],
+      "metric_definition": "Primary macro F1 includes all four declared classes. The present-class macro F1 diagnostic permits comparison with historical encoder reports.",
+      "primary_method": "ensemble_average",
+      "qwen_base": "Qwen/Qwen2.5-1.5B-Instruct",
+      "qwen_checkpoint": "outputs/qwen-when2call-sft-15b-seed20261022",
+      "qwen_mapping": "Historical adapter training used LABEL_TO_ID directly despite reversed ABCD descriptions in its prompt. Preserve learned identity indices.",
+      "qwen_output_permutation": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "selection_complete": true,
+      "single_encoder_index": 2,
+      "test_status": "queued",
+      "training_performed": false,
+      "validation_limitation": "Existing encoder warm starts saw all train_pref rows. No clean preference validation is claimed or used for selection."
+    },
+    "git_commit": "95e4dc3732351236e1abca27b8fa0f0cfe9c2212",
+    "max_length": 4096,
+    "primary_method": "ensemble_average",
+    "qwen_checkpoint": "outputs/qwen-when2call-sft-15b-seed20261022",
+    "runtime_seconds": 21.37459897994995,
+    "status": "completed",
+    "test_status": "queued",
+    "wandb_run_id": "e66r927g",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/e66r927g"
+  },
+  "metrics_path": "/workspace/post-training/outputs/existing-when2call-hybrid-prepare-20261025/metrics.json",
+  "official_test_loaded": null,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/existing-when2call-hybrid-prepare-20261025",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-25T01:00:43.088314+00:00",
+  "status": "completed",
+  "test_status": "queued",
+  "timestamp": "2026-10-25T01:02:13.968934+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "e66r927g",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/e66r927g"
+}
+```
