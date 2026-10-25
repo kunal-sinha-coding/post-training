@@ -1200,3 +1200,6 @@ The next candidate uses 500 Glaive decisions. Candidate selection uses the share
 | Aggregate test | test-qwen-glaive500-pref-full-15b-matched-seed20261029 | — | — | Queued after training and clean validation. Aggregate-only report. | queued |
 
 Source-specific result `qwen-when2call-qwen25-15b-pref-full-glaive500-matched-seed20261029` has status completed. Its separate validation metrics are {"preference_validation_metrics": {"accuracy": 0.8944444444444445, "macro_f1": 0.6718326346731825, "confusion_matrix": [[554, 21, 24, 0], [0, 505, 95, 0], [1, 48, 551, 0], [1, 0, 0, 0]], "examples": 1800}, "glaive_validation_metrics": {"accuracy": 0.91, "macro_f1": 0.6489298580207671, "confusion_matrix": [[16, 0, 0, 0], [6, 16, 2, 0], [1, 0, 59, 0], [0, 0, 0, 0]], "examples": 100}}. These values are not ranked against other splits.
+| Candidate | test-qwen-glaive500-pref-full-15b-matched-seed20261029 | — | — | [metrics](/workspace/post-training/outputs/test-qwen-glaive500-pref-full-15b-matched-seed20261029/metrics.json) | completed |
+
+| test-qwen-glaive500-pref-full-15b-matched-seed20261029 | 0.6262322015334063 | 0.45849601545418894 | cx198mpx | Aggregate-only frozen test measurement |
