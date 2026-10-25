@@ -4,11 +4,10 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "existing_frozen_encoder_llm_comparison_v1",
-  "current_hypothesis": "Test whether small external function-calling datasets improve the full-preference Qwen adapter when training continues on candidate data only. Select by clean preference validation accuracy. Evaluate every epoch or every 1,000 steps, whichever comes first, and stop after two consecutive evaluations without a clean-validation gain.",
-  "active_experiment": {},
-  "worker_command": [],
-  "worker_queue": [
-    [
+  "current_hypothesis": "Screen each accessible external function-calling dataset independently by continuing the same full-preference Qwen adapter on that dataset alone. Do not mix sources until single-source clean-validation results identify helpful candidates.",
+  "active_experiment": {
+    "pid": 63523,
+    "command": [
       "python",
       "-u",
       "-m",
@@ -42,6 +41,43 @@
       "--apigen-mt-sample",
       "500"
     ],
+    "started_at": "2026-10-25T19:14:20.213405+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.train_qwen_dataset_continuation",
+    "--model",
+    "Qwen/Qwen2.5-1.5B-Instruct",
+    "--initial-checkpoint",
+    "outputs/qwen-when2call-qwen25-15b-pref-full-control-seed20261031",
+    "--seed",
+    "20261047",
+    "--split-seed",
+    "20261029",
+    "--max-epochs",
+    "20",
+    "--batch-size",
+    "1",
+    "--max-length",
+    "4096",
+    "--learning-rate",
+    "2e-5",
+    "--weight-decay",
+    "0.01",
+    "--lora-rank",
+    "16",
+    "--evaluation-steps",
+    "1000",
+    "--max-nonimproving-evaluations",
+    "2",
+    "--output-dir",
+    "outputs/qwen-pref-control-continue-apigenmt500-seed20261047",
+    "--apigen-mt-sample",
+    "500"
+  ],
+  "worker_queue": [
     [
       "python",
       "-u",
@@ -75,42 +111,6 @@
       "outputs/qwen-pref-control-continue-toolace500-seed20261047",
       "--toolace-sample",
       "500"
-    ],
-    [
-      "python",
-      "-u",
-      "-m",
-      "experiments.train_qwen_dataset_continuation",
-      "--model",
-      "Qwen/Qwen2.5-1.5B-Instruct",
-      "--initial-checkpoint",
-      "outputs/qwen-when2call-qwen25-15b-pref-full-control-seed20261031",
-      "--seed",
-      "20261047",
-      "--split-seed",
-      "20261029",
-      "--max-epochs",
-      "20",
-      "--batch-size",
-      "1",
-      "--max-length",
-      "4096",
-      "--learning-rate",
-      "2e-5",
-      "--weight-decay",
-      "0.01",
-      "--lora-rank",
-      "16",
-      "--evaluation-steps",
-      "1000",
-      "--max-nonimproving-evaluations",
-      "2",
-      "--output-dir",
-      "outputs/qwen-pref-control-continue-apigenmt250-toolace250-seed20261047",
-      "--apigen-mt-sample",
-      "250",
-      "--toolace-sample",
-      "250"
     ],
     [
       "python",
@@ -211,8 +211,8 @@
     "status": "historical scores are incomparable",
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
-  "last_heartbeat": "2026-10-25T19:08:49.789118+00:00",
-  "last_action": "Activated the rebuilt adapter-continuation queue after verifying the continuation runner CLI. The watchdog should launch APIGen-MT 500 first.",
+  "last_heartbeat": "2026-10-25T19:14:20.213417+00:00",
+  "last_action": "Removed the premature APIGen-MT plus ToolACE mixture. Continue the queued single-source trials only.",
   "watchdog_enabled": true,
   "research_log_size": 846818,
   "stop_command": "STOP",
@@ -265,5 +265,5 @@
     "wandb_run_id": "0m0zb20q",
     "selection": "Best observed result among four methods frozen before this benchmark measurement. This does not establish independent generalization."
   },
-  "next_hypothesis": "Audit public candidate datasets while the current run proceeds. Continue the full-Glaive run only while aggregate checkpoint test accuracy improves. After it stops or completes, run APIGen-MT, ToolACE, and their matched mixture one at a time with epoch-end evaluation."
+  "next_hypothesis": "After independent source trials, compare only sources that improve clean preference-validation accuracy and test combinations of those sources."
 }
