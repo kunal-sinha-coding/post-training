@@ -145,12 +145,12 @@ def train_encoder(args: object, run: object, device: torch.device) -> dict:
             if start % 100 == 0:
                 run.log({"training/loss": losses[-1], "training/epoch": epoch + 1, "training/examples": start})
     # Save the encoder before scoring so evaluation failures do not discard trained weights.
-    checkpoint = args.output_dir / "encoder"
+    checkpoint = args.work_dir / "encoder"
     model.save_pretrained(checkpoint)
     tokenizer.save_pretrained(checkpoint)
     probabilities = encoder_probabilities(model, tokenizer, development, args, device)
     result = {"provenance": provenance, "parameter_count": count, "initialization": BASE_ENCODER, "task_warmstart": False, "epochs": args.epochs, "max_length": args.max_length, "learning_rate": args.learning_rate, "development_metrics": metrics(torch.tensor([row.label for row in development]), probabilities), "mean_training_loss": sum(losses) / len(losses), "checkpoint": str(checkpoint)}
-    save_json(args.output_dir / "encoder-metrics.json", result)
+    save_json(args.work_dir / "encoder-metrics.json", result)
     del model, tokenizer, optimizer
     free_gpu()
     return result
@@ -177,7 +177,7 @@ def member_probabilities(args: object, qwen_rows: list, encoder_rows: list, devi
         free_gpu()
     # Load only the newly trained encoder checkpoint and its recorded context limit.
     model, tokenizer = raw_encoder(device)
-    checkpoint = args.output_dir / "encoder"
+    checkpoint = args.work_dir / "encoder"
     model.load_state_dict(torch.load(checkpoint / "model_state.pt", map_location="cpu", weights_only=True))
     assert_size(model)
     outputs.append(encoder_probabilities(model, tokenizer, encoder_rows, args, device))
@@ -217,11 +217,11 @@ def combine(probabilities: torch.Tensor, candidate: str, stacker: dict) -> torch
 def select(args: object, run: object, device: torch.device) -> dict:
     # Select only from shared non-test development predictions using fixed fit and selection halves.
     _, encoder_rows, qwen_rows, provenance = partitions()
-    encoder_record = json.loads((args.output_dir / "encoder-metrics.json").read_text())
+    encoder_record = json.loads((args.work_dir / "encoder-metrics.json").read_text())
     if encoder_record["provenance"] != provenance:
         raise ValueError("Encoder split provenance does not match selection.")
     args.max_length = encoder_record["max_length"]
-    cache = args.output_dir / "development-probabilities.pt"
+    cache = args.work_dir / "development-probabilities.pt"
     digest = hashlib.sha256(json.dumps({"provenance": provenance, "members": MEMBERS, "encoder": encoder_record}, sort_keys=True).encode()).hexdigest()
     if cache.exists():
         cached = torch.load(cache, weights_only=True)
@@ -238,22 +238,28 @@ def select(args: object, run: object, device: torch.device) -> dict:
     fit_keys = set(keys[:len(keys) // 2])
     fitting = torch.tensor([index for index, row in enumerate(qwen_rows) if question_key(row.prompt) in fit_keys])
     selection = torch.tensor([index for index, row in enumerate(qwen_rows) if question_key(row.prompt) not in fit_keys])
+    if not len(fitting) or not len(selection):
+        raise ValueError("Both development roles require at least one question group.")
     stacker = fit_stacker(probabilities[fitting], labels[fitting])
     candidates = {}
     for name in ("uniform", "gate", "stacker"):
         score = metrics(labels[selection], combine(probabilities[selection], name, stacker))
-        candidates[name] = {"selection_metrics": score, "test_status": "pending", "rule": name}
+        viable = bool(torch.isfinite(combine(probabilities[selection], name, stacker)).all())
+        candidates[name] = {"selection_metrics": score, "test_status": "pending", "rule": name, "viable": viable}
         run.log({name + "/selection_accuracy": score["accuracy"], name + "/selection_macro_f1": score["macro_f1"]})
     # Freeze all three predeclared methods before any official measurement is allowed.
     config = {"selection_complete": True, "provenance": provenance, "members": MEMBERS, "encoder": encoder_record, "label_order": LABELS, "qwen_output_permutation": [0, 1, 2, 3], "qwen_prompt_mismatch": "Prompt describes ABCD in reverse order, but training and historical evaluation use LABEL_TO_ID indices directly. Preserve learned identity order.", "metric_definition": "Macro F1 includes all four classes. Some historical encoder metrics excluded direct.", "fitting_indices": fitting.tolist(), "selection_indices": selection.tolist(), "stacker": stacker, "candidates": candidates, "selection_criterion": "Report all predeclared methods. Prefer highest selection macro F1 with accuracy as tie breaker.", "member_selection_metrics": {MEMBERS[index]["name"] if index < 2 else "encoder": metrics(labels[selection], probabilities[selection, index]) for index in range(3)}}
-    save_json(args.output_dir / "frozen-config.json", config)
+    best = max(candidates, key=lambda name: (candidates[name]["selection_metrics"]["macro_f1"], candidates[name]["selection_metrics"]["accuracy"]))
+    config["best_selection_candidate"] = best
+    config["development_metrics"] = candidates[best]["selection_metrics"]
+    save_json(args.work_dir / "frozen-config.json", config)
     return config
 
 
 def test(args: object, run: object, device: torch.device) -> dict:
     # Load official labels only inside a separate frozen aggregate measurement worker.
-    config = json.loads((args.output_dir / "frozen-config.json").read_text())
-    if not config["selection_complete"] or config["members"] != MEMBERS:
+    config = json.loads((args.work_dir / "frozen-config.json").read_text())
+    if not config["selection_complete"] or config["members"] != MEMBERS or not config["candidates"][args.candidate]["viable"]:
         raise ValueError("Frozen candidate configuration is invalid.")
     from experiments.evaluate_qwen_when2call_test import load_official_rows, prepare_test_rows, aggregate_metrics
     from experiments.train_when2call_jina import Example
@@ -264,7 +270,7 @@ def test(args: object, run: object, device: torch.device) -> dict:
     probabilities = member_probabilities(args, qwen_rows, encoder_rows, device, official=True)
     predictions = combine(probabilities, args.candidate, config["stacker"]).argmax(-1).tolist()
     aggregate = aggregate_metrics([row.label for row in qwen_rows], predictions)
-    result = {"candidate": args.candidate, "test_measurement_only": True, "black_box": True, "selection_complete": True, "examples": len(rows), "metrics": aggregate, "frozen_config_sha256": hashlib.sha256((args.output_dir / "frozen-config.json").read_bytes()).hexdigest()}
+    result = {"candidate": args.candidate, "test_measurement_only": True, "black_box": True, "selection_complete": True, "examples": len(rows), "metrics": aggregate, "frozen_config_sha256": hashlib.sha256((args.work_dir / "frozen-config.json").read_bytes()).hexdigest()}
     save_json(args.output_dir / ("test-" + args.candidate + ".json"), result)
     run.log({"test/accuracy": aggregate["accuracy"], "test/macro_f1": aggregate["macro_f1"]})
     return result
@@ -275,16 +281,19 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("mode", choices=("train-encoder", "select", "test"))
     parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument("--work-dir", type=Path)
     parser.add_argument("--candidate", choices=("uniform", "gate", "stacker"), default="uniform")
     parser.add_argument("--epochs", type=int, default=1)
     parser.add_argument("--learning-rate", type=float, default=1e-5)
     parser.add_argument("--batch-size", type=int, default=1)
     parser.add_argument("--max-length", type=int, default=2048)
     args = parser.parse_args()
+    args.work_dir = args.work_dir or args.output_dir
     import wandb
     if not os.getenv("WANDB_API_KEY"):
         raise RuntimeError("WANDB_API_KEY is required.")
     args.output_dir.mkdir(parents=True, exist_ok=True)
+    args.work_dir.mkdir(parents=True, exist_ok=True)
     command = [sys.executable, *sys.argv]
     commit = subprocess.check_output(["git", "-c", "safe.directory=/workspace/post-training", "rev-parse", "HEAD"], text=True).strip()
     metadata = {"command": command, "git_commit": commit, "configuration": {key: str(value) if isinstance(value, Path) else value for key, value in vars(args).items()}, "members": MEMBERS, "labels": LABELS}
@@ -305,11 +314,13 @@ def main() -> int:
         result = {"train-encoder": train_encoder, "select": select, "test": test}[args.mode](args, run, device)
         metadata.update({"status": "completed", "runtime_seconds": time.time() - started, "wandb_run_id": run.id, "wandb_run_url": run.url, "result": result})
         save_json(path, metadata)
+        save_json(args.output_dir / "metrics.json", {**metadata, **result})
         write_heartbeat(args.output_dir / "heartbeat.json", "completed")
         run.summary.update({"status": "completed", "runtime_seconds": metadata["runtime_seconds"], "result_artifact": str(path)})
     except BaseException as error:
         metadata.update({"status": "failed", "error": repr(error), "runtime_seconds": time.time() - started, "wandb_run_id": run.id, "wandb_run_url": run.url})
         save_json(path, metadata)
+        save_json(args.output_dir / "metrics.json", {**metadata, **result})
         write_heartbeat(args.output_dir / "heartbeat.json", "failed")
         run.summary.update({"status": "failed", "error": repr(error)})
         raise
