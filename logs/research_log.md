@@ -8114,3 +8114,15 @@ This record was written automatically. Candidate selection must use clean valida
 The candidate used Qwen2.5-1.5B-Instruct, full train_pref training partition, 500 direct-filtered Glaive decisions, seed and split seed 20261029, one epoch, batch size 1, max length 4096, learning rate 2e-5, weight decay 0.01, and LoRA rank 16. It recorded training accuracy 0.918553 and macro F1 0.689551 on 7,600 examples. Clean preference validation on 1,800 examples was 0.894444 accuracy and 0.671833 macro F1. Clean Glaive validation on 100 examples was 0.910000 accuracy and 0.648930 macro F1. The aggregate-only test result on 3,652 When2Call test/mcq examples was 0.626232 accuracy and 0.458496 macro F1. The complete training, validation, and test artifacts are recorded; test metrics are aggregate-only and did not inform candidate selection.
 
 The 500-example preference validation is below the 250-example candidate's 0.912778 accuracy and 0.685114 macro F1, and below the matched preference-only control's 0.896111 accuracy and 0.672814 macro F1 by small margins. The next hypothesis tests whether the 250-example validation gain is robust across a different Glaive sample and training seed. It keeps the preference split fixed and selects using clean validation only.
+
+## qwen-when2call-qwen25-15b-pref-full-glaive250-seed20261034
+
+Timestamp: 2026-10-25T09:43:03.086185+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_glaive_mix", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--output-dir", "outputs/qwen-when2call-qwen25-15b-pref-full-glaive250-seed20261034", "--glaive-sample", "250", "--seed", "20261034", "--split-seed", "20261029", "--epochs", "1", "--batch-size", "1", "--max-length", "4096", "--learning-rate", "2e-5", "--weight-decay", "0.01", "--lora-rank", "16"]. Output: /workspace/post-training/outputs/qwen-when2call-qwen25-15b-pref-full-glaive250-seed20261034. W&B run: s9kl2h04.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {"preference_validation_metrics": {"accuracy": 0.9094444444444445, "macro_f1": 0.6826422187529956, "confusion_matrix": [[571, 13, 15, 0], [3, 550, 47, 0], [3, 81, 516, 0], [1, 0, 0, 0]], "examples": 1800}, "glaive_validation_metrics": {"accuracy": 0.92, "macro_f1": 0.6745470232959447, "confusion_matrix": [[9, 0, 0, 0], [1, 8, 3, 0], [0, 0, 29, 0], [0, 0, 0, 0]], "examples": 50}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
