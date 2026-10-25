@@ -7229,3 +7229,415 @@ Timestamp: 2026-10-24T01:46:00+00:00. Status: queued.
 Setup: ["python", "-u", "-m", "experiments.clean_validation_glaive", "--output-dir", "outputs/clean-validation-glaive-filtered-light1k-pref3k-sft3k-seed20261030", "--glaive-sample", "1000", "--pref-sample", "3000", "--sft-sample", "3000", "--epochs", "1", "--seed", "20261030", "--split-seed", "20261030", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"].
 
 Hypothesis: A small filtered Glaive mixture with equal When2Call SFT and preference samples may improve class-conditional coverage and generalization while limiting distribution shift. Clean validation will be measured on the Glaive and When2Call held-out splits. A frozen aggregate-only test evaluation is queued after training.
+
+## clean-validation-glaive-filtered-light1k-pref3k-sft3k-seed20261030
+
+Timestamp: 2026-10-24T01:50:10.227343+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_glaive", "--output-dir", "outputs/clean-validation-glaive-filtered-light1k-pref3k-sft3k-seed20261030", "--glaive-sample", "1000", "--pref-sample", "3000", "--sft-sample", "3000", "--epochs", "1", "--seed", "20261030", "--split-seed", "20261030", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-glaive-filtered-light1k-pref3k-sft3k-seed20261030. W&B run: not available.
+
+Clean development accuracy: 0.9283333333333333. Clean development macro F1: 0.9115391098403544. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-paper-mix-pref4500-sft3000-seed20261031
+
+Timestamp: 2026-10-24T01:54:13.600761+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-paper-mix-pref4500-sft3000-seed20261031", "--pref-sample", "4500", "--sft-sample", "3000", "--epochs", "1", "--seed", "20261031", "--split-seed", "20261031", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-paper-mix-pref4500-sft3000-seed20261031. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-sft-heavy-pref3000-sft4500-seed20261032
+
+Timestamp: 2026-10-24T01:57:47.113069+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-sft-heavy-pref3000-sft4500-seed20261032", "--pref-sample", "3000", "--sft-sample", "4500", "--epochs", "1", "--seed", "20261032", "--split-seed", "20261032", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-sft-heavy-pref3000-sft4500-seed20261032. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pool6000-pref3000-sft3000-seed20261033
+
+Timestamp: 2026-10-24T02:05:58.929429+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pool6000-pref3000-sft3000-seed20261033", "--pref-sample", "3000", "--sft-sample", "3000", "--pool-sample", "6000", "--epochs", "1", "--seed", "20261033", "--split-seed", "20261033", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pool6000-pref3000-sft3000-seed20261033. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pool6000-pref1500-sft1500-seed20261034
+
+Timestamp: 2026-10-24T02:11:03.631415+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pool6000-pref1500-sft1500-seed20261034", "--pref-sample", "1500", "--sft-sample", "1500", "--pool-sample", "6000", "--epochs", "1", "--seed", "20261034", "--split-seed", "20261034", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pool6000-pref1500-sft1500-seed20261034. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-pool1000-sft0-seed20261035
+
+Timestamp: 2026-10-24T02:15:40.059265+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-pool1000-sft0-seed20261035", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "1000", "--epochs", "1", "--seed", "20261035", "--split-seed", "20261035", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-pool1000-sft0-seed20261035. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-pool1000-sft0-retry-seed20261035
+
+Timestamp: 2026-10-24T02:19:45.242846+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-pool1000-sft0-retry-seed20261035", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "1000", "--epochs", "1", "--seed", "20261035", "--split-seed", "20261035", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-pool1000-sft0-retry-seed20261035. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-pool250-sft0-seed20261036
+
+Timestamp: 2026-10-24T02:24:51.122404+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-pool250-sft0-seed20261036", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "250", "--epochs", "1", "--seed", "20261036", "--split-seed", "20261036", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-pool250-sft0-seed20261036. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-pool500-sft0-seed20261037
+
+Timestamp: 2026-10-24T02:28:56.253040+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-pool500-sft0-seed20261037", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "500", "--epochs", "1", "--seed", "20261037", "--split-seed", "20261037", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-pool500-sft0-seed20261037. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-pool0-sft0-seed20261038
+
+Timestamp: 2026-10-24T02:33:01.457974+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-pool0-sft0-seed20261038", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--epochs", "1", "--seed", "20261038", "--split-seed", "20261038", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-pool0-sft0-seed20261038. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-pool100-sft0-seed20261039
+
+Timestamp: 2026-10-24T02:36:38.566664+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-pool100-sft0-seed20261039", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "100", "--epochs", "1", "--seed", "20261039", "--split-seed", "20261039", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-pool100-sft0-seed20261039. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-pool500-sft0-seed20261040
+
+Timestamp: 2026-10-24T02:41:14.406279+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-pool500-sft0-seed20261040", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "500", "--epochs", "1", "--seed", "20261040", "--split-seed", "20261040", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-pool500-sft0-seed20261040. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-pool500-sft0-seed20261041
+
+Timestamp: 2026-10-24T02:44:47.823588+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-pool500-sft0-seed20261041", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "500", "--epochs", "1", "--seed", "20261041", "--split-seed", "20261041", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-pool500-sft0-seed20261041. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-bfcl1000-seed20261042
+
+Timestamp: 2026-10-24T02:50:26.956112+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl1000-seed20261042", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1000", "--epochs", "1", "--seed", "20261042", "--split-seed", "20261042", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-bfcl1000-seed20261042. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-bfcl2000-seed20261043
+
+Timestamp: 2026-10-24T02:53:30.073425+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl2000-seed20261043", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "2000", "--epochs", "1", "--seed", "20261043", "--split-seed", "20261043", "--max-length", "4096", "--batch-size", "2", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-bfcl2000-seed20261043. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-bfcl1000-retry-seed20261042
+
+Timestamp: 2026-10-24T02:58:37.753040+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl1000-retry-seed20261042", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1000", "--epochs", "1", "--seed", "20261042", "--split-seed", "20261042", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-bfcl1000-retry-seed20261042. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-bfcl2000-retry-seed20261043
+
+Timestamp: 2026-10-24T03:04:13.946482+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl2000-retry-seed20261043", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "2000", "--epochs", "1", "--seed", "20261043", "--split-seed", "20261043", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-bfcl2000-retry-seed20261043. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-bfcl500-seed20261044
+
+Timestamp: 2026-10-24T03:09:19.900331+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl500-seed20261044", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "500", "--epochs", "1", "--seed", "20261044", "--split-seed", "20261044", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-bfcl500-seed20261044. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-bfcl750-seed20261045
+
+Timestamp: 2026-10-24T03:13:55.187048+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl750-seed20261045", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "750", "--epochs", "1", "--seed", "20261045", "--split-seed", "20261045", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-bfcl750-seed20261045. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-bfcl1000-callonly-seed20261046
+
+Timestamp: 2026-10-24T03:20:33.783318+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl1000-callonly-seed20261046", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1000", "--bfcl-call-only", "--epochs", "1", "--seed", "20261046", "--split-seed", "20261046", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-bfcl1000-callonly-seed20261046. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-bfcl1000-callonly-seed20261047
+
+Timestamp: 2026-10-24T03:26:41.550470+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl1000-callonly-seed20261047", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1000", "--bfcl-call-only", "--epochs", "1", "--seed", "20261047", "--split-seed", "20261047", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-bfcl1000-callonly-seed20261047. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048
+
+Timestamp: 2026-10-24T03:32:18.253312+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1500", "--bfcl-call-only", "--epochs", "1", "--seed", "20261048", "--split-seed", "20261048", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261049
+
+Timestamp: 2026-10-24T03:37:55.524449+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261049", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1500", "--bfcl-call-only", "--epochs", "1", "--seed", "20261049", "--split-seed", "20261049", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261049. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-bfcl2000-callonly-seed20261050
+
+Timestamp: 2026-10-24T03:42:29.477936+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl2000-callonly-seed20261050", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "2000", "--bfcl-call-only", "--epochs", "1", "--seed", "20261050", "--split-seed", "20261050", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-bfcl2000-callonly-seed20261050. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261051
+
+Timestamp: 2026-10-24T03:47:06.299659+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261051", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1500", "--bfcl-call-only", "--epochs", "1", "--seed", "20261051", "--split-seed", "20261051", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261051. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-bfcl1750-callonly-seed20261052
+
+Timestamp: 2026-10-24T03:52:42.749934+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl1750-callonly-seed20261052", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1750", "--bfcl-call-only", "--epochs", "1", "--seed", "20261052", "--split-seed", "20261052", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-bfcl1750-callonly-seed20261052. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261053
+
+Timestamp: 2026-10-24T04:17:04.451705+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261053", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1500", "--bfcl-call-only", "--epochs", "1", "--seed", "20261053", "--split-seed", "20261053", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261053. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref9000-bfcl1500-callonly-seed20261054
+
+Timestamp: 2026-10-24T04:23:11.466949+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref9000-bfcl1500-callonly-seed20261054", "--pref-sample", "9000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1500", "--bfcl-call-only", "--epochs", "1", "--seed", "20261054", "--split-seed", "20261054", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref9000-bfcl1500-callonly-seed20261054. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref9000-bfcl1500-callonly-seed20261055
+
+Timestamp: 2026-10-24T04:29:50.162988+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref9000-bfcl1500-callonly-seed20261055", "--pref-sample", "9000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1500", "--bfcl-call-only", "--epochs", "1", "--seed", "20261055", "--split-seed", "20261055", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref9000-bfcl1500-callonly-seed20261055. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-bfcl-simple-multiple-2000-seed20261056
+
+Timestamp: 2026-10-24T04:37:30.692231+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-2000-seed20261056", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "2000", "--bfcl-call-only", "--bfcl-simple-multiple-only", "--epochs", "1", "--seed", "20261056", "--split-seed", "20261056", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-2000-seed20261056. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261057
+
+Timestamp: 2026-10-24T04:40:04.978860+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261057", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1000", "--bfcl-call-only", "--bfcl-simple-multiple-only", "--epochs", "1", "--seed", "20261057", "--split-seed", "20261057", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261057. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261058
+
+Timestamp: 2026-10-24T04:41:38.874140+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261058", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1000", "--bfcl-call-only", "--bfcl-simple-multiple-only", "--epochs", "1", "--seed", "20261058", "--split-seed", "20261058", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261058. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261059
+
+Timestamp: 2026-10-24T04:44:12.522851+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261059", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1000", "--bfcl-call-only", "--bfcl-simple-multiple-only", "--epochs", "1", "--seed", "20261059", "--split-seed", "20261059", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261059. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261059
+
+Timestamp: 2026-10-24T04:49:52.347768+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261059", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1000", "--bfcl-call-only", "--bfcl-simple-multiple-only", "--epochs", "1", "--seed", "20261059", "--split-seed", "20261059", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261059. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-sft1000-bfcl-simple-multiple-1000-seed20261060
+
+Timestamp: 2026-10-24T04:55:24.687893+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-sft1000-bfcl-simple-multiple-1000-seed20261060", "--pref-sample", "6000", "--sft-sample", "1000", "--pool-sample", "0", "--bfcl-sample", "1000", "--bfcl-call-only", "--bfcl-simple-multiple-only", "--epochs", "1", "--seed", "20261060", "--split-seed", "20261060", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-sft1000-bfcl-simple-multiple-1000-seed20261060. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061
+
+Timestamp: 2026-10-24T05:01:32.582156+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1000", "--bfcl-call-only", "--bfcl-simple-multiple-only", "--epochs", "1", "--seed", "20261061", "--split-seed", "20261061", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-bfcl-simple-multiple-500-seed20261062
+
+Timestamp: 2026-10-24T05:07:41.027214+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-500-seed20261062", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "500", "--bfcl-call-only", "--bfcl-simple-multiple-only", "--epochs", "1", "--seed", "20261062", "--split-seed", "20261062", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-500-seed20261062. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-bfcl-simple-multiple-250-seed20261063
+
+Timestamp: 2026-10-24T05:13:50.684238+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-250-seed20261063", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "250", "--bfcl-call-only", "--bfcl-simple-multiple-only", "--epochs", "1", "--seed", "20261063", "--split-seed", "20261063", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-250-seed20261063. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-bfcl-simple-multiple-750-seed20261064
+
+Timestamp: 2026-10-24T05:20:59.320289+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-750-seed20261064", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "750", "--bfcl-call-only", "--bfcl-simple-multiple-only", "--epochs", "1", "--seed", "20261064", "--split-seed", "20261064", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-750-seed20261064. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065
+
+Timestamp: 2026-10-24T05:27:08.874478+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.clean_validation_when2call_source_mix", "--output-dir", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065", "--pref-sample", "6000", "--sft-sample", "0", "--pool-sample", "0", "--bfcl-sample", "1000", "--bfcl-call-only", "--bfcl-simple-multiple-only", "--epochs", "1", "--seed", "20261065", "--split-seed", "20261065", "--max-length", "2048", "--batch-size", "1", "--learning-rate", "1e-5", "--weight-decay", "0.005"]. Output: /workspace/post-training/outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Official test metrics: {}.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## heterogeneous-when2call-encoder-20261025
+
+Timestamp: 2026-10-25T00:51:10.226382+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.heterogeneous_when2call", "train-encoder", "--work-dir", "outputs/heterogeneous-when2call-20261025", "--output-dir", "outputs/heterogeneous-when2call-encoder-20261025"]. Output: /workspace/post-training/outputs/heterogeneous-when2call-encoder-20261025. W&B run: b3m9znrw.
+
+Clean development accuracy: 0.7288776796973518. Clean development macro F1: 0.5531984106517907. Official test loaded: None. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
