@@ -1182,3 +1182,6 @@ All test columns are aggregate-only reports and were not used for candidate sele
 | Candidate | qwen-when2call-qwen25-15b-pref-full-control-seed20261031 | — | — | Queued matched full-preference-only control. Use clean validation for selection. | queued |
 | Aggregate test | test-qwen-pref-full-control-15b-seed20261031 | — | — | Queued after training and clean validation. Aggregate-only report. | queued |
 | Candidate | qwen-when2call-qwen25-15b-pref-full-control-seed20261031 | 0.8961111111111111 | 0.6728144615609408 | [metrics](/workspace/post-training/outputs/qwen-when2call-qwen25-15b-pref-full-control-seed20261031/metrics.json) | completed |
+| Candidate | test-qwen-pref-full-control-15b-seed20261031 | — | — | [metrics](/workspace/post-training/outputs/test-qwen-pref-full-control-15b-seed20261031/metrics.json) | completed |
+
+| test-qwen-pref-full-control-15b-seed20261031 | 0.666210295728368 | 0.4924675618502121 | 4rxxwtzk | Aggregate-only frozen test measurement |

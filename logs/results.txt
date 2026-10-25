@@ -40377,3 +40377,71 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/n8qhbsob"
 }
 ```
+
+## test-qwen-pref-full-control-15b-seed20261031
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_qwen_when2call_test",
+    "--model",
+    "Qwen/Qwen2.5-1.5B-Instruct",
+    "--checkpoint",
+    "outputs/qwen-when2call-qwen25-15b-pref-full-control-seed20261031",
+    "--output-dir",
+    "outputs/test-qwen-pref-full-control-15b-seed20261031",
+    "--lora-rank",
+    "16",
+    "--max-length",
+    "4096",
+    "--batch-size",
+    "1"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "test-qwen-pref-full-control-15b-seed20261031",
+  "failure_reason": null,
+  "metadata": {
+    "base_model": "Qwen/Qwen2.5-1.5B-Instruct",
+    "black_box": true,
+    "checkpoint": "outputs/qwen-when2call-qwen25-15b-pref-full-control-seed20261031",
+    "dataset": "nvidia/When2Call",
+    "examples": 3652,
+    "metrics": {
+      "accuracy": 0.666210295728368,
+      "macro_f1": 0.4924675618502121
+    },
+    "official_test_loaded": true,
+    "official_test_metrics": {
+      "accuracy": 0.666210295728368,
+      "macro_f1": 0.4924675618502121
+    },
+    "output_dir": "outputs/test-qwen-pref-full-control-15b-seed20261031",
+    "split": "test/mcq",
+    "test_loaded": true,
+    "test_measurement_only": true,
+    "wandb_run_id": "4rxxwtzk",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/4rxxwtzk"
+  },
+  "metrics_path": "/workspace/post-training/outputs/test-qwen-pref-full-control-15b-seed20261031/metrics.json",
+  "official_test_loaded": true,
+  "official_test_metrics": {
+    "accuracy": 0.666210295728368,
+    "macro_f1": 0.4924675618502121
+  },
+  "output_dir": "/workspace/post-training/outputs/test-qwen-pref-full-control-15b-seed20261031",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-25T07:39:05.632569+00:00",
+  "status": "completed",
+  "test_status": "measured",
+  "timestamp": "2026-10-25T07:48:07.772909+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "4rxxwtzk",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/4rxxwtzk"
+}
+```

@@ -8062,3 +8062,15 @@ Clean development accuracy: 0.8961111111111111. Clean development macro F1: 0.67
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## test-qwen-pref-full-control-15b-seed20261031
+
+Timestamp: 2026-10-25T07:48:07.772909+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_qwen_when2call_test", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--checkpoint", "outputs/qwen-when2call-qwen25-15b-pref-full-control-seed20261031", "--output-dir", "outputs/test-qwen-pref-full-control-15b-seed20261031", "--lora-rank", "16", "--max-length", "4096", "--batch-size", "1"]. Output: /workspace/post-training/outputs/test-qwen-pref-full-control-15b-seed20261031. W&B run: 4rxxwtzk.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: True. Test status: measured. Official test metrics: {"accuracy": 0.666210295728368, "macro_f1": 0.4924675618502121}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
