@@ -997,3 +997,17 @@ The class-specialist rule trails both Qwen alone and equal averaging.
 | Candidate | existing-when2call-single-weighted-test-20261025 | — | — | [metrics](/workspace/post-training/outputs/existing-when2call-single-weighted-test-20261025/metrics.json) | completed |
 
 | existing-when2call-single-weighted-test-20261025 | 0.6809967141292442 | 0.5062693711376124 | siaty0g5 | Aggregate-only frozen test measurement |
+
+
+## October 25 asymmetric blend aggregate test results
+
+Accuracy ranks the aggregate-only benchmark scores.
+
+| Method | Accuracy | Macro F1 across four classes | Present-class macro F1 diagnostic | W&B |
+| --- | ---: | ---: | ---: | --- |
+| equal average | 0.694687842 | 0.515704143 | 0.687605524 | [siaty0g5](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/siaty0g5) |
+| entropy gate | 0.693044907 | 0.514422081 | 0.685896107 | [siaty0g5](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/siaty0g5) |
+| 25 percent encoder, 75 percent Qwen | 0.680996714 | 0.506269371 | 0.675025828 | [siaty0g5](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/siaty0g5) |
+| Qwen SFT | 0.678806134 | 0.505011686 | 0.673348915 | [siaty0g5](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/siaty0g5) |
+
+The equal average remains the best observed ensemble by accuracy.

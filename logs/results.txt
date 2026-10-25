@@ -36168,3 +36168,29 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/siaty0g5"
 }
 ```
+
+
+## Fixed asymmetric encoder Qwen blend, October 25
+
+Purpose: Test whether shrinking the lower-accuracy standalone encoder toward the stronger Qwen SFT model improves the equal-weight ensemble. Candidates were frozen before test loading. The split has prior repeated benchmark inspection, so these are exploratory aggregate measurements.
+
+Setup: Existing Jina checkpoint `outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048`, Qwen SFT adapter `outputs/qwen-when2call-sft-15b-seed20261022`, base `Qwen/Qwen2.5-1.5B-Instruct`, max length 4096, batch size 1, dataset revision `0582f7749df63a96fdc3070932e83e72396ace53`, test/mcq, 3652 examples. Frozen methods were 25 percent encoder plus 75 percent Qwen, equal arithmetic average, and minimum-entropy expert selection. No weights were fitted or swept. Aggregate metrics only. RTX A4500. Runtime 430.920 seconds. Code commit `3c2d624100559734d1756ae5bd138c58e0791621`. Frozen config SHA256 and model hashes are in `outputs/existing-when2call-single-weighted-test-20261025/aggregate-comparison.json`. Preparation W&B `3zuy8ur0`; test W&B `siaty0g5`: https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/siaty0g5.
+
+| Method | Accuracy | Macro F1 across four classes | Present-class macro F1 diagnostic |
+| --- | ---: | ---: | ---: |
+| equal average | 0.694687842 | 0.515704143 | 0.687605524 |
+| entropy gate | 0.693044907 | 0.514422081 | 0.685896107 |
+| 25 percent encoder, 75 percent Qwen | 0.680996714 | 0.506269371 | 0.675025828 |
+| Qwen SFT | 0.678806134 | 0.505011686 | 0.673348915 |
+| encoder alone | 0.592278204 | 0.439754957 | 0.586339943 |
+
+Analysis: The asymmetric blend is 0.219 percentage points and 8 correct examples above Qwen alone, but is 1.369 points below equal averaging. Equal averaging remains the accuracy leader by 58 correct examples over Qwen alone. The test does not support shrinking the encoder to 25 percent.
+
+Next comparison: In one frozen scoring pass, test normalized predictive-entropy weighted averaging, top-two-margin weighted averaging, and an encoder override only when its probability margin is at least 0.50 and exceeds Qwen's. Compare with equal averaging and minimum-entropy gating. These are distinct adaptive mechanisms, not a dense sweep. No thresholds are fitted. Accuracy is primary and macro F1 remains reported.
+
+Commands:
+
+```text
+python -u -m experiments.existing_when2call_hybrid prepare --suite single-adaptive --work-dir outputs/existing-when2call-single-adaptive-20261025 --output-dir outputs/existing-when2call-single-adaptive-prepare-20261025
+python -u -m experiments.existing_when2call_hybrid test --suite single-adaptive --work-dir outputs/existing-when2call-single-adaptive-20261025 --output-dir outputs/existing-when2call-single-adaptive-test-20261025
+```
