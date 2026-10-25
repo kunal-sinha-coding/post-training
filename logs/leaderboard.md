@@ -1011,3 +1011,4 @@ Accuracy ranks the aggregate-only benchmark scores.
 | Qwen SFT | 0.678806134 | 0.505011686 | 0.673348915 | [siaty0g5](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/siaty0g5) |
 
 The equal average remains the best observed ensemble by accuracy.
+| Candidate | existing-when2call-single-adaptive-prepare-20261025 | — | — | [metrics](/workspace/post-training/outputs/existing-when2call-single-adaptive-prepare-20261025/metrics.json) | completed |

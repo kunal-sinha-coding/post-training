@@ -7761,3 +7761,15 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## existing-when2call-single-adaptive-prepare-20261025
+
+Timestamp: 2026-10-25T01:55:45.929587+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.existing_when2call_hybrid", "prepare", "--suite", "single-adaptive", "--work-dir", "outputs/existing-when2call-single-adaptive-20261025", "--output-dir", "outputs/existing-when2call-single-adaptive-prepare-20261025"]. Output: /workspace/post-training/outputs/existing-when2call-single-adaptive-prepare-20261025. W&B run: epdmvzeq.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Test status: queued. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
