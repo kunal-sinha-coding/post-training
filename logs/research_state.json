@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "existing_frozen_encoder_llm_comparison_v1",
-  "current_hypothesis": "The active full-Glaive run was launched with 1,000-step checkpoints. Its first checkpoint evaluation is underway and it will evaluate again at step 2,000. Future queued data-mixture runs use 2,000-step evaluation and log optimizer loss every step.",
+  "current_hypothesis": "The active full-Glaive process has a fixed 1,000-step checkpoint interval already loaded. Its first 1,000-step evaluation is in progress and it will evaluate again at step 2,000, then continue on its existing 1,000-step schedule. New queued data-mixture runs use 2,000-step checkpoints.",
   "active_experiment": {
     "pid": 58289,
     "command": [
@@ -230,14 +230,17 @@
     "After the active full-Glaive run, compare the best known 500 explicit-tool-call Glaive plus full train_pref recipe with an equal 500-row external-data dose from APIGen-MT-5k.",
     "Compare the same fixed When2Call and Glaive recipe with a 500-row ToolACE dose.",
     "Compare a 500-row mixed dose with 250 APIGen-MT-5k and 250 ToolACE rows against the two single-source doses. Use identical model, seed, split, optimizer, and total source-row budget.",
-    "Each candidate logs optimizer loss every step, evaluates training and clean validation every 2,000 optimizer steps, and runs aggregate-only black-box test measurement at each checkpoint. Select checkpoints and source mixtures by fixed clean When2Call preference validation accuracy; report macro F1 and all source-specific validation metrics. Test results are report-only."
+    "Each candidate logs optimizer loss every step, evaluates training and clean validation every 2,000 optimizer steps, and runs aggregate-only black-box test measurement at each checkpoint. Select checkpoints and source mixtures by fixed clean When2Call preference validation accuracy; report macro F1 and all source-specific validation metrics. Test results are report-only.",
+    "After the APIGen-MT and ToolACE screens, audit xLAM irrelevance examples for whether an empty answer means cannot_answer or direct, then train only if the mapping is valid.",
+    "Audit Hermes Function Calling v1 for Glaive overlap before a small dose test. Check Tool Calling English 100K provenance and metadata before any use.",
+    "Review ToolAlpaca, API-Bank, and ToolBench source splits and licenses before adapting examples. Do not train on BFCL-derived data, benchmark-derived ICT, or redundant RFCD/Narrative mixtures unless overlap and licensing are resolved."
   ],
   "best_validation": {
     "status": "historical scores are incomparable",
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
   "last_heartbeat": "2026-10-25T17:53:09.203351+00:00",
-  "last_action": "Replaced the unstarted rank and Glaive dose comparisons with three controlled external-data experiments: APIGen-MT only, ToolACE only, and an equal-budget APIGen-MT plus ToolACE mix. Kept the active full-Glaive run untouched.",
+  "last_action": "Queued three 2,000-step-checkpointed external-data candidates. Confirmed the active process remains the only training experiment; its checkpoint test evaluator is a child measurement within that same experiment.",
   "watchdog_enabled": true,
   "research_log_size": 843916,
   "stop_command": "STOP",
