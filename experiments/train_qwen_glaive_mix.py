@@ -187,6 +187,7 @@ def main() -> int:
     parser.add_argument("--checkpoint-glaive-validation-size", type=int, default=1000)
     parser.add_argument("--train-metrics-sample-size", type=int, default=0)
     parser.add_argument("--checkpoint-test-evaluation", action="store_true")
+    parser.add_argument("--final-test-evaluation", action="store_true")
     args = parser.parse_args()
     # Require a positive logging interval so the optimizer callback can schedule live loss points.
     if args.training_log_steps < 1:
@@ -303,6 +304,13 @@ def main() -> int:
         if best_checkpoint["step"] is not None and args.checkpoint_test_evaluation:
             best_test_path = args.output_dir / "checkpoint-tests" / f"step-{best_checkpoint['step']:08d}" / "metrics.json"
             best_test_metrics = json.loads(best_test_path.read_text(encoding="utf-8"))["official_test_metrics"]
+        if args.final_test_evaluation:
+            # Evaluate the saved end-of-epoch adapter once after training and clean validation finish.
+            model.to("cpu")
+            final_test_dir = args.output_dir / "final-test"
+            test_command = [sys.executable, "-u", "-m", "experiments.evaluate_qwen_when2call_test", "--model", args.model, "--checkpoint", str(args.output_dir), "--output-dir", str(final_test_dir), "--lora-rank", str(args.lora_rank), "--max-length", str(args.max_length), "--batch-size", "1"]
+            subprocess.run(test_command, check=True)
+            best_test_metrics = json.loads((final_test_dir / "metrics.json").read_text(encoding="utf-8"))["official_test_metrics"]
         # Persist source metrics, checkpoint history, and aggregate-only benchmark reports.
         config = {key: str(value) if isinstance(value, Path) else value for key, value in vars(args).items()}
         metadata = {
@@ -332,9 +340,9 @@ def main() -> int:
             "checkpoint_validation_path": str(checkpoint_history) if checkpoint_history.exists() else None,
             "best_validation_checkpoint": best_checkpoint if best_checkpoint["path"] else None,
             "checkpoint_test_evaluation": args.checkpoint_test_evaluation,
-            "official_test_loaded": args.checkpoint_test_evaluation,
+            "official_test_loaded": args.checkpoint_test_evaluation or args.final_test_evaluation,
             "official_test_metrics": best_test_metrics or {},
-            "official_test_metrics_checkpoint": best_checkpoint["path"] if best_test_metrics else None,
+            "official_test_metrics_checkpoint": best_checkpoint["path"] if args.checkpoint_test_evaluation and best_test_metrics else str(args.output_dir) if args.final_test_evaluation and best_test_metrics else None,
             "test_metrics_are_report_only": True,
             "losses": losses,
             "label_order": LABELS,
@@ -345,7 +353,7 @@ def main() -> int:
             "wandb_run_url": run.url,
         }
         (args.output_dir / "metrics.json").write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
-        run.summary.update({"status": "completed", "train_accuracy": train_metrics["accuracy"], "pref_validation_accuracy": pref_metrics["accuracy"], "glaive_validation_accuracy": glaive_metrics["accuracy"], "sft_validation_accuracy": sft_metrics["accuracy"] if sft_metrics else None, "output_dir": str(args.output_dir)})
+        run.summary.update({"status": "completed", "train_accuracy": train_metrics["accuracy"], "pref_validation_accuracy": pref_metrics["accuracy"], "glaive_validation_accuracy": glaive_metrics["accuracy"], "sft_validation_accuracy": sft_metrics["accuracy"] if sft_metrics else None, "test_accuracy_report_only": best_test_metrics["accuracy"] if best_test_metrics else None, "test_macro_f1_report_only": best_test_metrics["macro_f1"] if best_test_metrics else None, "output_dir": str(args.output_dir)})
         write_heartbeat(args.output_dir / "heartbeat.json", "completed")
         print(json.dumps({"train": train_metrics, "preference_validation": pref_metrics, "glaive_validation": glaive_metrics, "sft_validation": sft_metrics}, indent=2))
     except BaseException as error:

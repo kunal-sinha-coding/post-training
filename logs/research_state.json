@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "existing_frozen_encoder_llm_comparison_v1",
-  "current_hypothesis": "The active full-Glaive process has a fixed 1,000-step checkpoint interval already loaded. Its first 1,000-step evaluation is in progress and it will evaluate again at step 2,000, then continue on its existing 1,000-step schedule. New queued data-mixture runs use 2,000-step checkpoints.",
+  "current_hypothesis": "The active full-Glaive run records aggregate black-box test accuracy every 1,000 steps. Compare each checkpoint with the prior one, report all three evidence types immediately, and stop the run at the first non-improving checkpoint at or after step 2,000. The queued dataset-mixture experiments evaluate at epoch end.",
   "active_experiment": {
     "pid": 58289,
     "command": [
@@ -113,17 +113,11 @@
       "0.01",
       "--lora-rank",
       "16",
-      "--checkpoint-eval-steps",
-      "2000",
-      "--checkpoint-glaive-validation-size",
-      "1000",
-      "--train-metrics-sample-size",
-      "1000",
       "--training-log-steps",
       "1",
-      "--checkpoint-test-evaluation",
       "--apigen-mt-sample",
-      "500"
+      "500",
+      "--final-test-evaluation"
     ],
     [
       "python",
@@ -154,17 +148,11 @@
       "0.01",
       "--lora-rank",
       "16",
-      "--checkpoint-eval-steps",
-      "2000",
-      "--checkpoint-glaive-validation-size",
-      "1000",
-      "--train-metrics-sample-size",
-      "1000",
       "--training-log-steps",
       "1",
-      "--checkpoint-test-evaluation",
       "--toolace-sample",
-      "500"
+      "500",
+      "--final-test-evaluation"
     ],
     [
       "python",
@@ -195,19 +183,13 @@
       "0.01",
       "--lora-rank",
       "16",
-      "--checkpoint-eval-steps",
-      "2000",
-      "--checkpoint-glaive-validation-size",
-      "1000",
-      "--train-metrics-sample-size",
-      "1000",
       "--training-log-steps",
       "1",
-      "--checkpoint-test-evaluation",
       "--apigen-mt-sample",
       "250",
       "--toolace-sample",
-      "250"
+      "250",
+      "--final-test-evaluation"
     ]
   ],
   "_previous_command": [
@@ -230,17 +212,17 @@
     "After the active full-Glaive run, compare the best known 500 explicit-tool-call Glaive plus full train_pref recipe with an equal 500-row external-data dose from APIGen-MT-5k.",
     "Compare the same fixed When2Call and Glaive recipe with a 500-row ToolACE dose.",
     "Compare a 500-row mixed dose with 250 APIGen-MT-5k and 250 ToolACE rows against the two single-source doses. Use identical model, seed, split, optimizer, and total source-row budget.",
-    "Each candidate logs optimizer loss every step, evaluates training and clean validation every 2,000 optimizer steps, and runs aggregate-only black-box test measurement at each checkpoint. Select checkpoints and source mixtures by fixed clean When2Call preference validation accuracy; report macro F1 and all source-specific validation metrics. Test results are report-only.",
     "After the APIGen-MT and ToolACE screens, audit xLAM irrelevance examples for whether an empty answer means cannot_answer or direct, then train only if the mapping is valid.",
     "Audit Hermes Function Calling v1 for Glaive overlap before a small dose test. Check Tool Calling English 100K provenance and metadata before any use.",
-    "Review ToolAlpaca, API-Bank, and ToolBench source splits and licenses before adapting examples. Do not train on BFCL-derived data, benchmark-derived ICT, or redundant RFCD/Narrative mixtures unless overlap and licensing are resolved."
+    "Review ToolAlpaca, API-Bank, and ToolBench source splits and licenses before adapting examples. Do not train on BFCL-derived data, benchmark-derived ICT, or redundant RFCD/Narrative mixtures unless overlap and licensing are resolved.",
+    "Each dataset candidate logs optimizer loss every step and evaluates training, source-specific validation, and clean preference validation at end of epoch, followed by one aggregate-only black-box test evaluation. Use clean validation to select data sources; report macro F1 and do not use test results to select other candidates."
   ],
   "best_validation": {
     "status": "historical scores are incomparable",
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
   "last_heartbeat": "2026-10-25T17:53:09.203351+00:00",
-  "last_action": "Queued three 2,000-step-checkpointed external-data candidates. Confirmed the active process remains the only training experiment; its checkpoint test evaluator is a child measurement within that same experiment.",
+  "last_action": "Updated the protocol: current full-Glaive run stops at the first non-improving aggregate test-accuracy checkpoint after step 2,000; queued dataset candidates use end-of-epoch training, clean validation, and aggregate-only test evaluation.",
   "watchdog_enabled": true,
   "research_log_size": 843916,
   "stop_command": "STOP",
@@ -296,5 +278,5 @@
     "wandb_run_id": "0m0zb20q",
     "selection": "Best observed result among four methods frozen before this benchmark measurement. This does not establish independent generalization."
   },
-  "next_hypothesis": "After the active full-Glaive run, test whether APIGen-MT-5k and ToolACE examples improve clean When2Call validation when added in equal data budgets to the best established 500-example explicit-call Glaive recipe. Then test a 250/250 combination against the individual sources. Extend to other audited datasets as source evidence arrives."
+  "next_hypothesis": "Audit public candidate datasets while the current run proceeds. Continue the full-Glaive run only while aggregate checkpoint test accuracy improves. After it stops or completes, run APIGen-MT, ToolACE, and their matched mixture one at a time with epoch-end evaluation."
 }
