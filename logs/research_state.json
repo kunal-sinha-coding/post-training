@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "existing_frozen_encoder_llm_comparison_v1",
-  "current_hypothesis": "The active full-Glaive run records aggregate black-box test accuracy every 1,000 steps. Compare each checkpoint with the prior one, report all three evidence types immediately, and stop the run at the first non-improving checkpoint at or after step 2,000. The queued dataset-mixture experiments evaluate at epoch end.",
+  "current_hypothesis": "For data-source experiments, choose end-of-epoch evaluation when an epoch has at most 1,000 optimizer steps and 1,000-step checkpoint evaluation when it has more. Evaluate training, clean validation, and aggregate-only test at each checkpoint; test metrics are report-only for candidate selection.",
   "active_experiment": {
     "pid": 61300,
     "command": [
@@ -113,7 +113,9 @@
       "1",
       "--toolace-sample",
       "500",
-      "--final-test-evaluation"
+      "--checkpoint-eval-steps",
+      "1000",
+      "--checkpoint-test-evaluation"
     ],
     [
       "python",
@@ -150,7 +152,9 @@
       "250",
       "--toolace-sample",
       "250",
-      "--final-test-evaluation"
+      "--checkpoint-eval-steps",
+      "1000",
+      "--checkpoint-test-evaluation"
     ],
     [
       "python",
@@ -185,7 +189,9 @@
       "1",
       "--xlam-irrelevance-sample",
       "500",
-      "--final-test-evaluation"
+      "--checkpoint-eval-steps",
+      "1000",
+      "--checkpoint-test-evaluation"
     ],
     [
       "python",
@@ -220,7 +226,9 @@
       "1",
       "--hermes-singleturn-sample",
       "500",
-      "--final-test-evaluation"
+      "--checkpoint-eval-steps",
+      "1000",
+      "--checkpoint-test-evaluation"
     ]
   ],
   "_previous_command": [
@@ -240,21 +248,23 @@
     "outputs/test-clean-validation-smooth0075-wd002-weight75-25.json"
   ],
   "experiment_queue": [
+    "The active APIGen-MT trial was launched with end-of-epoch-only evaluation before the updated cadence. Its in-memory process cannot be reconfigured. Preserve it and apply the 1,000-step cadence to the queued candidates because their epochs exceed 1,000 optimizer steps.",
     "Run the already queued APIGen-MT-5k and ToolACE single-source 500-row trials, plus their matched 250/250 mixture, on top of the same full train_pref and 500 explicit-tool-call Glaive recipe.",
     "Run 500-row xLAM irrelevance and Hermes singleturn trials independently on the same recipe. For xLAM, test the explicit label hypothesis that empty answers mean cannot_answer; retain the source only if clean preference validation improves.",
     "Run a 500-row Tool Calling English 100K trial after its provenance check. The card declares Apache-2.0, but provenance remains uncertain, so do not launch it until audit clears it.",
     "Audit Narrative Function Calling v1 for source overlap and deduplicate against Glaive and xLAM; run a 500-row unique-only trial if enough distinct examples remain.",
     "Review ToolAlpaca, API-Bank, ToolBench, and API-BLEND source splits, licenses, and label mappings. Add a small controlled trial for each source that is accessible, licensed, and non-overlapping.",
-    "Do not train on gated xLAM 60K until access is available, benchmark-derived ICT until licensing and leakage are resolved, or BFCL/RFCD benchmark data. For every candidate, log loss each optimizer step, evaluate training and clean validation at epoch end, then report one aggregate-only black-box test measurement. Select sources using clean validation and report macro F1."
+    "Do not train on gated xLAM 60K until access is available, benchmark-derived ICT until licensing and leakage are resolved, or BFCL/RFCD benchmark data. For every candidate, log loss each optimizer step, evaluate training and clean validation at epoch end, then report one aggregate-only black-box test measurement. Select sources using clean validation and report macro F1.",
+    "For future candidates, log loss each optimizer step. If an epoch has more than 1,000 optimizer steps, evaluate training, clean validation, and aggregate-only black-box test every 1,000 steps and at epoch end if the final step is not a multiple of 1,000. If an epoch has 1,000 steps or fewer, evaluate at epoch end. Use clean validation for data-source selection; test results are report-only."
   ],
   "best_validation": {
     "status": "historical scores are incomparable",
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
   "last_heartbeat": "2026-10-25T18:30:44.842144+00:00",
-  "last_action": "Watchdog started validation worker pid 61300.",
+  "last_action": "User set evaluation cadence to 1,000 steps for epochs longer than 1,000 updates and end of epoch otherwise. Current APIGen-MT run retains its launched end-of-epoch evaluation; queued runs use 1,000-step evaluations.",
   "watchdog_enabled": true,
-  "research_log_size": 843916,
+  "research_log_size": 845128,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -291,12 +301,7 @@
     "500",
     "--final-test-evaluation"
   ],
-  "recording_jobs": [
-    {
-      "pid": 61299,
-      "experiment_id": "qwen-when2call-qwen25-15b-pref-full-glaive-all-nondirect-ckpt1k-seed20261045"
-    }
-  ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-25T17:11:02.377836+00:00",
   "planning_ack_deadline": "2026-10-25T17:13:02.377861+00:00",
