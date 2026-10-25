@@ -71,3 +71,70 @@ def test_encoder_scoring_restores_original_row_order(tmp_path, monkeypatch):
     examples = [hybrid.Example("row" + str(index), 0, str(index)) for index in range(3)]
     result = hybrid.encoder_logits("mock", examples, SimpleNamespace(output_dir=tmp_path, batch_size=2), torch.device("cpu"))
     assert result[:, 0].tolist() == [0., 1., 2.]
+
+
+# Preserve geometric consensus and every rule's prediction when both experts agree exactly.
+def test_single_fusion_identical_experts_and_uniform_ties():
+    probability = torch.tensor([[.6, .25, .1, .05], [.25, .25, .25, .25]])
+    for rule in ("average", "gate", "geometric", "rank"):
+        result = hybrid.hybrid_probabilities(probability, probability, rule)
+        assert torch.isfinite(result).all()
+        assert torch.allclose(result.sum(-1), torch.ones(2, dtype=result.dtype))
+        assert result[0].argmax().item() == 0
+        assert torch.allclose(result[1], torch.full((4,), .25, dtype=result.dtype))
+        if rule != "rank":
+            assert torch.allclose(result, probability, atol=1e-7)
+
+
+# Compute the normalized geometric mean without fitting a confidence scale.
+def test_geometric_fusion_matches_probability_product():
+    encoder = torch.tensor([[.6, .2, .15, .05]])
+    qwen = torch.tensor([[.1, .3, .5, .1]])
+    expected = (encoder * qwen).sqrt()
+    expected /= expected.sum(-1, keepdim=True)
+    assert torch.allclose(hybrid.hybrid_probabilities(encoder, qwen, "geometric"), expected)
+
+
+# Break equal Borda totals with arithmetic probability and retain positive normalized scores.
+def test_rank_ties_use_arithmetic_probability():
+    encoder = torch.tensor([[.4, .3, .2, .1]])
+    qwen = torch.tensor([[.2, .6, .15, .05]])
+    rank = hybrid.hybrid_probabilities(encoder, qwen, "rank")
+    assert rank.argmax(-1).item() == 1
+    assert (rank > 0).all()
+    assert torch.allclose(rank.sum(-1), torch.ones(1, dtype=rank.dtype))
+
+
+# Preserve an unambiguous rank winner under independent monotone expert sharpening.
+def test_rank_winner_is_robust_to_confidence_scales():
+    encoder = torch.tensor([[.5, .3, .15, .05]])
+    qwen = torch.tensor([[.2, .5, .25, .05]])
+    sharpened_encoder = encoder.pow(5)
+    sharpened_encoder /= sharpened_encoder.sum(-1, keepdim=True)
+    flattened_qwen = qwen.pow(.25)
+    flattened_qwen /= flattened_qwen.sum(-1, keepdim=True)
+    before = hybrid.hybrid_probabilities(encoder, qwen, "rank")
+    after = hybrid.hybrid_probabilities(sharpened_encoder, flattened_qwen, "rank")
+    assert before.argmax(-1).item() == after.argmax(-1).item() == 1
+    assert torch.allclose(before, after, atol=1e-6)
+
+
+# Freeze only checkpoint 48 and reject any changed single-fusion definition before official loading.
+def test_single_suite_manifest_is_exact(tmp_path, monkeypatch):
+    from experiments import evaluate_qwen_when2call_test as official
+    loader = Mock(side_effect=AssertionError("Official examples must remain unopened."))
+    monkeypatch.setattr(official, "load_official_rows", loader)
+    monkeypatch.setattr(hybrid, "artifact_digest", lambda path: "mock-digest")
+    args = SimpleNamespace(suite="single-fusion", work_dir=tmp_path)
+    result = hybrid.prepare(args, SimpleNamespace(summary={}))
+    config = result["frozen_configuration"]
+    assert config["encoders"] == [hybrid.ENCODERS[2]]
+    assert config["methods"] == list(hybrid.SINGLE_METHODS)
+    assert config["primary_method"] == "single_geometric"
+    assert not any(hybrid.ENCODERS[index] in path for index in (0, 1) for path in config["artifact_sha256"])
+    hybrid.verify_frozen(config)
+    config["fusion_rules"] = dict(config["fusion_rules"], geometric="Changed after freezing.")
+    (tmp_path / "frozen-config.json").write_text(json.dumps(config))
+    with pytest.raises(ValueError, match="single-fusion rules changed"):
+        hybrid.test(args, SimpleNamespace())
+    loader.assert_not_called()

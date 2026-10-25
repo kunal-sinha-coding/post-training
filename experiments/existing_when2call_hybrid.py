@@ -3,6 +3,8 @@
 Preparation freezes existing checkpoint hashes and four predeclared hybrid rules without
 training or development selection. One aggregate measurement scores each model once,
 restores source row order after encoder batching, and compares fixed hybrids and baselines.
+The initial suite preserves both encoder families. The single-fusion suite uses checkpoint 48
+and adds geometric consensus and ordinal Borda fusion with unchanged arithmetic and gate controls.
 Official predictions, labels, probabilities, and per-class statistics remain in memory only.
 """
 from __future__ import annotations
@@ -34,6 +36,17 @@ WEIGHTS = [0.35625, 0.1375, 0.50625]
 QWEN = "outputs/qwen-when2call-sft-15b-seed20261022"
 QWEN_BASE = "Qwen/Qwen2.5-1.5B-Instruct"
 METHODS = ("single_average", "single_gate", "ensemble_average", "ensemble_gate")
+SINGLE_METHODS = ("single_average", "single_gate", "single_geometric", "single_rank")
+SINGLE_RULES = {"average": "Arithmetic mean of the two probability vectors with equal weights.", "gate": "Choose the lower-entropy probability vector with encoder first on exact ties.", "geometric": "Softmax of the equal mean of log probabilities clamped below at 1e-8.", "rank": "Sum equal Borda rank points from both experts. Average rank points for tied probabilities. Add 1e-6 times arithmetic mean probability, clamp below at 1e-12, and normalize."}
+
+
+def suite_definition(name: str) -> dict:
+    # Declare each suite independently without searching weights or fitting parameters.
+    if name == "initial":
+        return {"encoders": ENCODERS, "weights": WEIGHTS, "single_index": 2, "methods": list(METHODS), "primary": "ensemble_average"}
+    if name == "single-fusion":
+        return {"encoders": [ENCODERS[2]], "weights": [1.0], "single_index": 0, "methods": list(SINGLE_METHODS), "primary": "single_geometric"}
+    raise ValueError("Unknown frozen suite: " + name)
 
 
 def encoder_families(logits: torch.Tensor, weights: list[float]) -> tuple[torch.Tensor, torch.Tensor]:
@@ -43,24 +56,38 @@ def encoder_families(logits: torch.Tensor, weights: list[float]) -> tuple[torch.
 
 
 def hybrid_probabilities(encoder: torch.Tensor, qwen: torch.Tensor, rule: str) -> torch.Tensor:
-    # Apply a fixed equal probability average or choose the lower-entropy family per row.
+    # Apply the predeclared probability, entropy, geometric, or ordinal fusion rule.
     if rule == "average":
         return (encoder + qwen) / 2
-    if rule != "gate":
-        raise ValueError("Unknown frozen hybrid rule: " + rule)
     probabilities = torch.stack((encoder, qwen), dim=1)
-    entropy = -(probabilities.clamp_min(1e-8).log() * probabilities).sum(-1)
-    return probabilities[torch.arange(len(probabilities)), entropy.argmin(1)]
+    if rule == "geometric":
+        return probabilities.clamp_min(1e-8).log().mean(1).softmax(-1)
+    if rule == "rank":
+        # Average tied ranks so uniform or identical experts do not introduce an index preference.
+        lower = probabilities.unsqueeze(-1) > probabilities.unsqueeze(-2)
+        equal = probabilities.unsqueeze(-1) == probabilities.unsqueeze(-2)
+        points = lower.sum(-1).double() + (equal.sum(-1).double() - 1) / 2
+        scores = (points.sum(1) + 1e-6 * probabilities.double().mean(1)).clamp_min(1e-12)
+        return scores / scores.sum(-1, keepdim=True)
+    if rule == "gate":
+        entropy = -(probabilities.clamp_min(1e-8).log() * probabilities).sum(-1)
+        return probabilities[torch.arange(len(probabilities)), entropy.argmin(1)]
+    raise ValueError("Unknown frozen hybrid rule: " + rule)
 
 
 def prepare(args: object, run: object) -> dict:
-    # Freeze existing artifact identities and all four methods before opening official examples.
+    # Freeze only the selected suite artifacts and exact rules before opening official examples.
+    suite_name = getattr(args, "suite", "initial")
+    suite = suite_definition(suite_name)
     artifacts = []
-    for checkpoint in ENCODERS:
+    for checkpoint in suite["encoders"]:
         artifacts.extend(Path(checkpoint) / name for name in ("model_state.pt", "encoder_config.json"))
     artifacts.extend(Path(QWEN) / name for name in ("adapter_model.safetensors", "adapter_config.json"))
     artifacts.append(Path("outputs/when2call-jina-v2-small/latest/tokenizer.json"))
-    config = {"selection_complete": True, "training_performed": False, "development_selection_performed": False, "encoders": ENCODERS, "encoder_logit_weights": WEIGHTS, "single_encoder_index": 2, "qwen_checkpoint": QWEN, "qwen_base": QWEN_BASE, "qwen_output_permutation": [0, 1, 2, 3], "label_order": LABELS, "max_length": 4096, "methods": list(METHODS), "primary_method": "ensemble_average", "family_probability_weights": [0.5, 0.5], "artifact_sha256": {str(path): artifact_digest(path) for path in artifacts}, "validation_limitation": "Existing encoder warm starts saw all train_pref rows. No clean preference validation is claimed or used for selection.", "historical_selection_limitation": "Existing encoder approaches were identified in prior research with repeated official benchmark inspection. This fixed comparison is a benchmark measurement, not a new independent generalization estimate.", "metric_definition": "Primary macro F1 includes all four declared classes. The present-class macro F1 diagnostic permits comparison with historical encoder reports.", "qwen_mapping": "Historical adapter training used LABEL_TO_ID directly despite reversed ABCD descriptions in its prompt. Preserve learned identity indices.", "test_status": "queued"}
+    config = {"selection_complete": True, "training_performed": False, "development_selection_performed": False, "suite": suite_name, "encoders": suite["encoders"], "encoder_logit_weights": suite["weights"], "single_encoder_index": suite["single_index"], "qwen_checkpoint": QWEN, "qwen_base": QWEN_BASE, "qwen_output_permutation": [0, 1, 2, 3], "label_order": LABELS, "max_length": 4096, "methods": suite["methods"], "primary_method": suite["primary"], "family_probability_weights": [0.5, 0.5], "artifact_sha256": {str(path): artifact_digest(path) for path in artifacts}, "validation_limitation": "Existing encoder warm starts saw all train_pref rows. No clean preference validation is claimed or used for selection.", "historical_selection_limitation": "Existing encoder approaches were identified in prior research with repeated official benchmark inspection. This fixed comparison is a benchmark measurement, not a new independent generalization estimate.", "metric_definition": "Primary macro F1 includes all four declared classes. The present-class macro F1 diagnostic permits comparison with historical encoder reports.", "qwen_mapping": "Historical adapter training used LABEL_TO_ID directly despite reversed ABCD descriptions in its prompt. Preserve learned identity indices.", "test_status": "queued"}
+    if suite_name == "single-fusion":
+        config["fusion_rules"] = SINGLE_RULES
+        config["hypothesis"] = "Geometric consensus tests shared support while ordinal Borda fusion tests robustness to unequal expert confidence scales. Arithmetic averaging and entropy gating are unchanged controls."
     save_json(args.work_dir / "frozen-config.json", config)
     run.summary.update({"selection_complete": True, "training_performed": False, "test_status": "queued"})
     return {"status": "completed", "test_status": "queued", "frozen_configuration": config}
@@ -68,8 +95,12 @@ def prepare(args: object, run: object) -> dict:
 
 def verify_frozen(config: dict) -> None:
     # Reject changed artifacts or method definitions before the official loader is imported or called.
-    if not config["selection_complete"] or config["encoders"] != ENCODERS or config["qwen_checkpoint"] != QWEN or config["methods"] != list(METHODS) or config["encoder_logit_weights"] != WEIGHTS or config["primary_method"] != "ensemble_average":
+    suite_name = config.get("suite", "initial")
+    suite = suite_definition(suite_name)
+    if not config["selection_complete"] or config["encoders"] != suite["encoders"] or config["qwen_checkpoint"] != QWEN or config["methods"] != suite["methods"] or config["encoder_logit_weights"] != suite["weights"] or config["primary_method"] != suite["primary"]:
         raise ValueError("Frozen existing-model comparison configuration changed.")
+    if suite_name == "single-fusion" and (config.get("fusion_rules") != SINGLE_RULES or config.get("single_encoder_index") != 0 or config.get("qwen_base") != QWEN_BASE or config.get("max_length") != 4096 or config.get("qwen_output_permutation") != [0, 1, 2, 3] or config.get("family_probability_weights") != [0.5, 0.5]):
+        raise ValueError("Frozen single-fusion rules changed.")
     for path, expected in config["artifact_sha256"].items():
         if artifact_digest(Path(path)) != expected:
             raise ValueError("Frozen comparison artifact changed: " + path)
@@ -97,10 +128,12 @@ def encoder_logits(checkpoint: str, examples: list, args: object, device: torch.
 
 
 def test(args: object, run: object) -> dict:
-    # Measure every frozen hybrid and baseline from one sequential pass through the four models.
+    # Measure every frozen hybrid and baseline from one sequential pass through its model members.
     config_path = args.work_dir / "frozen-config.json"
     config = json.loads(config_path.read_text())
     verify_frozen(config)
+    if getattr(args, "suite", "initial") != config.get("suite", "initial"):
+        raise ValueError("The requested suite does not match its frozen manifest.")
     from experiments.evaluate_qwen_when2call_test import load_official_rows, prepare_test_rows
     rows = list(load_official_rows())
     qwen_rows = prepare_test_rows(rows)
@@ -111,7 +144,10 @@ def test(args: object, run: object) -> dict:
     for checkpoint in config["encoders"]:
         write_heartbeat(args.output_dir / "heartbeat.json", "loading-encoder")
         encoder_scores.append(encoder_logits(checkpoint, examples, args, device))
-    single, ensemble = encoder_families(torch.stack(encoder_scores), config["encoder_logit_weights"])
+    if config.get("suite", "initial") == "initial":
+        single, ensemble = encoder_families(torch.stack(encoder_scores), config["encoder_logit_weights"])
+    else:
+        single, ensemble = encoder_scores[0].softmax(-1), None
     del encoder_scores
     # Evaluate only the existing SFT adapter with its historical input and learned output order.
     write_heartbeat(args.output_dir / "heartbeat.json", "loading-qwen-sft")
@@ -129,10 +165,13 @@ def test(args: object, run: object) -> dict:
     del model, tokenizer, qwen_scores
     free_gpu()
     # Reduce hidden labels to aggregate metrics without saving probabilities or per-class outcomes.
-    probabilities = {"encoder_single": single, "encoder_ensemble": ensemble, "qwen_sft": qwen}
-    for family_name, family in (("single", single), ("ensemble", ensemble)):
-        for rule in ("average", "gate"):
-            probabilities[family_name + "_" + rule] = hybrid_probabilities(family, qwen, rule)
+    probabilities = {"encoder_single": single, "qwen_sft": qwen}
+    if ensemble is not None:
+        probabilities["encoder_ensemble"] = ensemble
+    for method in config["methods"]:
+        family_name, rule = method.split("_", 1)
+        family = single if family_name == "single" else ensemble
+        probabilities[method] = hybrid_probabilities(family, qwen, rule)
     labels = torch.tensor([row.label for row in qwen_rows])
     aggregate = {}
     for name, probability in probabilities.items():
@@ -150,6 +189,7 @@ def main() -> int:
     parser.add_argument("mode", choices=("prepare", "test"))
     parser.add_argument("--work-dir", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument("--suite", choices=("initial", "single-fusion"), default="initial")
     parser.add_argument("--batch-size", type=int, default=1)
     args = parser.parse_args()
     import wandb
@@ -157,8 +197,9 @@ def main() -> int:
         raise RuntimeError("WANDB_API_KEY is required.")
     args.work_dir.mkdir(parents=True, exist_ok=True)
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    metadata = {"command": [sys.executable, *sys.argv], "git_commit": subprocess.check_output(["git", "-c", "safe.directory=/workspace/post-training", "rev-parse", "HEAD"], text=True).strip(), "configuration": {key: str(value) if isinstance(value, Path) else value for key, value in vars(args).items()}, "encoders": ENCODERS, "encoder_logit_weights": WEIGHTS, "qwen_checkpoint": QWEN, "max_length": 4096, "primary_method": "ensemble_average"}
-    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name="existing-when2call-hybrid-" + args.mode, job_type="existing-hybrid-" + args.mode, config=metadata)
+    suite = suite_definition(args.suite)
+    metadata = {"command": [sys.executable, *sys.argv], "git_commit": subprocess.check_output(["git", "-c", "safe.directory=/workspace/post-training", "rev-parse", "HEAD"], text=True).strip(), "configuration": {key: str(value) if isinstance(value, Path) else value for key, value in vars(args).items()}, "suite": args.suite, "encoders": suite["encoders"], "encoder_logit_weights": suite["weights"], "qwen_checkpoint": QWEN, "max_length": 4096, "primary_method": suite["primary"]}
+    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name="existing-when2call-hybrid-" + args.suite + "-" + args.mode, job_type="existing-hybrid-" + args.mode, config=metadata)
     started = time.time()
     stop = threading.Event()
     def keep_alive() -> None:
@@ -173,7 +214,7 @@ def main() -> int:
         result = {"prepare": prepare, "test": test}[args.mode](args, run)
         metadata.update({"status": "completed", "runtime_seconds": time.time() - started, "wandb_run_id": run.id, "wandb_run_url": run.url})
         save_json(args.output_dir / "metrics.json", {**metadata, **result})
-        run.summary.update({"status": "completed", "runtime_seconds": metadata["runtime_seconds"], "primary_method": "ensemble_average"})
+        run.summary.update({"status": "completed", "runtime_seconds": metadata["runtime_seconds"], "primary_method": suite["primary"]})
         write_heartbeat(args.output_dir / "heartbeat.json", "completed")
     except BaseException as error:
         metadata.update({"status": "failed", "error": repr(error), "runtime_seconds": time.time() - started, "wandb_run_id": run.id, "wandb_run_url": run.url})
