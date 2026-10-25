@@ -1012,3 +1012,6 @@ Accuracy ranks the aggregate-only benchmark scores.
 
 The equal average remains the best observed ensemble by accuracy.
 | Candidate | existing-when2call-single-adaptive-prepare-20261025 | — | — | [metrics](/workspace/post-training/outputs/existing-when2call-single-adaptive-prepare-20261025/metrics.json) | completed |
+| Candidate | existing-when2call-single-adaptive-test-20261025 | — | — | [metrics](/workspace/post-training/outputs/existing-when2call-single-adaptive-test-20261025/metrics.json) | completed |
+
+| existing-when2call-single-adaptive-test-20261025 | 0.6944140197152245 | 0.5156183881581421 | a8tlnl3p | Aggregate-only frozen test measurement |
