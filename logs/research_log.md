@@ -7749,3 +7749,15 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## existing-when2call-single-weighted-test-20261025
+
+Timestamp: 2026-10-25T01:53:12.023898+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.existing_when2call_hybrid", "test", "--suite", "single-weighted", "--work-dir", "outputs/existing-when2call-single-weighted-20261025", "--output-dir", "outputs/existing-when2call-single-weighted-test-20261025"]. Output: /workspace/post-training/outputs/existing-when2call-single-weighted-test-20261025. W&B run: siaty0g5.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: True. Test status: measured. Official test metrics: {"accuracy": 0.6809967141292442, "macro_f1": 0.5062693711376124, "macro_f1_present_classes": 0.6750258281834832}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

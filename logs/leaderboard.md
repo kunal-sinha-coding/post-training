@@ -994,3 +994,6 @@ Accuracy ranks these aggregate-only benchmark measurements. The routing hypothes
 
 The class-specialist rule trails both Qwen alone and equal averaging.
 | Candidate | existing-when2call-single-weighted-prepare-20261025 | — | — | [metrics](/workspace/post-training/outputs/existing-when2call-single-weighted-prepare-20261025/metrics.json) | completed |
+| Candidate | existing-when2call-single-weighted-test-20261025 | — | — | [metrics](/workspace/post-training/outputs/existing-when2call-single-weighted-test-20261025/metrics.json) | completed |
+
+| existing-when2call-single-weighted-test-20261025 | 0.6809967141292442 | 0.5062693711376124 | siaty0g5 | Aggregate-only frozen test measurement |
