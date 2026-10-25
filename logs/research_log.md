@@ -8200,3 +8200,10 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+## Explicit tool-call Glaive dose series update
+
+The 1,000-decision explicit tool_call sample used Qwen2.5-1.5B-Instruct, 7,200 preference training examples and 465 filtered Glaive training examples. Training accuracy and macro F1 on 7,665 examples were 0.926810 and 0.695593. Clean preference validation on the fixed 1,800-example split was 0.906667 accuracy and 0.680433 macro F1. Glaive validation contained 116 tool_call-only examples, so its four-class macro F1 is not a cross-class comparison. Aggregate-only test metrics on 3,652 examples were 0.681818 accuracy and 0.502396 macro F1. Training, clean-validation, and test evidence are recorded in the artifacts and experiment records; test metrics are report-only.
+
+The 500-decision explicit-call candidate had stronger clean preference validation at 0.910000 accuracy and 0.682307 macro F1. The next hypothesis is that a 250-decision explicit-call sample may retain high-confidence tool-call coverage with less interference. The preference split stays fixed. Use clean validation only for candidate selection.
