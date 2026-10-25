@@ -43072,3 +43072,360 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/up5eqkis"
 }
 ```
+
+## qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-sft2k-seed20261040
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.train_qwen_glaive_mix",
+    "--model",
+    "Qwen/Qwen2.5-1.5B-Instruct",
+    "--output-dir",
+    "outputs/qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-sft2k-seed20261040",
+    "--glaive-sample",
+    "500",
+    "--glaive-label",
+    "tool_call",
+    "--sft-sample",
+    "2000",
+    "--seed",
+    "20261040",
+    "--split-seed",
+    "20261029",
+    "--epochs",
+    "1",
+    "--batch-size",
+    "1",
+    "--max-length",
+    "4096",
+    "--learning-rate",
+    "2e-5",
+    "--weight-decay",
+    "0.01",
+    "--lora-rank",
+    "16"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-sft2k-seed20261040",
+  "failure_reason": null,
+  "metadata": {
+    "config": {
+      "batch_size": 1,
+      "epochs": 1,
+      "glaive_label": "tool_call",
+      "glaive_sample": 500,
+      "learning_rate": 2e-05,
+      "lora_rank": 16,
+      "max_length": 4096,
+      "model": "Qwen/Qwen2.5-1.5B-Instruct",
+      "output_dir": "outputs/qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-sft2k-seed20261040",
+      "seed": 20261040,
+      "sft_sample": 2000,
+      "split_seed": 20261029,
+      "weight_decay": 0.01
+    },
+    "dataset": [
+      "nvidia/When2Call:train_pref",
+      "glaiveai/glaive-function-calling-v2",
+      "nvidia/When2Call:train_sft"
+    ],
+    "device": "cuda",
+    "glaive_direct_filtered": true,
+    "glaive_label_filter": "tool_call",
+    "glaive_training_examples": 216,
+    "glaive_validation_examples": 54,
+    "glaive_validation_metrics": {
+      "accuracy": 1.0,
+      "confusion_matrix": [
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          54,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "examples": 54,
+      "macro_f1": 0.25
+    },
+    "label_order": [
+      "cannot_answer",
+      "request_for_info",
+      "tool_call",
+      "direct"
+    ],
+    "label_tokens": [
+      362,
+      425,
+      356,
+      422
+    ],
+    "losses": [
+      0.6574236981325551
+    ],
+    "model": "Qwen/Qwen2.5-1.5B-Instruct",
+    "objective": "sft",
+    "official_test_loaded": false,
+    "preference_training_examples": 7200,
+    "preference_validation_examples": 1800,
+    "preference_validation_metrics": {
+      "accuracy": 0.9011111111111111,
+      "confusion_matrix": [
+        [
+          548,
+          27,
+          24,
+          0
+        ],
+        [
+          1,
+          523,
+          76,
+          0
+        ],
+        [
+          0,
+          49,
+          551,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0
+        ]
+      ],
+      "examples": 1800,
+      "macro_f1": 0.6767904695356682
+    },
+    "sft_training_examples": 1600,
+    "sft_validation_examples": 400,
+    "sft_validation_metrics": {
+      "accuracy": 0.89,
+      "confusion_matrix": [
+        [
+          180,
+          3,
+          13,
+          0
+        ],
+        [
+          0,
+          176,
+          28,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "examples": 400,
+      "macro_f1": 0.4691267151824899
+    },
+    "train_examples": 9016,
+    "train_metrics": {
+      "accuracy": 0.9096051464063887,
+      "confusion_matrix": [
+        [
+          2920,
+          130,
+          130,
+          0
+        ],
+        [
+          5,
+          2849,
+          365,
+          0
+        ],
+        [
+          1,
+          183,
+          2432,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0
+        ]
+      ],
+      "examples": 9016,
+      "macro_f1": 0.6816865803847675
+    },
+    "wandb_run_id": "9jirwf8l",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/9jirwf8l"
+  },
+  "metrics_path": "/workspace/post-training/outputs/qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-sft2k-seed20261040/metrics.json",
+  "official_test_loaded": false,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-sft2k-seed20261040",
+  "source_validation_metrics": {
+    "glaive_validation_metrics": {
+      "accuracy": 1.0,
+      "confusion_matrix": [
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          54,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "examples": 54,
+      "macro_f1": 0.25
+    },
+    "preference_validation_metrics": {
+      "accuracy": 0.9011111111111111,
+      "confusion_matrix": [
+        [
+          548,
+          27,
+          24,
+          0
+        ],
+        [
+          1,
+          523,
+          76,
+          0
+        ],
+        [
+          0,
+          49,
+          551,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0
+        ]
+      ],
+      "examples": 1800,
+      "macro_f1": 0.6767904695356682
+    },
+    "sft_validation_metrics": {
+      "accuracy": 0.89,
+      "confusion_matrix": [
+        [
+          180,
+          3,
+          13,
+          0
+        ],
+        [
+          0,
+          176,
+          28,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "examples": 400,
+      "macro_f1": 0.4691267151824899
+    }
+  },
+  "started_at": "2026-10-25T14:57:34.888367+00:00",
+  "status": "completed",
+  "test_status": "not measured",
+  "timestamp": "2026-10-25T15:59:44.202932+00:00",
+  "train_metrics": {
+    "accuracy": 0.9096051464063887,
+    "confusion_matrix": [
+      [
+        2920,
+        130,
+        130,
+        0
+      ],
+      [
+        5,
+        2849,
+        365,
+        0
+      ],
+      [
+        1,
+        183,
+        2432,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0
+      ]
+    ],
+    "examples": 9016,
+    "macro_f1": 0.6816865803847675
+  },
+  "wandb_run_id": "9jirwf8l",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/9jirwf8l"
+}
+```

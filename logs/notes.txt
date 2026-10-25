@@ -6863,3 +6863,5 @@ remove the file manually to continue.
 
 
 2026-10-25: The 1,000-example SFT dose completed with training, preference/SFT/Glaive clean validation, and aggregate test evidence. The shared preference holdout improved slightly over the 500-example SFT dose. Queue a 2,000-example SFT sample with the same 500 explicit-call Glaive source and preference split. Use clean validation only for selection.
+
+2026-10-25T15:59:46.775093+00:00: Commit `Record research experiment qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-sft2k-seed20261040` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.

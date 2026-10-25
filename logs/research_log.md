@@ -8300,3 +8300,15 @@ This record was written automatically. Candidate selection must use clean valida
 The completed 1,000-example SFT candidate trained on 7,200 preference examples, 248 explicit tool_call Glaive examples, and 800 train_sft examples. Training metrics on 8,248 examples were 0.926770 accuracy and 0.694903 macro F1. Clean preference validation on 1,800 examples was 0.914444 accuracy and 0.686113 macro F1. Clean SFT validation on 200 examples was 0.925000 accuracy and 0.476777 four-class macro F1; this source validation has no tool_call or direct examples. Glaive validation contained 62 tool_call-only examples. Aggregate-only test metrics on 3,652 examples were 0.671961 accuracy and 0.491678 macro F1. All three evidence types are recorded in the artifacts and experiment records. Test metrics are report-only.
 
 Compared with the 500-example SFT candidate, the 1,000-example candidate increased clean preference validation from 0.913333/0.685105 to 0.914444/0.686113. The next hypothesis increases the SFT sample to 2,000 while holding the explicit Glaive sample and preference split fixed. Selection uses clean validation only.
+
+## qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-sft2k-seed20261040
+
+Timestamp: 2026-10-25T15:59:44.202932+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_glaive_mix", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--output-dir", "outputs/qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-sft2k-seed20261040", "--glaive-sample", "500", "--glaive-label", "tool_call", "--sft-sample", "2000", "--seed", "20261040", "--split-seed", "20261029", "--epochs", "1", "--batch-size", "1", "--max-length", "4096", "--learning-rate", "2e-5", "--weight-decay", "0.01", "--lora-rank", "16"]. Output: /workspace/post-training/outputs/qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-sft2k-seed20261040. W&B run: 9jirwf8l.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {"preference_validation_metrics": {"accuracy": 0.9011111111111111, "macro_f1": 0.6767904695356682, "confusion_matrix": [[548, 27, 24, 0], [1, 523, 76, 0], [0, 49, 551, 0], [1, 0, 0, 0]], "examples": 1800}, "glaive_validation_metrics": {"accuracy": 1.0, "macro_f1": 0.25, "confusion_matrix": [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 54, 0], [0, 0, 0, 0]], "examples": 54}, "sft_validation_metrics": {"accuracy": 0.89, "macro_f1": 0.4691267151824899, "confusion_matrix": [[180, 3, 13, 0], [0, 176, 28, 0], [0, 0, 0, 0], [0, 0, 0, 0]], "examples": 400}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
