@@ -21,3 +21,12 @@ logs/auto_research_loop.pid
 logs/auto_research_watchdog.log
 logs/auto_research_watchdog.out
 logs/auto_research_watchdog.pid
+
+# Supervised research runtime files remain local while results are tracked.
+logs/validation_*.log
+logs/validation_*.out
+logs/validation_*.pid
+logs/*.lock
+logs/experiment_recorder.out
+logs/research_state.bak
+logs/research_state.tmp
