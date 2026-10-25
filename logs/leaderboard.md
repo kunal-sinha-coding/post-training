@@ -1029,3 +1029,6 @@ The equal average remains the best observed ensemble by accuracy.
 
 Accuracy leader remains equal probability averaging.
 | Candidate | existing-when2call-single-rules-prepare-20261025 | — | — | [metrics](/workspace/post-training/outputs/existing-when2call-single-rules-prepare-20261025/metrics.json) | completed |
+| Candidate | existing-when2call-single-rules-test-20261025 | — | — | [metrics](/workspace/post-training/outputs/existing-when2call-single-rules-test-20261025/metrics.json) | completed |
+
+| existing-when2call-single-rules-test-20261025 | 0.6790799561883899 | 0.5051495247819181 | 7h1eswyz | Aggregate-only frozen test measurement |

@@ -1,27 +1,11 @@
 {
-  "status": "active",
+  "status": "awaiting_codex_planning",
   "planning_owner": "codex_primary",
-  "planning_required": false,
+  "planning_required": true,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "existing_frozen_encoder_llm_comparison_v1",
   "current_hypothesis": "Visible task type may identify regions where the encoder or Qwen SFT is more accurate. Compare fixed routes by tool availability and question length against probability averaging and entropy gating.",
-  "active_experiment": {
-    "pid": 18404,
-    "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.existing_when2call_hybrid",
-      "test",
-      "--suite",
-      "single-rules",
-      "--work-dir",
-      "outputs/existing-when2call-single-rules-20261025",
-      "--output-dir",
-      "outputs/existing-when2call-single-rules-test-20261025"
-    ],
-    "started_at": "2026-10-25T02:05:50.190152+00:00"
-  },
+  "active_experiment": {},
   "worker_command": [
     "python",
     "-u",
@@ -62,33 +46,21 @@
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
   "last_heartbeat": "2026-10-25T02:05:50.190168+00:00",
-  "last_action": "Watchdog started validation worker pid 18404.",
+  "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
-  "research_log_size": 780329,
+  "research_log_size": 781108,
   "stop_command": "STOP",
-  "next_experiment": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.existing_when2call_hybrid",
-    "test",
-    "--suite",
-    "single-rules",
-    "--work-dir",
-    "outputs/existing-when2call-single-rules-20261025",
-    "--output-dir",
-    "outputs/existing-when2call-single-rules-test-20261025"
-  ],
+  "next_experiment": null,
   "recording_jobs": [
     {
-      "pid": 18403,
-      "experiment_id": "existing-when2call-single-rules-prepare-20261025"
+      "pid": 19040,
+      "experiment_id": "existing-when2call-single-rules-test-20261025"
     }
   ],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-25T02:03:19.627097+00:00",
-  "planning_ack_deadline": null,
-  "planning_attempts": 0,
+  "planning_notified_at": "2026-10-25T02:13:54.865203+00:00",
+  "planning_ack_deadline": "2026-10-25T02:15:54.865225+00:00",
+  "planning_attempts": 1,
   "best_observed_test": {
     "method": "single_average",
     "accuracy": 0.6946878422782037,
