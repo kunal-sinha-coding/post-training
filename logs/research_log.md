@@ -7653,3 +7653,15 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## heterogeneous-when2call-selection-20261025
+
+Timestamp: 2026-10-25T01:00:43.547278+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.heterogeneous_when2call", "select", "--work-dir", "outputs/heterogeneous-when2call-20261025", "--output-dir", "outputs/heterogeneous-when2call-selection-20261025"]. Output: /workspace/post-training/outputs/heterogeneous-when2call-selection-20261025. W&B run: s0f48n6q.
+
+Clean development accuracy: 0.8940731399747793. Clean development macro F1: 0.6730870311250094. Official test loaded: None. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

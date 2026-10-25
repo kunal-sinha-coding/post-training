@@ -936,3 +936,4 @@ Historical official test results remain detailed in [research_log.md](research_l
 | Candidate | heterogeneous-when2call-test-encoder-20261025 | — | — | [metrics](/workspace/post-training/outputs/heterogeneous-when2call-test-encoder-20261025/metrics.json) | completed |
 
 | heterogeneous-when2call-test-encoder-20261025 | 0.5150602409638554 | 0.38017244624352736 | rpyhutbi | Aggregate-only frozen test measurement |
+| Candidate | heterogeneous-when2call-selection-20261025 | 0.8940731399747793 | 0.6730870311250094 | [metrics](/workspace/post-training/outputs/heterogeneous-when2call-selection-20261025/metrics.json) | completed |
