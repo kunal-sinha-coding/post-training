@@ -249,8 +249,8 @@ def test(args: object, run: object) -> dict:
     for method in config["methods"]:
         family_name, rule = method.split("_", 1)
         family = single if family_name == "single" else ensemble
-        if rule in RULES:
-            mask = input_route_mask(rows, rule, single.device)
+        if rule.startswith("encoder_") and rule.removeprefix("encoder_") in RULES:
+            mask = input_route_mask(rows, rule.removeprefix("encoder_"), single.device)
             probabilities[method] = torch.where(mask.unsqueeze(-1), single, qwen)
         else:
             probabilities[method] = hybrid_probabilities(family, qwen, rule)
