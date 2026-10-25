@@ -6790,3 +6790,6 @@ remove the file manually to continue.
 . The result remains local and the worker queue continues.
 
 2026-10-25T04:35:30.350627+00:00: Commit `Record research experiment test-qwen-glaive1k-pref-full-15b-seed20261028` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+
+2026-10-25: Record the Qwen preference plus 1,000 filtered Glaive result. It reached 0.631435 aggregate test accuracy and 0.470737 macro F1 on 3,652 When2Call test/mcq examples, below Qwen SFT alone and the current equal-average encoder+Qwen ensemble. The 8,000-example training metrics and separate preference and Glaive clean-validation metrics are in the linked training artifact and experiment record. Queue a 250-example Glaive dose probe, then its frozen aggregate-only test measurement. Choose with training and clean validation only.

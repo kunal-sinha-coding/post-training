@@ -1144,3 +1144,12 @@ Source-specific result `qwen-when2call-qwen25-15b-pref-full-glaive1k-seed2026102
 | Candidate | test-qwen-glaive1k-pref-full-15b-seed20261028 | — | — | [metrics](/workspace/post-training/outputs/test-qwen-glaive1k-pref-full-15b-seed20261028/metrics.json) | completed |
 
 | test-qwen-glaive1k-pref-full-15b-seed20261028 | 0.6314348302300109 | 0.4707373374757976 | svr250hb | Aggregate-only frozen test measurement |
+
+
+### Qwen full preference plus 1,000 filtered Glaive examples
+
+The completed experiment used Qwen2.5-1.5B-Instruct with LoRA rank 16, one epoch, learning rate 2e-5, weight decay 0.01, max length 4096, batch size 1, seed and split seed 20261028. It trained on 7,200 When2Call preference examples and 800 direct-filtered Glaive examples. The held-out clean validations were kept source-specific: 1,800 preference examples and 200 Glaive examples.
+
+Training metrics on the 8,000 training examples were 91.91% accuracy and 69.03% four-class macro F1. Preference validation was 89.39% accuracy and 67.14% macro F1. Glaive validation was 91.00% accuracy and 66.70% macro F1. The frozen aggregate-only evaluation on all 3,652 examples in `nvidia/When2Call` `test/mcq` was 63.14% accuracy and 47.07% macro F1 (W&B run `svr250hb`). The result is below Qwen SFT alone (67.88% accuracy) and the current encoder+Qwen average (69.47%). Training metrics, both clean validation metrics, and aggregate test metrics are present in their linked artifacts and experiment records. Test labels were used only for this aggregate report, not for candidate selection.
+
+Hypothesis for the next experiment: 250 rather than 1,000 Glaive examples may reduce the out-of-domain mixture penalty while retaining useful tool-call coverage. Select using training and source-specific clean validation only. The worker queue contains the distinct training and aggregate test commands.

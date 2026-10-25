@@ -7977,3 +7977,10 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+## test-qwen-glaive1k-pref-full-15b-seed20261028
+
+The aggregate-only official `nvidia/When2Call` `test/mcq` evaluation completed on 3,652 rows. Accuracy was 0.6314348302 and four-class macro F1 was 0.4707373375. The linked training experiment used 8,000 examples and recorded training accuracy 0.919125 and macro F1 0.6902749784, plus source-specific clean validation for 1,800 preference examples (accuracy 0.8938888889, macro F1 0.6714429220) and 200 Glaive examples (accuracy 0.91, macro F1 0.6669834954). Result artifact: `outputs/test-qwen-glaive1k-pref-full-15b-seed20261028/metrics.json`. Training artifact: `outputs/qwen-when2call-qwen25-15b-pref-full-glaive1k-seed20261028/metrics.json`. W&B test run: `svr250hb`.
+
+The Glaive mixture underperformed Qwen SFT alone at 0.678806 accuracy and the current encoder+Qwen equal average at 0.694688. The next queued hypothesis reduces the Glaive sample to 250. The next candidate will be selected using clean source validation only. Its aggregate test measurement follows training and validation. No per-row test labels or predictions are retained.
