@@ -1159,3 +1159,6 @@ Hypothesis for the next experiment: 250 rather than 1,000 Glaive examples may re
 | Aggregate test | test-qwen-glaive100-pref-full-15b-seed20261030 | — | — | Queued after candidate training and clean validation. Aggregate-only measurement. | queued |
 
 Source-specific result `qwen-when2call-qwen25-15b-pref-full-glaive250-seed20261029` has status completed. Its separate validation metrics are {"preference_validation_metrics": {"accuracy": 0.9127777777777778, "macro_f1": 0.6851135479589983, "confusion_matrix": [[572, 8, 19, 0], [4, 533, 63, 0], [5, 57, 538, 0], [1, 0, 0, 0]], "examples": 1800}, "glaive_validation_metrics": {"accuracy": 0.9215686274509803, "macro_f1": 0.676055426055426, "confusion_matrix": [[12, 0, 0, 0], [2, 9, 1, 0], [0, 1, 26, 0], [0, 0, 0, 0]], "examples": 51}}. These values are not ranked against other splits.
+| Candidate | test-qwen-glaive250-pref-full-15b-seed20261029 | — | — | [metrics](/workspace/post-training/outputs/test-qwen-glaive250-pref-full-15b-seed20261029/metrics.json) | completed |
+
+| test-qwen-glaive250-pref-full-15b-seed20261029 | 0.622946330777656 | 0.44794118154241624 | 70bfryo3 | Aggregate-only frozen test measurement |
