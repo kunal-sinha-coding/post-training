@@ -220,7 +220,7 @@ def load_external_rows(source: str, sample_size: int, seed: int) -> tuple[list[C
     validation_count = max(1, round(len(reservoir) * 0.2)) if reservoir else 0
     validation_docs = reservoir[:validation_count]
     training_docs = reservoir[validation_count:]
-    training_rows = [example for index, row in enumerate(training_docs) if (example := external_conversation_example(row, f"{source}-train-{index}")) is not None and LABELS[example.label] != "direct"]
+    training_rows = [example for index, row in enumerate(training_docs) if (example := external_conversation_example(row, f"{source}-train-{index}")) is not None]
     validation_rows = [example for index, row in enumerate(validation_docs) if (example := external_conversation_example(row, f"{source}-validation-{index}")) is not None]
     return training_rows, validation_rows
 
