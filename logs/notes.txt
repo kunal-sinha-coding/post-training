@@ -6849,3 +6849,6 @@ remove the file manually to continue.
 
 
 2026-10-25: The 250-decision explicit tool_call mixture completed with training, clean validation, and aggregate test evidence. Preference validation was 0.910000 accuracy and 0.683180 macro F1, similar to the 500-decision explicit-call dose. Queue a mix of 500 explicit Glaive call decisions and 500 in-domain When2Call train_sft examples to test whether SFT coverage improves clean validation. Test labels are not used for selection.
+
+
+2026-10-25: Confirm the latest completed 250-example explicit-call experiment has training, clean validation, and aggregate test evidence. Preserve the active 500-example SFT candidate's test evaluation as the first queued command. Append a distinct candidate with 1,000 in-domain SFT examples and 500 explicit tool_call Glaive decisions, followed by its aggregate-only test measurement. Candidate selection uses clean validation only.

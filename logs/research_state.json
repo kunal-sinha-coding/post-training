@@ -91,6 +91,56 @@
       "4096",
       "--batch-size",
       "1"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_glaive_mix",
+      "--model",
+      "Qwen/Qwen2.5-1.5B-Instruct",
+      "--output-dir",
+      "outputs/qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-sft1k-seed20261039",
+      "--glaive-sample",
+      "500",
+      "--glaive-label",
+      "tool_call",
+      "--sft-sample",
+      "1000",
+      "--seed",
+      "20261039",
+      "--split-seed",
+      "20261029",
+      "--epochs",
+      "1",
+      "--batch-size",
+      "1",
+      "--max-length",
+      "4096",
+      "--learning-rate",
+      "2e-5",
+      "--weight-decay",
+      "0.01",
+      "--lora-rank",
+      "16"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_qwen_when2call_test",
+      "--model",
+      "Qwen/Qwen2.5-1.5B-Instruct",
+      "--checkpoint",
+      "outputs/qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-sft1k-seed20261039",
+      "--output-dir",
+      "outputs/test-qwen-glaive500-toolcall-sft1k-pref-full-15b-seed20261039",
+      "--lora-rank",
+      "16",
+      "--max-length",
+      "4096",
+      "--batch-size",
+      "1"
     ]
   ],
   "_previous_command": [
@@ -112,14 +162,17 @@
   "experiment_queue": [
     "Train Qwen2.5-1.5B SFT on the full preference training partition, 500 Glaive decisions filtered to explicit tool_call, and a deterministic 500-example sample from When2Call train_sft.",
     "Record training metrics and separate preference, Glaive, and SFT clean validations before test evaluation.",
-    "Run one aggregate-only official test measurement after freezing the candidate."
+    "Run one aggregate-only official test measurement after freezing the candidate.",
+    "After the active aggregate test measurement, train a distinct candidate with 500 explicit tool_call Glaive decisions and 1,000 in-domain When2Call train_sft examples.",
+    "Measure training and source-specific clean validation before aggregate test evaluation.",
+    "Run one aggregate-only test measurement after the candidate is frozen."
   ],
   "best_validation": {
     "status": "historical scores are incomparable",
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
   "last_heartbeat": "2026-10-25T12:52:43.979189+00:00",
-  "last_action": "Watchdog started validation worker pid 47051.",
+  "last_action": "Kept the active candidate test measurement first and appended a distinct higher-SFT-dose experiment with its test command.",
   "watchdog_enabled": true,
   "research_log_size": 828369,
   "stop_command": "STOP",
@@ -170,5 +223,5 @@
     "wandb_run_id": "0m0zb20q",
     "selection": "Best observed result among four methods frozen before this benchmark measurement. This does not establish independent generalization."
   },
-  "next_hypothesis": "Compare this combined in-domain SFT plus explicit-call Glaive mixture with the existing explicit-call candidates on clean validation. The aggregate official test run follows training and validation and is not used for selection."
+  "next_hypothesis": "If the active 500-example SFT addition preserves clean preference validation, increasing the in-domain SFT sample to 1,000 may add non-call coverage. Its selection will use preference and SFT clean validation only; the test command will follow training and validation."
 }

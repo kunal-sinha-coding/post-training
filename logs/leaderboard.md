@@ -1268,3 +1268,7 @@ Training accuracy and macro F1 were 0.919148 and 0.690043. Its 31-example Glaive
 
 | Candidate | qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-sft500-seed20261038 | — | — | Queued in-domain SFT plus explicit-call Glaive mix. Selection uses clean validation only. | queued |
 | Aggregate test | test-qwen-glaive500-toolcall-sft500-pref-full-15b-seed20261038 | — | — | Queued after training and clean validation. Aggregate-only report. | queued |
+
+
+| Candidate | qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-sft1k-seed20261039 | — | — | Queued 1,000-example in-domain SFT dose after current candidate measurement. | queued |
+| Aggregate test | test-qwen-glaive500-toolcall-sft1k-pref-full-15b-seed20261039 | — | — | Queued after training and clean validation. Aggregate-only report. | queued |
