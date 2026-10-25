@@ -354,6 +354,7 @@ def main() -> int:
             if not heartbeat.exists() or time.time() - heartbeat.stat().st_mtime > 45:
                 write_heartbeat(heartbeat, "worker-alive")
     threading.Thread(target=keep_alive, daemon=True).start()
+    result = {}
     path = args.output_dir / (args.mode + ("-" + args.candidate if args.mode == "test" else "") + "-run.json")
     try:
         write_heartbeat(args.output_dir / "heartbeat.json", "loading")

@@ -6603,3 +6603,8 @@ Validation: Python compilation and CLI parsing passed. Exact historical split re
 Commit name: Measure frozen standalone encoder before ensemble selection.
 Description: Add test-encoder mode with its own output directory and W&B worker. Freeze and hash the trained encoder checkpoint in its training record. Verify the hash before loading official data, then measure only aggregate accuracy and all-four-class macro F1 without writing predictions. This permits the required standalone frozen measurement immediately after training and before the three heterogeneous selection methods run.
 Validation: Python compilation passed. The existing absent-class and combiner checks remain applicable. Official measurements remain restricted to explicitly queued test workers.
+
+2026-10-25: Preserve heterogeneous worker startup failure evidence.
+Commit name: Preserve early heterogeneous worker failure records.
+Description: Initialize the result payload before dispatch so model or dataset startup errors can write standard failure metrics without an unbound local variable masking the original exception.
+Validation: Python compilation passed. Root review identified the error path before the first training launch.
