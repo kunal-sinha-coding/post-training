@@ -1,10 +1,10 @@
 {
-  "status": "awaiting_codex_planning",
+  "status": "active",
   "planning_owner": "codex_primary",
-  "planning_required": true,
+  "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "existing_frozen_encoder_llm_comparison_v1",
-  "current_hypothesis": "The encoder request_for_info region helped on held-out train_sft but not on the official benchmark. Requiring higher encoder confidence may preserve useful corrections and reduce harmful overrides.",
+  "current_hypothesis": "Probability averaging improves benchmark accuracy, but fixed routes and pooling alternatives do not. A linear meta-classifier trained on independent SFT and encoder-held-out BFCL predictions may learn when each expert is reliable.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -19,7 +19,50 @@
     "--output-dir",
     "outputs/existing-when2call-single-request-confidence-test-20261025"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_existing_when2call_stacker",
+      "--output-dir",
+      "outputs/existing-when2call-stacker-20261025",
+      "--holdout-seed",
+      "20261026",
+      "--meta-split-seed",
+      "20261027",
+      "--bfcl-source-seed",
+      "20261051",
+      "--batch-size",
+      "1"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.existing_when2call_hybrid",
+      "prepare",
+      "--suite",
+      "single-stacker",
+      "--work-dir",
+      "outputs/existing-when2call-single-stacker-20261025",
+      "--output-dir",
+      "outputs/existing-when2call-single-stacker-prepare-20261025"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.existing_when2call_hybrid",
+      "test",
+      "--suite",
+      "single-stacker",
+      "--work-dir",
+      "outputs/existing-when2call-single-stacker-20261025",
+      "--output-dir",
+      "outputs/existing-when2call-single-stacker-test-20261025"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -37,29 +80,40 @@
     "outputs/test-clean-validation-smooth0075-wd002-weight75-25.json"
   ],
   "experiment_queue": [
-    "Measure fixed request-for-info confidence routes on held-out train_sft validation.",
-    "Freeze the route grid and evaluate it once on official test after validation."
+    "Fit and validate a three-action linear stacker on disjoint SFT and BFCL source partitions.",
+    "Freeze stacker coefficients and model artifacts before official test scoring.",
+    "Run one aggregate-only official test comparison against Qwen and equal averaging."
   ],
   "best_validation": {
     "status": "historical scores are incomparable",
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
   "last_heartbeat": "2026-10-25T02:56:17.672673+00:00",
-  "last_action": "Watchdog handed planning control to the primary Codex process.",
+  "last_action": "Queued source-clean linear stacker training and validation, then frozen preparation and official aggregate test evaluation.",
   "watchdog_enabled": true,
-  "research_log_size": 792674,
+  "research_log_size": 793618,
   "stop_command": "STOP",
-  "next_experiment": null,
-  "recording_jobs": [
-    {
-      "pid": 24906,
-      "experiment_id": "existing-when2call-single-request-confidence-test-20261025"
-    }
+  "next_experiment": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.train_existing_when2call_stacker",
+    "--output-dir",
+    "outputs/existing-when2call-stacker-20261025",
+    "--holdout-seed",
+    "20261026",
+    "--meta-split-seed",
+    "20261027",
+    "--bfcl-source-seed",
+    "20261051",
+    "--batch-size",
+    "1"
   ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-25T03:04:23.431949+00:00",
-  "planning_ack_deadline": "2026-10-25T03:06:23.431972+00:00",
-  "planning_attempts": 5,
+  "planning_notified_at": "2026-10-25T03:10:34.541254+00:00",
+  "planning_ack_deadline": "2026-10-25T03:12:34.541276+00:00",
+  "planning_attempts": 8,
   "best_observed_test": {
     "method": "single_average",
     "accuracy": 0.6946878422782037,
