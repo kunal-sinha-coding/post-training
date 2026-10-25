@@ -34827,3 +34827,7 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/s0f48n6q"
 }
 ```
+
+## Existing encoder inference preservation
+
+The hybrid evaluator preserves the historical encoder policy of tokenizing with special tokens and then taking the first 4096 token IDs. It does not replace the last retained token through tokenizer truncation. The fresh-encoder combination records are marked test skipped with the user scope correction as the reason. Existing-model preparation and aggregate comparison remain the authorized pending commands.

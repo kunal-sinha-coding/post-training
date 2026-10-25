@@ -80,7 +80,7 @@ def encoder_logits(checkpoint: str, examples: list, args: object, device: torch.
     model, tokenizer = load_checkpoint(Path(checkpoint), device, 4096)
     assert_size(model)
     for example in examples:
-        example.token_ids = tokenizer(example.text, add_special_tokens=True, truncation=True, max_length=4096, verbose=False)["input_ids"]
+        example.token_ids = tokenizer(example.text, add_special_tokens=True, truncation=False, verbose=False)["input_ids"][:4096]
     order = sorted(range(len(examples)), key=lambda index: len(examples[index].token_ids))
     values = []
     for start in range(0, len(order), args.batch_size):
