@@ -33,7 +33,7 @@ def write_log(path: Path, message: str) -> None:
 def notify_codex_planning(repo: Path, state_path: Path, state: dict, log_path: Path, message: str | None = None) -> None:
     """Notify the configured parent Codex thread that planning is required."""
     # Queue one durable planning request so the parent agent can refill work without restarting stale training.
-    thread = os.getenv("CODEX_THREAD") or discover_codex_thread() or state.get("codex_thread")
+    thread = os.getenv("CODEX_THREAD") or os.getenv("CODEX_THREAD_ID") or discover_codex_thread() or state.get("codex_thread")
     if not thread:
         write_log(log_path, "planning handoff not sent because codex_thread is absent")
         return
@@ -118,6 +118,18 @@ def command_matches(expected: list[str], actual: str) -> bool:
         return False
     expected_tokens = [str(item) for item in expected]
     return any(tokens[index:index + len(expected_tokens)] == expected_tokens for index in range(len(tokens) - len(expected_tokens) + 1))
+
+
+def worker_matches(pid: int, expected: list[str]) -> bool:
+    """Check that a live process is the declared worker."""
+    # Read arguments from proc so a reused identifier cannot impersonate a worker.
+    if not process_alive(pid):
+        return False
+    try:
+        arguments = Path(f"/proc/{pid}/cmdline").read_bytes().decode().rstrip("\0").split("\0")
+    except (OSError, UnicodeError):
+        return False
+    return command_matches(expected, shlex.join(arguments))
 
 
 def running_validation_workers(exclude_pid: int, expected_command: list[str]) -> list[int]:
@@ -313,10 +325,13 @@ def main() -> int:
                 active = state.get("active_experiment") or {}
                 pid = int(active.get("pid", 0) or 0)
                 heartbeat = state.get("last_heartbeat")
-                alive = process_alive(pid)
+                alive = worker_matches(pid, state.get("worker_command") or [])
                 stale = heartbeat is None or not worker_heartbeat_fresh(args.repo, active)
                 write_log(log_path, f"check pid={pid} alive={alive} heartbeat={heartbeat} stale={stale}")
-                if state.get("status") == "active" and (not active or not alive or stale):
+                # Preserve a live worker even when its heartbeat is stale because training must not be interrupted.
+                if alive and stale:
+                    write_log(log_path, f"worker pid={pid} has a stale heartbeat and remains running without duplication")
+                if state.get("status") == "active" and (not active or not alive):
                     # Adopt a worker launched before the state update instead of competing for the GPU.
                     existing = running_validation_workers(os.getpid(), state.get("worker_command") or [])
                     if existing:
