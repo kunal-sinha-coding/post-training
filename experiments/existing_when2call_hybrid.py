@@ -4,7 +4,7 @@ Preparation freezes existing checkpoint hashes and four predeclared hybrid rules
 training or development selection. One aggregate measurement scores each model once,
 restores source row order after encoder batching, and compares fixed hybrids and baselines.
 The initial suite preserves both encoder families. The single-fusion suite compares fixed pooling rules.
-The single-route suite tests a class-specialized encoder route. The single-weighted suite tests a fixed asymmetric blend. The single-adaptive suite tests confidence-weighted pooling and selective overrides.
+The single-route suite tests a class-specialized encoder route. The single-weighted suite tests a fixed asymmetric blend. The single-adaptive suite tests confidence-weighted pooling and selective overrides. The single-rules suite routes by visible question and tool features.
 Official predictions, labels, probabilities, and per-class statistics remain in memory only.
 """
 from __future__ import annotations
@@ -44,6 +44,8 @@ WEIGHTED_METHODS = ("single_average", "single_gate", "single_qwen_weighted")
 WEIGHTED_RULES = {"qwen_weighted": "Combine 0.25 encoder probability with 0.75 Qwen probability. These weights are fixed before test loading."}
 ADAPTIVE_METHODS = ("single_average", "single_gate", "single_entropy_weighted", "single_margin_weighted", "single_encoder_confident")
 ADAPTIVE_RULES = {"entropy_weighted": "Weight each expert by 1 minus its normalized predictive entropy, with equal weights if both are uniform.", "margin_weighted": "Weight each expert by its top probability minus its second highest probability, with equal weights if both margins are zero.", "encoder_confident": "Use encoder probabilities only when its top-two probability margin is at least 0.50 and exceeds the Qwen margin. Otherwise use Qwen probabilities."}
+RULE_METHODS = ("single_average", "single_gate", "single_encoder_no_tools", "single_encoder_many_tools", "single_encoder_short_question", "single_encoder_long_question")
+RULES = {"no_tools": "Use the encoder when no tools are available.", "many_tools": "Use the encoder when at least two tools are available.", "short_question": "Use the encoder when the question has at most 20 whitespace-delimited words.", "long_question": "Use the encoder when the question has more than 20 whitespace-delimited words."}
 
 
 def suite_definition(name: str) -> dict:
@@ -58,6 +60,8 @@ def suite_definition(name: str) -> dict:
         return {"encoders": [ENCODERS[2]], "weights": [1.0], "single_index": 0, "methods": list(WEIGHTED_METHODS), "primary": "single_qwen_weighted"}
     if name == "single-adaptive":
         return {"encoders": [ENCODERS[2]], "weights": [1.0], "single_index": 0, "methods": list(ADAPTIVE_METHODS), "primary": "single_entropy_weighted"}
+    if name == "single-rules":
+        return {"encoders": [ENCODERS[2]], "weights": [1.0], "single_index": 0, "methods": list(RULE_METHODS), "primary": "single_encoder_no_tools"}
     raise ValueError("Unknown frozen suite: " + name)
 
 
@@ -113,6 +117,22 @@ def hybrid_probabilities(encoder: torch.Tensor, qwen: torch.Tensor, rule: str) -
     raise ValueError("Unknown frozen hybrid rule: " + rule)
 
 
+def input_route_mask(rows: list, rule: str, device: torch.device) -> torch.Tensor:
+    """Build an inference-only route mask from visible question and tool fields."""
+    # Select the declared input feature without reading target labels or model correctness.
+    if rule == "no_tools":
+        values = [len(row["tools"]) == 0 for row in rows]
+    elif rule == "many_tools":
+        values = [len(row["tools"]) >= 2 for row in rows]
+    elif rule == "short_question":
+        values = [len(str(row["question"]).split()) <= 20 for row in rows]
+    elif rule == "long_question":
+        values = [len(str(row["question"]).split()) > 20 for row in rows]
+    else:
+        raise ValueError("Unknown input route rule: " + rule)
+    return torch.tensor(values, dtype=torch.bool, device=device)
+
+
 def prepare(args: object, run: object) -> dict:
     # Freeze only the selected suite artifacts and exact rules before opening official examples.
     suite_name = getattr(args, "suite", "initial")
@@ -135,6 +155,9 @@ def prepare(args: object, run: object) -> dict:
     if suite_name == "single-adaptive":
         config["fusion_rules"] = ADAPTIVE_RULES
         config["hypothesis"] = "Test distinct adaptive ensemble mechanisms in one frozen score pass: soft weights from predictive entropy, soft weights from top-two margins, and a fixed high-margin encoder override. Compare with equal averaging and minimum-entropy gating. No thresholds are swept."
+    if suite_name == "single-rules":
+        config["fusion_rules"] = RULES
+        config["hypothesis"] = "Test whether visible task type should select the expert: no available tools, at least two tools, short questions, or long questions. Each fixed rule uses the encoder in only its declared region and Qwen otherwise. Compare with equal averaging and minimum-entropy gating. Rules use input fields only and are not fitted."
     save_json(args.work_dir / "frozen-config.json", config)
     run.summary.update({"selection_complete": True, "training_performed": False, "test_status": "queued"})
     return {"status": "completed", "test_status": "queued", "frozen_configuration": config}
@@ -154,6 +177,8 @@ def verify_frozen(config: dict) -> None:
         raise ValueError("Frozen single-weighted rules changed.")
     if suite_name == "single-adaptive" and (config.get("fusion_rules") != ADAPTIVE_RULES or config.get("single_encoder_index") != 0 or config.get("qwen_base") != QWEN_BASE or config.get("max_length") != 4096 or config.get("qwen_output_permutation") != [0, 1, 2, 3] or config.get("family_probability_weights") != [0.5, 0.5]):
         raise ValueError("Frozen single-adaptive rules changed.")
+    if suite_name == "single-rules" and (config.get("fusion_rules") != RULES or config.get("single_encoder_index") != 0 or config.get("qwen_base") != QWEN_BASE or config.get("max_length") != 4096 or config.get("qwen_output_permutation") != [0, 1, 2, 3] or config.get("family_probability_weights") != [0.5, 0.5]):
+        raise ValueError("Frozen single-rules definitions changed.")
     for path, expected in config["artifact_sha256"].items():
         if artifact_digest(Path(path)) != expected:
             raise ValueError("Frozen comparison artifact changed: " + path)
@@ -224,7 +249,11 @@ def test(args: object, run: object) -> dict:
     for method in config["methods"]:
         family_name, rule = method.split("_", 1)
         family = single if family_name == "single" else ensemble
-        probabilities[method] = hybrid_probabilities(family, qwen, rule)
+        if rule in RULES:
+            mask = input_route_mask(rows, rule, single.device)
+            probabilities[method] = torch.where(mask.unsqueeze(-1), single, qwen)
+        else:
+            probabilities[method] = hybrid_probabilities(family, qwen, rule)
     labels = torch.tensor([row.label for row in qwen_rows])
     aggregate = {}
     for name, probability in probabilities.items():
@@ -242,7 +271,7 @@ def main() -> int:
     parser.add_argument("mode", choices=("prepare", "test"))
     parser.add_argument("--work-dir", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
-    parser.add_argument("--suite", choices=("initial", "single-fusion", "single-route", "single-weighted", "single-adaptive"), default="initial")
+    parser.add_argument("--suite", choices=("initial", "single-fusion", "single-route", "single-weighted", "single-adaptive", "single-rules"), default="initial")
     parser.add_argument("--batch-size", type=int, default=1)
     args = parser.parse_args()
     import wandb
