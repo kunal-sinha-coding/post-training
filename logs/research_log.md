@@ -8367,3 +8367,15 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## test-qwen-glaive500-toolcall-sft750-wd005-pref-full-15b-seed20261041
+
+Timestamp: 2026-10-25T17:53:13.421250+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_qwen_when2call_test", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--checkpoint", "outputs/qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-sft750-wd005-seed20261041", "--output-dir", "outputs/test-qwen-glaive500-toolcall-sft750-wd005-pref-full-15b-seed20261041", "--lora-rank", "16", "--max-length", "4096", "--batch-size", "1"]. Output: /workspace/post-training/outputs/test-qwen-glaive500-toolcall-sft750-wd005-pref-full-15b-seed20261041. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
