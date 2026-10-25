@@ -8395,3 +8395,15 @@ This record was written automatically. Candidate selection must use clean valida
 ## qwen-when2call-qwen25-15b-pref-full-glaive-all-nondirect-ckpt1k-seed20261045 checkpoint completion correction
 
 The run completed evaluations at steps 1,000 and 2,000, then stopped under the user-requested continuation rule. Training probe at step 2,000: accuracy 0.935000, macro F1 0.685573. Clean preference validation: accuracy 0.575000, macro F1 0.421500. Aggregate black-box test at step 2,000: accuracy 0.487404, macro F1 0.359198, down from step 1,000 accuracy 0.543264. The test metric was used only for that continuation decision; labels were not exposed.
+
+## qwen-when2call-pref-full-glaive500-toolcall-apigenmt500-seed20261047
+
+Timestamp: 2026-10-25T19:08:50.359434+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_glaive_mix", "--output-dir", "outputs/qwen-when2call-pref-full-glaive500-toolcall-apigenmt500-seed20261047", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--glaive-sample", "500", "--glaive-label", "tool_call", "--seed", "20261047", "--split-seed", "20261029", "--epochs", "1", "--batch-size", "1", "--max-length", "4096", "--learning-rate", "2e-5", "--weight-decay", "0.01", "--lora-rank", "16", "--training-log-steps", "1", "--apigen-mt-sample", "500", "--final-test-evaluation"]. Output: /workspace/post-training/outputs/qwen-when2call-pref-full-glaive500-toolcall-apigenmt500-seed20261047. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

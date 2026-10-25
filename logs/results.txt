@@ -44657,3 +44657,64 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/7hndm0r6"
 }
 ```
+
+## qwen-when2call-pref-full-glaive500-toolcall-apigenmt500-seed20261047
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.train_qwen_glaive_mix",
+    "--output-dir",
+    "outputs/qwen-when2call-pref-full-glaive500-toolcall-apigenmt500-seed20261047",
+    "--model",
+    "Qwen/Qwen2.5-1.5B-Instruct",
+    "--glaive-sample",
+    "500",
+    "--glaive-label",
+    "tool_call",
+    "--seed",
+    "20261047",
+    "--split-seed",
+    "20261029",
+    "--epochs",
+    "1",
+    "--batch-size",
+    "1",
+    "--max-length",
+    "4096",
+    "--learning-rate",
+    "2e-5",
+    "--weight-decay",
+    "0.01",
+    "--lora-rank",
+    "16",
+    "--training-log-steps",
+    "1",
+    "--apigen-mt-sample",
+    "500",
+    "--final-test-evaluation"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "qwen-when2call-pref-full-glaive500-toolcall-apigenmt500-seed20261047",
+  "failure_reason": null,
+  "metadata": {},
+  "metrics_path": "/workspace/post-training/outputs/qwen-when2call-pref-full-glaive500-toolcall-apigenmt500-seed20261047/metrics.json",
+  "official_test_loaded": null,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/qwen-when2call-pref-full-glaive500-toolcall-apigenmt500-seed20261047",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-25T18:30:44.842131+00:00",
+  "status": "failed_or_incomplete",
+  "test_status": "not measured",
+  "timestamp": "2026-10-25T19:08:50.359434+00:00",
+  "train_metrics": {},
+  "wandb_run_id": null,
+  "wandb_run_url": null
+}
+```
