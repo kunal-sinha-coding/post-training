@@ -107,7 +107,7 @@ def main() -> int:
     parser.add_argument("--weight-decay", type=float, default=0.01)
     parser.add_argument("--lora-rank", type=int, default=16)
     parser.add_argument("--checkpoint-eval-steps", type=int, default=0)
-    parser.add_argument("--training-log-steps", type=int, default=10)
+    parser.add_argument("--training-log-steps", type=int, default=1)
     parser.add_argument("--checkpoint-glaive-validation-size", type=int, default=1000)
     parser.add_argument("--train-metrics-sample-size", type=int, default=0)
     parser.add_argument("--checkpoint-test-evaluation", action="store_true")
