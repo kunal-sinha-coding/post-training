@@ -38724,3 +38724,172 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/ah51fjux"
 }
 ```
+
+## existing-when2call-single-stacker-prepare-20261025
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "prepare",
+    "--suite",
+    "single-stacker",
+    "--work-dir",
+    "outputs/existing-when2call-single-stacker-20261025",
+    "--output-dir",
+    "outputs/existing-when2call-single-stacker-prepare-20261025"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "existing-when2call-single-stacker-prepare-20261025",
+  "failure_reason": null,
+  "metadata": {
+    "command": [
+      "/usr/local/bin/python",
+      "/workspace/post-training/experiments/existing_when2call_hybrid.py",
+      "prepare",
+      "--suite",
+      "single-stacker",
+      "--work-dir",
+      "outputs/existing-when2call-single-stacker-20261025",
+      "--output-dir",
+      "outputs/existing-when2call-single-stacker-prepare-20261025"
+    ],
+    "configuration": {
+      "batch_size": 1,
+      "mode": "prepare",
+      "output_dir": "outputs/existing-when2call-single-stacker-prepare-20261025",
+      "suite": "single-stacker",
+      "work_dir": "outputs/existing-when2call-single-stacker-20261025"
+    },
+    "encoder_logit_weights": [
+      1.0
+    ],
+    "encoders": [
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+    ],
+    "frozen_configuration": {
+      "artifact_sha256": {
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/encoder_config.json": "0616e72a787934ed1fa3bec80e5da45239be1a1c267525c92960b83e9c44c12f",
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/model_state.pt": "815459d76b8c2e9fb7ba44e2f3867379ab096766cf9f1c807a08921be26593b5",
+        "outputs/existing-when2call-stacker-20261025/stacker.json": "909fc11b4a4dc884fecc707e3e0696bc11f1efe1e03129307baecd2b1393af55",
+        "outputs/qwen-when2call-sft-15b-seed20261022/adapter_config.json": "73b427067b3c4385f48db97011e5e48a25a6b0ea1291e096c2b6e53d8d90588e",
+        "outputs/qwen-when2call-sft-15b-seed20261022/adapter_model.safetensors": "6ecc1863fe7e7eeb995a2588e106e45bfa66f21d36605c93c1ad7f41b3fbe9de",
+        "outputs/when2call-jina-v2-small/latest/tokenizer.json": "e9f999ac74497843ed9f4303246a8f43d9f100ee8aab8e133667903f447ceb48"
+      },
+      "development_selection_performed": false,
+      "encoder_logit_weights": [
+        1.0
+      ],
+      "encoders": [
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+      ],
+      "family_probability_weights": [
+        0.5,
+        0.5
+      ],
+      "fusion_rules": {
+        "stacker": "Apply a four-class linear meta-classifier fitted only on the declared clean train_sft meta-training partition. The coefficients are frozen before official test loading."
+      },
+      "historical_selection_limitation": "Existing encoder approaches were identified in prior research with repeated official benchmark inspection. This fixed comparison is a benchmark measurement, not a new independent generalization estimate.",
+      "hypothesis": "A linear meta-classifier can learn which probability features are useful from the independent SFT-source meta-training partition. It is fitted and measured on disjoint clean source partitions before its coefficients are frozen for official scoring.",
+      "label_order": [
+        "cannot_answer",
+        "request_for_info",
+        "tool_call",
+        "direct"
+      ],
+      "max_length": 4096,
+      "methods": [
+        "single_average",
+        "single_gate",
+        "single_stacker"
+      ],
+      "metric_definition": "Primary macro F1 includes all four declared classes. The present-class macro F1 diagnostic permits comparison with historical encoder reports.",
+      "primary_method": "single_stacker",
+      "qwen_base": "Qwen/Qwen2.5-1.5B-Instruct",
+      "qwen_checkpoint": "outputs/qwen-when2call-sft-15b-seed20261022",
+      "qwen_mapping": "Historical adapter training used LABEL_TO_ID directly despite reversed ABCD descriptions in its prompt. Preserve learned identity indices.",
+      "qwen_output_permutation": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "selection_complete": true,
+      "single_encoder_index": 0,
+      "stacker_artifact": "outputs/existing-when2call-stacker-20261025/stacker.json",
+      "stacker_parameters": {
+        "coefficients": [
+          [
+            1.3797250986099243,
+            -1.3060978651046753,
+            -2.316080331802368,
+            3.6601855754852295,
+            1.2883132696151733,
+            -1.5640060901641846,
+            -0.9725291132926941,
+            -2.6128652095794678
+          ],
+          [
+            -1.3569531440734863,
+            1.912569522857666,
+            -2.298889636993408,
+            5.867583274841309,
+            -1.3602607250213623,
+            1.1097689867019653,
+            0.27529987692832947,
+            -6.251662254333496
+          ],
+          [
+            -1.6987446546554565,
+            -2.0570459365844727,
+            2.3167531490325928,
+            -5.047191143035889,
+            -0.7811444997787476,
+            -0.23588672280311584,
+            0.566649317741394,
+            4.482108116149902
+          ]
+        ],
+        "intercepts": [
+          1.1698185205459595,
+          1.1590837240219116,
+          -1.0910862684249878
+        ]
+      },
+      "suite": "single-stacker",
+      "test_status": "queued",
+      "training_performed": false,
+      "validation_limitation": "Existing encoder warm starts saw all train_pref rows. No clean preference validation is claimed or used for selection."
+    },
+    "git_commit": "3ac986ee24728e9a91b125c2d919a0bac88e83f1",
+    "max_length": 4096,
+    "primary_method": "single_stacker",
+    "qwen_checkpoint": "outputs/qwen-when2call-sft-15b-seed20261022",
+    "runtime_seconds": 3.045088529586792,
+    "status": "completed",
+    "suite": "single-stacker",
+    "test_status": "queued",
+    "wandb_run_id": "rpxc9rf3",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/rpxc9rf3"
+  },
+  "metrics_path": "/workspace/post-training/outputs/existing-when2call-single-stacker-prepare-20261025/metrics.json",
+  "official_test_loaded": null,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/existing-when2call-single-stacker-prepare-20261025",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-25T03:17:35.467358+00:00",
+  "status": "completed",
+  "test_status": "queued",
+  "timestamp": "2026-10-25T03:18:35.776869+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "rpxc9rf3",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/rpxc9rf3"
+}
+```

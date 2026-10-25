@@ -7929,3 +7929,15 @@ Clean development accuracy: 0.9454209065679926. Clean development macro F1: 0.68
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## existing-when2call-single-stacker-prepare-20261025
+
+Timestamp: 2026-10-25T03:18:35.776869+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.existing_when2call_hybrid", "prepare", "--suite", "single-stacker", "--work-dir", "outputs/existing-when2call-single-stacker-20261025", "--output-dir", "outputs/existing-when2call-single-stacker-prepare-20261025"]. Output: /workspace/post-training/outputs/existing-when2call-single-stacker-prepare-20261025. W&B run: rpxc9rf3.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Test status: queued. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

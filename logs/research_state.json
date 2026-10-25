@@ -6,37 +6,8 @@
   "protocol": "existing_frozen_encoder_llm_comparison_v1",
   "current_hypothesis": "Probability averaging improves benchmark accuracy, but fixed routes and pooling alternatives do not. A linear meta-classifier trained on independent SFT and encoder-held-out BFCL predictions may learn when each expert is reliable.",
   "active_experiment": {
-    "pid": 26266,
+    "pid": 26517,
     "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.existing_when2call_hybrid",
-      "prepare",
-      "--suite",
-      "single-stacker",
-      "--work-dir",
-      "outputs/existing-when2call-single-stacker-20261025",
-      "--output-dir",
-      "outputs/existing-when2call-single-stacker-prepare-20261025"
-    ],
-    "started_at": "2026-10-25T03:17:35.467358+00:00"
-  },
-  "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.existing_when2call_hybrid",
-    "prepare",
-    "--suite",
-    "single-stacker",
-    "--work-dir",
-    "outputs/existing-when2call-single-stacker-20261025",
-    "--output-dir",
-    "outputs/existing-when2call-single-stacker-prepare-20261025"
-  ],
-  "worker_queue": [
-    [
       "python",
       "-u",
       "-m",
@@ -48,8 +19,23 @@
       "outputs/existing-when2call-single-stacker-20261025",
       "--output-dir",
       "outputs/existing-when2call-single-stacker-test-20261025"
-    ]
+    ],
+    "started_at": "2026-10-25T03:18:35.725827+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "test",
+    "--suite",
+    "single-stacker",
+    "--work-dir",
+    "outputs/existing-when2call-single-stacker-20261025",
+    "--output-dir",
+    "outputs/existing-when2call-single-stacker-test-20261025"
   ],
+  "worker_queue": [],
   "_previous_command": [
     "python",
     "-u",
@@ -75,28 +61,28 @@
     "status": "historical scores are incomparable",
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
-  "last_heartbeat": "2026-10-25T03:17:35.467372+00:00",
-  "last_action": "Watchdog started validation worker pid 26266.",
+  "last_heartbeat": "2026-10-25T03:18:35.725841+00:00",
+  "last_action": "Watchdog started validation worker pid 26517.",
   "watchdog_enabled": true,
-  "research_log_size": 793618,
+  "research_log_size": 794416,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
     "-u",
     "-m",
     "experiments.existing_when2call_hybrid",
-    "prepare",
+    "test",
     "--suite",
     "single-stacker",
     "--work-dir",
     "outputs/existing-when2call-single-stacker-20261025",
     "--output-dir",
-    "outputs/existing-when2call-single-stacker-prepare-20261025"
+    "outputs/existing-when2call-single-stacker-test-20261025"
   ],
   "recording_jobs": [
     {
-      "pid": 26265,
-      "experiment_id": "existing-when2call-stacker-20261025"
+      "pid": 26516,
+      "experiment_id": "existing-when2call-single-stacker-prepare-20261025"
     }
   ],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",

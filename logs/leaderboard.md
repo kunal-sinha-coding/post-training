@@ -1124,3 +1124,4 @@ Confidence filtering did not recover the benchmark performance. Equal averaging 
 
 The SFT source contains 15,000 rows but only one inferred `direct` response and no `tool_call` responses. A stacker trained on that source alone would miss a benchmark action class. The next meta-training experiment adds a clean BFCL call-only holdout that was excluded from the encoder's own training partition. It keeps a disjoint part of each source for validation.
 | Candidate | existing-when2call-stacker-20261025 | 0.9454209065679926 | 0.6801146933103491 | [metrics](/workspace/post-training/outputs/existing-when2call-stacker-20261025/metrics.json) | completed |
+| Candidate | existing-when2call-single-stacker-prepare-20261025 | — | — | [metrics](/workspace/post-training/outputs/existing-when2call-single-stacker-prepare-20261025/metrics.json) | completed |

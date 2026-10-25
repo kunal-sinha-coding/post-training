@@ -6769,3 +6769,5 @@ remove the file manually to continue.
 2026-10-25: Commit `Queue cross source stacker evaluation` sets the research worker active and sets `planning_required=false`. The worker queue contains stacker fitting and clean validation, frozen preparation, then one aggregate-only official test measurement. The selected training sources are held out from the encoder and Qwen checkpoints.
 
 2026-10-25T03:17:38.180276+00:00: Commit `Record research experiment existing-when2call-stacker-20261025` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-25T03:18:38.209136+00:00: Commit `Record research experiment existing-when2call-single-stacker-prepare-20261025` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
