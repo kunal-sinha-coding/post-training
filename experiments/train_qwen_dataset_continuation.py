@@ -41,9 +41,12 @@ def main() -> int:
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--apigen-mt-sample", type=int, default=0)
     parser.add_argument("--toolace-sample", type=int, default=0)
-    parser.add_argument("--xlam-irrelevance-sample", type=int, default=0)
     parser.add_argument("--hermes-singleturn-sample", type=int, default=0)
     parser.add_argument("--english100k-sample", type=int, default=0)
+    parser.add_argument("--toolbench-sample", type=int, default=0)
+    parser.add_argument("--narrative-sample", type=int, default=0)
+    parser.add_argument("--toolalpaca-sample", type=int, default=0)
+    parser.add_argument("--apibank-sample", type=int, default=0)
     parser.add_argument("--seed", type=int, default=20261047)
     parser.add_argument("--split-seed", type=int, default=20261029)
     parser.add_argument("--max-epochs", type=int, default=20)
@@ -59,9 +62,12 @@ def main() -> int:
     source_sizes = {
         "apigen_mt": args.apigen_mt_sample,
         "toolace": args.toolace_sample,
-        "xlam_irr": args.xlam_irrelevance_sample,
         "hermes_singleturn": args.hermes_singleturn_sample,
         "english100k": args.english100k_sample,
+        "toolbench": args.toolbench_sample,
+        "narrative": args.narrative_sample,
+        "toolalpaca": args.toolalpaca_sample,
+        "apibank": args.apibank_sample,
     }
     source_sizes = {source: size for source, size in source_sizes.items() if size > 0}
     if not source_sizes:
@@ -75,9 +81,12 @@ def main() -> int:
     source_names = {
         "apigen_mt": "Salesforce/APIGen-MT-5k",
         "toolace": "Team-ACE/ToolACE",
-        "xlam_irr": "MadeAgents/xlam-irrelevance-7.5k",
         "hermes_singleturn": "NousResearch/hermes-function-calling-v1:func_calling_singleturn",
         "english100k": "stindardlogic/tool-calling-english-100k",
+        "toolbench": "tuandunghcmut/toolbench-v1:default/train",
+        "narrative": "narrative-io/narrative-function-calling-v1:default/train",
+        "toolalpaca": "tangqiaoyu/ToolAlpaca:data/train_data.json (official upstream)",
+        "apibank": "liminghao1630/API-Bank:training-data/lv1-api-train.json",
     }
     dataset_names = [source_names[source] for source in source_sizes]
     args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -92,7 +101,7 @@ def main() -> int:
     pref_train, pref_validation = split_rows(prepare_rows(load_rows()), args.split_seed)
     external_training_rows = []
     external_validation_rows = {}
-    source_offsets = {"apigen_mt": 10, "toolace": 11, "xlam_irr": 12, "hermes_singleturn": 13, "english100k": 14}
+    source_offsets = {"apigen_mt": 10, "toolace": 11, "hermes_singleturn": 13, "english100k": 14, "toolbench": 15, "narrative": 16, "toolalpaca": 17, "apibank": 18}
     for source, sample_size in source_sizes.items():
         train_rows, validation_rows = load_external_rows(source, sample_size, args.seed + source_offsets[source])
         external_training_rows.extend(train_rows)

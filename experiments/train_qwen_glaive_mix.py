@@ -95,17 +95,20 @@ def prepare_sft_rows(sample_size: int, seed: int) -> list[ClassificationRow]:
 def external_message_role(message: dict) -> str:
     # Normalize common chat dataset roles before extracting the first assistant decision.
     role = str(message.get("from", message.get("role", ""))).lower()
-    return {"human": "user", "user": "user", "gpt": "assistant", "assistant": "assistant", "tool": "tool", "function": "tool"}.get(role, role)
+    return {"human": "user", "user": "user", "gpt": "assistant", "assistant": "assistant", "tool": "tool", "function": "tool", "observation": "tool", "function_call": "assistant", "tool_call": "assistant"}.get(role, role)
 
 
 def external_message_text(message: dict) -> str:
     # Read the message text from either common conversation field without retaining source metadata.
-    return str(message.get("value", message.get("content", ""))).strip()
+    text = message.get("value", message.get("content", ""))
+    if text is None and message.get("tool_calls"):
+        text = json.dumps(message["tool_calls"], ensure_ascii=False)
+    return str(text or "").strip()
 
 
 def external_decision_label(response: str) -> str:
     # Detect common textual tool-call formats before applying the shared response label heuristic.
-    if re.search(r"(?is)<(?:tool_call|function_call|functioncall)|functioncall|function_call|tool_call|^\s*\[[^\]\n]+\([^\n]*\)\]|\"name\"\s*:", response):
+    if re.search(r"(?is)<(?:tool_call|function_call|functioncall)|functioncall|function_call|tool_call|action\s+input\s*:|api-request\s*:|^\s*\[[^\]\n]+\([^\n]*\)\]|\"name\"\s*:", response):
         return "tool_call"
     return response_label(response)
 
@@ -119,18 +122,42 @@ def external_prompt(row: dict, question: str) -> str:
 
 def external_conversation_example(row: dict, source_id: str) -> ClassificationRow | None:
     # Convert the first user turn and its first assistant action into one conservative decision example.
-    if source_id.startswith("xlam_irr-"):
-        # Treat an empty answer list as no usable tool answer and record it as cannot_answer.
-        answers = row.get("answers", "[]")
-        try:
-            answers = json.loads(answers) if isinstance(answers, str) else answers
-        except json.JSONDecodeError:
-            answers = []
-        label_name = "cannot_answer" if not answers else "tool_call"
-        return ClassificationRow(external_prompt({"tools": row.get("tools", "")}, str(row.get("query", ""))), LABEL_TO_ID[label_name], None)
+    if source_id.startswith("english100k-"):
+        # Use the dataset's explicit no-tool and tool-call metadata when assistant content is null.
+        metadata = row.get("metadata", {})
+        if metadata.get("has_tool_call"):
+            label_name = "tool_call"
+        elif metadata.get("no_tool_needed"):
+            label_name = "direct"
+        else:
+            return None
+        messages = row.get("messages", [])
+        question = next((str(item.get("content", "")) for item in messages if item.get("role") == "user"), "")
+        return ClassificationRow(external_prompt(row, question), LABEL_TO_ID[label_name], None) if question else None
+    if source_id.startswith("apibank-"):
+        # Read only the declared API-Bank training rows and map explicit API requests to tool calls.
+        question = str(row.get("instruction", "") + "\n" + row.get("input", "")).strip()
+        answer = str(row.get("output", ""))
+        return ClassificationRow(external_prompt({}, question), LABEL_TO_ID["tool_call"], None) if question and "API-Request" in answer else None
+    if source_id.startswith("toolalpaca-"):
+        # Convert one flattened ToolAlpaca instruction and golden answer to a tool-call example.
+        question = str(row.get("instruction", row.get("prompt", "")))
+        answer = str(row.get("golden_answer", row.get("golden_response", "")))
+        if question and answer:
+            tools = str(row.get("tools", "")) or "\n".join(str(row.get(key, "")) for key in ("name", "description", "nl_documentation"))
+            return ClassificationRow(external_prompt({"tools": tools}, question), LABEL_TO_ID["tool_call"], None)
+        return None
     messages = row.get("conversations", row.get("messages", []))
+    if isinstance(messages, dict):
+        # Convert ToolBench columnar conversations to the common list-of-message format.
+        messages = [dict(zip(messages, values)) for values in zip(messages.get("from", []), messages.get("value", []))]
+    if source_id.startswith("narrative-"):
+        # Convert the dataset's tool catalog role into the normal tool-schema prompt field.
+        catalog = next((item.get("value", "") for item in messages if item.get("from") == "tool_catalog"), "")
+        row = {**row, "tools": catalog}
     question = ""
     response_parts = []
+    saw_tool_result = False
     for message in messages:
         role = external_message_role(message)
         text = external_message_text(message)
@@ -141,22 +168,47 @@ def external_conversation_example(row: dict, source_id: str) -> ClassificationRo
         elif role == "assistant" and question:
             response_parts.append(text)
         elif role == "tool" and question and response_parts:
-            continue
+            saw_tool_result = True
     if not question or not response_parts:
         return None
     response = "\n".join(response_parts)
-    label = LABEL_TO_ID[external_decision_label(response)]
+    # Treat narrative's respond_to_user wrapper as a direct response and other named functions as calls.
+    if source_id.startswith("narrative-") and '"name":"respond_to_user"' in response.replace(" ", ""):
+        label_name = "direct"
+    else:
+        label_name = "tool_call" if saw_tool_result else external_decision_label(response)
+    label = LABEL_TO_ID[label_name]
     return ClassificationRow(external_prompt(row, question), label, None)
 
 
 def load_external_rows(source: str, sample_size: int, seed: int) -> tuple[list[ClassificationRow], list[ClassificationRow]]:
     # Reservoir-sample source conversations, then split by conversation before extracting decision labels.
-    source_config = {"apigen_mt": ("Salesforce/APIGen-MT-5k", "default"), "toolace": ("Team-ACE/ToolACE", "default"), "xlam_irr": ("MadeAgents/xlam-irrelevance-7.5k", "default"), "hermes_singleturn": ("NousResearch/hermes-function-calling-v1", "func_calling_singleturn"), "english100k": ("stindardlogic/tool-calling-english-100k", "default")}
-    dataset_name, config = source_config[source]
+    source_config = {"apigen_mt": ("Salesforce/APIGen-MT-5k", "default"), "toolace": ("Team-ACE/ToolACE", "default"), "hermes_singleturn": ("NousResearch/hermes-function-calling-v1", "func_calling_singleturn"), "english100k": ("stindardlogic/tool-calling-english-100k", "default"), "toolbench": ("tuandunghcmut/toolbench-v1", "default"), "narrative": ("narrative-io/narrative-function-calling-v1", "default")}
+    if source == "apibank":
+        # Load only API-Bank's named training file and exclude its incompatible evaluation files.
+        dataset = load_dataset("json", data_files="hf://datasets/liminghao1630/API-Bank/training-data/lv1-api-train.json", split="train", streaming=True)
+    elif source == "toolalpaca":
+        # Read the official Apache-licensed ToolAlpaca training file rather than its unlicensed mirror.
+        raw = load_dataset("json", data_files="https://raw.githubusercontent.com/tangqiaoyu/ToolAlpaca/main/data/train_data.json", split="train", streaming=True)
+        def flattened_toolalpaca_rows():
+            # Expand each API record into the separate instruction instances declared by the training file.
+            for record in raw:
+                tools = "\n".join(str(record.get(key, "")) for key in ("Name", "Description", "Functions", "Documentation", "NLDocumentation"))
+                instructions = record.get("Instructions", [])
+                for index, instance in enumerate(record.get("Instances", [])):
+                    if isinstance(instance, str):
+                        instance = json.loads(instance)
+                    instruction = instructions[index] if index < len(instructions) else instance.get("input", "")
+                    yield {"instruction": instruction, "tools": tools, "golden_answer": instance.get("intermediate_steps", instance.get("output", ""))}
+        dataset = flattened_toolalpaca_rows()
+    else:
+        dataset_name, config = source_config[source]
+        dataset = load_dataset(dataset_name, config, split="train", streaming=True)
+
     reservoir = []
     rng = random.Random(seed)
     seen = 0
-    for row in load_dataset(dataset_name, config, split="train", streaming=True):
+    for row in dataset:
         seen += 1
         if len(reservoir) < sample_size:
             reservoir.append(dict(row))
@@ -178,6 +230,11 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", default="Qwen/Qwen2.5-1.5B-Instruct")
     parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument("--initial-checkpoint", type=Path)
+    parser.add_argument("--initial-validation-accuracy", type=float, default=0.8961111111111111)
+    parser.add_argument("--initial-test-accuracy", type=float, default=0.666210295728368)
+    parser.add_argument("--initial-test-macro-f1", type=float, default=0.4924675618502121)
+    parser.add_argument("--max-nonimproving-evals", type=int, default=2)
     parser.add_argument("--glaive-sample", type=int, default=1000)
     parser.add_argument("--sft-sample", type=int, default=0)
     parser.add_argument("--apigen-mt-sample", type=int, default=0)
@@ -204,7 +261,7 @@ def main() -> int:
     # Require a positive logging interval so the optimizer callback can schedule live loss points.
     if args.training_log_steps < 1:
         parser.error("--training-log-steps must be at least 1.")
-    dataset_names = [DATASET_NAME + ":train_pref", "glaiveai/glaive-function-calling-v2"]
+    dataset_names = [] if args.initial_checkpoint else [DATASET_NAME + ":train_pref", "glaiveai/glaive-function-calling-v2"]
     if args.sft_sample > 0:
         dataset_names.append(DATASET_NAME + ":train_sft")
     if args.apigen_mt_sample > 0:
@@ -233,9 +290,11 @@ def main() -> int:
     random.seed(args.seed)
     torch.manual_seed(args.seed)
     try:
-        # Split the full preference source and Glaive source independently to preserve source-specific validation.
+        # Keep the established preference holdout for clean evaluation while omitting its rows from continuation training.
         pref_train, pref_validation = split_rows(prepare_rows(load_rows()), args.split_seed)
-        glaive_rows = prepare_glaive_rows(args.glaive_sample, args.seed + 1, args.glaive_label)
+        if args.initial_checkpoint:
+            pref_train = []
+        glaive_rows = prepare_glaive_rows(args.glaive_sample, args.seed + 1, args.glaive_label) if args.glaive_sample > 0 else []
         glaive_train, glaive_validation = split_rows(glaive_rows, args.split_seed + 1)
         checkpoint_glaive_validation = sample_rows(glaive_validation, args.checkpoint_glaive_validation_size, args.split_seed + 3)
         sft_rows = prepare_sft_rows(args.sft_sample, args.seed + 2)
@@ -251,7 +310,7 @@ def main() -> int:
         training_rows = pref_train + glaive_train + sft_train + external_training_rows
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         write_heartbeat(args.output_dir / "heartbeat.json", "model-loading")
-        model, tokenizer = load_model(args.model, device, args.lora_rank)
+        model, tokenizer = load_model(args.model, device, args.lora_rank, str(args.initial_checkpoint) if args.initial_checkpoint else None)
         token_ids = label_token_ids(tokenizer)
         optimizer = torch.optim.AdamW((parameter for parameter in model.parameters() if parameter.requires_grad), lr=args.learning_rate, weight_decay=args.weight_decay)
         losses = []
