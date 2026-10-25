@@ -4,7 +4,7 @@
   "planning_required": true,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "existing_frozen_encoder_llm_comparison_v1",
-  "current_hypothesis": "User clarified that research must combine the best EXISTING trained encoder and LLM approaches. Use Qwen SFT 1.5B with Jina checkpoint48 or the historical weighted Jina65/61/48 approach. Predeclare probability averaging and entropy gating. No fresh encoder or RPO in the initial comparison.",
+  "current_hypothesis": "The best existing encoder and Qwen SFT complement each other. Compare geometric probability pooling and rank pooling for the strongest pair without fitting weights or thresholds. Preserve arithmetic averaging and entropy gating as exact controls.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -44,19 +44,24 @@
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
   "last_heartbeat": "2026-10-25T01:02:13.922718+00:00",
-  "last_action": "Watchdog handed planning control to the primary Codex process.",
+  "last_action": "Primary Codex analyzed all four frozen existing-model combinations. Single Jina plus Qwen probability averaging improved accuracy by 58 of 3652 examples. Two new fixed fusion mechanisms are being prepared.",
   "watchdog_enabled": true,
-  "research_log_size": 772800,
+  "research_log_size": 773627,
   "stop_command": "STOP",
   "next_experiment": null,
-  "recording_jobs": [
-    {
-      "pid": 12131,
-      "experiment_id": "existing-when2call-hybrid-test-20261025"
-    }
-  ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-25T01:13:19.973098+00:00",
-  "planning_ack_deadline": "2026-10-25T01:15:19.973117+00:00",
-  "planning_attempts": 1
+  "planning_notified_at": "2026-10-25T01:15:23.802860+00:00",
+  "planning_ack_deadline": "2026-10-25T01:25:32.158367+00:00",
+  "planning_attempts": 2,
+  "best_observed_test": {
+    "method": "single_average",
+    "accuracy": 0.6946878422782037,
+    "macro_f1": 0.5157041428790551,
+    "macro_f1_definition": "All four declared classes.",
+    "artifact": "outputs/existing-when2call-hybrid-test-20261025/metrics.json",
+    "frozen_config": "outputs/existing-when2call-hybrid-20261025/frozen-config.json",
+    "wandb_run_id": "0m0zb20q",
+    "selection": "Best observed result among four methods frozen before this benchmark measurement. This does not establish independent generalization."
+  }
 }

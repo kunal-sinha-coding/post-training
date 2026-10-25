@@ -941,3 +941,19 @@ Historical official test results remain detailed in [research_log.md](research_l
 | Candidate | existing-when2call-hybrid-test-20261025 | — | — | [metrics](/workspace/post-training/outputs/existing-when2call-hybrid-test-20261025/metrics.json) | completed |
 
 | existing-when2call-hybrid-test-20261025 | 0.683461117196057 | 0.5079429515477252 | 0m0zb20q | Aggregate-only frozen test measurement |
+
+## October 25 fixed existing encoder and LLM benchmark comparison
+
+These are official aggregate-only measurements of configurations frozen before this comparison. They are not clean validation rankings. Primary macro F1 consistently includes all four declared classes. The present-class diagnostic permits comparison with historical encoder reports. Earlier cross-model F1 rankings mixed absent-class conventions and were incorrect.
+
+| Method | Accuracy | Macro F1 across four classes | Present-class macro F1 diagnostic |
+| --- | ---: | ---: | ---: |
+| single_average | 0.694687842 | 0.515704143 | 0.687605524 |
+| single_gate | 0.693044907 | 0.514422081 | 0.685896107 |
+| ensemble_gate | 0.683461117 | 0.508102985 | 0.677470646 |
+| ensemble_average | 0.683461117 | 0.507942952 | 0.677257269 |
+| qwen_sft | 0.678806134 | 0.505011686 | 0.673348915 |
+| encoder_ensemble | 0.596933187 | 0.444039359 | 0.592052479 |
+| encoder_single | 0.592278204 | 0.439754957 | 0.586339943 |
+
+The best observed combination is single_average. Its absolute accuracy gain over qwen_sft is 0.0158817086527929, equivalent to 58 additional correct predictions among 3652 examples. No per-example correctness was exposed or saved. Existing encoder preference validation is contaminated by the warm start and was not used to fit these combinations. Historical repeated benchmark inspection limits generalization claims. W&B run: https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/0m0zb20q.

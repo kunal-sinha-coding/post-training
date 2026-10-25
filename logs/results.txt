@@ -35159,3 +35159,21 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/0m0zb20q"
 }
 ```
+
+## Completed fixed existing encoder and LLM comparison
+
+W&B run: https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/0m0zb20q. Runtime: 618.9316902160645 seconds. Code commit: bab20d1b66bf192f875b0c1fb3c189de9ba8da9f. Frozen configuration SHA256: e717d50447be3a313196d8f40427c7a369a7a7dfa5dcaeb71fedd1acdc916a25. The complete setup and model hashes are preserved in the result artifact and frozen configuration.
+
+| Method | Accuracy | Macro F1 across four classes | Present-class macro F1 diagnostic |
+| --- | ---: | ---: | ---: |
+| single_average | 0.694687842 | 0.515704143 | 0.687605524 |
+| single_gate | 0.693044907 | 0.514422081 | 0.685896107 |
+| ensemble_gate | 0.683461117 | 0.508102985 | 0.677470646 |
+| ensemble_average | 0.683461117 | 0.507942952 | 0.677257269 |
+| qwen_sft | 0.678806134 | 0.505011686 | 0.673348915 |
+| encoder_ensemble | 0.596933187 | 0.444039359 | 0.592052479 |
+| encoder_single | 0.592278204 | 0.439754957 | 0.586339943 |
+
+Analysis: Existing single Jina checkpoint 20261048 and Qwen SFT 1.5B show useful complementary behavior. Their fixed arithmetic probability average improved accuracy from 0.6788061336254108 to 0.6946878422782037 and four-class macro F1 from 0.5050116864318432 to 0.5157041428790551. The gate also improved both metrics. The historical three-encoder expert was stronger alone but its fixed hybrids were weaker than the single-encoder hybrids. No rule or weight was fitted during this comparison. No hidden per-example labels, probabilities, or correctness were exposed. Aggregate baseline accuracies reproduced historical values exactly. Minor historical F1 differences remain, so the common current four-class metric is authoritative for this table.
+
+Next hypothesis: The positive fixed-pair result justifies two distinct parameter-free pooling mechanisms. Geometric pooling tests whether consensus across class probabilities helps. Rank pooling tests robustness to differences in confidence scale. Both will be frozen before a new aggregate measurement. Arithmetic averaging and the confidence gate remain exact controls. A learned router remains deferred until an appropriate unseen calibration source is established.
