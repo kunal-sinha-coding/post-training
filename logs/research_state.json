@@ -4,9 +4,9 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "existing_frozen_encoder_llm_comparison_v1",
-  "current_hypothesis": "Screen accessible, label-compatible external sources one at a time from the same full-preference adapter. Select only by clean preference validation accuracy, and do not combine sources until these individual trials finish.",
+  "current_hypothesis": "Screen each accessible, label-compatible source alone from the same full-preference adapter. Stop after evaluation one if aggregate test accuracy is at least 2 percentage points below baseline. Starting with evaluation two, stop when aggregate test accuracy falls by any amount from the previous checkpoint. Test labels remain sealed.",
   "active_experiment": {
-    "pid": 63523,
+    "pid": 67202,
     "command": [
       "python",
       "-u",
@@ -34,14 +34,14 @@
       "16",
       "--evaluation-steps",
       "1000",
-      "--max-nonimproving-evaluations",
-      "2",
       "--output-dir",
-      "outputs/qwen-pref-control-continue-apigenmt500-seed20261047",
-      "--apigen-mt-sample",
-      "500"
+      "outputs/qwen-pref-control-continue-toolace500-seed20261047",
+      "--toolace-sample",
+      "500",
+      "--first-eval-test-drop-threshold",
+      "0.02"
     ],
-    "started_at": "2026-10-25T19:14:20.213405+00:00"
+    "started_at": "2026-10-25T19:56:55.010331+00:00"
   },
   "worker_command": [
     "python",
@@ -70,12 +70,12 @@
     "16",
     "--evaluation-steps",
     "1000",
-    "--max-nonimproving-evaluations",
-    "2",
     "--output-dir",
-    "outputs/qwen-pref-control-continue-apigenmt500-seed20261047",
-    "--apigen-mt-sample",
-    "500"
+    "outputs/qwen-pref-control-continue-toolace500-seed20261047",
+    "--toolace-sample",
+    "500",
+    "--first-eval-test-drop-threshold",
+    "0.02"
   ],
   "worker_queue": [
     [
@@ -105,46 +105,12 @@
       "16",
       "--evaluation-steps",
       "1000",
-      "--max-nonimproving-evaluations",
-      "2",
-      "--output-dir",
-      "outputs/qwen-pref-control-continue-toolace500-seed20261047",
-      "--toolace-sample",
-      "500"
-    ],
-    [
-      "python",
-      "-u",
-      "-m",
-      "experiments.train_qwen_dataset_continuation",
-      "--model",
-      "Qwen/Qwen2.5-1.5B-Instruct",
-      "--initial-checkpoint",
-      "outputs/qwen-when2call-qwen25-15b-pref-full-control-seed20261031",
-      "--seed",
-      "20261047",
-      "--split-seed",
-      "20261029",
-      "--max-epochs",
-      "20",
-      "--batch-size",
-      "1",
-      "--max-length",
-      "4096",
-      "--learning-rate",
-      "2e-5",
-      "--weight-decay",
-      "0.01",
-      "--lora-rank",
-      "16",
-      "--evaluation-steps",
-      "1000",
-      "--max-nonimproving-evaluations",
-      "2",
       "--output-dir",
       "outputs/qwen-pref-control-continue-hermes-singleturn500-seed20261047",
       "--hermes-singleturn-sample",
-      "500"
+      "500",
+      "--first-eval-test-drop-threshold",
+      "0.02"
     ],
     [
       "python",
@@ -173,12 +139,12 @@
       "16",
       "--evaluation-steps",
       "1000",
-      "--max-nonimproving-evaluations",
-      "2",
       "--output-dir",
       "outputs/qwen-pref-control-continue-english100k500-seed20261047",
       "--english100k-sample",
-      "500"
+      "500",
+      "--first-eval-test-drop-threshold",
+      "0.02"
     ],
     [
       "python",
@@ -207,12 +173,12 @@
       "16",
       "--evaluation-steps",
       "1000",
-      "--max-nonimproving-evaluations",
-      "2",
       "--output-dir",
       "outputs/qwen-pref-control-continue-toolbench500-seed20261047",
       "--toolbench-sample",
-      "500"
+      "500",
+      "--first-eval-test-drop-threshold",
+      "0.02"
     ],
     [
       "python",
@@ -241,12 +207,12 @@
       "16",
       "--evaluation-steps",
       "1000",
-      "--max-nonimproving-evaluations",
-      "2",
       "--output-dir",
       "outputs/qwen-pref-control-continue-apibank500-seed20261047",
       "--apibank-sample",
-      "500"
+      "500",
+      "--first-eval-test-drop-threshold",
+      "0.02"
     ],
     [
       "python",
@@ -275,12 +241,12 @@
       "16",
       "--evaluation-steps",
       "1000",
-      "--max-nonimproving-evaluations",
-      "2",
       "--output-dir",
       "outputs/qwen-pref-control-continue-toolalpaca500-seed20261047",
       "--toolalpaca-sample",
-      "500"
+      "500",
+      "--first-eval-test-drop-threshold",
+      "0.02"
     ],
     [
       "python",
@@ -309,12 +275,12 @@
       "16",
       "--evaluation-steps",
       "1000",
-      "--max-nonimproving-evaluations",
-      "2",
       "--output-dir",
       "outputs/qwen-pref-control-continue-narrative500-seed20261047",
       "--narrative-sample",
-      "500"
+      "500",
+      "--first-eval-test-drop-threshold",
+      "0.02"
     ]
   ],
   "_previous_command": [
@@ -347,10 +313,10 @@
     "status": "historical scores are incomparable",
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
-  "last_heartbeat": "2026-10-25T19:14:20.213417+00:00",
-  "last_action": "Audited remaining dataset access, licenses, train splits, and label mappings. Removed xLAM irrelevance because empty answers do not distinguish direct answer from cannot answer. Queued each additional usable source as an individual 500-row adapter-continuation trial.",
+  "last_heartbeat": "2026-10-25T19:56:55.010346+00:00",
+  "last_action": "Watchdog started validation worker pid 67202.",
   "watchdog_enabled": true,
-  "research_log_size": 846818,
+  "research_log_size": 848341,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -379,12 +345,12 @@
     "16",
     "--evaluation-steps",
     "1000",
-    "--max-nonimproving-evaluations",
-    "2",
     "--output-dir",
-    "outputs/qwen-pref-control-continue-apigenmt500-seed20261047",
-    "--apigen-mt-sample",
-    "500"
+    "outputs/qwen-pref-control-continue-toolace500-seed20261047",
+    "--toolace-sample",
+    "500",
+    "--first-eval-test-drop-threshold",
+    "0.02"
   ],
   "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",

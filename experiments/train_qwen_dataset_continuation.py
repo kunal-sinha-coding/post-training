@@ -56,7 +56,7 @@ def main() -> int:
     parser.add_argument("--weight-decay", type=float, default=0.01)
     parser.add_argument("--lora-rank", type=int, default=16)
     parser.add_argument("--evaluation-steps", type=int, default=1000)
-    parser.add_argument("--max-nonimproving-evaluations", type=int, default=2)
+    parser.add_argument("--first-eval-test-drop-threshold", type=float, default=0.02)
     args = parser.parse_args()
     # Require a declared external source and a readable adapter before opening a W&B run.
     source_sizes = {
@@ -118,11 +118,14 @@ def main() -> int:
     optimizer = torch.optim.AdamW((parameter for parameter in model.parameters() if parameter.requires_grad), lr=args.learning_rate, weight_decay=args.weight_decay)
     baseline_metrics = json.loads((args.initial_checkpoint / "metrics.json").read_text())
     baseline_accuracy = float(baseline_metrics["development_metrics"]["accuracy"])
+    baseline_test_accuracy = 0.666210295728368
     best_accuracy = baseline_accuracy
     best_checkpoint = str(args.initial_checkpoint)
     best_step = 0
     best_test_metrics = {"accuracy": 0.666210295728368, "macro_f1": 0.4924675618502121}
-    no_gain_evaluations = 0
+    evaluation_count = 0
+    previous_test_accuracy = baseline_test_accuracy
+    stop_reason = None
     stop_training = False
     last_step = 0
     last_evaluation = None
@@ -131,8 +134,8 @@ def main() -> int:
     train_probe = sample_rows(external_training_rows, 1000, args.seed + 4)
 
     def evaluate_checkpoint(step: int) -> bool:
-        # Measure training, clean preference and source validation, then record aggregate test metrics for reporting.
-        nonlocal best_accuracy, best_checkpoint, best_step, best_test_metrics, no_gain_evaluations, last_evaluation, stop_training
+        # Measure all required evidence and apply the user's aggregate-test continuation rule.
+        nonlocal best_accuracy, best_checkpoint, best_step, best_test_metrics, evaluation_count, previous_test_accuracy, last_evaluation, stop_training, stop_reason
         if step in evaluated_steps:
             return stop_training
         evaluated_steps.add(step)
@@ -151,6 +154,17 @@ def main() -> int:
         subprocess.run(test_command, check=True)
         test_metrics = json.loads((test_dir / "metrics.json").read_text())["official_test_metrics"]
         model.to(device)
+        current_test_accuracy = float(test_metrics["accuracy"])
+        if evaluation_count == 0:
+            test_delta = current_test_accuracy - baseline_test_accuracy
+            stop_training = test_delta <= -args.first_eval_test_drop_threshold
+            stop_reason = "first evaluation was at least the configured threshold below the starting checkpoint" if stop_training else None
+        else:
+            test_delta = current_test_accuracy - previous_test_accuracy
+            stop_training = current_test_accuracy < previous_test_accuracy
+            stop_reason = "aggregate test accuracy fell from the previous evaluation" if stop_training else None
+        evaluation_count += 1
+        previous_test_accuracy = current_test_accuracy
         record = {
             "step": step,
             "epoch": math.ceil(step / max(1, math.ceil(len(external_training_rows) / args.batch_size))),
@@ -160,6 +174,10 @@ def main() -> int:
             "source_validation_metrics": external_metrics,
             "aggregate_validation_metrics": aggregate_validation,
             "aggregate_black_box_test_metrics_report_only": test_metrics,
+            "test_accuracy_change_from_comparison_point": test_delta,
+            "test_stopping_rule": "evaluation 1 stops at >= configured drop from starting checkpoint; evaluation 2 onward stops at any decrease from the prior evaluation",
+            "test_stop_triggered": stop_training,
+            "test_stop_reason": stop_reason,
             "test_labels_exposed": False,
         }
         with checkpoint_log.open("a", encoding="utf-8") as stream:
@@ -171,16 +189,12 @@ def main() -> int:
             best_checkpoint = str(directory)
             best_step = step
             best_test_metrics = test_metrics
-            no_gain_evaluations = 0
             shutil.copy2(directory / "adapter_config.json", args.output_dir / "adapter_config.json")
             shutil.copy2(directory / "adapter_model.safetensors", args.output_dir / "adapter_model.safetensors")
             shutil.copy2(directory / "README.md", args.output_dir / "README.md") if (directory / "README.md").exists() else None
             (args.output_dir / "best_validation_checkpoint.json").write_text(json.dumps({"step": step, "accuracy": best_accuracy, "checkpoint": best_checkpoint}, indent=2) + "\n")
-        else:
-            no_gain_evaluations += 1
         last_evaluation = record
-        run.log({"evaluation/step": step, "training/accuracy": train_metrics["accuracy"], "training/macro_f1": train_metrics["macro_f1"], "validation/preference_accuracy": pref_metrics["accuracy"], "validation/preference_macro_f1": pref_metrics["macro_f1"], "validation/aggregate_accuracy": aggregate_validation["accuracy"], "validation/aggregate_macro_f1": aggregate_validation["macro_f1"], "test/aggregate_accuracy_report_only": test_metrics["accuracy"], "test/aggregate_macro_f1_report_only": test_metrics["macro_f1"]}, step=step)
-        stop_training = no_gain_evaluations >= args.max_nonimproving_evaluations
+        run.log({"evaluation/step": step, "training/accuracy": train_metrics["accuracy"], "training/macro_f1": train_metrics["macro_f1"], "validation/preference_accuracy": pref_metrics["accuracy"], "validation/preference_macro_f1": pref_metrics["macro_f1"], "validation/aggregate_accuracy": aggregate_validation["accuracy"], "validation/aggregate_macro_f1": aggregate_validation["macro_f1"], "test/aggregate_accuracy_report_only": test_metrics["accuracy"], "test/aggregate_macro_f1_report_only": test_metrics["macro_f1"], "stopping/test_accuracy_change": test_delta, "stopping/triggered": stop_training}, step=step)
         write_heartbeat(args.output_dir / "heartbeat.json", "evaluation", step)
         return stop_training
 
@@ -193,7 +207,7 @@ def main() -> int:
             return evaluate_checkpoint(step)
         return False
 
-    # Train only candidate-source rows and stop after two consecutive validation evaluations without improvement.
+    # Train only candidate-source rows and stop when the aggregate-test continuation rule triggers.
     losses = []
     steps_per_epoch = math.ceil(len(external_training_rows) / args.batch_size)
     for epoch in range(args.max_epochs):
@@ -228,8 +242,9 @@ def main() -> int:
         "baseline_test_metrics_report_only": {"accuracy": 0.666210295728368, "macro_f1": 0.4924675618502121},
         "optimizer_steps": last_step,
         "epochs_requested_maximum": args.max_epochs,
-        "nonimproving_evaluations_at_stop": no_gain_evaluations,
-        "stopped_after_patience": stop_training,
+        "test_evaluation_count": evaluation_count,
+        "stopped_by_test_accuracy_rule": stop_training,
+        "test_stop_reason": stop_reason,
         "losses_by_epoch": losses,
         "checkpoint_evaluations_path": str(checkpoint_log),
         "wandb_run_id": run.id,

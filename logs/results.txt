@@ -44792,3 +44792,67 @@ User interruption record. The base-retraining run stopped during model loading b
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/e4a03k56"
 }
 ```
+
+## qwen-pref-control-continue-apigenmt500-seed20261047
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.train_qwen_dataset_continuation",
+    "--model",
+    "Qwen/Qwen2.5-1.5B-Instruct",
+    "--initial-checkpoint",
+    "outputs/qwen-when2call-qwen25-15b-pref-full-control-seed20261031",
+    "--seed",
+    "20261047",
+    "--split-seed",
+    "20261029",
+    "--max-epochs",
+    "20",
+    "--batch-size",
+    "1",
+    "--max-length",
+    "4096",
+    "--learning-rate",
+    "2e-5",
+    "--weight-decay",
+    "0.01",
+    "--lora-rank",
+    "16",
+    "--evaluation-steps",
+    "1000",
+    "--max-nonimproving-evaluations",
+    "2",
+    "--output-dir",
+    "outputs/qwen-pref-control-continue-apigenmt500-seed20261047",
+    "--apigen-mt-sample",
+    "500"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "qwen-pref-control-continue-apigenmt500-seed20261047",
+  "failure_reason": null,
+  "metadata": {},
+  "metrics_path": "/workspace/post-training/outputs/qwen-pref-control-continue-apigenmt500-seed20261047/metrics.json",
+  "official_test_loaded": null,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/qwen-pref-control-continue-apigenmt500-seed20261047",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-25T19:14:20.213405+00:00",
+  "status": "failed_or_incomplete",
+  "test_status": "not measured",
+  "timestamp": "2026-10-25T19:56:55.923639+00:00",
+  "train_metrics": {},
+  "wandb_run_id": null,
+  "wandb_run_url": null
+}
+```
+
+## qwen-pref-control-continue-apigenmt500-seed20261047 stop-rule correction
+
+The first completed evaluation at step 397 had clean preference validation accuracy/macro F1 0.846111/0.635981 and aggregate black-box test accuracy/macro F1 0.587897/0.431152. The starting aggregate test accuracy was 0.666210. The drop was 0.078313, greater than the newly specified 0.02 threshold. The process had started its step-794 isolated test evaluation when the user changed the rule. That measurement was interrupted, and the run was stopped. Test labels were never exposed. The first checkpoint's training probe and APIGen source validation were entirely request-for-information examples, so the result is parser/sample-skewed.

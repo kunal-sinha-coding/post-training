@@ -8411,3 +8411,19 @@ This record was written automatically. Candidate selection must use clean valida
 ## Base-retraining candidates stopped by user
 
 APIGen-MT base-model retraining stopped at optimizer step 4,332 without clean validation or test evaluation. The watchdog had started the old ToolACE base-model command during the handoff; it was stopped at model loading before any optimizer update. Both attempts were replaced by the adapter-continuation design. No test results were used.
+
+## qwen-pref-control-continue-apigenmt500-seed20261047
+
+Timestamp: 2026-10-25T19:56:55.923639+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_dataset_continuation", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--initial-checkpoint", "outputs/qwen-when2call-qwen25-15b-pref-full-control-seed20261031", "--seed", "20261047", "--split-seed", "20261029", "--max-epochs", "20", "--batch-size", "1", "--max-length", "4096", "--learning-rate", "2e-5", "--weight-decay", "0.01", "--lora-rank", "16", "--evaluation-steps", "1000", "--max-nonimproving-evaluations", "2", "--output-dir", "outputs/qwen-pref-control-continue-apigenmt500-seed20261047", "--apigen-mt-sample", "500"]. Output: /workspace/post-training/outputs/qwen-pref-control-continue-apigenmt500-seed20261047. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-pref-control-continue-apigenmt500-seed20261047 stop-rule correction
+
+The first completed evaluation at step 397 had clean preference validation accuracy/macro F1 0.846111/0.635981 and aggregate black-box test accuracy/macro F1 0.587897/0.431152. The starting aggregate test accuracy was 0.666210. The drop was 0.078313, greater than the newly specified 0.02 threshold. The process had started its step-794 isolated test evaluation when the user changed the rule. That measurement was interrupted, and the run was stopped. Test labels were never exposed. The first checkpoint's training probe and APIGen source validation were entirely request-for-information examples, so the result is parser/sample-skewed.
