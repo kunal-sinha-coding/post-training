@@ -105,6 +105,9 @@ def record(repo: Path, args: argparse.Namespace) -> dict:
     source_validation = {key: value for key, value in metrics.items() if key.endswith("_validation_metrics") and value}
     # Preserve aggregate official test metrics when the worker is a black-box evaluator.
     official_test = metrics.get("official_test_metrics") or {}
+    aggregate_only = bool(metrics.get("test_measurement_only") and metrics.get("black_box"))
+    if not official_test and aggregate_only:
+        official_test = {key: metrics.get("metrics", {}).get(key) for key in ("accuracy", "macro_f1") if key in metrics.get("metrics", {})}
     if args.development_accuracy is not None:
         development["accuracy"] = float(args.development_accuracy)
     if args.development_macro_f1 is not None:
@@ -128,7 +131,7 @@ def record(repo: Path, args: argparse.Namespace) -> dict:
         "train_metrics": metrics.get("train_metrics", {}),
         "wandb_run_id": args.wandb_run_id or metrics.get("wandb_run_id"),
         "wandb_run_url": args.wandb_run_url or metrics.get("wandb_run_url"),
-        "official_test_loaded": metrics.get("official_test_loaded"),
+        "official_test_loaded": metrics.get("official_test_loaded", True if aggregate_only else None),
         "official_test_metrics": official_test,
         "source_validation_metrics": source_validation,
         "test_status": test_status,

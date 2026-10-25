@@ -87,3 +87,27 @@ def test_dns_retry_is_bounded(tmp_path):
     assert sleep.call_count == 2
     assert result["status"] == "failed"
     assert (tmp_path / "logs/experiment_recorder_errors.jsonl").exists()
+
+
+# Recognize a flat aggregate metric block only when the worker declares a black-box test measurement.
+def test_flat_blackbox_measurement_stays_out_of_development(tmp_path):
+    output = tmp_path / "output"
+    output.mkdir()
+    metrics = {"test_measurement_only": True, "black_box": True, "status": "completed", "metrics": {"accuracy": 0.7, "macro_f1": 0.6}}
+    (output / "metrics.json").write_text(json.dumps(metrics))
+    result = recorder.record(tmp_path, arguments(output))
+    assert result["official_test_metrics"] == metrics["metrics"]
+    assert result["official_test_loaded"] is True
+    assert result["test_status"] == "measured"
+    assert result["development_metrics"] == {}
+
+
+# Avoid interpreting an unmarked metric block as an official test result.
+def test_unmarked_flat_metrics_are_not_test_results(tmp_path):
+    output = tmp_path / "output"
+    output.mkdir()
+    (output / "metrics.json").write_text(json.dumps({"metrics": {"accuracy": 0.7, "macro_f1": 0.6}}))
+    result = recorder.record(tmp_path, arguments(output))
+    assert result["official_test_metrics"] == {}
+    assert result["development_metrics"] == {}
+    assert result["test_status"] == "not measured"
