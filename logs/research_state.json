@@ -1,32 +1,11 @@
 {
-  "status": "active",
+  "status": "awaiting_codex_planning",
   "planning_owner": "codex_primary",
-  "planning_required": false,
+  "planning_required": true,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "existing_frozen_encoder_llm_comparison_v1",
   "current_hypothesis": "Two 250-example Glaive draws both scored about 0.91 accuracy on the fixed clean preference holdout, while the 500-example all-label mixture scored 0.894444. Filtering a 500-decision sample to explicit tool_call labels may retain roughly the 250-example training dose while reducing noisy inferred labels. Selection will use clean preference validation only.",
-  "active_experiment": {
-    "pid": 42454,
-    "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_qwen_when2call_test",
-      "--model",
-      "Qwen/Qwen2.5-1.5B-Instruct",
-      "--checkpoint",
-      "outputs/qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-seed20261035",
-      "--output-dir",
-      "outputs/test-qwen-glaive500-toolcall-pref-full-15b-seed20261035",
-      "--lora-rank",
-      "16",
-      "--max-length",
-      "4096",
-      "--batch-size",
-      "1"
-    ],
-    "started_at": "2026-10-25T10:42:14.990302+00:00"
-  },
+  "active_experiment": {},
   "worker_command": [
     "python",
     "-u",
@@ -72,38 +51,21 @@
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
   "last_heartbeat": "2026-10-25T10:42:14.990315+00:00",
-  "last_action": "Watchdog started validation worker pid 42454.",
+  "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
-  "research_log_size": 817577,
+  "research_log_size": 818946,
   "stop_command": "STOP",
-  "next_experiment": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.evaluate_qwen_when2call_test",
-    "--model",
-    "Qwen/Qwen2.5-1.5B-Instruct",
-    "--checkpoint",
-    "outputs/qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-seed20261035",
-    "--output-dir",
-    "outputs/test-qwen-glaive500-toolcall-pref-full-15b-seed20261035",
-    "--lora-rank",
-    "16",
-    "--max-length",
-    "4096",
-    "--batch-size",
-    "1"
-  ],
+  "next_experiment": null,
   "recording_jobs": [
     {
-      "pid": 42453,
-      "experiment_id": "qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-seed20261035"
+      "pid": 42855,
+      "experiment_id": "test-qwen-glaive500-toolcall-pref-full-15b-seed20261035"
     }
   ],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-25T09:50:37.416935+00:00",
-  "planning_ack_deadline": "2026-10-25T09:52:37.416959+00:00",
-  "planning_attempts": 15,
+  "planning_notified_at": "2026-10-25T10:50:19.517462+00:00",
+  "planning_ack_deadline": "2026-10-25T10:52:19.517483+00:00",
+  "planning_attempts": 16,
   "best_observed_test": {
     "method": "single_average",
     "accuracy": 0.6946878422782037,
