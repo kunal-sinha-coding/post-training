@@ -7991,3 +7991,15 @@ The Glaive mixture underperformed Qwen SFT alone at 0.678806 accuracy and the cu
 Hypothesis: The 1,000-example Glaive contribution reduced official aggregate accuracy. A 250-example probe is active. A distinct 100-example probe may reduce out-of-domain interference further while retaining limited tool-call coverage. The experiment uses the same Qwen2.5-1.5B-Instruct base, full preference-source training partition, direct-filtered Glaive sampler, one epoch, rank 16, learning rate 2e-5, weight decay 0.01, max length 4096, and batch size 1. It uses seed and split seed 20261030. Training and source-specific clean validation are measured before the candidate's frozen aggregate-only test measurement. Test labels are not used for selection.
 
 Queued command: `python -u -m experiments.train_qwen_glaive_mix --model Qwen/Qwen2.5-1.5B-Instruct --output-dir outputs/qwen-when2call-qwen25-15b-pref-full-glaive100-seed20261030 --glaive-sample 100 --seed 20261030 --split-seed 20261030 --epochs 1 --batch-size 1 --max-length 4096 --learning-rate 2e-5 --weight-decay 0.01 --lora-rank 16`. Its aggregate measurement is queued after training and clean validation.
+
+## qwen-when2call-qwen25-15b-pref-full-glaive250-seed20261029
+
+Timestamp: 2026-10-25T05:31:36.501423+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_glaive_mix", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--output-dir", "outputs/qwen-when2call-qwen25-15b-pref-full-glaive250-seed20261029", "--glaive-sample", "250", "--seed", "20261029", "--split-seed", "20261029", "--epochs", "1", "--batch-size", "1", "--max-length", "4096", "--learning-rate", "2e-5", "--weight-decay", "0.01", "--lora-rank", "16"]. Output: /workspace/post-training/outputs/qwen-when2call-qwen25-15b-pref-full-glaive250-seed20261029. W&B run: iqf0t8hj.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {"preference_validation_metrics": {"accuracy": 0.9127777777777778, "macro_f1": 0.6851135479589983, "confusion_matrix": [[572, 8, 19, 0], [4, 533, 63, 0], [5, 57, 538, 0], [1, 0, 0, 0]], "examples": 1800}, "glaive_validation_metrics": {"accuracy": 0.9215686274509803, "macro_f1": 0.676055426055426, "confusion_matrix": [[12, 0, 0, 0], [2, 9, 1, 0], [0, 1, 26, 0], [0, 0, 0, 0]], "examples": 51}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
