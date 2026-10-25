@@ -1162,3 +1162,5 @@ Source-specific result `qwen-when2call-qwen25-15b-pref-full-glaive250-seed202610
 | Candidate | test-qwen-glaive250-pref-full-15b-seed20261029 | — | — | [metrics](/workspace/post-training/outputs/test-qwen-glaive250-pref-full-15b-seed20261029/metrics.json) | completed |
 
 | test-qwen-glaive250-pref-full-15b-seed20261029 | 0.622946330777656 | 0.44794118154241624 | 70bfryo3 | Aggregate-only frozen test measurement |
+
+Source-specific result `qwen-when2call-qwen25-15b-pref-full-glaive100-seed20261030` has status completed. Its separate validation metrics are {"preference_validation_metrics": {"accuracy": 0.8933333333333333, "macro_f1": 0.6711784418976574, "confusion_matrix": [[538, 17, 44, 0], [2, 519, 79, 0], [1, 48, 551, 0], [1, 0, 0, 0]], "examples": 1800}, "glaive_validation_metrics": {"accuracy": 0.8, "macro_f1": 0.44727272727272727, "confusion_matrix": [[5, 0, 0, 0], [1, 0, 3, 0], [0, 0, 11, 0], [0, 0, 0, 0]], "examples": 20}}. These values are not ranked against other splits.
