@@ -35840,3 +35840,29 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/dkkgq6x9"
 }
 ```
+
+
+## Fixed class-specialist route comparison, October 25
+
+Purpose: Transfer the earlier encoder plus Jev class-specialist idea to the allowed existing Jina plus Qwen SFT pair. This comparison follows a rule that was inspired by earlier benchmark-label error analysis, so treat it as test-tuned exploratory evidence and not an unbiased generalization estimate.
+
+Setup: Existing Jina checkpoint `outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048` and Qwen SFT adapter `outputs/qwen-when2call-sft-15b-seed20261022`, base `Qwen/Qwen2.5-1.5B-Instruct`, max length 4096, batch size 1, dataset revision `0582f7749df63a96fdc3070932e83e72396ace53`, test/mcq, 3652 examples. Frozen rule: use Jina probabilities if Jina's top class is cannot_answer and Qwen probabilities otherwise. Controls: equal probability average and per-example minimum-entropy expert. No weights or thresholds were fitted. Only aggregate accuracy and macro F1 were saved. RTX A4500. Runtime 480.492 seconds. Code commit `8002c589`. Frozen config SHA256 `022e52c964929761a9b11116bbd08c7c63275fc8bee4970aed9d938a7d7b7f6f`. W&B run `dkkgq6x9`: https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/dkkgq6x9.
+
+| Method | Accuracy | Macro F1 across four classes | Present-class macro F1 diagnostic |
+| --- | ---: | ---: | ---: |
+| single_average | 0.694687842 | 0.515704143 | 0.687605524 |
+| single_gate | 0.693044907 | 0.514422081 | 0.685896107 |
+| single_encoder_refusal | 0.658269441 | 0.488136876 | 0.650849169 |
+| qwen_sft | 0.678806134 | 0.505011686 | 0.673348915 |
+| encoder_single | 0.592278204 | 0.439754957 | 0.586339943 |
+
+Analysis: The class-specialist route is worse than Qwen alone by 2.05 percentage points in accuracy and worse than equal averaging by 3.64 points. The encoder's refusal region is not sufficiently reliable to transfer the Jina plus Jev route directly to Jina plus Qwen. Do not use this route as the current candidate.
+
+Next preregistration: Test a fixed asymmetric blend with 25 percent encoder probability and 75 percent Qwen probability. Compare it with equal averaging and minimum-entropy gating. This tests whether shrinking the lower-accuracy standalone encoder toward the stronger Qwen model retains complementary signal with less exposure to encoder errors. The weight is fixed in advance, with no fitting or sweep. Accuracy is the primary objective and macro F1 remains reported.
+
+Exact commands:
+
+```text
+python -u -m experiments.existing_when2call_hybrid prepare --suite single-weighted --work-dir outputs/existing-when2call-single-weighted-20261025 --output-dir outputs/existing-when2call-single-weighted-prepare-20261025
+python -u -m experiments.existing_when2call_hybrid test --suite single-weighted --work-dir outputs/existing-when2call-single-weighted-20261025 --output-dir outputs/existing-when2call-single-weighted-test-20261025
+```

@@ -979,3 +979,17 @@ The best result remains equal probability averaging, at 0.694687842 accuracy and
 | Candidate | existing-when2call-single-route-test-20261025 | — | — | [metrics](/workspace/post-training/outputs/existing-when2call-single-route-test-20261025/metrics.json) | completed |
 
 | existing-when2call-single-route-test-20261025 | 0.6582694414019715 | 0.4881368764810078 | dkkgq6x9 | Aggregate-only frozen test measurement |
+
+
+## October 25 class-specialist route aggregate test results
+
+Accuracy ranks these aggregate-only benchmark measurements. The routing hypothesis came from earlier test-label error analysis, so treat these as exploratory and potentially optimistic.
+
+| Method | Accuracy | Macro F1 across four classes | Present-class macro F1 diagnostic | W&B |
+| --- | ---: | ---: | ---: | --- |
+| single_average | 0.694687842 | 0.515704143 | 0.687605524 | [dkkgq6x9](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/dkkgq6x9) |
+| single_gate | 0.693044907 | 0.514422081 | 0.685896107 | [dkkgq6x9](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/dkkgq6x9) |
+| qwen_sft | 0.678806134 | 0.505011686 | 0.673348915 | [dkkgq6x9](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/dkkgq6x9) |
+| single_encoder_refusal | 0.658269441 | 0.488136876 | 0.650849169 | [dkkgq6x9](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/dkkgq6x9) |
+
+The class-specialist rule trails both Qwen alone and equal averaging.
