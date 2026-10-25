@@ -1,10 +1,10 @@
 {
-  "status": "awaiting_codex_planning",
+  "status": "active",
   "planning_owner": "codex_primary",
-  "planning_required": true,
+  "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "existing_frozen_encoder_llm_comparison_v1",
-  "current_hypothesis": "The best existing encoder and Qwen SFT complement each other. Compare geometric probability pooling and rank pooling for the strongest pair without fitting weights or thresholds. Preserve arithmetic averaging and entropy gating as exact controls.",
+  "current_hypothesis": "For the strongest existing pair, geometric probability consensus or ordinal rank pooling may outperform equal probability averaging and entropy gating. Compare all four fixed rules in one aggregate measurement without fitting weights or thresholds.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -17,7 +17,34 @@
     "--output-dir",
     "outputs/existing-when2call-hybrid-test-20261025"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.existing_when2call_hybrid",
+      "prepare",
+      "--suite",
+      "single-fusion",
+      "--work-dir",
+      "outputs/existing-when2call-single-fusion-20261025",
+      "--output-dir",
+      "outputs/existing-when2call-single-fusion-prepare-20261025"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.existing_when2call_hybrid",
+      "test",
+      "--suite",
+      "single-fusion",
+      "--work-dir",
+      "outputs/existing-when2call-single-fusion-20261025",
+      "--output-dir",
+      "outputs/existing-when2call-single-fusion-test-20261025"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -44,16 +71,28 @@
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
   "last_heartbeat": "2026-10-25T01:02:13.922718+00:00",
-  "last_action": "Primary Codex analyzed all four frozen existing-model combinations. Single Jina plus Qwen probability averaging improved accuracy by 58 of 3652 examples. Two new fixed fusion mechanisms are being prepared.",
+  "last_action": "Queued frozen single-encoder fusion preparation and aggregate evaluation after confirming the watchdog and supervisor are live.",
   "watchdog_enabled": true,
   "research_log_size": 773627,
   "stop_command": "STOP",
-  "next_experiment": null,
+  "next_experiment": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "prepare",
+    "--suite",
+    "single-fusion",
+    "--work-dir",
+    "outputs/existing-when2call-single-fusion-20261025",
+    "--output-dir",
+    "outputs/existing-when2call-single-fusion-prepare-20261025"
+  ],
   "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-25T01:15:23.802860+00:00",
-  "planning_ack_deadline": "2026-10-25T01:25:32.158367+00:00",
-  "planning_attempts": 2,
+  "planning_ack_deadline": null,
+  "planning_attempts": 0,
   "best_observed_test": {
     "method": "single_average",
     "accuracy": 0.6946878422782037,

@@ -35177,3 +35177,21 @@ W&B run: https://forge.coreweave.com/wandb/kunal-personal/when2call-research/run
 Analysis: Existing single Jina checkpoint 20261048 and Qwen SFT 1.5B show useful complementary behavior. Their fixed arithmetic probability average improved accuracy from 0.6788061336254108 to 0.6946878422782037 and four-class macro F1 from 0.5050116864318432 to 0.5157041428790551. The gate also improved both metrics. The historical three-encoder expert was stronger alone but its fixed hybrids were weaker than the single-encoder hybrids. No rule or weight was fitted during this comparison. No hidden per-example labels, probabilities, or correctness were exposed. Aggregate baseline accuracies reproduced historical values exactly. Minor historical F1 differences remain, so the common current four-class metric is authoritative for this table.
 
 Next hypothesis: The positive fixed-pair result justifies two distinct parameter-free pooling mechanisms. Geometric pooling tests whether consensus across class probabilities helps. Rank pooling tests robustness to differences in confidence scale. Both will be frozen before a new aggregate measurement. Arithmetic averaging and the confidence gate remain exact controls. A learned router remains deferred until an appropriate unseen calibration source is established.
+
+
+## Preregistered existing single-encoder fusion comparison
+
+Purpose: Test whether geometric consensus or ordinal Borda rank pooling improves on the strongest existing Jina plus Qwen SFT pair. The prior frozen comparison showed complementary predictions, with equal probability averaging improving accuracy by 58 of 3652 examples. The test set has been inspected in prior work, so this is a fixed aggregate benchmark measurement and not an independent generalization estimate.
+
+Candidates: Existing Jina checkpoint `outputs/clean-validation-cues-lr25e5-smooth0075-seed20261022`, selected historical seed 20261048, and existing Qwen2.5 1.5B SFT adapter `outputs/qwen25-1.5b-sft-when2call`. The single-fusion suite scores each expert once and compares arithmetic probability mean, minimum-entropy gate, equal geometric probability pooling, and equal Borda rank pooling. Geometric pooling clamps probabilities at 1e-8 before taking equal mean log probabilities and softmax. Rank pooling averages tied ranks, sums the two experts’ Borda points, adds 1e-6 times mean probability as a tie break, clamps at 1e-12, and normalizes. The primary method is `single_geometric`.
+
+Selection and data: The fixed pair and four rules are predeclared in code. No training, calibration, weight search, threshold sweep, or candidate selection from test outcomes is allowed. The work directory stores the frozen manifest and artifact hashes before official test loading. The test worker reports aggregate accuracy and four-class macro F1, with present-class macro F1 as a diagnostic only. It must not save or log per-example test labels, probabilities, or correctness.
+
+Exact queued commands:
+
+```text
+python -u -m experiments.existing_when2call_hybrid prepare --suite single-fusion --work-dir outputs/existing-when2call-single-fusion-20261025 --output-dir outputs/existing-when2call-single-fusion-prepare-20261025
+python -u -m experiments.existing_when2call_hybrid test --suite single-fusion --work-dir outputs/existing-when2call-single-fusion-20261025 --output-dir outputs/existing-when2call-single-fusion-test-20261025
+```
+
+Environment and controls: The work is supervised by `experiments.watchdog_supervisor` and `experiments.validation_watchdog` at 30-second intervals. The supervisor heartbeat fix is commit `9e5baac2`; the fusion suite is commit `0cddd90b`. Its nine focused unit tests passed before the benchmark run. GPU, runtime, final Git identifier, W&B run, artifact hashes, and aggregate metrics will be added after execution.
