@@ -7905,3 +7905,15 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## existing-when2call-single-request-confidence-test-20261025
+
+Timestamp: 2026-10-25T03:04:20.364876+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.existing_when2call_hybrid", "test", "--suite", "single-request-confidence", "--work-dir", "outputs/existing-when2call-single-request-confidence-20261025", "--output-dir", "outputs/existing-when2call-single-request-confidence-test-20261025"]. Output: /workspace/post-training/outputs/existing-when2call-single-request-confidence-test-20261025. W&B run: bgzbop64.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: True. Test status: measured. Official test metrics: {"accuracy": 0.6812705366922235, "macro_f1": 0.5101340922289233, "macro_f1_present_classes": 0.6801787896385644}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
