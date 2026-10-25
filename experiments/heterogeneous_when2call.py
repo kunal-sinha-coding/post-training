@@ -42,6 +42,15 @@ def save_json(path: Path, value: dict) -> None:
     temporary.replace(path)
 
 
+def artifact_digest(path: Path) -> str:
+    # Hash model artifacts in bounded chunks to bind frozen configuration to exact weights.
+    digest = hashlib.sha256()
+    with path.open("rb") as source:
+        for chunk in iter(lambda: source.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def question_key(prompt: str) -> str:
     # Normalize question whitespace and case without using labels or tool schemas.
     question = prompt.split("Question: ", 1)[1].split("\nAvailable tools:\n", 1)[0]
@@ -115,7 +124,11 @@ def encoder_probabilities(model: object, tokenizer: object, examples: list, args
 
 def metrics(labels: torch.Tensor, probabilities: torch.Tensor) -> dict:
     # Include all four declared classes even when a partition has no direct examples.
-    return metric_values(labels.tolist(), probabilities.argmax(-1).tolist(), list(range(len(LABELS))))
+    result = metric_values(labels.tolist(), probabilities.argmax(-1).tolist(), list(range(len(LABELS))))
+    result["macro_f1_present_classes"] = result["macro_f1"]
+    for field in ("precision", "recall", "f1"):
+        result["macro_" + field] = sum(result["per_class"][label][field] for label in LABELS) / len(LABELS)
+    return result
 
 
 def train_encoder(args: object, run: object, device: torch.device) -> dict:
@@ -148,8 +161,11 @@ def train_encoder(args: object, run: object, device: torch.device) -> dict:
     checkpoint = args.work_dir / "encoder"
     model.save_pretrained(checkpoint)
     tokenizer.save_pretrained(checkpoint)
+    train_probabilities = encoder_probabilities(model, tokenizer, training, args, device)
+    train_metrics = metrics(torch.tensor([row.label for row in training]), train_probabilities)
     probabilities = encoder_probabilities(model, tokenizer, development, args, device)
-    result = {"provenance": provenance, "parameter_count": count, "initialization": BASE_ENCODER, "task_warmstart": False, "epochs": args.epochs, "max_length": args.max_length, "learning_rate": args.learning_rate, "development_metrics": metrics(torch.tensor([row.label for row in development]), probabilities), "mean_training_loss": sum(losses) / len(losses), "checkpoint": str(checkpoint)}
+    result = {"train_metrics": train_metrics, "provenance": provenance, "parameter_count": count, "initialization": BASE_ENCODER, "task_warmstart": False, "epochs": args.epochs, "max_length": args.max_length, "learning_rate": args.learning_rate, "development_metrics": metrics(torch.tensor([row.label for row in development]), probabilities), "mean_training_loss": sum(losses) / len(losses), "checkpoint": str(checkpoint)}
+    run.log({"train/accuracy": train_metrics["accuracy"], "train/macro_f1": train_metrics["macro_f1"], "train/confusion_matrix": train_metrics["confusion_matrix"], "development/accuracy": result["development_metrics"]["accuracy"], "development/macro_f1": result["development_metrics"]["macro_f1"], "development/confusion_matrix": result["development_metrics"]["confusion_matrix"], "train/per_class": train_metrics["per_class"], "development/per_class": result["development_metrics"]["per_class"]})
     save_json(args.work_dir / "encoder-metrics.json", result)
     del model, tokenizer, optimizer
     free_gpu()
@@ -222,7 +238,9 @@ def select(args: object, run: object, device: torch.device) -> dict:
         raise ValueError("Encoder split provenance does not match selection.")
     args.max_length = encoder_record["max_length"]
     cache = args.work_dir / "development-probabilities.pt"
-    digest = hashlib.sha256(json.dumps({"provenance": provenance, "members": MEMBERS, "encoder": encoder_record}, sort_keys=True).encode()).hexdigest()
+    artifacts = {member["checkpoint"] + "/adapter_model.safetensors": artifact_digest(Path(member["checkpoint"]) / "adapter_model.safetensors") for member in MEMBERS}
+    artifacts[str(args.work_dir / "encoder" / "model_state.pt")] = artifact_digest(args.work_dir / "encoder" / "model_state.pt")
+    digest = hashlib.sha256(json.dumps({"provenance": provenance, "members": MEMBERS, "encoder": encoder_record, "artifact_sha256": artifacts}, sort_keys=True).encode()).hexdigest()
     if cache.exists():
         cached = torch.load(cache, weights_only=True)
         if cached["digest"] != digest:
@@ -250,6 +268,7 @@ def select(args: object, run: object, device: torch.device) -> dict:
     # Freeze all three predeclared methods before any official measurement is allowed.
     config = {"selection_complete": True, "provenance": provenance, "members": MEMBERS, "encoder": encoder_record, "label_order": LABELS, "qwen_output_permutation": [0, 1, 2, 3], "qwen_prompt_mismatch": "Prompt describes ABCD in reverse order, but training and historical evaluation use LABEL_TO_ID indices directly. Preserve learned identity order.", "metric_definition": "Macro F1 includes all four classes. Some historical encoder metrics excluded direct.", "fitting_indices": fitting.tolist(), "selection_indices": selection.tolist(), "stacker": stacker, "candidates": candidates, "selection_criterion": "Report all predeclared methods. Prefer highest selection macro F1 with accuracy as tie breaker.", "member_selection_metrics": {MEMBERS[index]["name"] if index < 2 else "encoder": metrics(labels[selection], probabilities[selection, index]) for index in range(3)}}
     best = max(candidates, key=lambda name: (candidates[name]["selection_metrics"]["macro_f1"], candidates[name]["selection_metrics"]["accuracy"]))
+    config["artifact_sha256"] = artifacts
     config["best_selection_candidate"] = best
     config["development_metrics"] = candidates[best]["selection_metrics"]
     save_json(args.work_dir / "frozen-config.json", config)
@@ -261,6 +280,9 @@ def test(args: object, run: object, device: torch.device) -> dict:
     config = json.loads((args.work_dir / "frozen-config.json").read_text())
     if not config["selection_complete"] or config["members"] != MEMBERS or not config["candidates"][args.candidate]["viable"]:
         raise ValueError("Frozen candidate configuration is invalid.")
+    for path, expected in config["artifact_sha256"].items():
+        if artifact_digest(Path(path)) != expected:
+            raise ValueError("Frozen model artifact changed: " + path)
     from experiments.evaluate_qwen_when2call_test import load_official_rows, prepare_test_rows, aggregate_metrics
     from experiments.train_when2call_jina import Example
     rows = list(load_official_rows())
