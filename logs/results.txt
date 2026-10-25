@@ -42154,3 +42154,71 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/nwwfa2iv"
 }
 ```
+
+## test-qwen-glaive250-toolcall-pref-full-15b-seed20261037
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_qwen_when2call_test",
+    "--model",
+    "Qwen/Qwen2.5-1.5B-Instruct",
+    "--checkpoint",
+    "outputs/qwen-when2call-qwen25-15b-pref-full-glaive250-toolcall-seed20261037",
+    "--output-dir",
+    "outputs/test-qwen-glaive250-toolcall-pref-full-15b-seed20261037",
+    "--lora-rank",
+    "16",
+    "--max-length",
+    "4096",
+    "--batch-size",
+    "1"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "test-qwen-glaive250-toolcall-pref-full-15b-seed20261037",
+  "failure_reason": null,
+  "metadata": {
+    "base_model": "Qwen/Qwen2.5-1.5B-Instruct",
+    "black_box": true,
+    "checkpoint": "outputs/qwen-when2call-qwen25-15b-pref-full-glaive250-toolcall-seed20261037",
+    "dataset": "nvidia/When2Call",
+    "examples": 3652,
+    "metrics": {
+      "accuracy": 0.6073384446878423,
+      "macro_f1": 0.4397278163962362
+    },
+    "official_test_loaded": true,
+    "official_test_metrics": {
+      "accuracy": 0.6073384446878423,
+      "macro_f1": 0.4397278163962362
+    },
+    "output_dir": "outputs/test-qwen-glaive250-toolcall-pref-full-15b-seed20261037",
+    "split": "test/mcq",
+    "test_loaded": true,
+    "test_measurement_only": true,
+    "wandb_run_id": "sb9mqv2x",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/sb9mqv2x"
+  },
+  "metrics_path": "/workspace/post-training/outputs/test-qwen-glaive250-toolcall-pref-full-15b-seed20261037/metrics.json",
+  "official_test_loaded": true,
+  "official_test_metrics": {
+    "accuracy": 0.6073384446878423,
+    "macro_f1": 0.4397278163962362
+  },
+  "output_dir": "/workspace/post-training/outputs/test-qwen-glaive250-toolcall-pref-full-15b-seed20261037",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-25T12:42:05.780108+00:00",
+  "status": "completed",
+  "test_status": "measured",
+  "timestamp": "2026-10-25T12:49:37.296601+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "sb9mqv2x",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/sb9mqv2x"
+}
+```

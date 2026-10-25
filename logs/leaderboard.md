@@ -1256,3 +1256,6 @@ Training accuracy and macro F1 were 0.926810 and 0.695593. Glaive validation had
 | Aggregate test | test-qwen-glaive250-toolcall-pref-full-15b-seed20261037 | — | — | Queued after training and clean validation. Aggregate-only report. | queued |
 
 Source-specific result `qwen-when2call-qwen25-15b-pref-full-glaive250-toolcall-seed20261037` has status completed. Its separate validation metrics are {"preference_validation_metrics": {"accuracy": 0.91, "macro_f1": 0.6831804088517784, "confusion_matrix": [[567, 12, 20, 0], [1, 523, 76, 0], [5, 47, 548, 0], [1, 0, 0, 0]], "examples": 1800}, "glaive_validation_metrics": {"accuracy": 1.0, "macro_f1": 0.25, "confusion_matrix": [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 31, 0], [0, 0, 0, 0]], "examples": 31}}. These values are not ranked against other splits.
+| Candidate | test-qwen-glaive250-toolcall-pref-full-15b-seed20261037 | — | — | [metrics](/workspace/post-training/outputs/test-qwen-glaive250-toolcall-pref-full-15b-seed20261037/metrics.json) | completed |
+
+| test-qwen-glaive250-toolcall-pref-full-15b-seed20261037 | 0.6073384446878423 | 0.4397278163962362 | sb9mqv2x | Aggregate-only frozen test measurement |
