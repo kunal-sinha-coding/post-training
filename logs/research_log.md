@@ -8145,3 +8145,15 @@ This record was written automatically. Candidate selection must use clean valida
 The second 250-example sample used Qwen2.5-1.5B-Instruct, 7,200 preference training examples and 200 Glaive training examples, seed 20261034, fixed preference split seed 20261029, one epoch, batch size 1, max length 4096, learning rate 2e-5, weight decay 0.01, and LoRA rank 16. Training metrics on 7,400 examples were 0.926216 accuracy and 0.695185 macro F1. Preference validation on the fixed 1,800-example holdout was 0.909444 accuracy and 0.682642 macro F1. Glaive validation on 50 examples was 0.920000 accuracy and 0.674547 macro F1. The aggregate-only test result on 3,652 examples was 0.654984 accuracy and 0.483830 macro F1. All three evidence types are in the candidate training and aggregate test artifacts and experiment records. The test report is not used for selection.
 
 Two 250-example draws have similar preference validation (0.912778 and 0.909444 accuracy), while the 500-example all-label mixture had 0.894444. This supports testing source quality rather than adding more all-label examples. The next candidate samples 500 Glaive decisions and filters to explicit `tool_call` labels, then evaluates the same preference holdout. Candidate selection will use clean validation only.
+
+## qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-seed20261035
+
+Timestamp: 2026-10-25T10:42:15.515879+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_glaive_mix", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--output-dir", "outputs/qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-seed20261035", "--glaive-sample", "500", "--glaive-label", "tool_call", "--seed", "20261035", "--split-seed", "20261029", "--epochs", "1", "--batch-size", "1", "--max-length", "4096", "--learning-rate", "2e-5", "--weight-decay", "0.01", "--lora-rank", "16"]. Output: /workspace/post-training/outputs/qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-seed20261035. W&B run: 7lf2cph6.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {"preference_validation_metrics": {"accuracy": 0.91, "macro_f1": 0.6823067418285723, "confusion_matrix": [[588, 3, 8, 0], [20, 516, 64, 0], [14, 52, 534, 0], [1, 0, 0, 0]], "examples": 1800}, "glaive_validation_metrics": {"accuracy": 1.0, "macro_f1": 0.25, "confusion_matrix": [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 59, 0], [0, 0, 0, 0]], "examples": 59}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
