@@ -5,33 +5,9 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "existing_frozen_encoder_llm_comparison_v1",
   "current_hypothesis": "For the strongest existing pair, geometric probability consensus or ordinal rank pooling may outperform equal probability averaging and entropy gating. Compare all four fixed rules in one aggregate measurement without fitting weights or thresholds.",
-  "active_experiment": {},
-  "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.existing_when2call_hybrid",
-    "test",
-    "--work-dir",
-    "outputs/existing-when2call-hybrid-20261025",
-    "--output-dir",
-    "outputs/existing-when2call-hybrid-test-20261025"
-  ],
-  "worker_queue": [
-    [
-      "python",
-      "-u",
-      "-m",
-      "experiments.existing_when2call_hybrid",
-      "prepare",
-      "--suite",
-      "single-fusion",
-      "--work-dir",
-      "outputs/existing-when2call-single-fusion-20261025",
-      "--output-dir",
-      "outputs/existing-when2call-single-fusion-prepare-20261025"
-    ],
-    [
+  "active_experiment": {
+    "pid": 13315,
+    "command": [
       "python",
       "-u",
       "-m",
@@ -43,8 +19,23 @@
       "outputs/existing-when2call-single-fusion-20261025",
       "--output-dir",
       "outputs/existing-when2call-single-fusion-test-20261025"
-    ]
+    ],
+    "started_at": "2026-10-25T01:21:24.347891+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "test",
+    "--suite",
+    "single-fusion",
+    "--work-dir",
+    "outputs/existing-when2call-single-fusion-20261025",
+    "--output-dir",
+    "outputs/existing-when2call-single-fusion-test-20261025"
   ],
+  "worker_queue": [],
   "_previous_command": [
     "python",
     "-u",
@@ -70,8 +61,8 @@
     "status": "historical scores are incomparable",
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
-  "last_heartbeat": "2026-10-25T01:02:13.922718+00:00",
-  "last_action": "Queued frozen single-encoder fusion preparation and aggregate evaluation after confirming the watchdog and supervisor are live.",
+  "last_heartbeat": "2026-10-25T01:21:24.347904+00:00",
+  "last_action": "Watchdog started validation worker pid 13315.",
   "watchdog_enabled": true,
   "research_log_size": 773627,
   "stop_command": "STOP",
@@ -80,15 +71,20 @@
     "-u",
     "-m",
     "experiments.existing_when2call_hybrid",
-    "prepare",
+    "test",
     "--suite",
     "single-fusion",
     "--work-dir",
     "outputs/existing-when2call-single-fusion-20261025",
     "--output-dir",
-    "outputs/existing-when2call-single-fusion-prepare-20261025"
+    "outputs/existing-when2call-single-fusion-test-20261025"
   ],
-  "recording_jobs": [],
+  "recording_jobs": [
+    {
+      "pid": 13314,
+      "experiment_id": "existing-when2call-single-fusion-prepare-20261025"
+    }
+  ],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-25T01:15:23.802860+00:00",
   "planning_ack_deadline": null,

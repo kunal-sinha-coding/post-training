@@ -957,3 +957,4 @@ These are official aggregate-only measurements of configurations frozen before t
 | encoder_single | 0.592278204 | 0.439754957 | 0.586339943 |
 
 The best observed combination is single_average. Its absolute accuracy gain over qwen_sft is 0.0158817086527929, equivalent to 58 additional correct predictions among 3652 examples. No per-example correctness was exposed or saved. Existing encoder preference validation is contaminated by the warm start and was not used to fit these combinations. Historical repeated benchmark inspection limits generalization claims. W&B run: https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/0m0zb20q.
+| Candidate | existing-when2call-single-fusion-prepare-20261025 | — | — | [metrics](/workspace/post-training/outputs/existing-when2call-single-fusion-prepare-20261025/metrics.json) | completed |

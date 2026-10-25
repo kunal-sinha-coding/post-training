@@ -35195,3 +35195,135 @@ python -u -m experiments.existing_when2call_hybrid test --suite single-fusion --
 ```
 
 Environment and controls: The work is supervised by `experiments.watchdog_supervisor` and `experiments.validation_watchdog` at 30-second intervals. The supervisor heartbeat fix is commit `9e5baac2`; the fusion suite is commit `0cddd90b`. Its nine focused unit tests passed before the benchmark run. GPU, runtime, final Git identifier, W&B run, artifact hashes, and aggregate metrics will be added after execution.
+
+## existing-when2call-single-fusion-prepare-20261025
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "prepare",
+    "--suite",
+    "single-fusion",
+    "--work-dir",
+    "outputs/existing-when2call-single-fusion-20261025",
+    "--output-dir",
+    "outputs/existing-when2call-single-fusion-prepare-20261025"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "existing-when2call-single-fusion-prepare-20261025",
+  "failure_reason": null,
+  "metadata": {
+    "command": [
+      "/usr/local/bin/python",
+      "/workspace/post-training/experiments/existing_when2call_hybrid.py",
+      "prepare",
+      "--suite",
+      "single-fusion",
+      "--work-dir",
+      "outputs/existing-when2call-single-fusion-20261025",
+      "--output-dir",
+      "outputs/existing-when2call-single-fusion-prepare-20261025"
+    ],
+    "configuration": {
+      "batch_size": 1,
+      "mode": "prepare",
+      "output_dir": "outputs/existing-when2call-single-fusion-prepare-20261025",
+      "suite": "single-fusion",
+      "work_dir": "outputs/existing-when2call-single-fusion-20261025"
+    },
+    "encoder_logit_weights": [
+      1.0
+    ],
+    "encoders": [
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+    ],
+    "frozen_configuration": {
+      "artifact_sha256": {
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/encoder_config.json": "0616e72a787934ed1fa3bec80e5da45239be1a1c267525c92960b83e9c44c12f",
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/model_state.pt": "815459d76b8c2e9fb7ba44e2f3867379ab096766cf9f1c807a08921be26593b5",
+        "outputs/qwen-when2call-sft-15b-seed20261022/adapter_config.json": "73b427067b3c4385f48db97011e5e48a25a6b0ea1291e096c2b6e53d8d90588e",
+        "outputs/qwen-when2call-sft-15b-seed20261022/adapter_model.safetensors": "6ecc1863fe7e7eeb995a2588e106e45bfa66f21d36605c93c1ad7f41b3fbe9de",
+        "outputs/when2call-jina-v2-small/latest/tokenizer.json": "e9f999ac74497843ed9f4303246a8f43d9f100ee8aab8e133667903f447ceb48"
+      },
+      "development_selection_performed": false,
+      "encoder_logit_weights": [
+        1.0
+      ],
+      "encoders": [
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+      ],
+      "family_probability_weights": [
+        0.5,
+        0.5
+      ],
+      "fusion_rules": {
+        "average": "Arithmetic mean of the two probability vectors with equal weights.",
+        "gate": "Choose the lower-entropy probability vector with encoder first on exact ties.",
+        "geometric": "Softmax of the equal mean of log probabilities clamped below at 1e-8.",
+        "rank": "Sum equal Borda rank points from both experts. Average rank points for tied probabilities. Add 1e-6 times arithmetic mean probability, clamp below at 1e-12, and normalize."
+      },
+      "historical_selection_limitation": "Existing encoder approaches were identified in prior research with repeated official benchmark inspection. This fixed comparison is a benchmark measurement, not a new independent generalization estimate.",
+      "hypothesis": "Geometric consensus tests shared support while ordinal Borda fusion tests robustness to unequal expert confidence scales. Arithmetic averaging and entropy gating are unchanged controls.",
+      "label_order": [
+        "cannot_answer",
+        "request_for_info",
+        "tool_call",
+        "direct"
+      ],
+      "max_length": 4096,
+      "methods": [
+        "single_average",
+        "single_gate",
+        "single_geometric",
+        "single_rank"
+      ],
+      "metric_definition": "Primary macro F1 includes all four declared classes. The present-class macro F1 diagnostic permits comparison with historical encoder reports.",
+      "primary_method": "single_geometric",
+      "qwen_base": "Qwen/Qwen2.5-1.5B-Instruct",
+      "qwen_checkpoint": "outputs/qwen-when2call-sft-15b-seed20261022",
+      "qwen_mapping": "Historical adapter training used LABEL_TO_ID directly despite reversed ABCD descriptions in its prompt. Preserve learned identity indices.",
+      "qwen_output_permutation": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "selection_complete": true,
+      "single_encoder_index": 0,
+      "suite": "single-fusion",
+      "test_status": "queued",
+      "training_performed": false,
+      "validation_limitation": "Existing encoder warm starts saw all train_pref rows. No clean preference validation is claimed or used for selection."
+    },
+    "git_commit": "e99541b01db8c88d55c1e4727f90e2db82f702cc",
+    "max_length": 4096,
+    "primary_method": "single_geometric",
+    "qwen_checkpoint": "outputs/qwen-when2call-sft-15b-seed20261022",
+    "runtime_seconds": 5.5705039501190186,
+    "status": "completed",
+    "suite": "single-fusion",
+    "test_status": "queued",
+    "wandb_run_id": "t1r948vr",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/t1r948vr"
+  },
+  "metrics_path": "/workspace/post-training/outputs/existing-when2call-single-fusion-prepare-20261025/metrics.json",
+  "official_test_loaded": null,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/existing-when2call-single-fusion-prepare-20261025",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-25T01:20:24.080183+00:00",
+  "status": "completed",
+  "test_status": "queued",
+  "timestamp": "2026-10-25T01:21:24.559052+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "t1r948vr",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/t1r948vr"
+}
+```
