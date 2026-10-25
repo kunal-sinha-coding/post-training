@@ -6,35 +6,8 @@
   "protocol": "existing_frozen_encoder_llm_comparison_v1",
   "current_hypothesis": "The encoder request_for_info region helped on held-out train_sft but not on the official benchmark. Requiring higher encoder confidence may preserve useful corrections and reduce harmful overrides.",
   "active_experiment": {
-    "pid": 23607,
+    "pid": 24120,
     "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_existing_when2call_hybrid_validation",
-      "--output-dir",
-      "outputs/existing-when2call-hybrid-request-confidence-validation-20261025",
-      "--split-seed",
-      "20261026",
-      "--batch-size",
-      "1"
-    ],
-    "started_at": "2026-10-25T02:48:45.815129+00:00"
-  },
-  "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.evaluate_existing_when2call_hybrid_validation",
-    "--output-dir",
-    "outputs/existing-when2call-hybrid-request-confidence-validation-20261025",
-    "--split-seed",
-    "20261026",
-    "--batch-size",
-    "1"
-  ],
-  "worker_queue": [
-    [
       "python",
       "-u",
       "-m",
@@ -47,6 +20,22 @@
       "--output-dir",
       "outputs/existing-when2call-single-request-confidence-prepare-20261025"
     ],
+    "started_at": "2026-10-25T02:55:17.422476+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "prepare",
+    "--suite",
+    "single-request-confidence",
+    "--work-dir",
+    "outputs/existing-when2call-single-request-confidence-20261025",
+    "--output-dir",
+    "outputs/existing-when2call-single-request-confidence-prepare-20261025"
+  ],
+  "worker_queue": [
     [
       "python",
       "-u",
@@ -85,8 +74,8 @@
     "status": "historical scores are incomparable",
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
-  "last_heartbeat": "2026-10-25T02:48:45.815141+00:00",
-  "last_action": "Watchdog started validation worker pid 23607.",
+  "last_heartbeat": "2026-10-25T02:55:17.422489+00:00",
+  "last_action": "Watchdog started validation worker pid 24120.",
   "watchdog_enabled": true,
   "research_log_size": 788853,
   "stop_command": "STOP",
@@ -94,15 +83,21 @@
     "python",
     "-u",
     "-m",
-    "experiments.evaluate_existing_when2call_hybrid_validation",
+    "experiments.existing_when2call_hybrid",
+    "prepare",
+    "--suite",
+    "single-request-confidence",
+    "--work-dir",
+    "outputs/existing-when2call-single-request-confidence-20261025",
     "--output-dir",
-    "outputs/existing-when2call-hybrid-request-confidence-validation-20261025",
-    "--split-seed",
-    "20261026",
-    "--batch-size",
-    "1"
+    "outputs/existing-when2call-single-request-confidence-prepare-20261025"
   ],
-  "recording_jobs": [],
+  "recording_jobs": [
+    {
+      "pid": 24119,
+      "experiment_id": "existing-when2call-hybrid-request-confidence-validation-20261025"
+    }
+  ],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-25T02:47:15.567070+00:00",
   "planning_ack_deadline": "2026-10-25T02:49:15.567094+00:00",
