@@ -1231,3 +1231,12 @@ Source-specific result `qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-s
 | Candidate | test-qwen-glaive500-toolcall-pref-full-15b-seed20261035 | — | — | [metrics](/workspace/post-training/outputs/test-qwen-glaive500-toolcall-pref-full-15b-seed20261035/metrics.json) | completed |
 
 | test-qwen-glaive500-toolcall-pref-full-15b-seed20261035 | 0.6938663745892661 | 0.5043332585183888 | c6403aii | Aggregate-only frozen test measurement |
+
+
+| Candidate | qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-seed20261035 | 0.910000 | 0.682307 | [metrics](/workspace/post-training/outputs/qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-seed20261035/metrics.json) | completed |
+| Aggregate test | test-qwen-glaive500-toolcall-pref-full-15b-seed20261035 | 0.693866 | 0.504333 | [metrics](/workspace/post-training/outputs/test-qwen-glaive500-toolcall-pref-full-15b-seed20261035/metrics.json) | aggregate-only |
+
+Training accuracy and macro F1 were 0.925383 and 0.694130. Glaive validation had 59 examples, all from the tool_call class, so its four-class macro F1 is not a cross-class validation comparison. The next dose probe increases the sampled explicit tool_call source to 1,000 decisions. Selection remains based on clean preference validation only.
+
+| Candidate | qwen-when2call-qwen25-15b-pref-full-glaive1k-toolcall-seed20261036 | — | — | Queued 1,000-decision explicit tool_call Glaive dose. | queued |
+| Aggregate test | test-qwen-glaive1k-toolcall-pref-full-15b-seed20261036 | — | — | Queued after training and clean validation. Aggregate-only report. | queued |
