@@ -1310,3 +1310,4 @@ Source-specific result `qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-s
 | Candidate | test-qwen-glaive500-toolcall-sft750-pref-full-15b-seed20261041 | — | — | [metrics](/workspace/post-training/outputs/test-qwen-glaive500-toolcall-sft750-pref-full-15b-seed20261041/metrics.json) | completed |
 
 | test-qwen-glaive500-toolcall-sft750-pref-full-15b-seed20261041 | 0.641566265060241 | 0.47386371873842753 | klncp63g | Aggregate-only frozen test measurement |
+| Candidate | qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-sft750-wd005-seed20261041 | — | — | [metrics](/workspace/post-training/outputs/qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-sft750-wd005-seed20261041/metrics.json) | failed_or_incomplete |
