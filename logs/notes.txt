@@ -6777,3 +6777,16 @@ remove the file manually to continue.
 2026-10-25: Commit `Record failed stacker transfer and queue Qwen data mix` records the cross-source stacker comparison. The stacker reached 0.945421 accuracy and 0.680115 macro F1 on the disjoint SFT plus BFCL validation partition, but only 0.636911 accuracy and 0.476539 macro F1 on official test, versus 0.694688 and 0.515704 for averaging. This is strong source-transfer failure evidence. Fixed probability averaging remains the sole ensemble method with a benchmark gain. The next experiment tests whether the Qwen SFT model improves from adding 1,000 direct-filtered Glaive decision examples to the full train_pref source while holding source-specific validation partitions.
 
 2026-10-25: Commit `Queue Qwen preference plus filtered Glaive` sets `status=active` and `planning_required=false`. It queues one fresh Qwen2.5 1.5B SFT run using the full train_pref source plus 1,000 direct-filtered Glaive Function Calling v2 decisions, with separate source-specific validation. Its frozen aggregate-only official test evaluation is queued immediately after training and validation.
+
+2026-10-25T04:27:58.463357+00:00: Commit `Record research experiment qwen-when2call-qwen25-15b-pref-full-glaive1k-seed20261028` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-25T04:28:01.140757+00:00: Commit `Record experiment synchronization failure` records the failed commit or push for qwen-when2call-qwen25-15b-pref-full-glaive1k-seed20261028: fatal: Unable to create '/workspace/post-training/.git/index.lock': File exists.
+
+Another git process seems to be running in this repository, e.g.
+an editor opened by 'git commit'. Please make sure all processes
+are terminated then try again. If it still fails, a git process
+may have crashed in this repository earlier:
+remove the file manually to continue.
+. The result remains local and the worker queue continues.
+
+2026-10-25T04:35:30.350627+00:00: Commit `Record research experiment test-qwen-glaive1k-pref-full-15b-seed20261028` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.

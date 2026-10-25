@@ -7953,3 +7953,27 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-when2call-qwen25-15b-pref-full-glaive1k-seed20261028
+
+Timestamp: 2026-10-25T04:27:54.097017+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_glaive_mix", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--output-dir", "outputs/qwen-when2call-qwen25-15b-pref-full-glaive1k-seed20261028", "--glaive-sample", "1000", "--seed", "20261028", "--split-seed", "20261028", "--epochs", "1", "--batch-size", "1", "--max-length", "4096", "--learning-rate", "2e-5", "--weight-decay", "0.01", "--lora-rank", "16"]. Output: /workspace/post-training/outputs/qwen-when2call-qwen25-15b-pref-full-glaive1k-seed20261028. W&B run: x9bn7fe5.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {"preference_validation_metrics": {"accuracy": 0.8938888888888888, "macro_f1": 0.6714429220310618, "confusion_matrix": [[544, 29, 26, 0], [0, 547, 53, 0], [3, 79, 518, 0], [1, 0, 0, 0]], "examples": 1800}, "glaive_validation_metrics": {"accuracy": 0.91, "macro_f1": 0.6669834954317713, "confusion_matrix": [[35, 1, 0, 0], [5, 37, 3, 0], [2, 7, 110, 0], [0, 0, 0, 0]], "examples": 200}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## test-qwen-glaive1k-pref-full-15b-seed20261028
+
+Timestamp: 2026-10-25T04:35:26.471747+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_qwen_when2call_test", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--checkpoint", "outputs/qwen-when2call-qwen25-15b-pref-full-glaive1k-seed20261028", "--output-dir", "outputs/test-qwen-glaive1k-pref-full-15b-seed20261028", "--lora-rank", "16", "--max-length", "4096", "--batch-size", "1"]. Output: /workspace/post-training/outputs/test-qwen-glaive1k-pref-full-15b-seed20261028. W&B run: svr250hb.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: True. Test status: measured. Official test metrics: {"accuracy": 0.6314348302300109, "macro_f1": 0.4707373374757976}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

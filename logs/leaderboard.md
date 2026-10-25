@@ -1139,3 +1139,8 @@ The SFT source contains 15,000 rows but only one inferred `direct` response and 
 | Qwen SFT | — | — | 0.678806 | 0.505012 |
 
 The stacker improved its mixed-source clean validation score but lost 5.79 percentage points of test accuracy versus equal averaging. This is a large source-transfer failure. The linear stacker is rejected. The next research branch changes the Qwen training data by adding a filtered Glaive sample to the full preference source.
+
+Source-specific result `qwen-when2call-qwen25-15b-pref-full-glaive1k-seed20261028` has status completed. Its separate validation metrics are {"preference_validation_metrics": {"accuracy": 0.8938888888888888, "macro_f1": 0.6714429220310618, "confusion_matrix": [[544, 29, 26, 0], [0, 547, 53, 0], [3, 79, 518, 0], [1, 0, 0, 0]], "examples": 1800}, "glaive_validation_metrics": {"accuracy": 0.91, "macro_f1": 0.6669834954317713, "confusion_matrix": [[35, 1, 0, 0], [5, 37, 3, 0], [2, 7, 110, 0], [0, 0, 0, 0]], "examples": 200}}. These values are not ranked against other splits.
+| Candidate | test-qwen-glaive1k-pref-full-15b-seed20261028 | — | — | [metrics](/workspace/post-training/outputs/test-qwen-glaive1k-pref-full-15b-seed20261028/metrics.json) | completed |
+
+| test-qwen-glaive1k-pref-full-15b-seed20261028 | 0.6314348302300109 | 0.4707373374757976 | svr250hb | Aggregate-only frozen test measurement |
