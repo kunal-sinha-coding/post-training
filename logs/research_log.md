@@ -7845,3 +7845,15 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: FileNotFoundError(2, 'No such file or directory').
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## existing-when2call-single-disagree-prepare-20261025
+
+Timestamp: 2026-10-25T02:31:36.603451+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.existing_when2call_hybrid", "prepare", "--suite", "single-disagree", "--work-dir", "outputs/existing-when2call-single-disagree-20261025", "--output-dir", "outputs/existing-when2call-single-disagree-prepare-20261025"]. Output: /workspace/post-training/outputs/existing-when2call-single-disagree-prepare-20261025. W&B run: r8qwqb4q.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Test status: queued. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

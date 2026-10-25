@@ -37363,3 +37363,143 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/9jyi79rd"
 }
 ```
+
+## existing-when2call-single-disagree-prepare-20261025
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "prepare",
+    "--suite",
+    "single-disagree",
+    "--work-dir",
+    "outputs/existing-when2call-single-disagree-20261025",
+    "--output-dir",
+    "outputs/existing-when2call-single-disagree-prepare-20261025"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "existing-when2call-single-disagree-prepare-20261025",
+  "failure_reason": null,
+  "metadata": {
+    "command": [
+      "/usr/local/bin/python",
+      "/workspace/post-training/experiments/existing_when2call_hybrid.py",
+      "prepare",
+      "--suite",
+      "single-disagree",
+      "--work-dir",
+      "outputs/existing-when2call-single-disagree-20261025",
+      "--output-dir",
+      "outputs/existing-when2call-single-disagree-prepare-20261025"
+    ],
+    "configuration": {
+      "batch_size": 1,
+      "mode": "prepare",
+      "output_dir": "outputs/existing-when2call-single-disagree-prepare-20261025",
+      "suite": "single-disagree",
+      "work_dir": "outputs/existing-when2call-single-disagree-20261025"
+    },
+    "encoder_logit_weights": [
+      1.0
+    ],
+    "encoders": [
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+    ],
+    "frozen_configuration": {
+      "artifact_sha256": {
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/encoder_config.json": "0616e72a787934ed1fa3bec80e5da45239be1a1c267525c92960b83e9c44c12f",
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/model_state.pt": "815459d76b8c2e9fb7ba44e2f3867379ab096766cf9f1c807a08921be26593b5",
+        "outputs/qwen-when2call-sft-15b-seed20261022/adapter_config.json": "73b427067b3c4385f48db97011e5e48a25a6b0ea1291e096c2b6e53d8d90588e",
+        "outputs/qwen-when2call-sft-15b-seed20261022/adapter_model.safetensors": "6ecc1863fe7e7eeb995a2588e106e45bfa66f21d36605c93c1ad7f41b3fbe9de",
+        "outputs/when2call-jina-v2-small/latest/tokenizer.json": "e9f999ac74497843ed9f4303246a8f43d9f100ee8aab8e133667903f447ceb48"
+      },
+      "development_selection_performed": false,
+      "encoder_logit_weights": [
+        1.0
+      ],
+      "encoders": [
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+      ],
+      "family_probability_weights": [
+        0.5,
+        0.5
+      ],
+      "fusion_rules": {
+        "disagreement_encoder": "Average when top classes agree. Use encoder probabilities when top classes disagree.",
+        "disagreement_margin": "Average when top classes agree. On disagreement use the expert with the larger top-two probability margin, with Qwen on ties.",
+        "disagreement_qwen": "Average when top classes agree. Use Qwen probabilities when top classes disagree.",
+        "encoder_cannot_answer": "Use encoder probabilities when its top class is cannot_answer and Qwen otherwise.",
+        "encoder_direct": "Use encoder probabilities when its top class is direct and Qwen otherwise.",
+        "encoder_request_for_info": "Use encoder probabilities when its top class is request_for_info and Qwen otherwise.",
+        "encoder_tool_call": "Use encoder probabilities when its top class is tool_call and Qwen otherwise."
+      },
+      "historical_selection_limitation": "Existing encoder approaches were identified in prior research with repeated official benchmark inspection. This fixed comparison is a benchmark measurement, not a new independent generalization estimate.",
+      "hypothesis": "Test direct disagreement routing and each encoder-predicted class as a specialist region in one frozen pass. Compare with average and entropy gate. The rules use model outputs only, with no fitting or threshold search.",
+      "label_order": [
+        "cannot_answer",
+        "request_for_info",
+        "tool_call",
+        "direct"
+      ],
+      "max_length": 4096,
+      "methods": [
+        "single_average",
+        "single_gate",
+        "single_disagreement_qwen",
+        "single_disagreement_encoder",
+        "single_disagreement_margin",
+        "single_encoder_cannot_answer",
+        "single_encoder_request_for_info",
+        "single_encoder_tool_call",
+        "single_encoder_direct"
+      ],
+      "metric_definition": "Primary macro F1 includes all four declared classes. The present-class macro F1 diagnostic permits comparison with historical encoder reports.",
+      "primary_method": "single_disagreement_margin",
+      "qwen_base": "Qwen/Qwen2.5-1.5B-Instruct",
+      "qwen_checkpoint": "outputs/qwen-when2call-sft-15b-seed20261022",
+      "qwen_mapping": "Historical adapter training used LABEL_TO_ID directly despite reversed ABCD descriptions in its prompt. Preserve learned identity indices.",
+      "qwen_output_permutation": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "selection_complete": true,
+      "single_encoder_index": 0,
+      "suite": "single-disagree",
+      "test_status": "queued",
+      "training_performed": false,
+      "validation_limitation": "Existing encoder warm starts saw all train_pref rows. No clean preference validation is claimed or used for selection."
+    },
+    "git_commit": "9527eaeb6f5eda1c63c66baf7c7f1c0328590a70",
+    "max_length": 4096,
+    "primary_method": "single_disagreement_margin",
+    "qwen_checkpoint": "outputs/qwen-when2call-sft-15b-seed20261022",
+    "runtime_seconds": 4.606284856796265,
+    "status": "completed",
+    "suite": "single-disagree",
+    "test_status": "queued",
+    "wandb_run_id": "r8qwqb4q",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/r8qwqb4q"
+  },
+  "metrics_path": "/workspace/post-training/outputs/existing-when2call-single-disagree-prepare-20261025/metrics.json",
+  "official_test_loaded": null,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/existing-when2call-single-disagree-prepare-20261025",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-25T02:30:36.099095+00:00",
+  "status": "completed",
+  "test_status": "queued",
+  "timestamp": "2026-10-25T02:31:36.603451+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "r8qwqb4q",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/r8qwqb4q"
+}
+```

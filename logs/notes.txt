@@ -6743,3 +6743,5 @@ are terminated then try again. If it still fails, a git process
 may have crashed in this repository earlier:
 remove the file manually to continue.
 . The result remains local and the worker queue continues.
+
+2026-10-25: Commit `Queue clean SFT-source validation for frozen hybrids` adds an aggregate-only validation scorer for the frozen Jina plus Qwen methods. The latest pooling comparison was inference-only, so fresh training evidence is not applicable, but the combined methods lacked an independent validation measurement. The selected validation partition is stratified from `nvidia/When2Call:train_sft`; the evaluated Jina and Qwen checkpoints were trained from preference and BFCL sources, not this split. The active disagreement test worker remains untouched. This validation command is queued directly after that active worker and before further experiments. The scorer records aggregate accuracy and four-class macro F1 only, with no official test access or per-row outcomes.
