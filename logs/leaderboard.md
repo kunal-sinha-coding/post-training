@@ -1128,3 +1128,14 @@ The SFT source contains 15,000 rows but only one inferred `direct` response and 
 | Candidate | existing-when2call-single-stacker-test-20261025 | — | — | [metrics](/workspace/post-training/outputs/existing-when2call-single-stacker-test-20261025/metrics.json) | completed |
 
 | existing-when2call-single-stacker-test-20261025 | 0.6369112814895947 | 0.47653923353405214 | kz5w1ziw | Aggregate-only frozen test measurement |
+
+
+### Cross-source linear stacker
+
+| Candidate | Clean validation accuracy | Clean validation macro F1 | Official test accuracy | Official test macro F1 |
+|---|---:|---:|---:|---:|
+| Equal probability average | 0.928770 | 0.658039 | 0.694688 | 0.515704 |
+| Linear stacker | 0.945421 | 0.680115 | 0.636911 | 0.476539 |
+| Qwen SFT | — | — | 0.678806 | 0.505012 |
+
+The stacker improved its mixed-source clean validation score but lost 5.79 percentage points of test accuracy versus equal averaging. This is a large source-transfer failure. The linear stacker is rejected. The next research branch changes the Qwen training data by adding a filtered Glaive sample to the full preference source.
