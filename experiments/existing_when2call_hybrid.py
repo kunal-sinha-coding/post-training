@@ -3,8 +3,8 @@
 Preparation freezes existing checkpoint hashes and four predeclared hybrid rules without
 training or development selection. One aggregate measurement scores each model once,
 restores source row order after encoder batching, and compares fixed hybrids and baselines.
-The initial suite preserves both encoder families. The single-fusion suite uses checkpoint 48
-and adds geometric consensus and ordinal Borda fusion with unchanged arithmetic and gate controls.
+The initial suite preserves both encoder families. The single-fusion suite compares fixed pooling rules.
+The single-route suite tests a class-specialized encoder route with arithmetic and entropy controls.
 Official predictions, labels, probabilities, and per-class statistics remain in memory only.
 """
 from __future__ import annotations
@@ -38,6 +38,8 @@ QWEN_BASE = "Qwen/Qwen2.5-1.5B-Instruct"
 METHODS = ("single_average", "single_gate", "ensemble_average", "ensemble_gate")
 SINGLE_METHODS = ("single_average", "single_gate", "single_geometric", "single_rank")
 SINGLE_RULES = {"average": "Arithmetic mean of the two probability vectors with equal weights.", "gate": "Choose the lower-entropy probability vector with encoder first on exact ties.", "geometric": "Softmax of the equal mean of log probabilities clamped below at 1e-8.", "rank": "Sum equal Borda rank points from both experts. Average rank points for tied probabilities. Add 1e-6 times arithmetic mean probability, clamp below at 1e-12, and normalize."}
+ROUTE_METHODS = ("single_average", "single_gate", "single_encoder_refusal")
+ROUTE_RULES = {"encoder_refusal": "Use the encoder when its top class is cannot_answer. Use Qwen for every other encoder prediction. The class boundary is fixed from the earlier Jina plus Jev routing hypothesis and is not fitted here."}
 
 
 def suite_definition(name: str) -> dict:
@@ -46,6 +48,8 @@ def suite_definition(name: str) -> dict:
         return {"encoders": ENCODERS, "weights": WEIGHTS, "single_index": 2, "methods": list(METHODS), "primary": "ensemble_average"}
     if name == "single-fusion":
         return {"encoders": [ENCODERS[2]], "weights": [1.0], "single_index": 0, "methods": list(SINGLE_METHODS), "primary": "single_geometric"}
+    if name == "single-route":
+        return {"encoders": [ENCODERS[2]], "weights": [1.0], "single_index": 0, "methods": list(ROUTE_METHODS), "primary": "single_encoder_refusal"}
     raise ValueError("Unknown frozen suite: " + name)
 
 
@@ -72,6 +76,10 @@ def hybrid_probabilities(encoder: torch.Tensor, qwen: torch.Tensor, rule: str) -
     if rule == "gate":
         entropy = -(probabilities.clamp_min(1e-8).log() * probabilities).sum(-1)
         return probabilities[torch.arange(len(probabilities)), entropy.argmin(1)]
+    if rule == "encoder_refusal":
+        # Keep the encoder refusal region and use Qwen for the other predicted classes.
+        use_encoder = encoder.argmax(-1).eq(LABELS.index("cannot_answer")).unsqueeze(-1)
+        return torch.where(use_encoder, encoder, qwen)
     raise ValueError("Unknown frozen hybrid rule: " + rule)
 
 
@@ -88,6 +96,9 @@ def prepare(args: object, run: object) -> dict:
     if suite_name == "single-fusion":
         config["fusion_rules"] = SINGLE_RULES
         config["hypothesis"] = "Geometric consensus tests shared support while ordinal Borda fusion tests robustness to unequal expert confidence scales. Arithmetic averaging and entropy gating are unchanged controls."
+    if suite_name == "single-route":
+        config["fusion_rules"] = ROUTE_RULES
+        config["hypothesis"] = "A fixed class-specialized route transfers the earlier encoder plus Jev complementarity hypothesis: keep encoder cannot_answer decisions and use Qwen for other encoder decisions. Compare with arithmetic averaging and entropy gating. Earlier class routing was selected using benchmark labels, so this is a predeclared exploratory aggregate measurement, not an unbiased estimate."
     save_json(args.work_dir / "frozen-config.json", config)
     run.summary.update({"selection_complete": True, "training_performed": False, "test_status": "queued"})
     return {"status": "completed", "test_status": "queued", "frozen_configuration": config}
@@ -101,6 +112,8 @@ def verify_frozen(config: dict) -> None:
         raise ValueError("Frozen existing-model comparison configuration changed.")
     if suite_name == "single-fusion" and (config.get("fusion_rules") != SINGLE_RULES or config.get("single_encoder_index") != 0 or config.get("qwen_base") != QWEN_BASE or config.get("max_length") != 4096 or config.get("qwen_output_permutation") != [0, 1, 2, 3] or config.get("family_probability_weights") != [0.5, 0.5]):
         raise ValueError("Frozen single-fusion rules changed.")
+    if suite_name == "single-route" and (config.get("fusion_rules") != ROUTE_RULES or config.get("single_encoder_index") != 0 or config.get("qwen_base") != QWEN_BASE or config.get("max_length") != 4096 or config.get("qwen_output_permutation") != [0, 1, 2, 3] or config.get("family_probability_weights") != [0.5, 0.5]):
+        raise ValueError("Frozen single-route rules changed.")
     for path, expected in config["artifact_sha256"].items():
         if artifact_digest(Path(path)) != expected:
             raise ValueError("Frozen comparison artifact changed: " + path)
@@ -189,7 +202,7 @@ def main() -> int:
     parser.add_argument("mode", choices=("prepare", "test"))
     parser.add_argument("--work-dir", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
-    parser.add_argument("--suite", choices=("initial", "single-fusion"), default="initial")
+    parser.add_argument("--suite", choices=("initial", "single-fusion", "single-route"), default="initial")
     parser.add_argument("--batch-size", type=int, default=1)
     args = parser.parse_args()
     import wandb
