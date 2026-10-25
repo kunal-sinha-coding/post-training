@@ -19619,3 +19619,7 @@ W&B run pfa19z23 downloaded model blobs but left existing empty snapshot placeho
 The shared split reconstruction found 7200 training rows, 1800 original development rows, 214 development rows with questions present in training, and 1586 surviving development rows. The surviving row-index manifest SHA256 is 101744f31f1f611205db470c63bcbd3dfa363a5875b4c414cb67b3f481c30164. The source sampling and original Qwen split are fixed. No official test was loaded for this audit.
 
 Six supervisor regressions and five recorder regressions passed. Pure ensemble checks confirmed finite normalized predictions and an explicit four-class macro F1 of 0.75 for perfect predictions on only three present classes. The complete six-command experiment queue is recorded in logs/research_state.json.
+
+## October 25 verified encoder launch
+
+Code setup was pushed through 7cf4363c before launch. W&B run b3m9znrw is https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/b3m9znrw. The encoder training worker began successfully, wrote a training heartbeat, and passed the second supervised 30-second check. Full results remain pending. The state file preserves the active exact command and the five pending commands.
