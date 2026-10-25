@@ -7809,3 +7809,15 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## existing-when2call-single-pool-grid-prepare-20261025
+
+Timestamp: 2026-10-25T02:18:58.754457+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.existing_when2call_hybrid", "prepare", "--suite", "single-pool-grid", "--work-dir", "outputs/existing-when2call-single-pool-grid-20261025", "--output-dir", "outputs/existing-when2call-single-pool-grid-prepare-20261025"]. Output: /workspace/post-training/outputs/existing-when2call-single-pool-grid-prepare-20261025. W&B run: 4f05529q.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Test status: queued. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

@@ -1049,3 +1049,4 @@ Rules used only visible question and tool fields. Accuracy ranks these explorato
 | encoder on many-tools rows | 0.604874042 | 0.449079079 | 0.598772106 | [7h1eswyz](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/7h1eswyz) |
 
 No input-feature route beat the equal average.
+| Candidate | existing-when2call-single-pool-grid-prepare-20261025 | — | — | [metrics](/workspace/post-training/outputs/existing-when2call-single-pool-grid-prepare-20261025/metrics.json) | completed |

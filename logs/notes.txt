@@ -6724,3 +6724,5 @@ remove the file manually to continue.
 
 
 2026-10-25: Commit `Record input route results and queue pooling grid` records that none of four input-based routing rules beat equal probability averaging. Routing Jina on no-tools rows scored 0.679079956 accuracy, only one correct example above Qwen; length and many-tool routes were substantially worse. The next batch compares six fixed probability weights, two asymmetric geometric pools, standardized log-score averaging, equal averaging, and entropy gating in one model-scoring pass. The backlog continues with disagreement routing and diverse checkpoint fusion. If ensemble gains plateau, focus shifts to Qwen training data mixtures. Accuracy is primary and macro F1 remains reported.
+
+2026-10-25T02:19:00.989727+00:00: Commit `Record research experiment existing-when2call-single-pool-grid-prepare-20261025` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
