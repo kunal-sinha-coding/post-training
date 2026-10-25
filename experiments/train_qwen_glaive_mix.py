@@ -107,10 +107,14 @@ def main() -> int:
     parser.add_argument("--weight-decay", type=float, default=0.01)
     parser.add_argument("--lora-rank", type=int, default=16)
     parser.add_argument("--checkpoint-eval-steps", type=int, default=0)
+    parser.add_argument("--training-log-steps", type=int, default=10)
     parser.add_argument("--checkpoint-glaive-validation-size", type=int, default=1000)
     parser.add_argument("--train-metrics-sample-size", type=int, default=0)
     parser.add_argument("--checkpoint-test-evaluation", action="store_true")
     args = parser.parse_args()
+    # Require a positive logging interval so the optimizer callback can schedule live loss points.
+    if args.training_log_steps < 1:
+        parser.error("--training-log-steps must be at least 1.")
     dataset_names = [DATASET_NAME + ":train_pref", "glaiveai/glaive-function-calling-v2"]
     if args.sft_sample > 0:
         dataset_names.append(DATASET_NAME + ":train_sft")
@@ -147,9 +151,14 @@ def main() -> int:
         checkpoint_history = args.output_dir / "checkpoint_validation.jsonl"
         checkpoint_training_rows = sample_rows(training_rows, args.train_metrics_sample_size, args.seed + 4)
         best_checkpoint = {"accuracy": -1.0, "path": None, "step": None}
-        def checkpoint_callback(step: int) -> None:
-            # Save and evaluate every configured interval without using test scores for selection.
-            if args.checkpoint_eval_steps <= 0 or step % args.checkpoint_eval_steps != 0:
+        def checkpoint_callback(step: int, step_loss: float) -> None:
+            # Log optimizer loss and evaluate scheduled checkpoints without using test scores for selection.
+            checkpoint_due = args.checkpoint_eval_steps > 0 and step % args.checkpoint_eval_steps == 0
+            if step % args.training_log_steps != 0 and not checkpoint_due:
+                return
+            checkpoint_log = {"training/step_loss": step_loss}
+            if not checkpoint_due:
+                run.log(checkpoint_log, step=step)
                 return
             checkpoint_dir = args.output_dir / "checkpoints" / f"step-{step:08d}"
             checkpoint_dir.mkdir(parents=True, exist_ok=True)
@@ -172,7 +181,7 @@ def main() -> int:
             checkpoint_record = {"step": step, "checkpoint": str(checkpoint_dir), "validation_source": "When2Call train_pref plus fixed held-out Glaive sample", "training_probe_metrics": train_checkpoint_metrics, "preference_validation_metrics": pref_checkpoint_metrics, "glaive_validation_metrics": glaive_checkpoint_metrics, "aggregate_validation_metrics": aggregate_checkpoint_metrics, "aggregate_black_box_test_metrics": checkpoint_test_metrics, "test_measurement_only": True, "official_test_labels_exposed": False}
             with checkpoint_history.open("a", encoding="utf-8") as stream:
                 stream.write(json.dumps(checkpoint_record) + "\n")
-            checkpoint_log = {"checkpoint/step": step, "checkpoint/training_probe_accuracy": train_checkpoint_metrics["accuracy"], "checkpoint/training_probe_macro_f1": train_checkpoint_metrics["macro_f1"], "checkpoint/preference_validation_accuracy": pref_checkpoint_metrics["accuracy"], "checkpoint/preference_validation_macro_f1": pref_checkpoint_metrics["macro_f1"], "checkpoint/glaive_validation_accuracy": glaive_checkpoint_metrics["accuracy"], "checkpoint/glaive_validation_macro_f1": glaive_checkpoint_metrics["macro_f1"], "checkpoint/aggregate_validation_accuracy": aggregate_checkpoint_metrics["accuracy"], "checkpoint/aggregate_validation_macro_f1": aggregate_checkpoint_metrics["macro_f1"]}
+            checkpoint_log.update({"checkpoint/step": step, "checkpoint/training_probe_accuracy": train_checkpoint_metrics["accuracy"], "checkpoint/training_probe_macro_f1": train_checkpoint_metrics["macro_f1"], "checkpoint/preference_validation_accuracy": pref_checkpoint_metrics["accuracy"], "checkpoint/preference_validation_macro_f1": pref_checkpoint_metrics["macro_f1"], "checkpoint/glaive_validation_accuracy": glaive_checkpoint_metrics["accuracy"], "checkpoint/glaive_validation_macro_f1": glaive_checkpoint_metrics["macro_f1"], "checkpoint/aggregate_validation_accuracy": aggregate_checkpoint_metrics["accuracy"], "checkpoint/aggregate_validation_macro_f1": aggregate_checkpoint_metrics["macro_f1"]})
             if checkpoint_test_metrics is not None:
                 checkpoint_log.update({"checkpoint/aggregate_test_accuracy_report_only": checkpoint_test_metrics["accuracy"], "checkpoint/aggregate_test_macro_f1_report_only": checkpoint_test_metrics["macro_f1"]})
             run.log(checkpoint_log, step=step)

@@ -200,7 +200,8 @@ def train_epoch(model: object, tokenizer: object, rows: list[ClassificationRow],
         losses.append(float(loss.detach().cpu()))
         # Run the optional checkpoint callback after each completed optimizer update.
         if step_callback is not None:
-            step_callback(step_offset + batch_index)
+            # Pass the optimizer loss so callers can record a live training curve.
+            step_callback(step_offset + batch_index, float(loss.detach().cpu()))
             model.train()
     return sum(losses) / max(1, len(losses))
 
