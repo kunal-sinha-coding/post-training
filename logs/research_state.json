@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "existing_frozen_encoder_llm_comparison_v1",
-  "current_hypothesis": "The user asked for one epoch over all eligible non-direct Glaive assistant decision points, with a saved intermediate adapter every 2,000 optimizer steps. At each checkpoint, record a fixed 1,000-example training probe, clean preference validation, a fixed Glaive validation sample, and an isolated aggregate-only official test evaluation. Select the best checkpoint only by merged clean validation accuracy; test metrics are report-only.",
+  "current_hypothesis": "The user asked for one epoch over all eligible non-direct Glaive assistant decision points, with a saved intermediate adapter every 1,000 optimizer steps. At each checkpoint, record a fixed 1,000-example training probe, clean preference validation, a fixed Glaive validation sample, and an isolated aggregate-only official test evaluation. Select the best checkpoint only by merged clean validation accuracy; test metrics are report-only.",
   "active_experiment": {
     "pid": 55569,
     "command": [
@@ -98,7 +98,7 @@
       "-m",
       "experiments.train_qwen_glaive_mix",
       "--output-dir",
-      "outputs/qwen-when2call-qwen25-15b-pref-full-glaive-all-nondirect-ckpt2k-seed20261045",
+      "outputs/qwen-when2call-qwen25-15b-pref-full-glaive-all-nondirect-ckpt1k-seed20261045",
       "--model",
       "Qwen/Qwen2.5-1.5B-Instruct",
       "--glaive-sample",
@@ -122,7 +122,7 @@
       "--lora-rank",
       "16",
       "--checkpoint-eval-steps",
-      "2000",
+      "1000",
       "--checkpoint-glaive-validation-size",
       "1000",
       "--train-metrics-sample-size",
@@ -294,7 +294,7 @@
   ],
   "experiment_queue": [
     "Candidate A: fixed 500 explicit tool_call Glaive and 750 train_sft samples; weight decay 0.05, LoRA rank 16. Compare to the existing 0.01/rank-16 run using the same sampling seed. Record training, preference/Glaive/SFT clean validation, then aggregate-only test.",
-    "After the active regularization candidate test, train Qwen2.5-1.5B on all eligible non-direct Glaive decision points plus full train_pref. Save and evaluate every 2,000 optimizer steps using a fixed training probe, clean preference validation, and fixed Glaive validation; run an isolated aggregate-only black-box test at each checkpoint. Select checkpoints only by clean validation.",
+    "After the active regularization candidate test, train Qwen2.5-1.5B on all eligible non-direct Glaive decision points plus full train_pref. Save and evaluate every 1,000 optimizer steps using a fixed training probe, clean preference validation, and fixed Glaive validation; run an isolated aggregate-only black-box test at each checkpoint. Select checkpoints only by clean validation.",
     "Candidate A aggregate-only test, only after training and clean validation are complete.",
     "Candidate B: same fixed data and seed; weight decay 0.01, LoRA rank 8. Compare to existing rank-16 run. Record training, preference/Glaive/SFT clean validation, then aggregate-only test.",
     "Candidate B aggregate-only test, only after training and clean validation are complete.",
@@ -308,7 +308,7 @@
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
   "last_heartbeat": "2026-10-25T17:13:02.667474+00:00",
-  "last_action": "Prepared full-data Glaive training with validation and aggregate-only black-box test at every 2,000-step checkpoint; inserted it immediately after the active candidate test.",
+  "last_action": "Updated the queued full-Glaive run to evaluate training, clean validation, and aggregate-only black-box test every 1,000 optimizer steps, selecting checkpoints by clean validation only.",
   "watchdog_enabled": true,
   "research_log_size": 841845,
   "stop_command": "STOP",
