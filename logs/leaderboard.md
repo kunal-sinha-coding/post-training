@@ -1053,3 +1053,22 @@ No input-feature route beat the equal average.
 | Candidate | existing-when2call-single-pool-grid-test-20261025 | — | — | [metrics](/workspace/post-training/outputs/existing-when2call-single-pool-grid-test-20261025/metrics.json) | completed |
 
 | existing-when2call-single-pool-grid-test-20261025 | 0.6946878422782037 | 0.5157041428790551 | sebdx3l3 | Aggregate-only frozen test measurement |
+
+
+### Single encoder plus Qwen SFT probability and score pooling grid
+
+| Method | Accuracy | Macro F1, four classes | Present-class macro F1 |
+|---|---:|---:|---:|
+| Equal probability average | 0.694687842 | 0.515704143 | 0.687605524 |
+| Minimum entropy gate | 0.693044907 | 0.514422081 | 0.685896107 |
+| Equal geometric pool | 0.691949617 | 0.513639029 | 0.684852039 |
+| 40% encoder probability | 0.683734940 | 0.508456244 | 0.677941658 |
+| Standardized log scores | 0.683461117 | 0.506758444 | 0.675677925 |
+| 25% encoder probability | 0.680996714 | 0.506269371 | 0.675025828 |
+| 10% encoder probability | 0.679079956 | 0.505213605 | 0.673618140 |
+| Qwen SFT | 0.678806134 | 0.505011686 | 0.673348915 |
+| 25% encoder geometric pool | 0.682365827 | 0.507347273 | 0.676463030 |
+| 75% encoder geometric pool | 0.648138007 | 0.481468684 | 0.641958245 |
+| Encoder | 0.592278204 | 0.439754957 | 0.586339943 |
+
+Equal probability averaging remains the best fixed fusion. The 40% encoder candidate is the strongest unequal arithmetic mixture but does not beat the equal average. This aggregate-only test comparison used the frozen candidates in one shared model-scoring pass.

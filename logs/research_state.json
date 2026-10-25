@@ -1,11 +1,27 @@
 {
-  "status": "awaiting_codex_planning",
+  "status": "active",
   "planning_owner": "codex_primary",
-  "planning_required": true,
+  "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "existing_frozen_encoder_llm_comparison_v1",
-  "current_hypothesis": "A broad fixed probability-weight grid may locate a useful encoder contribution, while weighted geometric and standardized log-score pooling may handle confidence-scale mismatch better than averaging. Compare all candidates in one frozen prediction pass with equal averaging and entropy gating.",
-  "active_experiment": {},
+  "current_hypothesis": "When the encoder and Qwen disagree, selecting the more confident expert or the expert associated with its predicted class may exploit complementary strengths without fitting from test outcomes.",
+  "active_experiment": {
+    "pid": 21110,
+    "command": [
+      "python",
+      "-u",
+      "-m",
+      "experiments.existing_when2call_hybrid",
+      "test",
+      "--suite",
+      "single-disagree",
+      "--work-dir",
+      "outputs/existing-when2call-single-disagree-20261025",
+      "--output-dir",
+      "outputs/existing-when2call-single-disagree-test-20261025"
+    ],
+    "started_at": "2026-10-25T02:29:02.675546+00:00"
+  },
   "worker_command": [
     "python",
     "-u",
@@ -13,11 +29,11 @@
     "experiments.existing_when2call_hybrid",
     "test",
     "--suite",
-    "single-pool-grid",
+    "single-disagree",
     "--work-dir",
-    "outputs/existing-when2call-single-pool-grid-20261025",
+    "outputs/existing-when2call-single-disagree-20261025",
     "--output-dir",
-    "outputs/existing-when2call-single-pool-grid-test-20261025"
+    "outputs/existing-when2call-single-disagree-test-20261025"
   ],
   "worker_queue": [],
   "_previous_command": [
@@ -37,26 +53,31 @@
     "outputs/test-clean-validation-smooth0075-wd002-weight75-25.json"
   ],
   "experiment_queue": [
-    "Freeze existing Qwen SFT 1.5B plus best single Jina and best Jina ensemble with two fixed combination rules.",
-    "Measure all four frozen combinations in one aggregate-only test pass with shared baseline predictions.",
-    "Analyze completed aggregate results and plan a distinct follow-up method."
+    "Freeze and score output-disagreement and class-specialist routing against averaging and entropy-gating controls."
   ],
   "best_validation": {
     "status": "historical scores are incomparable",
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
-  "last_heartbeat": "2026-10-25T02:18:58.329830+00:00",
-  "last_action": "Watchdog handed planning control to the primary Codex process.",
+  "last_heartbeat": "2026-10-25T02:29:02.675559+00:00",
+  "last_action": "Watchdog started validation worker pid 21110.",
   "watchdog_enabled": true,
-  "research_log_size": 782786,
+  "research_log_size": 783685,
   "stop_command": "STOP",
-  "next_experiment": null,
-  "recording_jobs": [
-    {
-      "pid": 20819,
-      "experiment_id": "existing-when2call-single-pool-grid-test-20261025"
-    }
+  "next_experiment": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "test",
+    "--suite",
+    "single-disagree",
+    "--work-dir",
+    "outputs/existing-when2call-single-disagree-20261025",
+    "--output-dir",
+    "outputs/existing-when2call-single-disagree-test-20261025"
   ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-25T02:27:02.425604+00:00",
   "planning_ack_deadline": "2026-10-25T02:29:02.425629+00:00",
