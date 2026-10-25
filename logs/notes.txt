@@ -6668,3 +6668,16 @@ Validation: All nine tests in tests/test_existing_when2call_hybrid.py passed in 
 
 
 2026-10-25: Commit `Queue accuracy-focused encoder specialist routing` records the completed four-rule fusion benchmark and preregisters a class-specialized Jina plus Qwen route. Equal averaging led this batch at 0.694687842 accuracy and 0.515704143 all-four-class macro F1. The next experiment keeps Jina when it predicts cannot_answer and uses Qwen otherwise, with average and entropy gate controls. It uses aggregate-only test metrics, no example-level outputs, and accuracy as the primary objective with macro F1 retained. The analogous Jina plus Jev routing choice was originally made using benchmark-label errors, so this is recorded as exploratory and potentially optimistic. Commands and full setup are in logs/results.txt.
+
+2026-10-25T01:33:35.497457+00:00: Commit `Record research experiment existing-when2call-single-route-prepare-20261025` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-25T01:33:37.132938+00:00: Commit `Record experiment synchronization failure` records the failed commit or push for existing-when2call-single-route-prepare-20261025: fatal: Unable to create '/workspace/post-training/.git/index.lock': File exists.
+
+Another git process seems to be running in this repository, e.g.
+an editor opened by 'git commit'. Please make sure all processes
+are terminated then try again. If it still fails, a git process
+may have crashed in this repository earlier:
+remove the file manually to continue.
+. The result remains local and the worker queue continues.
+
+2026-10-25T01:41:37.249565+00:00: Commit `Record research experiment existing-when2call-single-route-test-20261025` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.

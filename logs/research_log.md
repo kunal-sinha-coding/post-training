@@ -7713,3 +7713,27 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## existing-when2call-single-route-prepare-20261025
+
+Timestamp: 2026-10-25T01:33:32.876073+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.existing_when2call_hybrid", "prepare", "--suite", "single-route", "--work-dir", "outputs/existing-when2call-single-route-20261025", "--output-dir", "outputs/existing-when2call-single-route-prepare-20261025"]. Output: /workspace/post-training/outputs/existing-when2call-single-route-prepare-20261025. W&B run: t4ejrmna.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Test status: queued. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## existing-when2call-single-route-test-20261025
+
+Timestamp: 2026-10-25T01:41:34.752474+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.existing_when2call_hybrid", "test", "--suite", "single-route", "--work-dir", "outputs/existing-when2call-single-route-20261025", "--output-dir", "outputs/existing-when2call-single-route-test-20261025"]. Output: /workspace/post-training/outputs/existing-when2call-single-route-test-20261025. W&B run: dkkgq6x9.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: True. Test status: measured. Official test metrics: {"accuracy": 0.6582694414019715, "macro_f1": 0.4881368764810078, "macro_f1_present_classes": 0.6508491686413437}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

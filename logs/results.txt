@@ -35538,3 +35538,305 @@ python -u -m experiments.existing_when2call_hybrid prepare --suite single-route 
 python -u -m experiments.existing_when2call_hybrid test --suite single-route --work-dir outputs/existing-when2call-single-route-20261025 --output-dir outputs/existing-when2call-single-route-test-20261025
 ```
 
+
+## existing-when2call-single-route-prepare-20261025
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "prepare",
+    "--suite",
+    "single-route",
+    "--work-dir",
+    "outputs/existing-when2call-single-route-20261025",
+    "--output-dir",
+    "outputs/existing-when2call-single-route-prepare-20261025"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "existing-when2call-single-route-prepare-20261025",
+  "failure_reason": null,
+  "metadata": {
+    "command": [
+      "/usr/local/bin/python",
+      "/workspace/post-training/experiments/existing_when2call_hybrid.py",
+      "prepare",
+      "--suite",
+      "single-route",
+      "--work-dir",
+      "outputs/existing-when2call-single-route-20261025",
+      "--output-dir",
+      "outputs/existing-when2call-single-route-prepare-20261025"
+    ],
+    "configuration": {
+      "batch_size": 1,
+      "mode": "prepare",
+      "output_dir": "outputs/existing-when2call-single-route-prepare-20261025",
+      "suite": "single-route",
+      "work_dir": "outputs/existing-when2call-single-route-20261025"
+    },
+    "encoder_logit_weights": [
+      1.0
+    ],
+    "encoders": [
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+    ],
+    "frozen_configuration": {
+      "artifact_sha256": {
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/encoder_config.json": "0616e72a787934ed1fa3bec80e5da45239be1a1c267525c92960b83e9c44c12f",
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/model_state.pt": "815459d76b8c2e9fb7ba44e2f3867379ab096766cf9f1c807a08921be26593b5",
+        "outputs/qwen-when2call-sft-15b-seed20261022/adapter_config.json": "73b427067b3c4385f48db97011e5e48a25a6b0ea1291e096c2b6e53d8d90588e",
+        "outputs/qwen-when2call-sft-15b-seed20261022/adapter_model.safetensors": "6ecc1863fe7e7eeb995a2588e106e45bfa66f21d36605c93c1ad7f41b3fbe9de",
+        "outputs/when2call-jina-v2-small/latest/tokenizer.json": "e9f999ac74497843ed9f4303246a8f43d9f100ee8aab8e133667903f447ceb48"
+      },
+      "development_selection_performed": false,
+      "encoder_logit_weights": [
+        1.0
+      ],
+      "encoders": [
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+      ],
+      "family_probability_weights": [
+        0.5,
+        0.5
+      ],
+      "fusion_rules": {
+        "encoder_refusal": "Use the encoder when its top class is cannot_answer. Use Qwen for every other encoder prediction. The class boundary is fixed from the earlier Jina plus Jev routing hypothesis and is not fitted here."
+      },
+      "historical_selection_limitation": "Existing encoder approaches were identified in prior research with repeated official benchmark inspection. This fixed comparison is a benchmark measurement, not a new independent generalization estimate.",
+      "hypothesis": "A fixed class-specialized route transfers the earlier encoder plus Jev complementarity hypothesis: keep encoder cannot_answer decisions and use Qwen for other encoder decisions. Compare with arithmetic averaging and entropy gating. Earlier class routing was selected using benchmark labels, so this is a predeclared exploratory aggregate measurement, not an unbiased estimate.",
+      "label_order": [
+        "cannot_answer",
+        "request_for_info",
+        "tool_call",
+        "direct"
+      ],
+      "max_length": 4096,
+      "methods": [
+        "single_average",
+        "single_gate",
+        "single_encoder_refusal"
+      ],
+      "metric_definition": "Primary macro F1 includes all four declared classes. The present-class macro F1 diagnostic permits comparison with historical encoder reports.",
+      "primary_method": "single_encoder_refusal",
+      "qwen_base": "Qwen/Qwen2.5-1.5B-Instruct",
+      "qwen_checkpoint": "outputs/qwen-when2call-sft-15b-seed20261022",
+      "qwen_mapping": "Historical adapter training used LABEL_TO_ID directly despite reversed ABCD descriptions in its prompt. Preserve learned identity indices.",
+      "qwen_output_permutation": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "selection_complete": true,
+      "single_encoder_index": 0,
+      "suite": "single-route",
+      "test_status": "queued",
+      "training_performed": false,
+      "validation_limitation": "Existing encoder warm starts saw all train_pref rows. No clean preference validation is claimed or used for selection."
+    },
+    "git_commit": "0400bfb023bdc6d985907fb0f8f2854a18df1a50",
+    "max_length": 4096,
+    "primary_method": "single_encoder_refusal",
+    "qwen_checkpoint": "outputs/qwen-when2call-sft-15b-seed20261022",
+    "runtime_seconds": 3.3462626934051514,
+    "status": "completed",
+    "suite": "single-route",
+    "test_status": "queued",
+    "wandb_run_id": "t4ejrmna",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/t4ejrmna"
+  },
+  "metrics_path": "/workspace/post-training/outputs/existing-when2call-single-route-prepare-20261025/metrics.json",
+  "official_test_loaded": null,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/existing-when2call-single-route-prepare-20261025",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-25T01:32:31.959377+00:00",
+  "status": "completed",
+  "test_status": "queued",
+  "timestamp": "2026-10-25T01:33:32.876073+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "t4ejrmna",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/t4ejrmna"
+}
+```
+
+## existing-when2call-single-route-test-20261025
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "test",
+    "--suite",
+    "single-route",
+    "--work-dir",
+    "outputs/existing-when2call-single-route-20261025",
+    "--output-dir",
+    "outputs/existing-when2call-single-route-test-20261025"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "existing-when2call-single-route-test-20261025",
+  "failure_reason": null,
+  "metadata": {
+    "all_methods": {
+      "encoder_single": {
+        "accuracy": 0.5922782037239869,
+        "macro_f1": 0.4397549574969336,
+        "macro_f1_present_classes": 0.5863399433292448
+      },
+      "qwen_sft": {
+        "accuracy": 0.6788061336254108,
+        "macro_f1": 0.5050116864318432,
+        "macro_f1_present_classes": 0.6733489152424577
+      },
+      "single_average": {
+        "accuracy": 0.6946878422782037,
+        "macro_f1": 0.5157041428790551,
+        "macro_f1_present_classes": 0.6876055238387401
+      },
+      "single_encoder_refusal": {
+        "accuracy": 0.6582694414019715,
+        "macro_f1": 0.4881368764810078,
+        "macro_f1_present_classes": 0.6508491686413437
+      },
+      "single_gate": {
+        "accuracy": 0.6930449069003286,
+        "macro_f1": 0.514422080617809,
+        "macro_f1_present_classes": 0.6858961074904121
+      }
+    },
+    "black_box": true,
+    "command": [
+      "/usr/local/bin/python",
+      "/workspace/post-training/experiments/existing_when2call_hybrid.py",
+      "test",
+      "--suite",
+      "single-route",
+      "--work-dir",
+      "outputs/existing-when2call-single-route-20261025",
+      "--output-dir",
+      "outputs/existing-when2call-single-route-test-20261025"
+    ],
+    "configuration": {
+      "batch_size": 1,
+      "mode": "test",
+      "output_dir": "outputs/existing-when2call-single-route-test-20261025",
+      "suite": "single-route",
+      "work_dir": "outputs/existing-when2call-single-route-20261025"
+    },
+    "dataset": "nvidia/When2Call",
+    "dataset_revision": "0582f7749df63a96fdc3070932e83e72396ace53",
+    "encoder_logit_weights": [
+      1.0
+    ],
+    "encoders": [
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+    ],
+    "examples": 3652,
+    "frozen_config_sha256": "022e52c964929761a9b11116bbd08c7c63275fc8bee4970aed9d938a7d7b7f6f",
+    "frozen_configuration": {
+      "artifact_sha256": {
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/encoder_config.json": "0616e72a787934ed1fa3bec80e5da45239be1a1c267525c92960b83e9c44c12f",
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/model_state.pt": "815459d76b8c2e9fb7ba44e2f3867379ab096766cf9f1c807a08921be26593b5",
+        "outputs/qwen-when2call-sft-15b-seed20261022/adapter_config.json": "73b427067b3c4385f48db97011e5e48a25a6b0ea1291e096c2b6e53d8d90588e",
+        "outputs/qwen-when2call-sft-15b-seed20261022/adapter_model.safetensors": "6ecc1863fe7e7eeb995a2588e106e45bfa66f21d36605c93c1ad7f41b3fbe9de",
+        "outputs/when2call-jina-v2-small/latest/tokenizer.json": "e9f999ac74497843ed9f4303246a8f43d9f100ee8aab8e133667903f447ceb48"
+      },
+      "development_selection_performed": false,
+      "encoder_logit_weights": [
+        1.0
+      ],
+      "encoders": [
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+      ],
+      "family_probability_weights": [
+        0.5,
+        0.5
+      ],
+      "fusion_rules": {
+        "encoder_refusal": "Use the encoder when its top class is cannot_answer. Use Qwen for every other encoder prediction. The class boundary is fixed from the earlier Jina plus Jev routing hypothesis and is not fitted here."
+      },
+      "historical_selection_limitation": "Existing encoder approaches were identified in prior research with repeated official benchmark inspection. This fixed comparison is a benchmark measurement, not a new independent generalization estimate.",
+      "hypothesis": "A fixed class-specialized route transfers the earlier encoder plus Jev complementarity hypothesis: keep encoder cannot_answer decisions and use Qwen for other encoder decisions. Compare with arithmetic averaging and entropy gating. Earlier class routing was selected using benchmark labels, so this is a predeclared exploratory aggregate measurement, not an unbiased estimate.",
+      "label_order": [
+        "cannot_answer",
+        "request_for_info",
+        "tool_call",
+        "direct"
+      ],
+      "max_length": 4096,
+      "methods": [
+        "single_average",
+        "single_gate",
+        "single_encoder_refusal"
+      ],
+      "metric_definition": "Primary macro F1 includes all four declared classes. The present-class macro F1 diagnostic permits comparison with historical encoder reports.",
+      "primary_method": "single_encoder_refusal",
+      "qwen_base": "Qwen/Qwen2.5-1.5B-Instruct",
+      "qwen_checkpoint": "outputs/qwen-when2call-sft-15b-seed20261022",
+      "qwen_mapping": "Historical adapter training used LABEL_TO_ID directly despite reversed ABCD descriptions in its prompt. Preserve learned identity indices.",
+      "qwen_output_permutation": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "selection_complete": true,
+      "single_encoder_index": 0,
+      "suite": "single-route",
+      "test_status": "queued",
+      "training_performed": false,
+      "validation_limitation": "Existing encoder warm starts saw all train_pref rows. No clean preference validation is claimed or used for selection."
+    },
+    "git_commit": "0400bfb023bdc6d985907fb0f8f2854a18df1a50",
+    "max_length": 4096,
+    "official_test_loaded": true,
+    "official_test_metrics": {
+      "accuracy": 0.6582694414019715,
+      "macro_f1": 0.4881368764810078,
+      "macro_f1_present_classes": 0.6508491686413437
+    },
+    "primary_method": "single_encoder_refusal",
+    "qwen_checkpoint": "outputs/qwen-when2call-sft-15b-seed20261022",
+    "runtime_seconds": 449.7198534011841,
+    "selection_complete": true,
+    "split": "test/mcq",
+    "status": "completed",
+    "suite": "single-route",
+    "test_measurement_only": true,
+    "test_selection_performed": false,
+    "test_status": "measured",
+    "wandb_run_id": "dkkgq6x9",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/dkkgq6x9"
+  },
+  "metrics_path": "/workspace/post-training/outputs/existing-when2call-single-route-test-20261025/metrics.json",
+  "official_test_loaded": true,
+  "official_test_metrics": {
+    "accuracy": 0.6582694414019715,
+    "macro_f1": 0.4881368764810078,
+    "macro_f1_present_classes": 0.6508491686413437
+  },
+  "output_dir": "/workspace/post-training/outputs/existing-when2call-single-route-test-20261025",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-25T01:33:32.826422+00:00",
+  "status": "completed",
+  "test_status": "measured",
+  "timestamp": "2026-10-25T01:41:34.752474+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "dkkgq6x9",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/dkkgq6x9"
+}
+```

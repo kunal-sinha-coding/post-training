@@ -975,3 +975,7 @@ Candidates were frozen before measurement. These are aggregate-only benchmark sc
 | single_rank | 0.677984666 | 0.503256048 | 0.671008064 | [8n2vpvy7](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/8n2vpvy7) |
 
 The best result remains equal probability averaging, at 0.694687842 accuracy and 0.515704143 four-class macro F1.
+| Candidate | existing-when2call-single-route-prepare-20261025 | — | — | [metrics](/workspace/post-training/outputs/existing-when2call-single-route-prepare-20261025/metrics.json) | completed |
+| Candidate | existing-when2call-single-route-test-20261025 | — | — | [metrics](/workspace/post-training/outputs/existing-when2call-single-route-test-20261025/metrics.json) | completed |
+
+| existing-when2call-single-route-test-20261025 | 0.6582694414019715 | 0.4881368764810078 | dkkgq6x9 | Aggregate-only frozen test measurement |
