@@ -5,35 +5,9 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "existing_frozen_encoder_llm_comparison_v1",
   "current_hypothesis": "Visible task type may identify regions where the encoder or Qwen SFT is more accurate. Compare fixed routes by tool availability and question length against probability averaging and entropy gating.",
-  "active_experiment": {},
-  "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.existing_when2call_hybrid",
-    "test",
-    "--suite",
-    "single-adaptive",
-    "--work-dir",
-    "outputs/existing-when2call-single-adaptive-20261025",
-    "--output-dir",
-    "outputs/existing-when2call-single-adaptive-test-20261025"
-  ],
-  "worker_queue": [
-    [
-      "python",
-      "-u",
-      "-m",
-      "experiments.existing_when2call_hybrid",
-      "prepare",
-      "--suite",
-      "single-rules",
-      "--work-dir",
-      "outputs/existing-when2call-single-rules-20261025",
-      "--output-dir",
-      "outputs/existing-when2call-single-rules-prepare-20261025"
-    ],
-    [
+  "active_experiment": {
+    "pid": 18404,
+    "command": [
       "python",
       "-u",
       "-m",
@@ -45,8 +19,23 @@
       "outputs/existing-when2call-single-rules-20261025",
       "--output-dir",
       "outputs/existing-when2call-single-rules-test-20261025"
-    ]
+    ],
+    "started_at": "2026-10-25T02:05:50.190152+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "test",
+    "--suite",
+    "single-rules",
+    "--work-dir",
+    "outputs/existing-when2call-single-rules-20261025",
+    "--output-dir",
+    "outputs/existing-when2call-single-rules-test-20261025"
   ],
+  "worker_queue": [],
   "_previous_command": [
     "python",
     "-u",
@@ -72,8 +61,8 @@
     "status": "historical scores are incomparable",
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
-  "last_heartbeat": "2026-10-25T01:55:45.880351+00:00",
-  "last_action": "Recorded the adaptive fusion results and queued four predeclared input type routing rules in one aggregate evaluation.",
+  "last_heartbeat": "2026-10-25T02:05:50.190168+00:00",
+  "last_action": "Watchdog started validation worker pid 18404.",
   "watchdog_enabled": true,
   "research_log_size": 780329,
   "stop_command": "STOP",
@@ -82,15 +71,20 @@
     "-u",
     "-m",
     "experiments.existing_when2call_hybrid",
-    "prepare",
+    "test",
     "--suite",
     "single-rules",
     "--work-dir",
     "outputs/existing-when2call-single-rules-20261025",
     "--output-dir",
-    "outputs/existing-when2call-single-rules-prepare-20261025"
+    "outputs/existing-when2call-single-rules-test-20261025"
   ],
-  "recording_jobs": [],
+  "recording_jobs": [
+    {
+      "pid": 18403,
+      "experiment_id": "existing-when2call-single-rules-prepare-20261025"
+    }
+  ],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-25T02:03:19.627097+00:00",
   "planning_ack_deadline": null,

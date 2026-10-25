@@ -7785,3 +7785,15 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## existing-when2call-single-rules-prepare-20261025
+
+Timestamp: 2026-10-25T02:05:50.384009+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.existing_when2call_hybrid", "prepare", "--suite", "single-rules", "--work-dir", "outputs/existing-when2call-single-rules-20261025", "--output-dir", "outputs/existing-when2call-single-rules-prepare-20261025"]. Output: /workspace/post-training/outputs/existing-when2call-single-rules-prepare-20261025. W&B run: 5pcy2fsg.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Test status: queued. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

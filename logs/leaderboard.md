@@ -1028,3 +1028,4 @@ The equal average remains the best observed ensemble by accuracy.
 | high-margin encoder override | 0.690306681 | 0.512752246 | 0.683669662 | [a8tlnl3p](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/a8tlnl3p) |
 
 Accuracy leader remains equal probability averaging.
+| Candidate | existing-when2call-single-rules-prepare-20261025 | — | — | [metrics](/workspace/post-training/outputs/existing-when2call-single-rules-prepare-20261025/metrics.json) | completed |
