@@ -35510,3 +35510,31 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/8n2vpvy7"
 }
 ```
+
+
+## Fixed existing-model fusion comparison, October 25
+
+Purpose: Compare parameter-free combinations of the strongest existing single Jina encoder checkpoint and Qwen SFT 1.5B. The pair was frozen before official test loading. This repeat benchmark is exploratory because historical results have repeatedly inspected this test split.
+
+Setup: Jina checkpoint `outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048` and Qwen SFT adapter `outputs/qwen-when2call-sft-15b-seed20261022`, base `Qwen/Qwen2.5-1.5B-Instruct`, max length 4096, batch size 1, dataset revision `0582f7749df63a96fdc3070932e83e72396ace53`, test/mcq, 3652 rows. Frozen methods were equal arithmetic averaging, minimum-entropy expert selection, equal geometric probability pooling, and equal Borda rank pooling. No weights or thresholds were fitted and no per-example output was saved. RTX A4500. Runtime 459.455 seconds. Code commit `e99541b01db8c88d55c1e4727f90e2db82f702cc`. Frozen config SHA256 `57f19d66117dccd6513511833eb649903709209903e1bc02b0b82966c3793dab`. W&B run `8n2vpvy7`: https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/8n2vpvy7.
+
+| Method | Accuracy | Macro F1 across four classes | Present-class macro F1 diagnostic |
+| --- | ---: | ---: | ---: |
+| single_average | 0.694687842 | 0.515704143 | 0.687605524 |
+| single_gate | 0.693044907 | 0.514422081 | 0.685896107 |
+| single_geometric | 0.691949617 | 0.513639029 | 0.684852039 |
+| single_rank | 0.677984666 | 0.503256048 | 0.671008064 |
+| qwen_sft | 0.678806134 | 0.505011686 | 0.673348915 |
+| encoder_single | 0.592278204 | 0.439754957 | 0.586339943 |
+
+Analysis: Equal arithmetic averaging remains the best observed result by accuracy and also has the highest macro F1 among these methods. It adds 58 correct predictions over Qwen alone. The geometric and rank pooling hypotheses did not improve the arithmetic control. Selection remains provisional because this benchmark has prior repeated inspections.
+
+Next experiment preregistration: Test a fixed Jina specialist route. Keep Jina's probability vector when its top class is `cannot_answer`; otherwise use Qwen's probability vector. Compare against arithmetic averaging and minimum-entropy gating. The rule transfers the earlier Jina plus Jev class-specialist idea, but its original routing class was chosen from benchmark-label error analysis. No threshold, rule, or parameter will be fitted from this follow-up measurement. Accuracy is the primary optimization objective; macro F1 is reported as a secondary measure. The fixed config is prepared before test loading, which reports aggregate metrics only.
+
+Exact queued commands:
+
+```text
+python -u -m experiments.existing_when2call_hybrid prepare --suite single-route --work-dir outputs/existing-when2call-single-route-20261025 --output-dir outputs/existing-when2call-single-route-prepare-20261025
+python -u -m experiments.existing_when2call_hybrid test --suite single-route --work-dir outputs/existing-when2call-single-route-20261025 --output-dir outputs/existing-when2call-single-route-test-20261025
+```
+

@@ -1,25 +1,55 @@
 {
-  "status": "awaiting_codex_planning",
+  "status": "active",
   "planning_owner": "codex_primary",
-  "planning_required": true,
+  "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "existing_frozen_encoder_llm_comparison_v1",
-  "current_hypothesis": "For the strongest existing pair, geometric probability consensus or ordinal rank pooling may outperform equal probability averaging and entropy gating. Compare all four fixed rules in one aggregate measurement without fitting weights or thresholds.",
-  "active_experiment": {},
+  "current_hypothesis": "A fixed encoder-specialist route may improve test accuracy by keeping Jina cannot_answer predictions and using Qwen SFT for the other encoder top classes. Compare this with arithmetic averaging and minimum-entropy gating. Accuracy is primary and all-class macro F1 remains a secondary reported metric.",
+  "active_experiment": {
+    "pid": 14493,
+    "command": [
+      "python",
+      "-u",
+      "-m",
+      "experiments.existing_when2call_hybrid",
+      "prepare",
+      "--suite",
+      "single-route",
+      "--work-dir",
+      "outputs/existing-when2call-single-route-20261025",
+      "--output-dir",
+      "outputs/existing-when2call-single-route-prepare-20261025"
+    ],
+    "started_at": "2026-10-25T01:32:31.959377+00:00"
+  },
   "worker_command": [
     "python",
     "-u",
     "-m",
     "experiments.existing_when2call_hybrid",
-    "test",
+    "prepare",
     "--suite",
-    "single-fusion",
+    "single-route",
     "--work-dir",
-    "outputs/existing-when2call-single-fusion-20261025",
+    "outputs/existing-when2call-single-route-20261025",
     "--output-dir",
-    "outputs/existing-when2call-single-fusion-test-20261025"
+    "outputs/existing-when2call-single-route-prepare-20261025"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.existing_when2call_hybrid",
+      "test",
+      "--suite",
+      "single-route",
+      "--work-dir",
+      "outputs/existing-when2call-single-route-20261025",
+      "--output-dir",
+      "outputs/existing-when2call-single-route-test-20261025"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -45,22 +75,29 @@
     "status": "historical scores are incomparable",
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
-  "last_heartbeat": "2026-10-25T01:21:24.347904+00:00",
-  "last_action": "Watchdog handed planning control to the primary Codex process.",
+  "last_heartbeat": "2026-10-25T01:32:31.959390+00:00",
+  "last_action": "Watchdog started validation worker pid 14493.",
   "watchdog_enabled": true,
-  "research_log_size": 774411,
+  "research_log_size": 775295,
   "stop_command": "STOP",
-  "next_experiment": null,
-  "recording_jobs": [
-    {
-      "pid": 14101,
-      "experiment_id": "existing-when2call-single-fusion-test-20261025"
-    }
+  "next_experiment": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "prepare",
+    "--suite",
+    "single-route",
+    "--work-dir",
+    "outputs/existing-when2call-single-route-20261025",
+    "--output-dir",
+    "outputs/existing-when2call-single-route-prepare-20261025"
   ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-25T01:29:58.406441+00:00",
-  "planning_ack_deadline": "2026-10-25T01:31:58.406465+00:00",
-  "planning_attempts": 1,
+  "planning_notified_at": "2026-10-25T01:32:01.691813+00:00",
+  "planning_ack_deadline": null,
+  "planning_attempts": 0,
   "best_observed_test": {
     "method": "single_average",
     "accuracy": 0.6946878422782037,

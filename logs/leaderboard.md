@@ -961,3 +961,17 @@ The best observed combination is single_average. Its absolute accuracy gain over
 | Candidate | existing-when2call-single-fusion-test-20261025 | — | — | [metrics](/workspace/post-training/outputs/existing-when2call-single-fusion-test-20261025/metrics.json) | completed |
 
 | existing-when2call-single-fusion-test-20261025 | 0.6919496166484118 | 0.5136390294554042 | 8n2vpvy7 | Aggregate-only frozen test measurement |
+
+
+## October 25 single-encoder fusion aggregate test results
+
+Candidates were frozen before measurement. These are aggregate-only benchmark scores on 3652 official test examples, not clean validation estimates. Accuracy ranks the methods. Macro F1 includes all four declared classes.
+
+| Method | Accuracy | Macro F1 across four classes | Present-class macro F1 diagnostic | W&B |
+| --- | ---: | ---: | ---: | --- |
+| single_average | 0.694687842 | 0.515704143 | 0.687605524 | [8n2vpvy7](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/8n2vpvy7) |
+| single_gate | 0.693044907 | 0.514422081 | 0.685896107 | [8n2vpvy7](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/8n2vpvy7) |
+| single_geometric | 0.691949617 | 0.513639029 | 0.684852039 | [8n2vpvy7](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/8n2vpvy7) |
+| single_rank | 0.677984666 | 0.503256048 | 0.671008064 | [8n2vpvy7](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/8n2vpvy7) |
+
+The best result remains equal probability averaging, at 0.694687842 accuracy and 0.515704143 four-class macro F1.
