@@ -119,6 +119,15 @@ def external_prompt(row: dict, question: str) -> str:
 
 def external_conversation_example(row: dict, source_id: str) -> ClassificationRow | None:
     # Convert the first user turn and its first assistant action into one conservative decision example.
+    if source_id.startswith("xlam_irr-"):
+        # Treat an empty answer list as no usable tool answer and record it as cannot_answer.
+        answers = row.get("answers", "[]")
+        try:
+            answers = json.loads(answers) if isinstance(answers, str) else answers
+        except json.JSONDecodeError:
+            answers = []
+        label_name = "cannot_answer" if not answers else "tool_call"
+        return ClassificationRow(external_prompt({"tools": row.get("tools", "")}, str(row.get("query", ""))), LABEL_TO_ID[label_name], None)
     messages = row.get("conversations", row.get("messages", []))
     question = ""
     response_parts = []
@@ -142,7 +151,7 @@ def external_conversation_example(row: dict, source_id: str) -> ClassificationRo
 
 def load_external_rows(source: str, sample_size: int, seed: int) -> tuple[list[ClassificationRow], list[ClassificationRow]]:
     # Reservoir-sample source conversations, then split by conversation before extracting decision labels.
-    source_config = {"apigen_mt": ("Salesforce/APIGen-MT-5k", "default"), "toolace": ("Team-ACE/ToolACE", "default")}
+    source_config = {"apigen_mt": ("Salesforce/APIGen-MT-5k", "default"), "toolace": ("Team-ACE/ToolACE", "default"), "xlam_irr": ("MadeAgents/xlam-irrelevance-7.5k", "default"), "hermes_singleturn": ("NousResearch/hermes-function-calling-v1", "func_calling_singleturn"), "english100k": ("stindardlogic/tool-calling-english-100k", "default")}
     dataset_name, config = source_config[source]
     reservoir = []
     rng = random.Random(seed)
@@ -173,6 +182,9 @@ def main() -> int:
     parser.add_argument("--sft-sample", type=int, default=0)
     parser.add_argument("--apigen-mt-sample", type=int, default=0)
     parser.add_argument("--toolace-sample", type=int, default=0)
+    parser.add_argument("--xlam-irrelevance-sample", type=int, default=0)
+    parser.add_argument("--hermes-singleturn-sample", type=int, default=0)
+    parser.add_argument("--english100k-sample", type=int, default=0)
     parser.add_argument("--glaive-label", choices=("all", *LABELS), default="all")
     parser.add_argument("--seed", type=int, default=20261028)
     parser.add_argument("--split-seed", type=int, default=20261028)
@@ -199,6 +211,13 @@ def main() -> int:
         dataset_names.append("Salesforce/APIGen-MT-5k")
     if args.toolace_sample > 0:
         dataset_names.append("Team-ACE/ToolACE")
+    if args.xlam_irrelevance_sample > 0:
+        dataset_names.append("MadeAgents/xlam-irrelevance-7.5k")
+    if args.hermes_singleturn_sample > 0:
+        dataset_names.append("NousResearch/hermes-function-calling-v1:func_calling_singleturn")
+    # Register the source so its identity is recorded in the experiment metadata.
+    if args.english100k_sample > 0:
+        dataset_names.append("stindardlogic/tool-calling-english-100k")
     import wandb
     if not os.getenv("WANDB_API_KEY"):
         raise RuntimeError("WANDB_API_KEY is required for Qwen experiments.")
@@ -223,8 +242,8 @@ def main() -> int:
         sft_train, sft_validation = split_rows(sft_rows, args.split_seed + 2) if sft_rows else ([], [])
         external_training_rows = []
         external_validation_rows = {}
-        source_offsets = {"apigen_mt": 10, "toolace": 11}
-        for source, sample_size in (("apigen_mt", args.apigen_mt_sample), ("toolace", args.toolace_sample)):
+        source_offsets = {"apigen_mt": 10, "toolace": 11, "xlam_irr": 12, "hermes_singleturn": 13, "english100k": 14}
+        for source, sample_size in (("apigen_mt", args.apigen_mt_sample), ("toolace", args.toolace_sample), ("xlam_irr", args.xlam_irrelevance_sample), ("hermes_singleturn", args.hermes_singleturn_sample), ("english100k", args.english100k_sample)):
             if sample_size > 0:
                 source_train, source_validation = load_external_rows(source, sample_size, args.seed + source_offsets[source])
                 external_training_rows.extend(source_train)
