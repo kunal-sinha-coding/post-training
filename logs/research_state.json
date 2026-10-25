@@ -1,24 +1,66 @@
 {
-  "status": "awaiting_codex_planning",
+  "status": "active",
   "planning_owner": "codex_primary",
-  "planning_required": true,
+  "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "existing_frozen_encoder_llm_comparison_v1",
-  "current_hypothesis": "Equal-probability encoder plus Qwen fusion may retain its benchmark gain on an independent held-out train_sft validation source; compare fixed pooling and disagreement routes there before choosing another ensemble or training-data experiment.",
-  "active_experiment": {},
+  "current_hypothesis": "The encoder request_for_info region helped on held-out train_sft but not on the official benchmark. Requiring higher encoder confidence may preserve useful corrections and reduce harmful overrides.",
+  "active_experiment": {
+    "pid": 23607,
+    "command": [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_existing_when2call_hybrid_validation",
+      "--output-dir",
+      "outputs/existing-when2call-hybrid-request-confidence-validation-20261025",
+      "--split-seed",
+      "20261026",
+      "--batch-size",
+      "1"
+    ],
+    "started_at": "2026-10-25T02:48:45.815129+00:00"
+  },
   "worker_command": [
     "python",
     "-u",
     "-m",
     "experiments.evaluate_existing_when2call_hybrid_validation",
     "--output-dir",
-    "outputs/existing-when2call-hybrid-sft-validation-20261025",
+    "outputs/existing-when2call-hybrid-request-confidence-validation-20261025",
     "--split-seed",
     "20261026",
     "--batch-size",
     "1"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.existing_when2call_hybrid",
+      "prepare",
+      "--suite",
+      "single-request-confidence",
+      "--work-dir",
+      "outputs/existing-when2call-single-request-confidence-20261025",
+      "--output-dir",
+      "outputs/existing-when2call-single-request-confidence-prepare-20261025"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.existing_when2call_hybrid",
+      "test",
+      "--suite",
+      "single-request-confidence",
+      "--work-dir",
+      "outputs/existing-when2call-single-request-confidence-20261025",
+      "--output-dir",
+      "outputs/existing-when2call-single-request-confidence-test-20261025"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -36,30 +78,35 @@
     "outputs/test-clean-validation-smooth0075-wd002-weight75-25.json"
   ],
   "experiment_queue": [
-    "Complete the active frozen disagreement benchmark measurement.",
-    "Measure all fixed pooling and disagreement candidates on the stratified held-out train_sft source before selecting the next experiment.",
-    "Use clean-validation outcomes to decide whether to continue encoder plus Qwen ensembles or shift to a distinct training-data mixture hypothesis."
+    "Measure fixed request-for-info confidence routes on held-out train_sft validation.",
+    "Freeze the route grid and evaluate it once on official test after validation."
   ],
   "best_validation": {
     "status": "historical scores are incomparable",
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
-  "last_heartbeat": "2026-10-25T02:39:37.850549+00:00",
-  "last_action": "Watchdog handed planning control to the primary Codex process.",
+  "last_heartbeat": "2026-10-25T02:48:45.815141+00:00",
+  "last_action": "Watchdog started validation worker pid 23607.",
   "watchdog_enabled": true,
-  "research_log_size": 786196,
+  "research_log_size": 788853,
   "stop_command": "STOP",
-  "next_experiment": null,
-  "recording_jobs": [
-    {
-      "pid": 23164,
-      "experiment_id": "existing-when2call-hybrid-sft-validation-20261025"
-    }
+  "next_experiment": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_existing_when2call_hybrid_validation",
+    "--output-dir",
+    "outputs/existing-when2call-hybrid-request-confidence-validation-20261025",
+    "--split-seed",
+    "20261026",
+    "--batch-size",
+    "1"
   ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-25T02:45:11.668041+00:00",
-  "planning_ack_deadline": "2026-10-25T02:47:11.668066+00:00",
-  "planning_attempts": 3,
+  "planning_notified_at": "2026-10-25T02:47:15.567070+00:00",
+  "planning_ack_deadline": "2026-10-25T02:49:15.567094+00:00",
+  "planning_attempts": 4,
   "best_observed_test": {
     "method": "single_average",
     "accuracy": 0.6946878422782037,
