@@ -1,26 +1,11 @@
 {
-  "status": "active",
+  "status": "awaiting_codex_planning",
   "planning_owner": "codex_primary",
-  "planning_required": false,
+  "planning_required": true,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "existing_frozen_encoder_llm_comparison_v1",
   "current_hypothesis": "Equal-probability encoder plus Qwen fusion may retain its benchmark gain on an independent held-out train_sft validation source; compare fixed pooling and disagreement routes there before choosing another ensemble or training-data experiment.",
-  "active_experiment": {
-    "pid": 22622,
-    "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_existing_when2call_hybrid_validation",
-      "--output-dir",
-      "outputs/existing-when2call-hybrid-sft-validation-20261025",
-      "--split-seed",
-      "20261026",
-      "--batch-size",
-      "1"
-    ],
-    "started_at": "2026-10-25T02:39:37.850536+00:00"
-  },
+  "active_experiment": {},
   "worker_command": [
     "python",
     "-u",
@@ -60,32 +45,21 @@
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
   "last_heartbeat": "2026-10-25T02:39:37.850549+00:00",
-  "last_action": "Watchdog started validation worker pid 22622.",
+  "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
-  "research_log_size": 785303,
+  "research_log_size": 786196,
   "stop_command": "STOP",
-  "next_experiment": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.evaluate_existing_when2call_hybrid_validation",
-    "--output-dir",
-    "outputs/existing-when2call-hybrid-sft-validation-20261025",
-    "--split-seed",
-    "20261026",
-    "--batch-size",
-    "1"
-  ],
+  "next_experiment": null,
   "recording_jobs": [
     {
-      "pid": 22620,
-      "experiment_id": "existing-when2call-single-disagree-test-20261025"
+      "pid": 23164,
+      "experiment_id": "existing-when2call-hybrid-sft-validation-20261025"
     }
   ],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-25T02:30:05.867542+00:00",
-  "planning_ack_deadline": "2026-10-25T02:32:05.867567+00:00",
-  "planning_attempts": 2,
+  "planning_notified_at": "2026-10-25T02:45:11.668041+00:00",
+  "planning_ack_deadline": "2026-10-25T02:47:11.668066+00:00",
+  "planning_attempts": 3,
   "best_observed_test": {
     "method": "single_average",
     "accuracy": 0.6946878422782037,
