@@ -4,7 +4,7 @@ Preparation freezes existing checkpoint hashes and four predeclared hybrid rules
 training or development selection. One aggregate measurement scores each model once,
 restores source row order after encoder batching, and compares fixed hybrids and baselines.
 The initial suite preserves both encoder families. The single-fusion suite compares fixed pooling rules.
-The single-route suite tests a class-specialized encoder route with arithmetic and entropy controls.
+The single-route suite tests a class-specialized encoder route. The single-weighted suite tests a fixed asymmetric blend.
 Official predictions, labels, probabilities, and per-class statistics remain in memory only.
 """
 from __future__ import annotations
@@ -40,6 +40,8 @@ SINGLE_METHODS = ("single_average", "single_gate", "single_geometric", "single_r
 SINGLE_RULES = {"average": "Arithmetic mean of the two probability vectors with equal weights.", "gate": "Choose the lower-entropy probability vector with encoder first on exact ties.", "geometric": "Softmax of the equal mean of log probabilities clamped below at 1e-8.", "rank": "Sum equal Borda rank points from both experts. Average rank points for tied probabilities. Add 1e-6 times arithmetic mean probability, clamp below at 1e-12, and normalize."}
 ROUTE_METHODS = ("single_average", "single_gate", "single_encoder_refusal")
 ROUTE_RULES = {"encoder_refusal": "Use the encoder when its top class is cannot_answer. Use Qwen for every other encoder prediction. The class boundary is fixed from the earlier Jina plus Jev routing hypothesis and is not fitted here."}
+WEIGHTED_METHODS = ("single_average", "single_gate", "single_qwen_weighted")
+WEIGHTED_RULES = {"qwen_weighted": "Combine 0.25 encoder probability with 0.75 Qwen probability. These weights are fixed before test loading."}
 
 
 def suite_definition(name: str) -> dict:
@@ -50,6 +52,8 @@ def suite_definition(name: str) -> dict:
         return {"encoders": [ENCODERS[2]], "weights": [1.0], "single_index": 0, "methods": list(SINGLE_METHODS), "primary": "single_geometric"}
     if name == "single-route":
         return {"encoders": [ENCODERS[2]], "weights": [1.0], "single_index": 0, "methods": list(ROUTE_METHODS), "primary": "single_encoder_refusal"}
+    if name == "single-weighted":
+        return {"encoders": [ENCODERS[2]], "weights": [1.0], "single_index": 0, "methods": list(WEIGHTED_METHODS), "primary": "single_qwen_weighted"}
     raise ValueError("Unknown frozen suite: " + name)
 
 
@@ -80,6 +84,9 @@ def hybrid_probabilities(encoder: torch.Tensor, qwen: torch.Tensor, rule: str) -
         # Keep the encoder refusal region and use Qwen for the other predicted classes.
         use_encoder = encoder.argmax(-1).eq(LABELS.index("cannot_answer")).unsqueeze(-1)
         return torch.where(use_encoder, encoder, qwen)
+    if rule == "qwen_weighted":
+        # Shrink the weaker standalone encoder toward the stronger Qwen baseline.
+        return 0.25 * encoder + 0.75 * qwen
     raise ValueError("Unknown frozen hybrid rule: " + rule)
 
 
@@ -99,6 +106,9 @@ def prepare(args: object, run: object) -> dict:
     if suite_name == "single-route":
         config["fusion_rules"] = ROUTE_RULES
         config["hypothesis"] = "A fixed class-specialized route transfers the earlier encoder plus Jev complementarity hypothesis: keep encoder cannot_answer decisions and use Qwen for other encoder decisions. Compare with arithmetic averaging and entropy gating. Earlier class routing was selected using benchmark labels, so this is a predeclared exploratory aggregate measurement, not an unbiased estimate."
+    if suite_name == "single-weighted":
+        config["fusion_rules"] = WEIGHTED_RULES
+        config["hypothesis"] = "The encoder improves the Qwen baseline when averaged equally, but has lower standalone accuracy. A fixed 25 percent encoder and 75 percent Qwen blend tests whether shrinkage toward the stronger Qwen baseline improves accuracy. Compare with equal averaging and minimum-entropy gating. The fixed weight is not fitted."
     save_json(args.work_dir / "frozen-config.json", config)
     run.summary.update({"selection_complete": True, "training_performed": False, "test_status": "queued"})
     return {"status": "completed", "test_status": "queued", "frozen_configuration": config}
@@ -114,6 +124,8 @@ def verify_frozen(config: dict) -> None:
         raise ValueError("Frozen single-fusion rules changed.")
     if suite_name == "single-route" and (config.get("fusion_rules") != ROUTE_RULES or config.get("single_encoder_index") != 0 or config.get("qwen_base") != QWEN_BASE or config.get("max_length") != 4096 or config.get("qwen_output_permutation") != [0, 1, 2, 3] or config.get("family_probability_weights") != [0.5, 0.5]):
         raise ValueError("Frozen single-route rules changed.")
+    if suite_name == "single-weighted" and (config.get("fusion_rules") != WEIGHTED_RULES or config.get("single_encoder_index") != 0 or config.get("qwen_base") != QWEN_BASE or config.get("max_length") != 4096 or config.get("qwen_output_permutation") != [0, 1, 2, 3] or config.get("family_probability_weights") != [0.5, 0.5]):
+        raise ValueError("Frozen single-weighted rules changed.")
     for path, expected in config["artifact_sha256"].items():
         if artifact_digest(Path(path)) != expected:
             raise ValueError("Frozen comparison artifact changed: " + path)
@@ -202,7 +214,7 @@ def main() -> int:
     parser.add_argument("mode", choices=("prepare", "test"))
     parser.add_argument("--work-dir", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
-    parser.add_argument("--suite", choices=("initial", "single-fusion", "single-route"), default="initial")
+    parser.add_argument("--suite", choices=("initial", "single-fusion", "single-route", "single-weighted"), default="initial")
     parser.add_argument("--batch-size", type=int, default=1)
     args = parser.parse_args()
     import wandb
