@@ -6732,3 +6732,14 @@ remove the file manually to continue.
 2026-10-25: Commit `Record pooling grid results and queue disagreement rules` adds the complete measured probability and score pooling comparison to the leaderboard. Equal probability averaging remains best at 0.694687842 accuracy and 0.515704143 four-class macro F1. The fixed 40 percent encoder blend is the strongest asymmetric arithmetic mix, but remains below equal averaging. The next aggregate-only batch tests three model-output disagreement policies and four fixed encoder-predicted-class specialist routes against average and entropy-gate controls. It uses only the frozen model outputs and does not train a router or inspect example-level test outcomes.
 
 2026-10-25T02:30:07.937713+00:00: Commit `Record research experiment existing-when2call-single-disagree-test-20261025` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-25T02:31:45.076106+00:00: Commit `Record research experiment existing-when2call-single-disagree-prepare-20261025` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-25T02:31:48.118077+00:00: Commit `Record experiment synchronization failure` records the failed commit or push for existing-when2call-single-disagree-prepare-20261025: fatal: Unable to create '/workspace/post-training/.git/index.lock': File exists.
+
+Another git process seems to be running in this repository, e.g.
+an editor opened by 'git commit'. Please make sure all processes
+are terminated then try again. If it still fails, a git process
+may have crashed in this repository earlier:
+remove the file manually to continue.
+. The result remains local and the worker queue continues.
