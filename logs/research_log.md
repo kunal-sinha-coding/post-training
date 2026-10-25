@@ -8343,3 +8343,15 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {"preference_validation_metrics": {"accuracy": 0.905, "macro_f1": 0.679408336905414, "confusion_matrix": [[570, 16, 13, 0], [2, 529, 69, 0], [4, 66, 530, 0], [1, 0, 0, 0]], "examples": 1800}, "glaive_validation_metrics": {"accuracy": 1.0, "macro_f1": 0.25, "confusion_matrix": [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 64, 0], [0, 0, 0, 0]], "examples": 64}, "sft_validation_metrics": {"accuracy": 0.9533333333333334, "macro_f1": 0.48802534712515144, "confusion_matrix": [[73, 0, 1, 0], [0, 70, 6, 0], [0, 0, 0, 0], [0, 0, 0, 0]], "examples": 150}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## test-qwen-glaive500-toolcall-sft750-pref-full-15b-seed20261041
+
+Timestamp: 2026-10-25T17:10:59.554783+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_qwen_when2call_test", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--checkpoint", "outputs/qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-sft750-seed20261041", "--output-dir", "outputs/test-qwen-glaive500-toolcall-sft750-pref-full-15b-seed20261041", "--lora-rank", "16", "--max-length", "4096", "--batch-size", "1"]. Output: /workspace/post-training/outputs/test-qwen-glaive500-toolcall-sft750-pref-full-15b-seed20261041. W&B run: klncp63g.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: True. Test status: measured. Official test metrics: {"accuracy": 0.641566265060241, "macro_f1": 0.47386371873842753}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
