@@ -1240,3 +1240,5 @@ Training accuracy and macro F1 were 0.925383 and 0.694130. Glaive validation had
 
 | Candidate | qwen-when2call-qwen25-15b-pref-full-glaive1k-toolcall-seed20261036 | — | — | Queued 1,000-decision explicit tool_call Glaive dose. | queued |
 | Aggregate test | test-qwen-glaive1k-toolcall-pref-full-15b-seed20261036 | — | — | Queued after training and clean validation. Aggregate-only report. | queued |
+
+Source-specific result `qwen-when2call-qwen25-15b-pref-full-glaive1k-toolcall-seed20261036` has status completed. Its separate validation metrics are {"preference_validation_metrics": {"accuracy": 0.9066666666666666, "macro_f1": 0.6804333674584642, "confusion_matrix": [[574, 8, 17, 0], [5, 506, 89, 0], [7, 41, 552, 0], [1, 0, 0, 0]], "examples": 1800}, "glaive_validation_metrics": {"accuracy": 1.0, "macro_f1": 0.25, "confusion_matrix": [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 116, 0], [0, 0, 0, 0]], "examples": 116}}. These values are not ranked against other splits.

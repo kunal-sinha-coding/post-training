@@ -8176,3 +8176,15 @@ This record was written automatically. Candidate selection must use clean valida
 The candidate trained on 7,200 When2Call preference examples and 238 explicit tool_call Glaive examples, with 59 tool_call-only Glaive validation examples. It used Qwen2.5-1.5B-Instruct, one epoch, seed 20261035, preference split seed 20261029, batch size 1, max length 4096, learning rate 2e-5, weight decay 0.01, and LoRA rank 16. Training metrics on 7,438 examples were 0.925383 accuracy and 0.694130 macro F1. Clean preference validation on 1,800 examples was 0.910000 accuracy and 0.682307 macro F1. Glaive validation accuracy was 1.0 on 59 tool_call-only examples; its four-class macro F1 of 0.25 is not comparable because the validation subset has only one class. Aggregate-only test metrics on 3,652 When2Call test/mcq examples were 0.693866 accuracy and 0.504333 macro F1. All evidence is recorded in the linked metrics artifacts and experiment records. The test result is a report only and is not used for candidate selection.
 
 The next hypothesis is based on clean validation: increasing the sample to 1,000 Glaive decisions while retaining only explicit tool_call labels may broaden high-confidence coverage and preserve or improve the 0.910000 preference validation accuracy. Keep the preference validation split fixed and select only from clean validation.
+
+## qwen-when2call-qwen25-15b-pref-full-glaive1k-toolcall-seed20261036
+
+Timestamp: 2026-10-25T11:43:26.452212+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_glaive_mix", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--output-dir", "outputs/qwen-when2call-qwen25-15b-pref-full-glaive1k-toolcall-seed20261036", "--glaive-sample", "1000", "--glaive-label", "tool_call", "--seed", "20261036", "--split-seed", "20261029", "--epochs", "1", "--batch-size", "1", "--max-length", "4096", "--learning-rate", "2e-5", "--weight-decay", "0.01", "--lora-rank", "16"]. Output: /workspace/post-training/outputs/qwen-when2call-qwen25-15b-pref-full-glaive1k-toolcall-seed20261036. W&B run: wqqroynl.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {"preference_validation_metrics": {"accuracy": 0.9066666666666666, "macro_f1": 0.6804333674584642, "confusion_matrix": [[574, 8, 17, 0], [5, 506, 89, 0], [7, 41, 552, 0], [1, 0, 0, 0]], "examples": 1800}, "glaive_validation_metrics": {"accuracy": 1.0, "macro_f1": 0.25, "confusion_matrix": [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 116, 0], [0, 0, 0, 0]], "examples": 116}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
