@@ -1,27 +1,11 @@
 {
-  "status": "active",
+  "status": "awaiting_codex_planning",
   "planning_owner": "codex_primary",
-  "planning_required": false,
+  "planning_required": true,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "existing_frozen_encoder_llm_comparison_v1",
   "current_hypothesis": "When the encoder and Qwen disagree, selecting the more confident expert or the expert associated with its predicted class may exploit complementary strengths without fitting from test outcomes.",
-  "active_experiment": {
-    "pid": 21110,
-    "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.existing_when2call_hybrid",
-      "test",
-      "--suite",
-      "single-disagree",
-      "--work-dir",
-      "outputs/existing-when2call-single-disagree-20261025",
-      "--output-dir",
-      "outputs/existing-when2call-single-disagree-test-20261025"
-    ],
-    "started_at": "2026-10-25T02:29:02.675546+00:00"
-  },
+  "active_experiment": {},
   "worker_command": [
     "python",
     "-u",
@@ -60,28 +44,21 @@
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
   "last_heartbeat": "2026-10-25T02:29:02.675559+00:00",
-  "last_action": "Watchdog started validation worker pid 21110.",
+  "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
   "research_log_size": 783685,
   "stop_command": "STOP",
-  "next_experiment": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.existing_when2call_hybrid",
-    "test",
-    "--suite",
-    "single-disagree",
-    "--work-dir",
-    "outputs/existing-when2call-single-disagree-20261025",
-    "--output-dir",
-    "outputs/existing-when2call-single-disagree-test-20261025"
+  "next_experiment": null,
+  "recording_jobs": [
+    {
+      "pid": 21387,
+      "experiment_id": "existing-when2call-single-disagree-test-20261025"
+    }
   ],
-  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-25T02:27:02.425604+00:00",
-  "planning_ack_deadline": "2026-10-25T02:29:02.425629+00:00",
-  "planning_attempts": 1,
+  "planning_notified_at": "2026-10-25T02:30:05.867542+00:00",
+  "planning_ack_deadline": "2026-10-25T02:32:05.867567+00:00",
+  "planning_attempts": 2,
   "best_observed_test": {
     "method": "single_average",
     "accuracy": 0.6946878422782037,

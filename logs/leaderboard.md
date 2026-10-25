@@ -1072,3 +1072,4 @@ No input-feature route beat the equal average.
 | Encoder | 0.592278204 | 0.439754957 | 0.586339943 |
 
 Equal probability averaging remains the best fixed fusion. The 40% encoder candidate is the strongest unequal arithmetic mixture but does not beat the equal average. This aggregate-only test comparison used the frozen candidates in one shared model-scoring pass.
+| Candidate | existing-when2call-single-disagree-test-20261025 | — | — | [metrics](/workspace/post-training/outputs/existing-when2call-single-disagree-test-20261025/metrics.json) | failed |
