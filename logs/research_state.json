@@ -1,32 +1,11 @@
 {
-  "status": "active",
+  "status": "awaiting_codex_planning",
   "planning_owner": "codex_primary",
-  "planning_required": false,
+  "planning_required": true,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "existing_frozen_encoder_llm_comparison_v1",
   "current_hypothesis": "Reducing the direct-filtered Glaive contribution from 1,000 to 250 examples may retain useful tool-call behavior while reducing the domain-shift penalty observed in aggregate test accuracy. Candidate selection will use training and source-specific clean validation only; the official test is an aggregate-only measurement after the candidate is frozen.",
-  "active_experiment": {
-    "pid": 34205,
-    "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_qwen_when2call_test",
-      "--model",
-      "Qwen/Qwen2.5-1.5B-Instruct",
-      "--checkpoint",
-      "outputs/qwen-when2call-qwen25-15b-pref-full-glaive100-seed20261030",
-      "--output-dir",
-      "outputs/test-qwen-glaive100-pref-full-15b-seed20261030",
-      "--lora-rank",
-      "16",
-      "--max-length",
-      "4096",
-      "--batch-size",
-      "1"
-    ],
-    "started_at": "2026-10-25T06:32:46.516984+00:00"
-  },
+  "active_experiment": {},
   "worker_command": [
     "python",
     "-u",
@@ -72,38 +51,21 @@
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
   "last_heartbeat": "2026-10-25T06:32:46.516997+00:00",
-  "last_action": "Watchdog started validation worker pid 34205.",
+  "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
-  "research_log_size": 802873,
+  "research_log_size": 804213,
   "stop_command": "STOP",
-  "next_experiment": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.evaluate_qwen_when2call_test",
-    "--model",
-    "Qwen/Qwen2.5-1.5B-Instruct",
-    "--checkpoint",
-    "outputs/qwen-when2call-qwen25-15b-pref-full-glaive100-seed20261030",
-    "--output-dir",
-    "outputs/test-qwen-glaive100-pref-full-15b-seed20261030",
-    "--lora-rank",
-    "16",
-    "--max-length",
-    "4096",
-    "--batch-size",
-    "1"
-  ],
+  "next_experiment": null,
   "recording_jobs": [
     {
-      "pid": 34204,
-      "experiment_id": "qwen-when2call-qwen25-15b-pref-full-glaive100-seed20261030"
+      "pid": 34756,
+      "experiment_id": "test-qwen-glaive100-pref-full-15b-seed20261030"
     }
   ],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-25T04:35:27.946564+00:00",
-  "planning_ack_deadline": "2026-10-25T04:37:27.946587+00:00",
-  "planning_attempts": 11,
+  "planning_notified_at": "2026-10-25T06:41:27.067721+00:00",
+  "planning_ack_deadline": "2026-10-25T06:43:27.067745+00:00",
+  "planning_attempts": 12,
   "best_observed_test": {
     "method": "single_average",
     "accuracy": 0.6946878422782037,

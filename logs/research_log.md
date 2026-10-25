@@ -8027,3 +8027,15 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {"preference_validation_metrics": {"accuracy": 0.8933333333333333, "macro_f1": 0.6711784418976574, "confusion_matrix": [[538, 17, 44, 0], [2, 519, 79, 0], [1, 48, 551, 0], [1, 0, 0, 0]], "examples": 1800}, "glaive_validation_metrics": {"accuracy": 0.8, "macro_f1": 0.44727272727272727, "confusion_matrix": [[5, 0, 0, 0], [1, 0, 3, 0], [0, 0, 11, 0], [0, 0, 0, 0]], "examples": 20}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## test-qwen-glaive100-pref-full-15b-seed20261030
+
+Timestamp: 2026-10-25T06:41:19.987728+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_qwen_when2call_test", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--checkpoint", "outputs/qwen-when2call-qwen25-15b-pref-full-glaive100-seed20261030", "--output-dir", "outputs/test-qwen-glaive100-pref-full-15b-seed20261030", "--lora-rank", "16", "--max-length", "4096", "--batch-size", "1"]. Output: /workspace/post-training/outputs/test-qwen-glaive100-pref-full-15b-seed20261030. W&B run: hvbpjfyb.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: True. Test status: measured. Official test metrics: {"accuracy": 0.6292442497261774, "macro_f1": 0.4609264279659694}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
