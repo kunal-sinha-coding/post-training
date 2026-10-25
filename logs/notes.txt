@@ -6719,3 +6719,5 @@ are terminated then try again. If it still fails, a git process
 may have crashed in this repository earlier:
 remove the file manually to continue.
 . The result remains local and the worker queue continues.
+
+2026-10-25: Commit `Add broad weight grid and score pooling suite` prepares one-pass testing of fixed encoder weights 0.10, 0.25, 0.40, 0.60, 0.75, and 0.90 alongside equal averaging and entropy gating. It also compares asymmetric weighted geometric pools and standardized log-probability averaging. The controls and candidate weights are declared before official test loading. The suite is intended to test probability, product, and score-scale pooling without repeated model scoring. No benchmark rows were loaded and no tests were run in this code-only step.
