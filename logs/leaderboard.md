@@ -1015,3 +1015,16 @@ The equal average remains the best observed ensemble by accuracy.
 | Candidate | existing-when2call-single-adaptive-test-20261025 | — | — | [metrics](/workspace/post-training/outputs/existing-when2call-single-adaptive-test-20261025/metrics.json) | completed |
 
 | existing-when2call-single-adaptive-test-20261025 | 0.6944140197152245 | 0.5156183881581421 | a8tlnl3p | Aggregate-only frozen test measurement |
+
+
+## October 25 adaptive fusion aggregate test results
+
+| Method | Accuracy | Macro F1 across four classes | Present-class macro F1 diagnostic | W&B |
+| --- | ---: | ---: | ---: | --- |
+| equal average | 0.694687842 | 0.515704143 | 0.687605524 | [a8tlnl3p](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/a8tlnl3p) |
+| entropy weighted | 0.694414020 | 0.515618388 | 0.687491184 | [a8tlnl3p](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/a8tlnl3p) |
+| margin weighted | 0.693866375 | 0.515102309 | 0.686803078 | [a8tlnl3p](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/a8tlnl3p) |
+| entropy gate | 0.693044907 | 0.514422081 | 0.685896107 | [a8tlnl3p](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/a8tlnl3p) |
+| high-margin encoder override | 0.690306681 | 0.512752246 | 0.683669662 | [a8tlnl3p](https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/a8tlnl3p) |
+
+Accuracy leader remains equal probability averaging.

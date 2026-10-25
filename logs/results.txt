@@ -36514,3 +36514,39 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/a8tlnl3p"
 }
 ```
+
+
+## Adaptive existing-model fusion comparison, October 25
+
+Purpose: Compare fixed adaptive methods that let prediction confidence affect the ensemble. The same existing Jina checkpoint and Qwen SFT adapter were used. The official test split has repeated historical inspections, so all results are exploratory aggregate benchmark measurements.
+
+Setup: Jina checkpoint `outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048`, Qwen SFT adapter `outputs/qwen-when2call-sft-15b-seed20261022`, base `Qwen/Qwen2.5-1.5B-Instruct`, max length 4096, batch size 1, revision `0582f7749df63a96fdc3070932e83e72396ace53`, test/mcq, 3652 examples. Methods were equal average, minimum-entropy gate, normalized-entropy weighted average, top-two-margin weighted average, and an encoder override when its margin is at least 0.50 and larger than Qwen’s. No threshold sweep or calibration was used. Aggregate metrics only. RTX A4500, runtime 401.673 seconds. Test W&B run `a8tlnl3p`: https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/a8tlnl3p. Frozen config SHA256 `782e6dca88f13460f66c3348d3da6e09c9d9966c287d3fd70f5f9a7153aa42a3`.
+
+| Method | Accuracy | Macro F1 across four classes | Present-class macro F1 diagnostic |
+| --- | ---: | ---: | ---: |
+| equal average | 0.694687842 | 0.515704143 | 0.687605524 |
+| entropy weighted | 0.694414020 | 0.515618388 | 0.687491184 |
+| margin weighted | 0.693866375 | 0.515102309 | 0.686803078 |
+| entropy gate | 0.693044907 | 0.514422081 | 0.685896107 |
+| high-margin encoder override | 0.690306681 | 0.512752246 | 0.683669662 |
+| Qwen SFT | 0.678806134 | 0.505011686 | 0.673348915 |
+| encoder alone | 0.592278204 | 0.439754957 | 0.586339943 |
+
+Analysis: Entropy weighting nearly matched equal averaging, with one fewer correct example. Margin weighting was three examples lower. The hard encoder override was 16 examples lower than averaging. None replaces the current accuracy leader.
+
+Next experiment preregistration: Rule-based task routing from visible input fields. Test encoder routing for no available tools, at least two tools, short questions of at most 20 words, and long questions over 20 words. Qwen handles rows outside each declared region. Compare with equal averaging and entropy gating. Do not read target fields or use hidden labels to create the masks. Save only aggregate accuracy and macro F1. Accuracy is primary.
+
+Exact queued commands:
+
+```text
+python -u -m experiments.existing_when2call_hybrid prepare --suite single-rules --work-dir outputs/existing-when2call-single-rules-20261025 --output-dir outputs/existing-when2call-single-rules-prepare-20261025
+python -u -m experiments.existing_when2call_hybrid test --suite single-rules --work-dir outputs/existing-when2call-single-rules-20261025 --output-dir outputs/existing-when2call-single-rules-test-20261025
+```
+
+## Ensemble exploration backlog
+
+Tested: equal probability averaging; minimum-entropy hard gating; geometric probability pooling; ordinal Borda rank pooling; a Jina cannot_answer specialist route; a 25/75 Jina/Qwen blend; entropy-weighted blending; margin-weighted blending; and a high-margin encoder override. Equal probability averaging remains the accuracy leader at 0.694687842, compared with Qwen SFT at 0.678806134. The class-specialist, geometric, rank, asymmetric, and high-margin variants did not beat the leader.
+
+Queued: rule-based routes by tool availability and question length.
+
+Next distinct families: average raw class logits before softmax; a small predeclared broad weight grid in one model-scoring pass; disagreement-specific routing; input-conditioned mixtures that use tool count and question length jointly; diverse existing encoder-family plus Qwen fusion; and hard-vote or rank-vote variants. Revisit temperature calibration or learned stacking only if we establish a clean calibration split unseen by every fixed member. If the remaining fixed ensemble families plateau, prioritize Qwen SFT data construction and source-mixture experiments, then return to ensemble scoring with the improved model. This is an ordered exploration queue, not a stop rule.

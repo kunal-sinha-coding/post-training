@@ -1,10 +1,10 @@
 {
-  "status": "awaiting_codex_planning",
+  "status": "active",
   "planning_owner": "codex_primary",
-  "planning_required": true,
+  "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "existing_frozen_encoder_llm_comparison_v1",
-  "current_hypothesis": "Adaptive expert weighting by predictive entropy or top-two margin may retain more encoder complementarity than a fixed class route or 25/75 blend. Compare both continuous weighting rules and a fixed high-margin encoder override with equal averaging and entropy gate.",
+  "current_hypothesis": "Visible task type may identify regions where the encoder or Qwen SFT is more accurate. Compare fixed routes by tool availability and question length against probability averaging and entropy gating.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -19,7 +19,34 @@
     "--output-dir",
     "outputs/existing-when2call-single-adaptive-test-20261025"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.existing_when2call_hybrid",
+      "prepare",
+      "--suite",
+      "single-rules",
+      "--work-dir",
+      "outputs/existing-when2call-single-rules-20261025",
+      "--output-dir",
+      "outputs/existing-when2call-single-rules-prepare-20261025"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.existing_when2call_hybrid",
+      "test",
+      "--suite",
+      "single-rules",
+      "--work-dir",
+      "outputs/existing-when2call-single-rules-20261025",
+      "--output-dir",
+      "outputs/existing-when2call-single-rules-test-20261025"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -46,21 +73,28 @@
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
   "last_heartbeat": "2026-10-25T01:55:45.880351+00:00",
-  "last_action": "Watchdog handed planning control to the primary Codex process.",
+  "last_action": "Recorded the adaptive fusion results and queued four predeclared input type routing rules in one aggregate evaluation.",
   "watchdog_enabled": true,
-  "research_log_size": 779435,
+  "research_log_size": 780329,
   "stop_command": "STOP",
-  "next_experiment": null,
-  "recording_jobs": [
-    {
-      "pid": 17839,
-      "experiment_id": "existing-when2call-single-adaptive-test-20261025"
-    }
+  "next_experiment": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "prepare",
+    "--suite",
+    "single-rules",
+    "--work-dir",
+    "outputs/existing-when2call-single-rules-20261025",
+    "--output-dir",
+    "outputs/existing-when2call-single-rules-prepare-20261025"
   ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-25T02:03:19.627097+00:00",
-  "planning_ack_deadline": "2026-10-25T02:05:19.627121+00:00",
-  "planning_attempts": 1,
+  "planning_ack_deadline": null,
+  "planning_attempts": 0,
   "best_observed_test": {
     "method": "single_average",
     "accuracy": 0.6946878422782037,
