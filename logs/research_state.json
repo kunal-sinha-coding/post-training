@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "existing_frozen_encoder_llm_comparison_v1",
-  "current_hypothesis": "The explicit tool_call Glaive mixture gave promising clean preference validation at the 500 and 250 requested-decision settings. The loader first samples non-direct Glaive decision points and then filters to tool_call, so 500 requested points yielded 238 training calls and 59 held-out calls, while 1,000 yielded 465 and 116. Test a much larger sample at 2,000 and 5,000 requested decision points to see whether more in-domain-adjacent call examples improve clean preference validation. Use the same sampling seed and fixed preference split; report Glaive validation separately. Test metrics remain aggregate-only reports and do not guide selection.",
+  "current_hypothesis": "The user asked for one epoch over all eligible non-direct Glaive assistant decision points, with a saved intermediate adapter every 2,000 optimizer steps. At each checkpoint, record a fixed 1,000-example training probe, clean preference validation, a fixed Glaive validation sample, and an isolated aggregate-only official test evaluation. Select the best checkpoint only by merged clean validation accuracy; test metrics are report-only.",
   "active_experiment": {
     "pid": 55569,
     "command": [
@@ -91,6 +91,43 @@
       "4096",
       "--batch-size",
       "1"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_glaive_mix",
+      "--output-dir",
+      "outputs/qwen-when2call-qwen25-15b-pref-full-glaive-all-nondirect-ckpt2k-seed20261045",
+      "--model",
+      "Qwen/Qwen2.5-1.5B-Instruct",
+      "--glaive-sample",
+      "1000000",
+      "--glaive-label",
+      "all",
+      "--seed",
+      "20261045",
+      "--split-seed",
+      "20261029",
+      "--epochs",
+      "1",
+      "--batch-size",
+      "1",
+      "--max-length",
+      "4096",
+      "--learning-rate",
+      "2e-5",
+      "--weight-decay",
+      "0.01",
+      "--lora-rank",
+      "16",
+      "--checkpoint-eval-steps",
+      "2000",
+      "--checkpoint-glaive-validation-size",
+      "1000",
+      "--train-metrics-sample-size",
+      "1000",
+      "--checkpoint-test-evaluation"
     ],
     [
       "python",
@@ -257,6 +294,7 @@
   ],
   "experiment_queue": [
     "Candidate A: fixed 500 explicit tool_call Glaive and 750 train_sft samples; weight decay 0.05, LoRA rank 16. Compare to the existing 0.01/rank-16 run using the same sampling seed. Record training, preference/Glaive/SFT clean validation, then aggregate-only test.",
+    "After the active regularization candidate test, train Qwen2.5-1.5B on all eligible non-direct Glaive decision points plus full train_pref. Save and evaluate every 2,000 optimizer steps using a fixed training probe, clean preference validation, and fixed Glaive validation; run an isolated aggregate-only black-box test at each checkpoint. Select checkpoints only by clean validation.",
     "Candidate A aggregate-only test, only after training and clean validation are complete.",
     "Candidate B: same fixed data and seed; weight decay 0.01, LoRA rank 8. Compare to existing rank-16 run. Record training, preference/Glaive/SFT clean validation, then aggregate-only test.",
     "Candidate B aggregate-only test, only after training and clean validation are complete.",
@@ -270,7 +308,7 @@
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
   "last_heartbeat": "2026-10-25T17:13:02.667474+00:00",
-  "last_action": "Appended larger Glaive tool_call dose candidates at 2,000 and 5,000 sampled decisions, each followed by its aggregate-only test command; existing regularization experiments retain priority.",
+  "last_action": "Prepared full-data Glaive training with validation and aggregate-only black-box test at every 2,000-step checkpoint; inserted it immediately after the active candidate test.",
   "watchdog_enabled": true,
   "research_log_size": 841845,
   "stop_command": "STOP",
@@ -321,5 +359,5 @@
     "wandb_run_id": "0m0zb20q",
     "selection": "Best observed result among four methods frozen before this benchmark measurement. This does not establish independent generalization."
   },
-  "next_hypothesis": "If clean preference validation improves at 2,000 or 5,000 sampled decisions, test an intermediate dose using validation-based selection. If it declines, inspect source-specific validation and Glaive label composition before changing dose further. Do not use aggregate test scores or test labels for selection."
+  "next_hypothesis": "If full Glaive training validation improves and remains stable, compare the validation-selected checkpoint with the current best SFT candidate. Keep all checkpoint test results report-only and do not use test labels or scores for checkpoint selection."
 }

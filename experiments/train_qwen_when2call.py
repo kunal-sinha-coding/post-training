@@ -163,14 +163,14 @@ def write_heartbeat(path: Path, phase: str, step: int = 0) -> None:
     temporary.replace(path)
 
 
-def train_epoch(model: object, tokenizer: object, rows: list[ClassificationRow], label_ids: list[int], objective: str, device: torch.device, optimizer: object, max_length: int, batch_size: int, beta: float, seed: int, heartbeat_path: Path) -> float:
+def train_epoch(model: object, tokenizer: object, rows: list[ClassificationRow], label_ids: list[int], objective: str, device: torch.device, optimizer: object, max_length: int, batch_size: int, beta: float, seed: int, heartbeat_path: Path, step_callback: object | None = None, step_offset: int = 0) -> float:
     """Run one objective-specific training epoch and return mean loss."""
     # Shuffle only training rows and optimize the selected action objective in small memory-safe batches.
     model.train()
     order = list(rows)
     random.Random(seed).shuffle(order)
     losses = []
-    for start in range(0, len(order), batch_size):
+    for batch_index, start in enumerate(range(0, len(order), batch_size), start=1):
         write_heartbeat(heartbeat_path, "training", start)
         batch = order[start:start + batch_size]
         optimizer.zero_grad(set_to_none=True)
@@ -198,6 +198,10 @@ def train_epoch(model: object, tokenizer: object, rows: list[ClassificationRow],
         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
         optimizer.step()
         losses.append(float(loss.detach().cpu()))
+        # Run the optional checkpoint callback after each completed optimizer update.
+        if step_callback is not None:
+            step_callback(step_offset + batch_index)
+            model.train()
     return sum(losses) / max(1, len(losses))
 
 
