@@ -21,6 +21,7 @@ from experiments.clean_validation_when2call_source_mix import load_bfcl_examples
 from experiments.existing_when2call_hybrid import ENCODERS, QWEN, QWEN_BASE, encoder_logits
 from experiments.train_qwen_when2call import ClassificationRow, label_token_ids, load_model, make_prompt, score_rows, write_heartbeat
 from experiments.train_when2call_jina import LABELS, Example, metric_values, prepare_train_examples
+import experiments.train_when2call_jina as jina_training
 
 
 def aggregate(labels: torch.Tensor, logits: torch.Tensor) -> dict[str, float]:
@@ -82,6 +83,7 @@ def main() -> int:
         train_indices = torch.tensor([index for index, item in enumerate(pairs) if item[2] == "train" and item[0].label < 3], dtype=torch.long)
         validation_indices = torch.tensor([index for index, item in enumerate(pairs) if item[2] == "validation"], dtype=torch.long)
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        jina_training.MAX_LENGTH = 4096
         args.output_dir.mkdir(parents=True, exist_ok=True)
         write_heartbeat(args.output_dir / "heartbeat.json", "encoder-scoring")
         encoder = encoder_logits(ENCODERS[2], examples, args, device).softmax(-1)
@@ -106,9 +108,11 @@ def main() -> int:
         stacker = torch.nn.Linear(features.shape[-1], 3)
         optimizer = torch.optim.AdamW(stacker.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay)
         train_x, train_y = features[train_indices], labels[train_indices]
+        class_counts = torch.bincount(train_y, minlength=3).float()
+        class_weights = (class_counts.mean() / class_counts).sqrt()
         for epoch in range(args.epochs):
             optimizer.zero_grad(set_to_none=True)
-            loss = torch.nn.functional.cross_entropy(stacker(train_x), train_y)
+            loss = torch.nn.functional.cross_entropy(stacker(train_x), train_y, weight=class_weights)
             loss.backward()
             optimizer.step()
             if epoch % 20 == 0:
@@ -141,7 +145,7 @@ def main() -> int:
             "meta_validation_examples": len(validation_indices),
             "meta_training_source_counts": {"train_sft": len(sft_train), "bfcl": len(bfcl_train)},
             "meta_validation_source_counts": {"train_sft": len(sft_validation), "bfcl": len(bfcl_validation)},
-            "training_configuration": {"epochs": args.epochs, "learning_rate": args.learning_rate, "weight_decay": args.weight_decay},
+            "training_configuration": {"epochs": args.epochs, "learning_rate": args.learning_rate, "weight_decay": args.weight_decay, "class_weights": class_weights.tolist()},
             "validation_metrics": results,
             "official_test_loaded": False,
         }
