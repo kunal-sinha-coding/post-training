@@ -8207,3 +8207,15 @@ This record was written automatically. Candidate selection must use clean valida
 The 1,000-decision explicit tool_call sample used Qwen2.5-1.5B-Instruct, 7,200 preference training examples and 465 filtered Glaive training examples. Training accuracy and macro F1 on 7,665 examples were 0.926810 and 0.695593. Clean preference validation on the fixed 1,800-example split was 0.906667 accuracy and 0.680433 macro F1. Glaive validation contained 116 tool_call-only examples, so its four-class macro F1 is not a cross-class comparison. Aggregate-only test metrics on 3,652 examples were 0.681818 accuracy and 0.502396 macro F1. Training, clean-validation, and test evidence are recorded in the artifacts and experiment records; test metrics are report-only.
 
 The 500-decision explicit-call candidate had stronger clean preference validation at 0.910000 accuracy and 0.682307 macro F1. The next hypothesis is that a 250-decision explicit-call sample may retain high-confidence tool-call coverage with less interference. The preference split stays fixed. Use clean validation only for candidate selection.
+
+## qwen-when2call-qwen25-15b-pref-full-glaive250-toolcall-seed20261037
+
+Timestamp: 2026-10-25T12:42:06.213653+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_glaive_mix", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--output-dir", "outputs/qwen-when2call-qwen25-15b-pref-full-glaive250-toolcall-seed20261037", "--glaive-sample", "250", "--glaive-label", "tool_call", "--seed", "20261037", "--split-seed", "20261029", "--epochs", "1", "--batch-size", "1", "--max-length", "4096", "--learning-rate", "2e-5", "--weight-decay", "0.01", "--lora-rank", "16"]. Output: /workspace/post-training/outputs/qwen-when2call-qwen25-15b-pref-full-glaive250-toolcall-seed20261037. W&B run: nwwfa2iv.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {"preference_validation_metrics": {"accuracy": 0.91, "macro_f1": 0.6831804088517784, "confusion_matrix": [[567, 12, 20, 0], [1, 523, 76, 0], [5, 47, 548, 0], [1, 0, 0, 0]], "examples": 1800}, "glaive_validation_metrics": {"accuracy": 1.0, "macro_f1": 0.25, "confusion_matrix": [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 31, 0], [0, 0, 0, 0]], "examples": 31}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

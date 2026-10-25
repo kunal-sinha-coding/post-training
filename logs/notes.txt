@@ -6842,3 +6842,5 @@ remove the file manually to continue.
 
 
 2026-10-25: The 1,000-decision explicit tool_call Glaive experiment has training, preference and Glaive clean validation, and aggregate test records. Its shared preference validation was 0.906667 accuracy and 0.680433 macro F1, below the 500-decision explicit-call candidate. Queue a 250-decision explicit-call dose to test whether the smaller source contribution improves clean validation. Test metrics are not used for selection.
+
+2026-10-25T12:42:09.173595+00:00: Commit `Record research experiment qwen-when2call-qwen25-15b-pref-full-glaive250-toolcall-seed20261037` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
