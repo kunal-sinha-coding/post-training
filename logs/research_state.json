@@ -367,5 +367,11 @@
     "wandb_run_id": "0m0zb20q",
     "selection": "Best observed result among four methods frozen before this benchmark measurement. This does not establish independent generalization."
   },
-  "next_hypothesis": "After all usable standalone sources have results, compare only the sources that improve clean preference validation accuracy and then test combinations."
+  "next_hypothesis": "After all usable standalone sources have results, compare only the sources that improve clean preference validation accuracy and then test combinations.",
+  "post_queue_report_required": {
+    "required": true,
+    "trigger": "After every queued standalone dataset trial is complete and before queueing mixtures.",
+    "contents": "Compare each source trial with the common starting adapter. Report clean validation and aggregate black-box test accuracy and macro F1, baseline deltas, sample and usable training-row counts, limitations, and whether any new data helped.",
+    "selection": "Use clean preference validation to identify helpful sources. Report aggregate test results only, with no individual test labels or outcomes."
+  }
 }
