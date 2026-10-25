@@ -16,6 +16,16 @@ Do not spend research budget on seed sweeps as if they were new methods. A diffe
 
 Queue visibility is mandatory. After every user message that gives research guidance, answer the user and print the complete current worker queue, in execution order, including the active command and every pending command. After every queue update, print the complete resulting queue to the user in the same response. If the queue is empty, state explicitly that it is empty and state whether a worker is active or whether the system is awaiting Codex planning. Do not summarize or omit commands. This rule applies before and after any queue mutation so the user can verify the exact state.
 
+## Current user direction for the October 25 restart
+
+Prioritize an ensemble of the existing trained Qwen adapter, the existing Qwen SFT adapter, and a Jina encoder. The initial trained adapter is Qwen2.5 0.5B RPO, unless the user selects RL or the original instruct model. The SFT member is Qwen2.5 1.5B SFT.
+
+The old Jina encoder saw all preference rows before the later validation split. Do not use that encoder to claim clean preference validation. Train a fresh upstream Jina encoder on the exact historical Qwen training partition. Exclude validation questions that also occur in that training partition. Keep the surviving validation questions fixed across members and methods.
+
+Compare three predeclared methods first. Use an equal probability blend, a minimum entropy confidence gate, and a regularized linear stacker. Fit the stacker on one validation half and compare all methods on the other half. Keep duplicate question groups in the same half. Freeze candidates before separate aggregate test measurements. Do not run a fine ensemble weight search.
+
+Preserve the output index order learned by the saved Qwen adapters. Their prompt text describes a different order from their historical training targets. Record this mismatch. Define macro F1 consistently across all members and report the absent class convention explicitly before comparing historical scores.
+
 ## 1. Hard Constraints
 
 ### Model size
