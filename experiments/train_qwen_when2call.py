@@ -17,7 +17,7 @@ from pathlib import Path
 
 import torch
 from datasets import load_dataset
-from peft import LoraConfig, get_peft_model
+from peft import LoraConfig, PeftModel, get_peft_model
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from experiments.train_when2call_jina import LABELS, LABEL_TO_ID, response_label, tools_text
@@ -88,8 +88,8 @@ def split_rows(rows: list[ClassificationRow], seed: int) -> tuple[list[Classific
     return train, development
 
 
-def load_model(model_name: str, device: torch.device, lora_rank: int) -> tuple[object, object]:
-    """Load a Qwen causal model and attach a small LoRA adapter."""
+def load_model(model_name: str, device: torch.device, lora_rank: int, adapter_checkpoint: str | None = None) -> tuple[object, object]:
+    """Load a Qwen causal model and attach or continue a LoRA adapter."""
     # Use bfloat16 and gradient checkpointing so the two-billion-parameter limit is also memory safe.
     dtype = torch.bfloat16 if device.type == "cuda" else torch.float32
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=False)
@@ -98,7 +98,10 @@ def load_model(model_name: str, device: torch.device, lora_rank: int) -> tuple[o
     model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=dtype, trust_remote_code=False).to(device)
     model.config.use_cache = False
     model.gradient_checkpointing_enable()
-    if lora_rank > 0:
+    if adapter_checkpoint:
+        # Continue training the saved preference adapter without replaying its training data.
+        model = PeftModel.from_pretrained(model, adapter_checkpoint, is_trainable=True)
+    elif lora_rank > 0:
         # Adapt attention and feed-forward projections while keeping the base model frozen.
         config = LoraConfig(r=lora_rank, lora_alpha=2 * lora_rank, lora_dropout=0.05, target_modules="all-linear", task_type="CAUSAL_LM")
         model = get_peft_model(model, config)
@@ -201,8 +204,10 @@ def train_epoch(model: object, tokenizer: object, rows: list[ClassificationRow],
         # Run the optional checkpoint callback after each completed optimizer update.
         if step_callback is not None:
             # Pass the optimizer loss so callers can record a live training curve.
-            step_callback(step_offset + batch_index, float(loss.detach().cpu()))
+            should_stop = step_callback(step_offset + batch_index, float(loss.detach().cpu()))
             model.train()
+            if should_stop:
+                break
     return sum(losses) / max(1, len(losses))
 
 
