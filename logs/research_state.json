@@ -6,33 +6,8 @@
   "protocol": "heterogeneous_fixed_question_holdout_v1",
   "current_hypothesis": "Qwen RPO 0.5B and Qwen SFT 1.5B may complement a fresh Jina classifier. Compare uniform probabilities, entropy gating, and a regularized stacker on fixed unseen question groups. Preserve trained adapter index semantics. Freeze every method before aggregate testing.",
   "active_experiment": {
-    "pid": 9259,
+    "pid": 9755,
     "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.heterogeneous_when2call",
-      "test-encoder",
-      "--work-dir",
-      "outputs/heterogeneous-when2call-20261025",
-      "--output-dir",
-      "outputs/heterogeneous-when2call-test-encoder-20261025"
-    ],
-    "started_at": "2026-10-25T00:51:10.175502+00:00"
-  },
-  "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.heterogeneous_when2call",
-    "test-encoder",
-    "--work-dir",
-    "outputs/heterogeneous-when2call-20261025",
-    "--output-dir",
-    "outputs/heterogeneous-when2call-test-encoder-20261025"
-  ],
-  "worker_queue": [
-    [
       "python",
       "-u",
       "-m",
@@ -43,6 +18,20 @@
       "--output-dir",
       "outputs/heterogeneous-when2call-selection-20261025"
     ],
+    "started_at": "2026-10-25T00:53:10.482785+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.heterogeneous_when2call",
+    "select",
+    "--work-dir",
+    "outputs/heterogeneous-when2call-20261025",
+    "--output-dir",
+    "outputs/heterogeneous-when2call-selection-20261025"
+  ],
+  "worker_queue": [
     [
       "python",
       "-u",
@@ -109,27 +98,22 @@
     "status": "historical scores are incomparable",
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
-  "last_heartbeat": "2026-10-25T00:51:10.175517+00:00",
-  "last_action": "Watchdog started validation worker pid 9259.",
+  "last_heartbeat": "2026-10-25T00:53:10.482798+00:00",
+  "last_action": "Watchdog started validation worker pid 9755.",
   "watchdog_enabled": true,
-  "research_log_size": 769750,
+  "research_log_size": 771313,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
     "-u",
     "-m",
     "experiments.heterogeneous_when2call",
-    "test-encoder",
+    "select",
     "--work-dir",
     "outputs/heterogeneous-when2call-20261025",
     "--output-dir",
-    "outputs/heterogeneous-when2call-test-encoder-20261025"
+    "outputs/heterogeneous-when2call-selection-20261025"
   ],
-  "recording_jobs": [
-    {
-      "pid": 9258,
-      "experiment_id": "heterogeneous-when2call-encoder-20261025"
-    }
-  ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a"
 }

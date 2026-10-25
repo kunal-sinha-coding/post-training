@@ -23374,3 +23374,110 @@ The original training summaries were recovered through the read-only W&B API. Th
     "limitation": "Original development partition before the new question overlap filter. Shared validation will be scored separately."
   }
 }
+
+## heterogeneous-when2call-test-encoder-20261025
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.heterogeneous_when2call",
+    "test-encoder",
+    "--work-dir",
+    "outputs/heterogeneous-when2call-20261025",
+    "--output-dir",
+    "outputs/heterogeneous-when2call-test-encoder-20261025"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "heterogeneous-when2call-test-encoder-20261025",
+  "failure_reason": null,
+  "metadata": {
+    "black_box": true,
+    "candidate": "encoder",
+    "checkpoint_sha256": "09aace1faad0ac2061becb801fa6abf33a8c1ede742fc41249d244d1d940f581",
+    "command": [
+      "/usr/local/bin/python",
+      "/workspace/post-training/experiments/heterogeneous_when2call.py",
+      "test-encoder",
+      "--work-dir",
+      "outputs/heterogeneous-when2call-20261025",
+      "--output-dir",
+      "outputs/heterogeneous-when2call-test-encoder-20261025"
+    ],
+    "configuration": {
+      "batch_size": 1,
+      "candidate": "uniform",
+      "epochs": 1,
+      "learning_rate": 1e-05,
+      "max_length": 2048,
+      "mode": "test-encoder",
+      "output_dir": "outputs/heterogeneous-when2call-test-encoder-20261025",
+      "work_dir": "outputs/heterogeneous-when2call-20261025"
+    },
+    "examples": 3652,
+    "git_commit": "8a903ebaf72e91cd4bc84e6d98115c8d402dcab0",
+    "labels": [
+      "cannot_answer",
+      "request_for_info",
+      "tool_call",
+      "direct"
+    ],
+    "members": [
+      {
+        "checkpoint": "outputs/qwen-when2call-rpo-05b-seed20261022",
+        "model": "Qwen/Qwen2.5-0.5B-Instruct",
+        "name": "rpo"
+      },
+      {
+        "checkpoint": "outputs/qwen-when2call-sft-15b-seed20261022",
+        "model": "Qwen/Qwen2.5-1.5B-Instruct",
+        "name": "sft"
+      }
+    ],
+    "metric_definition": "Macro F1 includes all four classes.",
+    "metrics": {
+      "accuracy": 0.5150602409638554,
+      "macro_f1": 0.38017244624352736
+    },
+    "result": {
+      "black_box": true,
+      "candidate": "encoder",
+      "checkpoint_sha256": "09aace1faad0ac2061becb801fa6abf33a8c1ede742fc41249d244d1d940f581",
+      "examples": 3652,
+      "metric_definition": "Macro F1 includes all four classes.",
+      "metrics": {
+        "accuracy": 0.5150602409638554,
+        "macro_f1": 0.38017244624352736
+      },
+      "selection_complete": true,
+      "test_measurement_only": true
+    },
+    "runtime_seconds": 56.35110855102539,
+    "selection_complete": true,
+    "status": "completed",
+    "test_measurement_only": true,
+    "wandb_run_id": "rpyhutbi",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/rpyhutbi"
+  },
+  "metrics_path": "/workspace/post-training/outputs/heterogeneous-when2call-test-encoder-20261025/metrics.json",
+  "official_test_loaded": true,
+  "official_test_metrics": {
+    "accuracy": 0.5150602409638554,
+    "macro_f1": 0.38017244624352736
+  },
+  "output_dir": "/workspace/post-training/outputs/heterogeneous-when2call-test-encoder-20261025",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-25T00:51:10.175502+00:00",
+  "status": "completed",
+  "test_status": "measured",
+  "timestamp": "2026-10-25T00:53:10.529996+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "rpyhutbi",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/rpyhutbi"
+}
+```

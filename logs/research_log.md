@@ -7641,3 +7641,15 @@ Clean development accuracy: 0.7288776796973518. Clean development macro F1: 0.55
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## heterogeneous-when2call-test-encoder-20261025
+
+Timestamp: 2026-10-25T00:53:10.529996+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.heterogeneous_when2call", "test-encoder", "--work-dir", "outputs/heterogeneous-when2call-20261025", "--output-dir", "outputs/heterogeneous-when2call-test-encoder-20261025"]. Output: /workspace/post-training/outputs/heterogeneous-when2call-test-encoder-20261025. W&B run: rpyhutbi.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: True. Test status: measured. Official test metrics: {"accuracy": 0.5150602409638554, "macro_f1": 0.38017244624352736}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

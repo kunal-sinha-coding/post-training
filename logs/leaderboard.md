@@ -933,3 +933,6 @@ Historical official test results remain detailed in [research_log.md](research_l
 | Candidate | clean-validation-when2call-pref6000-bfcl-simple-multiple-750-seed20261064 | — | — | [metrics](/workspace/post-training/outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-750-seed20261064/metrics.json) | failed_or_incomplete |
 | Candidate | clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065 | — | — | [metrics](/workspace/post-training/outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065/metrics.json) | failed_or_incomplete |
 | Candidate | heterogeneous-when2call-encoder-20261025 | 0.7288776796973518 | 0.5531984106517907 | [metrics](/workspace/post-training/outputs/heterogeneous-when2call-encoder-20261025/metrics.json) | completed |
+| Candidate | heterogeneous-when2call-test-encoder-20261025 | — | — | [metrics](/workspace/post-training/outputs/heterogeneous-when2call-test-encoder-20261025/metrics.json) | completed |
+
+| heterogeneous-when2call-test-encoder-20261025 | 0.5150602409638554 | 0.38017244624352736 | rpyhutbi | Aggregate-only frozen test measurement |
