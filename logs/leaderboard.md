@@ -1120,3 +1120,6 @@ The held-out train_sft validation comparison used 3,001 examples.
 | Request route, confidence at least 0.80 | 0.948017 | 0.645030 | 0.682913 | 0.510368 |
 
 Confidence filtering did not recover the benchmark performance. Equal averaging remains best on test. The source-domain validation gain should not be treated as benchmark generalization.
+
+
+The SFT source contains 15,000 rows but only one inferred `direct` response and no `tool_call` responses. A stacker trained on that source alone would miss a benchmark action class. The next meta-training experiment adds a clean BFCL call-only holdout that was excluded from the encoder's own training partition. It keeps a disjoint part of each source for validation.
