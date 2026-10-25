@@ -18,13 +18,13 @@ Queue visibility is mandatory. After every user message that gives research guid
 
 ## Current user direction for the October 25 restart
 
-Prioritize an ensemble of the existing trained Qwen adapter, the existing Qwen SFT adapter, and a Jina encoder. The initial trained adapter is Qwen2.5 0.5B RPO, unless the user selects RL or the original instruct model. The SFT member is Qwen2.5 1.5B SFT.
+The user clarified that the next research must combine the best existing trained encoder and LLM approaches. Do not start by training a fresh encoder or including a weaker RPO model. Reuse Qwen2.5 1.5B SFT as the LLM member. Compare the best single Jina checkpoint at seed 20261048 and the existing three-Jina approach at seeds 20261065, 20261061, and 20261048.
 
-The old Jina encoder saw all preference rows before the later validation split. Do not use that encoder to claim clean preference validation. Train a fresh upstream Jina encoder on the exact historical Qwen training partition. Exclude validation questions that also occur in that training partition. Keep the surviving validation questions fixed across members and methods.
+Preserve the existing three-Jina weighted logit combination with weights 0.35625, 0.1375, and 0.50625. Treat that complete approach as one encoder expert. Compare equal probability averaging and minimum entropy gating between the encoder expert and Qwen SFT. Freeze all four combinations before one shared aggregate-only test pass. Reuse each model forward pass to measure the baselines and combined methods. Do not run separate standalone model jobs for this comparison.
 
-Compare three predeclared methods first. Use an equal probability blend, a minimum entropy confidence gate, and a regularized linear stacker. Fit the stacker on one validation half and compare all methods on the other half. Keep duplicate question groups in the same half. Freeze candidates before separate aggregate test measurements. Do not run a fine ensemble weight search.
+The old Jina encoders saw all preference rows before the later validation split. Do not claim that preference partition is clean validation for these frozen encoders. Do not fit weights, a router, or calibration parameters on those labels. The first comparison uses fixed rules and requires no fitted parameters. Record the validation limitation explicitly. Investigate a genuinely unseen validation source before any later learned combination.
 
-Preserve the output index order learned by the saved Qwen adapters. Their prompt text describes a different order from their historical training targets. Record this mismatch. Define macro F1 consistently across all members and report the absent class convention explicitly before comparing historical scores.
+Preserve the output index order learned by the saved Qwen adapters. Their prompt text describes a different order from their historical training targets. Define all new macro F1 values consistently across four classes and report the present-class diagnostic separately. Do not compare historical encoder and Qwen macro F1 values without accounting for their different absent-class conventions.
 
 ## 1. Hard Constraints
 

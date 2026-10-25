@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "heterogeneous_fixed_question_holdout_v1",
-  "current_hypothesis": "Qwen RPO 0.5B and Qwen SFT 1.5B may complement a fresh Jina classifier. Compare uniform probabilities, entropy gating, and a regularized stacker on fixed unseen question groups. Preserve trained adapter index semantics. Freeze every method before aggregate testing.",
+  "current_hypothesis": "User clarified that research must combine the best EXISTING trained encoder and LLM approaches. Use Qwen SFT 1.5B with Jina checkpoint48 or the historical weighted Jina65/61/48 approach. Predeclare probability averaging and entropy gating. No fresh encoder or RPO in the initial comparison.",
   "active_experiment": {
     "pid": 9755,
     "command": [
@@ -31,47 +31,7 @@
     "--output-dir",
     "outputs/heterogeneous-when2call-selection-20261025"
   ],
-  "worker_queue": [
-    [
-      "python",
-      "-u",
-      "-m",
-      "experiments.heterogeneous_when2call",
-      "test",
-      "--work-dir",
-      "outputs/heterogeneous-when2call-20261025",
-      "--output-dir",
-      "outputs/heterogeneous-when2call-test-uniform-20261025",
-      "--candidate",
-      "uniform"
-    ],
-    [
-      "python",
-      "-u",
-      "-m",
-      "experiments.heterogeneous_when2call",
-      "test",
-      "--work-dir",
-      "outputs/heterogeneous-when2call-20261025",
-      "--output-dir",
-      "outputs/heterogeneous-when2call-test-gate-20261025",
-      "--candidate",
-      "gate"
-    ],
-    [
-      "python",
-      "-u",
-      "-m",
-      "experiments.heterogeneous_when2call",
-      "test",
-      "--work-dir",
-      "outputs/heterogeneous-when2call-20261025",
-      "--output-dir",
-      "outputs/heterogeneous-when2call-test-stacker-20261025",
-      "--candidate",
-      "stacker"
-    ]
-  ],
+  "worker_queue": [],
   "_previous_command": [
     "python",
     "-u",
@@ -89,17 +49,16 @@
     "outputs/test-clean-validation-smooth0075-wd002-weight75-25.json"
   ],
   "experiment_queue": [
-    "Complete fresh encoder training and its frozen standalone test.",
-    "Compare three distinct heterogeneous ensemble methods on the fixed validation partition.",
-    "Measure each frozen viable method once with the aggregate-only evaluator.",
-    "Inspect validation errors and choose a distinct follow-up mechanism. No fine weight sweep."
+    "Freeze existing Qwen SFT 1.5B plus best single Jina and best Jina ensemble with two fixed combination rules.",
+    "Measure all four frozen combinations in one aggregate-only test pass with shared baseline predictions.",
+    "Analyze completed aggregate results and plan a distinct follow-up method."
   ],
   "best_validation": {
     "status": "historical scores are incomparable",
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
   "last_heartbeat": "2026-10-25T00:53:10.482798+00:00",
-  "last_action": "Watchdog started validation worker pid 9755.",
+  "last_action": "Primary Codex removed the three unstarted fresh-encoder ensemble tests after explicit user scope correction. The already running validation worker is left alive. Primary Codex is implementing existing-checkpoint comparisons.",
   "watchdog_enabled": true,
   "research_log_size": 771313,
   "stop_command": "STOP",
