@@ -1,7 +1,7 @@
 """Supervise the 30-second validation watchdog and restart it after failures.
 
 The flow holds one supervisor lock, adopts only a live matching watchdog, checks its log heartbeat,
-and restarts only the watchdog after exit or a stale heartbeat without terminating experiment workers.
+writes supervisor heartbeats, and restarts only the watchdog without terminating experiment workers.
 """
 from __future__ import annotations
 
@@ -79,9 +79,15 @@ def supervise(repo: Path) -> None:
                 process = subprocess.Popen(command, cwd=repo, stdout=output, stderr=subprocess.STDOUT, start_new_session=True)
             pid = process.pid
         started_at = time.time()
+        last_heartbeat = started_at - 30
 
         # Restart a stale watchdog only after confirming its exact identity again.
         while is_watchdog(pid):
+            # Record supervisor health every thirty seconds while the watchdog remains alive.
+            now = time.time()
+            if now - last_heartbeat >= 30:
+                write_log(log_path, f"supervisor heartbeat watchdog_pid={pid}")
+                last_heartbeat = now
             if watchdog_stale(heartbeat_path, started_at):
                 write_log(log_path, f"watchdog heartbeat stale pid={pid}; restarting watchdog only")
                 if is_watchdog(pid):

@@ -58,3 +58,25 @@ def test_watchdog_stale_log_has_startup_grace(tmp_path):
 def test_supervisor_requires_exact_watchdog_process():
     with patch.object(supervisor, "process_alive", return_value=True), patch.object(Path, "read_bytes", return_value=b"bash\0-c\0python -u -m experiments.validation_watchdog\0"):
         assert not supervisor.is_watchdog(123)
+
+
+# Write periodic supervisor heartbeats without restarting a healthy watchdog.
+def test_supervisor_heartbeat_preserves_healthy_watchdog(tmp_path):
+    clock = [0]
+
+    # Advance a simulated clock and end the infinite monitor after two heartbeat intervals.
+    def advance(seconds):
+        clock[0] += seconds
+        if clock[0] >= 65:
+            raise StopIteration
+
+    with patch.object(supervisor, "existing_watchdog", return_value=123), patch.object(supervisor, "is_watchdog", return_value=True), patch.object(supervisor, "watchdog_stale", return_value=False), patch.object(supervisor.time, "time", side_effect=lambda: clock[0]), patch.object(supervisor.time, "sleep", side_effect=advance), patch.object(supervisor.subprocess, "Popen") as launch, patch.object(supervisor.os, "kill") as kill:
+        try:
+            supervisor.supervise(tmp_path)
+        except StopIteration:
+            pass
+    log = (tmp_path / "logs/validation_supervisor.log").read_text()
+    assert log.count("supervisor heartbeat watchdog_pid=123") == 3
+    assert "watchdog exited" not in log
+    launch.assert_not_called()
+    kill.assert_not_called()
