@@ -7917,3 +7917,15 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## existing-when2call-stacker-20261025
+
+Timestamp: 2026-10-25T03:17:35.551607+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_existing_when2call_stacker", "--output-dir", "outputs/existing-when2call-stacker-20261025", "--holdout-seed", "20261026", "--meta-split-seed", "20261027", "--bfcl-source-seed", "20261051", "--batch-size", "1"]. Output: /workspace/post-training/outputs/existing-when2call-stacker-20261025. W&B run: ah51fjux.
+
+Clean development accuracy: 0.9454209065679926. Clean development macro F1: 0.6801146933103491. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

@@ -5,38 +5,9 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "existing_frozen_encoder_llm_comparison_v1",
   "current_hypothesis": "Probability averaging improves benchmark accuracy, but fixed routes and pooling alternatives do not. A linear meta-classifier trained on independent SFT and encoder-held-out BFCL predictions may learn when each expert is reliable.",
-  "active_experiment": {},
-  "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.existing_when2call_hybrid",
-    "test",
-    "--suite",
-    "single-request-confidence",
-    "--work-dir",
-    "outputs/existing-when2call-single-request-confidence-20261025",
-    "--output-dir",
-    "outputs/existing-when2call-single-request-confidence-test-20261025"
-  ],
-  "worker_queue": [
-    [
-      "python",
-      "-u",
-      "-m",
-      "experiments.train_existing_when2call_stacker",
-      "--output-dir",
-      "outputs/existing-when2call-stacker-20261025",
-      "--holdout-seed",
-      "20261026",
-      "--meta-split-seed",
-      "20261027",
-      "--bfcl-source-seed",
-      "20261051",
-      "--batch-size",
-      "1"
-    ],
-    [
+  "active_experiment": {
+    "pid": 26266,
+    "command": [
       "python",
       "-u",
       "-m",
@@ -49,6 +20,22 @@
       "--output-dir",
       "outputs/existing-when2call-single-stacker-prepare-20261025"
     ],
+    "started_at": "2026-10-25T03:17:35.467358+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "prepare",
+    "--suite",
+    "single-stacker",
+    "--work-dir",
+    "outputs/existing-when2call-single-stacker-20261025",
+    "--output-dir",
+    "outputs/existing-when2call-single-stacker-prepare-20261025"
+  ],
+  "worker_queue": [
     [
       "python",
       "-u",
@@ -88,8 +75,8 @@
     "status": "historical scores are incomparable",
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
-  "last_heartbeat": "2026-10-25T02:56:17.672673+00:00",
-  "last_action": "Queued source-clean linear stacker training and validation, then frozen preparation and official aggregate test evaluation.",
+  "last_heartbeat": "2026-10-25T03:17:35.467372+00:00",
+  "last_action": "Watchdog started validation worker pid 26266.",
   "watchdog_enabled": true,
   "research_log_size": 793618,
   "stop_command": "STOP",
@@ -97,19 +84,21 @@
     "python",
     "-u",
     "-m",
-    "experiments.train_existing_when2call_stacker",
+    "experiments.existing_when2call_hybrid",
+    "prepare",
+    "--suite",
+    "single-stacker",
+    "--work-dir",
+    "outputs/existing-when2call-single-stacker-20261025",
     "--output-dir",
-    "outputs/existing-when2call-stacker-20261025",
-    "--holdout-seed",
-    "20261026",
-    "--meta-split-seed",
-    "20261027",
-    "--bfcl-source-seed",
-    "20261051",
-    "--batch-size",
-    "1"
+    "outputs/existing-when2call-single-stacker-prepare-20261025"
   ],
-  "recording_jobs": [],
+  "recording_jobs": [
+    {
+      "pid": 26265,
+      "experiment_id": "existing-when2call-stacker-20261025"
+    }
+  ],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-25T03:10:34.541254+00:00",
   "planning_ack_deadline": "2026-10-25T03:12:34.541276+00:00",

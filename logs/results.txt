@@ -38564,3 +38564,163 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/bgzbop64"
 }
 ```
+
+## existing-when2call-stacker-20261025
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.train_existing_when2call_stacker",
+    "--output-dir",
+    "outputs/existing-when2call-stacker-20261025",
+    "--holdout-seed",
+    "20261026",
+    "--meta-split-seed",
+    "20261027",
+    "--bfcl-source-seed",
+    "20261051",
+    "--batch-size",
+    "1"
+  ],
+  "development_metrics": {
+    "accuracy": 0.9454209065679926,
+    "macro_f1": 0.6801146933103491
+  },
+  "exit_code": "unknown",
+  "experiment_id": "existing-when2call-stacker-20261025",
+  "failure_reason": null,
+  "metadata": {
+    "bfcl_source_seed": 20261051,
+    "class_order": [
+      "cannot_answer",
+      "request_for_info",
+      "tool_call"
+    ],
+    "coefficients": [
+      [
+        1.3797250986099243,
+        -1.3060978651046753,
+        -2.316080331802368,
+        3.6601855754852295,
+        1.2883132696151733,
+        -1.5640060901641846,
+        -0.9725291132926941,
+        -2.6128652095794678
+      ],
+      [
+        -1.3569531440734863,
+        1.912569522857666,
+        -2.298889636993408,
+        5.867583274841309,
+        -1.3602607250213623,
+        1.1097689867019653,
+        0.27529987692832947,
+        -6.251662254333496
+      ],
+      [
+        -1.6987446546554565,
+        -2.0570459365844727,
+        2.3167531490325928,
+        -5.047191143035889,
+        -0.7811444997787476,
+        -0.23588672280311584,
+        0.566649317741394,
+        4.482108116149902
+      ]
+    ],
+    "development_metrics": {
+      "accuracy": 0.9454209065679926,
+      "macro_f1": 0.6801146933103491
+    },
+    "feature_order": [
+      "encoder_probability_cannot_answer",
+      "encoder_probability_request_for_info",
+      "encoder_probability_tool_call",
+      "encoder_probability_direct",
+      "qwen_probability_cannot_answer",
+      "qwen_probability_request_for_info",
+      "qwen_probability_tool_call",
+      "qwen_probability_direct"
+    ],
+    "fit_sources": [
+      "nvidia/When2Call train_sft holdout",
+      "encoder-held-out BFCL call-only partition"
+    ],
+    "git_commit": "3ac986ee24728e9a91b125c2d919a0bac88e83f1",
+    "holdout_seed": 20261026,
+    "intercepts": [
+      1.1698185205459595,
+      1.1590837240219116,
+      -1.0910862684249878
+    ],
+    "meta_split_seed": 20261027,
+    "meta_training_examples": 2193,
+    "meta_training_source_counts": {
+      "bfcl": 183,
+      "train_sft": 2010
+    },
+    "meta_validation_examples": 1081,
+    "meta_validation_source_counts": {
+      "bfcl": 90,
+      "train_sft": 991
+    },
+    "official_test_loaded": false,
+    "runtime_seconds": 313.0763773918152,
+    "status": "completed",
+    "train_metrics": {
+      "accuracy": 0.9530323757409941,
+      "macro_f1": 0.9202656071989841
+    },
+    "training_configuration": {
+      "class_weights": [
+        0.8511637449264526,
+        0.8545581698417664,
+        1.9986333847045898
+      ],
+      "epochs": 200,
+      "learning_rate": 0.05,
+      "weight_decay": 0.01
+    },
+    "validation_metrics": {
+      "average_train": {
+        "accuracy": 0.9361605107159142,
+        "macro_f1": 0.8817979290537338
+      },
+      "average_validation": {
+        "accuracy": 0.9287696577243293,
+        "macro_f1": 0.6580386119257087
+      },
+      "stacker_train": {
+        "accuracy": 0.9530323757409941,
+        "macro_f1": 0.9202656071989841
+      },
+      "stacker_validation": {
+        "accuracy": 0.9454209065679926,
+        "macro_f1": 0.6801146933103491
+      }
+    },
+    "wandb_run_id": "ah51fjux",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/ah51fjux"
+  },
+  "metrics_path": "/workspace/post-training/outputs/existing-when2call-stacker-20261025/metrics.json",
+  "official_test_loaded": false,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/existing-when2call-stacker-20261025",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-25T03:11:34.894411+00:00",
+  "status": "completed",
+  "test_status": "not measured",
+  "timestamp": "2026-10-25T03:17:35.551607+00:00",
+  "train_metrics": {
+    "accuracy": 0.9530323757409941,
+    "macro_f1": 0.9202656071989841
+  },
+  "wandb_run_id": "ah51fjux",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/ah51fjux"
+}
+```
