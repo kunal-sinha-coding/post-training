@@ -1050,3 +1050,6 @@ Rules used only visible question and tool fields. Accuracy ranks these explorato
 
 No input-feature route beat the equal average.
 | Candidate | existing-when2call-single-pool-grid-prepare-20261025 | — | — | [metrics](/workspace/post-training/outputs/existing-when2call-single-pool-grid-prepare-20261025/metrics.json) | completed |
+| Candidate | existing-when2call-single-pool-grid-test-20261025 | — | — | [metrics](/workspace/post-training/outputs/existing-when2call-single-pool-grid-test-20261025/metrics.json) | completed |
+
+| existing-when2call-single-pool-grid-test-20261025 | 0.6946878422782037 | 0.5157041428790551 | sebdx3l3 | Aggregate-only frozen test measurement |
