@@ -50762,3 +50762,7 @@ Setup: Fresh Qwen 2.5 1.5B base, all 9,000 When2Call `train_pref` rows, LoRA ran
 | 4 | 0.9860 / 0.7395 | 0.9280 / 0.4774 | 0.6544 / 0.4680 |
 
 Training stopped after the epoch-4 validation-accuracy decline. The best clean validation checkpoint is epoch 3 at 0.9420 accuracy and 0.4834 macro F1. The training probe kept improving while validation accuracy fell by 1.4 percentage points at epoch 4. The validation sample has no tool-call rows and one direct-answer row. Test results are aggregate-only and were not used for stopping or selection.
+
+
+Weight-decay 0.05 full-pool run interrupted before evaluation, 2026-10-26
+The user requested stopping this run and clearing the queue. PID 112168 was stopped with a last heartbeat of training step 1691. An epoch-01 adapter directory exists, but no training evaluation, clean-validation result, or aggregate black-box test metric was saved. The incomplete run is excluded from rankings.

@@ -8620,3 +8620,10 @@ This record was written automatically. Candidate selection must use clean valida
 The fresh-base run used all 9,000 preference rows and stopped after epoch 4 failed to improve clean validation accuracy. The best validation result was epoch 3 at 0.9420 accuracy and 0.4834 macro F1 on a 500-row independent `train_sft` sample. The 500-row training probe accuracy rose from 0.9280 to 0.9860. Validation accuracy rose through epoch 3 and then fell to 0.9280. The full 3,652-row aggregate test metrics were reported each epoch and were not used for selection. The validation set has no tool-call rows and one direct-answer row.
 
 Next hypotheses test whether stronger weight decay or a lower learning rate reduces the train-validation gap. Each candidate starts from the same fresh base, uses the same data, seed, capped train and validation samples, full black-box test, and validation-based stopping.
+
+
+## Stop regularization run and start full-pool ensemble screening, 2026-10-26
+
+The user requested stopping the active weight-decay 0.05 run and clearing its pending queue before continuing. The trainer (PID 112168), watchdog (PID 94584), and supervisor (PID 94549) were stopped. Its last heartbeat reported phase `training`, step 1691. An `epoch-01` adapter directory exists, but no `metrics.json` or evaluation metrics were recorded, so this is logged as interrupted and is not ranked.
+
+The new first experiment screens encoder fusion with the full When2Call Qwen checkpoint that scored 0.702355 aggregate test accuracy at epoch 2. It evaluates fixed probability blends, confidence and disagreement rules, class-specific routes, and visible-input routes on a deterministic stratified clean `train_sft` sample capped at 500 examples. The official test split is not loaded in this screening step. Clean validation selects the candidate for a later aggregate-only test measurement.

@@ -7,8 +7,10 @@ only aggregate metrics. It never loads the official test split or writes row out
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
+import random
 from pathlib import Path
 import subprocess
 import time
@@ -16,10 +18,14 @@ import time
 import torch
 
 from experiments.clean_validation_baseline import load_sft_training_rows, split_examples
+from experiments.heterogeneous_when2call import artifact_digest
 from experiments.existing_when2call_hybrid import (
     DISAGREE_METHODS,
     POOL_GRID_METHODS,
     REQUEST_CONFIDENCE_METHODS,
+    RULE_METHODS,
+    RULES,
+    input_route_mask,
     encoder_logits,
     hybrid_probabilities,
 )
@@ -44,8 +50,27 @@ def evaluate(args: argparse.Namespace, run: object) -> dict:
     rows = list(load_sft_training_rows())
     examples = prepare_train_examples(rows)
     _, development = split_examples(examples, 0.2, args.split_seed)
+    # Keep the clean validation measurement within the project evaluation sample cap.
+    if len(development) > args.max_validation_examples:
+        grouped = {label: [] for label in range(len(LABELS))}
+        for item in development:
+            grouped[item.label].append(item)
+        rng = random.Random(args.sample_seed)
+        for items in grouped.values():
+            rng.shuffle(items)
+        total = len(development)
+        quotas = {label: len(items) * args.max_validation_examples / total for label, items in grouped.items()}
+        counts = {label: min(len(grouped[label]), int(quotas[label])) for label in grouped}
+        for label in sorted(grouped, key=lambda key: quotas[key] - counts[key], reverse=True):
+            if sum(counts.values()) >= args.max_validation_examples:
+                break
+            if counts[label] < len(grouped[label]):
+                counts[label] += 1
+        development = [item for label in grouped for item in grouped[label][:counts[label]]]
+        rng.shuffle(development)
     source_indices = [int(item.source_id) for item in development]
     validation_examples = [examples[index] for index in source_indices]
+    validation_source_rows = [rows[index] for index in source_indices]
     validation_rows = [ClassificationRow(make_prompt(rows[index]), examples[index].label, None) for index in source_indices]
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -54,7 +79,7 @@ def evaluate(args: argparse.Namespace, run: object) -> dict:
     model, tokenizer = load_model(QWEN_BASE, device, 16)
     if not hasattr(model, "load_adapter"):
         raise TypeError("The Qwen base did not produce a PEFT model.")
-    model.load_adapter(QWEN, adapter_name="frozen")
+    model.load_adapter(args.qwen_checkpoint, adapter_name="frozen")
     model.set_adapter("frozen")
     model.eval()
     scores = []
@@ -65,12 +90,16 @@ def evaluate(args: argparse.Namespace, run: object) -> dict:
     qwen = torch.cat(scores)
     labels = torch.tensor([item.label for item in validation_examples])
     candidates = {"encoder_single": encoder, "qwen_sft": qwen, "single_average": (encoder + qwen) / 2, "single_gate": hybrid_probabilities(encoder, qwen, "gate")}
-    methods = tuple(dict.fromkeys((*POOL_GRID_METHODS, *DISAGREE_METHODS, *REQUEST_CONFIDENCE_METHODS)))
+    methods = tuple(dict.fromkeys((*POOL_GRID_METHODS, *DISAGREE_METHODS, *REQUEST_CONFIDENCE_METHODS, *RULE_METHODS)))
     for method in methods:
         if method in candidates or method in ("single_average", "single_gate"):
             continue
         rule = method.removeprefix("single_")
-        candidates[method] = hybrid_probabilities(encoder, qwen, rule)
+        if rule.removeprefix("encoder_") in RULES:
+            mask = input_route_mask(validation_source_rows, rule.removeprefix("encoder_"), device)
+            candidates[method] = torch.where(mask.unsqueeze(-1), encoder, qwen)
+        else:
+            candidates[method] = hybrid_probabilities(encoder, qwen, rule)
     aggregate = {}
     for name, probabilities in candidates.items():
         result = metric_values(labels.tolist(), probabilities.argmax(-1).tolist(), list(range(len(LABELS))))
@@ -85,8 +114,20 @@ def evaluate(args: argparse.Namespace, run: object) -> dict:
         "validation_source_independent_of_training": True,
         "validation_examples": len(validation_examples),
         "split_seed": args.split_seed,
+        "sample_seed": args.sample_seed,
+        "validation_sample_cap": args.max_validation_examples,
+        "validation_indices_sha256": hashlib.sha256(",".join(map(str, source_indices)).encode()).hexdigest(),
         "encoder_checkpoint": ENCODER,
-        "qwen_checkpoint": QWEN,
+        "qwen_checkpoint": args.qwen_checkpoint,
+        "artifact_sha256": {
+            str(path): artifact_digest(path)
+            for path in (
+                Path(ENCODER) / "model_state.pt",
+                Path(ENCODER) / "encoder_config.json",
+                Path(args.qwen_checkpoint) / "adapter_model.safetensors",
+                Path(args.qwen_checkpoint) / "adapter_config.json",
+            )
+        },
         "qwen_base": QWEN_BASE,
         "candidate_methods": list(aggregate),
         "aggregate_validation_metrics": aggregate,
@@ -101,8 +142,14 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--split-seed", type=int, default=20261026)
+    parser.add_argument("--sample-seed", type=int, default=20261068)
+    parser.add_argument("--max-validation-examples", type=int, default=500)
+    parser.add_argument("--qwen-checkpoint", default=QWEN)
     parser.add_argument("--batch-size", type=int, default=1)
     args = parser.parse_args()
+    # Enforce the research policy before loading any validation rows.
+    if args.max_validation_examples < 1 or args.max_validation_examples > 500:
+        raise ValueError("Clean validation evaluation must use between 1 and 500 examples.")
     import wandb
     if not os.getenv("WANDB_API_KEY"):
         raise RuntimeError("WANDB_API_KEY is required for validation experiments.")
@@ -112,7 +159,7 @@ def main() -> int:
         entity=os.getenv("WANDB_ENTITY"),
         name="existing-when2call-hybrid-sft-source-validation",
         job_type="clean-validation",
-        config={"encoder": ENCODER, "qwen": QWEN, "qwen_base": QWEN_BASE, "split_seed": args.split_seed, "source": "nvidia/When2Call train_sft", "official_test_loaded": False},
+        config={"encoder": ENCODER, "qwen": args.qwen_checkpoint, "qwen_base": QWEN_BASE, "split_seed": args.split_seed, "sample_seed": args.sample_seed, "max_validation_examples": args.max_validation_examples, "source": "nvidia/When2Call train_sft", "official_test_loaded": False},
     )
     started = time.time()
     try:

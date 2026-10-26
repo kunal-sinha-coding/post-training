@@ -197,14 +197,21 @@ def prepare(args: object, run: object) -> dict:
     # Freeze only the selected suite artifacts and exact rules before opening official examples.
     suite_name = getattr(args, "suite", "initial")
     suite = suite_definition(suite_name)
+    qwen_checkpoint = str(getattr(args, "qwen_checkpoint", QWEN))
+    methods = list(getattr(args, "methods", None) or suite["methods"])
+    primary_method = str(getattr(args, "primary_method", None) or suite["primary"])
+    if not methods or len(methods) != len(set(methods)) or any(method not in suite["methods"] for method in methods):
+        raise ValueError("Requested methods must be a unique, non-empty subset of the selected suite.")
+    if primary_method not in methods:
+        raise ValueError("The primary method must be included in the frozen method list.")
     artifacts = []
     for checkpoint in suite["encoders"]:
         artifacts.extend(Path(checkpoint) / name for name in ("model_state.pt", "encoder_config.json"))
-    artifacts.extend(Path(QWEN) / name for name in ("adapter_model.safetensors", "adapter_config.json"))
+    artifacts.extend(Path(qwen_checkpoint) / name for name in ("adapter_model.safetensors", "adapter_config.json"))
     artifacts.append(Path("outputs/when2call-jina-v2-small/latest/tokenizer.json"))
     if suite_name == "single-stacker":
         artifacts.append(Path(STACKER_ARTIFACT))
-    config = {"selection_complete": True, "training_performed": False, "development_selection_performed": False, "suite": suite_name, "encoders": suite["encoders"], "encoder_logit_weights": suite["weights"], "single_encoder_index": suite["single_index"], "qwen_checkpoint": QWEN, "qwen_base": QWEN_BASE, "qwen_output_permutation": [0, 1, 2, 3], "label_order": LABELS, "max_length": 4096, "methods": suite["methods"], "primary_method": suite["primary"], "family_probability_weights": [0.5, 0.5], "artifact_sha256": {str(path): artifact_digest(path) for path in artifacts}, "validation_limitation": "Existing encoder warm starts saw all train_pref rows. No clean preference validation is claimed or used for selection.", "historical_selection_limitation": "Existing encoder approaches were identified in prior research with repeated official benchmark inspection. This fixed comparison is a benchmark measurement, not a new independent generalization estimate.", "metric_definition": "Primary macro F1 includes all four declared classes. The present-class macro F1 diagnostic permits comparison with historical encoder reports.", "qwen_mapping": "Historical adapter training used LABEL_TO_ID directly despite reversed ABCD descriptions in its prompt. Preserve learned identity indices.", "test_status": "queued"}
+    config = {"selection_complete": True, "training_performed": False, "development_selection_performed": False, "suite": suite_name, "encoders": suite["encoders"], "encoder_logit_weights": suite["weights"], "single_encoder_index": suite["single_index"], "qwen_checkpoint": qwen_checkpoint, "qwen_base": QWEN_BASE, "qwen_output_permutation": [0, 1, 2, 3], "label_order": LABELS, "max_length": 4096, "methods": methods, "primary_method": primary_method, "family_probability_weights": [0.5, 0.5], "artifact_sha256": {str(path): artifact_digest(path) for path in artifacts}, "validation_limitation": "Existing encoder warm starts saw all train_pref rows. Clean source validation is used to select the frozen fusion rule. Test metrics are report-only.", "historical_selection_limitation": "Existing encoder approaches were identified in prior research with repeated official benchmark inspection. This fixed comparison is a benchmark measurement, not a new independent generalization estimate.", "metric_definition": "Primary macro F1 includes all four declared classes. The present-class macro F1 diagnostic permits comparison with historical encoder reports.", "qwen_mapping": "Historical adapter training used LABEL_TO_ID directly despite reversed ABCD descriptions in its prompt. Preserve learned identity indices.", "test_status": "queued"}
     if suite_name == "single-fusion":
         config["fusion_rules"] = SINGLE_RULES
         config["hypothesis"] = "Geometric consensus tests shared support while ordinal Borda fusion tests robustness to unequal expert confidence scales. Arithmetic averaging and entropy gating are unchanged controls."
@@ -244,7 +251,7 @@ def verify_frozen(config: dict) -> None:
     # Reject changed artifacts or method definitions before the official loader is imported or called.
     suite_name = config.get("suite", "initial")
     suite = suite_definition(suite_name)
-    if not config["selection_complete"] or config["encoders"] != suite["encoders"] or config["qwen_checkpoint"] != QWEN or config["methods"] != suite["methods"] or config["encoder_logit_weights"] != suite["weights"] or config["primary_method"] != suite["primary"]:
+    if not config["selection_complete"] or config["encoders"] != suite["encoders"] or not config.get("qwen_checkpoint") or not config["methods"] or any(method not in suite["methods"] for method in config["methods"]) or config["primary_method"] not in config["methods"] or config["encoder_logit_weights"] != suite["weights"]:
         raise ValueError("Frozen existing-model comparison configuration changed.")
     if suite_name == "single-fusion" and (config.get("fusion_rules") != SINGLE_RULES or config.get("single_encoder_index") != 0 or config.get("qwen_base") != QWEN_BASE or config.get("max_length") != 4096 or config.get("qwen_output_permutation") != [0, 1, 2, 3] or config.get("family_probability_weights") != [0.5, 0.5]):
         raise ValueError("Frozen single-fusion rules changed.")
@@ -360,6 +367,9 @@ def main() -> int:
     parser.add_argument("--work-dir", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--suite", choices=("initial", "single-fusion", "single-route", "single-weighted", "single-adaptive", "single-rules", "single-pool-grid", "single-disagree", "single-request-confidence", "single-stacker"), default="initial")
+    parser.add_argument("--qwen-checkpoint", default=QWEN)
+    parser.add_argument("--methods", nargs="*")
+    parser.add_argument("--primary-method")
     parser.add_argument("--batch-size", type=int, default=1)
     args = parser.parse_args()
     import wandb
@@ -368,7 +378,7 @@ def main() -> int:
     args.work_dir.mkdir(parents=True, exist_ok=True)
     args.output_dir.mkdir(parents=True, exist_ok=True)
     suite = suite_definition(args.suite)
-    metadata = {"command": [sys.executable, *sys.argv], "git_commit": subprocess.check_output(["git", "-c", "safe.directory=/workspace/post-training", "rev-parse", "HEAD"], text=True).strip(), "configuration": {key: str(value) if isinstance(value, Path) else value for key, value in vars(args).items()}, "suite": args.suite, "encoders": suite["encoders"], "encoder_logit_weights": suite["weights"], "qwen_checkpoint": QWEN, "max_length": 4096, "primary_method": suite["primary"]}
+    metadata = {"command": [sys.executable, *sys.argv], "git_commit": subprocess.check_output(["git", "-c", "safe.directory=/workspace/post-training", "rev-parse", "HEAD"], text=True).strip(), "configuration": {key: str(value) if isinstance(value, Path) else value for key, value in vars(args).items()}, "suite": args.suite, "encoders": suite["encoders"], "encoder_logit_weights": suite["weights"], "qwen_checkpoint": args.qwen_checkpoint, "max_length": 4096, "primary_method": args.primary_method or suite["primary"]}
     run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name="existing-when2call-hybrid-" + args.suite + "-" + args.mode, job_type="existing-hybrid-" + args.mode, config=metadata)
     started = time.time()
     stop = threading.Event()

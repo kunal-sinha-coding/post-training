@@ -7182,3 +7182,10 @@ Commit name: Queue controlled full-pool regularization trials.
 The latest full When2Call run recorded training, clean validation, and full aggregate test metrics for all four epochs. Its clean validation accuracy peaked at 0.9420 in epoch 3 and fell to 0.9280 in epoch 4 while training accuracy rose to 0.9860. The 500-row validation sample has no tool-call rows and one direct-answer row. Test metrics were report-only.
 
 Queued two separate fresh-base full-pool trials. The first increases weight decay from 0.01 to 0.05. The second reduces learning rate from 2e-5 to 1e-5. They share the same split, validation sample, training evaluation sample, seed, maximum 10-epoch schedule, and clean-validation early stop. Each epoch reports at most 500 training rows, at most 500 validation rows, and the full 3,652-row aggregate test set. Test labels are not used for selection.
+
+
+## 2026-10-26: Stop regularization run and begin ensemble screening
+
+Commit name: Stop the weight-decay worker and screen encoder fusion on clean validation.
+
+Stopped the active weight-decay 0.05 trainer, watchdog, and supervisor at the user request. Recorded its last heartbeat at step 1691 and its missing evaluation evidence. Cleared the old lower-learning-rate queue entry. Added support for evaluating a chosen Qwen adapter with existing encoder-fusion candidates. The new first candidate screen uses a deterministic stratified clean `train_sft` sample capped at 500 rows and does not load the black-box test data. The validation result will select any later test measurement.
