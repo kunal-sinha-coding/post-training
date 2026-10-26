@@ -1,0 +1,86 @@
+{
+  "experiment": "gpt6_luna_bfcl_live_to_when2call_labels",
+  "prompt_path": "prompts/bfcl_to_when2call_labels.md",
+  "prompt_sha256": "2a191a61da8709a4cff51676bfb421c274e5e84b7c81ee3a7e6d44f80cf8fa85",
+  "model": "gpt-6-luna",
+  "endpoint": "OpenAI Responses API",
+  "max_concurrency": 24,
+  "retry_limit": 5,
+  "label_split_seed": 20261025,
+  "validation_fraction": 0.2,
+  "labeling_scope": "Every BFCL Live row without a When2Call test source-ID match or question near-duplicate.",
+  "selection_protocol": "When2Call test labels were not read or sent to the model.",
+  "overlap_audit": {
+    "bfcl_category_counts": {
+      "simple": 258,
+      "multiple": 1053,
+      "parallel": 16,
+      "parallel_multiple": 24,
+      "relevance": 16,
+      "irrelevance": 884
+    },
+    "when2call_test_rows": 3652,
+    "when2call_test_unique_source_ids": 1295,
+    "source_id_disjoint_count": 956,
+    "near_duplicate_excluded_count": 34,
+    "near_duplicate_threshold": 0.8,
+    "candidate_count": 922,
+    "candidate_category_counts": {
+      "multiple": 16,
+      "parallel": 15,
+      "parallel_multiple": 24,
+      "relevance": 16,
+      "irrelevance": 851
+    },
+    "test_answers_loaded": false
+  },
+  "label_counts": {
+    "tool_call": 128,
+    "request_for_info": 212,
+    "cannot_answer": 271,
+    "direct": 311
+  },
+  "split_label_counts": {
+    "train": {
+      "tool_call": 102,
+      "request_for_info": 170,
+      "cannot_answer": 217,
+      "direct": 249
+    },
+    "validation": {
+      "tool_call": 26,
+      "request_for_info": 42,
+      "cannot_answer": 54,
+      "direct": 62
+    }
+  },
+  "category_label_counts": {
+    "simple": {},
+    "multiple": {
+      "tool_call": 16
+    },
+    "parallel": {
+      "tool_call": 15
+    },
+    "parallel_multiple": {
+      "tool_call": 24
+    },
+    "relevance": {
+      "tool_call": 10,
+      "request_for_info": 6
+    },
+    "irrelevance": {
+      "cannot_answer": 271,
+      "direct": 311,
+      "request_for_info": 206,
+      "tool_call": 63
+    }
+  },
+  "needs_review_count": 85,
+  "confidence_counts": {
+    "high": 819,
+    "medium": 99,
+    "low": 4
+  },
+  "output": "data/bfcl_when2call_labeled.jsonl"
+}
