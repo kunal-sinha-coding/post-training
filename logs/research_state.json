@@ -6,55 +6,8 @@
   "protocol": "fresh_base_bfcl_when2call_data_exploration_v1",
   "current_hypothesis": "A Qwen checkpoint selected by clean held-out validation and an early-stop rule may complement the full-pool epoch-2 adapter differently. Compare both against the same fixed three-encoder family on the same capped clean SFT sample; use clean validation only for selection.",
   "active_experiment": {
-    "pid": 122674,
+    "pid": 123311,
     "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.existing_when2call_hybrid",
-      "test",
-      "--work-dir",
-      "outputs/qwen-three-encoder-gate-test-20261082",
-      "--output-dir",
-      "outputs/qwen-three-encoder-gate-test-20261082",
-      "--suite",
-      "initial",
-      "--qwen-checkpoint",
-      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
-      "--methods",
-      "ensemble_average",
-      "ensemble_gate",
-      "--primary-method",
-      "ensemble_gate",
-      "--batch-size",
-      "1"
-    ],
-    "started_at": "2026-10-26T17:32:39.904638+00:00"
-  },
-  "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.existing_when2call_hybrid",
-    "test",
-    "--work-dir",
-    "outputs/qwen-three-encoder-gate-test-20261082",
-    "--output-dir",
-    "outputs/qwen-three-encoder-gate-test-20261082",
-    "--suite",
-    "initial",
-    "--qwen-checkpoint",
-    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
-    "--methods",
-    "ensemble_average",
-    "ensemble_gate",
-    "--primary-method",
-    "ensemble_gate",
-    "--batch-size",
-    "1"
-  ],
-  "worker_queue": [
-    [
       "python",
       "-u",
       "-m",
@@ -78,6 +31,33 @@
       "--batch-size",
       "1"
     ],
+    "started_at": "2026-10-26T17:41:41.620112+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_existing_when2call_hybrid_validation",
+    "--output-dir",
+    "outputs/qwen-checkpoint-diversity-reference-20261090",
+    "--split-seed",
+    "20261090",
+    "--sample-seed",
+    "20261091",
+    "--max-validation-examples",
+    "500",
+    "--qwen-checkpoint",
+    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "--encoder-checkpoint",
+    "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065",
+    "--encoder-checkpoint",
+    "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061",
+    "--encoder-checkpoint",
+    "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
+    "--batch-size",
+    "1"
+  ],
+  "worker_queue": [
     [
       "python",
       "-u",
@@ -135,10 +115,10 @@
     "macro_f1": 0.48337889372616516,
     "selection": "clean validation only"
   },
-  "last_heartbeat": "2026-10-26T17:32:39.904649+00:00",
-  "last_action": "Audited the completed frozen-configuration phase: component training metrics and 500-row clean validation are recorded; aggregate black-box test is not yet recorded and its measurement is active. Queued paired checkpoint validation commands behind the active test worker.",
+  "last_heartbeat": "2026-10-26T17:41:41.620126+00:00",
+  "last_action": "The frozen three-encoder comparison completed with training provenance, clean validation, and aggregate test evidence recorded. Clean-validation selection remains the entropy gate. The full-pool Qwen reference checkpoint validation is now active; its early-stopped checkpoint comparison is queued next.",
   "watchdog_enabled": true,
-  "research_log_size": 898370,
+  "research_log_size": 899408,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -170,13 +150,13 @@
   "planning_ack_deadline": "2026-10-26T17:31:39.041850+00:00",
   "planning_attempts": 35,
   "best_observed_test": {
-    "method": "qwen_full_when2call_epoch_2",
-    "accuracy": 0.702354874041621,
-    "macro_f1": 0.5277889126113546,
+    "method": "three_encoder_qwen_equal_probability_average",
+    "accuracy": 0.7113910186199343,
+    "macro_f1": 0.5334823256400584,
     "examples": 3652,
-    "artifact": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
-    "metrics": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json",
-    "selection": "Fixed two-epoch run. Aggregate test result is report-only and was not used for checkpoint selection."
+    "artifact": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02 plus the three frozen encoder checkpoints in outputs/qwen-three-encoder-gate-test-20261082/frozen-config.json",
+    "metrics": "outputs/qwen-three-encoder-gate-test-20261082/aggregate-comparison.json",
+    "selection": "Reported as the highest aggregate score in this frozen comparison only. Test metrics did not select the candidate; clean validation selected the entropy gate."
   },
   "next_hypothesis": "After the frozen multi-encoder test measurement, continue with the queued checkpoint diversity, prompt-only, disagreement, and visible-input routing hypotheses. Keep few-shot prompting deferred until those existing ensemble and individual-model ideas are exhausted.",
   "post_queue_report_required": {
@@ -215,14 +195,15 @@
     "selection_use": "none"
   },
   "evidence_audit": {
-    "latest_completed_experiment": "qwen-three-encoder-gate-test-20261082 prepare phase",
+    "latest_completed_experiment": "qwen-three-encoder-gate-test-20261082",
     "training_metrics_recorded": true,
-    "training_metrics_scope": "No training occurred in this frozen inference experiment. Training metrics are recorded for the Qwen and all three encoder checkpoints.",
+    "training_metrics_scope": "Inference-only ensemble evaluation. Training metrics are available in the records for the frozen Qwen and three encoder checkpoints.",
     "clean_validation_recorded": true,
     "clean_validation_source": "outputs/qwen-fullpool-three-encoder-validation-20261082/metrics.json",
     "clean_validation_examples": 500,
-    "aggregate_black_box_test_metrics_recorded": false,
-    "aggregate_black_box_test_measurement": "Active as worker_command; do not duplicate or start new experiment before it completes.",
+    "aggregate_black_box_test_metrics_recorded": true,
+    "aggregate_black_box_test_source": "outputs/qwen-three-encoder-gate-test-20261082/aggregate-comparison.json",
+    "aggregate_black_box_test_examples": 3652,
     "test_labels_used_for_selection": false
   },
   "duplicate_worker_failure": {
@@ -254,16 +235,18 @@
     "wandb_run_id": "zn9bdfia"
   },
   "selected_ensemble_candidate": {
-    "method": "single_request_conf_60",
+    "method": "three_encoder_min_entropy_gate",
     "qwen_checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
-    "encoder_checkpoint": "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
+    "encoder_checkpoints": [
+      "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065",
+      "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061",
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+    ],
     "validation_examples": 500,
-    "validation_accuracy": 0.95,
-    "validation_macro_f1": 0.9635575051540453,
-    "qwen_validation_accuracy": 0.936,
-    "qwen_validation_macro_f1": 0.9570257611241219,
-    "rule": "Use encoder probabilities only when its top class is request_for_info and its maximum probability is at least 0.60. Use Qwen otherwise.",
-    "selection": "Highest validation accuracy on the second clean sample among fixed candidates; the method also improved on the first clean sample. Test metrics remain report-only."
+    "validation_accuracy": 0.934,
+    "validation_macro_f1": 0.9576318270590611,
+    "rule": "Take the fixed-weight raw-logit ensemble of the three encoders using weights 0.35625, 0.1375, and 0.50625. Convert it to probabilities, then select whichever has lower predictive entropy between that encoder-family distribution and Qwen probabilities.",
+    "selection": "Clean validation only. Aggregate test comparison is report-only."
   },
   "ensemble_candidate_history": [
     {
@@ -291,6 +274,47 @@
         "examples": 500
       },
       "selection": "Clean validation only; pending aggregate test measurement."
+    },
+    {
+      "method": "three_encoder_min_entropy_gate",
+      "validation_experiment": "qwen-fullpool-three-encoder-validation-20261082",
+      "validation_accuracy": 0.934,
+      "validation_macro_f1": 0.9576318270590611,
+      "test_experiment": "qwen-three-encoder-gate-test-20261082",
+      "test_accuracy": 0.7083789704271632,
+      "test_macro_f1": 0.5314276117833936,
+      "paired_qwen_test_accuracy": 0.7026286966046003,
+      "paired_qwen_test_macro_f1": 0.5279759197297567,
+      "equal_average_test_accuracy": 0.7113910186199343,
+      "equal_average_test_macro_f1": 0.5334823256400584,
+      "selection": "The gate was selected by clean validation. All official test metrics are report-only; the higher average score does not change selection."
     }
-  ]
+  ],
+  "latest_aggregate_test_report": {
+    "experiment": "qwen-three-encoder-gate-test-20261082",
+    "selection": "The entropy gate was selected on clean validation before test scoring. All official test results are aggregate-only and report-only.",
+    "metrics": {
+      "qwen_sft": {
+        "accuracy": 0.7026286966046003,
+        "macro_f1": 0.5279759197297567
+      },
+      "encoder_single": {
+        "accuracy": 0.5922782037239869,
+        "macro_f1": 0.4397549574969336
+      },
+      "encoder_ensemble": {
+        "accuracy": 0.5969331872946331,
+        "macro_f1": 0.4440393593836841
+      },
+      "ensemble_average": {
+        "accuracy": 0.7113910186199343,
+        "macro_f1": 0.5334823256400584
+      },
+      "ensemble_gate": {
+        "accuracy": 0.7083789704271632,
+        "macro_f1": 0.5314276117833936
+      }
+    },
+    "examples": 3652
+  }
 }
