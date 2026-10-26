@@ -7210,3 +7210,10 @@ The retry completed model scoring but the visible-input rules expected question 
 Commit name: Freeze the high-confidence request route before test measurement.
 
 The 500-row clean SFT-source screen scored the full-pool Qwen epoch-2 checkpoint, the existing Jina encoder, and fixed fusion rules. Qwen accuracy was 0.9560, equal averaging was 0.9480, and the best fixed rule was encoder request_for_info routing at confidence 0.80 with 0.9640 accuracy and 0.9757 macro F1. This is four additional correct examples on the same validation sample, after screening 28 fixed candidates. Recorded the overfitting limitation and froze that route for one aggregate-only test measurement with baselines.
+
+
+## 2026-10-26: Queue a second clean validation screen
+
+Commit name: Queue cross-split confirmation for encoder fusion.
+
+The active worker queue was empty while the frozen request-confidence route test measurement was running. Added a distinct capped clean-validation screen with new split and sample seeds behind it, using the same Qwen epoch-2 checkpoint and encoder. Updated the written experiment plan to keep test metrics report-only and use clean validation for selection.

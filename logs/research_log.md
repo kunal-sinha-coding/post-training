@@ -8668,3 +8668,20 @@ This record was written automatically. Candidate selection must use clean valida
 The clean `train_sft` source screen used a deterministic stratified sample of 500 examples. Qwen epoch 2 alone scored 0.956 accuracy and 0.971477 macro F1. The encoder alone scored 0.894 and 0.932578. Equal probability averaging scored 0.948 and 0.967138. The best fixed candidate by validation accuracy was `single_request_conf_80`: use the encoder only when its predicted class is request_for_info and maximum probability is at least 0.80, otherwise use Qwen. It scored 0.964 accuracy and 0.975692 macro F1, an increase of four correct examples over Qwen on this sample. This screen compared 28 fixed candidates on one 500-row sample, so validation overfitting is possible.
 
 The route, Qwen epoch-2 checkpoint, and encoder checkpoint are frozen before the black-box measurement. The test pass will report the selected route and fixed baselines only. No aggregate test metric will select or tune a method.
+
+## fullpool-qwen-encoder-route80-prepare-20261070
+
+Timestamp: 2026-10-26T16:47:48.958171+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.existing_when2call_hybrid", "prepare", "--work-dir", "outputs/fullpool-qwen-encoder-route80-20261070", "--output-dir", "outputs/fullpool-qwen-encoder-route80-prepare-20261070", "--suite", "single-request-confidence", "--qwen-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--methods", "single_request_conf_80", "--primary-method", "single_request_conf_80", "--batch-size", "4"]. Output: /workspace/post-training/outputs/fullpool-qwen-encoder-route80-prepare-20261070. W&B run: n6xlamdl.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Test status: queued. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+
+## Queue second clean-validation confirmation screen, 2026-10-26
+
+While the frozen route80 aggregate test measurement runs, queued a second clean `train_sft` candidate screen capped at 500 rows with a new split seed and sample seed. The screen does not use or load test data. It will measure whether the fixed route and other predeclared approaches transfer across a different clean-source split. The current test metrics remain report-only.

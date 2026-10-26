@@ -51149,3 +51149,156 @@ The complete setup and observed results are recorded below. Source validation sp
 
 Ensemble candidate selected on capped clean validation, 2026-10-26
 On 500 deterministic stratified `train_sft` validation examples, Qwen epoch 2 scored 0.9560 accuracy / 0.9715 macro F1; the encoder scored 0.8940 / 0.9326; equal probability averaging scored 0.9480 / 0.9671. The highest fixed-candidate validation accuracy was 0.9640 / 0.9757 for `single_request_conf_80`, a four-example or 0.8-point improvement over Qwen. The rule uses encoder probabilities only for predictions of request_for_info with maximum probability at least 0.80, and Qwen otherwise. This rule was selected by clean validation only. Twenty-eight fixed candidates were screened on the same 500 examples, so its gain may reflect validation overfitting. A single full-test aggregate measurement is queued for report only.
+
+## fullpool-qwen-encoder-route80-prepare-20261070
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "prepare",
+    "--work-dir",
+    "outputs/fullpool-qwen-encoder-route80-20261070",
+    "--output-dir",
+    "outputs/fullpool-qwen-encoder-route80-prepare-20261070",
+    "--suite",
+    "single-request-confidence",
+    "--qwen-checkpoint",
+    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "--methods",
+    "single_request_conf_80",
+    "--primary-method",
+    "single_request_conf_80",
+    "--batch-size",
+    "4"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "fullpool-qwen-encoder-route80-prepare-20261070",
+  "failure_reason": null,
+  "metadata": {
+    "command": [
+      "/usr/local/bin/python",
+      "/workspace/post-training/experiments/existing_when2call_hybrid.py",
+      "prepare",
+      "--work-dir",
+      "outputs/fullpool-qwen-encoder-route80-20261070",
+      "--output-dir",
+      "outputs/fullpool-qwen-encoder-route80-prepare-20261070",
+      "--suite",
+      "single-request-confidence",
+      "--qwen-checkpoint",
+      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "--methods",
+      "single_request_conf_80",
+      "--primary-method",
+      "single_request_conf_80",
+      "--batch-size",
+      "4"
+    ],
+    "configuration": {
+      "batch_size": 4,
+      "methods": [
+        "single_request_conf_80"
+      ],
+      "mode": "prepare",
+      "output_dir": "outputs/fullpool-qwen-encoder-route80-prepare-20261070",
+      "primary_method": "single_request_conf_80",
+      "qwen_checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "suite": "single-request-confidence",
+      "work_dir": "outputs/fullpool-qwen-encoder-route80-20261070"
+    },
+    "encoder_logit_weights": [
+      1.0
+    ],
+    "encoders": [
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+    ],
+    "frozen_configuration": {
+      "artifact_sha256": {
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/encoder_config.json": "0616e72a787934ed1fa3bec80e5da45239be1a1c267525c92960b83e9c44c12f",
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/model_state.pt": "815459d76b8c2e9fb7ba44e2f3867379ab096766cf9f1c807a08921be26593b5",
+        "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02/adapter_config.json": "bfe4f64a34cbe48967937473e3f0558033c8b98578e46a9fe7447d86404c37f9",
+        "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02/adapter_model.safetensors": "6afccbb2022780a2bc986e08cf48eb376635cd345d6672d1613ec7e4355d0484",
+        "outputs/when2call-jina-v2-small/latest/tokenizer.json": "e9f999ac74497843ed9f4303246a8f43d9f100ee8aab8e133667903f447ceb48"
+      },
+      "development_selection_performed": false,
+      "encoder_logit_weights": [
+        1.0
+      ],
+      "encoders": [
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+      ],
+      "family_probability_weights": [
+        0.5,
+        0.5
+      ],
+      "fusion_rules": {
+        "request_conf_40": "Use encoder probabilities when its top class is request_for_info and its top probability is at least 0.40. Use Qwen otherwise.",
+        "request_conf_60": "Use encoder probabilities when its top class is request_for_info and its top probability is at least 0.60. Use Qwen otherwise.",
+        "request_conf_80": "Use encoder probabilities when its top class is request_for_info and its top probability is at least 0.80. Use Qwen otherwise."
+      },
+      "historical_selection_limitation": "Existing encoder approaches were identified in prior research with repeated official benchmark inspection. This fixed comparison is a benchmark measurement, not a new independent generalization estimate.",
+      "hypothesis": "Clean validation favored the encoder request_for_info region, while the fixed class route did not improve aggregate test accuracy. Confidence filtering tests whether restricting that route to more certain encoder predictions improves validation transfer. Thresholds are fixed before scoring.",
+      "label_order": [
+        "cannot_answer",
+        "request_for_info",
+        "tool_call",
+        "direct"
+      ],
+      "max_length": 4096,
+      "methods": [
+        "single_request_conf_80"
+      ],
+      "metric_definition": "Primary macro F1 includes all four declared classes. The present-class macro F1 diagnostic permits comparison with historical encoder reports.",
+      "primary_method": "single_request_conf_80",
+      "qwen_base": "Qwen/Qwen2.5-1.5B-Instruct",
+      "qwen_checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "qwen_mapping": "Historical adapter training used LABEL_TO_ID directly despite reversed ABCD descriptions in its prompt. Preserve learned identity indices.",
+      "qwen_output_permutation": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "selection_complete": true,
+      "single_encoder_index": 0,
+      "suite": "single-request-confidence",
+      "test_status": "queued",
+      "training_performed": false,
+      "validation_limitation": "Existing encoder warm starts saw all train_pref rows. Clean source validation is used to select the frozen fusion rule. Test metrics are report-only."
+    },
+    "git_commit": "f45430b370cfdcf75c0ee92cd3cf7db228ffa442",
+    "max_length": 4096,
+    "primary_method": "single_request_conf_80",
+    "qwen_checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "runtime_seconds": 0.9945027828216553,
+    "status": "completed",
+    "suite": "single-request-confidence",
+    "test_status": "queued",
+    "wandb_run_id": "n6xlamdl",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/n6xlamdl"
+  },
+  "metrics_path": "/workspace/post-training/outputs/fullpool-qwen-encoder-route80-prepare-20261070/metrics.json",
+  "official_test_loaded": null,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/fullpool-qwen-encoder-route80-prepare-20261070",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-26T16:46:48.172230+00:00",
+  "status": "completed",
+  "test_status": "queued",
+  "timestamp": "2026-10-26T16:47:48.958171+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "n6xlamdl",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/n6xlamdl"
+}
+```
+
+
+Queued a second clean-validation ensemble screen, 2026-10-26
+The next worker is `qwen-fullpool-ensemble-confirm-validation-20261071`, a second capped clean `train_sft` screen of the same fixed candidate rules against Qwen epoch 2 and the existing encoder, using split seed 20261071 and sample seed 20261072. It is queued behind the current frozen aggregate-only test measurement. Test results do not select or tune candidates.
