@@ -70,7 +70,12 @@ def evaluate(args: argparse.Namespace, run: object) -> dict:
         rng.shuffle(development)
     source_indices = [int(item.source_id) for item in development]
     validation_examples = [examples[index] for index in source_indices]
-    validation_source_rows = [rows[index] for index in source_indices]
+    # Build routing features from the same visible question and tool text scored by both models.
+    validation_source_rows = []
+    for item in validation_examples:
+        question, _, tool_text = item.text.partition("\nAvailable tools:\n")
+        tools = [] if tool_text.strip() == "No tools are available." else tool_text.splitlines()
+        validation_source_rows.append({"question": question, "tools": tools})
     validation_rows = [ClassificationRow(make_prompt(rows[index]), examples[index].label, None) for index in source_indices]
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     args.output_dir.mkdir(parents=True, exist_ok=True)

@@ -7196,3 +7196,10 @@ Stopped the active weight-decay 0.05 trainer, watchdog, and supervisor at the us
 Commit name: Fix validation routing mask device selection.
 
 The first capped clean-validation screen stopped before metrics because input route masks were created on CUDA while cached model probabilities were on CPU. No test data was loaded. Changed route-mask placement to match the cached probability device, recorded the failed attempt, and queued one retry with the same sample and model under a distinct output directory.
+
+
+## 2026-10-26: Build routing features from validation inputs
+
+Commit name: Derive ensemble routing features from SFT inputs.
+
+The retry completed model scoring but the visible-input rules expected question and tools fields that the SFT source rows do not contain. Derived those fields from the validation inputs instead. The official test data remains unloaded. Queued a second retry with the same validation and model artifacts under a new output ID.

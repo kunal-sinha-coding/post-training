@@ -12,7 +12,7 @@
     "-m",
     "experiments.evaluate_existing_when2call_hybrid_validation",
     "--output-dir",
-    "outputs/qwen-fullpool-ensemble-validation-20261069-retry1",
+    "outputs/qwen-fullpool-ensemble-validation-20261069-retry2",
     "--split-seed",
     "20261026",
     "--sample-seed",
@@ -31,7 +31,7 @@
       "-m",
       "experiments.evaluate_existing_when2call_hybrid_validation",
       "--output-dir",
-      "outputs/qwen-fullpool-ensemble-validation-20261069-retry1",
+      "outputs/qwen-fullpool-ensemble-validation-20261069-retry2",
       "--split-seed",
       "20261026",
       "--sample-seed",
@@ -76,9 +76,9 @@
     "selection": "clean validation only"
   },
   "last_heartbeat": null,
-  "last_action": "Queued a corrected clean-validation ensemble screen after the first attempt exposed a CPU/GPU mask mismatch.",
+  "last_action": "Queued a second corrected clean-validation screen using routing features parsed from the same model input text.",
   "watchdog_enabled": true,
-  "research_log_size": 874340,
+  "research_log_size": 875705,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -86,7 +86,7 @@
     "-m",
     "experiments.evaluate_existing_when2call_hybrid_validation",
     "--output-dir",
-    "outputs/qwen-fullpool-ensemble-validation-20261069-retry1",
+    "outputs/qwen-fullpool-ensemble-validation-20261069-retry2",
     "--split-seed",
     "20261026",
     "--sample-seed",
@@ -98,12 +98,7 @@
     "--batch-size",
     "1"
   ],
-  "recording_jobs": [
-    {
-      "pid": 116449,
-      "experiment_id": "qwen-fullpool-ensemble-validation-20261069"
-    }
-  ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-26T16:39:44.318445+00:00",
   "planning_ack_deadline": "2026-10-26T16:41:44.318465+00:00",
@@ -183,9 +178,9 @@
   },
   "queue_cleared_reason": "The user requested that the active experiment and pending queue be stopped and cleared before further exploration. The queue now contains only the clean-validation ensemble screen.",
   "failed_experiment": {
-    "experiment_id": "qwen-fullpool-ensemble-validation-20261069",
+    "experiment_id": "qwen-fullpool-ensemble-validation-20261069-retry1",
     "status": "failed",
-    "failure": "A visible-input routing mask was created on CUDA while cached probability tensors were on CPU. The evaluator failed before writing validation metrics. No black-box test data was loaded.",
-    "wandb_run_id": "30s1h7h7"
+    "failure": "The clean SFT source rows do not expose question/tools keys. The visible-input router now derives those features from the constructed validation input text. No official test data was loaded.",
+    "wandb_run_id": "zn9bdfia"
   }
 }

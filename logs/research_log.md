@@ -8644,3 +8644,8 @@ This record was written automatically. Candidate selection must use clean valida
 ## Ensemble validation screen implementation correction, 2026-10-26
 
 The first capped clean-validation screen failed during visible-input routing because the route mask was created on CUDA while cached model probabilities were on CPU. The failure occurred before metrics were saved, and the official test split was not loaded. The mask now uses the probability tensor device. A retry uses the same fixed 500-row sample and Qwen checkpoint under a distinct output ID.
+
+
+## Ensemble validation screen input-feature correction, 2026-10-26
+
+The first retry completed encoder and Qwen scoring but failed when visible-input route rules expected `question` and `tools` keys not present in the SFT source rows. The evaluator now derives those routing features from each sampled model input. No official test data was loaded and no metrics were saved. A second retry uses the same fixed validation sample and checkpoint with a new output ID.

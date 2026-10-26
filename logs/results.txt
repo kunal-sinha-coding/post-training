@@ -50814,3 +50814,7 @@ The complete setup and observed results are recorded below. Source validation sp
 
 Ensemble clean-validation screen failed before metrics, 2026-10-26
 The 500-row validation run failed in visible-input rule evaluation due to a CPU/GPU tensor device mismatch. No validation metrics were written and no official test data was loaded. W&B run `30s1h7h7`; failure only, excluded from rankings.
+
+
+Ensemble clean-validation screen retry failed before metrics, 2026-10-26
+Encoder and Qwen probabilities were computed on the capped clean sample, but visible-input routing raised `KeyError(question)` because source rows contain messages rather than question/tools fields. The evaluator will derive routing features from the model inputs. No official test data was loaded. W&B run `zn9bdfia`; no results are ranked.
