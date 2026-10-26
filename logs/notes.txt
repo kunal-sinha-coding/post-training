@@ -7087,3 +7087,10 @@ Commit name: Record and correct the original-only control results.
 Completed the 1,476-example original-only control with the same base model, seed, optimizer settings, and balanced 184/184 validation sample as the 50/50 mixture. It reused the mixture's 738 original training rows and added 738 rows from the unused original training partition. Its best balanced validation checkpoint was step 1,000, with accuracy 0.6005 and macro F1 0.4762. At the fixed step-1,476 endpoint it scored 0.5788 / 0.4700 balanced validation, 0.3913 / 0.3479 BFCL validation, 0.7663 / 0.5770 original validation, and 0.6010 / 0.4363 aggregate test. The 50/50 endpoint scored 0.6495 / 0.6375 balanced validation, 0.5489 / 0.5246 BFCL validation, 0.7500 / 0.5639 original validation, and 0.5296 / 0.4048 aggregate test. Test metrics remain report-only.
 
 The control's metrics file initially reported a BFCL fraction of 0.5 because the source mixture calculation used all available BFCL source rows rather than the sampled rows actually used for training. Corrected the ignored artifact to 0.0 / 1.0 and fixed the trainer code to derive source fractions from actual samples. This was a reporting issue only; it did not affect model training, evaluation, or selection. The control improved the original test aggregate relative to the mixture, but its BFCL labels are not independently validated. Follow up with another seed or a smaller BFCL fraction only if the user wants to continue this direction.
+
+
+## 2026-10-26: Fix source-fraction artifact reporting
+
+Commit name: Derive source fractions from sampled rows.
+
+The original-only control metrics file revealed that the trainer used the full BFCL train source size rather than the BFCL rows actually sampled when it wrote the source fraction. Updated the experiment name, W&B job type, purpose, selection text, and source-fraction calculation so a zero-BFCL run records 0.0 BFCL and 1.0 original data. Corrected the already generated, ignored control metrics artifact to reflect the actual sample counts. This change affects metadata only and does not change training or results.

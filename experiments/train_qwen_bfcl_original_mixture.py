@@ -144,7 +144,7 @@ def main() -> int:
     # Combine the requested source sample and shuffle it with the run seed.
     training_rows = list(bfcl_sample) + list(original_sample)
     random.Random(args.seed).shuffle(training_rows)
-    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name=args.output_dir.name, job_type="bfcl-original-mixture-sft", config=config | {"bfcl_train_examples": len(bfcl_sample), "original_train_examples": len(original_sample), "bfcl_validation_examples": len(bfcl_validation), "original_validation_sample_examples": len(original_validation_sample), "original_validation_source_examples": len(original_validation), "official_test_selection": False})
+    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name=args.output_dir.name, job_type="bfcl-original-source-fraction-sft", config=config | {"bfcl_train_examples": len(bfcl_sample), "original_train_examples": len(original_sample), "bfcl_validation_examples": len(bfcl_validation), "original_validation_sample_examples": len(original_validation_sample), "original_validation_source_examples": len(original_validation), "official_test_selection": False})
     atexit.register(run.finish)
     # Fix all random sources before loading the base model and new LoRA adapter.
     random.seed(args.seed)
@@ -202,14 +202,14 @@ def main() -> int:
     # Save one aggregate experiment record without any individual test predictions.
     final_record = evaluations[-1]
     result = {
-        "experiment": "qwen25_1p5b_base_sft_bfcl_when2call_50_50",
-        "purpose": "Measure the effect of mixing source-disjoint BFCL action labels with original When2Call training rows.",
+        "experiment": f"qwen25_1p5b_base_sft_bfcl_{round(args.bfcl_fraction * 100)}_when2call_{100 - round(args.bfcl_fraction * 100)}",
+        "purpose": "Measure the effect of a fixed-budget BFCL and original When2Call source mixture.",
         "config": config,
         "base_model": args.model,
         "base_model_checkpoint": "Qwen/Qwen2.5-1.5B-Instruct before any task adapter training",
         "data": {"bfcl_file": str(args.bfcl_data), "bfcl_sha256": hashlib.sha256(args.bfcl_data.read_bytes()).hexdigest(), "bfcl_prompt_sha256": bfcl_metadata["prompt_sha256"], "bfcl_source_train_examples": len(bfcl_train), "bfcl_train_examples": len(bfcl_sample), "bfcl_validation_examples": len(bfcl_validation), "original_dataset": DATASET_NAME, "original_split": "train_pref", "original_split_seed": args.original_split_seed, "original_source_train_examples": len(original_train), "original_sample_examples": len(original_sample), "original_sample_fingerprint": fingerprint_rows(original_sample), "original_validation_source_examples": len(original_validation), "original_validation_sample_examples": len(original_validation_sample), "original_validation_sample_seed": args.seed + 1, "original_validation_sample_fingerprint": fingerprint_rows(original_validation_sample)},
-        "source_mix": {"bfcl_fraction": len(bfcl_train) / len(training_rows), "original_when2call_fraction": len(original_sample) / len(training_rows)},
-        "selection_procedure": "The BFCL train and validation splits were fixed before training. Equal-size deterministic stratified samples were drawn from the original When2Call train and validation partitions. The combined validation set is 50/50 by source. Checkpoints are selected by balanced held-out validation accuracy. Aggregate test metrics are report-only.",
+        "source_mix": {"bfcl_fraction": len(bfcl_sample) / len(training_rows), "original_when2call_fraction": len(original_sample) / len(training_rows)},
+        "selection_procedure": "The BFCL train and validation splits were fixed before training. A deterministic source mixture was sampled from the training partitions. The combined validation set is 50/50 by source. Checkpoints are selected by balanced held-out validation accuracy. Aggregate test metrics are report-only.",
         "test_label_use": "The model never receives test labels. Test accuracy and macro F1 are computed locally for baseline and checkpoint reports only.",
         "training_loss_by_epoch": losses,
         "baseline_metrics": baseline,
