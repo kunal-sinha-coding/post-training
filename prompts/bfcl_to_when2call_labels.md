@@ -2,42 +2,46 @@
 
 ## Task
 
-Read the complete BFCL example and assign the assistant's required action to one of the four When2Call labels. Use the conversation, system instructions, available function descriptions and schemas, BFCL category, and a reference call when one is provided. The category is evidence about the task structure. It is not the label by itself.
+Read one complete BFCL Live example and select the required assistant action from the When2Call four-way label set. Use the conversation, system instructions, visible function descriptions and schemas, BFCL category, and a reference call when provided. Apply a category only when it describes this exact question and visible function list.
 
 ## When2Call action labels
 
 Return exactly one action label:
 
-- `A` (`direct`): The assistant can satisfy the request in ordinary text without calling an available function. This includes a general answer or a text-generation task that does not need external information or an external action.
-- `B` (`tool_call`): At least one available function can satisfy the request, and the required arguments are stated or can be safely inferred from the conversation and system instructions.
-- `C` (`request_for_info`): An available function can satisfy the request, but at least one required argument is missing and cannot be safely inferred. The assistant should ask for that information.
-- `D` (`cannot_answer`): The assistant cannot responsibly satisfy the request from the conversation or general knowledge, and none of the available functions can satisfy it.
+- `A` (`direct`): The assistant can satisfy the request in ordinary text without an available function. This includes general knowledge answers and text generation that do not need external information or an external action.
+- `B` (`tool_call`): A visible function can perform the requested operation, and every required argument is stated or can be safely inferred from the conversation and system instructions.
+- `C` (`request_for_info`): A visible function can perform the requested operation, but a required argument is missing and cannot be safely inferred. The user can reasonably provide the missing value.
+- `D` (`cannot_answer`): No visible function can perform the requested operation, and the assistant cannot responsibly satisfy the request directly. This includes requests that need unavailable live, private, transactional, or physical capabilities.
 
-Do not use `D` just because no function should be called. Choose `A` when the assistant can answer directly. Choose `D` only when the request cannot be met without unavailable information or capability.
+Do not choose `C` only because a function is vaguely related to the topic. The function must perform the requested operation. Do not choose `D` when the assistant can answer directly without a function.
 
-## BFCL category definitions
+## BFCL categories
 
-Use these definitions to understand what the BFCL example is designed to test:
+The category describes the function-call structure expected for the BFCL example:
 
-- `Simple`: One function is available and one function call is expected.
-- `Multiple`: More than one function is available and one function call is expected.
-- `Parallel`: One function is available and multiple invocations are expected, usually with different arguments.
-- `Parallel Multiple`: Multiple functions are available and multiple distinct function calls are expected.
-- `Relevance`: At least one available function is relevant and a function call is expected. BFCL may not provide one canonical call because several valid calls can satisfy the request.
-- `Irrelevance`: None of the available functions is relevant, so no function call is expected. The assistant may still answer directly, or it may be unable to answer. Decide between `A` and `D` from the request itself.
+- `Simple`: One function is available and one call is expected.
+- `Multiple`: More than one function is available and one call is expected.
+- `Parallel`: One function is available and multiple invocations are expected.
+- `Parallel Multiple`: Multiple functions are available and multiple distinct calls are expected.
+- `Relevance`: At least one visible function is relevant and a call is expected. BFCL may allow several valid calls and provide no single canonical call.
+- `Irrelevance`: No visible function is relevant, so no function call is expected.
 
-These categories do not replace the action-label definitions. For example, a call-oriented category can map to `C` if a required argument is genuinely missing. An Irrelevance example can map to `A` or `D`.
+## Category rules
+
+- For `Simple`, `Multiple`, `Parallel`, `Parallel Multiple`, and `Relevance`, choose `B` when the required values are available. Choose `C` only when the function can perform the requested operation but a required user value is missing.
+- For `Irrelevance`, choose `A` if the assistant can answer in text. Choose `D` if the request still cannot be met. Never choose `B` or `C` for a valid Irrelevance example.
+- These rules apply only when the category matches the question and visible functions. A transformed example may have a changed function list. Do not infer that the original BFCL category still applies from a source ID alone. If the category conflicts with the visible example, set `needs_review` to `true`, explain the conflict, and label the action from the visible request and functions.
 
 ## Decision procedure
 
-1. Read all system and user messages. Identify the user's actual request and any constraints.
-2. Inspect the available function names, descriptions, required parameters, types, and constraints. Decide whether a function can fulfill the request.
-3. If no function is needed and the assistant can answer in text, choose `A`.
-4. If a suitable function exists and its required arguments are available or safely inferable, choose `B`.
-5. If a suitable function exists but a required argument is missing and cannot be inferred, choose `C`.
-6. If no suitable function exists and the assistant cannot responsibly answer directly, choose `D`.
-7. Use the BFCL reference call, when provided, to check which function or functions BFCL expects and the expected call count. Do not assume that reference argument values were stated by the user. Verify each value against the conversation and system instructions.
-8. Do not invent function capabilities, argument values, or missing context. If the best label remains uncertain, give the best-supported A/B/C/D label and set `needs_review` to `true` with a short reason.
+1. Read every system and user message. Identify the requested operation and constraints.
+2. Check each visible function's documented purpose, required parameters, types, defaults, and constraints.
+3. Choose `A` if no function is needed and the request can be answered directly.
+4. Choose `B` only if a suitable visible function can perform the requested operation and its required arguments are available or safely inferable. A schema default counts as available. Never invent an identifier or other required value.
+5. Choose `C` only if a suitable visible function can perform the operation after the user supplies a specific missing required value.
+6. Choose `D` if no visible function can perform the operation and a direct answer would require unavailable information or capability.
+7. Use BFCL reference calls, when provided, to identify the intended function and expected call count. A reference argument value is not proof that the user supplied that value. Check the conversation.
+8. If evidence conflicts or remains unclear, return the best-supported action label and set `needs_review` to `true` with a short reason.
 
 ## Required output
 
@@ -48,15 +52,15 @@ Return one JSON object and no other text:
   "label": "A | B | C | D",
   "label_name": "direct | tool_call | request_for_info | cannot_answer",
   "confidence": "high | medium | low",
-  "rationale": "Short explanation grounded in the request and available functions.",
+  "rationale": "Short explanation grounded in the request and visible functions.",
   "expected_call_count": 0,
   "needs_review": false,
   "review_reason": null
 }
 ```
 
-Set `expected_call_count` from a BFCL reference answer when available. Use `0` for Irrelevance. Use `null` when BFCL gives no reference call. This field records task structure and does not change the four-way action label.
+Set `expected_call_count` from a BFCL reference call when available. Use `1` for `Simple`, `Multiple`, and `Relevance` when no exact count is given. Use the reference count for `Parallel` and `Parallel Multiple`. Use `0` for `Irrelevance`. Use `null` if the category or count does not apply to the visible example. This field does not change the action label.
 
 ## Data and evaluation limits
 
-Label only the BFCL training candidates that pass the source-ID and text-overlap audit. Do not use When2Call validation or test labels to create, revise, or select labels. Keep black-box test evaluation separate and report aggregate metrics only after the model and training procedure are fixed.
+Label only BFCL training candidates that pass the source-ID and text-overlap audit. Do not use When2Call validation or test labels to create, revise, or select labels. Keep any benchmark comparison separate and report aggregate metrics only after the prompt and labels are fixed.
