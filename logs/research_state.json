@@ -4,53 +4,10 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "fresh_base_bfcl_when2call_data_exploration_v1",
-  "current_hypothesis": "The equal probability average of the three-encoder family and Qwen scored 0.974 clean-validation accuracy on the matched split, above the entropy gate and Qwen. The queued request-confidence replication will check whether single-encoder routing also transfers to another split.",
+  "current_hypothesis": "Request-confidence-0.80 routing again exceeded Qwen on clean validation, scoring 0.966 versus 0.956 accuracy. Its matching full-test metric already exists. The queued three-encoder average-versus-gate replication will check fusion stability on a fourth capped clean sample.",
   "active_experiment": {
-    "pid": 126240,
+    "pid": 126582,
     "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_existing_when2call_hybrid_validation",
-      "--output-dir",
-      "outputs/qwen-single-encoder-rule-replication-validation-20261094",
-      "--split-seed",
-      "20261094",
-      "--sample-seed",
-      "20261095",
-      "--max-validation-examples",
-      "500",
-      "--qwen-checkpoint",
-      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
-      "--encoder-checkpoint",
-      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
-      "--batch-size",
-      "1"
-    ],
-    "started_at": "2026-10-26T18:14:36.898653+00:00"
-  },
-  "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.evaluate_existing_when2call_hybrid_validation",
-    "--output-dir",
-    "outputs/qwen-single-encoder-rule-replication-validation-20261094",
-    "--split-seed",
-    "20261094",
-    "--sample-seed",
-    "20261095",
-    "--max-validation-examples",
-    "500",
-    "--qwen-checkpoint",
-    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
-    "--encoder-checkpoint",
-    "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
-    "--batch-size",
-    "1"
-  ],
-  "worker_queue": [
-    [
       "python",
       "-u",
       "-m",
@@ -73,8 +30,34 @@
       "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
       "--batch-size",
       "1"
-    ]
+    ],
+    "started_at": "2026-10-26T18:16:37.402075+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_existing_when2call_hybrid_validation",
+    "--output-dir",
+    "outputs/qwen-three-encoder-averaging-replication-20261096",
+    "--split-seed",
+    "20261096",
+    "--sample-seed",
+    "20261097",
+    "--max-validation-examples",
+    "500",
+    "--qwen-checkpoint",
+    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "--encoder-checkpoint",
+    "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065",
+    "--encoder-checkpoint",
+    "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061",
+    "--encoder-checkpoint",
+    "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
+    "--batch-size",
+    "1"
   ],
+  "worker_queue": [],
   "_previous_command": [
     "python",
     "-u",
@@ -107,10 +90,10 @@
     "macro_f1": 0.48337889372616516,
     "selection": "clean validation only"
   },
-  "last_heartbeat": "2026-10-26T18:14:36.898667+00:00",
-  "last_action": "The matched three-encoder validation completed with training provenance, 500-row clean validation, and matching aggregate test evidence from the exact same frozen components. Equal family averaging scored 0.974 accuracy / 0.981830 macro F1. A fresh request-confidence replication is first in queue, followed by another three-encoder average-versus-gate validation split.",
+  "last_heartbeat": "2026-10-26T18:16:37.402088+00:00",
+  "last_action": "The request-confidence replication completed with training provenance, 500-row clean validation, and a matching prior aggregate test measurement. No evidence is missing. The fourth split three-encoder average-versus-gate validation is now next in queue.",
   "watchdog_enabled": true,
-  "research_log_size": 908852,
+  "research_log_size": 912073,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -150,12 +133,12 @@
     "metrics": "outputs/qwen-three-encoder-gate-test-20261082/aggregate-comparison.json",
     "selection": "Reported as the highest aggregate score in this frozen comparison only. Test metrics did not select the candidate; clean validation selected the entropy gate."
   },
-  "next_hypothesis": "Across three clean splits, average and entropy gating have traded small accuracy leads. A fourth capped clean SFT sample can test whether equal averaging is the more stable rule without using test metrics.",
+  "next_hypothesis": "Across clean splits, probability averaging and entropy gating differ by only a few examples. Compare them on another shared sample and assess whether either has a repeatable validation advantage.",
   "post_queue_report_required": {
     "required": true,
-    "trigger": "After the request-confidence replication and the fourth three-encoder clean-validation screen.",
-    "contents": "Report all clean-validation results and training provenance; link the matching aggregate black-box test metrics for candidates that have already been measured. If a new selected method lacks test evidence, queue that aggregate measurement before any later experiment.",
-    "selection": "Clean validation only; test labels and aggregate test metrics never select candidates."
+    "trigger": "After the fourth split three-encoder average-versus-gate validation.",
+    "contents": "Report the rule replication metrics and prior matching aggregate test result, the matched single-versus-three-encoder validation, and the fourth split fusion validation. Keep splits separate and do not select from aggregate test metrics.",
+    "selection": "Clean validation only; aggregate test values are report-only."
   },
   "pause_reason": null,
   "paused_at": null,
@@ -187,15 +170,15 @@
     "selection_use": "none"
   },
   "evidence_audit": {
-    "latest_completed_experiment": "qwen-three-encoder-routing-validation-20261092",
+    "latest_completed_experiment": "qwen-single-encoder-rule-replication-validation-20261094",
     "training_metrics_recorded": true,
-    "training_metrics_scope": "No training occurred in this evaluation. Training metrics are recorded for Qwen epoch 2 and all three encoder checkpoints.",
+    "training_metrics_scope": "No training occurred in this evaluation. Training metrics for the frozen Qwen and encoder checkpoints are recorded in their source experiment outputs.",
     "clean_validation_recorded": true,
-    "clean_validation_source": "outputs/qwen-three-encoder-routing-validation-20261092/metrics.json",
+    "clean_validation_source": "outputs/qwen-single-encoder-rule-replication-validation-20261094/metrics.json",
     "clean_validation_examples": 500,
     "aggregate_black_box_test_metrics_recorded": true,
-    "aggregate_black_box_test_source": "outputs/qwen-three-encoder-gate-test-20261082/aggregate-comparison.json",
-    "aggregate_black_box_test_scope": "The exact same Qwen and three encoders with equal probability averaging and entropy gating were measured on all 3,652 rows.",
+    "aggregate_black_box_test_source": "outputs/fullpool-qwen-encoder-route80-test-20261070/aggregate-comparison.json",
+    "aggregate_black_box_test_scope": "The clean-validation leader request-confidence-0.80 uses the same frozen Qwen and encoder artifacts and already has a full 3,652-row aggregate test measurement.",
     "test_labels_used_for_selection": false
   },
   "duplicate_worker_failure": {
@@ -308,6 +291,20 @@
       "test_entropy_gate_accuracy": 0.6960569550930996,
       "test_entropy_gate_macro_f1": 0.5153830152498104,
       "selection": "Equal averaging and entropy gate tied on clean validation; equal average was frozen as primary before test scoring. Test metrics are report-only."
+    },
+    {
+      "method": "single_request_conf_80",
+      "validation_experiment": "qwen-single-encoder-rule-replication-validation-20261094",
+      "validation_accuracy": 0.966,
+      "validation_macro_f1": 0.9767472293788084,
+      "qwen_validation_accuracy": 0.956,
+      "qwen_validation_macro_f1": 0.9724664679582713,
+      "test_experiment": "fullpool-qwen-encoder-route80-test-20261070",
+      "test_accuracy": 0.702354874041621,
+      "test_macro_f1": 0.5282408989122551,
+      "paired_qwen_test_accuracy": 0.702354874041621,
+      "paired_qwen_test_macro_f1": 0.5277889126113546,
+      "selection": "Selected by clean validation only on this replication. The matching test score is from a previous aggregate-only measurement and remains report-only."
     }
   ],
   "latest_aggregate_test_report": {
