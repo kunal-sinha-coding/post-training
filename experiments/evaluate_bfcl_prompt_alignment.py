@@ -118,6 +118,7 @@ def main() -> int:
     parser.add_argument("--output", type=Path, default=Path("outputs/bfcl-prompt-test-alignment-20261026/metrics.json"))
     parser.add_argument("--poll-seconds", type=int, default=30)
     parser.add_argument("--batch-id")
+    parser.add_argument("--allow-partial", action="store_true")
     args = parser.parse_args()
     prompt = args.prompt.read_text(encoding="utf-8")
     prompt_sha = hashlib.sha256(prompt.encode("utf-8")).hexdigest()
@@ -143,12 +144,13 @@ def main() -> int:
         batch = client.batches.retrieve(batch.id)
         counts = batch.request_counts.model_dump() if batch.request_counts else None
         print(json.dumps({"batch_id": batch.id, "status": batch.status, "request_counts": counts}), flush=True)
-    if batch.status != "completed" or not batch.output_file_id:
+    partial_allowed = args.allow_partial and batch.status == "cancelled"
+    if (batch.status != "completed" and not partial_allowed) or not batch.output_file_id:
         raise RuntimeError(f"GPT-6 Luna batch ended with status={batch.status}, errors={batch.errors}")
     # Parse successful outputs in memory and reject incomplete runs instead of scoring a partial set.
     content = client.files.content(batch.output_file_id).read().decode("utf-8")
     outputs = [json.loads(line) for line in content.splitlines() if line.strip()]
-    if len(outputs) != len(rows):
+    if len(outputs) != len(rows) and not partial_allowed:
         raise RuntimeError(f"Expected {len(rows)} successful predictions, received {len(outputs)}. Error file: {batch.error_file_id}")
     by_index = {}
     usage = Counter()
@@ -163,10 +165,13 @@ def main() -> int:
         if body.get("usage"):
             usage["input_tokens"] += body["usage"].get("input_tokens", 0)
             usage["output_tokens"] += body["usage"].get("output_tokens", 0)
-    if len(by_index) != len(rows):
-        raise RuntimeError(f"Received {len(by_index)} unique labels for {len(rows)} examples.")
-    predicted = [by_index[index] for index in range(len(rows))]
-    metrics = aggregate(expected, predicted, categories)
+    if len(by_index) != len(outputs) or not by_index:
+        raise RuntimeError(f"Received {len(by_index)} unique labels from {len(outputs)} successful responses.")
+    completed_indices = sorted(by_index)
+    predicted = [by_index[index] for index in completed_indices]
+    scored_expected = [expected[index] for index in completed_indices]
+    scored_categories = [categories[index] for index in completed_indices]
+    metrics = aggregate(scored_expected, predicted, scored_categories)
     # Save dataset and prompt fingerprints plus aggregate scores, but no per-example test labels or predictions.
     result = {
         "experiment": "gpt6_luna_bfcl_label_prompt_alignment_when2call_test",
@@ -175,6 +180,9 @@ def main() -> int:
         "endpoint": "/v1/responses via OpenAI Batch API",
         "batch_id": batch.id,
         "batch_status": batch.status,
+        "partial_result": partial_allowed,
+        "completed_examples": len(completed_indices),
+        "not_scored_examples": len(rows) - len(completed_indices),
         "prompt_path": str(args.prompt),
         "prompt_sha256": prompt_sha,
         "test_dataset": "nvidia/When2Call test/mcq",
