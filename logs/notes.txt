@@ -7064,3 +7064,10 @@ Completed fresh base-model SFT with a 50/50 training mixture: 738 generated-labe
 The base model scored 0.2234 test accuracy and 0.2040 macro F1. Step 1,000 scored 0.5148 and 0.3840. Step 1,476 scored 0.5296 and 0.4048. The final training accuracy was 0.7771, balanced validation accuracy was 0.6495, BFCL validation accuracy was 0.5489, and original validation accuracy was 0.7500. The best balanced validation checkpoint is `outputs/qwen-bfcl-original-5050-base-seed20261050/step-001476`. The full record, including all metrics, data hashes, samples, settings, and W&B run, is in `logs/results.txt` and the ignored output directory's `metrics.json`.
 
 This result does not isolate the BFCL data contribution. The next useful comparison is a base-model control with the same 1,476 optimizer steps and same 50/50 held-out validation, but 1,476 original When2Call training examples. Compare both validation sources and report the aggregate test metrics without using them for checkpoint selection.
+
+
+## 2026-10-26: Add a same-budget original-only control
+
+Commit name: Support an original-only control for the BFCL mixture experiment.
+
+Added `--bfcl-fraction` to the mixture trainer so it can run a controlled source ablation without changing the base model, training budget, optimizer, evaluation schedule, or balanced validation design. The default remains the 50/50 mix. A fraction of zero trains on 1,476 original examples. The original-only sample keeps all 738 original examples used in the mixed run and adds 738 deterministic stratified examples from the remaining original training data. This nested sample reduces sampling differences while testing whether the BFCL examples add value.

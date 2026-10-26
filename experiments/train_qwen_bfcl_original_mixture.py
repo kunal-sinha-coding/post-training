@@ -52,6 +52,29 @@ def sample_stratified(rows: list[ClassificationRow], sample_size: int, seed: int
     return selected
 
 
+def extend_stratified_sample(rows: list[ClassificationRow], base: list[ClassificationRow], total_size: int, seed: int) -> list[ClassificationRow]:
+    """Extend a stratified sample while keeping every row in the base sample."""
+    # Compute target class counts for the full requested sample.
+    groups = {label: [row for row in rows if row.label == label] for label in range(len(LABELS))}
+    exact = {label: total_size * len(group) / len(rows) for label, group in groups.items()}
+    counts = {label: int(value) for label, value in exact.items()}
+    remainder = total_size - sum(counts.values())
+    for label in sorted(groups, key=lambda item: (exact[item] - counts[item], -item), reverse=True)[:remainder]:
+        counts[label] += 1
+    # Keep the base sample and add only the rows needed to reach each target count.
+    selected = list(base)
+    for label, group in groups.items():
+        existing = [row for row in base if row.label == label]
+        remaining = [row for row in group if row not in set(existing)]
+        needed = counts[label] - len(existing)
+        if needed < 0 or needed > len(remaining):
+            raise RuntimeError("The base sample cannot be extended to the requested stratified size.")
+        selected.extend(random.Random(seed + label).sample(remaining, needed))
+    # Shuffle the final sample without changing its membership.
+    random.Random(seed).shuffle(selected)
+    return selected
+
+
 def fingerprint_rows(rows: list[ClassificationRow]) -> str:
     """Hash prompt and label pairs without saving example text."""
     # Sort per-row hashes so the fingerprint does not depend on iteration order.
@@ -92,7 +115,11 @@ def main() -> int:
     parser.add_argument("--weight-decay", type=float, default=0.01)
     parser.add_argument("--lora-rank", type=int, default=16)
     parser.add_argument("--evaluation-steps", type=int, default=1000)
+    parser.add_argument("--bfcl-fraction", type=float, default=0.5)
     args = parser.parse_args()
+    # Reject source ratios that cannot form a valid two-source mixture.
+    if not 0.0 <= args.bfcl_fraction <= 1.0:
+        raise ValueError("--bfcl-fraction must be between 0 and 1.")
     # Require online W&B before loading training or benchmark data.
     if not os.getenv("WANDB_API_KEY"):
         raise RuntimeError("WANDB_API_KEY is required for Qwen experiments.")
@@ -102,15 +129,21 @@ def main() -> int:
     # Keep the original When2Call validation partition separate from its training rows.
     original_train, original_validation = split_rows(prepare_rows(load_rows()), args.original_split_seed)
     bfcl_train, bfcl_validation = load_labeled_rows(args.bfcl_data)
-    if len(original_train) < len(bfcl_train):
-        raise RuntimeError("The original training split is smaller than the BFCL training split.")
-    original_sample = sample_stratified(original_train, len(bfcl_train), args.seed)
+    total_training_examples = 2 * len(bfcl_train)
+    bfcl_sample_size = round(total_training_examples * args.bfcl_fraction)
+    original_sample_size = total_training_examples - bfcl_sample_size
+    if len(original_train) < original_sample_size:
+        raise RuntimeError("The original training split is smaller than the requested sample.")
+    original_sample = sample_stratified(original_train, min(original_sample_size, len(bfcl_train)), args.seed)
+    if original_sample_size > len(original_sample):
+        original_sample = extend_stratified_sample(original_train, original_sample, original_sample_size, args.seed)
+    bfcl_sample = sample_stratified(bfcl_train, bfcl_sample_size, args.seed + 2)
     # Match the original validation sample size to the BFCL held-out split.
     original_validation_sample = sample_stratified(original_validation, len(bfcl_validation), args.seed + 1)
     # Form an exact 50/50 mix and shuffle it with the run seed.
-    training_rows = list(bfcl_train) + list(original_sample)
+    training_rows = list(bfcl_sample) + list(original_sample)
     random.Random(args.seed).shuffle(training_rows)
-    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name=args.output_dir.name, job_type="bfcl-original-mixture-sft", config=config | {"bfcl_train_examples": len(bfcl_train), "original_train_examples": len(original_sample), "bfcl_validation_examples": len(bfcl_validation), "original_validation_sample_examples": len(original_validation_sample), "original_validation_source_examples": len(original_validation), "official_test_selection": False})
+    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name=args.output_dir.name, job_type="bfcl-original-mixture-sft", config=config | {"bfcl_train_examples": len(bfcl_sample), "original_train_examples": len(original_sample), "bfcl_validation_examples": len(bfcl_validation), "original_validation_sample_examples": len(original_validation_sample), "original_validation_source_examples": len(original_validation), "official_test_selection": False})
     atexit.register(run.finish)
     # Fix all random sources before loading the base model and new LoRA adapter.
     random.seed(args.seed)
@@ -173,7 +206,7 @@ def main() -> int:
         "config": config,
         "base_model": args.model,
         "base_model_checkpoint": "Qwen/Qwen2.5-1.5B-Instruct before any task adapter training",
-        "data": {"bfcl_file": str(args.bfcl_data), "bfcl_sha256": hashlib.sha256(args.bfcl_data.read_bytes()).hexdigest(), "bfcl_prompt_sha256": bfcl_metadata["prompt_sha256"], "bfcl_train_examples": len(bfcl_train), "bfcl_validation_examples": len(bfcl_validation), "original_dataset": DATASET_NAME, "original_split": "train_pref", "original_split_seed": args.original_split_seed, "original_source_train_examples": len(original_train), "original_sample_examples": len(original_sample), "original_sample_fingerprint": fingerprint_rows(original_sample), "original_validation_source_examples": len(original_validation), "original_validation_sample_examples": len(original_validation_sample), "original_validation_sample_seed": args.seed + 1, "original_validation_sample_fingerprint": fingerprint_rows(original_validation_sample)},
+        "data": {"bfcl_file": str(args.bfcl_data), "bfcl_sha256": hashlib.sha256(args.bfcl_data.read_bytes()).hexdigest(), "bfcl_prompt_sha256": bfcl_metadata["prompt_sha256"], "bfcl_source_train_examples": len(bfcl_train), "bfcl_train_examples": len(bfcl_sample), "bfcl_validation_examples": len(bfcl_validation), "original_dataset": DATASET_NAME, "original_split": "train_pref", "original_split_seed": args.original_split_seed, "original_source_train_examples": len(original_train), "original_sample_examples": len(original_sample), "original_sample_fingerprint": fingerprint_rows(original_sample), "original_validation_source_examples": len(original_validation), "original_validation_sample_examples": len(original_validation_sample), "original_validation_sample_seed": args.seed + 1, "original_validation_sample_fingerprint": fingerprint_rows(original_validation_sample)},
         "source_mix": {"bfcl_fraction": len(bfcl_train) / len(training_rows), "original_when2call_fraction": len(original_sample) / len(training_rows)},
         "selection_procedure": "The BFCL train and validation splits were fixed before training. Equal-size deterministic stratified samples were drawn from the original When2Call train and validation partitions. The combined validation set is 50/50 by source. Checkpoints are selected by balanced held-out validation accuracy. Aggregate test metrics are report-only.",
         "test_label_use": "The model never receives test labels. Test accuracy and macro F1 are computed locally for baseline and checkpoint reports only.",
