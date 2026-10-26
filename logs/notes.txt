@@ -7035,3 +7035,12 @@ The prompt iteration was stopped. On the fixed 100-row test sample, the correcte
 The highest historical Qwen/Qwen2.5-1.5B-Instruct checkpoint by aggregate test accuracy is `outputs/qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-seed20261035`, with test accuracy 0.693866 and macro F1 0.504333. It was trained for one epoch on 7,200 When2Call preference rows plus 238 Glaive tool-call rows, with LoRA rank 16, batch size 1, maximum length 4096, learning rate 2e-5, and weight decay 0.01. The user requested this historical checkpoint as the starting point. This uses an aggregate test score to select the initial checkpoint, as explicitly requested.
 
 Updated `experiments/train_qwen_bfcl_when2call.py` to continue that adapter on the 738 BFCL training rows only, evaluate training, held-out BFCL validation, and aggregate-only test metrics at every epoch, and select within-run checkpoints by held-out BFCL validation accuracy. The evaluator now scores the active adapter rather than disabling it. No training run had started at this commit.
+
+
+## 2026-10-26: Replace adapter continuation with a base-model 50/50 mixture
+
+Commit name: Add base Qwen training on balanced BFCL and When2Call data.
+
+The user corrected the training design to start from Qwen/Qwen2.5-1.5B-Instruct with a fresh LoRA adapter and a 50/50 mix of augmented BFCL and original When2Call data. Added `experiments/train_qwen_bfcl_original_mixture.py`. It uses all 738 BFCL training rows and a deterministic class-stratified sample of 738 rows from the fixed 7,200-row original When2Call training partition. It keeps the 184-row BFCL validation split and 1,800-row original validation split separate. It reports baseline metrics, then evaluates combined training, both validations, and aggregate-only black-box test metrics at step 1,000 and the epoch boundary. The first run uses one epoch, batch size 1, maximum length 4096, learning rate 2e-5, weight decay 0.01, and LoRA rank 16. Checkpoints are selected by BFCL held-out validation accuracy.
+
+The previously launched adapter-continuation run was stopped at the user's request after checking its progress. It was still in its baseline training-set evaluation, at evaluation row 438 of 738, and had made zero optimizer updates. W&B run `w50wdkow` produced no baseline result, trained checkpoint, or training metric. The corrected mixed-data run had not started at this commit.
