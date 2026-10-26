@@ -8767,3 +8767,34 @@ Queued a conditional measurement behind the active stacker fit. It reads only th
 ## Queue scalar calibration on a new clean split, 2026-10-26
 
 Queued a scalar-temperature calibration experiment behind the active stacker test worker. It draws at most 500 clean `train_sft` examples, splits fit and validation rows, fits one positive temperature per frozen model using only fit labels, and compares calibrated single-model and fusion candidates on clean validation. The official test data remains unavailable to this worker. A later test measurement will be gated on clean validation accuracy.
+
+## fullpool-qwen-encoder-stacker-test-20261074
+
+Timestamp: 2026-10-26T17:21:32.482275+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.conditionally_score_fullpool_stacker", "--training-metrics", "outputs/fullpool-qwen-encoder-stacker-validation-20261074/metrics.json", "--output-dir", "outputs/fullpool-qwen-encoder-stacker-test-20261074", "--work-dir", "outputs/fullpool-qwen-encoder-stacker-test-20261074/frozen", "--qwen-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02"]. Output: /workspace/post-training/outputs/fullpool-qwen-encoder-stacker-test-20261074. W&B run: yersx1yg.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: True. Test status: measured. Official test metrics: {"accuracy": 0.46741511500547644, "macro_f1": 0.2917470257141671, "macro_f1_present_classes": 0.3889960342855561}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.9799196787148594, "macro_f1": 0.9799144954424458}, "baseline_validation_metrics": {"qwen_sft": {"accuracy": 0.9317269076305221, "macro_f1": 0.9603841536614646}, "encoder_single": {"accuracy": 0.891566265060241, "macro_f1": 0.9335214967870202}, "single_average": {"accuracy": 0.9357429718875502, "macro_f1": 0.9624581539933046}, "single_request_conf_60": {"accuracy": 0.9558232931726908, "macro_f1": 0.9734024757443961}}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## fullpool-qwen-encoder-temperature-validation-20261081
+
+Timestamp: 2026-10-26T17:23:33.049786+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.calibrate_fullpool_when2call_ensemble", "--output-dir", "outputs/fullpool-qwen-encoder-temperature-validation-20261081", "--split-seed", "20261078", "--sample-seed", "20261079", "--meta-split-seed", "20261080", "--max-examples", "500", "--batch-size", "1"]. Output: /workspace/post-training/outputs/fullpool-qwen-encoder-temperature-validation-20261081. W&B run: 64wig9iy.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"qwen_sft": {"accuracy": 0.9558232931726908, "macro_f1": 0.9732659684812794}, "encoder_single": {"accuracy": 0.8795180722891566, "macro_f1": 0.9246354483895238}, "single_average": {"accuracy": 0.9558232931726908, "macro_f1": 0.9752549263359483}, "single_request_conf_60": {"accuracy": 0.963855421686747, "macro_f1": 0.975609756097561}, "qwen_temperature": {"accuracy": 0.9558232931726908, "macro_f1": 0.9732659684812794}, "encoder_temperature": {"accuracy": 0.8795180722891566, "macro_f1": 0.9246354483895238}, "temperature_average": {"accuracy": 0.9518072289156626, "macro_f1": 0.9749593385741393}, "temperature_request_conf_60": {"accuracy": 0.963855421686747, "macro_f1": 0.975609756097561}}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+
+## Calibration result and multi-encoder follow-up, 2026-10-26
+
+Scalar temperature fitting learned Qwen T=1.7659 and encoder T=1.2373 on 251 clean fit examples and evaluated on 249 disjoint validation examples. Qwen accuracy was 0.9558; the raw and calibrated Qwen scores matched. The request-confidence-0.60 route remained highest at 0.9639, unchanged by calibration. No new test measurement is justified by validation.
+
+The next queued experiment compares the three existing encoders and their fixed-weight family ensemble with full-pool Qwen on a new clean sample capped at 500. This expands model diversity without using test metrics for selection. Follow-up directions include Qwen checkpoint and seed diversity, fixed prompt variants, disagreement and input-structure routes, and source-disjoint BFCL holdouts.

@@ -51818,3 +51818,1244 @@ The complete setup and observed results are recorded below. Source validation sp
 
 Cross-split clean-validation confirmation, 2026-10-26
 On the second deterministic 500-row clean `train_sft` sample, Qwen scored 0.9360 accuracy / 0.9570 macro F1, the encoder scored 0.9220 / 0.9489, equal average scored 0.9480 / 0.9663, and request_for_info confidence routing at threshold 0.60 scored 0.9500 / 0.9636. The 0.60 route improved over Qwen on both clean samples. It is frozen for one aggregate test measurement. The threshold-0.80 route test tied Qwen at 0.70235 accuracy; its macro F1 was 0.52824 versus 0.52779. Test metrics remain report-only.
+
+## fullpool-qwen-encoder-route60-prepare-20261073
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "prepare",
+    "--work-dir",
+    "outputs/fullpool-qwen-encoder-route60-20261073",
+    "--output-dir",
+    "outputs/fullpool-qwen-encoder-route60-prepare-20261073",
+    "--suite",
+    "single-request-confidence",
+    "--qwen-checkpoint",
+    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "--methods",
+    "single_request_conf_60",
+    "--primary-method",
+    "single_request_conf_60",
+    "--batch-size",
+    "4"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "fullpool-qwen-encoder-route60-prepare-20261073",
+  "failure_reason": null,
+  "metadata": {
+    "command": [
+      "/usr/local/bin/python",
+      "/workspace/post-training/experiments/existing_when2call_hybrid.py",
+      "prepare",
+      "--work-dir",
+      "outputs/fullpool-qwen-encoder-route60-20261073",
+      "--output-dir",
+      "outputs/fullpool-qwen-encoder-route60-prepare-20261073",
+      "--suite",
+      "single-request-confidence",
+      "--qwen-checkpoint",
+      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "--methods",
+      "single_request_conf_60",
+      "--primary-method",
+      "single_request_conf_60",
+      "--batch-size",
+      "4"
+    ],
+    "configuration": {
+      "batch_size": 4,
+      "methods": [
+        "single_request_conf_60"
+      ],
+      "mode": "prepare",
+      "output_dir": "outputs/fullpool-qwen-encoder-route60-prepare-20261073",
+      "primary_method": "single_request_conf_60",
+      "qwen_checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "suite": "single-request-confidence",
+      "work_dir": "outputs/fullpool-qwen-encoder-route60-20261073"
+    },
+    "encoder_logit_weights": [
+      1.0
+    ],
+    "encoders": [
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+    ],
+    "frozen_configuration": {
+      "artifact_sha256": {
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/encoder_config.json": "0616e72a787934ed1fa3bec80e5da45239be1a1c267525c92960b83e9c44c12f",
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/model_state.pt": "815459d76b8c2e9fb7ba44e2f3867379ab096766cf9f1c807a08921be26593b5",
+        "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02/adapter_config.json": "bfe4f64a34cbe48967937473e3f0558033c8b98578e46a9fe7447d86404c37f9",
+        "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02/adapter_model.safetensors": "6afccbb2022780a2bc986e08cf48eb376635cd345d6672d1613ec7e4355d0484",
+        "outputs/when2call-jina-v2-small/latest/tokenizer.json": "e9f999ac74497843ed9f4303246a8f43d9f100ee8aab8e133667903f447ceb48"
+      },
+      "development_selection_performed": false,
+      "encoder_logit_weights": [
+        1.0
+      ],
+      "encoders": [
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+      ],
+      "family_probability_weights": [
+        0.5,
+        0.5
+      ],
+      "fusion_rules": {
+        "request_conf_40": "Use encoder probabilities when its top class is request_for_info and its top probability is at least 0.40. Use Qwen otherwise.",
+        "request_conf_60": "Use encoder probabilities when its top class is request_for_info and its top probability is at least 0.60. Use Qwen otherwise.",
+        "request_conf_80": "Use encoder probabilities when its top class is request_for_info and its top probability is at least 0.80. Use Qwen otherwise."
+      },
+      "historical_selection_limitation": "Existing encoder approaches were identified in prior research with repeated official benchmark inspection. This fixed comparison is a benchmark measurement, not a new independent generalization estimate.",
+      "hypothesis": "Clean validation favored the encoder request_for_info region, while the fixed class route did not improve aggregate test accuracy. Confidence filtering tests whether restricting that route to more certain encoder predictions improves validation transfer. Thresholds are fixed before scoring.",
+      "label_order": [
+        "cannot_answer",
+        "request_for_info",
+        "tool_call",
+        "direct"
+      ],
+      "max_length": 4096,
+      "methods": [
+        "single_request_conf_60"
+      ],
+      "metric_definition": "Primary macro F1 includes all four declared classes. The present-class macro F1 diagnostic permits comparison with historical encoder reports.",
+      "primary_method": "single_request_conf_60",
+      "qwen_base": "Qwen/Qwen2.5-1.5B-Instruct",
+      "qwen_checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "qwen_mapping": "Historical adapter training used LABEL_TO_ID directly despite reversed ABCD descriptions in its prompt. Preserve learned identity indices.",
+      "qwen_output_permutation": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "selection_complete": true,
+      "single_encoder_index": 0,
+      "suite": "single-request-confidence",
+      "test_status": "queued",
+      "training_performed": false,
+      "validation_limitation": "Existing encoder warm starts saw all train_pref rows. Clean source validation is used to select the frozen fusion rule. Test metrics are report-only."
+    },
+    "git_commit": "48edda46cabc73228393e5baa1d3af24730e5e65",
+    "max_length": 4096,
+    "primary_method": "single_request_conf_60",
+    "qwen_checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "runtime_seconds": 0.977531909942627,
+    "status": "completed",
+    "suite": "single-request-confidence",
+    "test_status": "queued",
+    "wandb_run_id": "5aoqcu7o",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/5aoqcu7o"
+  },
+  "metrics_path": "/workspace/post-training/outputs/fullpool-qwen-encoder-route60-prepare-20261073/metrics.json",
+  "official_test_loaded": null,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/fullpool-qwen-encoder-route60-prepare-20261073",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-26T16:58:22.520434+00:00",
+  "status": "completed",
+  "test_status": "queued",
+  "timestamp": "2026-10-26T16:59:23.191310+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "5aoqcu7o",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/5aoqcu7o"
+}
+```
+
+## fullpool-qwen-encoder-route60-test-20261073
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "test",
+    "--work-dir",
+    "outputs/fullpool-qwen-encoder-route60-20261073",
+    "--output-dir",
+    "outputs/fullpool-qwen-encoder-route60-test-20261073",
+    "--suite",
+    "single-request-confidence",
+    "--qwen-checkpoint",
+    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "--methods",
+    "single_request_conf_60",
+    "--primary-method",
+    "single_request_conf_60",
+    "--batch-size",
+    "4"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "fullpool-qwen-encoder-route60-test-20261073",
+  "failure_reason": null,
+  "metadata": {
+    "all_methods": {
+      "encoder_single": {
+        "accuracy": 0.5922782037239869,
+        "macro_f1": 0.43965574889312375,
+        "macro_f1_present_classes": 0.5862076651908317
+      },
+      "qwen_sft": {
+        "accuracy": 0.702354874041621,
+        "macro_f1": 0.5277889126113546,
+        "macro_f1_present_classes": 0.7037185501484728
+      },
+      "single_request_conf_60": {
+        "accuracy": 0.6976998904709748,
+        "macro_f1": 0.5251559223456526,
+        "macro_f1_present_classes": 0.7002078964608701
+      }
+    },
+    "black_box": true,
+    "command": [
+      "/usr/local/bin/python",
+      "/workspace/post-training/experiments/existing_when2call_hybrid.py",
+      "test",
+      "--work-dir",
+      "outputs/fullpool-qwen-encoder-route60-20261073",
+      "--output-dir",
+      "outputs/fullpool-qwen-encoder-route60-test-20261073",
+      "--suite",
+      "single-request-confidence",
+      "--qwen-checkpoint",
+      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "--methods",
+      "single_request_conf_60",
+      "--primary-method",
+      "single_request_conf_60",
+      "--batch-size",
+      "4"
+    ],
+    "configuration": {
+      "batch_size": 4,
+      "methods": [
+        "single_request_conf_60"
+      ],
+      "mode": "test",
+      "output_dir": "outputs/fullpool-qwen-encoder-route60-test-20261073",
+      "primary_method": "single_request_conf_60",
+      "qwen_checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "suite": "single-request-confidence",
+      "work_dir": "outputs/fullpool-qwen-encoder-route60-20261073"
+    },
+    "dataset": "nvidia/When2Call",
+    "dataset_revision": "0582f7749df63a96fdc3070932e83e72396ace53",
+    "encoder_logit_weights": [
+      1.0
+    ],
+    "encoders": [
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+    ],
+    "examples": 3652,
+    "frozen_config_sha256": "c09df1e24e64648978dbd2518c96f53a2b3556aa69a173b2fe59015d096493dd",
+    "frozen_configuration": {
+      "artifact_sha256": {
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/encoder_config.json": "0616e72a787934ed1fa3bec80e5da45239be1a1c267525c92960b83e9c44c12f",
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/model_state.pt": "815459d76b8c2e9fb7ba44e2f3867379ab096766cf9f1c807a08921be26593b5",
+        "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02/adapter_config.json": "bfe4f64a34cbe48967937473e3f0558033c8b98578e46a9fe7447d86404c37f9",
+        "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02/adapter_model.safetensors": "6afccbb2022780a2bc986e08cf48eb376635cd345d6672d1613ec7e4355d0484",
+        "outputs/when2call-jina-v2-small/latest/tokenizer.json": "e9f999ac74497843ed9f4303246a8f43d9f100ee8aab8e133667903f447ceb48"
+      },
+      "development_selection_performed": false,
+      "encoder_logit_weights": [
+        1.0
+      ],
+      "encoders": [
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+      ],
+      "family_probability_weights": [
+        0.5,
+        0.5
+      ],
+      "fusion_rules": {
+        "request_conf_40": "Use encoder probabilities when its top class is request_for_info and its top probability is at least 0.40. Use Qwen otherwise.",
+        "request_conf_60": "Use encoder probabilities when its top class is request_for_info and its top probability is at least 0.60. Use Qwen otherwise.",
+        "request_conf_80": "Use encoder probabilities when its top class is request_for_info and its top probability is at least 0.80. Use Qwen otherwise."
+      },
+      "historical_selection_limitation": "Existing encoder approaches were identified in prior research with repeated official benchmark inspection. This fixed comparison is a benchmark measurement, not a new independent generalization estimate.",
+      "hypothesis": "Clean validation favored the encoder request_for_info region, while the fixed class route did not improve aggregate test accuracy. Confidence filtering tests whether restricting that route to more certain encoder predictions improves validation transfer. Thresholds are fixed before scoring.",
+      "label_order": [
+        "cannot_answer",
+        "request_for_info",
+        "tool_call",
+        "direct"
+      ],
+      "max_length": 4096,
+      "methods": [
+        "single_request_conf_60"
+      ],
+      "metric_definition": "Primary macro F1 includes all four declared classes. The present-class macro F1 diagnostic permits comparison with historical encoder reports.",
+      "primary_method": "single_request_conf_60",
+      "qwen_base": "Qwen/Qwen2.5-1.5B-Instruct",
+      "qwen_checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "qwen_mapping": "Historical adapter training used LABEL_TO_ID directly despite reversed ABCD descriptions in its prompt. Preserve learned identity indices.",
+      "qwen_output_permutation": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "selection_complete": true,
+      "single_encoder_index": 0,
+      "suite": "single-request-confidence",
+      "test_status": "queued",
+      "training_performed": false,
+      "validation_limitation": "Existing encoder warm starts saw all train_pref rows. Clean source validation is used to select the frozen fusion rule. Test metrics are report-only."
+    },
+    "git_commit": "d129a44d14646654a5ec9fc08160731ff3fb8ce0",
+    "max_length": 4096,
+    "official_test_loaded": true,
+    "official_test_metrics": {
+      "accuracy": 0.6976998904709748,
+      "macro_f1": 0.5251559223456526,
+      "macro_f1_present_classes": 0.7002078964608701
+    },
+    "primary_method": "single_request_conf_60",
+    "qwen_checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "runtime_seconds": 404.0141854286194,
+    "selection_complete": true,
+    "split": "test/mcq",
+    "status": "completed",
+    "suite": "single-request-confidence",
+    "test_measurement_only": true,
+    "test_selection_performed": false,
+    "test_status": "measured",
+    "wandb_run_id": "5una9g4l",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/5una9g4l"
+  },
+  "metrics_path": "/workspace/post-training/outputs/fullpool-qwen-encoder-route60-test-20261073/metrics.json",
+  "official_test_loaded": true,
+  "official_test_metrics": {
+    "accuracy": 0.6976998904709748,
+    "macro_f1": 0.5251559223456526,
+    "macro_f1_present_classes": 0.7002078964608701
+  },
+  "output_dir": "/workspace/post-training/outputs/fullpool-qwen-encoder-route60-test-20261073",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-26T16:59:22.965781+00:00",
+  "status": "completed",
+  "test_status": "measured",
+  "timestamp": "2026-10-26T17:06:54.247597+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "5una9g4l",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/5una9g4l"
+}
+```
+
+## fullpool-qwen-encoder-stacker-validation-20261074
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.train_fullpool_when2call_stacker",
+    "--output-dir",
+    "outputs/fullpool-qwen-encoder-stacker-validation-20261074",
+    "--split-seed",
+    "20261075",
+    "--sample-seed",
+    "20261076",
+    "--meta-split-seed",
+    "20261077",
+    "--max-examples",
+    "500",
+    "--batch-size",
+    "1",
+    "--epochs",
+    "100",
+    "--learning-rate",
+    "0.02",
+    "--weight-decay",
+    "0.1",
+    "--patience",
+    "10"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "fullpool-qwen-encoder-stacker-validation-20261074",
+  "failure_reason": null,
+  "metadata": {
+    "baseline_validation_metrics": {
+      "encoder_single": {
+        "accuracy": 0.891566265060241,
+        "macro_f1": 0.9335214967870202
+      },
+      "qwen_sft": {
+        "accuracy": 0.9317269076305221,
+        "macro_f1": 0.9603841536614646
+      },
+      "single_average": {
+        "accuracy": 0.9357429718875502,
+        "macro_f1": 0.9624581539933046
+      },
+      "single_request_conf_60": {
+        "accuracy": 0.9558232931726908,
+        "macro_f1": 0.9734024757443961
+      }
+    },
+    "git_commit": "d15e91cfc53605265653ff1bda27c5bda7dd48e5",
+    "heldout_validation_metrics": {
+      "accuracy": 0.9799196787148594,
+      "macro_f1": 0.9799144954424458
+    },
+    "history": [
+      {
+        "epoch": 1,
+        "training_loss": 1.3852312564849854,
+        "training_metrics": {
+          "accuracy": 0.4940239043824701,
+          "macro_f1": 0.33066666666666666
+        },
+        "validation_metrics": {
+          "accuracy": 0.4819277108433735,
+          "macro_f1": 0.3260869565217391
+        }
+      },
+      {
+        "epoch": 2,
+        "training_loss": 1.3122012615203857,
+        "training_metrics": {
+          "accuracy": 0.49800796812749004,
+          "macro_f1": 0.3324468085106383
+        },
+        "validation_metrics": {
+          "accuracy": 0.4979919678714859,
+          "macro_f1": 0.3324396782841823
+        }
+      },
+      {
+        "epoch": 3,
+        "training_loss": 1.241697072982788,
+        "training_metrics": {
+          "accuracy": 0.49800796812749004,
+          "macro_f1": 0.3324468085106383
+        },
+        "validation_metrics": {
+          "accuracy": 0.4979919678714859,
+          "macro_f1": 0.3324396782841823
+        }
+      },
+      {
+        "epoch": 4,
+        "training_loss": 1.1738024950027466,
+        "training_metrics": {
+          "accuracy": 0.49800796812749004,
+          "macro_f1": 0.3324468085106383
+        },
+        "validation_metrics": {
+          "accuracy": 0.4979919678714859,
+          "macro_f1": 0.3324396782841823
+        }
+      },
+      {
+        "epoch": 5,
+        "training_loss": 1.1085869073867798,
+        "training_metrics": {
+          "accuracy": 0.49800796812749004,
+          "macro_f1": 0.3324468085106383
+        },
+        "validation_metrics": {
+          "accuracy": 0.4979919678714859,
+          "macro_f1": 0.3324396782841823
+        }
+      },
+      {
+        "epoch": 6,
+        "training_loss": 1.0461052656173706,
+        "training_metrics": {
+          "accuracy": 0.49800796812749004,
+          "macro_f1": 0.3324468085106383
+        },
+        "validation_metrics": {
+          "accuracy": 0.4979919678714859,
+          "macro_f1": 0.3324396782841823
+        }
+      },
+      {
+        "epoch": 7,
+        "training_loss": 0.9863961338996887,
+        "training_metrics": {
+          "accuracy": 0.49800796812749004,
+          "macro_f1": 0.3324468085106383
+        },
+        "validation_metrics": {
+          "accuracy": 0.4979919678714859,
+          "macro_f1": 0.3324396782841823
+        }
+      },
+      {
+        "epoch": 8,
+        "training_loss": 0.9294813871383667,
+        "training_metrics": {
+          "accuracy": 0.49800796812749004,
+          "macro_f1": 0.3324468085106383
+        },
+        "validation_metrics": {
+          "accuracy": 0.4979919678714859,
+          "macro_f1": 0.3324396782841823
+        }
+      },
+      {
+        "epoch": 9,
+        "training_loss": 0.8753657341003418,
+        "training_metrics": {
+          "accuracy": 0.9442231075697212,
+          "macro_f1": 0.9441157760814249
+        },
+        "validation_metrics": {
+          "accuracy": 0.9678714859437751,
+          "macro_f1": 0.9678460743801653
+        }
+      },
+      {
+        "epoch": 10,
+        "training_loss": 0.8240366578102112,
+        "training_metrics": {
+          "accuracy": 0.952191235059761,
+          "macro_f1": 0.9521296884933248
+        },
+        "validation_metrics": {
+          "accuracy": 0.9678714859437751,
+          "macro_f1": 0.9678460743801653
+        }
+      },
+      {
+        "epoch": 11,
+        "training_loss": 0.7754653096199036,
+        "training_metrics": {
+          "accuracy": 0.952191235059761,
+          "macro_f1": 0.9521296884933248
+        },
+        "validation_metrics": {
+          "accuracy": 0.9678714859437751,
+          "macro_f1": 0.9678460743801653
+        }
+      },
+      {
+        "epoch": 12,
+        "training_loss": 0.7296080589294434,
+        "training_metrics": {
+          "accuracy": 0.952191235059761,
+          "macro_f1": 0.9521296884933248
+        },
+        "validation_metrics": {
+          "accuracy": 0.9678714859437751,
+          "macro_f1": 0.9678460743801653
+        }
+      },
+      {
+        "epoch": 13,
+        "training_loss": 0.6864073872566223,
+        "training_metrics": {
+          "accuracy": 0.9681274900398407,
+          "macro_f1": 0.968114837398374
+        },
+        "validation_metrics": {
+          "accuracy": 0.9678714859437751,
+          "macro_f1": 0.9678460743801653
+        }
+      },
+      {
+        "epoch": 14,
+        "training_loss": 0.6457933187484741,
+        "training_metrics": {
+          "accuracy": 0.9721115537848606,
+          "macro_f1": 0.9721044693180916
+        },
+        "validation_metrics": {
+          "accuracy": 0.9718875502008032,
+          "macro_f1": 0.9718712176228517
+        }
+      },
+      {
+        "epoch": 15,
+        "training_loss": 0.6076859831809998,
+        "training_metrics": {
+          "accuracy": 0.9721115537848606,
+          "macro_f1": 0.9721044693180916
+        },
+        "validation_metrics": {
+          "accuracy": 0.9759036144578314,
+          "macro_f1": 0.9758938944107396
+        }
+      },
+      {
+        "epoch": 16,
+        "training_loss": 0.5719971060752869,
+        "training_metrics": {
+          "accuracy": 0.9721115537848606,
+          "macro_f1": 0.9721044693180916
+        },
+        "validation_metrics": {
+          "accuracy": 0.9759036144578314,
+          "macro_f1": 0.9758938944107396
+        }
+      },
+      {
+        "epoch": 17,
+        "training_loss": 0.5386313796043396,
+        "training_metrics": {
+          "accuracy": 0.9721115537848606,
+          "macro_f1": 0.9721044693180916
+        },
+        "validation_metrics": {
+          "accuracy": 0.9759036144578314,
+          "macro_f1": 0.9758938944107396
+        }
+      },
+      {
+        "epoch": 18,
+        "training_loss": 0.5074889063835144,
+        "training_metrics": {
+          "accuracy": 0.9721115537848606,
+          "macro_f1": 0.9721044693180916
+        },
+        "validation_metrics": {
+          "accuracy": 0.9799196787148594,
+          "macro_f1": 0.9799144954424458
+        }
+      },
+      {
+        "epoch": 19,
+        "training_loss": 0.4784659743309021,
+        "training_metrics": {
+          "accuracy": 0.9721115537848606,
+          "macro_f1": 0.9721044693180916
+        },
+        "validation_metrics": {
+          "accuracy": 0.9799196787148594,
+          "macro_f1": 0.9799144954424458
+        }
+      },
+      {
+        "epoch": 20,
+        "training_loss": 0.45145678520202637,
+        "training_metrics": {
+          "accuracy": 0.9721115537848606,
+          "macro_f1": 0.9721044693180916
+        },
+        "validation_metrics": {
+          "accuracy": 0.9799196787148594,
+          "macro_f1": 0.9799144954424458
+        }
+      },
+      {
+        "epoch": 21,
+        "training_loss": 0.42635443806648254,
+        "training_metrics": {
+          "accuracy": 0.9721115537848606,
+          "macro_f1": 0.9721044693180916
+        },
+        "validation_metrics": {
+          "accuracy": 0.9799196787148594,
+          "macro_f1": 0.9799144954424458
+        }
+      },
+      {
+        "epoch": 22,
+        "training_loss": 0.40305206179618835,
+        "training_metrics": {
+          "accuracy": 0.9721115537848606,
+          "macro_f1": 0.9721044693180916
+        },
+        "validation_metrics": {
+          "accuracy": 0.9799196787148594,
+          "macro_f1": 0.9799144954424458
+        }
+      },
+      {
+        "epoch": 23,
+        "training_loss": 0.3814437687397003,
+        "training_metrics": {
+          "accuracy": 0.9721115537848606,
+          "macro_f1": 0.9721044693180916
+        },
+        "validation_metrics": {
+          "accuracy": 0.9799196787148594,
+          "macro_f1": 0.9799144954424458
+        }
+      },
+      {
+        "epoch": 24,
+        "training_loss": 0.3614252507686615,
+        "training_metrics": {
+          "accuracy": 0.9721115537848606,
+          "macro_f1": 0.9721044693180916
+        },
+        "validation_metrics": {
+          "accuracy": 0.9799196787148594,
+          "macro_f1": 0.9799144954424458
+        }
+      },
+      {
+        "epoch": 25,
+        "training_loss": 0.3428942859172821,
+        "training_metrics": {
+          "accuracy": 0.9721115537848606,
+          "macro_f1": 0.9721044693180916
+        },
+        "validation_metrics": {
+          "accuracy": 0.9799196787148594,
+          "macro_f1": 0.9799144954424458
+        }
+      },
+      {
+        "epoch": 26,
+        "training_loss": 0.3257520794868469,
+        "training_metrics": {
+          "accuracy": 0.9760956175298805,
+          "macro_f1": 0.9760922021844044
+        },
+        "validation_metrics": {
+          "accuracy": 0.9799196787148594,
+          "macro_f1": 0.9799144954424458
+        }
+      },
+      {
+        "epoch": 27,
+        "training_loss": 0.3099028170108795,
+        "training_metrics": {
+          "accuracy": 0.9760956175298805,
+          "macro_f1": 0.9760922021844044
+        },
+        "validation_metrics": {
+          "accuracy": 0.9799196787148594,
+          "macro_f1": 0.9799144954424458
+        }
+      },
+      {
+        "epoch": 28,
+        "training_loss": 0.29525458812713623,
+        "training_metrics": {
+          "accuracy": 0.9760956175298805,
+          "macro_f1": 0.9760922021844044
+        },
+        "validation_metrics": {
+          "accuracy": 0.9799196787148594,
+          "macro_f1": 0.9799144954424458
+        }
+      }
+    ],
+    "official_test_loaded": false,
+    "runtime_seconds": 112.16708517074585,
+    "sampled_examples": 500,
+    "selected_epoch": 18,
+    "stacker_artifact": "outputs/fullpool-qwen-encoder-stacker-validation-20261074/stacker.json",
+    "stacker_artifact_sha256": "0b31e05f608f60154ea475cca4bd6fbade0c56e560797e37f436d6feb25f684b",
+    "status": "completed",
+    "training_examples": 251,
+    "training_metrics": {
+      "accuracy": 0.9721115537848606,
+      "macro_f1": 0.9721044693180916
+    },
+    "validation_examples": 249,
+    "wandb_run_id": "tar2cmhs",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/tar2cmhs"
+  },
+  "metrics_path": "/workspace/post-training/outputs/fullpool-qwen-encoder-stacker-validation-20261074/metrics.json",
+  "official_test_loaded": false,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/fullpool-qwen-encoder-stacker-validation-20261074",
+  "source_validation_metrics": {
+    "baseline_validation_metrics": {
+      "encoder_single": {
+        "accuracy": 0.891566265060241,
+        "macro_f1": 0.9335214967870202
+      },
+      "qwen_sft": {
+        "accuracy": 0.9317269076305221,
+        "macro_f1": 0.9603841536614646
+      },
+      "single_average": {
+        "accuracy": 0.9357429718875502,
+        "macro_f1": 0.9624581539933046
+      },
+      "single_request_conf_60": {
+        "accuracy": 0.9558232931726908,
+        "macro_f1": 0.9734024757443961
+      }
+    },
+    "heldout_validation_metrics": {
+      "accuracy": 0.9799196787148594,
+      "macro_f1": 0.9799144954424458
+    }
+  },
+  "started_at": "2026-10-26T17:09:58.176317+00:00",
+  "status": "completed",
+  "test_status": "not measured",
+  "timestamp": "2026-10-26T17:12:59.797626+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "tar2cmhs",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/tar2cmhs"
+}
+```
+
+## fullpool-qwen-encoder-stacker-test-20261074
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.conditionally_score_fullpool_stacker",
+    "--training-metrics",
+    "outputs/fullpool-qwen-encoder-stacker-validation-20261074/metrics.json",
+    "--output-dir",
+    "outputs/fullpool-qwen-encoder-stacker-test-20261074",
+    "--work-dir",
+    "outputs/fullpool-qwen-encoder-stacker-test-20261074/frozen",
+    "--qwen-checkpoint",
+    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "fullpool-qwen-encoder-stacker-test-20261074",
+  "failure_reason": null,
+  "metadata": {
+    "all_methods": {
+      "encoder_single": {
+        "accuracy": 0.5922782037239869,
+        "macro_f1": 0.43965574889312375,
+        "macro_f1_present_classes": 0.5862076651908317
+      },
+      "qwen_sft": {
+        "accuracy": 0.702354874041621,
+        "macro_f1": 0.5277889126113546,
+        "macro_f1_present_classes": 0.7037185501484728
+      },
+      "single_stacker": {
+        "accuracy": 0.46741511500547644,
+        "macro_f1": 0.2917470257141671,
+        "macro_f1_present_classes": 0.3889960342855561
+      }
+    },
+    "baseline_validation_metrics": {
+      "encoder_single": {
+        "accuracy": 0.891566265060241,
+        "macro_f1": 0.9335214967870202
+      },
+      "qwen_sft": {
+        "accuracy": 0.9317269076305221,
+        "macro_f1": 0.9603841536614646
+      },
+      "single_average": {
+        "accuracy": 0.9357429718875502,
+        "macro_f1": 0.9624581539933046
+      },
+      "single_request_conf_60": {
+        "accuracy": 0.9558232931726908,
+        "macro_f1": 0.9734024757443961
+      }
+    },
+    "black_box": true,
+    "command": [
+      "/usr/local/bin/python",
+      "/workspace/post-training/experiments/existing_when2call_hybrid.py",
+      "test",
+      "--work-dir",
+      "outputs/fullpool-qwen-encoder-stacker-test-20261074/frozen",
+      "--suite",
+      "single-stacker",
+      "--qwen-checkpoint",
+      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "--stacker-artifact",
+      "outputs/fullpool-qwen-encoder-stacker-validation-20261074/stacker.json",
+      "--methods",
+      "single_stacker",
+      "--primary-method",
+      "single_stacker",
+      "--batch-size",
+      "4",
+      "--output-dir",
+      "outputs/fullpool-qwen-encoder-stacker-test-20261074"
+    ],
+    "configuration": {
+      "batch_size": 4,
+      "methods": [
+        "single_stacker"
+      ],
+      "mode": "test",
+      "output_dir": "outputs/fullpool-qwen-encoder-stacker-test-20261074",
+      "primary_method": "single_stacker",
+      "qwen_checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "stacker_artifact": "outputs/fullpool-qwen-encoder-stacker-validation-20261074/stacker.json",
+      "suite": "single-stacker",
+      "work_dir": "outputs/fullpool-qwen-encoder-stacker-test-20261074/frozen"
+    },
+    "dataset": "nvidia/When2Call",
+    "dataset_revision": "0582f7749df63a96fdc3070932e83e72396ace53",
+    "encoder_logit_weights": [
+      1.0
+    ],
+    "encoders": [
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+    ],
+    "examples": 3652,
+    "frozen_config_sha256": "9c0599adba222ffa6ce37b14f20710f298f607d732f26b10c5318037c9eef0fc",
+    "frozen_configuration": {
+      "artifact_sha256": {
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/encoder_config.json": "0616e72a787934ed1fa3bec80e5da45239be1a1c267525c92960b83e9c44c12f",
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/model_state.pt": "815459d76b8c2e9fb7ba44e2f3867379ab096766cf9f1c807a08921be26593b5",
+        "outputs/fullpool-qwen-encoder-stacker-validation-20261074/stacker.json": "0b31e05f608f60154ea475cca4bd6fbade0c56e560797e37f436d6feb25f684b",
+        "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02/adapter_config.json": "bfe4f64a34cbe48967937473e3f0558033c8b98578e46a9fe7447d86404c37f9",
+        "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02/adapter_model.safetensors": "6afccbb2022780a2bc986e08cf48eb376635cd345d6672d1613ec7e4355d0484",
+        "outputs/when2call-jina-v2-small/latest/tokenizer.json": "e9f999ac74497843ed9f4303246a8f43d9f100ee8aab8e133667903f447ceb48"
+      },
+      "development_selection_performed": false,
+      "encoder_logit_weights": [
+        1.0
+      ],
+      "encoders": [
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+      ],
+      "family_probability_weights": [
+        0.5,
+        0.5
+      ],
+      "fusion_rules": {
+        "stacker": "Apply a four-class linear meta-classifier fitted only on the declared clean train_sft meta-training partition. The coefficients are frozen before official test loading."
+      },
+      "historical_selection_limitation": "Existing encoder approaches were identified in prior research with repeated official benchmark inspection. This fixed comparison is a benchmark measurement, not a new independent generalization estimate.",
+      "hypothesis": "A linear meta-classifier can learn which probability features are useful from the independent SFT-source meta-training partition. It is fitted and measured on disjoint clean source partitions before its coefficients are frozen for official scoring.",
+      "label_order": [
+        "cannot_answer",
+        "request_for_info",
+        "tool_call",
+        "direct"
+      ],
+      "max_length": 4096,
+      "methods": [
+        "single_stacker"
+      ],
+      "metric_definition": "Primary macro F1 includes all four declared classes. The present-class macro F1 diagnostic permits comparison with historical encoder reports.",
+      "primary_method": "single_stacker",
+      "qwen_base": "Qwen/Qwen2.5-1.5B-Instruct",
+      "qwen_checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "qwen_mapping": "Historical adapter training used LABEL_TO_ID directly despite reversed ABCD descriptions in its prompt. Preserve learned identity indices.",
+      "qwen_output_permutation": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "selection_complete": true,
+      "single_encoder_index": 0,
+      "stacker_artifact": "outputs/fullpool-qwen-encoder-stacker-validation-20261074/stacker.json",
+      "stacker_parameters": {
+        "coefficients": [
+          [
+            0.5578033328056335,
+            -0.2627811133861542,
+            -0.21473677456378937,
+            0.6733275651931763,
+            0.1458924114704132,
+            -0.3582627773284912,
+            0.16996268928050995,
+            0.39083462953567505
+          ],
+          [
+            -0.08528457581996918,
+            0.15308769047260284,
+            0.36354294419288635,
+            0.3238448202610016,
+            -0.06072927266359329,
+            0.6448788642883301,
+            0.484525203704834,
+            0.6470351219177246
+          ],
+          [
+            -0.35795843601226807,
+            -0.4309520721435547,
+            -0.23654687404632568,
+            -0.2532939314842224,
+            -0.20976866781711578,
+            -0.4930345416069031,
+            -0.65908282995224,
+            -0.11963658034801483
+          ],
+          [
+            -0.1600734442472458,
+            -0.3639104962348938,
+            -0.01905209571123123,
+            -0.18753042817115784,
+            -0.19516749680042267,
+            -0.308862566947937,
+            -0.05267482250928879,
+            -0.08619722723960876
+          ]
+        ],
+        "intercepts": [
+          0.20375217497348785,
+          0.2672065794467926,
+          -0.5397672653198242,
+          -0.5444247126579285
+        ]
+      },
+      "suite": "single-stacker",
+      "test_status": "queued",
+      "training_performed": false,
+      "validation_limitation": "Existing encoder warm starts saw all train_pref rows. Clean source validation is used to select the frozen fusion rule. Test metrics are report-only."
+    },
+    "git_commit": "410d2bb6beaae52030f372852da3134964394f43",
+    "heldout_validation_metrics": {
+      "accuracy": 0.9799196787148594,
+      "macro_f1": 0.9799144954424458
+    },
+    "max_length": 4096,
+    "official_test_loaded": true,
+    "official_test_metrics": {
+      "accuracy": 0.46741511500547644,
+      "macro_f1": 0.2917470257141671,
+      "macro_f1_present_classes": 0.3889960342855561
+    },
+    "primary_method": "single_stacker",
+    "qwen_checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "runtime_seconds": 417.48934841156006,
+    "selection_complete": true,
+    "selection_metric": "clean validation accuracy",
+    "split": "test/mcq",
+    "stacker_artifact": "outputs/fullpool-qwen-encoder-stacker-validation-20261074/stacker.json",
+    "status": "completed",
+    "suite": "single-stacker",
+    "test_measurement_only": true,
+    "test_selection_performed": false,
+    "test_status": "measured",
+    "training_metrics": {
+      "accuracy": 0.9721115537848606,
+      "macro_f1": 0.9721044693180916
+    },
+    "training_metrics_path": "outputs/fullpool-qwen-encoder-stacker-validation-20261074/metrics.json",
+    "wandb_run_id": "yersx1yg",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/yersx1yg"
+  },
+  "metrics_path": "/workspace/post-training/outputs/fullpool-qwen-encoder-stacker-test-20261074/metrics.json",
+  "official_test_loaded": true,
+  "official_test_metrics": {
+    "accuracy": 0.46741511500547644,
+    "macro_f1": 0.2917470257141671,
+    "macro_f1_present_classes": 0.3889960342855561
+  },
+  "output_dir": "/workspace/post-training/outputs/fullpool-qwen-encoder-stacker-test-20261074",
+  "source_validation_metrics": {
+    "baseline_validation_metrics": {
+      "encoder_single": {
+        "accuracy": 0.891566265060241,
+        "macro_f1": 0.9335214967870202
+      },
+      "qwen_sft": {
+        "accuracy": 0.9317269076305221,
+        "macro_f1": 0.9603841536614646
+      },
+      "single_average": {
+        "accuracy": 0.9357429718875502,
+        "macro_f1": 0.9624581539933046
+      },
+      "single_request_conf_60": {
+        "accuracy": 0.9558232931726908,
+        "macro_f1": 0.9734024757443961
+      }
+    },
+    "heldout_validation_metrics": {
+      "accuracy": 0.9799196787148594,
+      "macro_f1": 0.9799144954424458
+    }
+  },
+  "started_at": "2026-10-26T17:13:31.053831+00:00",
+  "status": "completed",
+  "test_status": "measured",
+  "timestamp": "2026-10-26T17:21:32.482275+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "yersx1yg",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/yersx1yg"
+}
+```
+
+## fullpool-qwen-encoder-temperature-validation-20261081
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.calibrate_fullpool_when2call_ensemble",
+    "--output-dir",
+    "outputs/fullpool-qwen-encoder-temperature-validation-20261081",
+    "--split-seed",
+    "20261078",
+    "--sample-seed",
+    "20261079",
+    "--meta-split-seed",
+    "20261080",
+    "--max-examples",
+    "500",
+    "--batch-size",
+    "1"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "fullpool-qwen-encoder-temperature-validation-20261081",
+  "failure_reason": null,
+  "metadata": {
+    "artifacts": {
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/model_state.pt": "815459d76b8c2e9fb7ba44e2f3867379ab096766cf9f1c807a08921be26593b5",
+      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02/adapter_model.safetensors": "6afccbb2022780a2bc986e08cf48eb376635cd345d6672d1613ec7e4355d0484"
+    },
+    "fit_indices_sha256": "d43804f0a02b3b56ac19d81d864f8a3fe2feeeef47256215c7505ec34b124c2b",
+    "git_commit": "c6a31e4eef288bb1e179324aba8426a970378b9c",
+    "heldout_validation_metrics": {
+      "encoder_single": {
+        "accuracy": 0.8795180722891566,
+        "macro_f1": 0.9246354483895238
+      },
+      "encoder_temperature": {
+        "accuracy": 0.8795180722891566,
+        "macro_f1": 0.9246354483895238
+      },
+      "qwen_sft": {
+        "accuracy": 0.9558232931726908,
+        "macro_f1": 0.9732659684812794
+      },
+      "qwen_temperature": {
+        "accuracy": 0.9558232931726908,
+        "macro_f1": 0.9732659684812794
+      },
+      "single_average": {
+        "accuracy": 0.9558232931726908,
+        "macro_f1": 0.9752549263359483
+      },
+      "single_request_conf_60": {
+        "accuracy": 0.963855421686747,
+        "macro_f1": 0.975609756097561
+      },
+      "temperature_average": {
+        "accuracy": 0.9518072289156626,
+        "macro_f1": 0.9749593385741393
+      },
+      "temperature_request_conf_60": {
+        "accuracy": 0.963855421686747,
+        "macro_f1": 0.975609756097561
+      }
+    },
+    "official_test_loaded": false,
+    "runtime_seconds": 86.26576685905457,
+    "sampled_examples": 500,
+    "selection_metric": "clean validation accuracy",
+    "status": "completed",
+    "temperatures": {
+      "encoder": 1.23729940049602,
+      "qwen": 1.7659138509782175
+    },
+    "training_examples": 251,
+    "training_metrics": {
+      "encoder_single": {
+        "accuracy": 0.9482071713147411,
+        "macro_f1": 0.9666914867212708
+      },
+      "encoder_temperature": {
+        "accuracy": 0.9482071713147411,
+        "macro_f1": 0.9666914867212708
+      },
+      "qwen_sft": {
+        "accuracy": 0.9601593625498008,
+        "macro_f1": 0.9755053858639515
+      },
+      "qwen_temperature": {
+        "accuracy": 0.9601593625498008,
+        "macro_f1": 0.9755053858639515
+      },
+      "single_average": {
+        "accuracy": 0.9601593625498008,
+        "macro_f1": 0.9771903820816865
+      },
+      "single_request_conf_60": {
+        "accuracy": 0.9721115537848606,
+        "macro_f1": 0.9838048780487805
+      },
+      "temperature_average": {
+        "accuracy": 0.952191235059761,
+        "macro_f1": 0.9708529080923709
+      },
+      "temperature_request_conf_60": {
+        "accuracy": 0.9721115537848606,
+        "macro_f1": 0.9838048780487805
+      }
+    },
+    "validation_examples": 249,
+    "validation_indices_sha256": "d2374c70f8d445119f1fb4a928d7ec36dec578c8dbbaf630f5616aac6713028e",
+    "wandb_run_id": "64wig9iy",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/64wig9iy"
+  },
+  "metrics_path": "/workspace/post-training/outputs/fullpool-qwen-encoder-temperature-validation-20261081/metrics.json",
+  "official_test_loaded": false,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/fullpool-qwen-encoder-temperature-validation-20261081",
+  "source_validation_metrics": {
+    "heldout_validation_metrics": {
+      "encoder_single": {
+        "accuracy": 0.8795180722891566,
+        "macro_f1": 0.9246354483895238
+      },
+      "encoder_temperature": {
+        "accuracy": 0.8795180722891566,
+        "macro_f1": 0.9246354483895238
+      },
+      "qwen_sft": {
+        "accuracy": 0.9558232931726908,
+        "macro_f1": 0.9732659684812794
+      },
+      "qwen_temperature": {
+        "accuracy": 0.9558232931726908,
+        "macro_f1": 0.9732659684812794
+      },
+      "single_average": {
+        "accuracy": 0.9558232931726908,
+        "macro_f1": 0.9752549263359483
+      },
+      "single_request_conf_60": {
+        "accuracy": 0.963855421686747,
+        "macro_f1": 0.975609756097561
+      },
+      "temperature_average": {
+        "accuracy": 0.9518072289156626,
+        "macro_f1": 0.9749593385741393
+      },
+      "temperature_request_conf_60": {
+        "accuracy": 0.963855421686747,
+        "macro_f1": 0.975609756097561
+      }
+    }
+  },
+  "started_at": "2026-10-26T17:21:32.398381+00:00",
+  "status": "completed",
+  "test_status": "not measured",
+  "timestamp": "2026-10-26T17:23:33.049786+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "64wig9iy",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/64wig9iy"
+}
+```
+
+
+Temperature calibration validation summary, 2026-10-26
+Separate scalar temperatures were fit on 251 clean SFT examples: Qwen T=1.7659 and encoder T=1.2373. On a disjoint 249-example validation partition, Qwen accuracy was 0.9558 and temperature-scaled Qwen remained 0.9558; equal average was 0.9558; calibrated average was 0.9518. Request-confidence-0.60 routing remained best at 0.9639, identical to its uncalibrated result. The calibration did not improve clean validation accuracy and no test measurement was queued from it.

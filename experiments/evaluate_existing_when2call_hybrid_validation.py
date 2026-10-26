@@ -20,11 +20,13 @@ import torch
 from experiments.clean_validation_baseline import load_sft_training_rows, split_examples
 from experiments.heterogeneous_when2call import artifact_digest
 from experiments.existing_when2call_hybrid import (
+    ENCODERS,
     DISAGREE_METHODS,
     POOL_GRID_METHODS,
     REQUEST_CONFIDENCE_METHODS,
     RULE_METHODS,
     RULES,
+    WEIGHTS,
     input_route_mask,
     encoder_logits,
     hybrid_probabilities,
@@ -80,7 +82,17 @@ def evaluate(args: argparse.Namespace, run: object) -> dict:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     args.output_dir.mkdir(parents=True, exist_ok=True)
     write_heartbeat(args.output_dir / "heartbeat.json", "encoder-validation")
-    encoder = encoder_logits(ENCODER, validation_examples, args, device).softmax(-1)
+    # Score every declared encoder once and combine their raw scores with the frozen family weights.
+    encoder_checkpoints = args.encoder_checkpoints or [ENCODER]
+    raw_encoder_logits = [encoder_logits(checkpoint, validation_examples, args, device) for checkpoint in encoder_checkpoints]
+    if len(raw_encoder_logits) == 1:
+        encoder = raw_encoder_logits[0].softmax(-1)
+        encoder_members = {"encoder_single": encoder}
+    else:
+        weights = WEIGHTS if encoder_checkpoints == ENCODERS else [1 / len(raw_encoder_logits)] * len(raw_encoder_logits)
+        encoder = (torch.stack(raw_encoder_logits) * torch.tensor(weights, dtype=raw_encoder_logits[0].dtype).view(-1, 1, 1)).sum(0).softmax(-1)
+        encoder_members = {f"encoder_{index}": scores.softmax(-1) for index, scores in enumerate(raw_encoder_logits)}
+        encoder_members["encoder_ensemble"] = encoder
     model, tokenizer = load_model(QWEN_BASE, device, 16)
     if not hasattr(model, "load_adapter"):
         raise TypeError("The Qwen base did not produce a PEFT model.")
@@ -94,12 +106,13 @@ def evaluate(args: argparse.Namespace, run: object) -> dict:
             scores.append(score_rows(model, tokenizer, validation_rows[start:start + args.batch_size], label_token_ids(tokenizer), device, 4096).exp().cpu())
     qwen = torch.cat(scores)
     labels = torch.tensor([item.label for item in validation_examples])
-    candidates = {"encoder_single": encoder, "qwen_sft": qwen, "single_average": (encoder + qwen) / 2, "single_gate": hybrid_probabilities(encoder, qwen, "gate")}
-    methods = tuple(dict.fromkeys((*POOL_GRID_METHODS, *DISAGREE_METHODS, *REQUEST_CONFIDENCE_METHODS, *RULE_METHODS)))
+    prefix = "ensemble" if len(raw_encoder_logits) > 1 else "single"
+    candidates = {**encoder_members, "qwen_sft": qwen, f"{prefix}_average": (encoder + qwen) / 2, f"{prefix}_gate": hybrid_probabilities(encoder, qwen, "gate")}
+    methods = ("ensemble_average", "ensemble_gate") if len(raw_encoder_logits) > 1 else tuple(dict.fromkeys((*POOL_GRID_METHODS, *DISAGREE_METHODS, *REQUEST_CONFIDENCE_METHODS, *RULE_METHODS)))
     for method in methods:
-        if method in candidates or method in ("single_average", "single_gate"):
+        if method in candidates or method in ("single_average", "single_gate", "ensemble_average", "ensemble_gate"):
             continue
-        rule = method.removeprefix("single_")
+        rule = method.removeprefix("ensemble_").removeprefix("single_")
         if rule.removeprefix("encoder_") in RULES:
             mask = input_route_mask(validation_source_rows, rule.removeprefix("encoder_"), encoder.device)
             candidates[method] = torch.where(mask.unsqueeze(-1), encoder, qwen)
@@ -122,16 +135,16 @@ def evaluate(args: argparse.Namespace, run: object) -> dict:
         "sample_seed": args.sample_seed,
         "validation_sample_cap": args.max_validation_examples,
         "validation_indices_sha256": hashlib.sha256(",".join(map(str, source_indices)).encode()).hexdigest(),
-        "encoder_checkpoint": ENCODER,
+        "encoder_checkpoints": encoder_checkpoints,
+        "encoder_weights": WEIGHTS if encoder_checkpoints == ENCODERS else ([1.0] if len(encoder_checkpoints) == 1 else [1 / len(encoder_checkpoints)] * len(encoder_checkpoints)),
         "qwen_checkpoint": args.qwen_checkpoint,
         "artifact_sha256": {
             str(path): artifact_digest(path)
-            for path in (
-                Path(ENCODER) / "model_state.pt",
-                Path(ENCODER) / "encoder_config.json",
+            for path in [
+                *(Path(checkpoint) / name for checkpoint in encoder_checkpoints for name in ("model_state.pt", "encoder_config.json")),
                 Path(args.qwen_checkpoint) / "adapter_model.safetensors",
                 Path(args.qwen_checkpoint) / "adapter_config.json",
-            )
+            ]
         },
         "qwen_base": QWEN_BASE,
         "candidate_methods": list(aggregate),
@@ -150,6 +163,7 @@ def main() -> int:
     parser.add_argument("--sample-seed", type=int, default=20261068)
     parser.add_argument("--max-validation-examples", type=int, default=500)
     parser.add_argument("--qwen-checkpoint", default=QWEN)
+    parser.add_argument("--encoder-checkpoint", dest="encoder_checkpoints", action="append")
     parser.add_argument("--batch-size", type=int, default=1)
     args = parser.parse_args()
     # Enforce the research policy before loading any validation rows.
@@ -164,7 +178,7 @@ def main() -> int:
         entity=os.getenv("WANDB_ENTITY"),
         name="existing-when2call-hybrid-sft-source-validation",
         job_type="clean-validation",
-        config={"encoder": ENCODER, "qwen": args.qwen_checkpoint, "qwen_base": QWEN_BASE, "split_seed": args.split_seed, "sample_seed": args.sample_seed, "max_validation_examples": args.max_validation_examples, "source": "nvidia/When2Call train_sft", "official_test_loaded": False},
+        config={"encoders": args.encoder_checkpoints or [ENCODER], "qwen": args.qwen_checkpoint, "qwen_base": QWEN_BASE, "split_seed": args.split_seed, "sample_seed": args.sample_seed, "max_validation_examples": args.max_validation_examples, "source": "nvidia/When2Call train_sft", "official_test_loaded": False},
     )
     started = time.time()
     try:

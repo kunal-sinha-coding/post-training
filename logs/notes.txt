@@ -7245,3 +7245,10 @@ Added an orchestration command that reads the completed stacker fit and clean-va
 Commit name: Queue scalar temperature calibration after the stacker test.
 
 Added a calibration experiment that fits separate scalar temperatures for the frozen Qwen and encoder using a fit partition of at most 500 clean SFT examples. It compares the calibrated models and ensembles on a disjoint clean validation partition. Added its command behind the active stacker test without changing the current worker command. Only clean validation can select a later test candidate.
+
+
+## 2026-10-26: Queue a three-encoder diversity trial
+
+Commit name: Compare the full encoder family with the best Qwen checkpoint.
+
+Scalar temperatures did not improve clean-validation accuracy over the request-confidence route. Queued a new 500-row clean validation screen comparing all three existing encoders, their prior fixed-weight family combination, and the full-pool Qwen epoch-2 checkpoint. The broader follow-up plan includes Qwen checkpoint and seed diversity, prompt variants, disagreement and input-structure routing, source-disjoint BFCL validation, then individual Qwen and data improvements if ensemble candidates plateau. Test results remain report-only.
