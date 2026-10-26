@@ -59,15 +59,17 @@ def fingerprint_rows(rows: list[ClassificationRow]) -> str:
     return hashlib.sha256("\n".join(hashes).encode()).hexdigest()
 
 
-def run_evaluation(model: object, tokenizer: object, labels: list[int], device: torch.device, max_length: int, batch_size: int, train_rows: list[ClassificationRow], bfcl_validation: list[ClassificationRow], original_validation: list[ClassificationRow], step: int, heartbeat: Path) -> dict:
-    """Measure training, both clean validation sets, and aggregate black-box test metrics."""
-    # Keep test outputs aggregate-only while preserving separate source validation results.
+def run_evaluation(model: object, tokenizer: object, labels: list[int], device: torch.device, max_length: int, batch_size: int, train_rows: list[ClassificationRow], bfcl_validation: list[ClassificationRow], original_validation_sample: list[ClassificationRow], step: int, heartbeat: Path) -> dict:
+    """Measure training, balanced and source validation, and aggregate black-box test metrics."""
+    # Keep test outputs aggregate-only and weight the two validation sources equally.
     write_heartbeat(heartbeat, "checkpoint_evaluation", step)
+    balanced_validation = bfcl_validation + original_validation_sample
     return {
         "step": step,
         "training_metrics": evaluate(model, tokenizer, train_rows, labels, device, max_length, batch_size, heartbeat),
+        "balanced_heldout_validation_metrics": evaluate(model, tokenizer, balanced_validation, labels, device, max_length, batch_size, heartbeat),
         "bfcl_heldout_validation_metrics": evaluate(model, tokenizer, bfcl_validation, labels, device, max_length, batch_size, heartbeat),
-        "original_heldout_validation_metrics": evaluate(model, tokenizer, original_validation, labels, device, max_length, batch_size, heartbeat),
+        "original_heldout_validation_metrics": evaluate(model, tokenizer, original_validation_sample, labels, device, max_length, batch_size, heartbeat),
         "black_box_test_metrics": evaluate_black_box(model, tokenizer, labels, device, max_length, batch_size),
     }
 
@@ -103,10 +105,12 @@ def main() -> int:
     if len(original_train) < len(bfcl_train):
         raise RuntimeError("The original training split is smaller than the BFCL training split.")
     original_sample = sample_stratified(original_train, len(bfcl_train), args.seed)
+    # Match the original validation sample size to the BFCL held-out split.
+    original_validation_sample = sample_stratified(original_validation, len(bfcl_validation), args.seed + 1)
     # Form an exact 50/50 mix and shuffle it with the run seed.
     training_rows = list(bfcl_train) + list(original_sample)
     random.Random(args.seed).shuffle(training_rows)
-    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name=args.output_dir.name, job_type="bfcl-original-mixture-sft", config=config | {"bfcl_train_examples": len(bfcl_train), "original_train_examples": len(original_sample), "bfcl_validation_examples": len(bfcl_validation), "original_validation_examples": len(original_validation), "official_test_selection": False})
+    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name=args.output_dir.name, job_type="bfcl-original-mixture-sft", config=config | {"bfcl_train_examples": len(bfcl_train), "original_train_examples": len(original_sample), "bfcl_validation_examples": len(bfcl_validation), "original_validation_sample_examples": len(original_validation_sample), "original_validation_source_examples": len(original_validation), "official_test_selection": False})
     atexit.register(run.finish)
     # Fix all random sources before loading the base model and new LoRA adapter.
     random.seed(args.seed)
@@ -118,8 +122,8 @@ def main() -> int:
     label_ids = label_token_ids(tokenizer)
     optimizer = torch.optim.AdamW((parameter for parameter in model.parameters() if parameter.requires_grad), lr=args.learning_rate, weight_decay=args.weight_decay)
     # Measure the base model on all splits before its first optimizer update.
-    baseline = run_evaluation(model, tokenizer, label_ids, device, args.max_length, args.eval_batch_size, training_rows, bfcl_validation, original_validation, 0, heartbeat)
-    run.log({"baseline/training_accuracy": baseline["training_metrics"]["accuracy"], "baseline/training_macro_f1": baseline["training_metrics"]["macro_f1"], "baseline/bfcl_validation_accuracy": baseline["bfcl_heldout_validation_metrics"]["accuracy"], "baseline/bfcl_validation_macro_f1": baseline["bfcl_heldout_validation_metrics"]["macro_f1"], "baseline/original_validation_accuracy": baseline["original_heldout_validation_metrics"]["accuracy"], "baseline/original_validation_macro_f1": baseline["original_heldout_validation_metrics"]["macro_f1"], "test/base_accuracy": baseline["black_box_test_metrics"]["accuracy"], "test/base_macro_f1": baseline["black_box_test_metrics"]["macro_f1"]}, step=0)
+    baseline = run_evaluation(model, tokenizer, label_ids, device, args.max_length, args.eval_batch_size, training_rows, bfcl_validation, original_validation_sample, 0, heartbeat)
+    run.log({"baseline/training_accuracy": baseline["training_metrics"]["accuracy"], "baseline/training_macro_f1": baseline["training_metrics"]["macro_f1"], "baseline/balanced_validation_accuracy": baseline["balanced_heldout_validation_metrics"]["accuracy"], "baseline/balanced_validation_macro_f1": baseline["balanced_heldout_validation_metrics"]["macro_f1"], "baseline/bfcl_validation_accuracy": baseline["bfcl_heldout_validation_metrics"]["accuracy"], "baseline/bfcl_validation_macro_f1": baseline["bfcl_heldout_validation_metrics"]["macro_f1"], "baseline/original_validation_accuracy": baseline["original_heldout_validation_metrics"]["accuracy"], "baseline/original_validation_macro_f1": baseline["original_heldout_validation_metrics"]["macro_f1"], "test/base_accuracy": baseline["black_box_test_metrics"]["accuracy"], "test/base_macro_f1": baseline["black_box_test_metrics"]["macro_f1"]}, step=0)
     # Log each optimizer loss and evaluate at every 1,000 steps and at each epoch boundary.
     steps_per_epoch = (len(training_rows) + args.batch_size - 1) // args.batch_size
     total_steps = steps_per_epoch * args.epochs
@@ -135,32 +139,32 @@ def main() -> int:
             run.log({"training/optimizer_step_loss": loss}, step=step)
             if step % args.evaluation_steps != 0 and step != total_steps:
                 return False
-            record = run_evaluation(model, tokenizer, label_ids, device, args.max_length, args.eval_batch_size, training_rows, bfcl_validation, original_validation, step, heartbeat)
+            record = run_evaluation(model, tokenizer, label_ids, device, args.max_length, args.eval_batch_size, training_rows, bfcl_validation, original_validation_sample, step, heartbeat)
             evaluations.append(record)
             checkpoint_dir = args.output_dir / f"step-{step:06d}"
             model.save_pretrained(checkpoint_dir)
             tokenizer.save_pretrained(checkpoint_dir)
-            validation_accuracy = record["bfcl_heldout_validation_metrics"]["accuracy"]
+            validation_accuracy = record["balanced_heldout_validation_metrics"]["accuracy"]
             if validation_accuracy > best_validation_accuracy:
                 best_validation_accuracy = validation_accuracy
                 best_checkpoint = str(checkpoint_dir)
-            run.log({"training/accuracy": record["training_metrics"]["accuracy"], "training/macro_f1": record["training_metrics"]["macro_f1"], "bfcl_heldout_validation/accuracy": validation_accuracy, "bfcl_heldout_validation/macro_f1": record["bfcl_heldout_validation_metrics"]["macro_f1"], "original_heldout_validation/accuracy": record["original_heldout_validation_metrics"]["accuracy"], "original_heldout_validation/macro_f1": record["original_heldout_validation_metrics"]["macro_f1"], "test/accuracy": record["black_box_test_metrics"]["accuracy"], "test/macro_f1": record["black_box_test_metrics"]["macro_f1"]}, step=step)
+            run.log({"training/accuracy": record["training_metrics"]["accuracy"], "training/macro_f1": record["training_metrics"]["macro_f1"], "balanced_heldout_validation/accuracy": validation_accuracy, "balanced_heldout_validation/macro_f1": record["balanced_heldout_validation_metrics"]["macro_f1"], "bfcl_heldout_validation/accuracy": record["bfcl_heldout_validation_metrics"]["accuracy"], "bfcl_heldout_validation/macro_f1": record["bfcl_heldout_validation_metrics"]["macro_f1"], "original_heldout_validation/accuracy": record["original_heldout_validation_metrics"]["accuracy"], "original_heldout_validation/macro_f1": record["original_heldout_validation_metrics"]["macro_f1"], "test/accuracy": record["black_box_test_metrics"]["accuracy"], "test/macro_f1": record["black_box_test_metrics"]["macro_f1"]}, step=step)
             last_eval_step = step
             return False
         epoch_loss = train_epoch(model, tokenizer, training_rows, label_ids, "sft", device, optimizer, args.max_length, args.batch_size, 0.1, args.seed + epoch, heartbeat, log_and_evaluate, epoch * steps_per_epoch)
         losses.append(epoch_loss)
         epoch_end_step = (epoch + 1) * steps_per_epoch
         if last_eval_step != epoch_end_step:
-            record = run_evaluation(model, tokenizer, label_ids, device, args.max_length, args.eval_batch_size, training_rows, bfcl_validation, original_validation, epoch_end_step, heartbeat)
+            record = run_evaluation(model, tokenizer, label_ids, device, args.max_length, args.eval_batch_size, training_rows, bfcl_validation, original_validation_sample, epoch_end_step, heartbeat)
             evaluations.append(record)
             checkpoint_dir = args.output_dir / f"step-{epoch_end_step:06d}"
             model.save_pretrained(checkpoint_dir)
             tokenizer.save_pretrained(checkpoint_dir)
-            validation_accuracy = record["bfcl_heldout_validation_metrics"]["accuracy"]
+            validation_accuracy = record["balanced_heldout_validation_metrics"]["accuracy"]
             if validation_accuracy > best_validation_accuracy:
                 best_validation_accuracy = validation_accuracy
                 best_checkpoint = str(checkpoint_dir)
-            run.log({"training/accuracy": record["training_metrics"]["accuracy"], "training/macro_f1": record["training_metrics"]["macro_f1"], "bfcl_heldout_validation/accuracy": validation_accuracy, "bfcl_heldout_validation/macro_f1": record["bfcl_heldout_validation_metrics"]["macro_f1"], "original_heldout_validation/accuracy": record["original_heldout_validation_metrics"]["accuracy"], "original_heldout_validation/macro_f1": record["original_heldout_validation_metrics"]["macro_f1"], "test/accuracy": record["black_box_test_metrics"]["accuracy"], "test/macro_f1": record["black_box_test_metrics"]["macro_f1"]}, step=epoch_end_step)
+            run.log({"training/accuracy": record["training_metrics"]["accuracy"], "training/macro_f1": record["training_metrics"]["macro_f1"], "balanced_heldout_validation/accuracy": validation_accuracy, "balanced_heldout_validation/macro_f1": record["balanced_heldout_validation_metrics"]["macro_f1"], "bfcl_heldout_validation/accuracy": record["bfcl_heldout_validation_metrics"]["accuracy"], "bfcl_heldout_validation/macro_f1": record["bfcl_heldout_validation_metrics"]["macro_f1"], "original_heldout_validation/accuracy": record["original_heldout_validation_metrics"]["accuracy"], "original_heldout_validation/macro_f1": record["original_heldout_validation_metrics"]["macro_f1"], "test/accuracy": record["black_box_test_metrics"]["accuracy"], "test/macro_f1": record["black_box_test_metrics"]["macro_f1"]}, step=epoch_end_step)
     # Save one aggregate experiment record without any individual test predictions.
     final_record = evaluations[-1]
     result = {
@@ -169,9 +173,9 @@ def main() -> int:
         "config": config,
         "base_model": args.model,
         "base_model_checkpoint": "Qwen/Qwen2.5-1.5B-Instruct before any task adapter training",
-        "data": {"bfcl_file": str(args.bfcl_data), "bfcl_sha256": hashlib.sha256(args.bfcl_data.read_bytes()).hexdigest(), "bfcl_prompt_sha256": bfcl_metadata["prompt_sha256"], "bfcl_train_examples": len(bfcl_train), "bfcl_validation_examples": len(bfcl_validation), "original_dataset": DATASET_NAME, "original_split": "train_pref", "original_split_seed": args.original_split_seed, "original_source_train_examples": len(original_train), "original_sample_examples": len(original_sample), "original_validation_examples": len(original_validation), "original_sample_fingerprint": fingerprint_rows(original_sample)},
+        "data": {"bfcl_file": str(args.bfcl_data), "bfcl_sha256": hashlib.sha256(args.bfcl_data.read_bytes()).hexdigest(), "bfcl_prompt_sha256": bfcl_metadata["prompt_sha256"], "bfcl_train_examples": len(bfcl_train), "bfcl_validation_examples": len(bfcl_validation), "original_dataset": DATASET_NAME, "original_split": "train_pref", "original_split_seed": args.original_split_seed, "original_source_train_examples": len(original_train), "original_sample_examples": len(original_sample), "original_sample_fingerprint": fingerprint_rows(original_sample), "original_validation_source_examples": len(original_validation), "original_validation_sample_examples": len(original_validation_sample), "original_validation_sample_seed": args.seed + 1, "original_validation_sample_fingerprint": fingerprint_rows(original_validation_sample)},
         "source_mix": {"bfcl_fraction": len(bfcl_train) / len(training_rows), "original_when2call_fraction": len(original_sample) / len(training_rows)},
-        "selection_procedure": "The BFCL split was fixed before training. A deterministic stratified sample of equal size was drawn from the original When2Call training partition. Checkpoints are selected by BFCL held-out validation accuracy. Aggregate test metrics are report-only.",
+        "selection_procedure": "The BFCL train and validation splits were fixed before training. Equal-size deterministic stratified samples were drawn from the original When2Call train and validation partitions. The combined validation set is 50/50 by source. Checkpoints are selected by balanced held-out validation accuracy. Aggregate test metrics are report-only.",
         "test_label_use": "The model never receives test labels. Test accuracy and macro F1 are computed locally for baseline and checkpoint reports only.",
         "training_loss_by_epoch": losses,
         "baseline_metrics": baseline,

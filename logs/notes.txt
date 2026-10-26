@@ -7044,3 +7044,12 @@ Commit name: Add base Qwen training on balanced BFCL and When2Call data.
 The user corrected the training design to start from Qwen/Qwen2.5-1.5B-Instruct with a fresh LoRA adapter and a 50/50 mix of augmented BFCL and original When2Call data. Added `experiments/train_qwen_bfcl_original_mixture.py`. It uses all 738 BFCL training rows and a deterministic class-stratified sample of 738 rows from the fixed 7,200-row original When2Call training partition. It keeps the 184-row BFCL validation split and 1,800-row original validation split separate. It reports baseline metrics, then evaluates combined training, both validations, and aggregate-only black-box test metrics at step 1,000 and the epoch boundary. The first run uses one epoch, batch size 1, maximum length 4096, learning rate 2e-5, weight decay 0.01, and LoRA rank 16. Checkpoints are selected by BFCL held-out validation accuracy.
 
 The previously launched adapter-continuation run was stopped at the user's request after checking its progress. It was still in its baseline training-set evaluation, at evaluation row 438 of 738, and had made zero optimizer updates. W&B run `w50wdkow` produced no baseline result, trained checkpoint, or training metric. The corrected mixed-data run had not started at this commit.
+
+
+## 2026-10-26: Balance the held-out validation sources
+
+Commit name: Match original and BFCL validation sample sizes.
+
+The user requested a 50/50 validation mix as well as the 50/50 training mix. Updated `experiments/train_qwen_bfcl_original_mixture.py` to sample 184 examples from the 1,800-row original When2Call validation partition, matching all 184 BFCL validation rows. The run now reports combined 368-row validation metrics and per-source metrics separately, and selects checkpoints on combined validation accuracy. The original validation sample is deterministic and stratified.
+
+The initial base-model mixture run, W&B run `b46ej7an`, was stopped during baseline evaluation before any optimizer updates. Its latest observed heartbeat was at row 516 of the 1,476-row combined training metric pass. No training or test results were produced. The new run will use the balanced validation sample from its baseline onward.

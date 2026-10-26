@@ -47708,3 +47708,10 @@ Purpose: Initial attempt to continue the highest historical Qwen adapter on the 
 Configuration: Qwen/Qwen2.5-1.5B-Instruct with initial LoRA adapter `outputs/qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-seed20261035`, 738 BFCL training rows, 184 BFCL validation rows, batch size 1, maximum length 4096, learning rate 2e-5, weight decay 0.01, LoRA rank 16, and one epoch.
 Run: W&B run `w50wdkow`. The user then corrected the plan to start from the base model and train on a 50/50 mixture. At the time of the correction, the process was evaluating the starting adapter on the BFCL training split, with heartbeat phase `evaluation` at row 438/738. It had made zero optimizer updates. The user requested stopping because the run had not started training.
 Outcome: Interrupted during baseline evaluation. There are no completed baseline metrics, training metrics, validation metrics, test metrics, or model checkpoints. This attempt is excluded from result rankings.
+
+
+Base-model 50/50 mixture run stopped before training, 2026-10-26
+Purpose: Begin base Qwen SFT on a 50/50 mixture of original When2Call and augmented BFCL labels.
+Run: W&B run `b46ej7an`. The first version held out all 1,800 original When2Call validation rows and 184 BFCL validation rows. The user requested a balanced 50/50 validation set as well. The process was still in baseline evaluation, with the latest observed heartbeat at row 516/1,476 of combined training-set evaluation. It made zero optimizer updates.
+Outcome: Interrupted before training. No baseline metric, checkpoint, training metric, validation metric, or black-box test metric completed. This attempt is excluded from rankings.
+Correction: The next run will use 184 stratified original When2Call validation rows plus all 184 BFCL validation rows. It will report the combined 368-row validation metrics and the two source-specific metrics separately.
