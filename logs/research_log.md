@@ -8762,3 +8762,8 @@ This record was written automatically. Candidate selection must use clean valida
 ## Queue validation-gated stacker test measurement, 2026-10-26
 
 Queued a conditional measurement behind the active stacker fit. It reads only the stacker training and clean-validation metrics first. It prepares and scores the stacker on the official test only if its clean validation accuracy strictly exceeds Qwen, encoder, equal-average, and request-confidence baselines. If it does not, the command records a skip and never loads the test split. Aggregate test results cannot select or tune.
+
+
+## Queue scalar calibration on a new clean split, 2026-10-26
+
+Queued a scalar-temperature calibration experiment behind the active stacker test worker. It draws at most 500 clean `train_sft` examples, splits fit and validation rows, fits one positive temperature per frozen model using only fit labels, and compares calibrated single-model and fusion candidates on clean validation. The official test data remains unavailable to this worker. A later test measurement will be gated on clean validation accuracy.

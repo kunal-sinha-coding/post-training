@@ -7238,3 +7238,10 @@ The threshold-0.60 route was selected on clean validation and scored 0.69770 acc
 Commit name: Gate learned fusion test scoring on clean validation.
 
 Added an orchestration command that reads the completed stacker fit and clean-validation metrics, compares validation accuracy with frozen baselines, and measures the full aggregate test only if the stacker strictly wins on validation. It records a skip without loading test data otherwise. Queued the command behind the active stacker fit while leaving its declared worker command unchanged so the watchdog does not misidentify or restart it.
+
+
+## 2026-10-26: Queue clean-only temperature calibration
+
+Commit name: Queue scalar temperature calibration after the stacker test.
+
+Added a calibration experiment that fits separate scalar temperatures for the frozen Qwen and encoder using a fit partition of at most 500 clean SFT examples. It compares the calibrated models and ensembles on a disjoint clean validation partition. Added its command behind the active stacker test without changing the current worker command. Only clean validation can select a later test candidate.

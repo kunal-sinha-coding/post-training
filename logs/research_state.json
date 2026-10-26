@@ -5,35 +5,9 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "fresh_base_bfcl_when2call_data_exploration_v1",
   "current_hypothesis": "A regularized linear fusion layer may combine encoder and Qwen probabilities more reliably than fixed confidence rules. Fit on one stratified half of at most 500 clean SFT examples and select by accuracy on the other half. Test metrics remain report-only.",
-  "active_experiment": {},
-  "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.train_fullpool_when2call_stacker",
-    "--output-dir",
-    "outputs/fullpool-qwen-encoder-stacker-validation-20261074",
-    "--split-seed",
-    "20261075",
-    "--sample-seed",
-    "20261076",
-    "--meta-split-seed",
-    "20261077",
-    "--max-examples",
-    "500",
-    "--batch-size",
-    "1",
-    "--epochs",
-    "100",
-    "--learning-rate",
-    "0.02",
-    "--weight-decay",
-    "0.1",
-    "--patience",
-    "10"
-  ],
-  "worker_queue": [
-    [
+  "active_experiment": {
+    "pid": 120426,
+    "command": [
       "python",
       "-u",
       "-m",
@@ -46,6 +20,41 @@
       "outputs/fullpool-qwen-encoder-stacker-test-20261074/frozen",
       "--qwen-checkpoint",
       "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02"
+    ],
+    "started_at": "2026-10-26T17:13:31.053831+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.conditionally_score_fullpool_stacker",
+    "--training-metrics",
+    "outputs/fullpool-qwen-encoder-stacker-validation-20261074/metrics.json",
+    "--output-dir",
+    "outputs/fullpool-qwen-encoder-stacker-test-20261074",
+    "--work-dir",
+    "outputs/fullpool-qwen-encoder-stacker-test-20261074/frozen",
+    "--qwen-checkpoint",
+    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02"
+  ],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.calibrate_fullpool_when2call_ensemble",
+      "--output-dir",
+      "outputs/fullpool-qwen-encoder-temperature-validation-20261081",
+      "--split-seed",
+      "20261078",
+      "--sample-seed",
+      "20261079",
+      "--meta-split-seed",
+      "20261080",
+      "--max-examples",
+      "500",
+      "--batch-size",
+      "1"
     ]
   ],
   "_previous_command": [
@@ -65,9 +74,9 @@
     "outputs/test-clean-validation-smooth0075-wd002-weight75-25.json"
   ],
   "experiment_queue": [
-    "The active stacker trial fits and selects on disjoint halves of a stratified clean train_sft sample capped at 500 examples.",
-    "A queued gate compares the stacker held-out clean-validation accuracy with Qwen, encoder, equal-average, and request-confidence baselines. It runs the full aggregate black-box test only if the stacker strictly beats every baseline on clean validation.",
-    "After the gated stacker measurement or skip, test scalar probability calibration on clean validation if it remains a distinct candidate, then resume individual Qwen regularization or data-quality experiments."
+    "The active validation-gated stacker measurement reports the frozen learned fusion result and does not use its test metrics for selection.",
+    "Run the queued scalar-temperature experiment on a new stratified clean SFT sample capped at 500 examples. Fit one temperature per frozen model on the fit partition, then compare on the disjoint clean validation partition.",
+    "If a calibrated ensemble improves clean-validation accuracy, freeze one calibrated method and evaluate it once on the full aggregate black-box test set. Otherwise return to controlled Qwen regularization and data-quality experiments."
   ],
   "best_validation": {
     "experiment": "qwen-when2call-fullpool-sft-validation-base-seed20261062",
@@ -78,31 +87,30 @@
     "macro_f1": 0.48337889372616516,
     "selection": "clean validation only"
   },
-  "last_heartbeat": "2026-10-26T17:09:58.176330+00:00",
-  "last_action": "Queued a validation-gated stacker measurement behind the active stacker fit. It will load test data only if clean validation accuracy beats every frozen baseline.",
+  "last_heartbeat": "2026-10-26T17:13:31.053840+00:00",
+  "last_action": "Queued clean-validation-only scalar temperature calibration behind the active validation-gated stacker test.",
   "watchdog_enabled": true,
-  "research_log_size": 889429,
+  "research_log_size": 891309,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
     "-u",
     "-m",
-    "experiments.conditionally_score_fullpool_stacker",
-    "--training-metrics",
-    "outputs/fullpool-qwen-encoder-stacker-validation-20261074/metrics.json",
+    "experiments.calibrate_fullpool_when2call_ensemble",
     "--output-dir",
-    "outputs/fullpool-qwen-encoder-stacker-test-20261074",
-    "--work-dir",
-    "outputs/fullpool-qwen-encoder-stacker-test-20261074/frozen",
-    "--qwen-checkpoint",
-    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02"
+    "outputs/fullpool-qwen-encoder-temperature-validation-20261081",
+    "--split-seed",
+    "20261078",
+    "--sample-seed",
+    "20261079",
+    "--meta-split-seed",
+    "20261080",
+    "--max-examples",
+    "500",
+    "--batch-size",
+    "1"
   ],
-  "recording_jobs": [
-    {
-      "pid": 120323,
-      "experiment_id": "fullpool-qwen-encoder-stacker-validation-20261074"
-    }
-  ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-26T17:13:00.565055+00:00",
   "planning_ack_deadline": "2026-10-26T17:15:00.565078+00:00",
