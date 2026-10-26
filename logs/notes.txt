@@ -7115,3 +7115,12 @@ The user stopped the full-pool run after 62 optimizer updates in its first epoch
 Commit name: Add opt-in baseline evaluation and 738-row training budget.
 
 The prior commit recorded the user's baseline-off direction but the attempted code patch did not match the trainer's current W&B job type, so only the notes and interrupted-run record were committed. Applied the code changes now. Baseline evaluation is opt-in in both recent Qwen trainers, and the mixture trainer accepts an explicit total training-row budget. The next run will train on 738 original When2Call rows only, with the exact deterministic 738-row sample used in the 50/50 run. It will skip the redundant baseline pass and evaluate at the end of its epoch.
+
+
+## 2026-10-26: Complete the 738-row When2Call-only comparison
+
+Commit name: Record the 738-row When2Call-only experiment.
+
+Completed one base-model epoch on 738 When2Call preference examples with no BFCL training examples and no baseline evaluation. The run used the exact 738-row original sample from the previous 50/50 experiment and the same 184+184 held-out validation sample. Final training accuracy and macro F1 were 0.6504 and 0.4052. Balanced validation was 0.5163 / 0.3365, BFCL validation 0.3859 / 0.2659, original validation 0.6467 / 0.4114, and aggregate test 0.5600 / 0.3347.
+
+Compared with the 738+738 50/50 run, original-only scored 3.04 percentage points higher in test accuracy, while the 50/50 model scored 7.00 points higher in test macro F1. The mixed model also scored higher on both held-out sources. This result is one seed, and the runs have different optimizer-step counts because each trained for one epoch. Test metrics remain report-only. Results are recorded in `logs/results.txt`.

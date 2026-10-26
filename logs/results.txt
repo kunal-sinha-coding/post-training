@@ -47756,3 +47756,18 @@ Full When2Call preference-pool run stopped at the user's request, 2026-10-26
 Purpose: Attempt base Qwen SFT on all 9,000 When2Call preference rows for two fixed epochs, with aggregate-only test reporting after each epoch and no validation split.
 Configuration: `Qwen/Qwen2.5-1.5B-Instruct`, fresh LoRA rank 16, batch size 1, max length 4,096, learning rate 2e-5, weight decay 0.01, seed 20261050, planned two epochs.
 Outcome: The run completed a base-model aggregate test evaluation and then completed 62 of 9,000 optimizer updates in epoch 1 before the user explicitly stopped it. No epoch finished. No trained checkpoint, training metric, validation metric, or post-training test metric was produced. The run is excluded from rankings. W&B run `gmiag8eo`: https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/gmiag8eo.
+
+
+Qwen SFT on 738 When2Call preference examples only, 2026-10-26
+Purpose: Compare 738 real When2Call examples alone with the same 738 real examples plus 738 GPT-6 Luna labeled BFCL examples.
+Setup: Fresh `Qwen/Qwen2.5-1.5B-Instruct` LoRA adapter, one epoch, 738 optimizer steps, batch size 1, eval batch size 4, max length 4,096, learning rate 2e-5, weight decay 0.01, LoRA rank 16, seed 20261050. Baseline evaluation was disabled as requested. The run used the exact same original When2Call sample as the 50/50 run, fingerprint `4e22c5b6f77e84d92f1eaf595281597726718e160e39e6f8a0a6185c8be0399d`.
+Data: From `nvidia/When2Call:train_pref`, fixed train split seed 20261029. The full source train partition contains 7,200 rows; this run used 738. No BFCL examples were used for training. Validation reused 184 original When2Call examples and 184 BFCL generated-label examples, for a 368-row balanced validation set. Original validation fingerprint `ff5b05e683ec7e0047f1c391d8b75687b43e78a7e0f513b1c750e11f3ea7ec9f`. The BFCL validation source has 184 rows; BFCL data file SHA-256 `a4b817a01c109603c00fe9e682f11eb636afc139894a92d4960bde8bddfda27f`; label prompt SHA-256 `2a191a61da8709a4cff51676bfb421c274e5e84b7c81ee3a7e6d44f80cf8fa85`.
+Metrics are accuracy / macro F1.
+
+| Model | Training accuracy / macro F1 | Balanced validation accuracy / macro F1 | BFCL validation accuracy / macro F1 | When2Call validation accuracy / macro F1 | Aggregate test accuracy / macro F1 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 738 When2Call only, step 738 | 0.6504 / 0.4052 | 0.5163 / 0.3365 | 0.3859 / 0.2659 | 0.6467 / 0.4114 | 0.5600 / 0.3347 |
+| 738 When2Call + 738 BFCL, step 1,476 | 0.7771 / 0.7696 | 0.6495 / 0.6375 | 0.5489 / 0.5246 | 0.7500 / 0.5639 | 0.5296 / 0.4048 |
+
+The 738-row original-only model scored 3.04 percentage points higher in aggregate test accuracy than the 50/50 model. Its test macro F1 was 7.00 points lower. The 50/50 model scored higher on both source-specific validation sets, including original When2Call validation, but its aggregate test accuracy was lower. This is one seed. The two runs have different optimizer-step counts because each uses one epoch over its own training set. Test metrics are aggregate-only and report-only; they were not used to select a checkpoint or stop training.
+Artifacts and environment: `outputs/qwen-bfcl-original-only-738-base-seed20261050/metrics.json`, W&B run `r8f2wo92` at https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/r8f2wo92. The comparison 50/50 run is in `outputs/qwen-bfcl-original-5050-base-seed20261050/metrics.json`, W&B run `tf0jwrgd`. Both used CUDA on the RTX A4500. The experiment code was commit `8fff229f`.
