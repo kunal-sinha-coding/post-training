@@ -7008,3 +7008,10 @@ A direct, aggregate-only test evaluation of temporary v8 was interrupted at the 
 Commit name: Clarify semantic handling of schema defaults.
 
 Updated the BFCL action prompt so a schema default counts as available only when it preserves the user's requested target, scope, and result. The prompt now identifies task-defining values such as identity, query, location, time range, filter, metric, currency, and sort order. This corrects the prior blanket rule that treated every schema default as sufficient. The alignment evaluator has not yet been changed or run with this prompt.
+
+
+## 2026-10-26: Make alignment inference category-free and label-only
+
+Commit name: Simplify aggregate prompt-alignment inference.
+
+Updated the alignment evaluator to derive an evaluation-specific prompt from the reviewed action definitions, omit BFCL source categories from model input, and request only the A/B/C/D action code. The evaluator maps codes to labels locally. It still derives categories from source IDs for aggregate reporting and now preserves the compound `parallel_multiple` category. The canonical BFCL labeling prompt retains category guidance for intact BFCL examples and now applies the corrected semantic-default rule. The 100-row aggregate-only rescore is the next step; this code commit contains no new alignment metric.

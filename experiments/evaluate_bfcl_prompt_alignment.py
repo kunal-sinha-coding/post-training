@@ -1,8 +1,7 @@
-"""Measure GPT-6 Luna agreement with When2Call MCQ labels using the fixed BFCL prompt.
+"""Measure GPT-6 Luna action-label alignment without exposing answer labels to the model.
 
-The flow loads public When2Call test questions and visible tools, maps each source ID to its BFCL
-category, submits only unlabeled inputs to the OpenAI Batch API with structured JSON output, compares
-returned labels to correct_answer locally after inference, and saves aggregate-only alignment metrics.
+The flow loads the action definitions, sends only each request and visible tools, requests one action
+code, compares predictions locally, and saves aggregate-only metrics.
 """
 from __future__ import annotations
 
@@ -20,34 +19,55 @@ LABEL_BY_CODE = {"A": "direct", "B": "tool_call", "C": "request_for_info", "D": 
 CODE_BY_LABEL = {value: key for key, value in LABEL_BY_CODE.items()}
 OUTPUT_SCHEMA = {
     "type": "object",
-    "properties": {
-        "label": {"type": "string", "enum": ["A", "B", "C", "D"]},
-        "label_name": {"type": "string", "enum": ["direct", "tool_call", "request_for_info", "cannot_answer"]},
-        "confidence": {"type": "string", "enum": ["high", "medium", "low"]},
-        "rationale": {"type": "string"},
-        "expected_call_count": {"anyOf": [{"type": "integer"}, {"type": "null"}]},
-        "needs_review": {"type": "boolean"},
-        "review_reason": {"anyOf": [{"type": "string"}, {"type": "null"}]},
-    },
-    "required": ["label", "label_name", "confidence", "rationale", "expected_call_count", "needs_review", "review_reason"],
+    "properties": {"label": {"type": "string", "enum": ["A", "B", "C", "D"]}},
+    "required": ["label"],
     "additionalProperties": False,
 }
 
 
 def category_for_source_id(source_id: str) -> str:
     """Map a When2Call source ID to its BFCL Live category name."""
-    # Keep category interpretation explicit and independent of the answer label.
+    # Keep compound category names intact for aggregate reporting.
     parts = source_id.split("_")
     raw = parts[1] if len(parts) > 1 else "unknown"
+    if raw.lower() == "parallel" and len(parts) > 2 and parts[2].lower() == "multiple":
+        raw = "parallel_multiple"
     return {"simple": "Simple", "multiple": "Multiple", "parallel": "Parallel", "parallel_multiple": "Parallel Multiple", "relevance": "Relevance", "irrelevance": "Irrelevance"}.get(raw, raw.title())
+
+
+def alignment_prompt(prompt: str) -> str:
+    """Build an alignment prompt without BFCL categories or unused output fields."""
+    # Keep the shared action definitions and omit category and reference-call instructions.
+    prefix = prompt.split("## BFCL categories", 1)[0].rstrip()
+    prefix = prefix.replace(
+        "Use the conversation, system instructions, visible function descriptions and schemas, BFCL category, and a reference call when provided. Apply a category only when it describes this exact question and visible function list.",
+        "Use the conversation, system instructions, and visible function descriptions and schemas. Base the action on the request and functions shown.",
+    )
+    # Apply one category-free decision procedure and require only the action code.
+    return prefix + """
+
+## Decision procedure for alignment
+
+1. Identify the requested operation and its constraints.
+2. Check whether a visible function performs that operation and whether the needed values are available.
+3. Choose `A` when the request can be satisfied in ordinary text without a function.
+4. Choose `B` when a suitable function can perform the operation with available or safely inferred values. Use a default only when it preserves the requested target, scope, and result.
+5. Choose `C` when a suitable function exists but a required task-defining value is missing and the user can provide it.
+6. Choose `D` when no suitable function exists and the request needs unavailable information or capability.
+
+Return only this JSON object with one label code:
+
+```json
+{\"label\": \"A | B | C | D\"}
+```
+"""
 
 
 def build_request(row: dict, index: int, prompt: str) -> dict:
     """Create one structured-output model request without test answer fields."""
-    # Send only the task category, question, and tools shown to the model in the test example.
-    category = category_for_source_id(row["source_id"])
+    # Keep the inferred source category out because the visible tools may be transformed.
     tools = "\n".join(tool if isinstance(tool, str) else json.dumps(tool, ensure_ascii=False, sort_keys=True) for tool in row["tools"])
-    user_input = f"BFCL category: {category}\n\nConversation:\nuser: {row['question']}\n\nAvailable functions:\n{tools}\n\nLabel the required assistant action."
+    user_input = f"Conversation:\nuser: {row['question']}\n\nAvailable functions:\n{tools}\n\nLabel the required assistant action."
     return {
         "custom_id": f"row-{index:05d}",
         "method": "POST",
@@ -76,7 +96,7 @@ def response_text(body: dict) -> str:
             parsed = json.loads(part)
         except json.JSONDecodeError:
             continue
-        if isinstance(parsed, dict) and {"label", "label_name", "confidence", "rationale", "expected_call_count", "needs_review", "review_reason"}.issubset(parsed):
+        if isinstance(parsed, dict) and "label" in parsed:
             return part
     raise ValueError("No complete label object was present in the response text.")
 
@@ -127,7 +147,8 @@ def main() -> int:
     parser.add_argument("--batch-id")
     parser.add_argument("--allow-partial", action="store_true")
     args = parser.parse_args()
-    prompt = args.prompt.read_text(encoding="utf-8")
+    source_prompt = args.prompt.read_text(encoding="utf-8")
+    prompt = alignment_prompt(source_prompt)
     prompt_sha = hashlib.sha256(prompt.encode("utf-8")).hexdigest()
     # Keep reference labels local and exclude every answer-derived field from API request bodies.
     rows = [json.loads(line) for line in args.test_data.read_text(encoding="utf-8").splitlines() if line.strip()]
@@ -166,7 +187,7 @@ def main() -> int:
         body = item["response"]["body"]
         parsed = json.loads(response_text(body))
         label = LABEL_BY_CODE.get(parsed.get("label"))
-        if label is None or parsed.get("label_name") != label:
+        if label is None:
             raise ValueError(f"Structured output label mismatch for custom_id={item['custom_id']}.")
         by_index[index] = label
         if body.get("usage"):
@@ -192,6 +213,7 @@ def main() -> int:
         "not_scored_examples": len(rows) - len(completed_indices),
         "prompt_path": str(args.prompt),
         "prompt_sha256": prompt_sha,
+        "source_prompt_sha256": hashlib.sha256(source_prompt.encode("utf-8")).hexdigest(),
         "test_dataset": "nvidia/When2Call test/mcq",
         "test_data_sha256": hashlib.sha256(args.test_data.read_bytes()).hexdigest(),
         "test_labels_sent_to_model": False,
