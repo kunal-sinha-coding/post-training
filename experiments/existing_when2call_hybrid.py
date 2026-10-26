@@ -198,6 +198,7 @@ def prepare(args: object, run: object) -> dict:
     suite_name = getattr(args, "suite", "initial")
     suite = suite_definition(suite_name)
     qwen_checkpoint = str(getattr(args, "qwen_checkpoint", QWEN))
+    stacker_artifact = str(getattr(args, "stacker_artifact", STACKER_ARTIFACT))
     methods = list(getattr(args, "methods", None) or suite["methods"])
     primary_method = str(getattr(args, "primary_method", None) or suite["primary"])
     if not methods or len(methods) != len(set(methods)) or any(method not in suite["methods"] for method in methods):
@@ -210,7 +211,7 @@ def prepare(args: object, run: object) -> dict:
     artifacts.extend(Path(qwen_checkpoint) / name for name in ("adapter_model.safetensors", "adapter_config.json"))
     artifacts.append(Path("outputs/when2call-jina-v2-small/latest/tokenizer.json"))
     if suite_name == "single-stacker":
-        artifacts.append(Path(STACKER_ARTIFACT))
+        artifacts.append(Path(stacker_artifact))
     config = {"selection_complete": True, "training_performed": False, "development_selection_performed": False, "suite": suite_name, "encoders": suite["encoders"], "encoder_logit_weights": suite["weights"], "single_encoder_index": suite["single_index"], "qwen_checkpoint": qwen_checkpoint, "qwen_base": QWEN_BASE, "qwen_output_permutation": [0, 1, 2, 3], "label_order": LABELS, "max_length": 4096, "methods": methods, "primary_method": primary_method, "family_probability_weights": [0.5, 0.5], "artifact_sha256": {str(path): artifact_digest(path) for path in artifacts}, "validation_limitation": "Existing encoder warm starts saw all train_pref rows. Clean source validation is used to select the frozen fusion rule. Test metrics are report-only.", "historical_selection_limitation": "Existing encoder approaches were identified in prior research with repeated official benchmark inspection. This fixed comparison is a benchmark measurement, not a new independent generalization estimate.", "metric_definition": "Primary macro F1 includes all four declared classes. The present-class macro F1 diagnostic permits comparison with historical encoder reports.", "qwen_mapping": "Historical adapter training used LABEL_TO_ID directly despite reversed ABCD descriptions in its prompt. Preserve learned identity indices.", "test_status": "queued"}
     if suite_name == "single-fusion":
         config["fusion_rules"] = SINGLE_RULES
@@ -237,9 +238,9 @@ def prepare(args: object, run: object) -> dict:
         config["fusion_rules"] = REQUEST_CONFIDENCE_RULES
         config["hypothesis"] = "Clean validation favored the encoder request_for_info region, while the fixed class route did not improve aggregate test accuracy. Confidence filtering tests whether restricting that route to more certain encoder predictions improves validation transfer. Thresholds are fixed before scoring."
     if suite_name == "single-stacker":
-        stacker = json.loads(Path(STACKER_ARTIFACT).read_text())
+        stacker = json.loads(Path(stacker_artifact).read_text())
         config["fusion_rules"] = STACKER_RULES
-        config["stacker_artifact"] = STACKER_ARTIFACT
+        config["stacker_artifact"] = stacker_artifact
         config["stacker_parameters"] = {"coefficients": stacker["coefficients"], "intercepts": stacker["intercepts"]}
         config["hypothesis"] = "A linear meta-classifier can learn which probability features are useful from the independent SFT-source meta-training partition. It is fitted and measured on disjoint clean source partitions before its coefficients are frozen for official scoring."
     save_json(args.work_dir / "frozen-config.json", config)
@@ -270,9 +271,10 @@ def verify_frozen(config: dict) -> None:
     if suite_name == "single-request-confidence" and (config.get("fusion_rules") != REQUEST_CONFIDENCE_RULES or config.get("single_encoder_index") != 0 or config.get("qwen_base") != QWEN_BASE or config.get("max_length") != 4096 or config.get("qwen_output_permutation") != [0, 1, 2, 3] or config.get("family_probability_weights") != [0.5, 0.5]):
         raise ValueError("Frozen request confidence rules changed.")
     if suite_name == "single-stacker":
-        stacker = json.loads(Path(STACKER_ARTIFACT).read_text())
+        stacker_artifact = Path(config.get("stacker_artifact", STACKER_ARTIFACT))
+        stacker = json.loads(stacker_artifact.read_text())
         expected_parameters = {"coefficients": stacker["coefficients"], "intercepts": stacker["intercepts"]}
-        if config.get("fusion_rules") != STACKER_RULES or config.get("stacker_parameters") != expected_parameters or config.get("stacker_artifact") != STACKER_ARTIFACT:
+        if config.get("fusion_rules") != STACKER_RULES or config.get("stacker_parameters") != expected_parameters or config.get("stacker_artifact") != str(stacker_artifact):
             raise ValueError("Frozen stacker parameters changed.")
     for path, expected in config["artifact_sha256"].items():
         if artifact_digest(Path(path)) != expected:
@@ -368,6 +370,7 @@ def main() -> int:
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--suite", choices=("initial", "single-fusion", "single-route", "single-weighted", "single-adaptive", "single-rules", "single-pool-grid", "single-disagree", "single-request-confidence", "single-stacker"), default="initial")
     parser.add_argument("--qwen-checkpoint", default=QWEN)
+    parser.add_argument("--stacker-artifact", default=STACKER_ARTIFACT)
     parser.add_argument("--methods", nargs="*")
     parser.add_argument("--primary-method")
     parser.add_argument("--batch-size", type=int, default=1)
@@ -378,7 +381,7 @@ def main() -> int:
     args.work_dir.mkdir(parents=True, exist_ok=True)
     args.output_dir.mkdir(parents=True, exist_ok=True)
     suite = suite_definition(args.suite)
-    metadata = {"command": [sys.executable, *sys.argv], "git_commit": subprocess.check_output(["git", "-c", "safe.directory=/workspace/post-training", "rev-parse", "HEAD"], text=True).strip(), "configuration": {key: str(value) if isinstance(value, Path) else value for key, value in vars(args).items()}, "suite": args.suite, "encoders": suite["encoders"], "encoder_logit_weights": suite["weights"], "qwen_checkpoint": args.qwen_checkpoint, "max_length": 4096, "primary_method": args.primary_method or suite["primary"]}
+    metadata = {"command": [sys.executable, *sys.argv], "git_commit": subprocess.check_output(["git", "-c", "safe.directory=/workspace/post-training", "rev-parse", "HEAD"], text=True).strip(), "configuration": {key: str(value) if isinstance(value, Path) else value for key, value in vars(args).items()}, "suite": args.suite, "encoders": suite["encoders"], "encoder_logit_weights": suite["weights"], "qwen_checkpoint": args.qwen_checkpoint, "stacker_artifact": args.stacker_artifact, "max_length": 4096, "primary_method": args.primary_method or suite["primary"]}
     run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name="existing-when2call-hybrid-" + args.suite + "-" + args.mode, job_type="existing-hybrid-" + args.mode, config=metadata)
     started = time.time()
     stop = threading.Event()

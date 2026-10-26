@@ -8716,3 +8716,32 @@ This record was written automatically. Candidate selection must use clean valida
 A second deterministic 500-row clean `train_sft` sample evaluated the full-pool Qwen epoch-2 checkpoint, the existing encoder, and the same fixed fusion candidates. Qwen scored 0.936 accuracy / 0.957026 macro F1, encoder 0.922 / 0.948860, equal probability average 0.948 / 0.966255, and the request-for-information route with confidence threshold 0.60 scored 0.950 / 0.963558. The 0.60 route improves validation accuracy over Qwen on both clean samples: 0.6 points in the first and 1.4 points in the second. Freeze this rule for aggregate testing; do not use the test result to select.
 
 The earlier frozen threshold-0.80 route test tied Qwen at 0.702355 accuracy and had macro F1 0.528241 versus 0.527789 for Qwen. This is aggregate-only reporting and does not change the selected threshold.
+
+## fullpool-qwen-encoder-route60-prepare-20261073
+
+Timestamp: 2026-10-26T16:59:23.191310+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.existing_when2call_hybrid", "prepare", "--work-dir", "outputs/fullpool-qwen-encoder-route60-20261073", "--output-dir", "outputs/fullpool-qwen-encoder-route60-prepare-20261073", "--suite", "single-request-confidence", "--qwen-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--methods", "single_request_conf_60", "--primary-method", "single_request_conf_60", "--batch-size", "4"]. Output: /workspace/post-training/outputs/fullpool-qwen-encoder-route60-prepare-20261073. W&B run: 5aoqcu7o.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Test status: queued. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## fullpool-qwen-encoder-route60-test-20261073
+
+Timestamp: 2026-10-26T17:06:54.247597+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.existing_when2call_hybrid", "test", "--work-dir", "outputs/fullpool-qwen-encoder-route60-20261073", "--output-dir", "outputs/fullpool-qwen-encoder-route60-test-20261073", "--suite", "single-request-confidence", "--qwen-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--methods", "single_request_conf_60", "--primary-method", "single_request_conf_60", "--batch-size", "4"]. Output: /workspace/post-training/outputs/fullpool-qwen-encoder-route60-test-20261073. W&B run: 5una9g4l.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: True. Test status: measured. Official test metrics: {"accuracy": 0.6976998904709748, "macro_f1": 0.5251559223456526, "macro_f1_present_classes": 0.7002078964608701}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+
+## Queue regularized fusion training on capped clean data, 2026-10-26
+
+The fixed request-for-information route at confidence 0.60 was selected using clean validation and then evaluated on the black-box test. It scored 0.697700 accuracy / 0.525156 macro F1 versus 0.702355 / 0.527789 for paired Qwen. This is report-only and does not change selection. The next hypothesis is that a regularized linear fusion layer, fit and validated on disjoint halves of a capped clean SFT sample, may use complementary probabilities better than fixed routing. The queued experiment uses at most 500 total rows, reports fit and held-out validation metrics, and does not load test data.

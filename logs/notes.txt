@@ -7224,3 +7224,10 @@ The active worker queue was empty while the frozen request-confidence route test
 Commit name: Test the request confidence route confirmed on two clean splits.
 
 The second capped clean validation sample showed Qwen at 0.936 accuracy, equal probability averaging at 0.948, and request_for_info confidence routing at threshold 0.60 at 0.950. The threshold 0.60 route improved clean validation on both samples. The first frozen threshold 0.80 test tied Qwen accuracy and slightly raised macro F1, with test metrics kept report-only. Queued preparation and one aggregate test of the validation-selected threshold 0.60 candidate, followed by the planned regularized learned fusion study.
+
+
+## 2026-10-26: Queue a disjoint-split linear fusion trial
+
+Commit name: Train a regularized fusion layer on capped clean SFT data.
+
+The threshold-0.60 route was selected on clean validation and scored 0.69770 accuracy / 0.52516 macro F1 on the test set, below paired Qwen accuracy 0.70235. Test scores remain report-only. Added a new linear fusion trainer that uses at most 500 clean SFT examples in disjoint stratified fit and validation sets, logs training loss and both partitions’ accuracy and macro F1, selects by clean validation accuracy, and never loads the official test split. Queued this trainer next.
