@@ -47771,3 +47771,17 @@ Metrics are accuracy / macro F1.
 
 The 738-row original-only model scored 3.04 percentage points higher in aggregate test accuracy than the 50/50 model. Its test macro F1 was 7.00 points lower. The 50/50 model scored higher on both source-specific validation sets, including original When2Call validation, but its aggregate test accuracy was lower. This is one seed. The two runs have different optimizer-step counts because each uses one epoch over its own training set. Test metrics are aggregate-only and report-only; they were not used to select a checkpoint or stop training.
 Artifacts and environment: `outputs/qwen-bfcl-original-only-738-base-seed20261050/metrics.json`, W&B run `r8f2wo92` at https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/r8f2wo92. The comparison 50/50 run is in `outputs/qwen-bfcl-original-5050-base-seed20261050/metrics.json`, W&B run `tf0jwrgd`. Both used CUDA on the RTX A4500. The experiment code was commit `8fff229f`.
+
+Queued fresh-base data experiments and open-ended phase, 2026-10-26
+Purpose: Test the requested BFCL-only, full When2Call, and combined full-data training conditions before open-ended data exploration.
+Current status: Queued in `logs/research_state.json`; no run in this queue has reported results yet. All runs use fresh `Qwen/Qwen2.5-1.5B-Instruct` initialization and LoRA rank 16, batch size 1, maximum length 4,096, learning rate 2e-5, and weight decay 0.01. Baseline evaluation is disabled.
+
+| Order | Training data | Fixed schedule | Clean validation | Required reports |
+| --- | --- | --- | --- | --- |
+| 1 | 738 rows from the fixed BFCL training partition only | One epoch | Fixed 184-row BFCL holdout and a 184-row When2Call preference holdout | Training, each validation source and balanced validation, and aggregate black-box test accuracy and macro F1 |
+| 2 | All 9,000 When2Call `train_pref` rows | Two epochs | Fixed 184-row BFCL validation partition, which is not used for training | Training, BFCL validation, and aggregate black-box test accuracy and macro F1 after each epoch |
+| 3 | All 9,000 When2Call `train_pref` rows plus all 922 labeled BFCL rows | Two epochs | Fixed stratified 500-row sample from separate `train_sft` config, seed 20261057 | Training, SFT validation, and aggregate black-box test accuracy and macro F1 after each epoch |
+
+The `train_sft` validation source is separate from `train_pref` and from BFCL. Its full inferred-label pool has 7,529 cannot-answer, 7,470 request-for-information, zero tool-call, and one direct-answer row. The 500-row validation sample is stratified to include the sole direct-answer example. The source has no tool-call examples, so it is clean but weak for checking tool-call generalization. BFCL is fully included in experiment 3, so its fixed validation rows cannot be used there.
+
+The script `experiments/train_qwen_when2call_fullpool.py` now supports BFCL inclusion, either BFCL or separate SFT validation, and an optional validation-driven early stop for later research runs. The three requested runs keep their explicitly fixed epoch counts. The future default is to evaluate every epoch and stop when clean validation accuracy fails to improve. Aggregate black-box test accuracy and macro F1 are reported but are not used for selection or stopping. No OpenAI API generation has started. Authorized cumulative generation budget is $10, with $0 spent.
