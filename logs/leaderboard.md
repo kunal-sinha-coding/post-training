@@ -1319,3 +1319,35 @@ Source-specific result `qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-s
 
 | qwen-when2call-pref-full-glaive500-toolcall-apigenmt500-seed20261047 | — | — | c38r2c7n | Interrupted by user at step 4,332 before evaluation; excluded from ranking |
 | qwen-when2call-pref-full-glaive500-toolcall-toolace500-seed20261047 | — | — | e4a03k56 | Interrupted by user during model loading; excluded from ranking |
+| Candidate | qwen-pref-control-continue-apigenmt500-seed20261047 | — | — | [metrics](/workspace/post-training/outputs/qwen-pref-control-continue-apigenmt500-seed20261047/metrics.json) | failed_or_incomplete |
+| Candidate | qwen-pref-control-continue-toolace500-seed20261047 | 0.8694444444444445 | 0.6535828422949388 | [metrics](/workspace/post-training/outputs/qwen-pref-control-continue-toolace500-seed20261047/metrics.json) | completed |
+
+| qwen-pref-control-continue-toolace500-seed20261047 | 0.6248630887185104 | 0.4562050119198142 | ffkx9t79 | Aggregate-only frozen test measurement |
+| Candidate | qwen-pref-control-continue-hermes-singleturn500-seed20261047 | 0.59 | 0.41638695911417145 | [metrics](/workspace/post-training/outputs/qwen-pref-control-continue-hermes-singleturn500-seed20261047/metrics.json) | completed |
+
+| qwen-pref-control-continue-hermes-singleturn500-seed20261047 | 0.4356516976998905 | 0.2541335632233766 | h6039fol | Aggregate-only frozen test measurement |
+| Candidate | qwen-pref-control-continue-english100k500-seed20261047 | 0.59 | 0.41796412906313984 | [metrics](/workspace/post-training/outputs/qwen-pref-control-continue-english100k500-seed20261047/metrics.json) | completed |
+
+| qwen-pref-control-continue-english100k500-seed20261047 | 0.45098576122672507 | 0.2747408778788624 | j03axhp0 | Aggregate-only frozen test measurement |
+| Candidate | qwen-pref-control-continue-toolbench500-seed20261047 | 0.5355555555555556 | 0.33602305125380677 | [metrics](/workspace/post-training/outputs/qwen-pref-control-continue-toolbench500-seed20261047/metrics.json) | completed |
+
+| qwen-pref-control-continue-toolbench500-seed20261047 | 0.42059145673603504 | 0.23094520624123588 | drq3dnak | Aggregate-only frozen test measurement |
+| Candidate | qwen-pref-control-continue-apibank500-seed20261047 | 0.8316666666666667 | 0.6260064776531947 | [metrics](/workspace/post-training/outputs/qwen-pref-control-continue-apibank500-seed20261047/metrics.json) | completed |
+
+| qwen-pref-control-continue-apibank500-seed20261047 | 0.593921139101862 | 0.42300463400227334 | 71nag3fy | Aggregate-only frozen test measurement |
+| Candidate | qwen-pref-control-continue-toolalpaca500-seed20261047 | 0.7083333333333334 | 0.5305718437962894 | [metrics](/workspace/post-training/outputs/qwen-pref-control-continue-toolalpaca500-seed20261047/metrics.json) | completed |
+
+| qwen-pref-control-continue-toolalpaca500-seed20261047 | 0.49561883899233294 | 0.30211518520553365 | 1sawyxar | Aggregate-only frozen test measurement |
+| Candidate | qwen-pref-control-continue-narrative500-seed20261047 | 0.7827777777777778 | 0.6318992831128838 | [metrics](/workspace/post-training/outputs/qwen-pref-control-continue-narrative500-seed20261047/metrics.json) | completed |
+
+| qwen-pref-control-continue-narrative500-seed20261047 | 0.49342825848849947 | 0.40787175065879855 | ng5n57bt | Aggregate-only frozen test measurement |
+| Candidate | qwen-pref-control-continue-apigenmt500-includedirect-seed20261047 | 0.8711111111111111 | 0.6547317160809918 | [metrics](/workspace/post-training/outputs/qwen-pref-control-continue-apigenmt500-includedirect-seed20261047/metrics.json) | completed |
+
+| qwen-pref-control-continue-apigenmt500-includedirect-seed20261047 | 0.6169222343921139 | 0.4551528086132888 | ntw9sxqc | Aggregate-only frozen test measurement |
+| Candidate | qwen-bfcl-only-738-base-seed20261054 | 0.5924 | 0.5617 | [metrics](/workspace/post-training/outputs/qwen-bfcl-only-738-base-seed20261054/metrics.json) | completed |
+| Candidate | qwen-when2call-fullpool-base-seed20261055 | — | — | [metrics](/workspace/post-training/outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json) | completed, validation skipped by direction |
+| Candidate | qwen-when2call-plus-full-bfcl-base-seed20261056 | 0.9280 | 0.4774 | [metrics](/workspace/post-training/outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/metrics.json) | completed, best clean validation at epoch 1 |
+
+Source-specific result `posthoc-clean-validation-sft-seed20261057` has status completed. Its separate validation metrics are {"sft_validation_metrics": {"outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/epoch-01": {"accuracy": 0.928, "macro_f1": 0.4773767437922056, "confusion_matrix": [[234, 8, 8, 0], [0, 230, 19, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}, "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/epoch-02": {"accuracy": 0.91, "macro_f1": 0.4728619842998928, "confusion_matrix": [[235, 7, 8, 0], [0, 220, 29, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}}. These values are not ranked against other splits.
+
+Source-specific result `posthoc-clean-validation-sft-seed20261057` has status completed. Its separate validation metrics are {"sft_validation_metrics": {"outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/epoch-01": {"accuracy": 0.928, "macro_f1": 0.4773767437922056, "confusion_matrix": [[234, 8, 8, 0], [0, 230, 19, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}, "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/epoch-02": {"accuracy": 0.91, "macro_f1": 0.4728619842998928, "confusion_matrix": [[235, 7, 8, 0], [0, 220, 29, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}}. These values are not ranked against other splits.

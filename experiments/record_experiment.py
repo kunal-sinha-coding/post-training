@@ -96,15 +96,30 @@ def commit_records(repo: Path, experiment_id: str) -> dict:
 
 def record(repo: Path, args: argparse.Namespace) -> dict:
     """Write durable records for one experiment."""
-    # Build a complete result or a minimal failure record before updating human-readable files.
+    # Normalize the supported training artifact schemas before updating durable result files.
     output_dir = Path(args.output_dir)
     if not output_dir.is_absolute():
         output_dir = repo / output_dir
     metrics = load_metrics(output_dir)
     development = metrics.get("development_metrics") or {}
     source_validation = {key: value for key, value in metrics.items() if key.endswith("_validation_metrics") and value}
+    checkpoint_records = metrics.get("epoch_records") or metrics.get("checkpoint_evaluations") or []
+    latest_checkpoint = checkpoint_records[-1] if checkpoint_records else {}
+    train_metrics = metrics.get("train_metrics") or latest_checkpoint.get("training_metrics") or {}
+    if not development:
+        development = latest_checkpoint.get("balanced_heldout_validation_metrics") or latest_checkpoint.get("heldout_validation_metrics") or {}
+    if not source_validation:
+        source_validation = {
+            key: latest_checkpoint[key]
+            for key in ("bfcl_heldout_validation_metrics", "original_heldout_validation_metrics", "source_validation_metrics")
+            if latest_checkpoint.get(key)
+        }
+        if latest_checkpoint.get("heldout_validation_metrics"):
+            source_validation["heldout_validation_metrics"] = latest_checkpoint["heldout_validation_metrics"]
     # Preserve aggregate official test metrics when the worker is a black-box evaluator.
     official_test = metrics.get("official_test_metrics") or {}
+    if not official_test and latest_checkpoint.get("black_box_test_metrics"):
+        official_test = latest_checkpoint["black_box_test_metrics"]
     aggregate_only = bool(metrics.get("test_measurement_only") and metrics.get("black_box"))
     if not official_test and aggregate_only:
         official_test = {key: metrics.get("metrics", {}).get(key) for key in ("accuracy", "macro_f1") if key in metrics.get("metrics", {})}
@@ -114,7 +129,8 @@ def record(repo: Path, args: argparse.Namespace) -> dict:
         development["macro_f1"] = float(args.development_macro_f1)
     status = args.status or metrics.get("status")
     if not status:
-        status = "failed" if str(args.exit_code) not in ("0", "unknown", "None") else ("completed" if development or source_validation or official_test else "failed_or_incomplete")
+        has_experiment_evidence = bool(development or source_validation or official_test or train_metrics)
+        status = "failed" if str(args.exit_code) not in ("0", "unknown", "None") else ("completed" if has_experiment_evidence else "failed_or_incomplete")
     test_status = metrics.get("test_status") or ("measured" if official_test else "not measured")
     if status in ("failed", "test skipped", "test_skipped"):
         test_status = "failed" if status == "failed" else "test skipped"
@@ -128,7 +144,7 @@ def record(repo: Path, args: argparse.Namespace) -> dict:
         "exit_code": args.exit_code,
         "metrics_path": str(output_dir / "metrics.json"),
         "development_metrics": development,
-        "train_metrics": metrics.get("train_metrics", {}),
+        "train_metrics": train_metrics,
         "wandb_run_id": args.wandb_run_id or metrics.get("wandb_run_id"),
         "wandb_run_url": args.wandb_run_url or metrics.get("wandb_run_url"),
         "official_test_loaded": metrics.get("official_test_loaded", True if aggregate_only else None),

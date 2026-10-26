@@ -8427,3 +8427,165 @@ This record was written automatically. Candidate selection must use clean valida
 ## qwen-pref-control-continue-apigenmt500-seed20261047 stop-rule correction
 
 The first completed evaluation at step 397 had clean preference validation accuracy/macro F1 0.846111/0.635981 and aggregate black-box test accuracy/macro F1 0.587897/0.431152. The starting aggregate test accuracy was 0.666210. The drop was 0.078313, greater than the newly specified 0.02 threshold. The process had started its step-794 isolated test evaluation when the user changed the rule. That measurement was interrupted, and the run was stopped. Test labels were never exposed. The first checkpoint's training probe and APIGen source validation were entirely request-for-information examples, so the result is parser/sample-skewed.
+
+## qwen-pref-control-continue-toolace500-seed20261047
+
+Timestamp: 2026-10-25T20:10:33.422215+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_dataset_continuation", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--initial-checkpoint", "outputs/qwen-when2call-qwen25-15b-pref-full-control-seed20261031", "--seed", "20261047", "--split-seed", "20261029", "--max-epochs", "20", "--batch-size", "1", "--max-length", "4096", "--learning-rate", "2e-5", "--weight-decay", "0.01", "--lora-rank", "16", "--evaluation-steps", "1000", "--output-dir", "outputs/qwen-pref-control-continue-toolace500-seed20261047", "--toolace-sample", "500", "--first-eval-test-drop-threshold", "0.02"]. Output: /workspace/post-training/outputs/qwen-pref-control-continue-toolace500-seed20261047. W&B run: ffkx9t79.
+
+Clean development accuracy: 0.8694444444444445. Clean development macro F1: 0.6535828422949388. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.6248630887185104, "macro_f1": 0.4562050119198142}.
+
+Separate source validation metrics: {"source_validation_metrics": {"toolace": {"accuracy": 0.9, "macro_f1": 0.38770491803278684, "confusion_matrix": [[0, 0, 0, 0], [0, 3, 3, 0], [0, 0, 87, 0], [0, 1, 6, 0]], "examples": 100}}, "aggregate_validation_metrics": {"accuracy": 0.8710526315789474, "macro_f1": 0.6563794299301398, "confusion_matrix": [[536, 5, 58, 0], [3, 454, 149, 0], [1, 21, 665, 0], [1, 1, 6, 0]], "examples": 1900}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-pref-control-continue-hermes-singleturn500-seed20261047
+
+Timestamp: 2026-10-25T20:31:01.194086+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_dataset_continuation", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--initial-checkpoint", "outputs/qwen-when2call-qwen25-15b-pref-full-control-seed20261031", "--seed", "20261047", "--split-seed", "20261029", "--max-epochs", "20", "--batch-size", "1", "--max-length", "4096", "--learning-rate", "2e-5", "--weight-decay", "0.01", "--lora-rank", "16", "--evaluation-steps", "1000", "--output-dir", "outputs/qwen-pref-control-continue-hermes-singleturn500-seed20261047", "--hermes-singleturn-sample", "500", "--first-eval-test-drop-threshold", "0.02"]. Output: /workspace/post-training/outputs/qwen-pref-control-continue-hermes-singleturn500-seed20261047. W&B run: h6039fol.
+
+Clean development accuracy: 0.59. Clean development macro F1: 0.41638695911417145. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.4356516976998905, "macro_f1": 0.2541335632233766}.
+
+Separate source validation metrics: {"source_validation_metrics": {"hermes_singleturn": {"accuracy": 1.0, "macro_f1": 0.25, "confusion_matrix": [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 100, 0], [0, 0, 0, 0]], "examples": 100}}, "aggregate_validation_metrics": {"accuracy": 0.611578947368421, "macro_f1": 0.42537423918224027, "confusion_matrix": [[107, 2, 490, 0], [0, 360, 240, 0], [0, 5, 695, 0], [0, 0, 1, 0]], "examples": 1900}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-pref-control-continue-english100k500-seed20261047
+
+Timestamp: 2026-10-25T20:45:32.650181+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_dataset_continuation", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--initial-checkpoint", "outputs/qwen-when2call-qwen25-15b-pref-full-control-seed20261031", "--seed", "20261047", "--split-seed", "20261029", "--max-epochs", "20", "--batch-size", "1", "--max-length", "4096", "--learning-rate", "2e-5", "--weight-decay", "0.01", "--lora-rank", "16", "--evaluation-steps", "1000", "--output-dir", "outputs/qwen-pref-control-continue-english100k500-seed20261047", "--english100k-sample", "500", "--first-eval-test-drop-threshold", "0.02"]. Output: /workspace/post-training/outputs/qwen-pref-control-continue-english100k500-seed20261047. W&B run: j03axhp0.
+
+Clean development accuracy: 0.59. Clean development macro F1: 0.41796412906313984. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.45098576122672507, "macro_f1": 0.2747408778788624}.
+
+Separate source validation metrics: {"source_validation_metrics": {"english100k": {"accuracy": 0.9, "macro_f1": 0.2368421052631579, "confusion_matrix": [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 90, 0], [0, 0, 10, 0]], "examples": 100}}, "aggregate_validation_metrics": {"accuracy": 0.6063157894736843, "macro_f1": 0.42534504506077325, "confusion_matrix": [[113, 2, 484, 0], [0, 353, 247, 0], [0, 4, 686, 0], [0, 0, 11, 0]], "examples": 1900}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-pref-control-continue-toolbench500-seed20261047
+
+Timestamp: 2026-10-25T21:01:35.402022+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_dataset_continuation", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--initial-checkpoint", "outputs/qwen-when2call-qwen25-15b-pref-full-control-seed20261031", "--seed", "20261047", "--split-seed", "20261029", "--max-epochs", "20", "--batch-size", "1", "--max-length", "4096", "--learning-rate", "2e-5", "--weight-decay", "0.01", "--lora-rank", "16", "--evaluation-steps", "1000", "--output-dir", "outputs/qwen-pref-control-continue-toolbench500-seed20261047", "--toolbench-sample", "500", "--first-eval-test-drop-threshold", "0.02"]. Output: /workspace/post-training/outputs/qwen-pref-control-continue-toolbench500-seed20261047. W&B run: drq3dnak.
+
+Clean development accuracy: 0.5355555555555556. Clean development macro F1: 0.33602305125380677. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.42059145673603504, "macro_f1": 0.23094520624123588}.
+
+Separate source validation metrics: {"source_validation_metrics": {"toolbench": {"accuracy": 1.0, "macro_f1": 0.25, "confusion_matrix": [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 88, 0], [0, 0, 0, 0]], "examples": 88}}, "aggregate_validation_metrics": {"accuracy": 0.5572033898305084, "macro_f1": 0.34426415797317433, "confusion_matrix": [[0, 2, 597, 0], [0, 369, 231, 0], [0, 5, 683, 0], [0, 0, 1, 0]], "examples": 1888}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-pref-control-continue-apibank500-seed20261047
+
+Timestamp: 2026-10-25T21:17:07.641753+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_dataset_continuation", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--initial-checkpoint", "outputs/qwen-when2call-qwen25-15b-pref-full-control-seed20261031", "--seed", "20261047", "--split-seed", "20261029", "--max-epochs", "20", "--batch-size", "1", "--max-length", "4096", "--learning-rate", "2e-5", "--weight-decay", "0.01", "--lora-rank", "16", "--evaluation-steps", "1000", "--output-dir", "outputs/qwen-pref-control-continue-apibank500-seed20261047", "--apibank-sample", "500", "--first-eval-test-drop-threshold", "0.02"]. Output: /workspace/post-training/outputs/qwen-pref-control-continue-apibank500-seed20261047. W&B run: 71nag3fy.
+
+Clean development accuracy: 0.8316666666666667. Clean development macro F1: 0.6260064776531947. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.593921139101862, "macro_f1": 0.42300463400227334}.
+
+Separate source validation metrics: {"source_validation_metrics": {"apibank": {"accuracy": 1.0, "macro_f1": 0.25, "confusion_matrix": [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 100, 0], [0, 0, 0, 0]], "examples": 100}}, "aggregate_validation_metrics": {"accuracy": 0.8405263157894737, "macro_f1": 0.6320407226090585, "confusion_matrix": [[501, 5, 93, 0], [3, 411, 186, 0], [1, 14, 685, 0], [1, 0, 0, 0]], "examples": 1900}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-pref-control-continue-toolalpaca500-seed20261047
+
+Timestamp: 2026-10-25T21:38:09.838694+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_dataset_continuation", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--initial-checkpoint", "outputs/qwen-when2call-qwen25-15b-pref-full-control-seed20261031", "--seed", "20261047", "--split-seed", "20261029", "--max-epochs", "20", "--batch-size", "1", "--max-length", "4096", "--learning-rate", "2e-5", "--weight-decay", "0.01", "--lora-rank", "16", "--evaluation-steps", "1000", "--output-dir", "outputs/qwen-pref-control-continue-toolalpaca500-seed20261047", "--toolalpaca-sample", "500", "--first-eval-test-drop-threshold", "0.02"]. Output: /workspace/post-training/outputs/qwen-pref-control-continue-toolalpaca500-seed20261047. W&B run: 1sawyxar.
+
+Clean development accuracy: 0.7083333333333334. Clean development macro F1: 0.5305718437962894. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.49561883899233294, "macro_f1": 0.30211518520553365}.
+
+Separate source validation metrics: {"source_validation_metrics": {"toolalpaca": {"accuracy": 1.0, "macro_f1": 0.25, "confusion_matrix": [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 97, 0], [0, 0, 0, 0]], "examples": 97}}, "aggregate_validation_metrics": {"accuracy": 0.7232472324723247, "macro_f1": 0.5382710303297156, "confusion_matrix": [[404, 1, 194, 0], [5, 274, 321, 0], [1, 2, 694, 0], [1, 0, 0, 0]], "examples": 1897}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-pref-control-continue-narrative500-seed20261047
+
+Timestamp: 2026-10-25T21:51:41.758471+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_dataset_continuation", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--initial-checkpoint", "outputs/qwen-when2call-qwen25-15b-pref-full-control-seed20261031", "--seed", "20261047", "--split-seed", "20261029", "--max-epochs", "20", "--batch-size", "1", "--max-length", "4096", "--learning-rate", "2e-5", "--weight-decay", "0.01", "--lora-rank", "16", "--evaluation-steps", "1000", "--output-dir", "outputs/qwen-pref-control-continue-narrative500-seed20261047", "--narrative-sample", "500", "--first-eval-test-drop-threshold", "0.02"]. Output: /workspace/post-training/outputs/qwen-pref-control-continue-narrative500-seed20261047. W&B run: ng5n57bt.
+
+Clean development accuracy: 0.7827777777777778. Clean development macro F1: 0.6318992831128838. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.49342825848849947, "macro_f1": 0.40787175065879855}.
+
+Separate source validation metrics: {"source_validation_metrics": {"narrative": {"accuracy": 1.0, "macro_f1": 0.25, "confusion_matrix": [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 72]], "examples": 72}}, "aggregate_validation_metrics": {"accuracy": 0.7911324786324786, "macro_f1": 0.7197041611616644, "confusion_matrix": [[490, 8, 21, 80], [0, 387, 80, 133], [0, 16, 532, 52], [1, 0, 0, 72]], "examples": 1872}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-pref-control-continue-apigenmt500-includedirect-seed20261047
+
+Timestamp: 2026-10-25T22:20:45.564114+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_dataset_continuation", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--initial-checkpoint", "outputs/qwen-when2call-qwen25-15b-pref-full-control-seed20261031", "--seed", "20261047", "--split-seed", "20261029", "--max-epochs", "20", "--batch-size", "1", "--max-length", "4096", "--learning-rate", "2e-5", "--weight-decay", "0.01", "--lora-rank", "16", "--evaluation-steps", "1000", "--first-eval-test-drop-threshold", "0.02", "--output-dir", "outputs/qwen-pref-control-continue-apigenmt500-includedirect-seed20261047", "--apigen-mt-sample", "500"]. Output: /workspace/post-training/outputs/qwen-pref-control-continue-apigenmt500-includedirect-seed20261047. W&B run: ntw9sxqc.
+
+Clean development accuracy: 0.8711111111111111. Clean development macro F1: 0.6547317160809918. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.6169222343921139, "macro_f1": 0.4551528086132888}.
+
+Separate source validation metrics: {"source_validation_metrics": {"apigen_mt": {"accuracy": 0.94, "macro_f1": 0.2422680412371134, "confusion_matrix": [[0, 0, 0, 0], [0, 94, 0, 0], [0, 6, 0, 0], [0, 0, 0, 0]], "examples": 100}}, "aggregate_validation_metrics": {"accuracy": 0.8747368421052631, "macro_f1": 0.6581601079753459, "confusion_matrix": [[509, 59, 31, 0], [0, 611, 83, 0], [0, 64, 542, 0], [1, 0, 0, 0]], "examples": 1900}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-bfcl-only-738-base-seed20261054
+
+Timestamp: 2026-10-26T06:28:13.185910+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_bfcl_original_mixture", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--output-dir", "outputs/qwen-bfcl-only-738-base-seed20261054", "--seed", "20261054", "--original-split-seed", "20261029", "--epochs", "1", "--batch-size", "1", "--eval-batch-size", "4", "--max-length", "4096", "--learning-rate", "2e-5", "--weight-decay", "0.01", "--lora-rank", "16", "--evaluation-steps", "1000", "--bfcl-fraction", "1.0", "--training-examples", "738"]. Output: /workspace/post-training/outputs/qwen-bfcl-only-738-base-seed20261054. W&B run: p3ap1hlz.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-when2call-fullpool-base-seed20261055
+
+Timestamp: 2026-10-26T08:22:34.377226+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--output-dir", "outputs/qwen-when2call-fullpool-base-seed20261055", "--seed", "20261055", "--epochs", "2", "--batch-size", "1", "--eval-batch-size", "4", "--max-length", "4096", "--learning-rate", "2e-5", "--weight-decay", "0.01", "--lora-rank", "16", "--validation-source", "none", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059"]. Output: /workspace/post-training/outputs/qwen-when2call-fullpool-base-seed20261055. W&B run: scb8jkpn.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-when2call-plus-full-bfcl-base-seed20261056
+
+Timestamp: 2026-10-26T10:17:23.233281+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--output-dir", "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056", "--seed", "20261056", "--epochs", "2", "--batch-size", "1", "--eval-batch-size", "4", "--max-length", "4096", "--learning-rate", "2e-5", "--weight-decay", "0.01", "--lora-rank", "16", "--include-full-bfcl", "--validation-source", "none", "--training-eval-sample-size", "500", "--training-eval-seed", "20261060"]. Output: /workspace/post-training/outputs/qwen-when2call-plus-full-bfcl-base-seed20261056. W&B run: 24w09p8d.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## posthoc-clean-validation-sft-seed20261057
+
+Timestamp: 2026-10-26T10:26:02.404804+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_qwen_checkpoint_sft_validation", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--checkpoint", "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/epoch-01", "--checkpoint", "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/epoch-02", "--run-metrics", "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/metrics.json", "--output-dir", "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/posthoc-clean-validation-sft-seed20261057", "--sample-size", "500", "--seed", "20261057", "--batch-size", "4", "--max-length", "4096", "--lora-rank", "16"]. Output: /workspace/post-training/outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/posthoc-clean-validation-sft-seed20261057. W&B run: au4t169u.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured; this is a validation-only follow-up. Official test metrics: {}.
+
+Separate source validation metrics: {"sft_validation_metrics": {"outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/epoch-01": {"accuracy": 0.928, "macro_f1": 0.4773767437922056, "confusion_matrix": [[234, 8, 8, 0], [0, 230, 19, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}, "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/epoch-02": {"accuracy": 0.91, "macro_f1": 0.4728619842998928, "confusion_matrix": [[235, 7, 8, 0], [0, 220, 29, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## posthoc-clean-validation-sft-seed20261057
+
+Timestamp: 2026-10-26T10:28:39.058216+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_qwen_checkpoint_sft_validation", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--checkpoint", "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/epoch-01", "--checkpoint", "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/epoch-02", "--run-metrics", "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/metrics.json", "--output-dir", "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/posthoc-clean-validation-sft-seed20261057", "--sample-size", "500", "--seed", "20261057", "--batch-size", "4", "--max-length", "4096", "--lora-rank", "16"]. Output: /workspace/post-training/outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/posthoc-clean-validation-sft-seed20261057. W&B run: au4t169u.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured; this is a validation-only follow-up. Official test metrics: {}.
+
+Separate source validation metrics: {"sft_validation_metrics": {"outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/epoch-01": {"accuracy": 0.928, "macro_f1": 0.4773767437922056, "confusion_matrix": [[234, 8, 8, 0], [0, 230, 19, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}, "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/epoch-02": {"accuracy": 0.91, "macro_f1": 0.4728619842998928, "confusion_matrix": [[235, 7, 8, 0], [0, 220, 29, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## Evidence audit and post hoc validation correction, 2026-10-26
+
+The full When2Call plus full BFCL experiment now has training, clean validation, and aggregate black-box test metrics for both epochs. Training accuracy and macro F1 on the 500-row training probe were 0.9000 / 0.8966 and 0.9440 / 0.9426. Clean validation on a 500-row independent `train_sft` sample was 0.9280 / 0.4774 and 0.9100 / 0.4729. Aggregate test metrics on all 3,652 rows were 0.6520 / 0.4947 and 0.6402 / 0.4739. Validation was post hoc and did not control the fixed training schedule. Its sample contains no tool-call examples and one direct-answer example.
+
+The experiment recorder previously marked newer trainer artifacts as incomplete because it did not read metrics from `epoch_records` or `checkpoint_evaluations`. The recorder now extracts the latest training, validation, and aggregate test measurements from those structures. Corrected status and validation rows have been added to the leaderboard, and append-only correction records were added to the experiment journal.

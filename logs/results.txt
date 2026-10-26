@@ -48610,3 +48610,557 @@ The first three requested fresh-base runs have completed. Accuracy and macro F1 
 The most recent experiment has training and aggregate black-box test evidence for both epochs but no clean held-out validation. The fixed 500-row stratified sample from the separate `nvidia/When2Call:train_sft` config will be evaluated on both saved checkpoints before a new training experiment. That sample includes the sole direct-answer row but has no tool-call rows. The validation result is post hoc and will not be used to select a checkpoint based on any test labels. Test outputs remain aggregate-only.
 
 A new hypothesis is that a small BFCL fraction can retain some source diversity while reducing overfit to generated labels. Supporting development evidence includes the 738-row BFCL-only run's 0.7344 training accuracy versus 0.5924 balanced validation accuracy. The next experiment after the missing validation measurement is a fresh-base 1,476-row mixture with 10% BFCL and 90% When2Call examples. It will evaluate a fixed 500-row training probe, 368-row balanced held-out validation, and the complete test set every epoch, with early stopping on validation accuracy only.
+
+## posthoc-clean-validation-sft-seed20261057
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_qwen_checkpoint_sft_validation",
+    "--model",
+    "Qwen/Qwen2.5-1.5B-Instruct",
+    "--checkpoint",
+    "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/epoch-01",
+    "--checkpoint",
+    "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/epoch-02",
+    "--run-metrics",
+    "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/metrics.json",
+    "--output-dir",
+    "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/posthoc-clean-validation-sft-seed20261057",
+    "--sample-size",
+    "500",
+    "--seed",
+    "20261057",
+    "--batch-size",
+    "4",
+    "--max-length",
+    "4096",
+    "--lora-rank",
+    "16"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "posthoc-clean-validation-sft-seed20261057",
+  "failure_reason": null,
+  "metadata": {
+    "checkpoint_metrics": {
+      "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/epoch-01": {
+        "accuracy": 0.928,
+        "confusion_matrix": [
+          [
+            234,
+            8,
+            8,
+            0
+          ],
+          [
+            0,
+            230,
+            19,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0
+          ]
+        ],
+        "examples": 500,
+        "macro_f1": 0.4773767437922056
+      },
+      "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/epoch-02": {
+        "accuracy": 0.91,
+        "confusion_matrix": [
+          [
+            235,
+            7,
+            8,
+            0
+          ],
+          [
+            0,
+            220,
+            29,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0
+          ]
+        ],
+        "examples": 500,
+        "macro_f1": 0.4728619842998928
+      }
+    },
+    "device": "cuda",
+    "measurement": "posthoc_clean_validation",
+    "official_test_data_loaded": false,
+    "official_test_loaded": false,
+    "purpose": "Fill missing held-out validation measurements for the fixed two-epoch full-data BFCL experiment.",
+    "sft_validation_metrics": {
+      "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/epoch-01": {
+        "accuracy": 0.928,
+        "confusion_matrix": [
+          [
+            234,
+            8,
+            8,
+            0
+          ],
+          [
+            0,
+            230,
+            19,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0
+          ]
+        ],
+        "examples": 500,
+        "macro_f1": 0.4773767437922056
+      },
+      "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/epoch-02": {
+        "accuracy": 0.91,
+        "confusion_matrix": [
+          [
+            235,
+            7,
+            8,
+            0
+          ],
+          [
+            0,
+            220,
+            29,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0
+          ]
+        ],
+        "examples": 500,
+        "macro_f1": 0.4728619842998928
+      }
+    },
+    "status": "completed",
+    "test_labels_used_for_selection": false,
+    "test_status": "not measured; this is a validation-only follow-up",
+    "validation_sample": {
+      "label_counts": {
+        "0": 250,
+        "1": 249,
+        "3": 1
+      },
+      "sample_fingerprint": "1ce21c31939384815b93e6eacbbf484924e32f2f28972ddbe2004303a2945bd6",
+      "sample_rows": 500,
+      "sample_seed": 20261057,
+      "source": "nvidia/When2Call:train_sft",
+      "source_independent_of_train_pref_and_bfcl": true,
+      "source_rows": 15000
+    },
+    "wandb_run_id": "au4t169u",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/au4t169u"
+  },
+  "metrics_path": "/workspace/post-training/outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/posthoc-clean-validation-sft-seed20261057/metrics.json",
+  "official_test_loaded": false,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/posthoc-clean-validation-sft-seed20261057",
+  "source_validation_metrics": {
+    "sft_validation_metrics": {
+      "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/epoch-01": {
+        "accuracy": 0.928,
+        "confusion_matrix": [
+          [
+            234,
+            8,
+            8,
+            0
+          ],
+          [
+            0,
+            230,
+            19,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0
+          ]
+        ],
+        "examples": 500,
+        "macro_f1": 0.4773767437922056
+      },
+      "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/epoch-02": {
+        "accuracy": 0.91,
+        "confusion_matrix": [
+          [
+            235,
+            7,
+            8,
+            0
+          ],
+          [
+            0,
+            220,
+            29,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0
+          ]
+        ],
+        "examples": 500,
+        "macro_f1": 0.4728619842998928
+      }
+    }
+  },
+  "started_at": "2026-10-26T10:21:59.148600+00:00",
+  "status": "completed",
+  "test_status": "not measured; this is a validation-only follow-up",
+  "timestamp": "2026-10-26T10:26:02.404804+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "au4t169u",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/au4t169u"
+}
+```
+
+## posthoc-clean-validation-sft-seed20261057
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_qwen_checkpoint_sft_validation",
+    "--model",
+    "Qwen/Qwen2.5-1.5B-Instruct",
+    "--checkpoint",
+    "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/epoch-01",
+    "--checkpoint",
+    "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/epoch-02",
+    "--run-metrics",
+    "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/metrics.json",
+    "--output-dir",
+    "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/posthoc-clean-validation-sft-seed20261057",
+    "--sample-size",
+    "500",
+    "--seed",
+    "20261057",
+    "--batch-size",
+    "4",
+    "--max-length",
+    "4096",
+    "--lora-rank",
+    "16"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "posthoc-clean-validation-sft-seed20261057",
+  "failure_reason": null,
+  "metadata": {
+    "checkpoint_metrics": {
+      "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/epoch-01": {
+        "accuracy": 0.928,
+        "confusion_matrix": [
+          [
+            234,
+            8,
+            8,
+            0
+          ],
+          [
+            0,
+            230,
+            19,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0
+          ]
+        ],
+        "examples": 500,
+        "macro_f1": 0.4773767437922056
+      },
+      "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/epoch-02": {
+        "accuracy": 0.91,
+        "confusion_matrix": [
+          [
+            235,
+            7,
+            8,
+            0
+          ],
+          [
+            0,
+            220,
+            29,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0
+          ]
+        ],
+        "examples": 500,
+        "macro_f1": 0.4728619842998928
+      }
+    },
+    "device": "cuda",
+    "measurement": "posthoc_clean_validation",
+    "official_test_data_loaded": false,
+    "official_test_loaded": false,
+    "purpose": "Fill missing held-out validation measurements for the fixed two-epoch full-data BFCL experiment.",
+    "sft_validation_metrics": {
+      "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/epoch-01": {
+        "accuracy": 0.928,
+        "confusion_matrix": [
+          [
+            234,
+            8,
+            8,
+            0
+          ],
+          [
+            0,
+            230,
+            19,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0
+          ]
+        ],
+        "examples": 500,
+        "macro_f1": 0.4773767437922056
+      },
+      "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/epoch-02": {
+        "accuracy": 0.91,
+        "confusion_matrix": [
+          [
+            235,
+            7,
+            8,
+            0
+          ],
+          [
+            0,
+            220,
+            29,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0
+          ]
+        ],
+        "examples": 500,
+        "macro_f1": 0.4728619842998928
+      }
+    },
+    "status": "completed",
+    "test_labels_used_for_selection": false,
+    "test_status": "not measured; this is a validation-only follow-up",
+    "validation_sample": {
+      "label_counts": {
+        "0": 250,
+        "1": 249,
+        "3": 1
+      },
+      "sample_fingerprint": "1ce21c31939384815b93e6eacbbf484924e32f2f28972ddbe2004303a2945bd6",
+      "sample_rows": 500,
+      "sample_seed": 20261057,
+      "source": "nvidia/When2Call:train_sft",
+      "source_independent_of_train_pref_and_bfcl": true,
+      "source_rows": 15000
+    },
+    "wandb_run_id": "au4t169u",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/au4t169u"
+  },
+  "metrics_path": "/workspace/post-training/outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/posthoc-clean-validation-sft-seed20261057/metrics.json",
+  "official_test_loaded": false,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/posthoc-clean-validation-sft-seed20261057",
+  "source_validation_metrics": {
+    "sft_validation_metrics": {
+      "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/epoch-01": {
+        "accuracy": 0.928,
+        "confusion_matrix": [
+          [
+            234,
+            8,
+            8,
+            0
+          ],
+          [
+            0,
+            230,
+            19,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0
+          ]
+        ],
+        "examples": 500,
+        "macro_f1": 0.4773767437922056
+      },
+      "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/epoch-02": {
+        "accuracy": 0.91,
+        "confusion_matrix": [
+          [
+            235,
+            7,
+            8,
+            0
+          ],
+          [
+            0,
+            220,
+            29,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0
+          ]
+        ],
+        "examples": 500,
+        "macro_f1": 0.4728619842998928
+      }
+    }
+  },
+  "started_at": "2026-10-26T10:21:59.148600+00:00",
+  "status": "completed",
+  "test_status": "not measured; this is a validation-only follow-up",
+  "timestamp": "2026-10-26T10:28:39.058216+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "au4t169u",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/au4t169u"
+}
+```
+
+
+Post hoc clean validation completed for the full When2Call plus full BFCL experiment, 2026-10-26
+Purpose: Fill the missing clean held-out validation evidence before starting another training experiment.
+Source: A deterministic stratified 500-row sample from the separate `nvidia/When2Call:train_sft` configuration, seed 20261057, fingerprint `1ce21c31939384815b93e6eacbbf484924e32f2f28972ddbe2004303a2945bd6`. The sample has 250 cannot-answer, 249 request-for-information, one direct-answer, and zero tool-call rows. The source is independent of the 9,000 `train_pref` rows and BFCL training data.
+
+| Checkpoint | Training accuracy / macro F1 on 500 rows | Clean validation accuracy / macro F1 on 500 rows | Aggregate test accuracy / macro F1 on 3,652 rows |
+| --- | ---: | ---: | ---: |
+| Epoch 1 | 0.9000 / 0.8966 | 0.9280 / 0.4774 | 0.6520 / 0.4947 |
+| Epoch 2 | 0.9440 / 0.9426 | 0.9100 / 0.4729 | 0.6402 / 0.4739 |
+
+Validation was measured after the fixed two-epoch schedule and was not used to select training duration. Macro F1 includes all four declared classes; the validation sample has no tool-call rows, so this score is limited for that class. Test metrics remain aggregate-only and were not used for selection. The primary metrics artifact now contains all three evidence types for both epochs.
+
+
+Duplicate worker attempt for the low-dose BFCL experiment, 2026-10-26
+A stale PID in `logs/research_state.json` caused the watchdog to launch a second copy of the 10% BFCL experiment against the same output directory. Duplicate W&B run `m4pemqs1` failed after seven optimizer updates with a `heartbeat.tmp` `FileNotFoundError`. It saved no checkpoint and performed no training probe, clean validation, or test measurement. The original worker (PID 103361, W&B run `9kho1als`) continued. The state now tracks the original worker, and the next run remains queued behind it.

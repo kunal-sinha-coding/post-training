@@ -7161,3 +7161,10 @@ Reviewed the completed 738-row BFCL-only run, full 9,000-row When2Call run, and 
 Queued the missing validation measurement before a new training run. The following hypothesis tests whether a 10% BFCL share reduces overfit to generated labels while retaining data diversity. Updated the mixture trainer to cap training evaluation at 500 rows and stop after a clean balanced-validation accuracy plateau. The candidate will evaluate every epoch and use aggregate test metrics only for reporting. No test labels were inspected or used for selection. API generation remains at $0 of the $10 limit.
 
 The watchdog launched the post hoc validation worker as PID 102818 before the low-dose mixture experiment. It is evaluating both saved checkpoints on the same 500-row validation sample. The next training command remains queued and cannot start until this measurement worker exits.
+
+
+## 2026-10-26: Record and contain a duplicate worker failure
+
+Commit name: Record duplicate low-dose BFCL worker failure.
+
+A stale `active_experiment.pid` raced with the watchdog while updating research state. The watchdog launched a second copy of the same 10% BFCL command using the same output directory. The duplicate W&B run `m4pemqs1` failed after seven updates because both processes wrote the same heartbeat temporary file. It saved no model checkpoint and performed no evaluation. The original run, PID 103361 and W&B run `9kho1als`, remained active. The research state now tracks the original worker. The next full-preference run remains queued and will not launch until the tracked run exits. The experiment recorder was also updated to parse the current epoch-based training metric schema, which had previously marked valid results incomplete.
