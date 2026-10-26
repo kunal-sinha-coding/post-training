@@ -59,7 +59,7 @@ Return one JSON object and no other text:
 }
 ```
 
-Set `expected_call_count` from a BFCL reference call when available. Use `1` for `Simple`, `Multiple`, and `Relevance` when no exact count is given. Use the reference count for `Parallel` and `Parallel Multiple`. Use `0` for `Irrelevance`. Use `null` if the category or count does not apply to the visible example. This field does not change the action label.
+Set `expected_call_count` from a BFCL reference call when available. Use `1` for `Simple` and `Multiple`. Use the reference count for `Parallel` and `Parallel Multiple`, or `null` if no exact count is available. Use `null` for `Relevance` when no exact count is available because that category may allow different valid calls. Use `0` for `Irrelevance`. Use `null` if the category does not apply to the visible example. This field does not change the action label.
 
 ## Data and evaluation limits
 
