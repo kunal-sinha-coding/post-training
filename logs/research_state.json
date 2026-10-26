@@ -157,7 +157,7 @@
     "reason": "The old encoder saw full preference training data and macro F1 conventions differed."
   },
   "last_heartbeat": "2026-10-26T10:30:34.831620+00:00",
-  "last_action": "Post hoc clean validation is complete. The original 10 percent BFCL mixture worker continues. A duplicate worker failed on a shared heartbeat file and saved no checkpoint. The full When2Call clean-validation run remains queued after the active worker.",
+  "last_action": "The latest completed experiment has all three evidence types for both epochs. The full When2Call plus full BFCL validation values were reattached from the separate post hoc validation artifact. The 10 percent BFCL mixture remains active; the full-preference validation run is queued next.",
   "watchdog_enabled": true,
   "research_log_size": 869398,
   "stop_command": "STOP",
@@ -254,7 +254,8 @@
     "training_metrics_recorded": true,
     "clean_validation_recorded": true,
     "aggregate_black_box_test_metrics_recorded": true,
-    "test_labels_used_for_selection": false
+    "test_labels_used_for_selection": false,
+    "validation_measurement_artifact": "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/posthoc-clean-validation-sft-seed20261057/metrics.json"
   },
   "duplicate_worker_failure": {
     "pid": 103632,

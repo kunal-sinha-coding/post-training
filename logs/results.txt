@@ -49164,3 +49164,6 @@ Validation was measured after the fixed two-epoch schedule and was not used to s
 
 Duplicate worker attempt for the low-dose BFCL experiment, 2026-10-26
 A stale PID in `logs/research_state.json` caused the watchdog to launch a second copy of the 10% BFCL experiment against the same output directory. Duplicate W&B run `m4pemqs1` failed after seven optimizer updates with a `heartbeat.tmp` `FileNotFoundError`. It saved no checkpoint and performed no training probe, clean validation, or test measurement. The original worker (PID 103361, W&B run `9kho1als`) continued. The state now tracks the original worker, and the next run remains queued behind it.
+
+Primary metrics artifact integrity correction, 2026-10-26
+The separate post hoc validation artifact remains intact with the 500-row validation measurements for epochs 1 and 2. The primary training metrics file was found without those attached values during the latest audit. Reattached the same recorded validation results from the post hoc artifact. This did not run a new evaluation or change any result or selection.

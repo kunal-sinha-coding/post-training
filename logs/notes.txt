@@ -7168,3 +7168,9 @@ The watchdog launched the post hoc validation worker as PID 102818 before the lo
 Commit name: Record duplicate low-dose BFCL worker failure.
 
 A stale `active_experiment.pid` raced with the watchdog while updating research state. The watchdog launched a second copy of the same 10% BFCL command using the same output directory. The duplicate W&B run `m4pemqs1` failed after seven updates because both processes wrote the same heartbeat temporary file. It saved no model checkpoint and performed no evaluation. The original run, PID 103361 and W&B run `9kho1als`, remained active. The research state now tracks the original worker. The next full-preference run remains queued and will not launch until the tracked run exits. The experiment recorder was also updated to parse the current epoch-based training metric schema, which had previously marked valid results incomplete.
+
+## 2026-10-26: Restore attached validation metrics
+
+Commit name: Restore the post hoc validation link in the training artifact.
+
+The latest audit found that the combined run's primary metrics file no longer contained its post hoc validation fields, while the separate validation artifact and experiment journal remained complete. Reattached the existing epoch 1 and epoch 2 validation metrics from the source artifact and updated the research state evidence audit. This is a metadata repair only. No model evaluation was rerun and no checkpoint was selected from test metrics.
