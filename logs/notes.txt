@@ -6983,3 +6983,10 @@ Limitations: The user explicitly requested prompt iteration against test labels,
 Commit name: Record BFCL prompt iteration four.
 
 Tested a fourth temporary prompt on the fixed 100-row sample. It removed the BFCL category hint, used the broad direct-answer and external-action rules from variant 3, and clarified that a domain-specific search/find/lookup function is suitable when its documented scope and parameters cover the request. It scored 81/100, compared with variant 3 at 80/100. The confusion counts were one tool_call predicted as cannot_answer, eight request_for_info predicted as tool_call, two cannot_answer predicted as direct, one request_for_info predicted as cannot_answer, one cannot_answer predicted as tool_call, four cannot_answer predicted as request_for_info, and two tool_call predicted as request_for_info. The gain is one example. Further improvement would require fitting the remaining cases individually, which is inconsistent with the user's instruction to avoid overfitting. The repository prompt remains unchanged.
+
+
+## 2026-10-26: Check deterministic decoding on the BFCL prompt sample
+
+Commit name: Record deterministic BFCL prompt sample result.
+
+Repeated the best broad temporary prompt on the same fixed 100-row sample with GPT-6 Luna temperature 0. Accuracy remained 81/100. The confusion counts were tool_call to cannot_answer 1; request_for_info to tool_call 7; tool_call to direct 1; cannot_answer to direct 2; tool_call to request_for_info 3; request_for_info to cannot_answer 1; cannot_answer to tool_call 1; cannot_answer to request_for_info 3. This confirms the best observed sample score did not improve by deterministic decoding. The repository prompt remains unchanged and no full-test or label-generation run started.
