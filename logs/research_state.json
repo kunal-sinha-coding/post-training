@@ -4,20 +4,46 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "fresh_base_bfcl_when2call_data_exploration_v1",
-  "current_hypothesis": "The strongest clean-validation method varies between hard class-union routing and a 50/50 class-union blend. Two additional independent 500-row clean samples can show whether either rule has a repeatable accuracy or macro F1 gain over equal averaging. Freeze the candidate methods before the aggregate report and do not select with test labels or scores.",
-  "active_experiment": {
-    "pid": 150849,
-    "command": [
+  "current_hypothesis": "The full request_for_info plus equal request/cannot blend performed strongly on both recent clean samples, while high-confidence class-union routing varied. Two new independent clean samples can check whether these fixed class-specific blends retain their accuracy and macro F1 advantage over equal averaging. Then a frozen aggregate report will measure all predeclared methods; test metrics will not select a method.",
+  "active_experiment": {},
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "test",
+    "--work-dir",
+    "outputs/qwen-class-route-stability-test-20261210",
+    "--suite",
+    "single-disagree",
+    "--qwen-checkpoint",
+    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "--methods",
+    "single_average",
+    "single_gate",
+    "single_encoder_request_or_cannot_answer",
+    "single_encoder_request_or_cannot_answer_mix_50",
+    "single_encoder_request_full_cannot_mix_50",
+    "single_encoder_request_cannot_mix_r75_c50",
+    "--primary-method",
+    "single_average",
+    "--batch-size",
+    "1",
+    "--output-dir",
+    "outputs/qwen-class-route-stability-test-20261210"
+  ],
+  "worker_queue": [
+    [
       "python",
       "-u",
       "-m",
       "experiments.evaluate_existing_when2call_hybrid_validation",
       "--output-dir",
-      "outputs/qwen-class-route-stability-validation-20261210",
+      "outputs/qwen-class-route-stability-validation-20261214",
       "--split-seed",
-      "20261210",
+      "20261214",
       "--sample-seed",
-      "20261211",
+      "20261215",
       "--max-validation-examples",
       "500",
       "--qwen-checkpoint",
@@ -27,40 +53,17 @@
       "--batch-size",
       "1"
     ],
-    "started_at": "2026-10-26T22:50:30.607109+00:00"
-  },
-  "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.evaluate_existing_when2call_hybrid_validation",
-    "--output-dir",
-    "outputs/qwen-class-route-stability-validation-20261210",
-    "--split-seed",
-    "20261210",
-    "--sample-seed",
-    "20261211",
-    "--max-validation-examples",
-    "500",
-    "--qwen-checkpoint",
-    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
-    "--encoder-checkpoint",
-    "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
-    "--batch-size",
-    "1"
-  ],
-  "worker_queue": [
     [
       "python",
       "-u",
       "-m",
       "experiments.evaluate_existing_when2call_hybrid_validation",
       "--output-dir",
-      "outputs/qwen-class-route-stability-validation-20261212",
+      "outputs/qwen-class-route-stability-validation-20261216",
       "--split-seed",
-      "20261212",
+      "20261216",
       "--sample-seed",
-      "20261213",
+      "20261217",
       "--max-validation-examples",
       "500",
       "--qwen-checkpoint",
@@ -77,7 +80,7 @@
       "experiments.existing_when2call_hybrid",
       "prepare",
       "--work-dir",
-      "outputs/qwen-class-route-stability-test-20261210",
+      "outputs/qwen-class-route-stability-followup-test-20261214",
       "--suite",
       "single-disagree",
       "--qwen-checkpoint",
@@ -85,8 +88,7 @@
       "--methods",
       "single_average",
       "single_gate",
-      "single_encoder_request_or_cannot_answer",
-      "single_encoder_request_or_cannot_answer_mix_50",
+      "single_encoder_request_or_cannot_answer_conf_90",
       "single_encoder_request_full_cannot_mix_50",
       "single_encoder_request_cannot_mix_r75_c50",
       "--primary-method",
@@ -94,7 +96,7 @@
       "--batch-size",
       "1",
       "--output-dir",
-      "outputs/qwen-class-route-stability-test-20261210/prepare"
+      "outputs/qwen-class-route-stability-followup-test-20261214/prepare"
     ],
     [
       "python",
@@ -103,7 +105,7 @@
       "experiments.existing_when2call_hybrid",
       "test",
       "--work-dir",
-      "outputs/qwen-class-route-stability-test-20261210",
+      "outputs/qwen-class-route-stability-followup-test-20261214",
       "--suite",
       "single-disagree",
       "--qwen-checkpoint",
@@ -111,8 +113,7 @@
       "--methods",
       "single_average",
       "single_gate",
-      "single_encoder_request_or_cannot_answer",
-      "single_encoder_request_or_cannot_answer_mix_50",
+      "single_encoder_request_or_cannot_answer_conf_90",
       "single_encoder_request_full_cannot_mix_50",
       "single_encoder_request_cannot_mix_r75_c50",
       "--primary-method",
@@ -120,7 +121,7 @@
       "--batch-size",
       "1",
       "--output-dir",
-      "outputs/qwen-class-route-stability-test-20261210"
+      "outputs/qwen-class-route-stability-followup-test-20261214"
     ]
   ],
   "_previous_command": [
@@ -140,11 +141,8 @@
     "outputs/test-clean-validation-smooth0075-wd002-weight75-25.json"
   ],
   "experiment_queue": [
-    "Compare each existing encoder, the fixed-weight three-encoder family, and Qwen on the same new clean train_sft sample capped at 500 rows. Evaluate only fixed ensemble candidates supported by the initial suite.",
-    "If a multi-encoder combination improves clean validation accuracy, freeze its method and score it once on the full aggregate black-box test with Qwen and encoder baselines.",
-    "Then test seed and checkpoint diversity across existing Qwen SFT adapters, fixed prompt variants, and disagreement plus input-structure routing. Use disjoint clean validation partitions and source-disjoint BFCL holdouts where labels are available.",
-    "If the ensemble family plateaus, return to individual Qwen regularization and training-data hypotheses. Keep every aggregate test metric report-only.",
-    "After the current encoder fusion, routing, checkpoint-diversity, and individual Qwen hypotheses have been explored with clean-validation evidence, revisit the user-suggested few-shot prompting family. Compare a small hand-written example set with training-data example selection, and test retrieval only after the earlier branches are exhausted. Select examples and prompt variants with clean validation; keep test data aggregate-only and report-only."
+    "Run clean validation on two new deterministic 500-row samples with the frozen Qwen epoch 2 and encoder checkpoints. Compare equal averaging, entropy gating, high-confidence request/cannot routing, full request plus 50/50 cannot blending, and 75/50 class-specific blending.",
+    "After the clean screens, run prepare and one aggregate black-box test pass for the same predeclared methods. Use aggregate test metrics only as a report."
   ],
   "best_validation": {
     "experiment": "qwen-when2call-fullpool-sft-validation-base-seed20261062",
@@ -155,10 +153,10 @@
     "macro_f1": 0.48337889372616516,
     "selection": "clean validation only"
   },
-  "last_heartbeat": "2026-10-26T22:50:30.607118+00:00",
-  "last_action": "Watchdog started validation worker pid 150849.",
+  "last_heartbeat": "2026-10-26T22:56:02.185610+00:00",
+  "last_action": "Audited the latest completed ensemble benchmark and source evidence, refreshed the evidence audit, and queued two clean replications followed by a fixed aggregate comparison.",
   "watchdog_enabled": true,
-  "research_log_size": 1050143,
+  "research_log_size": 1063376,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -166,11 +164,11 @@
     "-m",
     "experiments.evaluate_existing_when2call_hybrid_validation",
     "--output-dir",
-    "outputs/qwen-class-route-stability-validation-20261210",
+    "outputs/qwen-class-route-stability-validation-20261214",
     "--split-seed",
-    "20261210",
+    "20261214",
     "--sample-seed",
-    "20261211",
+    "20261215",
     "--max-validation-examples",
     "500",
     "--qwen-checkpoint",
@@ -182,9 +180,9 @@
   ],
   "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-26T22:50:00.101262+00:00",
-  "planning_ack_deadline": "2026-10-26T22:52:00.101312+00:00",
-  "planning_attempts": 56,
+  "planning_notified_at": "2026-10-26T23:06:06.877420+00:00",
+  "planning_ack_deadline": "2026-10-26T23:08:06.877444+00:00",
+  "planning_attempts": 58,
   "best_observed_test": {
     "method": "three_encoder_qwen_equal_probability_average",
     "accuracy": 0.7113910186199343,
@@ -194,7 +192,7 @@
     "metrics": "outputs/qwen-three-encoder-gate-test-20261082/aggregate-comparison.json",
     "selection": "Reported as the highest aggregate score in this frozen comparison only. Test metrics did not select the candidate; clean validation selected the entropy gate."
   },
-  "next_hypothesis": "The strongest clean-validation method varies between hard class-union routing and a 50/50 class-union blend. Two additional independent 500-row clean samples can show whether either rule has a repeatable accuracy or macro F1 gain over equal averaging. Freeze the candidate methods before the aggregate report and do not select with test labels or scores.",
+  "next_hypothesis": "The full request_for_info plus equal request/cannot blend performed strongly on both recent clean samples, while high-confidence class-union routing varied. Two new independent clean samples can check whether these fixed class-specific blends retain their accuracy and macro F1 advantage over equal averaging. Then a frozen aggregate report will measure all predeclared methods; test metrics will not select a method.",
   "post_queue_report_required": {
     "required": true,
     "trigger": "After the family confidence-routing validation and aggregate test pass.",
@@ -231,20 +229,69 @@
     "selection_use": "none"
   },
   "evidence_audit": {
-    "latest_completed_experiment": "qwen-single-class-weight-grid-stability-test-20261208",
+    "latest_completed_experiment": "qwen-class-route-stability-test-20261210",
     "training_metrics_recorded": true,
-    "training_metrics_scope": "The frozen ensemble did not train. Qwen epoch 2 source includes a 500-example training probe, and the encoder source records training metrics on 5894 examples.",
+    "training_metrics_scope": "The ensemble benchmark did not train. Training evidence is linked from both frozen source checkpoints.",
     "training_metrics_sources": [
-      "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json",
-      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/metrics.json"
+      {
+        "path": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json",
+        "checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+        "epoch": 2,
+        "accuracy": 0.96,
+        "macro_f1": 0.7201450925439365,
+        "examples": 500
+      },
+      {
+        "path": "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/metrics.json",
+        "accuracy": 0.9787919918561249,
+        "macro_f1": 0.979498520571581,
+        "examples": 5894
+      }
     ],
     "clean_validation_recorded": true,
-    "clean_validation_source": "outputs/qwen-single-class-weight-grid-stability-validation-20261208/metrics.json",
-    "clean_validation_examples": 500,
+    "clean_validation_sources": [
+      {
+        "path": "outputs/qwen-class-route-stability-validation-20261210/metrics.json",
+        "examples": 500,
+        "single_average": {
+          "accuracy": 0.956,
+          "macro_f1": 0.9734602110572775
+        },
+        "single_encoder_request_or_cannot_answer_conf_90": {
+          "accuracy": 0.968,
+          "macro_f1": 0.9817067149440422
+        },
+        "single_encoder_request_full_cannot_mix_50": {
+          "accuracy": 0.966,
+          "macro_f1": 0.9777408978220338
+        }
+      },
+      {
+        "path": "outputs/qwen-class-route-stability-validation-20261212/metrics.json",
+        "examples": 500,
+        "single_average": {
+          "accuracy": 0.952,
+          "macro_f1": 0.9692986823326364
+        },
+        "single_encoder_request_or_cannot_answer_conf_90": {
+          "accuracy": 0.964,
+          "macro_f1": 0.9726721637388782
+        },
+        "single_encoder_request_full_cannot_mix_50": {
+          "accuracy": 0.972,
+          "macro_f1": 0.9778630651638813
+        }
+      }
+    ],
     "aggregate_black_box_test_metrics_recorded": true,
-    "aggregate_black_box_test_source": "outputs/qwen-single-class-weight-grid-stability-test-20261208/metrics.json",
+    "aggregate_black_box_test_source": "outputs/qwen-class-route-stability-test-20261210/metrics.json",
     "aggregate_black_box_test_examples": 3652,
-    "aggregate_black_box_test_scope": "Report only. No test labels or test scores selected candidates.",
+    "aggregate_black_box_primary_metrics": {
+      "method": "single_average",
+      "accuracy": 0.7154983570646222,
+      "macro_f1": 0.5364892151910794
+    },
+    "aggregate_black_box_test_scope": "Report only. No test labels or test scores were used to select methods.",
     "test_labels_used_for_selection": false
   },
   "duplicate_worker_failure": {
