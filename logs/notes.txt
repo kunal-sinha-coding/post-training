@@ -7001,3 +7001,10 @@ The user clarified that test alignment should still be computed, but individual 
 During the interrupted prompt iteration, GPT-6 Luna was tested on the same fixed 100-row development sample selected from the When2Call training preference split. Targets were inferred from chosen_response using the repository response_label heuristic. The results were: v0 75/100, v1 76/100, v2 81/100, v4 77/100, v5 82/100, v6 81/100, v7 75/100, and v8 71/100. The best development score was v5 at 82/100. These labels are heuristic proxies for preferred-response behavior and are not gold action labels. No candidate was adopted.
 
 A direct, aggregate-only test evaluation of temporary v8 was interrupted at the user's request. It produced no complete alignment score. The implementation did not save individual predictions. Earlier test exposure and test-sample prompt tuning remain a limitation for any interpretation of the historical 75/100 sample score. The separate prior partial full-test aggregate of 2,465/3,470 (71.04%) remains unchanged.
+
+
+## 2026-10-26: Clarify when schema defaults are usable
+
+Commit name: Clarify semantic handling of schema defaults.
+
+Updated the BFCL action prompt so a schema default counts as available only when it preserves the user's requested target, scope, and result. The prompt now identifies task-defining values such as identity, query, location, time range, filter, metric, currency, and sort order. This corrects the prior blanket rule that treated every schema default as sufficient. The alignment evaluator has not yet been changed or run with this prompt.

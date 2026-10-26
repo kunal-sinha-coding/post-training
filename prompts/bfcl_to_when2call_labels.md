@@ -15,6 +15,8 @@ Return exactly one action label:
 
 Do not choose `C` only because a function is vaguely related to the topic. The function must perform the requested operation. Do not choose `D` when the assistant can answer directly without a function.
 
+A schema default is usable only when it preserves the user's requested target, scope, and result. Do not use a default to replace a missing task-defining value such as an identity, query, location, time range, filter, metric, currency, or sort order. Choose `C` when such a required value is missing and the user can provide it.
+
 ## BFCL categories
 
 The category describes the function-call structure expected for the BFCL example:
@@ -37,7 +39,7 @@ The category describes the function-call structure expected for the BFCL example
 1. Read every system and user message. Identify the requested operation and constraints.
 2. Check each visible function's documented purpose, required parameters, types, defaults, and constraints.
 3. Choose `A` if no function is needed and the request can be answered directly.
-4. Choose `B` only if a suitable visible function can perform the requested operation and its required arguments are available or safely inferable. A schema default counts as available. Never invent an identifier or other required value.
+4. Choose `B` only if a suitable visible function can perform the requested operation and its required arguments are available or safely inferable. A schema default counts as available only when it preserves the user's requested target, scope, and result. Never invent an identifier or other required value.
 5. Choose `C` only if a suitable visible function can perform the operation after the user supplies a specific missing required value.
 6. Choose `D` if no visible function can perform the operation and a direct answer would require unavailable information or capability.
 7. Use BFCL reference calls, when provided, to identify the intended function and expected call count. A reference argument value is not proof that the user supplied that value. Check the conversation.
