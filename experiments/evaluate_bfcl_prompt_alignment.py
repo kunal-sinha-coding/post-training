@@ -64,14 +64,21 @@ def build_request(row: dict, index: int, prompt: str) -> dict:
 
 def response_text(body: dict) -> str:
     """Extract structured JSON text from one Responses API result."""
-    # Read only output text items and ignore hidden reasoning or non-text content.
+    # Return the first complete schema-shaped JSON text block and ignore other message blocks.
     parts = []
     for item in body.get("output", []):
         if item.get("type") == "message":
             parts.extend(content.get("text", "") for content in item.get("content", []) if content.get("type") == "output_text")
     if not parts and isinstance(body.get("output_text"), str):
         parts.append(body["output_text"])
-    return "".join(parts)
+    for part in parts:
+        try:
+            parsed = json.loads(part)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(parsed, dict) and {"label", "label_name", "confidence", "rationale", "expected_call_count", "needs_review", "review_reason"}.issubset(parsed):
+            return part
+    raise ValueError("No complete label object was present in the response text.")
 
 
 def aggregate(expected: list[str], predicted: list[str], categories: list[str]) -> dict:
