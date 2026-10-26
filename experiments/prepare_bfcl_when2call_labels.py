@@ -28,6 +28,12 @@ def question_text(row: dict) -> str:
     return "\n".join(f"{message['role']}: {message.get('content', '')}" for group in row["question"] for message in group)
 
 
+def question_content(row: dict) -> str:
+    """Join message content without role markers for content-overlap checks."""
+    # Match the public test question text while keeping role prefixes out of similarity scores.
+    return " ".join(message.get("content", "") for group in row["question"] for message in group)
+
+
 def tool_text(row: dict) -> str:
     """Serialize each available function schema in a stable readable form."""
     # Retain each full function definition because descriptions clarify its real capability.
@@ -126,6 +132,7 @@ def main() -> int:
     parser.add_argument("--when2call-test", type=Path, required=True)
     parser.add_argument("--prompt", type=Path, default=Path("prompts/bfcl_to_when2call_labels.md"))
     parser.add_argument("--model", default="Qwen/Qwen2.5-1.5B-Instruct")
+    parser.add_argument("--reuse-labels", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--seed", type=int, default=20261025)
     parser.add_argument("--validation-fraction", type=float, default=0.2)
@@ -133,6 +140,10 @@ def main() -> int:
     parser.add_argument("--max-input-tokens", type=int, default=8192)
     args = parser.parse_args()
     instructions = args.prompt.read_text(encoding="utf-8")
+    reused_labels = {}
+    if args.reuse_labels:
+        # Reuse completed model annotations when only the leakage screen or split needs correction.
+        reused_labels = {item["source_id"]: item for item in (json.loads(line) for line in args.reuse_labels.read_text(encoding="utf-8").splitlines() if line.strip())}
     # Build the test source-ID and question indexes without reading its answer labels.
     test_rows = [json.loads(line) for line in args.when2call_test.read_text(encoding="utf-8").splitlines() if line.strip()]
     test_source_ids = {row["source_id"] for row in test_rows}
@@ -151,20 +162,25 @@ def main() -> int:
     disjoint = [row for row in all_rows if row["id"] not in test_source_ids]
     near_duplicate_ids = set()
     for row in disjoint:
-        candidate = ngrams(question_text(row))
+        candidate = ngrams(question_content(row))
         if any(similarity(candidate, test_question) >= args.similarity_threshold for test_question in test_questions):
             near_duplicate_ids.add(row["id"])
     candidates = [row for row in disjoint if row["id"] not in near_duplicate_ids]
     # Load the local teacher only when unresolved no-call rows require a direct-versus-refusal decision.
     irrelevance_rows = [row for row in candidates if row["category"] == "irrelevance"]
-    teacher, tokenizer, device = load_teacher(args.model) if irrelevance_rows else (None, None, None)
+    needs_teacher = any(row["id"] not in reused_labels for row in irrelevance_rows)
+    teacher, tokenizer, device = load_teacher(args.model) if needs_teacher else (None, None, None)
     reference_counts = load_reference_counts(args.bfcl_data_dir)
     # Assign BFCL call categories to tool-call action and ask the teacher to resolve no-call rows.
     labeled = []
     for row in candidates:
         category = row["category"]
         if category == "irrelevance":
-            decision = label_irrelevance(teacher, tokenizer, device, instructions, row, args.max_input_tokens)
+            if row["id"] in reused_labels:
+                prior = reused_labels[row["id"]]
+                decision = {"label": prior["label"], "confidence": prior["confidence"], "rationale": prior["rationale"], "review_reason": prior.get("review_reason")}
+            else:
+                decision = label_irrelevance(teacher, tokenizer, device, instructions, row, args.max_input_tokens)
             expected_calls = 0
         else:
             decision = {"label": "tool_call", "confidence": "high", "rationale": f"BFCL {category} category expects at least one function call.", "review_reason": None}
@@ -213,6 +229,7 @@ def main() -> int:
         "excluded_needs_review_count": sum(item["label"] == "needs_review" for item in labeled),
         "model_assisted_categories": ["irrelevance"],
         "labeling_model": args.model,
+        "reused_labels_from": str(args.reuse_labels) if args.reuse_labels else None,
         "labeling_seed": args.seed,
         "validation_fraction": args.validation_fraction,
         "output": str(args.output),
