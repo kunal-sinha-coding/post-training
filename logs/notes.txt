@@ -7022,3 +7022,16 @@ Updated the alignment evaluator to derive an evaluation-specific prompt from the
 Commit name: Record corrected 100-row prompt alignment.
 
 The same fixed, label-independent 100-row When2Call test sample was evaluated with the corrected default-value rule, no source-category hint in model input, and a one-field action-code schema. The prior sample UUID manifest was used only to recover the same sample. Test labels were not sent to the model, and no individual test examples or predictions were printed or saved. GPT-6 Luna scored 76/100, compared with the historical 75/100 for the original setup on this same sample. The one-point change is not strong evidence of improvement because several inference changes were combined. The sample has no direct-class examples and has already been used in earlier prompt exploration.
+
+
+## 2026-10-26: Stop prompt iteration and prepare BFCL continuation training
+
+Commit name: Continue the best historical Qwen adapter on BFCL labels.
+
+The user stopped prompt iteration and asked to use the original BFCL labeling prompt. The full augmented corpus was already labeled and saved under the original prompt SHA-256 2a191a61da8709a4cff51676bfb421c274e5e84b7c81ee3a7e6d44f80cf8fa85. It contains 922 source-disjoint BFCL Live examples, with 738 training rows and 184 held-out validation rows. The label file SHA-256 is a4b817a01c109603c00fe9e682f11eb636afc139894a92d4960bde8bddfda27f. No relabeling is needed.
+
+The prompt iteration was stopped. On the fixed 100-row test sample, the corrected pipeline scored 76/100 with macro F1 0.573328. Six further aggregate-only variants scored v1 75/100 (0.570277), v2 76/100 (0.571429), v3 72/100 (0.550881), v4 72/100 (0.552387), v5 72/100 (0.546110), and v6 77/100 (0.583449). No variant reached 80%; none was adopted. No individual test rows or predictions were inspected or printed. These scores remain exploratory because the same sample was previously used for prompt iteration.
+
+The highest historical Qwen/Qwen2.5-1.5B-Instruct checkpoint by aggregate test accuracy is `outputs/qwen-when2call-qwen25-15b-pref-full-glaive500-toolcall-seed20261035`, with test accuracy 0.693866 and macro F1 0.504333. It was trained for one epoch on 7,200 When2Call preference rows plus 238 Glaive tool-call rows, with LoRA rank 16, batch size 1, maximum length 4096, learning rate 2e-5, and weight decay 0.01. The user requested this historical checkpoint as the starting point. This uses an aggregate test score to select the initial checkpoint, as explicitly requested.
+
+Updated `experiments/train_qwen_bfcl_when2call.py` to continue that adapter on the 738 BFCL training rows only, evaluate training, held-out BFCL validation, and aggregate-only test metrics at every epoch, and select within-run checkpoints by held-out BFCL validation accuracy. The evaluator now scores the active adapter rather than disabling it. No training run had started at this commit.
