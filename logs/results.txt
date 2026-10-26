@@ -50818,3 +50818,334 @@ The 500-row validation run failed in visible-input rule evaluation due to a CPU/
 
 Ensemble clean-validation screen retry failed before metrics, 2026-10-26
 Encoder and Qwen probabilities were computed on the capped clean sample, but visible-input routing raised `KeyError(question)` because source rows contain messages rather than question/tools fields. The evaluator will derive routing features from the model inputs. No official test data was loaded. W&B run `zn9bdfia`; no results are ranked.
+
+## qwen-fullpool-ensemble-validation-20261069-retry2
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_existing_when2call_hybrid_validation",
+    "--output-dir",
+    "outputs/qwen-fullpool-ensemble-validation-20261069-retry2",
+    "--split-seed",
+    "20261026",
+    "--sample-seed",
+    "20261068",
+    "--max-validation-examples",
+    "500",
+    "--qwen-checkpoint",
+    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "--batch-size",
+    "1"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "qwen-fullpool-ensemble-validation-20261069-retry2",
+  "failure_reason": null,
+  "metadata": {
+    "aggregate_validation_metrics": {
+      "encoder_single": {
+        "accuracy": 0.894,
+        "macro_f1": 0.9325776805251641
+      },
+      "qwen_sft": {
+        "accuracy": 0.956,
+        "macro_f1": 0.9714767318878901
+      },
+      "single_average": {
+        "accuracy": 0.948,
+        "macro_f1": 0.9671382625939443
+      },
+      "single_disagreement_encoder": {
+        "accuracy": 0.894,
+        "macro_f1": 0.9325776805251641
+      },
+      "single_disagreement_margin": {
+        "accuracy": 0.948,
+        "macro_f1": 0.9670833333333333
+      },
+      "single_disagreement_qwen": {
+        "accuracy": 0.956,
+        "macro_f1": 0.9714767318878901
+      },
+      "single_encoder_cannot_answer": {
+        "accuracy": 0.956,
+        "macro_f1": 0.9693583911405694
+      },
+      "single_encoder_direct": {
+        "accuracy": 0.956,
+        "macro_f1": 0.9714767318878901
+      },
+      "single_encoder_long_question": {
+        "accuracy": 0.946,
+        "macro_f1": 0.9651775486827033
+      },
+      "single_encoder_many_tools": {
+        "accuracy": 0.926,
+        "macro_f1": 0.950334352916359
+      },
+      "single_encoder_no_tools": {
+        "accuracy": 0.956,
+        "macro_f1": 0.9714767318878901
+      },
+      "single_encoder_request_for_info": {
+        "accuracy": 0.962,
+        "macro_f1": 0.9726945569050831
+      },
+      "single_encoder_short_question": {
+        "accuracy": 0.904,
+        "macro_f1": 0.9393777662067171
+      },
+      "single_encoder_tool_call": {
+        "accuracy": 0.888,
+        "macro_f1": 0.9333706109986866
+      },
+      "single_gate": {
+        "accuracy": 0.948,
+        "macro_f1": 0.9671382625939443
+      },
+      "single_geometric": {
+        "accuracy": 0.944,
+        "macro_f1": 0.9649598393574297
+      },
+      "single_geometric_encoder": {
+        "accuracy": 0.924,
+        "macro_f1": 0.9518447114300184
+      },
+      "single_geometric_qwen": {
+        "accuracy": 0.956,
+        "macro_f1": 0.9724271555257471
+      },
+      "single_qwen_w10": {
+        "accuracy": 0.956,
+        "macro_f1": 0.9714767318878901
+      },
+      "single_qwen_w25": {
+        "accuracy": 0.956,
+        "macro_f1": 0.9714767318878901
+      },
+      "single_qwen_w40": {
+        "accuracy": 0.954,
+        "macro_f1": 0.9704121679803934
+      },
+      "single_qwen_w60": {
+        "accuracy": 0.92,
+        "macro_f1": 0.9496752136752137
+      },
+      "single_qwen_w75": {
+        "accuracy": 0.906,
+        "macro_f1": 0.9407099567099566
+      },
+      "single_qwen_w90": {
+        "accuracy": 0.9,
+        "macro_f1": 0.9361739130434783
+      },
+      "single_request_conf_40": {
+        "accuracy": 0.962,
+        "macro_f1": 0.9726945569050831
+      },
+      "single_request_conf_60": {
+        "accuracy": 0.962,
+        "macro_f1": 0.973675907144467
+      },
+      "single_request_conf_80": {
+        "accuracy": 0.964,
+        "macro_f1": 0.9756917125622868
+      },
+      "single_standardized_logits": {
+        "accuracy": 0.95,
+        "macro_f1": 0.969152442098334
+      }
+    },
+    "artifact_sha256": {
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/encoder_config.json": "0616e72a787934ed1fa3bec80e5da45239be1a1c267525c92960b83e9c44c12f",
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/model_state.pt": "815459d76b8c2e9fb7ba44e2f3867379ab096766cf9f1c807a08921be26593b5",
+      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02/adapter_config.json": "bfe4f64a34cbe48967937473e3f0558033c8b98578e46a9fe7447d86404c37f9",
+      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02/adapter_model.safetensors": "6afccbb2022780a2bc986e08cf48eb376635cd345d6672d1613ec7e4355d0484"
+    },
+    "candidate_methods": [
+      "encoder_single",
+      "qwen_sft",
+      "single_average",
+      "single_gate",
+      "single_qwen_w10",
+      "single_qwen_w25",
+      "single_qwen_w40",
+      "single_qwen_w60",
+      "single_qwen_w75",
+      "single_qwen_w90",
+      "single_geometric",
+      "single_geometric_qwen",
+      "single_geometric_encoder",
+      "single_standardized_logits",
+      "single_disagreement_qwen",
+      "single_disagreement_encoder",
+      "single_disagreement_margin",
+      "single_encoder_cannot_answer",
+      "single_encoder_request_for_info",
+      "single_encoder_tool_call",
+      "single_encoder_direct",
+      "single_request_conf_40",
+      "single_request_conf_60",
+      "single_request_conf_80",
+      "single_encoder_no_tools",
+      "single_encoder_many_tools",
+      "single_encoder_short_question",
+      "single_encoder_long_question"
+    ],
+    "encoder_checkpoint": "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
+    "git_commit": "f45430b370cfdcf75c0ee92cd3cf7db228ffa442",
+    "official_test_loaded": false,
+    "qwen_base": "Qwen/Qwen2.5-1.5B-Instruct",
+    "qwen_checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "runtime_seconds": 90.12356376647949,
+    "sample_seed": 20261068,
+    "split_seed": 20261026,
+    "status": "completed",
+    "training_performed": false,
+    "validation_examples": 500,
+    "validation_indices_sha256": "2fcc12fcb0e9384c882937855b8dc827285e62d18c595044bb75f2c018824cb5",
+    "validation_sample_cap": 500,
+    "validation_source": "nvidia/When2Call train_sft",
+    "validation_source_independent_of_training": true,
+    "wandb_run_id": "wyyq9e6s",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/wyyq9e6s"
+  },
+  "metrics_path": "/workspace/post-training/outputs/qwen-fullpool-ensemble-validation-20261069-retry2/metrics.json",
+  "official_test_loaded": false,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/qwen-fullpool-ensemble-validation-20261069-retry2",
+  "source_validation_metrics": {
+    "aggregate_validation_metrics": {
+      "encoder_single": {
+        "accuracy": 0.894,
+        "macro_f1": 0.9325776805251641
+      },
+      "qwen_sft": {
+        "accuracy": 0.956,
+        "macro_f1": 0.9714767318878901
+      },
+      "single_average": {
+        "accuracy": 0.948,
+        "macro_f1": 0.9671382625939443
+      },
+      "single_disagreement_encoder": {
+        "accuracy": 0.894,
+        "macro_f1": 0.9325776805251641
+      },
+      "single_disagreement_margin": {
+        "accuracy": 0.948,
+        "macro_f1": 0.9670833333333333
+      },
+      "single_disagreement_qwen": {
+        "accuracy": 0.956,
+        "macro_f1": 0.9714767318878901
+      },
+      "single_encoder_cannot_answer": {
+        "accuracy": 0.956,
+        "macro_f1": 0.9693583911405694
+      },
+      "single_encoder_direct": {
+        "accuracy": 0.956,
+        "macro_f1": 0.9714767318878901
+      },
+      "single_encoder_long_question": {
+        "accuracy": 0.946,
+        "macro_f1": 0.9651775486827033
+      },
+      "single_encoder_many_tools": {
+        "accuracy": 0.926,
+        "macro_f1": 0.950334352916359
+      },
+      "single_encoder_no_tools": {
+        "accuracy": 0.956,
+        "macro_f1": 0.9714767318878901
+      },
+      "single_encoder_request_for_info": {
+        "accuracy": 0.962,
+        "macro_f1": 0.9726945569050831
+      },
+      "single_encoder_short_question": {
+        "accuracy": 0.904,
+        "macro_f1": 0.9393777662067171
+      },
+      "single_encoder_tool_call": {
+        "accuracy": 0.888,
+        "macro_f1": 0.9333706109986866
+      },
+      "single_gate": {
+        "accuracy": 0.948,
+        "macro_f1": 0.9671382625939443
+      },
+      "single_geometric": {
+        "accuracy": 0.944,
+        "macro_f1": 0.9649598393574297
+      },
+      "single_geometric_encoder": {
+        "accuracy": 0.924,
+        "macro_f1": 0.9518447114300184
+      },
+      "single_geometric_qwen": {
+        "accuracy": 0.956,
+        "macro_f1": 0.9724271555257471
+      },
+      "single_qwen_w10": {
+        "accuracy": 0.956,
+        "macro_f1": 0.9714767318878901
+      },
+      "single_qwen_w25": {
+        "accuracy": 0.956,
+        "macro_f1": 0.9714767318878901
+      },
+      "single_qwen_w40": {
+        "accuracy": 0.954,
+        "macro_f1": 0.9704121679803934
+      },
+      "single_qwen_w60": {
+        "accuracy": 0.92,
+        "macro_f1": 0.9496752136752137
+      },
+      "single_qwen_w75": {
+        "accuracy": 0.906,
+        "macro_f1": 0.9407099567099566
+      },
+      "single_qwen_w90": {
+        "accuracy": 0.9,
+        "macro_f1": 0.9361739130434783
+      },
+      "single_request_conf_40": {
+        "accuracy": 0.962,
+        "macro_f1": 0.9726945569050831
+      },
+      "single_request_conf_60": {
+        "accuracy": 0.962,
+        "macro_f1": 0.973675907144467
+      },
+      "single_request_conf_80": {
+        "accuracy": 0.964,
+        "macro_f1": 0.9756917125622868
+      },
+      "single_standardized_logits": {
+        "accuracy": 0.95,
+        "macro_f1": 0.969152442098334
+      }
+    }
+  },
+  "started_at": "2026-10-26T16:42:45.304130+00:00",
+  "status": "completed",
+  "test_status": "not measured",
+  "timestamp": "2026-10-26T16:45:16.044442+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "wyyq9e6s",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/wyyq9e6s"
+}
+```
+
+
+Ensemble candidate selected on capped clean validation, 2026-10-26
+On 500 deterministic stratified `train_sft` validation examples, Qwen epoch 2 scored 0.9560 accuracy / 0.9715 macro F1; the encoder scored 0.8940 / 0.9326; equal probability averaging scored 0.9480 / 0.9671. The highest fixed-candidate validation accuracy was 0.9640 / 0.9757 for `single_request_conf_80`, a four-example or 0.8-point improvement over Qwen. The rule uses encoder probabilities only for predictions of request_for_info with maximum probability at least 0.80, and Qwen otherwise. This rule was selected by clean validation only. Twenty-eight fixed candidates were screened on the same 500 examples, so its gain may reflect validation overfitting. A single full-test aggregate measurement is queued for report only.
