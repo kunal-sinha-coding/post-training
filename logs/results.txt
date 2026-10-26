@@ -50766,3 +50766,51 @@ Training stopped after the epoch-4 validation-accuracy decline. The best clean v
 
 Weight-decay 0.05 full-pool run interrupted before evaluation, 2026-10-26
 The user requested stopping this run and clearing the queue. PID 112168 was stopped with a last heartbeat of training step 1691. An epoch-01 adapter directory exists, but no training evaluation, clean-validation result, or aggregate black-box test metric was saved. The incomplete run is excluded from rankings.
+
+## qwen-fullpool-ensemble-validation-20261069
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_existing_when2call_hybrid_validation",
+    "--output-dir",
+    "outputs/qwen-fullpool-ensemble-validation-20261069",
+    "--split-seed",
+    "20261026",
+    "--sample-seed",
+    "20261068",
+    "--max-validation-examples",
+    "500",
+    "--qwen-checkpoint",
+    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "--batch-size",
+    "1"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "qwen-fullpool-ensemble-validation-20261069",
+  "failure_reason": null,
+  "metadata": {},
+  "metrics_path": "/workspace/post-training/outputs/qwen-fullpool-ensemble-validation-20261069/metrics.json",
+  "official_test_loaded": null,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/qwen-fullpool-ensemble-validation-20261069",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-26T16:37:12.269318+00:00",
+  "status": "failed_or_incomplete",
+  "test_status": "not measured",
+  "timestamp": "2026-10-26T16:39:43.937493+00:00",
+  "train_metrics": {},
+  "wandb_run_id": null,
+  "wandb_run_url": null
+}
+```
+
+
+Ensemble clean-validation screen failed before metrics, 2026-10-26
+The 500-row validation run failed in visible-input rule evaluation due to a CPU/GPU tensor device mismatch. No validation metrics were written and no official test data was loaded. W&B run `30s1h7h7`; failure only, excluded from rankings.

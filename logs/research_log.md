@@ -8627,3 +8627,20 @@ Next hypotheses test whether stronger weight decay or a lower learning rate redu
 The user requested stopping the active weight-decay 0.05 run and clearing its pending queue before continuing. The trainer (PID 112168), watchdog (PID 94584), and supervisor (PID 94549) were stopped. Its last heartbeat reported phase `training`, step 1691. An `epoch-01` adapter directory exists, but no `metrics.json` or evaluation metrics were recorded, so this is logged as interrupted and is not ranked.
 
 The new first experiment screens encoder fusion with the full When2Call Qwen checkpoint that scored 0.702355 aggregate test accuracy at epoch 2. It evaluates fixed probability blends, confidence and disagreement rules, class-specific routes, and visible-input routes on a deterministic stratified clean `train_sft` sample capped at 500 examples. The official test split is not loaded in this screening step. Clean validation selects the candidate for a later aggregate-only test measurement.
+
+## qwen-fullpool-ensemble-validation-20261069
+
+Timestamp: 2026-10-26T16:39:43.937493+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_existing_when2call_hybrid_validation", "--output-dir", "outputs/qwen-fullpool-ensemble-validation-20261069", "--split-seed", "20261026", "--sample-seed", "20261068", "--max-validation-examples", "500", "--qwen-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--batch-size", "1"]. Output: /workspace/post-training/outputs/qwen-fullpool-ensemble-validation-20261069. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+
+## Ensemble validation screen implementation correction, 2026-10-26
+
+The first capped clean-validation screen failed during visible-input routing because the route mask was created on CUDA while cached model probabilities were on CPU. The failure occurred before metrics were saved, and the official test split was not loaded. The mask now uses the probability tensor device. A retry uses the same fixed 500-row sample and Qwen checkpoint under a distinct output ID.

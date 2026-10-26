@@ -96,7 +96,7 @@ def evaluate(args: argparse.Namespace, run: object) -> dict:
             continue
         rule = method.removeprefix("single_")
         if rule.removeprefix("encoder_") in RULES:
-            mask = input_route_mask(validation_source_rows, rule.removeprefix("encoder_"), device)
+            mask = input_route_mask(validation_source_rows, rule.removeprefix("encoder_"), encoder.device)
             candidates[method] = torch.where(mask.unsqueeze(-1), encoder, qwen)
         else:
             candidates[method] = hybrid_probabilities(encoder, qwen, rule)

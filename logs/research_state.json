@@ -12,7 +12,7 @@
     "-m",
     "experiments.evaluate_existing_when2call_hybrid_validation",
     "--output-dir",
-    "outputs/qwen-fullpool-ensemble-validation-20261069",
+    "outputs/qwen-fullpool-ensemble-validation-20261069-retry1",
     "--split-seed",
     "20261026",
     "--sample-seed",
@@ -31,7 +31,7 @@
       "-m",
       "experiments.evaluate_existing_when2call_hybrid_validation",
       "--output-dir",
-      "outputs/qwen-fullpool-ensemble-validation-20261069",
+      "outputs/qwen-fullpool-ensemble-validation-20261069-retry1",
       "--split-seed",
       "20261026",
       "--sample-seed",
@@ -76,9 +76,9 @@
     "selection": "clean validation only"
   },
   "last_heartbeat": null,
-  "last_action": "Queued a capped clean-validation ensemble screen using the 70.24% Qwen checkpoint; the previous worker and watchdog were stopped at the user request.",
+  "last_action": "Queued a corrected clean-validation ensemble screen after the first attempt exposed a CPU/GPU mask mismatch.",
   "watchdog_enabled": true,
-  "research_log_size": 873358,
+  "research_log_size": 874340,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -86,7 +86,7 @@
     "-m",
     "experiments.evaluate_existing_when2call_hybrid_validation",
     "--output-dir",
-    "outputs/qwen-fullpool-ensemble-validation-20261069",
+    "outputs/qwen-fullpool-ensemble-validation-20261069-retry1",
     "--split-seed",
     "20261026",
     "--sample-seed",
@@ -98,11 +98,16 @@
     "--batch-size",
     "1"
   ],
-  "recording_jobs": [],
+  "recording_jobs": [
+    {
+      "pid": 116449,
+      "experiment_id": "qwen-fullpool-ensemble-validation-20261069"
+    }
+  ],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": null,
-  "planning_ack_deadline": null,
-  "planning_attempts": 26,
+  "planning_notified_at": "2026-10-26T16:39:44.318445+00:00",
+  "planning_ack_deadline": "2026-10-26T16:41:44.318465+00:00",
+  "planning_attempts": 27,
   "best_observed_test": {
     "method": "qwen_full_when2call_epoch_2",
     "accuracy": 0.702354874041621,
@@ -176,5 +181,11 @@
     "checkpoint_present": "outputs/qwen-when2call-fullpool-wd005-base-seed20261066/epoch-01",
     "reason": "User requested stopping the active run and clearing the queue before continuing ensemble exploration."
   },
-  "queue_cleared_reason": "The user requested that the active experiment and pending queue be stopped and cleared before further exploration. The queue now contains only the clean-validation ensemble screen."
+  "queue_cleared_reason": "The user requested that the active experiment and pending queue be stopped and cleared before further exploration. The queue now contains only the clean-validation ensemble screen.",
+  "failed_experiment": {
+    "experiment_id": "qwen-fullpool-ensemble-validation-20261069",
+    "status": "failed",
+    "failure": "A visible-input routing mask was created on CUDA while cached probability tensors were on CPU. The evaluator failed before writing validation metrics. No black-box test data was loaded.",
+    "wandb_run_id": "30s1h7h7"
+  }
 }

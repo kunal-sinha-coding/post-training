@@ -7189,3 +7189,10 @@ Queued two separate fresh-base full-pool trials. The first increases weight deca
 Commit name: Stop the weight-decay worker and screen encoder fusion on clean validation.
 
 Stopped the active weight-decay 0.05 trainer, watchdog, and supervisor at the user request. Recorded its last heartbeat at step 1691 and its missing evaluation evidence. Cleared the old lower-learning-rate queue entry. Added support for evaluating a chosen Qwen adapter with existing encoder-fusion candidates. The new first candidate screen uses a deterministic stratified clean `train_sft` sample capped at 500 rows and does not load the black-box test data. The validation result will select any later test measurement.
+
+
+## 2026-10-26: Fix device mismatch in ensemble validation
+
+Commit name: Fix validation routing mask device selection.
+
+The first capped clean-validation screen stopped before metrics because input route masks were created on CUDA while cached model probabilities were on CPU. No test data was loaded. Changed route-mask placement to match the cached probability device, recorded the failed attempt, and queued one retry with the same sample and model under a distinct output directory.
