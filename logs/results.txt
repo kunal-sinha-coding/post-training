@@ -49167,3 +49167,1598 @@ A stale PID in `logs/research_state.json` caused the watchdog to launch a second
 
 Primary metrics artifact integrity correction, 2026-10-26
 The separate post hoc validation artifact remains intact with the 500-row validation measurements for epochs 1 and 2. The primary training metrics file was found without those attached values during the latest audit. Reattached the same recorded validation results from the post hoc artifact. This did not run a new evaluation or change any result or selection.
+
+## qwen-bfcl-when2call-10pct-1476-base-seed20261061
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.train_qwen_bfcl_original_mixture",
+    "--model",
+    "Qwen/Qwen2.5-1.5B-Instruct",
+    "--output-dir",
+    "outputs/qwen-bfcl-when2call-10pct-1476-base-seed20261061",
+    "--seed",
+    "20261061",
+    "--original-split-seed",
+    "20261029",
+    "--epochs",
+    "10",
+    "--batch-size",
+    "1",
+    "--eval-batch-size",
+    "4",
+    "--max-length",
+    "4096",
+    "--learning-rate",
+    "2e-5",
+    "--weight-decay",
+    "0.01",
+    "--lora-rank",
+    "16",
+    "--evaluation-steps",
+    "1000000",
+    "--bfcl-fraction",
+    "0.1",
+    "--training-examples",
+    "1476",
+    "--training-eval-sample-size",
+    "500",
+    "--training-eval-seed",
+    "20261063",
+    "--stop-on-validation-non-improvement"
+  ],
+  "development_metrics": {
+    "accuracy": 0.6820652173913043,
+    "confusion_matrix": [
+      [
+        99,
+        3,
+        5,
+        8
+      ],
+      [
+        9,
+        55,
+        34,
+        6
+      ],
+      [
+        4,
+        7,
+        75,
+        1
+      ],
+      [
+        32,
+        6,
+        2,
+        22
+      ]
+    ],
+    "examples": 368,
+    "macro_f1": 0.6441027234130683
+  },
+  "exit_code": "unknown",
+  "experiment_id": "qwen-bfcl-when2call-10pct-1476-base-seed20261061",
+  "failure_reason": null,
+  "metadata": {
+    "base_model": "Qwen/Qwen2.5-1.5B-Instruct",
+    "base_model_checkpoint": "Qwen/Qwen2.5-1.5B-Instruct before any task adapter training",
+    "baseline_metrics": null,
+    "best_validation_accuracy": 0.6956521739130435,
+    "best_validation_checkpoint": "outputs/qwen-bfcl-when2call-10pct-1476-base-seed20261061/step-005904",
+    "checkpoint_evaluations": [
+      {
+        "balanced_heldout_validation_metrics": {
+          "accuracy": 0.6141304347826086,
+          "confusion_matrix": [
+            [
+              80,
+              23,
+              2,
+              10
+            ],
+            [
+              3,
+              92,
+              5,
+              4
+            ],
+            [
+              1,
+              44,
+              42,
+              0
+            ],
+            [
+              30,
+              18,
+              2,
+              12
+            ]
+          ],
+          "examples": 368,
+          "macro_f1": 0.5587292879239242
+        },
+        "bfcl_heldout_validation_metrics": {
+          "accuracy": 0.42934782608695654,
+          "confusion_matrix": [
+            [
+              28,
+              15,
+              1,
+              10
+            ],
+            [
+              1,
+              35,
+              2,
+              4
+            ],
+            [
+              1,
+              21,
+              4,
+              0
+            ],
+            [
+              30,
+              18,
+              2,
+              12
+            ]
+          ],
+          "examples": 184,
+          "macro_f1": 0.38171947912807697
+        },
+        "black_box_test_metrics": {
+          "accuracy": 0.5427163198247535,
+          "examples": 3652,
+          "macro_f1": 0.41206144243017906
+        },
+        "original_heldout_validation_metrics": {
+          "accuracy": 0.7989130434782609,
+          "confusion_matrix": [
+            [
+              52,
+              8,
+              1,
+              0
+            ],
+            [
+              2,
+              57,
+              3,
+              0
+            ],
+            [
+              0,
+              23,
+              38,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "examples": 184,
+          "macro_f1": 0.6005529759392149
+        },
+        "step": 1476,
+        "training_metrics": {
+          "accuracy": 0.818,
+          "confusion_matrix": [
+            [
+              149,
+              13,
+              1,
+              2
+            ],
+            [
+              1,
+              149,
+              11,
+              0
+            ],
+            [
+              0,
+              50,
+              107,
+              0
+            ],
+            [
+              2,
+              11,
+              0,
+              4
+            ]
+          ],
+          "examples": 500,
+          "macro_f1": 0.7098232909866045
+        }
+      },
+      {
+        "balanced_heldout_validation_metrics": {
+          "accuracy": 0.6467391304347826,
+          "confusion_matrix": [
+            [
+              111,
+              1,
+              3,
+              0
+            ],
+            [
+              24,
+              58,
+              21,
+              1
+            ],
+            [
+              5,
+              12,
+              69,
+              1
+            ],
+            [
+              56,
+              4,
+              2,
+              0
+            ]
+          ],
+          "examples": 368,
+          "macro_f1": 0.5300282043846685
+        },
+        "bfcl_heldout_validation_metrics": {
+          "accuracy": 0.44021739130434784,
+          "confusion_matrix": [
+            [
+              52,
+              1,
+              1,
+              0
+            ],
+            [
+              17,
+              16,
+              8,
+              1
+            ],
+            [
+              4,
+              8,
+              13,
+              1
+            ],
+            [
+              56,
+              4,
+              2,
+              0
+            ]
+          ],
+          "examples": 184,
+          "macro_f1": 0.3847525590702686
+        },
+        "black_box_test_metrics": {
+          "accuracy": 0.6738773274917853,
+          "examples": 3652,
+          "macro_f1": 0.4961864648310954
+        },
+        "original_heldout_validation_metrics": {
+          "accuracy": 0.8532608695652174,
+          "confusion_matrix": [
+            [
+              59,
+              0,
+              2,
+              0
+            ],
+            [
+              7,
+              42,
+              13,
+              0
+            ],
+            [
+              1,
+              4,
+              56,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "examples": 184,
+          "macro_f1": 0.6370344065656566
+        },
+        "step": 2952,
+        "training_metrics": {
+          "accuracy": 0.868,
+          "confusion_matrix": [
+            [
+              164,
+              0,
+              1,
+              0
+            ],
+            [
+              6,
+              123,
+              32,
+              0
+            ],
+            [
+              3,
+              8,
+              146,
+              0
+            ],
+            [
+              13,
+              2,
+              1,
+              1
+            ]
+          ],
+          "examples": 500,
+          "macro_f1": 0.6871968955478918
+        }
+      },
+      {
+        "balanced_heldout_validation_metrics": {
+          "accuracy": 0.657608695652174,
+          "confusion_matrix": [
+            [
+              103,
+              2,
+              0,
+              10
+            ],
+            [
+              23,
+              62,
+              11,
+              8
+            ],
+            [
+              10,
+              18,
+              53,
+              6
+            ],
+            [
+              38,
+              0,
+              0,
+              24
+            ]
+          ],
+          "examples": 368,
+          "macro_f1": 0.6294549565408202
+        },
+        "bfcl_heldout_validation_metrics": {
+          "accuracy": 0.4782608695652174,
+          "confusion_matrix": [
+            [
+              43,
+              1,
+              0,
+              10
+            ],
+            [
+              15,
+              14,
+              5,
+              8
+            ],
+            [
+              6,
+              7,
+              7,
+              6
+            ],
+            [
+              38,
+              0,
+              0,
+              24
+            ]
+          ],
+          "examples": 184,
+          "macro_f1": 0.4483916850693166
+        },
+        "black_box_test_metrics": {
+          "accuracy": 0.6656626506024096,
+          "examples": 3652,
+          "macro_f1": 0.4916676060728028
+        },
+        "original_heldout_validation_metrics": {
+          "accuracy": 0.8369565217391305,
+          "confusion_matrix": [
+            [
+              60,
+              1,
+              0,
+              0
+            ],
+            [
+              8,
+              48,
+              6,
+              0
+            ],
+            [
+              4,
+              11,
+              46,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "examples": 184,
+          "macro_f1": 0.6258250442586955
+        },
+        "step": 4428,
+        "training_metrics": {
+          "accuracy": 0.908,
+          "confusion_matrix": [
+            [
+              165,
+              0,
+              0,
+              0
+            ],
+            [
+              10,
+              145,
+              3,
+              3
+            ],
+            [
+              13,
+              14,
+              130,
+              0
+            ],
+            [
+              3,
+              0,
+              0,
+              14
+            ]
+          ],
+          "examples": 500,
+          "macro_f1": 0.8883243570093671
+        }
+      },
+      {
+        "balanced_heldout_validation_metrics": {
+          "accuracy": 0.6956521739130435,
+          "confusion_matrix": [
+            [
+              82,
+              11,
+              3,
+              19
+            ],
+            [
+              3,
+              86,
+              6,
+              9
+            ],
+            [
+              0,
+              29,
+              52,
+              6
+            ],
+            [
+              18,
+              7,
+              1,
+              36
+            ]
+          ],
+          "examples": 368,
+          "macro_f1": 0.6803682743104693
+        },
+        "bfcl_heldout_validation_metrics": {
+          "accuracy": 0.5163043478260869,
+          "confusion_matrix": [
+            [
+              26,
+              9,
+              1,
+              18
+            ],
+            [
+              3,
+              28,
+              2,
+              9
+            ],
+            [
+              0,
+              16,
+              5,
+              5
+            ],
+            [
+              18,
+              7,
+              1,
+              36
+            ]
+          ],
+          "examples": 184,
+          "macro_f1": 0.47585788313802296
+        },
+        "black_box_test_metrics": {
+          "accuracy": 0.5996714129244249,
+          "examples": 3652,
+          "macro_f1": 0.4623514934628935
+        },
+        "original_heldout_validation_metrics": {
+          "accuracy": 0.875,
+          "confusion_matrix": [
+            [
+              56,
+              2,
+              2,
+              1
+            ],
+            [
+              0,
+              58,
+              4,
+              0
+            ],
+            [
+              0,
+              13,
+              47,
+              1
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "examples": 184,
+          "macro_f1": 0.6602714050082471
+        },
+        "step": 5904,
+        "training_metrics": {
+          "accuracy": 0.958,
+          "confusion_matrix": [
+            [
+              165,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              159,
+              1,
+              1
+            ],
+            [
+              1,
+              13,
+              140,
+              3
+            ],
+            [
+              0,
+              2,
+              0,
+              15
+            ]
+          ],
+          "examples": 500,
+          "macro_f1": 0.9297908080191513
+        }
+      },
+      {
+        "balanced_heldout_validation_metrics": {
+          "accuracy": 0.6820652173913043,
+          "confusion_matrix": [
+            [
+              99,
+              3,
+              5,
+              8
+            ],
+            [
+              9,
+              55,
+              34,
+              6
+            ],
+            [
+              4,
+              7,
+              75,
+              1
+            ],
+            [
+              32,
+              6,
+              2,
+              22
+            ]
+          ],
+          "examples": 368,
+          "macro_f1": 0.6441027234130683
+        },
+        "bfcl_heldout_validation_metrics": {
+          "accuracy": 0.4891304347826087,
+          "confusion_matrix": [
+            [
+              40,
+              3,
+              3,
+              8
+            ],
+            [
+              8,
+              13,
+              15,
+              6
+            ],
+            [
+              3,
+              7,
+              15,
+              1
+            ],
+            [
+              32,
+              6,
+              2,
+              22
+            ]
+          ],
+          "examples": 184,
+          "macro_f1": 0.47159662801774416
+        },
+        "black_box_test_metrics": {
+          "accuracy": 0.6382803943044907,
+          "examples": 3652,
+          "macro_f1": 0.45257557274814736
+        },
+        "original_heldout_validation_metrics": {
+          "accuracy": 0.875,
+          "confusion_matrix": [
+            [
+              59,
+              0,
+              2,
+              0
+            ],
+            [
+              1,
+              42,
+              19,
+              0
+            ],
+            [
+              1,
+              0,
+              60,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "examples": 184,
+          "macro_f1": 0.6549939612454043
+        },
+        "step": 7380,
+        "training_metrics": {
+          "accuracy": 0.96,
+          "confusion_matrix": [
+            [
+              165,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              143,
+              18,
+              0
+            ],
+            [
+              0,
+              1,
+              156,
+              0
+            ],
+            [
+              0,
+              1,
+              0,
+              16
+            ]
+          ],
+          "examples": 500,
+          "macro_f1": 0.9617339199709912
+        }
+      }
+    ],
+    "config": {
+      "batch_size": 1,
+      "bfcl_data": "data/bfcl_when2call_labeled.jsonl",
+      "bfcl_fraction": 0.1,
+      "bfcl_metadata": "data/bfcl_when2call_labeled.metadata.json",
+      "epochs": 10,
+      "eval_batch_size": 4,
+      "evaluate_baseline": false,
+      "evaluation_steps": 1000000,
+      "learning_rate": 2e-05,
+      "lora_rank": 16,
+      "max_length": 4096,
+      "model": "Qwen/Qwen2.5-1.5B-Instruct",
+      "original_split_seed": 20261029,
+      "output_dir": "outputs/qwen-bfcl-when2call-10pct-1476-base-seed20261061",
+      "seed": 20261061,
+      "stop_on_validation_non_improvement": true,
+      "training_eval_sample_size": 500,
+      "training_eval_seed": 20261063,
+      "training_examples": 1476,
+      "weight_decay": 0.01
+    },
+    "data": {
+      "bfcl_file": "data/bfcl_when2call_labeled.jsonl",
+      "bfcl_prompt_sha256": "2a191a61da8709a4cff51676bfb421c274e5e84b7c81ee3a7e6d44f80cf8fa85",
+      "bfcl_sha256": "a4b817a01c109603c00fe9e682f11eb636afc139894a92d4960bde8bddfda27f",
+      "bfcl_source_train_examples": 738,
+      "bfcl_train_examples": 148,
+      "bfcl_validation_examples": 184,
+      "original_dataset": "nvidia/When2Call",
+      "original_sample_examples": 1328,
+      "original_sample_fingerprint": "670258c6b22f849f83501295be598a82424146d1c4a369f100ca53b4f2c85945",
+      "original_source_train_examples": 7200,
+      "original_split": "train_pref",
+      "original_split_seed": 20261029,
+      "original_validation_sample_examples": 184,
+      "original_validation_sample_fingerprint": "58c9c98286e6528bbd4e3515b2b63b3eed05d3afc757c9246bf5bcc182ae03a0",
+      "original_validation_sample_seed": 20261062,
+      "original_validation_source_examples": 1800
+    },
+    "device": "cuda",
+    "experiment": "qwen25_1p5b_base_sft_bfcl_10_when2call_90",
+    "final_epoch_metrics": {
+      "balanced_heldout_validation_metrics": {
+        "accuracy": 0.6820652173913043,
+        "confusion_matrix": [
+          [
+            99,
+            3,
+            5,
+            8
+          ],
+          [
+            9,
+            55,
+            34,
+            6
+          ],
+          [
+            4,
+            7,
+            75,
+            1
+          ],
+          [
+            32,
+            6,
+            2,
+            22
+          ]
+        ],
+        "examples": 368,
+        "macro_f1": 0.6441027234130683
+      },
+      "bfcl_heldout_validation_metrics": {
+        "accuracy": 0.4891304347826087,
+        "confusion_matrix": [
+          [
+            40,
+            3,
+            3,
+            8
+          ],
+          [
+            8,
+            13,
+            15,
+            6
+          ],
+          [
+            3,
+            7,
+            15,
+            1
+          ],
+          [
+            32,
+            6,
+            2,
+            22
+          ]
+        ],
+        "examples": 184,
+        "macro_f1": 0.47159662801774416
+      },
+      "black_box_test_metrics": {
+        "accuracy": 0.6382803943044907,
+        "examples": 3652,
+        "macro_f1": 0.45257557274814736
+      },
+      "original_heldout_validation_metrics": {
+        "accuracy": 0.875,
+        "confusion_matrix": [
+          [
+            59,
+            0,
+            2,
+            0
+          ],
+          [
+            1,
+            42,
+            19,
+            0
+          ],
+          [
+            1,
+            0,
+            60,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "examples": 184,
+        "macro_f1": 0.6549939612454043
+      },
+      "step": 7380,
+      "training_metrics": {
+        "accuracy": 0.96,
+        "confusion_matrix": [
+          [
+            165,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            143,
+            18,
+            0
+          ],
+          [
+            0,
+            1,
+            156,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            16
+          ]
+        ],
+        "examples": 500,
+        "macro_f1": 0.9617339199709912
+      }
+    },
+    "purpose": "Measure the effect of a fixed-budget BFCL and original When2Call source mixture.",
+    "selection_procedure": "The BFCL train and validation splits were fixed before training. A deterministic source mixture was sampled from the training partitions. The combined validation set is 50/50 by source. Checkpoints are selected by balanced held-out validation accuracy. Aggregate test metrics are report-only.",
+    "source_mix": {
+      "bfcl_fraction": 0.1002710027100271,
+      "original_when2call_fraction": 0.8997289972899729
+    },
+    "stop_reason": "balanced held-out validation accuracy did not improve",
+    "test_label_use": "The model never receives test labels. Test accuracy and macro F1 are computed locally for baseline and checkpoint reports only.",
+    "training_evaluation_examples_per_checkpoint": 500,
+    "training_evaluation_fingerprint": "bb3615fcdf889df1a91a8cd8f8ba1934aa7c85ae6c8b43b263f2476a98b05b26",
+    "training_loss_by_epoch": [
+      1.1834008800203772,
+      0.7837167284505024,
+      0.5141149355715269,
+      0.31135403201551526,
+      0.22829516286594762
+    ],
+    "wandb_run_id": "9kho1als",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/9kho1als"
+  },
+  "metrics_path": "/workspace/post-training/outputs/qwen-bfcl-when2call-10pct-1476-base-seed20261061/metrics.json",
+  "official_test_loaded": null,
+  "official_test_metrics": {
+    "accuracy": 0.6382803943044907,
+    "examples": 3652,
+    "macro_f1": 0.45257557274814736
+  },
+  "output_dir": "/workspace/post-training/outputs/qwen-bfcl-when2call-10pct-1476-base-seed20261061",
+  "source_validation_metrics": {
+    "bfcl_heldout_validation_metrics": {
+      "accuracy": 0.4891304347826087,
+      "confusion_matrix": [
+        [
+          40,
+          3,
+          3,
+          8
+        ],
+        [
+          8,
+          13,
+          15,
+          6
+        ],
+        [
+          3,
+          7,
+          15,
+          1
+        ],
+        [
+          32,
+          6,
+          2,
+          22
+        ]
+      ],
+      "examples": 184,
+      "macro_f1": 0.47159662801774416
+    },
+    "original_heldout_validation_metrics": {
+      "accuracy": 0.875,
+      "confusion_matrix": [
+        [
+          59,
+          0,
+          2,
+          0
+        ],
+        [
+          1,
+          42,
+          19,
+          0
+        ],
+        [
+          1,
+          0,
+          60,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "examples": 184,
+      "macro_f1": 0.6549939612454043
+    }
+  },
+  "started_at": "2026-10-26T10:26:01.953769+00:00",
+  "status": "completed",
+  "test_status": "measured",
+  "timestamp": "2026-10-26T11:43:19.516442+00:00",
+  "train_metrics": {
+    "accuracy": 0.96,
+    "confusion_matrix": [
+      [
+        165,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        143,
+        18,
+        0
+      ],
+      [
+        0,
+        1,
+        156,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        16
+      ]
+    ],
+    "examples": 500,
+    "macro_f1": 0.9617339199709912
+  },
+  "wandb_run_id": "9kho1als",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/9kho1als"
+}
+```
+
+## qwen-when2call-fullpool-sft-validation-base-seed20261062
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.train_qwen_when2call_fullpool",
+    "--model",
+    "Qwen/Qwen2.5-1.5B-Instruct",
+    "--output-dir",
+    "outputs/qwen-when2call-fullpool-sft-validation-base-seed20261062",
+    "--seed",
+    "20261062",
+    "--epochs",
+    "10",
+    "--batch-size",
+    "1",
+    "--eval-batch-size",
+    "4",
+    "--max-length",
+    "4096",
+    "--learning-rate",
+    "2e-5",
+    "--weight-decay",
+    "0.01",
+    "--lora-rank",
+    "16",
+    "--validation-source",
+    "sft",
+    "--validation-sample-size",
+    "500",
+    "--validation-seed",
+    "20261064",
+    "--training-eval-sample-size",
+    "500",
+    "--training-eval-seed",
+    "20261063",
+    "--stop-on-validation-non-improvement"
+  ],
+  "development_metrics": {
+    "accuracy": 0.928,
+    "confusion_matrix": [
+      [
+        246,
+        2,
+        2,
+        0
+      ],
+      [
+        5,
+        218,
+        26,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0
+      ]
+    ],
+    "examples": 500,
+    "macro_f1": 0.4774293019818381
+  },
+  "exit_code": "unknown",
+  "experiment_id": "qwen-when2call-fullpool-sft-validation-base-seed20261062",
+  "failure_reason": null,
+  "metadata": {
+    "base_model": "Qwen/Qwen2.5-1.5B-Instruct",
+    "base_model_checkpoint": "Qwen/Qwen2.5-1.5B-Instruct before any task adapter training",
+    "baseline_black_box_test_metrics": null,
+    "best_validation_accuracy": 0.942,
+    "config": {
+      "batch_size": 1,
+      "bfcl_data": "data/bfcl_when2call_labeled.jsonl",
+      "epochs": 10,
+      "eval_batch_size": 4,
+      "evaluate_baseline": false,
+      "include_full_bfcl": false,
+      "learning_rate": 2e-05,
+      "lora_rank": 16,
+      "max_length": 4096,
+      "model": "Qwen/Qwen2.5-1.5B-Instruct",
+      "output_dir": "outputs/qwen-when2call-fullpool-sft-validation-base-seed20261062",
+      "seed": 20261062,
+      "stop_on_validation_non_improvement": true,
+      "training_eval_sample_size": 500,
+      "training_eval_seed": 20261063,
+      "validation_sample_size": 500,
+      "validation_seed": 20261064,
+      "validation_source": "sft",
+      "weight_decay": 0.01
+    },
+    "data": {
+      "bfcl_file": "data/bfcl_when2call_labeled.jsonl",
+      "bfcl_sha256": "a4b817a01c109603c00fe9e682f11eb636afc139894a92d4960bde8bddfda27f",
+      "bfcl_train_examples": 0,
+      "dataset": "nvidia/When2Call",
+      "label_counts": {
+        "0": 2997,
+        "1": 3001,
+        "2": 3000,
+        "3": 2
+      },
+      "preference_examples": 9000,
+      "prompt_label_fingerprint": "9e045007dc72faa346ac8e82ba3f0f82043bd7a58a26a77cd3b407397840064f",
+      "split": "train_pref"
+    },
+    "device": "cuda",
+    "epoch_records": [
+      {
+        "black_box_test_metrics": {
+          "accuracy": 0.6673055859802848,
+          "examples": 3652,
+          "macro_f1": 0.4848681781175645
+        },
+        "checkpoint": "outputs/qwen-when2call-fullpool-sft-validation-base-seed20261062/epoch-01",
+        "epoch": 1,
+        "heldout_validation_metrics": {
+          "accuracy": 0.908,
+          "confusion_matrix": [
+            [
+              243,
+              4,
+              3,
+              0
+            ],
+            [
+              4,
+              211,
+              34,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              0
+            ]
+          ],
+          "examples": 500,
+          "macro_f1": 0.47134659326963024
+        },
+        "step": 9000,
+        "training_evaluation_examples": 500,
+        "training_evaluation_fingerprint": "6a0dc8e21cc8f38285592c15c189ba222a194ed265939f669ecd641624516da4",
+        "training_loss": 0.7002447257455535,
+        "training_metrics": {
+          "accuracy": 0.928,
+          "confusion_matrix": [
+            [
+              163,
+              1,
+              2,
+              0
+            ],
+            [
+              2,
+              150,
+              15,
+              0
+            ],
+            [
+              3,
+              13,
+              151,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "examples": 500,
+          "macro_f1": 0.6959712130952957
+        },
+        "validation_examples": 500,
+        "validation_source": "sft"
+      },
+      {
+        "black_box_test_metrics": {
+          "accuracy": 0.6957831325301205,
+          "examples": 3652,
+          "macro_f1": 0.5211494089543487
+        },
+        "checkpoint": "outputs/qwen-when2call-fullpool-sft-validation-base-seed20261062/epoch-02",
+        "epoch": 2,
+        "heldout_validation_metrics": {
+          "accuracy": 0.94,
+          "confusion_matrix": [
+            [
+              240,
+              6,
+              4,
+              0
+            ],
+            [
+              2,
+              230,
+              17,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              0
+            ]
+          ],
+          "examples": 500,
+          "macro_f1": 0.4805211099726062
+        },
+        "step": 18000,
+        "training_evaluation_examples": 500,
+        "training_evaluation_fingerprint": "6a0dc8e21cc8f38285592c15c189ba222a194ed265939f669ecd641624516da4",
+        "training_loss": 0.3780977587756572,
+        "training_metrics": {
+          "accuracy": 0.952,
+          "confusion_matrix": [
+            [
+              161,
+              1,
+              4,
+              0
+            ],
+            [
+              0,
+              159,
+              8,
+              0
+            ],
+            [
+              0,
+              11,
+              156,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "examples": 500,
+          "macro_f1": 0.7142202915178194
+        },
+        "validation_examples": 500,
+        "validation_source": "sft"
+      },
+      {
+        "black_box_test_metrics": {
+          "accuracy": 0.6922234392113911,
+          "examples": 3652,
+          "macro_f1": 0.5110511413102728
+        },
+        "checkpoint": "outputs/qwen-when2call-fullpool-sft-validation-base-seed20261062/epoch-03",
+        "epoch": 3,
+        "heldout_validation_metrics": {
+          "accuracy": 0.942,
+          "confusion_matrix": [
+            [
+              245,
+              1,
+              4,
+              0
+            ],
+            [
+              2,
+              226,
+              21,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              0
+            ]
+          ],
+          "examples": 500,
+          "macro_f1": 0.48337889372616516
+        },
+        "step": 27000,
+        "training_evaluation_examples": 500,
+        "training_evaluation_fingerprint": "6a0dc8e21cc8f38285592c15c189ba222a194ed265939f669ecd641624516da4",
+        "training_loss": 0.2717621487840164,
+        "training_metrics": {
+          "accuracy": 0.976,
+          "confusion_matrix": [
+            [
+              165,
+              1,
+              0,
+              0
+            ],
+            [
+              2,
+              162,
+              3,
+              0
+            ],
+            [
+              2,
+              4,
+              161,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "examples": 500,
+          "macro_f1": 0.7319860436947271
+        },
+        "validation_examples": 500,
+        "validation_source": "sft"
+      },
+      {
+        "black_box_test_metrics": {
+          "accuracy": 0.6544359255202629,
+          "examples": 3652,
+          "macro_f1": 0.46797468518126134
+        },
+        "checkpoint": "outputs/qwen-when2call-fullpool-sft-validation-base-seed20261062/epoch-04",
+        "epoch": 4,
+        "heldout_validation_metrics": {
+          "accuracy": 0.928,
+          "confusion_matrix": [
+            [
+              246,
+              2,
+              2,
+              0
+            ],
+            [
+              5,
+              218,
+              26,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              0
+            ]
+          ],
+          "examples": 500,
+          "macro_f1": 0.4774293019818381
+        },
+        "step": 36000,
+        "stop_reason": "held-out validation accuracy did not improve",
+        "training_evaluation_examples": 500,
+        "training_evaluation_fingerprint": "6a0dc8e21cc8f38285592c15c189ba222a194ed265939f669ecd641624516da4",
+        "training_loss": 0.1805936781181137,
+        "training_metrics": {
+          "accuracy": 0.986,
+          "confusion_matrix": [
+            [
+              166,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              164,
+              2,
+              0
+            ],
+            [
+              0,
+              4,
+              163,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "examples": 500,
+          "macro_f1": 0.7395072963630778
+        },
+        "validation_examples": 500,
+        "validation_source": "sft"
+      }
+    ],
+    "experiment": "qwen25_1p5b_all_when2call_trainpref_sft",
+    "optimizer_steps": 90000,
+    "purpose": "Train on all When2Call preference rows, optionally with BFCL, and report each epoch.",
+    "selection_procedure": "When validation is enabled, clean held-out validation accuracy controls optional early stopping. Aggregate black-box test metrics are report-only and do not select or stop training.",
+    "test_label_use": "Test labels were used only inside the evaluator to compute aggregate accuracy and macro F1. No individual test rows or predictions were saved, and test metrics did not select or stop training.",
+    "training_evaluation_examples_per_epoch": 500,
+    "training_loss_by_epoch": [
+      0.7002447257455535,
+      0.3780977587756572,
+      0.2717621487840164,
+      0.1805936781181137
+    ],
+    "validation_examples": 500,
+    "validation_source": "sft",
+    "wandb_run_id": "pklv8voq",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/pklv8voq"
+  },
+  "metrics_path": "/workspace/post-training/outputs/qwen-when2call-fullpool-sft-validation-base-seed20261062/metrics.json",
+  "official_test_loaded": null,
+  "official_test_metrics": {
+    "accuracy": 0.6544359255202629,
+    "examples": 3652,
+    "macro_f1": 0.46797468518126134
+  },
+  "output_dir": "/workspace/post-training/outputs/qwen-when2call-fullpool-sft-validation-base-seed20261062",
+  "source_validation_metrics": {
+    "heldout_validation_metrics": {
+      "accuracy": 0.928,
+      "confusion_matrix": [
+        [
+          246,
+          2,
+          2,
+          0
+        ],
+        [
+          5,
+          218,
+          26,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0
+        ]
+      ],
+      "examples": 500,
+      "macro_f1": 0.4774293019818381
+    }
+  },
+  "started_at": "2026-10-26T11:43:19.467669+00:00",
+  "status": "completed",
+  "test_status": "measured",
+  "timestamp": "2026-10-26T15:23:01.663270+00:00",
+  "train_metrics": {
+    "accuracy": 0.986,
+    "confusion_matrix": [
+      [
+        166,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        164,
+        2,
+        0
+      ],
+      [
+        0,
+        4,
+        163,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "examples": 500,
+    "macro_f1": 0.7395072963630778
+  },
+  "wandb_run_id": "pklv8voq",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/pklv8voq"
+}
+```
+
+
+Full When2Call training with clean validation-based stopping, 2026-10-26
+Purpose: Determine how long full `train_pref` SFT should continue using clean held-out validation accuracy, while reporting full aggregate test metrics only.
+Setup: Fresh Qwen 2.5 1.5B base, all 9,000 When2Call `train_pref` rows, LoRA rank 16, batch size 1, learning rate 2e-5, weight decay 0.01, max 10 epochs, stopping at the first epoch without validation-accuracy improvement. Training and validation probes each use 500 deterministic examples. Validation is a separate 500-row sample from `nvidia/When2Call:train_sft`, seed 20261064. The complete 3,652-row test set is evaluated after each epoch.
+
+| Epoch | Training accuracy / macro F1 | Clean validation accuracy / macro F1 | Aggregate test accuracy / macro F1 |
+| ---: | ---: | ---: | ---: |
+| 1 | 0.9280 / 0.6960 | 0.9080 / 0.4713 | 0.6673 / 0.4849 |
+| 2 | 0.9520 / 0.7142 | 0.9400 / 0.4805 | 0.6958 / 0.5211 |
+| 3 | 0.9760 / 0.7320 | 0.9420 / 0.4834 | 0.6922 / 0.5111 |
+| 4 | 0.9860 / 0.7395 | 0.9280 / 0.4774 | 0.6544 / 0.4680 |
+
+Training stopped after the epoch-4 validation-accuracy decline. The best clean validation checkpoint is epoch 3 at 0.9420 accuracy and 0.4834 macro F1. The training probe kept improving while validation accuracy fell by 1.4 percentage points at epoch 4. The validation sample has no tool-call rows and one direct-answer row. Test results are aggregate-only and were not used for stopping or selection.

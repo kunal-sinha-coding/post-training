@@ -7174,3 +7174,11 @@ A stale `active_experiment.pid` raced with the watchdog while updating research 
 Commit name: Restore the post hoc validation link in the training artifact.
 
 The latest audit found that the combined run's primary metrics file no longer contained its post hoc validation fields, while the separate validation artifact and experiment journal remained complete. Reattached the existing epoch 1 and epoch 2 validation metrics from the source artifact and updated the research state evidence audit. This is a metadata repair only. No model evaluation was rerun and no checkpoint was selected from test metrics.
+
+## 2026-10-26: Queue regularization trials after validation plateau
+
+Commit name: Queue controlled full-pool regularization trials.
+
+The latest full When2Call run recorded training, clean validation, and full aggregate test metrics for all four epochs. Its clean validation accuracy peaked at 0.9420 in epoch 3 and fell to 0.9280 in epoch 4 while training accuracy rose to 0.9860. The 500-row validation sample has no tool-call rows and one direct-answer row. Test metrics were report-only.
+
+Queued two separate fresh-base full-pool trials. The first increases weight decay from 0.01 to 0.05. The second reduces learning rate from 2e-5 to 1e-5. They share the same split, validation sample, training evaluation sample, seed, maximum 10-epoch schedule, and clean-validation early stop. Each epoch reports at most 500 training rows, at most 500 validation rows, and the full 3,652-row aggregate test set. Test labels are not used for selection.

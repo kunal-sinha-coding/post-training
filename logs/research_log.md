@@ -8589,3 +8589,34 @@ This record was written automatically. Candidate selection must use clean valida
 The full When2Call plus full BFCL experiment now has training, clean validation, and aggregate black-box test metrics for both epochs. Training accuracy and macro F1 on the 500-row training probe were 0.9000 / 0.8966 and 0.9440 / 0.9426. Clean validation on a 500-row independent `train_sft` sample was 0.9280 / 0.4774 and 0.9100 / 0.4729. Aggregate test metrics on all 3,652 rows were 0.6520 / 0.4947 and 0.6402 / 0.4739. Validation was post hoc and did not control the fixed training schedule. Its sample contains no tool-call examples and one direct-answer example.
 
 The experiment recorder previously marked newer trainer artifacts as incomplete because it did not read metrics from `epoch_records` or `checkpoint_evaluations`. The recorder now extracts the latest training, validation, and aggregate test measurements from those structures. Corrected status and validation rows have been added to the leaderboard, and append-only correction records were added to the experiment journal.
+
+## qwen-bfcl-when2call-10pct-1476-base-seed20261061
+
+Timestamp: 2026-10-26T11:43:19.516442+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_bfcl_original_mixture", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--output-dir", "outputs/qwen-bfcl-when2call-10pct-1476-base-seed20261061", "--seed", "20261061", "--original-split-seed", "20261029", "--epochs", "10", "--batch-size", "1", "--eval-batch-size", "4", "--max-length", "4096", "--learning-rate", "2e-5", "--weight-decay", "0.01", "--lora-rank", "16", "--evaluation-steps", "1000000", "--bfcl-fraction", "0.1", "--training-examples", "1476", "--training-eval-sample-size", "500", "--training-eval-seed", "20261063", "--stop-on-validation-non-improvement"]. Output: /workspace/post-training/outputs/qwen-bfcl-when2call-10pct-1476-base-seed20261061. W&B run: 9kho1als.
+
+Clean development accuracy: 0.6820652173913043. Clean development macro F1: 0.6441027234130683. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.6382803943044907, "macro_f1": 0.45257557274814736, "examples": 3652}.
+
+Separate source validation metrics: {"bfcl_heldout_validation_metrics": {"accuracy": 0.4891304347826087, "macro_f1": 0.47159662801774416, "confusion_matrix": [[40, 3, 3, 8], [8, 13, 15, 6], [3, 7, 15, 1], [32, 6, 2, 22]], "examples": 184}, "original_heldout_validation_metrics": {"accuracy": 0.875, "macro_f1": 0.6549939612454043, "confusion_matrix": [[59, 0, 2, 0], [1, 42, 19, 0], [1, 0, 60, 0], [0, 0, 0, 0]], "examples": 184}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-when2call-fullpool-sft-validation-base-seed20261062
+
+Timestamp: 2026-10-26T15:23:01.663270+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--model", "Qwen/Qwen2.5-1.5B-Instruct", "--output-dir", "outputs/qwen-when2call-fullpool-sft-validation-base-seed20261062", "--seed", "20261062", "--epochs", "10", "--batch-size", "1", "--eval-batch-size", "4", "--max-length", "4096", "--learning-rate", "2e-5", "--weight-decay", "0.01", "--lora-rank", "16", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261064", "--training-eval-sample-size", "500", "--training-eval-seed", "20261063", "--stop-on-validation-non-improvement"]. Output: /workspace/post-training/outputs/qwen-when2call-fullpool-sft-validation-base-seed20261062. W&B run: pklv8voq.
+
+Clean development accuracy: 0.928. Clean development macro F1: 0.4774293019818381. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.6544359255202629, "macro_f1": 0.46797468518126134, "examples": 3652}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.928, "macro_f1": 0.4774293019818381, "confusion_matrix": [[246, 2, 2, 0], [5, 218, 26, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+
+## Full When2Call run with clean validation stopping, 2026-10-26
+
+The fresh-base run used all 9,000 preference rows and stopped after epoch 4 failed to improve clean validation accuracy. The best validation result was epoch 3 at 0.9420 accuracy and 0.4834 macro F1 on a 500-row independent `train_sft` sample. The 500-row training probe accuracy rose from 0.9280 to 0.9860. Validation accuracy rose through epoch 3 and then fell to 0.9280. The full 3,652-row aggregate test metrics were reported each epoch and were not used for selection. The validation set has no tool-call rows and one direct-answer row.
+
+Next hypotheses test whether stronger weight decay or a lower learning rate reduces the train-validation gap. Each candidate starts from the same fresh base, uses the same data, seed, capped train and validation samples, full black-box test, and validation-based stopping.
