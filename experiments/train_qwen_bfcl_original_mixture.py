@@ -65,7 +65,8 @@ def extend_stratified_sample(rows: list[ClassificationRow], base: list[Classific
     selected = list(base)
     for label, group in groups.items():
         existing = [row for row in base if row.label == label]
-        remaining = [row for row in group if row not in set(existing)]
+        existing_ids = {id(row) for row in existing}
+        remaining = [row for row in group if id(row) not in existing_ids]
         needed = counts[label] - len(existing)
         if needed < 0 or needed > len(remaining):
             raise RuntimeError("The base sample cannot be extended to the requested stratified size.")
@@ -98,7 +99,7 @@ def run_evaluation(model: object, tokenizer: object, labels: list[int], device: 
 
 
 def main() -> int:
-    """Train one base-model epoch on an exact 50/50 source mixture."""
+    """Train one base-model epoch on a fixed-size source mixture."""
     # Parse data, optimization, evaluation, and artifact controls before loading model weights.
     parser = argparse.ArgumentParser()
     parser.add_argument("--bfcl-data", type=Path, default=Path("data/bfcl_when2call_labeled.jsonl"))
@@ -140,7 +141,7 @@ def main() -> int:
     bfcl_sample = sample_stratified(bfcl_train, bfcl_sample_size, args.seed + 2)
     # Match the original validation sample size to the BFCL held-out split.
     original_validation_sample = sample_stratified(original_validation, len(bfcl_validation), args.seed + 1)
-    # Form an exact 50/50 mix and shuffle it with the run seed.
+    # Combine the requested source sample and shuffle it with the run seed.
     training_rows = list(bfcl_sample) + list(original_sample)
     random.Random(args.seed).shuffle(training_rows)
     run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name=args.output_dir.name, job_type="bfcl-original-mixture-sft", config=config | {"bfcl_train_examples": len(bfcl_sample), "original_train_examples": len(original_sample), "bfcl_validation_examples": len(bfcl_validation), "original_validation_sample_examples": len(original_validation_sample), "original_validation_source_examples": len(original_validation), "official_test_selection": False})

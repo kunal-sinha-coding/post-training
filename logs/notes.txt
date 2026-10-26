@@ -7071,3 +7071,10 @@ This result does not isolate the BFCL data contribution. The next useful compari
 Commit name: Support an original-only control for the BFCL mixture experiment.
 
 Added `--bfcl-fraction` to the mixture trainer so it can run a controlled source ablation without changing the base model, training budget, optimizer, evaluation schedule, or balanced validation design. The default remains the 50/50 mix. A fraction of zero trains on 1,476 original examples. The original-only sample keeps all 738 original examples used in the mixed run and adds 738 deterministic stratified examples from the remaining original training data. This nested sample reduces sampling differences while testing whether the BFCL examples add value.
+
+
+## 2026-10-26: Fix nested original-only sample membership
+
+Commit name: Fix row membership in the original-only control sampler.
+
+Changed the nested sampler to track existing row objects by identity because `ClassificationRow` instances are not hashable. Updated the trainer description and source-combination comment for the configurable source fraction. The completed 50/50 run is unchanged.
