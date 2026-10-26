@@ -7217,3 +7217,10 @@ The 500-row clean SFT-source screen scored the full-pool Qwen epoch-2 checkpoint
 Commit name: Queue cross-split confirmation for encoder fusion.
 
 The active worker queue was empty while the frozen request-confidence route test measurement was running. Added a distinct capped clean-validation screen with new split and sample seeds behind it, using the same Qwen epoch-2 checkpoint and encoder. Updated the written experiment plan to keep test metrics report-only and use clean validation for selection.
+
+
+## 2026-10-26: Queue the cross-split-selected route
+
+Commit name: Test the request confidence route confirmed on two clean splits.
+
+The second capped clean validation sample showed Qwen at 0.936 accuracy, equal probability averaging at 0.948, and request_for_info confidence routing at threshold 0.60 at 0.950. The threshold 0.60 route improved clean validation on both samples. The first frozen threshold 0.80 test tied Qwen accuracy and slightly raised macro F1, with test metrics kept report-only. Queued preparation and one aggregate test of the validation-selected threshold 0.60 candidate, followed by the planned regularized learned fusion study.

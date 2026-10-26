@@ -8685,3 +8685,34 @@ This record was written automatically. Candidate selection must use clean valida
 ## Queue second clean-validation confirmation screen, 2026-10-26
 
 While the frozen route80 aggregate test measurement runs, queued a second clean `train_sft` candidate screen capped at 500 rows with a new split seed and sample seed. The screen does not use or load test data. It will measure whether the fixed route and other predeclared approaches transfer across a different clean-source split. The current test metrics remain report-only.
+
+## fullpool-qwen-encoder-route80-test-20261070
+
+Timestamp: 2026-10-26T16:55:20.141967+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.existing_when2call_hybrid", "test", "--work-dir", "outputs/fullpool-qwen-encoder-route80-20261070", "--output-dir", "outputs/fullpool-qwen-encoder-route80-test-20261070", "--suite", "single-request-confidence", "--qwen-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--methods", "single_request_conf_80", "--primary-method", "single_request_conf_80", "--batch-size", "4"]. Output: /workspace/post-training/outputs/fullpool-qwen-encoder-route80-test-20261070. W&B run: ry089z23.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: True. Test status: measured. Official test metrics: {"accuracy": 0.702354874041621, "macro_f1": 0.5282408989122551, "macro_f1_present_classes": 0.7043211985496735}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-fullpool-ensemble-confirm-validation-20261071
+
+Timestamp: 2026-10-26T16:57:50.497239+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_existing_when2call_hybrid_validation", "--output-dir", "outputs/qwen-fullpool-ensemble-confirm-validation-20261071", "--split-seed", "20261071", "--sample-seed", "20261072", "--max-validation-examples", "500", "--qwen-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--batch-size", "1"]. Output: /workspace/post-training/outputs/qwen-fullpool-ensemble-confirm-validation-20261071. W&B run: 4kortm64.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {"aggregate_validation_metrics": {"encoder_single": {"accuracy": 0.922, "macro_f1": 0.9488597273538031}, "qwen_sft": {"accuracy": 0.936, "macro_f1": 0.9570257611241219}, "single_average": {"accuracy": 0.948, "macro_f1": 0.9662551440329218}, "single_gate": {"accuracy": 0.946, "macro_f1": 0.9651775486827033}, "single_qwen_w10": {"accuracy": 0.936, "macro_f1": 0.9570257611241219}, "single_qwen_w25": {"accuracy": 0.934, "macro_f1": 0.9559740520969526}, "single_qwen_w40": {"accuracy": 0.938, "macro_f1": 0.9580857066542019}, "single_qwen_w60": {"accuracy": 0.936, "macro_f1": 0.9576852449669213}, "single_qwen_w75": {"accuracy": 0.928, "macro_f1": 0.95323044397463}, "single_qwen_w90": {"accuracy": 0.926, "macro_f1": 0.9521016949152542}, "single_geometric": {"accuracy": 0.948, "macro_f1": 0.9662551440329218}, "single_geometric_qwen": {"accuracy": 0.936, "macro_f1": 0.9570552147239264}, "single_geometric_encoder": {"accuracy": 0.936, "macro_f1": 0.9576852449669213}, "single_standardized_logits": {"accuracy": 0.948, "macro_f1": 0.9641845674820716}, "single_disagreement_qwen": {"accuracy": 0.936, "macro_f1": 0.9570257611241219}, "single_disagreement_encoder": {"accuracy": 0.922, "macro_f1": 0.9488597273538031}, "single_disagreement_margin": {"accuracy": 0.948, "macro_f1": 0.9662551440329218}, "single_encoder_cannot_answer": {"accuracy": 0.946, "macro_f1": 0.9618409493975104}, "single_encoder_request_for_info": {"accuracy": 0.95, "macro_f1": 0.9635575051540453}, "single_encoder_tool_call": {"accuracy": 0.898, "macro_f1": 0.936898642845621}, "single_encoder_direct": {"accuracy": 0.936, "macro_f1": 0.9570257611241219}, "single_request_conf_40": {"accuracy": 0.95, "macro_f1": 0.9635575051540453}, "single_request_conf_60": {"accuracy": 0.95, "macro_f1": 0.9635575051540453}, "single_request_conf_80": {"accuracy": 0.946, "macro_f1": 0.961460756324394}, "single_encoder_no_tools": {"accuracy": 0.936, "macro_f1": 0.9570257611241219}, "single_encoder_many_tools": {"accuracy": 0.922, "macro_f1": 0.9492144730476408}, "single_encoder_short_question": {"accuracy": 0.924, "macro_f1": 0.9499980929860026}, "single_encoder_long_question": {"accuracy": 0.934, "macro_f1": 0.9559401584042242}}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+
+## Cross-split ensemble confirmation and frozen threshold-0.60 route, 2026-10-26
+
+A second deterministic 500-row clean `train_sft` sample evaluated the full-pool Qwen epoch-2 checkpoint, the existing encoder, and the same fixed fusion candidates. Qwen scored 0.936 accuracy / 0.957026 macro F1, encoder 0.922 / 0.948860, equal probability average 0.948 / 0.966255, and the request-for-information route with confidence threshold 0.60 scored 0.950 / 0.963558. The 0.60 route improves validation accuracy over Qwen on both clean samples: 0.6 points in the first and 1.4 points in the second. Freeze this rule for aggregate testing; do not use the test result to select.
+
+The earlier frozen threshold-0.80 route test tied Qwen at 0.702355 accuracy and had macro F1 0.528241 versus 0.527789 for Qwen. This is aggregate-only reporting and does not change the selected threshold.
