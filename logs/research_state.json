@@ -5,29 +5,9 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "fresh_base_bfcl_when2call_data_exploration_v1",
   "current_hypothesis": "Across seven clean validation samples, fixed class-specific encoder/Qwen blending remains stronger than equal averaging. The alternate encoder seed 20261049 has higher source training accuracy than seed 20261048, but its held-out generalization is unknown. Compare seed 48, seed 49, and their equal-logit ensemble on the same fresh 500-row clean sample. This tests whether encoder-seed diversity adds clean-validation value. Use only clean validation for selection.",
-  "active_experiment": {},
-  "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.evaluate_existing_when2call_hybrid_validation",
-    "--output-dir",
-    "outputs/qwen-class-route-stability-validation-20261226",
-    "--split-seed",
-    "20261226",
-    "--sample-seed",
-    "20261227",
-    "--max-validation-examples",
-    "500",
-    "--qwen-checkpoint",
-    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
-    "--encoder-checkpoint",
-    "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
-    "--batch-size",
-    "1"
-  ],
-  "worker_queue": [
-    [
+  "active_experiment": {
+    "pid": 157293,
+    "command": [
       "python",
       "-u",
       "-m",
@@ -47,6 +27,29 @@
       "--encoder-checkpoint",
       "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
     ],
+    "started_at": "2026-10-26T23:53:53.071187+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_existing_when2call_hybrid_validation",
+    "--output-dir",
+    "outputs/qwen-encoder-seed-diversity-validation-encoder48-control-20261228",
+    "--split-seed",
+    "20261228",
+    "--sample-seed",
+    "20261229",
+    "--max-validation-examples",
+    "500",
+    "--qwen-checkpoint",
+    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "--batch-size",
+    "1",
+    "--encoder-checkpoint",
+    "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+  ],
+  "worker_queue": [
     [
       "python",
       "-u",
@@ -123,8 +126,8 @@
     "macro_f1": 0.48337889372616516,
     "selection": "clean validation only"
   },
-  "last_heartbeat": "2026-10-26T23:49:50.651496+00:00",
-  "last_action": "Audited the latest clean screen and linked source training plus aggregate test evidence for its frozen candidate suite. Queued a shared-sample encoder seed-diversity comparison.",
+  "last_heartbeat": "2026-10-26T23:53:53.071200+00:00",
+  "last_action": "Watchdog started validation worker pid 157293.",
   "watchdog_enabled": true,
   "research_log_size": 1108655,
   "stop_command": "STOP",
@@ -224,31 +227,31 @@
     "clean_validation_metrics": {
       "single_average": {
         "accuracy": 0.968,
-        "macro_f1": 0.9815068296274274
+        "macro_f1": 0.981542070498179
       },
       "single_encoder_request_or_cannot_answer_conf_40": {
         "accuracy": 0.974,
-        "macro_f1": 0.975896994782804
+        "macro_f1": 0.975934293230516
       },
       "single_encoder_request_or_cannot_answer_conf_60": {
         "accuracy": 0.972,
-        "macro_f1": 0.975896994782804
+        "macro_f1": 0.9758810221833301
       },
       "single_encoder_request_full_cannot_mix_40": {
         "accuracy": 0.976,
-        "macro_f1": 0.9808628736918988
+        "macro_f1": 0.9809055134016953
       },
       "single_encoder_request_full_cannot_mix_50": {
         "accuracy": 0.98,
-        "macro_f1": 0.9828957372958816
+        "macro_f1": 0.9829458113013174
       },
       "single_encoder_request_full_cannot_mix_60": {
         "accuracy": 0.976,
-        "macro_f1": 0.9778669833725823
+        "macro_f1": 0.9779430664439018
       },
       "single_encoder_request_cannot_mix_r75_c50": {
         "accuracy": 0.976,
-        "macro_f1": 0.9818820859290094
+        "macro_f1": 0.9818748608327766
       }
     },
     "aggregate_black_box_test_metrics_recorded": true,
