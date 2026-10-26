@@ -7015,3 +7015,10 @@ Updated the BFCL action prompt so a schema default counts as available only when
 Commit name: Simplify aggregate prompt-alignment inference.
 
 Updated the alignment evaluator to derive an evaluation-specific prompt from the reviewed action definitions, omit BFCL source categories from model input, and request only the A/B/C/D action code. The evaluator maps codes to labels locally. It still derives categories from source IDs for aggregate reporting and now preserves the compound `parallel_multiple` category. The canonical BFCL labeling prompt retains category guidance for intact BFCL examples and now applies the corrected semantic-default rule. The 100-row aggregate-only rescore is the next step; this code commit contains no new alignment metric.
+
+
+## 2026-10-26: Recompute action-label alignment after pipeline simplification
+
+Commit name: Record corrected 100-row prompt alignment.
+
+The same fixed, label-independent 100-row When2Call test sample was evaluated with the corrected default-value rule, no source-category hint in model input, and a one-field action-code schema. The prior sample UUID manifest was used only to recover the same sample. Test labels were not sent to the model, and no individual test examples or predictions were printed or saved. GPT-6 Luna scored 76/100, compared with the historical 75/100 for the original setup on this same sample. The one-point change is not strong evidence of improvement because several inference changes were combined. The sample has no direct-class examples and has already been used in earlier prompt exploration.
