@@ -7094,3 +7094,10 @@ The control's metrics file initially reported a BFCL fraction of 0.5 because the
 Commit name: Derive source fractions from sampled rows.
 
 The original-only control metrics file revealed that the trainer used the full BFCL train source size rather than the BFCL rows actually sampled when it wrote the source fraction. Updated the experiment name, W&B job type, purpose, selection text, and source-fraction calculation so a zero-BFCL run records 0.0 BFCL and 1.0 original data. Corrected the already generated, ignored control metrics artifact to reflect the actual sample counts. This change affects metadata only and does not change training or results.
+
+
+## 2026-10-26: Prepare full When2Call preference-pool training
+
+Commit name: Add Qwen training on the complete When2Call preference split.
+
+The user requested retraining the original-only Qwen setup on the full `train_pref` pool instead of holding out the 1,800-row validation subset. Added `experiments/train_qwen_when2call_fullpool.py`. It loads all 9,000 rows, uses a fresh base Qwen 1.5B model and LoRA adapter, and uses two fixed epochs. It logs loss at every optimizer step and records training metrics plus aggregate-only black-box test metrics after each epoch. There is no held-out validation partition. The two-epoch schedule is fixed before test scoring; test metrics are report-only and cannot select or stop the run.
