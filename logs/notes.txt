@@ -6976,3 +6976,10 @@ GPT-6 Luna Responses API inference used the question and current visible `tools`
 Official NVIDIA When2Call documentation says `tools` intentionally differs from `orig_tools` for cannot_answer and request_for_info examples. The former removes tools and the latter removes a parameter from the question. This is part of benchmark construction. The four action labels are not the BFCL source category. The full 3,652-row test contains 1,295 cannot_answer, 1,062 request_for_info, 1,295 tool_call, and zero direct examples. Therefore this test cannot measure direct-class performance.
 
 Limitations: The user explicitly requested prompt iteration against test labels, so sample labels were used for prompt selection. The 80% is a test-tuned sample score, not an unbiased benchmark estimate. Other rows may share source IDs or underlying tasks with the selected sample. The earlier 71.04% partial aggregate belongs to the original prompt and is not a score for these candidate prompts. The full test was not rerun because the user-set sample threshold was not met. No additional BFCL labels were generated.
+
+
+## 2026-10-26: Test domain-specific function matching rule
+
+Commit name: Record BFCL prompt iteration four.
+
+Tested a fourth temporary prompt on the fixed 100-row sample. It removed the BFCL category hint, used the broad direct-answer and external-action rules from variant 3, and clarified that a domain-specific search/find/lookup function is suitable when its documented scope and parameters cover the request. It scored 81/100, compared with variant 3 at 80/100. The confusion counts were one tool_call predicted as cannot_answer, eight request_for_info predicted as tool_call, two cannot_answer predicted as direct, one request_for_info predicted as cannot_answer, one cannot_answer predicted as tool_call, four cannot_answer predicted as request_for_info, and two tool_call predicted as request_for_info. The gain is one example. Further improvement would require fitting the remaining cases individually, which is inconsistent with the user's instruction to avoid overfitting. The repository prompt remains unchanged.
