@@ -7108,3 +7108,10 @@ The user requested retraining the original-only Qwen setup on the full `train_pr
 Commit name: Support a 738-row When2Call-only comparison without baseline evaluation.
 
 The user stopped the full-pool run after 62 optimizer updates in its first epoch. The run had completed its initial base-model test evaluation but no post-training evaluation or epoch checkpoint. Recorded the interrupted attempt in `logs/results.txt`. The user also specified that baseline evaluation should be disabled by default. Updated both recent Qwen experiment scripts so base-model evaluation is opt-in, and added a training-example budget argument to the data-mixture trainer. The next authorized run will use exactly the same deterministic 738 When2Call training rows as the 50/50 run, no BFCL training rows, the same 184+184 held-out validation sample, and one epoch. It will evaluate at the epoch boundary without a redundant base-model benchmark.
+
+
+## 2026-10-26: Apply the baseline-off and sample-budget controls
+
+Commit name: Add opt-in baseline evaluation and 738-row training budget.
+
+The prior commit recorded the user's baseline-off direction but the attempted code patch did not match the trainer's current W&B job type, so only the notes and interrupted-run record were committed. Applied the code changes now. Baseline evaluation is opt-in in both recent Qwen trainers, and the mixture trainer accepts an explicit total training-row budget. The next run will train on 738 original When2Call rows only, with the exact deterministic 738-row sample used in the 50/50 run. It will skip the redundant baseline pass and evaluate at the end of its epoch.

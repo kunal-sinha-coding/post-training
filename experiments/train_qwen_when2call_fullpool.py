@@ -52,6 +52,7 @@ def main() -> int:
     parser.add_argument("--learning-rate", type=float, default=2e-5)
     parser.add_argument("--weight-decay", type=float, default=0.01)
     parser.add_argument("--lora-rank", type=int, default=16)
+    parser.add_argument("--evaluate-baseline", action="store_true")
     args = parser.parse_args()
     # Require online W&B before loading the model or benchmark data.
     if not os.getenv("WANDB_API_KEY"):
@@ -75,9 +76,10 @@ def main() -> int:
     model, tokenizer = load_model(args.model, device, args.lora_rank)
     label_ids = label_token_ids(tokenizer)
     optimizer = torch.optim.AdamW((parameter for parameter in model.parameters() if parameter.requires_grad), lr=args.learning_rate, weight_decay=args.weight_decay)
-    # Measure the base model on the aggregate-only test benchmark before updates.
-    baseline_test = evaluate_black_box(model, tokenizer, label_ids, device, args.max_length, args.eval_batch_size)
-    run.log({"baseline/test_accuracy": baseline_test["accuracy"], "baseline/test_macro_f1": baseline_test["macro_f1"]}, step=0)
+    baseline_test = None
+    if args.evaluate_baseline:
+        baseline_test = evaluate_black_box(model, tokenizer, label_ids, device, args.max_length, args.eval_batch_size)
+        run.log({"baseline/test_accuracy": baseline_test["accuracy"], "baseline/test_macro_f1": baseline_test["macro_f1"]}, step=0)
     total_steps = len(all_rows) * args.epochs
     epoch_records = []
     losses = []

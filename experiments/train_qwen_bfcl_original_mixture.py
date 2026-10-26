@@ -117,10 +117,15 @@ def main() -> int:
     parser.add_argument("--lora-rank", type=int, default=16)
     parser.add_argument("--evaluation-steps", type=int, default=1000)
     parser.add_argument("--bfcl-fraction", type=float, default=0.5)
+    parser.add_argument("--training-examples", type=int, default=1476)
+    parser.add_argument("--evaluate-baseline", action="store_true")
     args = parser.parse_args()
     # Reject source ratios that cannot form a valid two-source mixture.
     if not 0.0 <= args.bfcl_fraction <= 1.0:
         raise ValueError("--bfcl-fraction must be between 0 and 1.")
+    # Require a positive fixed training budget for each run.
+    if args.training_examples < 1:
+        raise ValueError("--training-examples must be positive.")
     # Require online W&B before loading training or benchmark data.
     if not os.getenv("WANDB_API_KEY"):
         raise RuntimeError("WANDB_API_KEY is required for Qwen experiments.")
@@ -130,7 +135,7 @@ def main() -> int:
     # Keep the original When2Call validation partition separate from its training rows.
     original_train, original_validation = split_rows(prepare_rows(load_rows()), args.original_split_seed)
     bfcl_train, bfcl_validation = load_labeled_rows(args.bfcl_data)
-    total_training_examples = 2 * len(bfcl_train)
+    total_training_examples = args.training_examples
     bfcl_sample_size = round(total_training_examples * args.bfcl_fraction)
     original_sample_size = total_training_examples - bfcl_sample_size
     if len(original_train) < original_sample_size:
@@ -144,7 +149,7 @@ def main() -> int:
     # Combine the requested source sample and shuffle it with the run seed.
     training_rows = list(bfcl_sample) + list(original_sample)
     random.Random(args.seed).shuffle(training_rows)
-    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name=args.output_dir.name, job_type="bfcl-original-source-fraction-sft", config=config | {"bfcl_train_examples": len(bfcl_sample), "original_train_examples": len(original_sample), "bfcl_validation_examples": len(bfcl_validation), "original_validation_sample_examples": len(original_validation_sample), "original_validation_source_examples": len(original_validation), "official_test_selection": False})
+    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name=args.output_dir.name, job_type="bfcl-original-source-fraction-sft", config=config | {"bfcl_train_examples": len(bfcl_sample), "original_train_examples": len(original_sample), "bfcl_validation_examples": len(bfcl_validation), "original_validation_sample_examples": len(original_validation_sample), "original_validation_source_examples": len(original_validation), "baseline_evaluation": args.evaluate_baseline, "official_test_selection": False})
     atexit.register(run.finish)
     # Fix all random sources before loading the base model and new LoRA adapter.
     random.seed(args.seed)
@@ -155,13 +160,14 @@ def main() -> int:
     model, tokenizer = load_model(args.model, device, args.lora_rank)
     label_ids = label_token_ids(tokenizer)
     optimizer = torch.optim.AdamW((parameter for parameter in model.parameters() if parameter.requires_grad), lr=args.learning_rate, weight_decay=args.weight_decay)
-    # Measure the base model on all splits before its first optimizer update.
-    baseline = run_evaluation(model, tokenizer, label_ids, device, args.max_length, args.eval_batch_size, training_rows, bfcl_validation, original_validation_sample, 0, heartbeat)
-    run.log({"baseline/training_accuracy": baseline["training_metrics"]["accuracy"], "baseline/training_macro_f1": baseline["training_metrics"]["macro_f1"], "baseline/balanced_validation_accuracy": baseline["balanced_heldout_validation_metrics"]["accuracy"], "baseline/balanced_validation_macro_f1": baseline["balanced_heldout_validation_metrics"]["macro_f1"], "baseline/bfcl_validation_accuracy": baseline["bfcl_heldout_validation_metrics"]["accuracy"], "baseline/bfcl_validation_macro_f1": baseline["bfcl_heldout_validation_metrics"]["macro_f1"], "baseline/original_validation_accuracy": baseline["original_heldout_validation_metrics"]["accuracy"], "baseline/original_validation_macro_f1": baseline["original_heldout_validation_metrics"]["macro_f1"], "test/base_accuracy": baseline["black_box_test_metrics"]["accuracy"], "test/base_macro_f1": baseline["black_box_test_metrics"]["macro_f1"]}, step=0)
+    baseline = None
+    if args.evaluate_baseline:
+        baseline = run_evaluation(model, tokenizer, label_ids, device, args.max_length, args.eval_batch_size, training_rows, bfcl_validation, original_validation_sample, 0, heartbeat)
+        run.log({"baseline/training_accuracy": baseline["training_metrics"]["accuracy"], "baseline/training_macro_f1": baseline["training_metrics"]["macro_f1"], "baseline/balanced_validation_accuracy": baseline["balanced_heldout_validation_metrics"]["accuracy"], "baseline/balanced_validation_macro_f1": baseline["balanced_heldout_validation_metrics"]["macro_f1"], "baseline/bfcl_validation_accuracy": baseline["bfcl_heldout_validation_metrics"]["accuracy"], "baseline/bfcl_validation_macro_f1": baseline["bfcl_heldout_validation_metrics"]["macro_f1"], "baseline/original_validation_accuracy": baseline["original_heldout_validation_metrics"]["accuracy"], "baseline/original_validation_macro_f1": baseline["original_heldout_validation_metrics"]["macro_f1"], "test/base_accuracy": baseline["black_box_test_metrics"]["accuracy"], "test/base_macro_f1": baseline["black_box_test_metrics"]["macro_f1"]}, step=0)
     # Log each optimizer loss and evaluate at every 1,000 steps and at each epoch boundary.
     steps_per_epoch = (len(training_rows) + args.batch_size - 1) // args.batch_size
     total_steps = steps_per_epoch * args.epochs
-    evaluations = [baseline]
+    evaluations = []
     losses = []
     best_validation_accuracy = float("-inf")
     best_checkpoint = None
@@ -213,7 +219,7 @@ def main() -> int:
         "test_label_use": "The model never receives test labels. Test accuracy and macro F1 are computed locally for baseline and checkpoint reports only.",
         "training_loss_by_epoch": losses,
         "baseline_metrics": baseline,
-        "checkpoint_evaluations": evaluations[1:],
+        "checkpoint_evaluations": evaluations,
         "best_validation_accuracy": best_validation_accuracy,
         "best_validation_checkpoint": best_checkpoint,
         "final_epoch_metrics": final_record,
