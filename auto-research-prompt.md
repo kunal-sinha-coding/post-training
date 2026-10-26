@@ -16,6 +16,8 @@ The three experiments above use their explicitly requested fixed epoch counts. F
 
 After the three queued experiments, continue open-ended data research. Prioritize identifying and creating useful training data, including synthetic data approaches. The total OpenAI API data-generation spend authorized from 2026-10-26 onward is $10. Track cumulative spend in `logs/research_state.json` and never exceed the cap. Use subagent-generated data if the API budget is exhausted.
 
+If a later instruction requires complete training, clean-validation, and aggregate test evidence for a completed run, queue any missing measurement before starting new training. Keep such follow-up measurements separate from new experiments and do not use test labels for selection.
+
 ## Legacy user direction
 
 Older sections in this prompt describe earlier phases of the project. Do not revive their queues, pause reasons, model comparisons, continuation rules, or data priorities when they conflict with the current direction above.

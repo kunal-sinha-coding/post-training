@@ -47791,3 +47791,822 @@ The user clarified that the second and third queued experiments should skip held
 
 Evaluation-sample cap update, 2026-10-26
 The user clarified that the second and third queued experiments should skip held-out validation and report training and aggregate black-box test metrics. Training metrics will use a deterministic random sample of 500 rows per epoch; the complete test set will still be evaluated. The trainer supports `--validation-source none`, samples at most 500 training examples, and caps any requested validation sample at 500. The first 738-row BFCL run was already in its final evaluation when this guidance arrived. Its loaded code evaluates all 738 training rows and cannot be changed without interrupting the authorized run, so it is being allowed to finish under its original configuration. The new 500-row cap applies to the two pending runs and subsequent runs.
+
+## qwen-bfcl-only-738-base-seed20261054
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.train_qwen_bfcl_original_mixture",
+    "--model",
+    "Qwen/Qwen2.5-1.5B-Instruct",
+    "--output-dir",
+    "outputs/qwen-bfcl-only-738-base-seed20261054",
+    "--seed",
+    "20261054",
+    "--original-split-seed",
+    "20261029",
+    "--epochs",
+    "1",
+    "--batch-size",
+    "1",
+    "--eval-batch-size",
+    "4",
+    "--max-length",
+    "4096",
+    "--learning-rate",
+    "2e-5",
+    "--weight-decay",
+    "0.01",
+    "--lora-rank",
+    "16",
+    "--evaluation-steps",
+    "1000",
+    "--bfcl-fraction",
+    "1.0",
+    "--training-examples",
+    "738"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "qwen-bfcl-only-738-base-seed20261054",
+  "failure_reason": null,
+  "metadata": {
+    "base_model": "Qwen/Qwen2.5-1.5B-Instruct",
+    "base_model_checkpoint": "Qwen/Qwen2.5-1.5B-Instruct before any task adapter training",
+    "baseline_metrics": null,
+    "best_validation_accuracy": 0.592391304347826,
+    "best_validation_checkpoint": "outputs/qwen-bfcl-only-738-base-seed20261054/step-000738",
+    "checkpoint_evaluations": [
+      {
+        "balanced_heldout_validation_metrics": {
+          "accuracy": 0.592391304347826,
+          "confusion_matrix": [
+            [
+              89,
+              6,
+              0,
+              20
+            ],
+            [
+              7,
+              69,
+              15,
+              13
+            ],
+            [
+              1,
+              58,
+              24,
+              4
+            ],
+            [
+              23,
+              3,
+              0,
+              36
+            ]
+          ],
+          "examples": 368,
+          "macro_f1": 0.5616831306990882
+        },
+        "bfcl_heldout_validation_metrics": {
+          "accuracy": 0.5815217391304348,
+          "confusion_matrix": [
+            [
+              41,
+              2,
+              0,
+              11
+            ],
+            [
+              5,
+              23,
+              2,
+              12
+            ],
+            [
+              1,
+              14,
+              7,
+              4
+            ],
+            [
+              23,
+              3,
+              0,
+              36
+            ]
+          ],
+          "examples": 184,
+          "macro_f1": 0.5462273425499232
+        },
+        "black_box_test_metrics": {
+          "accuracy": 0.4550930996714129,
+          "examples": 3652,
+          "macro_f1": 0.3306544069551367
+        },
+        "original_heldout_validation_metrics": {
+          "accuracy": 0.6032608695652174,
+          "confusion_matrix": [
+            [
+              48,
+              4,
+              0,
+              9
+            ],
+            [
+              2,
+              46,
+              13,
+              1
+            ],
+            [
+              0,
+              44,
+              17,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "examples": 184,
+          "macro_f1": 0.45705870705870705
+        },
+        "step": 738,
+        "training_metrics": {
+          "accuracy": 0.7344173441734417,
+          "confusion_matrix": [
+            [
+              166,
+              9,
+              3,
+              39
+            ],
+            [
+              16,
+              136,
+              5,
+              13
+            ],
+            [
+              8,
+              45,
+              44,
+              5
+            ],
+            [
+              39,
+              10,
+              4,
+              196
+            ]
+          ],
+          "examples": 738,
+          "macro_f1": 0.704342068327394
+        }
+      }
+    ],
+    "config": {
+      "batch_size": 1,
+      "bfcl_data": "data/bfcl_when2call_labeled.jsonl",
+      "bfcl_fraction": 1.0,
+      "bfcl_metadata": "data/bfcl_when2call_labeled.metadata.json",
+      "epochs": 1,
+      "eval_batch_size": 4,
+      "evaluate_baseline": false,
+      "evaluation_steps": 1000,
+      "learning_rate": 2e-05,
+      "lora_rank": 16,
+      "max_length": 4096,
+      "model": "Qwen/Qwen2.5-1.5B-Instruct",
+      "original_split_seed": 20261029,
+      "output_dir": "outputs/qwen-bfcl-only-738-base-seed20261054",
+      "seed": 20261054,
+      "training_examples": 738,
+      "weight_decay": 0.01
+    },
+    "data": {
+      "bfcl_file": "data/bfcl_when2call_labeled.jsonl",
+      "bfcl_prompt_sha256": "2a191a61da8709a4cff51676bfb421c274e5e84b7c81ee3a7e6d44f80cf8fa85",
+      "bfcl_sha256": "a4b817a01c109603c00fe9e682f11eb636afc139894a92d4960bde8bddfda27f",
+      "bfcl_source_train_examples": 738,
+      "bfcl_train_examples": 738,
+      "bfcl_validation_examples": 184,
+      "original_dataset": "nvidia/When2Call",
+      "original_sample_examples": 0,
+      "original_sample_fingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_source_train_examples": 7200,
+      "original_split": "train_pref",
+      "original_split_seed": 20261029,
+      "original_validation_sample_examples": 184,
+      "original_validation_sample_fingerprint": "a8b05e9f7c028b619db335362e399eae12b2b5537f4f722d36f8f0486d0915fb",
+      "original_validation_sample_seed": 20261055,
+      "original_validation_source_examples": 1800
+    },
+    "device": "cuda",
+    "experiment": "qwen25_1p5b_base_sft_bfcl_100_when2call_0",
+    "final_epoch_metrics": {
+      "balanced_heldout_validation_metrics": {
+        "accuracy": 0.592391304347826,
+        "confusion_matrix": [
+          [
+            89,
+            6,
+            0,
+            20
+          ],
+          [
+            7,
+            69,
+            15,
+            13
+          ],
+          [
+            1,
+            58,
+            24,
+            4
+          ],
+          [
+            23,
+            3,
+            0,
+            36
+          ]
+        ],
+        "examples": 368,
+        "macro_f1": 0.5616831306990882
+      },
+      "bfcl_heldout_validation_metrics": {
+        "accuracy": 0.5815217391304348,
+        "confusion_matrix": [
+          [
+            41,
+            2,
+            0,
+            11
+          ],
+          [
+            5,
+            23,
+            2,
+            12
+          ],
+          [
+            1,
+            14,
+            7,
+            4
+          ],
+          [
+            23,
+            3,
+            0,
+            36
+          ]
+        ],
+        "examples": 184,
+        "macro_f1": 0.5462273425499232
+      },
+      "black_box_test_metrics": {
+        "accuracy": 0.4550930996714129,
+        "examples": 3652,
+        "macro_f1": 0.3306544069551367
+      },
+      "original_heldout_validation_metrics": {
+        "accuracy": 0.6032608695652174,
+        "confusion_matrix": [
+          [
+            48,
+            4,
+            0,
+            9
+          ],
+          [
+            2,
+            46,
+            13,
+            1
+          ],
+          [
+            0,
+            44,
+            17,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "examples": 184,
+        "macro_f1": 0.45705870705870705
+      },
+      "step": 738,
+      "training_metrics": {
+        "accuracy": 0.7344173441734417,
+        "confusion_matrix": [
+          [
+            166,
+            9,
+            3,
+            39
+          ],
+          [
+            16,
+            136,
+            5,
+            13
+          ],
+          [
+            8,
+            45,
+            44,
+            5
+          ],
+          [
+            39,
+            10,
+            4,
+            196
+          ]
+        ],
+        "examples": 738,
+        "macro_f1": 0.704342068327394
+      }
+    },
+    "purpose": "Measure the effect of a fixed-budget BFCL and original When2Call source mixture.",
+    "selection_procedure": "The BFCL train and validation splits were fixed before training. A deterministic source mixture was sampled from the training partitions. The combined validation set is 50/50 by source. Checkpoints are selected by balanced held-out validation accuracy. Aggregate test metrics are report-only.",
+    "source_mix": {
+      "bfcl_fraction": 1.0,
+      "original_when2call_fraction": 0.0
+    },
+    "test_label_use": "The model never receives test labels. Test accuracy and macro F1 are computed locally for baseline and checkpoint reports only.",
+    "training_loss_by_epoch": [
+      1.5819487208712573
+    ],
+    "wandb_run_id": "p3ap1hlz",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/p3ap1hlz"
+  },
+  "metrics_path": "/workspace/post-training/outputs/qwen-bfcl-only-738-base-seed20261054/metrics.json",
+  "official_test_loaded": null,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/qwen-bfcl-only-738-base-seed20261054",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-26T06:09:40.779447+00:00",
+  "status": "failed_or_incomplete",
+  "test_status": "not measured",
+  "timestamp": "2026-10-26T06:28:13.185910+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "p3ap1hlz",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/p3ap1hlz"
+}
+```
+
+## qwen-when2call-fullpool-base-seed20261055
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.train_qwen_when2call_fullpool",
+    "--model",
+    "Qwen/Qwen2.5-1.5B-Instruct",
+    "--output-dir",
+    "outputs/qwen-when2call-fullpool-base-seed20261055",
+    "--seed",
+    "20261055",
+    "--epochs",
+    "2",
+    "--batch-size",
+    "1",
+    "--eval-batch-size",
+    "4",
+    "--max-length",
+    "4096",
+    "--learning-rate",
+    "2e-5",
+    "--weight-decay",
+    "0.01",
+    "--lora-rank",
+    "16",
+    "--validation-source",
+    "none",
+    "--training-eval-sample-size",
+    "500",
+    "--training-eval-seed",
+    "20261059"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "qwen-when2call-fullpool-base-seed20261055",
+  "failure_reason": null,
+  "metadata": {
+    "base_model": "Qwen/Qwen2.5-1.5B-Instruct",
+    "base_model_checkpoint": "Qwen/Qwen2.5-1.5B-Instruct before any task adapter training",
+    "baseline_black_box_test_metrics": null,
+    "best_validation_accuracy": null,
+    "config": {
+      "batch_size": 1,
+      "bfcl_data": "data/bfcl_when2call_labeled.jsonl",
+      "epochs": 2,
+      "eval_batch_size": 4,
+      "evaluate_baseline": false,
+      "include_full_bfcl": false,
+      "learning_rate": 2e-05,
+      "lora_rank": 16,
+      "max_length": 4096,
+      "model": "Qwen/Qwen2.5-1.5B-Instruct",
+      "output_dir": "outputs/qwen-when2call-fullpool-base-seed20261055",
+      "seed": 20261055,
+      "stop_on_validation_non_improvement": false,
+      "training_eval_sample_size": 500,
+      "training_eval_seed": 20261059,
+      "validation_sample_size": 500,
+      "validation_seed": 20261053,
+      "validation_source": "none",
+      "weight_decay": 0.01
+    },
+    "data": {
+      "bfcl_file": "data/bfcl_when2call_labeled.jsonl",
+      "bfcl_sha256": "a4b817a01c109603c00fe9e682f11eb636afc139894a92d4960bde8bddfda27f",
+      "bfcl_train_examples": 0,
+      "dataset": "nvidia/When2Call",
+      "label_counts": {
+        "0": 2997,
+        "1": 3001,
+        "2": 3000,
+        "3": 2
+      },
+      "preference_examples": 9000,
+      "prompt_label_fingerprint": "9e045007dc72faa346ac8e82ba3f0f82043bd7a58a26a77cd3b407397840064f",
+      "split": "train_pref"
+    },
+    "device": "cuda",
+    "epoch_records": [
+      {
+        "black_box_test_metrics": {
+          "accuracy": 0.670591456736035,
+          "examples": 3652,
+          "macro_f1": 0.5002100732575008
+        },
+        "checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-01",
+        "epoch": 1,
+        "heldout_validation_metrics": null,
+        "step": 9000,
+        "training_evaluation_examples": 500,
+        "training_evaluation_fingerprint": "f9b0e4d6bcd2ac665d9e5157a5dd4a103e27183813ee452a47309847443be3f7",
+        "training_loss": 0.7071133796158043,
+        "training_metrics": {
+          "accuracy": 0.922,
+          "confusion_matrix": [
+            [
+              162,
+              2,
+              2,
+              0
+            ],
+            [
+              0,
+              156,
+              11,
+              0
+            ],
+            [
+              1,
+              23,
+              143,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "examples": 500,
+          "macro_f1": 0.6917007680393855
+        },
+        "validation_examples": 0,
+        "validation_source": "none"
+      },
+      {
+        "black_box_test_metrics": {
+          "accuracy": 0.702354874041621,
+          "examples": 3652,
+          "macro_f1": 0.5277889126113546
+        },
+        "checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+        "epoch": 2,
+        "heldout_validation_metrics": null,
+        "step": 18000,
+        "training_evaluation_examples": 500,
+        "training_evaluation_fingerprint": "f9b0e4d6bcd2ac665d9e5157a5dd4a103e27183813ee452a47309847443be3f7",
+        "training_loss": 0.408354387068056,
+        "training_metrics": {
+          "accuracy": 0.96,
+          "confusion_matrix": [
+            [
+              164,
+              2,
+              0,
+              0
+            ],
+            [
+              0,
+              163,
+              4,
+              0
+            ],
+            [
+              0,
+              14,
+              153,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "examples": 500,
+          "macro_f1": 0.7201450925439365
+        },
+        "validation_examples": 0,
+        "validation_source": "none"
+      }
+    ],
+    "experiment": "qwen25_1p5b_all_when2call_trainpref_sft",
+    "optimizer_steps": 18000,
+    "purpose": "Train on all When2Call preference rows, optionally with BFCL, and report each epoch.",
+    "selection_procedure": "When validation is enabled, clean held-out validation accuracy controls optional early stopping. Aggregate black-box test metrics are report-only and do not select or stop training.",
+    "test_label_use": "Test labels were used only inside the evaluator to compute aggregate accuracy and macro F1. No individual test rows or predictions were saved, and test metrics did not select or stop training.",
+    "training_evaluation_examples_per_epoch": 500,
+    "training_loss_by_epoch": [
+      0.7071133796158043,
+      0.408354387068056
+    ],
+    "validation_examples": 0,
+    "validation_source": "none",
+    "wandb_run_id": "scb8jkpn",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/scb8jkpn"
+  },
+  "metrics_path": "/workspace/post-training/outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json",
+  "official_test_loaded": null,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/qwen-when2call-fullpool-base-seed20261055",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-26T06:28:13.064389+00:00",
+  "status": "failed_or_incomplete",
+  "test_status": "not measured",
+  "timestamp": "2026-10-26T08:22:34.377226+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "scb8jkpn",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/scb8jkpn"
+}
+```
+
+## qwen-when2call-plus-full-bfcl-base-seed20261056
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.train_qwen_when2call_fullpool",
+    "--model",
+    "Qwen/Qwen2.5-1.5B-Instruct",
+    "--output-dir",
+    "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056",
+    "--seed",
+    "20261056",
+    "--epochs",
+    "2",
+    "--batch-size",
+    "1",
+    "--eval-batch-size",
+    "4",
+    "--max-length",
+    "4096",
+    "--learning-rate",
+    "2e-5",
+    "--weight-decay",
+    "0.01",
+    "--lora-rank",
+    "16",
+    "--include-full-bfcl",
+    "--validation-source",
+    "none",
+    "--training-eval-sample-size",
+    "500",
+    "--training-eval-seed",
+    "20261060"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "qwen-when2call-plus-full-bfcl-base-seed20261056",
+  "failure_reason": null,
+  "metadata": {
+    "base_model": "Qwen/Qwen2.5-1.5B-Instruct",
+    "base_model_checkpoint": "Qwen/Qwen2.5-1.5B-Instruct before any task adapter training",
+    "baseline_black_box_test_metrics": null,
+    "best_validation_accuracy": null,
+    "config": {
+      "batch_size": 1,
+      "bfcl_data": "data/bfcl_when2call_labeled.jsonl",
+      "epochs": 2,
+      "eval_batch_size": 4,
+      "evaluate_baseline": false,
+      "include_full_bfcl": true,
+      "learning_rate": 2e-05,
+      "lora_rank": 16,
+      "max_length": 4096,
+      "model": "Qwen/Qwen2.5-1.5B-Instruct",
+      "output_dir": "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056",
+      "seed": 20261056,
+      "stop_on_validation_non_improvement": false,
+      "training_eval_sample_size": 500,
+      "training_eval_seed": 20261060,
+      "validation_sample_size": 500,
+      "validation_seed": 20261053,
+      "validation_source": "none",
+      "weight_decay": 0.01
+    },
+    "data": {
+      "bfcl_file": "data/bfcl_when2call_labeled.jsonl",
+      "bfcl_sha256": "a4b817a01c109603c00fe9e682f11eb636afc139894a92d4960bde8bddfda27f",
+      "bfcl_train_examples": 922,
+      "dataset": "nvidia/When2Call",
+      "label_counts": {
+        "0": 3268,
+        "1": 3213,
+        "2": 3128,
+        "3": 313
+      },
+      "preference_examples": 9000,
+      "prompt_label_fingerprint": "063d2e0dcf9529df182c6b532a91e7fea536a113af0a33658fb45c227200da59",
+      "split": "train_pref"
+    },
+    "device": "cuda",
+    "epoch_records": [
+      {
+        "black_box_test_metrics": {
+          "accuracy": 0.6519715224534501,
+          "examples": 3652,
+          "macro_f1": 0.4947089240985971
+        },
+        "checkpoint": "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/epoch-01",
+        "epoch": 1,
+        "heldout_validation_metrics": null,
+        "step": 9922,
+        "training_evaluation_examples": 500,
+        "training_evaluation_fingerprint": "2f8e816b8eb99b3e6af0169ad87544148abb2c71e95fffd4c04010e028ef80e0",
+        "training_loss": 0.8159036976342401,
+        "training_metrics": {
+          "accuracy": 0.9,
+          "confusion_matrix": [
+            [
+              148,
+              10,
+              5,
+              2
+            ],
+            [
+              1,
+              149,
+              11,
+              1
+            ],
+            [
+              0,
+              19,
+              138,
+              0
+            ],
+            [
+              0,
+              1,
+              0,
+              15
+            ]
+          ],
+          "examples": 500,
+          "macro_f1": 0.8965970501853066
+        },
+        "validation_examples": 0,
+        "validation_source": "none"
+      },
+      {
+        "black_box_test_metrics": {
+          "accuracy": 0.640197152245345,
+          "examples": 3652,
+          "macro_f1": 0.47387035435822933
+        },
+        "checkpoint": "outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/epoch-02",
+        "epoch": 2,
+        "heldout_validation_metrics": null,
+        "step": 19844,
+        "training_evaluation_examples": 500,
+        "training_evaluation_fingerprint": "2f8e816b8eb99b3e6af0169ad87544148abb2c71e95fffd4c04010e028ef80e0",
+        "training_loss": 0.4498522700511735,
+        "training_metrics": {
+          "accuracy": 0.944,
+          "confusion_matrix": [
+            [
+              155,
+              5,
+              5,
+              0
+            ],
+            [
+              1,
+              152,
+              8,
+              1
+            ],
+            [
+              0,
+              7,
+              150,
+              0
+            ],
+            [
+              0,
+              1,
+              0,
+              15
+            ]
+          ],
+          "examples": 500,
+          "macro_f1": 0.9425989239475263
+        },
+        "validation_examples": 0,
+        "validation_source": "none"
+      }
+    ],
+    "experiment": "qwen25_1p5b_all_when2call_trainpref_sft",
+    "optimizer_steps": 19844,
+    "purpose": "Train on all When2Call preference rows, optionally with BFCL, and report each epoch.",
+    "selection_procedure": "When validation is enabled, clean held-out validation accuracy controls optional early stopping. Aggregate black-box test metrics are report-only and do not select or stop training.",
+    "test_label_use": "Test labels were used only inside the evaluator to compute aggregate accuracy and macro F1. No individual test rows or predictions were saved, and test metrics did not select or stop training.",
+    "training_evaluation_examples_per_epoch": 500,
+    "training_loss_by_epoch": [
+      0.8159036976342401,
+      0.4498522700511735
+    ],
+    "validation_examples": 0,
+    "validation_source": "none",
+    "wandb_run_id": "24w09p8d",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/24w09p8d"
+  },
+  "metrics_path": "/workspace/post-training/outputs/qwen-when2call-plus-full-bfcl-base-seed20261056/metrics.json",
+  "official_test_loaded": null,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/qwen-when2call-plus-full-bfcl-base-seed20261056",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-26T08:22:33.860139+00:00",
+  "status": "failed_or_incomplete",
+  "test_status": "not measured",
+  "timestamp": "2026-10-26T10:17:23.233281+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "24w09p8d",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/24w09p8d"
+}
+```
+
+Full-data BFCL comparison outcomes and evidence audit, 2026-10-26
+The first three requested fresh-base runs have completed. Accuracy and macro F1 are shown below.
+
+| Experiment | Epoch | Training evaluation | Clean held-out validation | Aggregate black-box test |
+| --- | ---: | ---: | ---: | ---: |
+| BFCL only, 738 rows | 1 | 0.7344 / 0.7043 on 738 rows | 0.5924 / 0.5617 on 368 rows, including 184 BFCL and 184 When2Call examples | 0.4551 / 0.3307 on all 3,652 test rows |
+| Full When2Call `train_pref`, 9,000 rows | 1 | 0.9220 / 0.6917 on 500 rows | Skipped as directed | 0.6706 / 0.5002 on all 3,652 test rows |
+| Full When2Call `train_pref`, 9,000 rows | 2 | 0.9600 / 0.7201 on 500 rows | Skipped as directed | 0.7024 / 0.5278 on all 3,652 test rows |
+| Full When2Call plus all BFCL, 9,922 rows | 1 | 0.9000 / 0.8966 on 500 rows | Missing and queued for post hoc measurement | 0.6520 / 0.4947 on all 3,652 test rows |
+| Full When2Call plus all BFCL, 9,922 rows | 2 | 0.9440 / 0.9426 on 500 rows | Missing and queued for post hoc measurement | 0.6402 / 0.4739 on all 3,652 test rows |
+
+The most recent experiment has training and aggregate black-box test evidence for both epochs but no clean held-out validation. The fixed 500-row stratified sample from the separate `nvidia/When2Call:train_sft` config will be evaluated on both saved checkpoints before a new training experiment. That sample includes the sole direct-answer row but has no tool-call rows. The validation result is post hoc and will not be used to select a checkpoint based on any test labels. Test outputs remain aggregate-only.
+
+A new hypothesis is that a small BFCL fraction can retain some source diversity while reducing overfit to generated labels. Supporting development evidence includes the 738-row BFCL-only run's 0.7344 training accuracy versus 0.5924 balanced validation accuracy. The next experiment after the missing validation measurement is a fresh-base 1,476-row mixture with 10% BFCL and 90% When2Call examples. It will evaluate a fixed 500-row training probe, 368-row balanced held-out validation, and the complete test set every epoch, with early stopping on validation accuracy only.

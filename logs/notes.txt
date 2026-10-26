@@ -7151,3 +7151,13 @@ Updated the two pending full-pool experiments to skip held-out validation as dir
 Commit name: Limit training and validation evaluation samples to 500 rows.
 
 Updated the two pending full-pool experiments to skip held-out validation as directed. Each epoch will evaluate 500 deterministically sampled training rows and the full black-box test set. Updated the full-pool trainer to accept no validation, cap training and validation evaluations at 500 rows, and use a deterministic stratified sample. Updated the current auto-research prompt and state with this policy. The first BFCL-only run was already in its final evaluation, and its running process cannot adopt the new cap without interruption. It remains active under the original 738-row evaluation configuration. Test metrics remain aggregate-only and report-only. No API generation spend has occurred.
+
+## 2026-10-26: Audit full-data evidence and queue missing validation
+
+Commit name: Queue post hoc validation and a low-dose BFCL mixture.
+
+Reviewed the completed 738-row BFCL-only run, full 9,000-row When2Call run, and 9,000-row When2Call plus 922-row BFCL run. The latest run has 500-row training probes and full 3,652-row aggregate test measurements for both epochs, but it has no clean held-out validation. Added a validation-only evaluator that uses a deterministic stratified sample of at most 500 rows from the separate `train_sft` config, evaluates both saved epoch checkpoints, and attaches results to the training artifact. This validation source contains no tool-call examples and only one direct example, which the sample includes.
+
+Queued the missing validation measurement before a new training run. The following hypothesis tests whether a 10% BFCL share reduces overfit to generated labels while retaining data diversity. Updated the mixture trainer to cap training evaluation at 500 rows and stop after a clean balanced-validation accuracy plateau. The candidate will evaluate every epoch and use aggregate test metrics only for reporting. No test labels were inspected or used for selection. API generation remains at $0 of the $10 limit.
+
+The watchdog launched the post hoc validation worker as PID 102818 before the low-dose mixture experiment. It is evaluating both saved checkpoints on the same 500-row validation sample. The next training command remains queued and cannot start until this measurement worker exits.
