@@ -6990,3 +6990,14 @@ Tested a fourth temporary prompt on the fixed 100-row sample. It removed the BFC
 Commit name: Record deterministic BFCL prompt sample result.
 
 Repeated the best broad temporary prompt on the same fixed 100-row sample with GPT-6 Luna temperature 0. Accuracy remained 81/100. The confusion counts were tool_call to cannot_answer 1; request_for_info to tool_call 7; tool_call to direct 1; cannot_answer to direct 2; tool_call to request_for_info 3; request_for_info to cannot_answer 1; cannot_answer to tool_call 1; cannot_answer to request_for_info 3. This confirms the best observed sample score did not improve by deterministic decoding. The repository prompt remains unchanged and no full-test or label-generation run started.
+
+
+## 2026-10-26: Stop prompt iteration and retain the checked-in prompt
+
+Commit name: Record aggregate-only prompt clarification and development results.
+
+The user clarified that test alignment should still be computed, but individual test examples must remain uninspected. The user then stopped prompt iteration and asked to use the original checked-in prompt. No prompt file was changed. The checked-in prompt SHA-256 is ee1d78f72898061fc764021ac5480c44e7b7195db74857160176f182c1821f41.
+
+During the interrupted prompt iteration, GPT-6 Luna was tested on the same fixed 100-row development sample selected from the When2Call training preference split. Targets were inferred from chosen_response using the repository response_label heuristic. The results were: v0 75/100, v1 76/100, v2 81/100, v4 77/100, v5 82/100, v6 81/100, v7 75/100, and v8 71/100. The best development score was v5 at 82/100. These labels are heuristic proxies for preferred-response behavior and are not gold action labels. No candidate was adopted.
+
+A direct, aggregate-only test evaluation of temporary v8 was interrupted at the user's request. It produced no complete alignment score. The implementation did not save individual predictions. Earlier test exposure and test-sample prompt tuning remain a limitation for any interpretation of the historical 75/100 sample score. The separate prior partial full-test aggregate of 2,465/3,470 (71.04%) remains unchanged.
