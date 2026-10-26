@@ -8745,3 +8745,20 @@ This record was written automatically. Candidate selection must use clean valida
 ## Queue regularized fusion training on capped clean data, 2026-10-26
 
 The fixed request-for-information route at confidence 0.60 was selected using clean validation and then evaluated on the black-box test. It scored 0.697700 accuracy / 0.525156 macro F1 versus 0.702355 / 0.527789 for paired Qwen. This is report-only and does not change selection. The next hypothesis is that a regularized linear fusion layer, fit and validated on disjoint halves of a capped clean SFT sample, may use complementary probabilities better than fixed routing. The queued experiment uses at most 500 total rows, reports fit and held-out validation metrics, and does not load test data.
+
+## fullpool-qwen-encoder-stacker-validation-20261074
+
+Timestamp: 2026-10-26T17:12:59.797626+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_fullpool_when2call_stacker", "--output-dir", "outputs/fullpool-qwen-encoder-stacker-validation-20261074", "--split-seed", "20261075", "--sample-seed", "20261076", "--meta-split-seed", "20261077", "--max-examples", "500", "--batch-size", "1", "--epochs", "100", "--learning-rate", "0.02", "--weight-decay", "0.1", "--patience", "10"]. Output: /workspace/post-training/outputs/fullpool-qwen-encoder-stacker-validation-20261074. W&B run: tar2cmhs.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.9799196787148594, "macro_f1": 0.9799144954424458}, "baseline_validation_metrics": {"qwen_sft": {"accuracy": 0.9317269076305221, "macro_f1": 0.9603841536614646}, "encoder_single": {"accuracy": 0.891566265060241, "macro_f1": 0.9335214967870202}, "single_average": {"accuracy": 0.9357429718875502, "macro_f1": 0.9624581539933046}, "single_request_conf_60": {"accuracy": 0.9558232931726908, "macro_f1": 0.9734024757443961}}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+
+## Queue validation-gated stacker test measurement, 2026-10-26
+
+Queued a conditional measurement behind the active stacker fit. It reads only the stacker training and clean-validation metrics first. It prepares and scores the stacker on the official test only if its clean validation accuracy strictly exceeds Qwen, encoder, equal-average, and request-confidence baselines. If it does not, the command records a skip and never loads the test split. Aggregate test results cannot select or tune.
