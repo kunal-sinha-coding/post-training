@@ -7132,3 +7132,10 @@ Commit name: Queue the requested BFCL and full When2Call comparisons.
 Updated the auto-research prompt and durable state for the current direction. Added support to the full-pool trainer for all 9,000 preference rows, optional full BFCL inclusion, a separate clean validation source, and an optional early stop based only on held-out validation accuracy. The first queued experiment uses the existing base-model mixture trainer with 738 BFCL rows only for one epoch. The second uses all 9,000 preference rows for two epochs and BFCL validation. The third uses all 9,000 preference rows plus all 922 labeled BFCL rows for two epochs and a fixed 500-row sample from the separate `train_sft` config. The SFT label distribution is highly skewed and includes no tool-call labels, so this validation limitation is recorded.
 
 The future policy evaluates every epoch and stops after clean validation accuracy fails to improve. Each checkpoint still reports training, validation, and aggregate black-box test accuracy and macro F1. Official test metrics remain report-only. The $10 OpenAI API generation cap is recorded at $0 spent. The worker queue is serialized to allow one training worker at a time, followed by primary-agent planning for open-ended data research.
+
+
+## 2026-10-26: Start the BFCL-only run under supervision
+
+Commit name: Start the first queued BFCL-only experiment.
+
+Started the validation supervisor and watchdog. The watchdog launched the first queued command as PID 94622, using fresh base Qwen 1.5B, the fixed 738-row BFCL train partition, one epoch, and aggregate reporting at the epoch boundary. The state records two remaining experiments. No second training worker is active. The full-pool trainer change was syntax-checked, and the fixed 500-row SFT validation sample was checked to contain 250 cannot-answer, 249 request-for-information, one direct-answer, and zero tool-call examples.
