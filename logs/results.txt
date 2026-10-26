@@ -47715,3 +47715,21 @@ Purpose: Begin base Qwen SFT on a 50/50 mixture of original When2Call and augmen
 Run: W&B run `b46ej7an`. The first version held out all 1,800 original When2Call validation rows and 184 BFCL validation rows. The user requested a balanced 50/50 validation set as well. The process was still in baseline evaluation, with the latest observed heartbeat at row 516/1,476 of combined training-set evaluation. It made zero optimizer updates.
 Outcome: Interrupted before training. No baseline metric, checkpoint, training metric, validation metric, or black-box test metric completed. This attempt is excluded from rankings.
 Correction: The next run will use 184 stratified original When2Call validation rows plus all 184 BFCL validation rows. It will report the combined 368-row validation metrics and the two source-specific metrics separately.
+
+
+Base Qwen 1.5B SFT on a balanced BFCL and When2Call mix, 2026-10-26
+Purpose: Measure whether the labeled BFCL Live examples can train a fresh Qwen model in a balanced mixture with original When2Call data.
+Setup: Base `Qwen/Qwen2.5-1.5B-Instruct` with a fresh LoRA adapter. One epoch, 1,476 training examples, batch size 1, evaluation batch size 4, maximum length 4,096, learning rate 2e-5, weight decay 0.01, LoRA rank 16, seed 20261050. Loss was logged per optimizer step. Full evaluation ran at baseline, step 1,000, and epoch end at step 1,476.
+Data: BFCL labeled file `data/bfcl_when2call_labeled.jsonl`, SHA-256 `a4b817a01c109603c00fe9e682f11eb636afc139894a92d4960bde8bddfda27f`, original prompt SHA-256 `2a191a61da8709a4cff51676bfb421c274e5e84b7c81ee3a7e6d44f80cf8fa85`. The fixed BFCL split contributed 738 train and 184 validation rows. The original When2Call split used seed 20261029, with 7,200 train and 1,800 validation rows. A deterministic stratified 738-row train sample and 184-row validation sample were selected using seeds 20261050 and 20261051. Validation was 50/50 by source, 184 BFCL plus 184 original examples. Original train sample fingerprint `4e22c5b6f77e84d92f1eaf595281597726718e160e39e6f8a0a6185c8be0399d`; original validation sample fingerprint `ff5b05e683ec7e0047f1c391d8b75687b43e78a7e0f513b1c750e11f3ea7ec9f`.
+Metrics are accuracy / macro F1.
+
+| Checkpoint | Training 1,476 | Balanced validation 368 | BFCL validation 184 | Original validation 184 | Aggregate black-box test 3,652 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Base, step 0 | 0.2324 / 0.2232 | 0.2772 / 0.2648 | 0.2989 / 0.2397 | 0.2554 / 0.2112 | 0.2234 / 0.2040 |
+| Step 1,000 | 0.6531 / 0.5702 | 0.5734 / 0.4756 | 0.4511 / 0.3880 | 0.6957 / 0.5180 | 0.5148 / 0.3840 |
+| Step 1,476 | 0.7771 / 0.7696 | 0.6495 / 0.6375 | 0.5489 / 0.5246 | 0.7500 / 0.5639 | 0.5296 / 0.4048 |
+
+The step-1,476 checkpoint had the best balanced validation accuracy and was selected by that validation metric. Relative to step 1,000, aggregate test accuracy rose by 1.48 percentage points and macro F1 rose by 2.07 points. Training accuracy was 77.71%, balanced validation accuracy was 64.95%, BFCL validation accuracy was 54.89%, and original validation accuracy was 75.00%. The gap between the two validation sources shows that generated BFCL label validation is the harder source and may reflect label noise or a distribution difference.
+Test handling: The official 3,652-row When2Call test set was scored only for aggregate accuracy and macro F1 at baseline and checkpoints. Test labels were not used for checkpoint selection, and no individual test examples or predictions were saved.
+Artifacts and environment: Metrics are in `outputs/qwen-bfcl-original-5050-base-seed20261050/metrics.json`; checkpoints are in that directory. W&B run `tf0jwrgd`: https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/tf0jwrgd. Device was CUDA on an RTX A4500 with 20 GB memory. The code used commit `6da7f835`.
+Limitations: There was no same-budget original-only control in this run. The historical best used 7,200 original training rows plus Glaive examples, so this experiment does not establish that adding generated BFCL labels improves over a size-matched original-only training set. A matched control is needed to isolate BFCL data value.

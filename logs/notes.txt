@@ -7053,3 +7053,14 @@ Commit name: Match original and BFCL validation sample sizes.
 The user requested a 50/50 validation mix as well as the 50/50 training mix. Updated `experiments/train_qwen_bfcl_original_mixture.py` to sample 184 examples from the 1,800-row original When2Call validation partition, matching all 184 BFCL validation rows. The run now reports combined 368-row validation metrics and per-source metrics separately, and selects checkpoints on combined validation accuracy. The original validation sample is deterministic and stratified.
 
 The initial base-model mixture run, W&B run `b46ej7an`, was stopped during baseline evaluation before any optimizer updates. Its latest observed heartbeat was at row 516 of the 1,476-row combined training metric pass. No training or test results were produced. The new run will use the balanced validation sample from its baseline onward.
+
+
+## 2026-10-26: Complete balanced BFCL and When2Call base-model SFT
+
+Commit name: Record the completed balanced BFCL mixture experiment.
+
+Completed fresh base-model SFT with a 50/50 training mixture: 738 generated-label BFCL examples and 738 original When2Call examples. Validation was also 50/50 by source, with 184 examples from each source. The final epoch boundary was step 1,476. Evaluation ran at baseline, step 1,000, and step 1,476. Checkpoint selection used balanced validation accuracy. Test data was evaluated only as an aggregate benchmark and did not affect selection.
+
+The base model scored 0.2234 test accuracy and 0.2040 macro F1. Step 1,000 scored 0.5148 and 0.3840. Step 1,476 scored 0.5296 and 0.4048. The final training accuracy was 0.7771, balanced validation accuracy was 0.6495, BFCL validation accuracy was 0.5489, and original validation accuracy was 0.7500. The best balanced validation checkpoint is `outputs/qwen-bfcl-original-5050-base-seed20261050/step-001476`. The full record, including all metrics, data hashes, samples, settings, and W&B run, is in `logs/results.txt` and the ignored output directory's `metrics.json`.
+
+This result does not isolate the BFCL data contribution. The next useful comparison is a base-model control with the same 1,476 optimizer steps and same 50/50 held-out validation, but 1,476 original When2Call training examples. Compare both validation sources and report the aggregate test metrics without using them for checkpoint selection.
