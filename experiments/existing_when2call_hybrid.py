@@ -36,7 +36,7 @@ WEIGHTS = [0.35625, 0.1375, 0.50625]
 QWEN = "outputs/qwen-when2call-sft-15b-seed20261022"
 QWEN_BASE = "Qwen/Qwen2.5-1.5B-Instruct"
 STACKER_ARTIFACT = "outputs/existing-when2call-stacker-20261025/stacker.json"
-METHODS = ("single_average", "single_gate", "ensemble_average", "ensemble_gate")
+METHODS = ("single_average", "single_gate", "ensemble_average", "ensemble_gate", "ensemble_request_conf_60", "ensemble_request_conf_80")
 SINGLE_METHODS = ("single_average", "single_gate", "single_geometric", "single_rank")
 SINGLE_RULES = {"average": "Arithmetic mean of the two probability vectors with equal weights.", "gate": "Choose the lower-entropy probability vector with encoder first on exact ties.", "geometric": "Softmax of the equal mean of log probabilities clamped below at 1e-8.", "rank": "Sum equal Borda rank points from both experts. Average rank points for tied probabilities. Add 1e-6 times arithmetic mean probability, clamp below at 1e-12, and normalize."}
 ROUTE_METHODS = ("single_average", "single_gate", "single_encoder_refusal")
@@ -213,6 +213,10 @@ def prepare(args: object, run: object) -> dict:
     if suite_name == "single-stacker":
         artifacts.append(Path(stacker_artifact))
     config = {"selection_complete": True, "training_performed": False, "development_selection_performed": False, "suite": suite_name, "encoders": suite["encoders"], "encoder_logit_weights": suite["weights"], "single_encoder_index": suite["single_index"], "qwen_checkpoint": qwen_checkpoint, "qwen_base": QWEN_BASE, "qwen_output_permutation": [0, 1, 2, 3], "label_order": LABELS, "max_length": 4096, "methods": methods, "primary_method": primary_method, "family_probability_weights": [0.5, 0.5], "artifact_sha256": {str(path): artifact_digest(path) for path in artifacts}, "validation_limitation": "Existing encoder warm starts saw all train_pref rows. Clean source validation is used to select the frozen fusion rule. Test metrics are report-only.", "historical_selection_limitation": "Existing encoder approaches were identified in prior research with repeated official benchmark inspection. This fixed comparison is a benchmark measurement, not a new independent generalization estimate.", "metric_definition": "Primary macro F1 includes all four declared classes. The present-class macro F1 diagnostic permits comparison with historical encoder reports.", "qwen_mapping": "Historical adapter training used LABEL_TO_ID directly despite reversed ABCD descriptions in its prompt. Preserve learned identity indices.", "test_status": "queued"}
+    # Record the family-confidence thresholds as fixed rules before official evaluation.
+    if suite_name == "initial":
+        config["fusion_rules"] = {"request_conf_60": REQUEST_CONFIDENCE_RULES["request_conf_60"], "request_conf_80": REQUEST_CONFIDENCE_RULES["request_conf_80"]}
+        config["hypothesis"] = "Apply the clean-validation-supported request-confidence route to the fixed three-encoder family. Compare two fixed thresholds with average and entropy gating; do not tune on test metrics."
     if suite_name == "single-fusion":
         config["fusion_rules"] = SINGLE_RULES
         config["hypothesis"] = "Geometric consensus tests shared support while ordinal Borda fusion tests robustness to unequal expert confidence scales. Arithmetic averaging and entropy gating are unchanged controls."
@@ -254,6 +258,9 @@ def verify_frozen(config: dict) -> None:
     suite = suite_definition(suite_name)
     if not config["selection_complete"] or config["encoders"] != suite["encoders"] or not config.get("qwen_checkpoint") or not config["methods"] or any(method not in suite["methods"] for method in config["methods"]) or config["primary_method"] not in config["methods"] or config["encoder_logit_weights"] != suite["weights"]:
         raise ValueError("Frozen existing-model comparison configuration changed.")
+    # Reject changed confidence thresholds for the predeclared three-encoder family.
+    if suite_name == "initial" and config.get("fusion_rules") != {"request_conf_60": REQUEST_CONFIDENCE_RULES["request_conf_60"], "request_conf_80": REQUEST_CONFIDENCE_RULES["request_conf_80"]}:
+        raise ValueError("Frozen three-encoder confidence rules changed.")
     if suite_name == "single-fusion" and (config.get("fusion_rules") != SINGLE_RULES or config.get("single_encoder_index") != 0 or config.get("qwen_base") != QWEN_BASE or config.get("max_length") != 4096 or config.get("qwen_output_permutation") != [0, 1, 2, 3] or config.get("family_probability_weights") != [0.5, 0.5]):
         raise ValueError("Frozen single-fusion rules changed.")
     if suite_name == "single-route" and (config.get("fusion_rules") != ROUTE_RULES or config.get("single_encoder_index") != 0 or config.get("qwen_base") != QWEN_BASE or config.get("max_length") != 4096 or config.get("qwen_output_permutation") != [0, 1, 2, 3] or config.get("family_probability_weights") != [0.5, 0.5]):
