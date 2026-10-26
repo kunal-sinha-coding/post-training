@@ -1,7 +1,7 @@
 {
-  "status": "active",
+  "status": "awaiting_codex_planning",
   "planning_owner": "codex_primary",
-  "planning_required": false,
+  "planning_required": true,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "fresh_base_bfcl_when2call_data_exploration_v1",
   "current_hypothesis": "The existing three-encoder weighted ensemble may complement the full-pool Qwen checkpoint better than the strongest single encoder. Compare fixed family averaging on a new capped clean SFT split before any test measurement.",
@@ -30,32 +30,7 @@
     "--batch-size",
     "1"
   ],
-  "worker_queue": [
-    [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_existing_when2call_hybrid_validation",
-      "--output-dir",
-      "outputs/qwen-fullpool-three-encoder-validation-20261082",
-      "--split-seed",
-      "20261082",
-      "--sample-seed",
-      "20261083",
-      "--max-validation-examples",
-      "500",
-      "--qwen-checkpoint",
-      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
-      "--encoder-checkpoint",
-      "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065",
-      "--encoder-checkpoint",
-      "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061",
-      "--encoder-checkpoint",
-      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
-      "--batch-size",
-      "1"
-    ]
-  ],
+  "worker_queue": [],
   "_previous_command": [
     "python",
     "-u",
@@ -76,7 +51,8 @@
     "Compare each existing encoder, the fixed-weight three-encoder family, and Qwen on the same new clean train_sft sample capped at 500 rows. Evaluate only fixed ensemble candidates supported by the initial suite.",
     "If a multi-encoder combination improves clean validation accuracy, freeze its method and score it once on the full aggregate black-box test with Qwen and encoder baselines.",
     "Then test seed and checkpoint diversity across existing Qwen SFT adapters, fixed prompt variants, and disagreement plus input-structure routing. Use disjoint clean validation partitions and source-disjoint BFCL holdouts where labels are available.",
-    "If the ensemble family plateaus, return to individual Qwen regularization and training-data hypotheses. Keep every aggregate test metric report-only."
+    "If the ensemble family plateaus, return to individual Qwen regularization and training-data hypotheses. Keep every aggregate test metric report-only.",
+    "After the current encoder fusion, routing, checkpoint-diversity, and individual Qwen hypotheses have been explored with clean-validation evidence, revisit the user-suggested few-shot prompting family. Compare a small hand-written example set with training-data example selection, and test retrieval only after the earlier branches are exhausted. Select examples and prompt variants with clean validation; keep test data aggregate-only and report-only."
   ],
   "best_validation": {
     "experiment": "qwen-when2call-fullpool-sft-validation-base-seed20261062",
@@ -87,40 +63,22 @@
     "macro_f1": 0.48337889372616516,
     "selection": "clean validation only"
   },
-  "last_heartbeat": null,
-  "last_action": "Queued a clean-validation comparison of the three existing encoders and their fixed-weight ensemble with the full-pool Qwen checkpoint.",
+  "last_heartbeat": "2026-10-26T17:26:37.102824+00:00",
+  "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
-  "research_log_size": 894895,
+  "research_log_size": 895713,
   "stop_command": "STOP",
-  "next_experiment": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.evaluate_existing_when2call_hybrid_validation",
-    "--output-dir",
-    "outputs/qwen-fullpool-three-encoder-validation-20261082",
-    "--split-seed",
-    "20261082",
-    "--sample-seed",
-    "20261083",
-    "--max-validation-examples",
-    "500",
-    "--qwen-checkpoint",
-    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
-    "--encoder-checkpoint",
-    "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065",
-    "--encoder-checkpoint",
-    "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061",
-    "--encoder-checkpoint",
-    "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
-    "--batch-size",
-    "1"
+  "next_experiment": null,
+  "recording_jobs": [
+    {
+      "pid": 122100,
+      "experiment_id": "qwen-fullpool-three-encoder-validation-20261082"
+    }
   ],
-  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-26T17:25:36.147236+00:00",
-  "planning_ack_deadline": "2026-10-26T17:27:36.147257+00:00",
-  "planning_attempts": 34,
+  "planning_notified_at": "2026-10-26T17:29:39.041825+00:00",
+  "planning_ack_deadline": "2026-10-26T17:31:39.041850+00:00",
+  "planning_attempts": 35,
   "best_observed_test": {
     "method": "qwen_full_when2call_epoch_2",
     "accuracy": 0.702354874041621,
