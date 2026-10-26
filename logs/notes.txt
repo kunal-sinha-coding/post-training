@@ -7139,3 +7139,15 @@ The future policy evaluates every epoch and stops after clean validation accurac
 Commit name: Start the first queued BFCL-only experiment.
 
 Started the validation supervisor and watchdog. The watchdog launched the first queued command as PID 94622, using fresh base Qwen 1.5B, the fixed 738-row BFCL train partition, one epoch, and aggregate reporting at the epoch boundary. The state records two remaining experiments. No second training worker is active. The full-pool trainer change was syntax-checked, and the fixed 500-row SFT validation sample was checked to contain 250 cannot-answer, 249 request-for-information, one direct-answer, and zero tool-call examples.
+
+## 2026-10-26: Cap evaluation samples at 500 rows
+
+Commit name: Limit training and validation evaluation samples to 500 rows.
+
+Updated the two pending full-pool experiments to skip held-out validation as directed. Each epoch will evaluate 500 deterministically sampled training rows and the full black-box test set. Updated the full-pool trainer to accept no validation, cap training and validation evaluations at 500 rows, and use a deterministic stratified sample. Updated the current auto-research prompt and state with this policy. The first BFCL-only run was already in its final evaluation, and its running process cannot adopt the new cap without interruption. It remains active under the original 738-row evaluation configuration. Test metrics remain aggregate-only and report-only. No API generation spend has occurred.
+
+## 2026-10-26: Cap evaluation samples at 500 rows
+
+Commit name: Limit training and validation evaluation samples to 500 rows.
+
+Updated the two pending full-pool experiments to skip held-out validation as directed. Each epoch will evaluate 500 deterministically sampled training rows and the full black-box test set. Updated the full-pool trainer to accept no validation, cap training and validation evaluations at 500 rows, and use a deterministic stratified sample. Updated the current auto-research prompt and state with this policy. The first BFCL-only run was already in its final evaluation, and its running process cannot adopt the new cap without interruption. It remains active under the original 738-row evaluation configuration. Test metrics remain aggregate-only and report-only. No API generation spend has occurred.

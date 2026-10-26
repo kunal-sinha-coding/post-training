@@ -52,9 +52,11 @@ def main() -> int:
     parser.add_argument("--output-dir", type=Path, default=Path("outputs/qwen-when2call-fullpool-base-seed20261050"))
     parser.add_argument("--bfcl-data", type=Path, default=Path("data/bfcl_when2call_labeled.jsonl"))
     parser.add_argument("--include-full-bfcl", action="store_true")
-    parser.add_argument("--validation-source", choices=("bfcl", "sft"), default="bfcl")
+    parser.add_argument("--validation-source", choices=("bfcl", "sft", "none"), default="bfcl")
     parser.add_argument("--validation-sample-size", type=int, default=500)
     parser.add_argument("--validation-seed", type=int, default=20261053)
+    parser.add_argument("--training-eval-sample-size", type=int, default=500)
+    parser.add_argument("--training-eval-seed", type=int, default=20261059)
     parser.add_argument("--stop-on-validation-non-improvement", action="store_true")
     parser.add_argument("--seed", type=int, default=20261050)
     parser.add_argument("--epochs", type=int, default=2)
@@ -80,7 +82,7 @@ def main() -> int:
     training_rows = preference_rows + (bfcl_rows if args.include_full_bfcl else [])
     if args.validation_source == "bfcl":
         validation_rows = bfcl_validation
-    else:
+    elif args.validation_source == "sft":
         # Build a fixed stratified holdout from the separate supervised training configuration.
         sft_examples = []
         for row in load_sft_training_rows():
@@ -95,8 +97,17 @@ def main() -> int:
             counts = Counter(row.label for row in validation_rows)
             replace_index = max((index for index, row in enumerate(validation_rows) if counts[row.label] > 1), key=lambda index: counts[validation_rows[index].label])
             validation_rows[replace_index] = replacement
-    if not validation_rows:
+    else:
+        validation_rows = []
+    if args.validation_source != "none" and not validation_rows:
         raise RuntimeError("A non-empty clean validation source is required.")
+    if args.stop_on_validation_non_improvement and args.validation_source == "none":
+        raise ValueError("Validation-based early stopping requires a held-out validation source.")
+    if args.training_eval_sample_size < 1 or args.training_eval_sample_size > 500:
+        raise ValueError("Training evaluation samples must contain between 1 and 500 examples.")
+    if args.validation_sample_size < 1 or args.validation_sample_size > 500:
+        raise ValueError("Validation evaluation samples must contain between 1 and 500 examples.")
+    training_eval_rows = sample_stratified(training_rows, min(args.training_eval_sample_size, len(training_rows)), args.training_eval_seed)
     label_counts = dict(sorted(Counter(row.label for row in training_rows).items()))
     data_fingerprint = fingerprint_rows(training_rows)
     run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name=args.output_dir.name, job_type="when2call-fullpool-sft", config=config | {"dataset": DATASET_NAME + ":train_pref" + (" + BFCL" if args.include_full_bfcl else ""), "train_examples": len(training_rows), "preference_train_examples": len(preference_rows), "bfcl_train_examples": len(training_rows) - len(preference_rows), "validation_source": args.validation_source, "validation_examples": len(validation_rows), "official_test_selection": False})
@@ -117,7 +128,7 @@ def main() -> int:
     total_steps = len(training_rows) * args.epochs
     epoch_records = []
     losses = []
-    best_validation_accuracy = float("-inf")
+    best_validation_accuracy = None
     for epoch in range(args.epochs):
         # Log every optimizer-step loss while using every preference row in each epoch.
         def log_step_loss(step: int, loss: float) -> bool:
@@ -132,15 +143,18 @@ def main() -> int:
         tokenizer.save_pretrained(checkpoint_dir)
         # Measure training and clean validation before the aggregate-only test report.
         write_heartbeat(heartbeat, "epoch_evaluation", global_step)
-        training_metrics = evaluate(model, tokenizer, training_rows, label_ids, device, args.max_length, args.eval_batch_size, heartbeat)
-        validation_metrics = evaluate(model, tokenizer, validation_rows, label_ids, device, args.max_length, args.eval_batch_size, heartbeat)
+        training_metrics = evaluate(model, tokenizer, training_eval_rows, label_ids, device, args.max_length, args.eval_batch_size, heartbeat)
+        validation_metrics = evaluate(model, tokenizer, validation_rows, label_ids, device, args.max_length, args.eval_batch_size, heartbeat) if validation_rows else None
         test_metrics = evaluate_black_box(model, tokenizer, label_ids, device, args.max_length, args.eval_batch_size)
-        record = {"epoch": epoch + 1, "step": global_step, "training_loss": epoch_loss, "training_metrics": training_metrics, "heldout_validation_metrics": validation_metrics, "validation_source": args.validation_source, "black_box_test_metrics": test_metrics, "checkpoint": str(checkpoint_dir)}
+        record = {"epoch": epoch + 1, "step": global_step, "training_loss": epoch_loss, "training_metrics": training_metrics, "training_evaluation_examples": len(training_eval_rows), "training_evaluation_fingerprint": fingerprint_rows(training_eval_rows), "heldout_validation_metrics": validation_metrics, "validation_source": args.validation_source, "validation_examples": len(validation_rows), "black_box_test_metrics": test_metrics, "checkpoint": str(checkpoint_dir)}
         epoch_records.append(record)
-        run.log({"epoch": epoch + 1, "training/epoch_loss": epoch_loss, "training/accuracy": training_metrics["accuracy"], "training/macro_f1": training_metrics["macro_f1"], "validation/accuracy": validation_metrics["accuracy"], "validation/macro_f1": validation_metrics["macro_f1"], "test/accuracy": test_metrics["accuracy"], "test/macro_f1": test_metrics["macro_f1"]}, step=global_step)
-        if validation_metrics["accuracy"] > best_validation_accuracy:
+        log_metrics = {"epoch": epoch + 1, "training/epoch_loss": epoch_loss, "training/accuracy": training_metrics["accuracy"], "training/macro_f1": training_metrics["macro_f1"], "test/accuracy": test_metrics["accuracy"], "test/macro_f1": test_metrics["macro_f1"]}
+        if validation_metrics is not None:
+            log_metrics.update({"validation/accuracy": validation_metrics["accuracy"], "validation/macro_f1": validation_metrics["macro_f1"]})
+        run.log(log_metrics, step=global_step)
+        if validation_metrics is not None and (best_validation_accuracy is None or validation_metrics["accuracy"] > best_validation_accuracy):
             best_validation_accuracy = validation_metrics["accuracy"]
-        elif args.stop_on_validation_non_improvement:
+        elif validation_metrics is not None and args.stop_on_validation_non_improvement:
             record["stop_reason"] = "held-out validation accuracy did not improve"
             break
     # Save complete provenance and aggregate metrics without per-example test outputs.
@@ -154,7 +168,8 @@ def main() -> int:
         "validation_source": args.validation_source,
         "validation_examples": len(validation_rows),
         "best_validation_accuracy": best_validation_accuracy,
-        "selection_procedure": "Clean held-out validation accuracy controls optional early stopping. Aggregate black-box test metrics are report-only and do not select or stop training.",
+        "training_evaluation_examples_per_epoch": len(training_eval_rows),
+        "selection_procedure": "When validation is enabled, clean held-out validation accuracy controls optional early stopping. Aggregate black-box test metrics are report-only and do not select or stop training.",
         "test_label_use": "Test labels were used only inside the evaluator to compute aggregate accuracy and macro F1. No individual test rows or predictions were saved, and test metrics did not select or stop training.",
         "baseline_black_box_test_metrics": baseline_test,
         "training_loss_by_epoch": losses,

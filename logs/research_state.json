@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "fresh_base_bfcl_when2call_data_exploration_v1",
-  "current_hypothesis": "A small BFCL-only run tests whether the mapped Live examples transfer; full preference training and the combined corpus then test whether more in-domain and cross-source data improve clean validation and aggregate test metrics.",
+  "current_hypothesis": "The fixed full-data experiments compare individual BFCL-only, preference-only, and combined training. For the two pending runs, sampled training metrics and full aggregate test metrics will be reported without a held-out validation evaluation.",
   "active_experiment": {
     "pid": 94622,
     "command": [
@@ -104,7 +104,11 @@
       "--lora-rank",
       "16",
       "--validation-source",
-      "bfcl"
+      "none",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059"
     ],
     [
       "python",
@@ -133,11 +137,11 @@
       "16",
       "--include-full-bfcl",
       "--validation-source",
-      "sft",
-      "--validation-sample-size",
+      "none",
+      "--training-eval-sample-size",
       "500",
-      "--validation-seed",
-      "20261057"
+      "--training-eval-seed",
+      "20261060"
     ]
   ],
   "_previous_command": [
@@ -241,10 +245,12 @@
   },
   "future_policy": {
     "evaluation_frequency": "At every epoch boundary.",
-    "continuation_metric": "Clean held-out validation accuracy.",
-    "stop_rule": "For experiments after the three fixed runs, stop at the first epoch where clean held-out validation accuracy does not improve.",
+    "continuation_metric": "Clean held-out validation accuracy when validation is evaluated.",
+    "stop_rule": "For experiments after the three fixed runs, stop at the first epoch where clean held-out validation accuracy does not improve when validation is available. Without validation, use only a fixed schedule.",
     "test_metrics": "Report aggregate black-box accuracy and macro F1 at each evaluation. Never use test metrics for checkpoint selection or continuation.",
-    "reported_metrics": "Training accuracy and macro F1, held-out validation accuracy and macro F1 when available, and aggregate black-box test accuracy and macro F1."
+    "reported_metrics": "Training accuracy and macro F1 from at most 500 deterministic random training examples; held-out validation accuracy and macro F1 from at most 500 examples when evaluated; aggregate black-box test accuracy and macro F1 from the full test set.",
+    "evaluation_sample_cap": 500,
+    "full_test_evaluation": true
   },
   "open_ended_phase": "After the three queued runs, use their clean-validation evidence to prioritize standalone data and synthetic-data hypotheses. Do not generate data until a concrete hypothesis and cost estimate are recorded."
 }
