@@ -1832,3 +1832,6 @@ Source-specific result `when2call-similarity-gate-sft-tools-k3-fallback-refine-t
 | Candidate | when2call-similarity-gate-sft-tools-k3-fallback-fine-refine-20270410 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-sft-tools-k3-fallback-fine-refine-20270410/metrics.json) | completed |
 
 Source-specific result `when2call-similarity-gate-sft-tools-k3-fallback-fine-refine-test-20270411` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.68_fallback_k1_probavg_w0.48": {"accuracy": 0.952, "macro_f1": 0.974304490322797}}}. These values are not ranked against other splits.
+| Candidate | when2call-similarity-gate-sft-tools-k2-fallback-20270412 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-sft-tools-k2-fallback-20270412/metrics.json) | completed |
+
+Source-specific result `when2call-similarity-gate-sft-tools-k2-fallback-test-20270413` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.65_k2_fallback_k1_probavg_w0.45": {"accuracy": 0.95, "macro_f1": 0.9722771696310328}}}. These values are not ranked against other splits.
