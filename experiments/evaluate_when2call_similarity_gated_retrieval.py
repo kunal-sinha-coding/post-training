@@ -1,8 +1,8 @@
 """Evaluate a similarity-gated retrieval fallback for the frozen When2Call Qwen model.
 
-The flow samples clean train_sft validation data, embeds training and validation tool schemas,
-uses label-free similarity quantiles to choose when to add demonstrations, scores Qwen, and
-writes aggregate validation metrics without opening the official test split.
+The flow creates clean validation, builds a selected SFT or preference retrieval pool, caches
+OpenAI embeddings, scores similarity-gated Qwen prompts, and writes aggregate metrics without
+opening official test rows during clean evaluation.
 """
 from __future__ import annotations
 
@@ -19,6 +19,29 @@ from experiments import evaluate_when2call_dynamic_retrieval as retrieval
 from experiments.train_qwen_when2call import ClassificationRow, label_token_ids, load_model, score_rows, write_heartbeat
 from experiments.train_when2call_jina import LABELS, metric_values
 
+
+
+def build_retrieval_pool(args: argparse.Namespace, pool_name: str) -> tuple[list, list]:
+    """Build a retrieval pool that excludes every question in clean development."""
+    # Split clean SFT rows once and preserve the complete held-out question set.
+    train_sft, validation, held_questions = retrieval.build_sampled_split(args)
+    if pool_name == "train_sft":
+        return train_sft, validation
+    # Filter preference rows against clean development questions before retrieval.
+    train_pref = retrieval.prepare_train_examples(retrieval.load_preference_rows())
+    normalize = lambda example: " ".join(retrieval.question_text(example).casefold().split())
+    train_pref = [row for row in train_pref if normalize(row) not in held_questions]
+    if pool_name == "train_pref":
+        return train_pref, validation
+    # Give preference rows precedence and add only new SFT questions to the union.
+    union = list(train_pref)
+    seen = {normalize(row) for row in union}
+    for row in train_sft:
+        question = normalize(row)
+        if question not in seen:
+            union.append(row)
+            seen.add(question)
+    return union, validation
 
 def score_prompts(model: object, tokenizer: object, prompts: list[ClassificationRow], device: torch.device, batch_size: int, output_dir: Path, phase: str, return_probabilities: bool = False) -> list[int] | np.ndarray:
     """Score prompts as one of the four learned action tokens."""
@@ -55,6 +78,7 @@ def main() -> int:
     parser.add_argument("--label-disagreement-fallback-k1", action="store_true")
     parser.add_argument("--require-neighbor-match-zero-shot", action="store_true")
     parser.add_argument("--probability-average", action="store_true")
+    parser.add_argument("--retrieval-pool", choices=("train_sft", "train_pref", "train_pref_plus_train_sft"), default="train_sft")
     parser.add_argument("--retrieval-weights", type=float, nargs="+", default=[0.25, 0.5, 0.75])
     args = parser.parse_args()
     # Keep every clean-validation evaluation within the declared sample cap.
@@ -70,18 +94,18 @@ def main() -> int:
         raise RuntimeError("WANDB_API_KEY and OPENAI_API_KEY are required.")
     from openai import OpenAI
     import wandb
-    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name="when2call-similarity-gated-retrieval", job_type="clean-validation", config={"split_seed": args.split_seed, "sample_seed": args.sample_seed, "embedding_model": args.embedding_model, "embedding_dimensions": args.embedding_dimensions, "retrieval_pool": "train_sft", "retrieval_features": args.feature, "gate_score": args.gate_score, "k": args.k, "gate_quantiles": args.gate_quantiles, "label_consensus_gate": args.label_consensus_gate, "label_disagreement_fallback_k1": args.label_disagreement_fallback_k1, "require_neighbor_match_zero_shot": args.require_neighbor_match_zero_shot, "probability_average": args.probability_average, "retrieval_weights": args.retrieval_weights, "official_test_loaded": False})
+    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name="when2call-similarity-gated-retrieval", job_type="clean-validation", config={"split_seed": args.split_seed, "sample_seed": args.sample_seed, "embedding_model": args.embedding_model, "embedding_dimensions": args.embedding_dimensions, "retrieval_pool": args.retrieval_pool, "retrieval_features": args.feature, "gate_score": args.gate_score, "k": args.k, "gate_quantiles": args.gate_quantiles, "label_consensus_gate": args.label_consensus_gate, "label_disagreement_fallback_k1": args.label_disagreement_fallback_k1, "require_neighbor_match_zero_shot": args.require_neighbor_match_zero_shot, "probability_average": args.probability_average, "retrieval_weights": args.retrieval_weights, "official_test_loaded": False})
     started = time.time()
     args.output_dir.mkdir(parents=True, exist_ok=True)
     write_heartbeat(args.output_dir / "heartbeat.json", "load-clean-data")
     try:
         # Reuse the clean stratified split and remove all development questions from retrieval.
-        train, validation, _ = retrieval.build_sampled_split(args)
+        train, validation = build_retrieval_pool(args, args.retrieval_pool)
         # Build cached embeddings using the same cache keys as the completed OpenAI screen.
         client = OpenAI()
         train_text = [retrieval.retrieval_text(row, args.feature) for row in train]
         validation_text = [retrieval.retrieval_text(row, args.feature) for row in validation]
-        train_vectors, train_usage, train_cache = retrieval.load_or_create_embeddings(client, train_text, args.embedding_model, args.embedding_dimensions, f"train_sft_{args.feature}", "training", args.cache_dir)
+        train_vectors, train_usage, train_cache = retrieval.load_or_create_embeddings(client, train_text, args.embedding_model, args.embedding_dimensions, f"{args.retrieval_pool}_{args.feature}", "training", args.cache_dir)
         validation_vectors, validation_usage, validation_cache = retrieval.load_or_create_embeddings(client, validation_text, args.embedding_model, args.embedding_dimensions, args.feature, "validation", args.cache_dir)
         # Compute cosine scores and nearest three examples without reading validation labels.
         train_vectors = train_vectors / np.linalg.norm(train_vectors, axis=1, keepdims=True).clip(min=1e-12)
@@ -145,7 +169,7 @@ def main() -> int:
         metrics = {name: {key: metric_values(labels, predictions, list(range(len(LABELS))))[key] for key in ("accuracy", "macro_f1")} for name, predictions in methods.items()}
         for name, values in metrics.items():
             run.log({f"validation/{name}/accuracy": values["accuracy"], f"validation/{name}/macro_f1": values["macro_f1"]})
-        record = {"status": "completed", "training_performed": False, "official_test_loaded": False, "validation_source": "nvidia/When2Call train_sft", "validation_examples": len(validation), "qwen_checkpoint": args.qwen_checkpoint, "retrieval_pool": "train_sft", "retrieval_feature": args.feature, "gate_score": args.gate_score, "k": args.k, "label_consensus_gate": args.label_consensus_gate, "label_disagreement_fallback_k1": args.label_disagreement_fallback_k1, "require_neighbor_match_zero_shot": args.require_neighbor_match_zero_shot, "probability_average": args.probability_average, "retrieval_weights": args.retrieval_weights, "embedding_model": args.embedding_model, "embedding_dimensions": args.embedding_dimensions, "gate_quantiles": args.gate_quantiles, "gate_thresholds_from_unlabeled_validation_scores": thresholds, "gate_thresholds_from_unlabeled_validation_similarities": thresholds, "embedding_cache": {"training": train_cache, "validation": validation_cache}, "embedding_usage": {"training": train_usage, "validation": validation_usage}, "validation_metrics": metrics, "training_metrics_source": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json", "aggregate_test_loaded": False, "git_commit": os.popen("git rev-parse HEAD").read().strip(), "wandb_run_id": run.id, "wandb_run_url": run.url, "runtime_seconds": time.time() - started}
+        record = {"status": "completed", "training_performed": False, "official_test_loaded": False, "validation_source": "nvidia/When2Call train_sft", "validation_examples": len(validation), "qwen_checkpoint": args.qwen_checkpoint, "retrieval_pool": args.retrieval_pool, "retrieval_feature": args.feature, "gate_score": args.gate_score, "k": args.k, "label_consensus_gate": args.label_consensus_gate, "label_disagreement_fallback_k1": args.label_disagreement_fallback_k1, "require_neighbor_match_zero_shot": args.require_neighbor_match_zero_shot, "probability_average": args.probability_average, "retrieval_weights": args.retrieval_weights, "embedding_model": args.embedding_model, "embedding_dimensions": args.embedding_dimensions, "gate_quantiles": args.gate_quantiles, "gate_thresholds_from_unlabeled_validation_scores": thresholds, "gate_thresholds_from_unlabeled_validation_similarities": thresholds, "embedding_cache": {"training": train_cache, "validation": validation_cache}, "embedding_usage": {"training": train_usage, "validation": validation_usage}, "validation_metrics": metrics, "training_metrics_source": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json", "aggregate_test_loaded": False, "git_commit": os.popen("git rev-parse HEAD").read().strip(), "wandb_run_id": run.id, "wandb_run_url": run.url, "runtime_seconds": time.time() - started}
         (args.output_dir / "metrics.json").write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
         run.summary.update({"status": "completed", "output_dir": str(args.output_dir)})
         write_heartbeat(args.output_dir / "heartbeat.json", "completed")

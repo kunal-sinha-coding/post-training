@@ -4,16 +4,16 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "fresh_base_bfcl_when2call_data_exploration_v1",
-  "current_hypothesis": "The fine K=1 probability blend selected by clean validation (retrieval weight 0.55, q=0.7) scores 0.954 validation accuracy and 0.97441 macro F1. A narrower clean-only sweep around 0.55 may find a better convex blend.",
+  "current_hypothesis": "The latest K=1 probability-average sweep has complete evidence and its clean-selected q=0.7, weight 0.55 setting scores 0.954 validation accuracy. Test whether the train_pref retrieval pool gives more useful neighbors than train_sft under the same gated probability blend.",
   "active_experiment": {
-    "pid": 208680,
+    "pid": 209566,
     "command": [
       "python",
       "-u",
       "-m",
       "experiments.evaluate_when2call_similarity_gated_retrieval",
       "--output-dir",
-      "outputs/when2call-similarity-gate-k1-probability-local-20270383",
+      "outputs/when2call-similarity-gate-train-pref-k1-probavg-20270385",
       "--split-seed",
       "20270327",
       "--sample-seed",
@@ -33,6 +33,7 @@
       "--gate-quantiles",
       "0.65",
       "0.7",
+      "0.75",
       "--feature",
       "tools_only",
       "--gate-score",
@@ -41,12 +42,11 @@
       "1",
       "--probability-average",
       "--retrieval-weights",
-      "0.525",
       "0.55",
-      "0.575",
-      "0.6"
+      "--retrieval-pool",
+      "train_pref"
     ],
-    "started_at": "2026-10-27T11:42:46.802485+00:00"
+    "started_at": "2026-10-27T12:01:51.407072+00:00"
   },
   "worker_command": [
     "python",
@@ -54,7 +54,7 @@
     "-m",
     "experiments.evaluate_when2call_similarity_gated_retrieval",
     "--output-dir",
-    "outputs/when2call-similarity-gate-k1-probability-local-20270383",
+    "outputs/when2call-similarity-gate-train-pref-k1-probavg-20270385",
     "--split-seed",
     "20270327",
     "--sample-seed",
@@ -74,6 +74,7 @@
     "--gate-quantiles",
     "0.65",
     "0.7",
+    "0.75",
     "--feature",
     "tools_only",
     "--gate-score",
@@ -82,10 +83,9 @@
     "1",
     "--probability-average",
     "--retrieval-weights",
-    "0.525",
     "0.55",
-    "0.575",
-    "0.6"
+    "--retrieval-pool",
+    "train_pref"
   ],
   "worker_queue": [
     [
@@ -94,11 +94,11 @@
       "-m",
       "experiments.evaluate_when2call_similarity_gate_test_screen",
       "--output-dir",
-      "outputs/when2call-similarity-gate-k1-probability-local-test-20270384",
+      "outputs/when2call-similarity-gate-train-pref-k1-probavg-test-20270386",
       "--clean-metrics",
-      "outputs/when2call-similarity-gate-k1-probability-local-20270383/metrics.json",
+      "outputs/when2call-similarity-gate-train-pref-k1-probavg-20270385/metrics.json",
       "--sample-seed",
-      "20270384",
+      "20270386",
       "--max-test-examples",
       "500",
       "--split-seed",
@@ -153,10 +153,10 @@
     "macro_f1": 0.48337889372616516,
     "selection": "clean validation only"
   },
-  "last_heartbeat": "2026-10-27T11:42:46.802497+00:00",
-  "last_action": "Watchdog started validation worker pid 208680.",
+  "last_heartbeat": "2026-10-27T12:01:51.407082+00:00",
+  "last_action": "Watchdog started validation worker pid 209566.",
   "watchdog_enabled": true,
-  "research_log_size": 1413973,
+  "research_log_size": 1416673,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -164,7 +164,7 @@
     "-m",
     "experiments.evaluate_when2call_similarity_gated_retrieval",
     "--output-dir",
-    "outputs/when2call-similarity-gate-k1-probability-local-20270383",
+    "outputs/when2call-similarity-gate-train-pref-k1-probavg-20270385",
     "--split-seed",
     "20270327",
     "--sample-seed",
@@ -184,6 +184,7 @@
     "--gate-quantiles",
     "0.65",
     "0.7",
+    "0.75",
     "--feature",
     "tools_only",
     "--gate-score",
@@ -192,16 +193,15 @@
     "1",
     "--probability-average",
     "--retrieval-weights",
-    "0.525",
     "0.55",
-    "0.575",
-    "0.6"
+    "--retrieval-pool",
+    "train_pref"
   ],
   "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-27T11:41:45.689056+00:00",
-  "planning_ack_deadline": "2026-10-27T11:43:45.689079+00:00",
-  "planning_attempts": 12,
+  "planning_notified_at": "2026-10-27T11:59:50.889988+00:00",
+  "planning_ack_deadline": "2026-10-27T12:01:50.890011+00:00",
+  "planning_attempts": 13,
   "best_observed_test": {
     "method": "single_average",
     "accuracy": 0.7154983570646222,
@@ -210,7 +210,7 @@
     "artifact": "outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json",
     "selection": "Report-only aggregate benchmark result. Test labels were not used for candidate selection."
   },
-  "next_hypothesis": "Small changes around the 0.55 retrieval weight may improve clean accuracy while keeping the macro-F1 gain. Compare 0.525, 0.55, 0.575, and 0.6 at clean-selected q=0.65 and q=0.7.",
+  "next_hypothesis": "Although ungated train_pref retrieval was weak in earlier comparisons, similarity gating may isolate useful preference examples. Compare train_pref tools-only K=1 probability averaging at retrieval weight 0.55 over clean-selected similarity quantiles 0.65, 0.7, and 0.75.",
   "post_queue_report_required": {
     "required": true,
     "trigger": "After the family confidence-routing validation and aggregate test pass.",
@@ -247,7 +247,7 @@
     "selection_use": "none"
   },
   "evidence_audit": {
-    "latest_completed_experiment": "when2call-similarity-gate-k1-probability-fineweights-test-20270382",
+    "latest_completed_experiment": "when2call-similarity-gate-k1-probability-local-test-20270384",
     "training_metrics_recorded": true,
     "training_metrics_scope": "Retrieval did not train; metrics from the frozen Qwen epoch-2 checkpoint are linked.",
     "training_metrics_sources": [
@@ -262,7 +262,7 @@
       }
     ],
     "clean_validation_recorded": true,
-    "clean_validation_source": "outputs/when2call-similarity-gate-k1-probability-fineweights-20270381/metrics.json",
+    "clean_validation_source": "outputs/when2call-similarity-gate-k1-probability-local-20270383/metrics.json",
     "clean_validation_examples": 500,
     "clean_validation_best_accuracy": {
       "method": "gate_top_0.7_k1_probavg_w0.55",
@@ -274,7 +274,7 @@
       "macro_f1": 0.967059240237315
     },
     "aggregate_black_box_test_metrics_recorded": true,
-    "aggregate_black_box_test_source": "outputs/when2call-similarity-gate-k1-probability-fineweights-test-20270382/metrics.json",
+    "aggregate_black_box_test_source": "outputs/when2call-similarity-gate-k1-probability-local-test-20270384/metrics.json",
     "aggregate_black_box_test_examples": 3652,
     "aggregate_black_box_test_metrics": {
       "zero_shot": {
@@ -289,16 +289,16 @@
     "test_sample_examples": 500,
     "test_sample_metrics": {
       "zero_shot": {
-        "accuracy": 0.692,
-        "macro_f1": 0.5220634438025743
+        "accuracy": 0.694,
+        "macro_f1": 0.5204486034964247
       },
       "gate_top_0.7_k1_probavg_w0.55": {
-        "accuracy": 0.704,
-        "macro_f1": 0.5296994971283151
+        "accuracy": 0.706,
+        "macro_f1": 0.5281911989771595
       }
     },
     "full_test_evaluated": true,
-    "aggregate_black_box_test_selection_policy": "Candidate and threshold were selected on clean validation. Test metrics are aggregate-only and did not determine the next experiment."
+    "aggregate_black_box_test_selection_policy": "The candidate and quantile were selected on clean validation. Test labels were used only for aggregate metrics and did not guide the next experiment."
   },
   "duplicate_worker_failure": {
     "pid": 103632,
@@ -574,5 +574,5 @@
     "examples": 3652,
     "artifact": "outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json"
   },
-  "updated_at": "2026-10-27T11:42:20.390491+00:00"
+  "updated_at": "2026-10-27T12:01:50.699396+00:00"
 }
