@@ -4,40 +4,20 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "fresh_base_bfcl_when2call_data_exploration_v1",
-  "current_hypothesis": "Across eight independent 500-row clean samples, the full-cannot 50-percent blend averages 0.9675 accuracy and the 60-percent blend averages 0.96725. The request/cannot confidence-0.60 route averages 0.96575. The small gap may be sampling noise. Two new samples will test whether the blend ranking persists.",
-  "active_experiment": {},
-  "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.evaluate_existing_when2call_hybrid_validation",
-    "--output-dir",
-    "outputs/qwen-single-encoder48-route-replication-20270128",
-    "--split-seed",
-    "20270128",
-    "--sample-seed",
-    "20270129",
-    "--max-validation-examples",
-    "500",
-    "--qwen-checkpoint",
-    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
-    "--batch-size",
-    "1",
-    "--encoder-checkpoint",
-    "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
-  ],
-  "worker_queue": [
-    [
+  "current_hypothesis": "Across ten independent clean samples, the full-cannot 50-percent blend averages 0.9686 accuracy and 0.977280 macro F1, while the 60-percent blend averages 0.9672 and 0.974356. The 0.0014 accuracy gap may be sampling noise. Two fresh clean samples will check whether this ranking persists.",
+  "active_experiment": {
+    "pid": 175088,
+    "command": [
       "python",
       "-u",
       "-m",
       "experiments.evaluate_existing_when2call_hybrid_validation",
       "--output-dir",
-      "outputs/qwen-single-encoder48-route-replication-20270130",
+      "outputs/qwen-single-encoder48-route-replication-20270205",
       "--split-seed",
-      "20270130",
+      "20270205",
       "--sample-seed",
-      "20270131",
+      "20270206",
       "--max-validation-examples",
       "500",
       "--qwen-checkpoint",
@@ -47,27 +27,29 @@
       "--encoder-checkpoint",
       "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
     ],
-    [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_existing_when2call_hybrid_validation",
-      "--output-dir",
-      "outputs/qwen-single-encoder48-route-replication-20270201",
-      "--split-seed",
-      "20270201",
-      "--sample-seed",
-      "20270202",
-      "--max-validation-examples",
-      "500",
-      "--qwen-checkpoint",
-      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
-      "--batch-size",
-      "1",
-      "--encoder-checkpoint",
-      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
-    ]
+    "started_at": "2026-10-27T03:06:43.033522+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_existing_when2call_hybrid_validation",
+    "--output-dir",
+    "outputs/qwen-single-encoder48-route-replication-20270205",
+    "--split-seed",
+    "20270205",
+    "--sample-seed",
+    "20270206",
+    "--max-validation-examples",
+    "500",
+    "--qwen-checkpoint",
+    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "--batch-size",
+    "1",
+    "--encoder-checkpoint",
+    "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
   ],
+  "worker_queue": [],
   "_previous_command": [
     "python",
     "-u",
@@ -85,8 +67,9 @@
     "outputs/test-clean-validation-smooth0075-wd002-weight75-25.json"
   ],
   "experiment_queue": [
-    "Run two new independent 500-row clean screens using the same frozen Qwen and encoder-48 models and route candidates.",
-    "Recompute clean-only mean accuracy and macro F1 over ten samples before deciding whether 50 or 60 percent full-cannot mixing is more stable."
+    "Run a fresh 500-row clean screen on the frozen Qwen and encoder-48 checkpoints using split/sample seeds 20270203/20270204.",
+    "Run a second distinct 500-row clean screen with split/sample seeds 20270205/20270206.",
+    "Recompute ten-plus-sample clean accuracy and macro F1 means before deciding whether to retain full-cannot mix 50 percent."
   ],
   "best_validation": {
     "experiment": "qwen-when2call-fullpool-sft-validation-base-seed20261062",
@@ -97,10 +80,10 @@
     "macro_f1": 0.48337889372616516,
     "selection": "clean validation only"
   },
-  "last_heartbeat": "2026-10-27T02:58:06.858967+00:00",
-  "last_action": "Audited the latest 20270128 clean-validation result and confirmed linked source training and matching aggregate test measurements. Refilled the queue with two distinct clean screens to test the close 50 versus 60 percent mixture ranking.",
+  "last_heartbeat": "2026-10-27T03:06:43.033535+00:00",
+  "last_action": "Watchdog started validation worker pid 175088.",
   "watchdog_enabled": true,
-  "research_log_size": 1208974,
+  "research_log_size": 1219852,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -108,11 +91,11 @@
     "-m",
     "experiments.evaluate_existing_when2call_hybrid_validation",
     "--output-dir",
-    "outputs/qwen-single-encoder48-route-replication-20270130",
+    "outputs/qwen-single-encoder48-route-replication-20270205",
     "--split-seed",
-    "20270130",
+    "20270205",
     "--sample-seed",
-    "20270131",
+    "20270206",
     "--max-validation-examples",
     "500",
     "--qwen-checkpoint",
@@ -124,9 +107,9 @@
   ],
   "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-27T03:00:08.856613+00:00",
-  "planning_ack_deadline": "2026-10-27T03:02:08.856637+00:00",
-  "planning_attempts": 74,
+  "planning_notified_at": "2026-10-27T03:05:11.794061+00:00",
+  "planning_ack_deadline": "2026-10-27T03:07:11.794086+00:00",
+  "planning_attempts": 75,
   "best_observed_test": {
     "method": "three_encoder_qwen_equal_probability_average",
     "accuracy": 0.7113910186199343,
@@ -136,7 +119,7 @@
     "metrics": "outputs/qwen-three-encoder-gate-test-20261082/aggregate-comparison.json",
     "selection": "Reported as the highest aggregate score in this frozen comparison only. Test metrics did not select the candidate; clean validation selected the entropy gate."
   },
-  "next_hypothesis": "After ten clean samples, compare mean accuracy and macro F1 for Qwen and the stable class-specific routes. If the 50/60 blend ranking remains close, prefer the simpler or more stable route using clean results only. Aggregate test results remain report-only.",
+  "next_hypothesis": "After the next two clean replications, recompute clean-only means. Keep the 50-percent route only if its accuracy lead persists; otherwise report uncertainty and test the simpler average or another clean-selected route. Use the existing aggregate report only as report-only context.",
   "post_queue_report_required": {
     "required": true,
     "trigger": "After the family confidence-routing validation and aggregate test pass.",
@@ -173,233 +156,233 @@
     "selection_use": "none"
   },
   "evidence_audit": {
-    "latest_completed_experiment": "qwen-single-encoder48-route-replication-20270128",
+    "latest_completed_experiment": "qwen-single-encoder48-route-replication-20270201",
     "training_metrics_recorded": true,
-    "training_metrics_scope": "Inference-only clean validation. No training occurred in this run. Training metrics for Qwen epoch 2 and encoder 48 are linked below.",
+    "training_metrics_scope": "Inference-only clean validation. No training occurred in this run. Source training metrics are linked for the frozen Qwen epoch-2 and encoder-48 checkpoints.",
     "training_metrics_sources": [
       {
         "path": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json",
         "checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
         "epoch": 2,
+        "examples": 500,
         "accuracy": 0.96,
-        "macro_f1": 0.7201450925439365,
-        "examples": 500
+        "macro_f1": 0.7201450925439365
       },
       {
         "path": "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/metrics.json",
         "checkpoint": "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
+        "examples": 5894,
         "accuracy": 0.9787919918561249,
-        "macro_f1": 0.979498520571581,
-        "examples": 5894
+        "macro_f1": 0.979498520571581
       }
     ],
     "clean_validation_recorded": true,
-    "clean_validation_source": "outputs/qwen-single-encoder48-route-replication-20270128/metrics.json",
+    "clean_validation_source": "outputs/qwen-single-encoder48-route-replication-20270201/metrics.json",
     "clean_validation_examples": 500,
     "clean_validation_metrics": {
       "encoder_single": {
-        "accuracy": 0.926,
-        "macro_f1": 0.94970839960615
+        "accuracy": 0.89,
+        "macro_f1": 0.9271951591136651
       },
       "qwen_sft": {
-        "accuracy": 0.938,
-        "macro_f1": 0.9627253748339344
+        "accuracy": 0.954,
+        "macro_f1": 0.9733833177132145
       },
       "single_average": {
-        "accuracy": 0.946,
-        "macro_f1": 0.967879870211535
+        "accuracy": 0.958,
+        "macro_f1": 0.9753808622921438
       },
       "single_gate": {
-        "accuracy": 0.944,
-        "macro_f1": 0.9658744131455399
+        "accuracy": 0.958,
+        "macro_f1": 0.9754319732829968
       },
       "single_entropy_weighted": {
-        "accuracy": 0.944,
-        "macro_f1": 0.9667792508947926
+        "accuracy": 0.956,
+        "macro_f1": 0.9743627051565591
       },
       "single_margin_weighted": {
-        "accuracy": 0.944,
-        "macro_f1": 0.9658744131455399
+        "accuracy": 0.956,
+        "macro_f1": 0.9733728301636297
       },
       "single_encoder_confident": {
-        "accuracy": 0.944,
-        "macro_f1": 0.9658744131455399
+        "accuracy": 0.956,
+        "macro_f1": 0.9733728301636297
       },
       "single_qwen_w10": {
-        "accuracy": 0.938,
-        "macro_f1": 0.9627253748339344
+        "accuracy": 0.954,
+        "macro_f1": 0.9733833177132145
       },
       "single_qwen_w25": {
-        "accuracy": 0.938,
-        "macro_f1": 0.9627253748339344
+        "accuracy": 0.954,
+        "macro_f1": 0.9733833177132145
       },
       "single_qwen_w40": {
-        "accuracy": 0.938,
-        "macro_f1": 0.9627253748339344
+        "accuracy": 0.956,
+        "macro_f1": 0.9744097106750914
       },
       "single_qwen_w60": {
-        "accuracy": 0.932,
-        "macro_f1": 0.9548142175636632
+        "accuracy": 0.908,
+        "macro_f1": 0.9402770135497627
       },
       "single_qwen_w75": {
-        "accuracy": 0.93,
-        "macro_f1": 0.9518241935078323
+        "accuracy": 0.898,
+        "macro_f1": 0.9318905760382586
       },
       "single_qwen_w90": {
-        "accuracy": 0.93,
-        "macro_f1": 0.9518585257511629
+        "accuracy": 0.896,
+        "macro_f1": 0.9307242465137202
       },
       "single_geometric": {
-        "accuracy": 0.948,
-        "macro_f1": 0.9699698189134809
+        "accuracy": 0.958,
+        "macro_f1": 0.9763177807897954
       },
       "single_geometric_qwen": {
-        "accuracy": 0.938,
-        "macro_f1": 0.9627253748339344
+        "accuracy": 0.954,
+        "macro_f1": 0.9733833177132145
       },
       "single_geometric_encoder": {
-        "accuracy": 0.938,
-        "macro_f1": 0.9579949079677783
+        "accuracy": 0.912,
+        "macro_f1": 0.9413881067038128
       },
       "single_standardized_logits": {
-        "accuracy": 0.95,
-        "macro_f1": 0.9672343338380801
+        "accuracy": 0.94,
+        "macro_f1": 0.9626890756302521
       },
       "single_disagreement_qwen": {
-        "accuracy": 0.938,
-        "macro_f1": 0.9627253748339344
+        "accuracy": 0.954,
+        "macro_f1": 0.9733833177132145
       },
       "single_encoder_cannot_answer": {
-        "accuracy": 0.946,
-        "macro_f1": 0.9647398627105293
+        "accuracy": 0.954,
+        "macro_f1": 0.9672312057088033
       },
       "single_encoder_request_for_info": {
-        "accuracy": 0.96,
-        "macro_f1": 0.9697194827248383
+        "accuracy": 0.956,
+        "macro_f1": 0.9696049507680027
       },
       "single_encoder_request_or_cannot_answer": {
-        "accuracy": 0.968,
-        "macro_f1": 0.9719032258064516
+        "accuracy": 0.956,
+        "macro_f1": 0.9636450114028562
       },
       "single_encoder_request_or_cannot_answer_conf_40": {
-        "accuracy": 0.968,
-        "macro_f1": 0.9719032258064516
+        "accuracy": 0.956,
+        "macro_f1": 0.9636450114028562
       },
       "single_encoder_request_or_cannot_answer_conf_50": {
-        "accuracy": 0.964,
-        "macro_f1": 0.9698346187324143
+        "accuracy": 0.954,
+        "macro_f1": 0.9625809605279237
       },
       "single_encoder_request_or_cannot_answer_conf_60": {
-        "accuracy": 0.964,
-        "macro_f1": 0.9708006101122866
+        "accuracy": 0.954,
+        "macro_f1": 0.9625809605279237
       },
       "single_encoder_request_or_cannot_answer_conf_65": {
-        "accuracy": 0.964,
-        "macro_f1": 0.9708006101122866
+        "accuracy": 0.954,
+        "macro_f1": 0.9625809605279237
       },
       "single_encoder_request_or_cannot_answer_conf_70": {
-        "accuracy": 0.962,
-        "macro_f1": 0.969758064516129
+        "accuracy": 0.96,
+        "macro_f1": 0.9685880512369218
       },
       "single_encoder_request_or_cannot_answer_conf_80": {
         "accuracy": 0.96,
-        "macro_f1": 0.9716599190283401
+        "macro_f1": 0.970532653779134
       },
       "single_encoder_request_or_cannot_answer_conf_90": {
-        "accuracy": 0.956,
-        "macro_f1": 0.9724374896506045
+        "accuracy": 0.96,
+        "macro_f1": 0.9715107772135401
       },
       "single_encoder_request_or_cannot_answer_mix_25": {
-        "accuracy": 0.94,
-        "macro_f1": 0.9638257575757576
+        "accuracy": 0.954,
+        "macro_f1": 0.9733833177132145
       },
       "single_encoder_request_or_cannot_answer_mix_40": {
-        "accuracy": 0.94,
-        "macro_f1": 0.9638257575757576
+        "accuracy": 0.956,
+        "macro_f1": 0.9744097106750914
       },
       "single_encoder_request_or_cannot_answer_mix_50": {
-        "accuracy": 0.95,
-        "macro_f1": 0.9700673797059338
+        "accuracy": 0.962,
+        "macro_f1": 0.9774642067640436
       },
       "single_encoder_request_or_cannot_answer_mix_60": {
-        "accuracy": 0.96,
-        "macro_f1": 0.9696846023246702
+        "accuracy": 0.958,
+        "macro_f1": 0.9675560054862518
       },
       "single_encoder_request_full_cannot_mix_25": {
-        "accuracy": 0.96,
-        "macro_f1": 0.9697194827248383
+        "accuracy": 0.956,
+        "macro_f1": 0.9696049507680027
       },
       "single_encoder_request_full_cannot_mix_40": {
-        "accuracy": 0.96,
-        "macro_f1": 0.9697194827248383
+        "accuracy": 0.958,
+        "macro_f1": 0.9706524863466514
       },
       "single_encoder_request_full_cannot_mix_50": {
-        "accuracy": 0.966,
-        "macro_f1": 0.9738283107918583
+        "accuracy": 0.964,
+        "macro_f1": 0.9737695952591818
       },
       "single_encoder_request_full_cannot_mix_60": {
-        "accuracy": 0.964,
-        "macro_f1": 0.96982995951417
+        "accuracy": 0.958,
+        "macro_f1": 0.9656747967479675
       },
       "single_encoder_request_full_cannot_mix_75": {
-        "accuracy": 0.968,
-        "macro_f1": 0.9719032258064516
+        "accuracy": 0.956,
+        "macro_f1": 0.9636450114028562
       },
       "single_encoder_request_cannot_mix_r75_c40": {
-        "accuracy": 0.956,
-        "macro_f1": 0.9676557377049181
+        "accuracy": 0.958,
+        "macro_f1": 0.9706524863466514
       },
       "single_encoder_request_cannot_mix_r75_c50": {
-        "accuracy": 0.962,
-        "macro_f1": 0.9717643025358251
+        "accuracy": 0.964,
+        "macro_f1": 0.9737695952591818
       },
       "single_encoder_request_cannot_mix_r75_c60": {
-        "accuracy": 0.96,
-        "macro_f1": 0.9677576703575435
+        "accuracy": 0.958,
+        "macro_f1": 0.9656747967479675
       },
       "single_encoder_tool_call": {
-        "accuracy": 0.896,
-        "macro_f1": 0.939520535871673
+        "accuracy": 0.888,
+        "macro_f1": 0.9367655987713848
       },
       "single_encoder_direct": {
-        "accuracy": 0.938,
-        "macro_f1": 0.9627253748339344
+        "accuracy": 0.954,
+        "macro_f1": 0.9733833177132145
       },
       "single_request_conf_40": {
-        "accuracy": 0.96,
-        "macro_f1": 0.9697194827248383
+        "accuracy": 0.956,
+        "macro_f1": 0.9696049507680027
       },
       "single_request_conf_50": {
-        "accuracy": 0.958,
-        "macro_f1": 0.9686896698406466
+        "accuracy": 0.954,
+        "macro_f1": 0.9685624051718451
       },
       "single_request_conf_60": {
-        "accuracy": 0.958,
-        "macro_f1": 0.9696734983258952
+        "accuracy": 0.954,
+        "macro_f1": 0.9685624051718451
       },
       "single_request_conf_70": {
-        "accuracy": 0.956,
-        "macro_f1": 0.9686352773055412
+        "accuracy": 0.96,
+        "macro_f1": 0.9746244166295619
       },
       "single_request_conf_80": {
-        "accuracy": 0.954,
-        "macro_f1": 0.9685631828488972
+        "accuracy": 0.956,
+        "macro_f1": 0.9715322044261204
       },
       "single_encoder_no_tools": {
-        "accuracy": 0.938,
-        "macro_f1": 0.9627253748339344
+        "accuracy": 0.954,
+        "macro_f1": 0.9733833177132145
       },
       "single_encoder_many_tools": {
-        "accuracy": 0.94,
-        "macro_f1": 0.958147673993283
+        "accuracy": 0.91,
+        "macro_f1": 0.9407274283269148
       },
       "single_encoder_short_question": {
-        "accuracy": 0.93,
-        "macro_f1": 0.9527914838222016
+        "accuracy": 0.9,
+        "macro_f1": 0.9330519424584374
       },
       "single_encoder_long_question": {
-        "accuracy": 0.934,
-        "macro_f1": 0.9596771467207572
+        "accuracy": 0.944,
+        "macro_f1": 0.9679924242424243
       }
     },
     "aggregate_black_box_test_metrics_recorded": true,
@@ -552,31 +535,31 @@
         "macro_f1_present_classes": 0.7039678929730089
       }
     },
-    "aggregate_black_box_test_scope": "Report-only metrics for the same frozen Qwen plus encoder-48 route family. All candidates have an aggregate measurement. Clean-validation means control candidate selection.",
+    "aggregate_black_box_test_scope": "Report-only metrics for the same frozen Qwen epoch-2 plus encoder-48 candidate family. Clean-validation means control candidate selection.",
     "test_labels_used_for_selection": false,
     "aggregate_black_box_test_measurement_queued": false,
     "aggregate_black_box_test_queued_command": null,
-    "evidence_cross_run_note": "The latest clean evaluation uses Qwen epoch 2 and encoder 48, matching the checkpoint pair in the completed single-disagree aggregate test run.",
+    "evidence_cross_run_note": "The latest clean run evaluates the same frozen Qwen epoch-2 and encoder-48 checkpoints in the existing aggregate black-box test report. No training occurred in the latest evaluation. Source training metrics, clean metrics, and the aggregate report are all recorded.",
     "additional_clean_selected_candidate": {
       "candidates_ranked_by_clean_mean_accuracy": [
         "single_encoder_request_full_cannot_mix_50",
         "single_encoder_request_full_cannot_mix_60"
       ],
-      "selection_basis": "Mean accuracy across eight independent clean samples. No aggregate test metrics used.",
       "clean_summary": {
         "single_encoder_request_full_cannot_mix_50": {
-          "accuracy_mean": 0.9675,
-          "macro_f1_mean": 0.9761453254165633,
-          "n_samples": 8,
+          "accuracy_mean": 0.9686,
+          "macro_f1_mean": 0.9772802117290874,
+          "n_samples": 10,
           "examples_per_sample": 500
         },
         "single_encoder_request_full_cannot_mix_60": {
-          "accuracy_mean": 0.9672499999999999,
-          "macro_f1_mean": 0.9743911175159472,
-          "n_samples": 8,
+          "accuracy_mean": 0.9672000000000001,
+          "macro_f1_mean": 0.9743558159858827,
+          "n_samples": 10,
           "examples_per_sample": 500
         }
       },
+      "selection_basis": "Mean clean-validation accuracy across ten independent 500-row samples. Aggregate test labels and scores were not used.",
       "aggregate_test_measurement_status": "recorded report-only",
       "aggregate_test_metrics": {
         "single_encoder_request_full_cannot_mix_50": {
@@ -595,42 +578,51 @@
     "additional_candidate_aggregate_test_command": null,
     "clean_validation_replication_summary": {
       "qwen_sft": {
-        "accuracy_mean": 0.94975,
-        "macro_f1_mean": 0.96924795907907,
-        "n_samples": 8,
+        "accuracy_mean": 0.9522,
+        "macro_f1_mean": 0.9711021311333429,
+        "n_samples": 10,
+        "examples_per_sample": 500
+      },
+      "single_average": {
+        "accuracy_mean": 0.9586,
+        "macro_f1_mean": 0.9753588671401066,
+        "n_samples": 10,
         "examples_per_sample": 500
       },
       "single_encoder_request_full_cannot_mix_50": {
-        "accuracy_mean": 0.9675,
-        "macro_f1_mean": 0.9761453254165633,
-        "n_samples": 8,
+        "accuracy_mean": 0.9686,
+        "macro_f1_mean": 0.9772802117290874,
+        "n_samples": 10,
         "examples_per_sample": 500
       },
       "single_encoder_request_full_cannot_mix_60": {
-        "accuracy_mean": 0.9672499999999999,
-        "macro_f1_mean": 0.9743911175159472,
-        "n_samples": 8,
+        "accuracy_mean": 0.9672000000000001,
+        "macro_f1_mean": 0.9743558159858827,
+        "n_samples": 10,
         "examples_per_sample": 500
       },
       "single_encoder_request_full_cannot_mix_75": {
-        "accuracy_mean": 0.9664999999999999,
-        "macro_f1_mean": 0.9732569884004407,
-        "n_samples": 8,
+        "accuracy_mean": 0.9663999999999999,
+        "macro_f1_mean": 0.9732455341589663,
+        "n_samples": 10,
         "examples_per_sample": 500
       },
       "single_encoder_request_or_cannot_answer_conf_60": {
-        "accuracy_mean": 0.96575,
-        "macro_f1_mean": 0.9740788503983463,
-        "n_samples": 8,
+        "accuracy_mean": 0.9655999999999999,
+        "macro_f1_mean": 0.9737966186697976,
+        "n_samples": 10,
         "examples_per_sample": 500
       },
       "single_encoder_request_or_cannot_answer_mix_50": {
-        "accuracy_mean": 0.9612499999999999,
-        "macro_f1_mean": 0.9763521790281314,
-        "n_samples": 8,
+        "accuracy_mean": 0.9632,
+        "macro_f1_mean": 0.9777087153128855,
+        "n_samples": 10,
         "examples_per_sample": 500
       }
-    }
+    },
+    "clean_validation_split_seed": 20270201,
+    "clean_validation_sample_seed": 20270202,
+    "clean_validation_sample_indices_sha256": "6f419233a674d75c7e77f667da0df0d7bf3fd19b926d389257f475152d57b6fd"
   },
   "duplicate_worker_failure": {
     "pid": 103632,
