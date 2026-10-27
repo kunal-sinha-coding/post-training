@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "fresh_base_bfcl_when2call_data_exploration_v1",
-  "current_hypothesis": "On the 15% preference/SFT pool, K=2 and K=3 both reach 95.4% clean accuracy, and retrieval weight 0.5 is best in the refinement grid. Increasing the preference share to 30% or 35% may improve the clean retrieval pool, or may dilute the stronger SFT signal.",
+  "current_hypothesis": "The 30% preference pool has the best recent clean accuracy at 95.6%, while 35% falls to 95.2%. A single-neighbor gate or a margin-based confidence gate may reduce harm from ambiguous similarity matches.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -12,11 +12,11 @@
     "-m",
     "experiments.evaluate_when2call_similarity_gate_test_screen",
     "--output-dir",
-    "outputs/when2call-similarity-gate-15pct-pref-k2-fallback-fulltest-20270508",
+    "outputs/when2call-similarity-gate-35pct-pref-k3-fallback-fulltest-20270512",
     "--clean-metrics",
-    "outputs/when2call-similarity-gate-15pct-pref-k2-fallback-20270507/metrics.json",
+    "outputs/when2call-similarity-gate-35pct-pref-k3-fallback-20270511/metrics.json",
     "--sample-seed",
-    "20270508",
+    "20270512",
     "--max-test-examples",
     "500",
     "--split-seed",
@@ -47,7 +47,11 @@
       "-m",
       "experiments.evaluate_when2call_similarity_gated_retrieval",
       "--output-dir",
-      "outputs/when2call-similarity-gate-30pct-pref-k3-fallback-20270509",
+      "outputs/when2call-similarity-gate-30pct-pref-k1-fallback-20270513",
+      "--gate-score",
+      "absolute",
+      "--k",
+      "1",
       "--split-seed",
       "20270327",
       "--sample-seed",
@@ -70,10 +74,6 @@
       "0.75",
       "--feature",
       "tools_only",
-      "--gate-score",
-      "absolute",
-      "--k",
-      "3",
       "--label-disagreement-fallback-k1",
       "--probability-average",
       "--retrieval-weights",
@@ -87,11 +87,11 @@
       "-m",
       "experiments.evaluate_when2call_similarity_gate_test_screen",
       "--output-dir",
-      "outputs/when2call-similarity-gate-30pct-pref-k3-fallback-fulltest-20270510",
+      "outputs/when2call-similarity-gate-30pct-pref-k1-fallback-fulltest-20270514",
       "--clean-metrics",
-      "outputs/when2call-similarity-gate-30pct-pref-k3-fallback-20270509/metrics.json",
+      "outputs/when2call-similarity-gate-30pct-pref-k1-fallback-20270513/metrics.json",
       "--sample-seed",
-      "20270510",
+      "20270514",
       "--max-test-examples",
       "500",
       "--split-seed",
@@ -121,7 +121,11 @@
       "-m",
       "experiments.evaluate_when2call_similarity_gated_retrieval",
       "--output-dir",
-      "outputs/when2call-similarity-gate-35pct-pref-k3-fallback-20270511",
+      "outputs/when2call-similarity-gate-30pct-pref-k3-margin-20270515",
+      "--gate-score",
+      "margin",
+      "--k",
+      "3",
       "--split-seed",
       "20270327",
       "--sample-seed",
@@ -144,16 +148,12 @@
       "0.75",
       "--feature",
       "tools_only",
-      "--gate-score",
-      "absolute",
-      "--k",
-      "3",
       "--label-disagreement-fallback-k1",
       "--probability-average",
       "--retrieval-weights",
       "0.5",
       "--retrieval-pool",
-      "train_pref_35pct_plus_train_sft"
+      "train_pref_30pct_plus_train_sft"
     ],
     [
       "python",
@@ -161,11 +161,11 @@
       "-m",
       "experiments.evaluate_when2call_similarity_gate_test_screen",
       "--output-dir",
-      "outputs/when2call-similarity-gate-35pct-pref-k3-fallback-fulltest-20270512",
+      "outputs/when2call-similarity-gate-30pct-pref-k3-margin-fulltest-20270516",
       "--clean-metrics",
-      "outputs/when2call-similarity-gate-35pct-pref-k3-fallback-20270511/metrics.json",
+      "outputs/when2call-similarity-gate-30pct-pref-k3-margin-20270515/metrics.json",
       "--sample-seed",
-      "20270512",
+      "20270516",
       "--max-test-examples",
       "500",
       "--split-seed",
@@ -222,10 +222,10 @@
     "macro_f1": 0.48337889372616516,
     "selection": "clean validation only"
   },
-  "last_heartbeat": "2026-10-27T19:34:56.019568+00:00",
-  "last_action": "Audited the latest 15% K=2 test run with all three evidence types present. Queued distinct 30% and 35% preference/SFT clean comparisons and full aggregate test measurements.",
+  "last_heartbeat": "2026-10-27T20:23:09.715647+00:00",
+  "last_action": "Audited the completed 35% pool run. Training probe, clean validation, and full aggregate test metrics are all recorded. Queued distinct K=1 and margin-gate clean experiments on the clean-leading 30% pool, each followed by full aggregate test reporting.",
   "watchdog_enabled": true,
-  "research_log_size": 1495390,
+  "research_log_size": 1501108,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -233,7 +233,11 @@
     "-m",
     "experiments.evaluate_when2call_similarity_gated_retrieval",
     "--output-dir",
-    "outputs/when2call-similarity-gate-30pct-pref-k3-fallback-20270509",
+    "outputs/when2call-similarity-gate-30pct-pref-k1-fallback-20270513",
+    "--gate-score",
+    "absolute",
+    "--k",
+    "1",
     "--split-seed",
     "20270327",
     "--sample-seed",
@@ -256,10 +260,6 @@
     "0.75",
     "--feature",
     "tools_only",
-    "--gate-score",
-    "absolute",
-    "--k",
-    "3",
     "--label-disagreement-fallback-k1",
     "--probability-average",
     "--retrieval-weights",
@@ -269,9 +269,9 @@
   ],
   "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-27T19:48:59.759221+00:00",
-  "planning_ack_deadline": "2026-10-27T19:50:59.759245+00:00",
-  "planning_attempts": 33,
+  "planning_notified_at": "2026-10-27T20:37:13.220229+00:00",
+  "planning_ack_deadline": "2026-10-27T20:39:13.220251+00:00",
+  "planning_attempts": 34,
   "best_observed_test": {
     "method": "single_average",
     "accuracy": 0.7154983570646222,
@@ -280,7 +280,7 @@
     "artifact": "outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json",
     "selection": "Report-only aggregate benchmark result. Test labels were not used for candidate selection."
   },
-  "next_hypothesis": "Compare 30% and 35% preference/SFT pools with the same K=3 tools-only gate and retrieval weight 0.5. Select on clean validation only; full test metrics are forced aggregate-only reports.",
+  "next_hypothesis": "Compare K=1 against K=3 absolute gating, then compare margin gating with K=3 on the same 30% pool. Select by clean validation and use full test metrics only for aggregate reporting.",
   "post_queue_report_required": {
     "required": true,
     "trigger": "After the family confidence-routing validation and aggregate test pass.",
@@ -317,7 +317,7 @@
     "selection_use": "none"
   },
   "evidence_audit": {
-    "latest_completed_experiment": "when2call-similarity-gate-15pct-pref-k2-fallback-fulltest-20270508",
+    "latest_completed_experiment": "when2call-similarity-gate-35pct-pref-k3-fallback-fulltest-20270512",
     "training_metrics_recorded": true,
     "training_metrics_scope": "Retrieval did not train. The test screen links the frozen Qwen epoch-2 probe and loss.",
     "training_metrics_sources": [
@@ -332,28 +332,28 @@
       }
     ],
     "clean_validation_recorded": true,
-    "clean_validation_source": "outputs/when2call-similarity-gate-15pct-pref-k2-fallback-20270507/metrics.json",
+    "clean_validation_source": "outputs/when2call-similarity-gate-35pct-pref-k3-fallback-20270511/metrics.json",
     "clean_validation_examples": 500,
     "clean_validation_zero_shot": {
       "accuracy": 0.942,
       "macro_f1": 0.967059240237315
     },
     "clean_validation_best": {
-      "method": "gate_top_0.65_k2_fallback_k1_probavg_w0.5",
-      "accuracy": 0.954,
-      "macro_f1": 0.9753309492439928
+      "method": "gate_top_0.75_fallback_k1_probavg_w0.5",
+      "accuracy": 0.952,
+      "macro_f1": 0.9742570937591685
     },
     "aggregate_black_box_test_metrics_recorded": true,
-    "aggregate_black_box_test_source": "outputs/when2call-similarity-gate-15pct-pref-k2-fallback-fulltest-20270508/metrics.json",
+    "aggregate_black_box_test_source": "outputs/when2call-similarity-gate-35pct-pref-k3-fallback-fulltest-20270512/metrics.json",
     "test_sample_examples": 500,
     "test_sample_metrics": {
       "zero_shot": {
-        "accuracy": 0.638,
-        "macro_f1": 0.47995073282544387
+        "accuracy": 0.678,
+        "macro_f1": 0.5083189759692766
       },
       "selected_gate": {
-        "accuracy": 0.648,
-        "macro_f1": 0.48675089236211144
+        "accuracy": 0.68,
+        "macro_f1": 0.509886835489804
       }
     },
     "full_test_evaluated": true,
@@ -364,13 +364,13 @@
         "macro_f1": 0.511927570670597
       },
       "selected_gate": {
-        "accuracy": 0.6853778751369113,
-        "macro_f1": 0.5152938740359665
+        "accuracy": 0.6856516976998904,
+        "macro_f1": 0.5155074961358893
       }
     },
     "test_labels_used_for_selection": false,
     "per_example_test_outcomes_saved": false,
-    "aggregate_black_box_test_selection_policy": "K and gate selected on clean validation. Sample and full test values are aggregate-only reports."
+    "aggregate_black_box_test_selection_policy": "The gate was selected on clean validation. Sample and full test metrics were aggregate-only reports."
   },
   "duplicate_worker_failure": {
     "pid": 103632,
@@ -646,5 +646,5 @@
     "examples": 3652,
     "artifact": "outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json"
   },
-  "updated_at": "2026-10-27T19:49:50.420755+00:00"
+  "updated_at": "2026-10-27T20:38:02.835395+00:00"
 }
