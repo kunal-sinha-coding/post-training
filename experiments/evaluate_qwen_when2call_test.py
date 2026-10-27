@@ -38,10 +38,20 @@ def load_official_rows() -> object:
     return load_dataset(DATASET_NAME, "test", split="mcq")
 
 
-def prepare_test_rows(rows: object) -> list[ClassificationRow]:
+def prepare_test_rows(rows: object, corrected_label_order: bool = False) -> list[ClassificationRow]:
     """Build Qwen prompts and retain labels only inside the evaluator."""
-    # Convert official labels to the trainer's class order without writing them to any result artifact.
-    return [ClassificationRow(make_prompt({"messages": [{"role": "user", "content": row["question"]}], "tools": row["tools"]}), LABEL_TO_ID[str(row["correct_answer"])], None) for row in rows]
+    # Convert official labels to the trainer class order without saving any row-level label.
+    prepared = []
+    for row in rows:
+        prompt = make_prompt({"messages": [{"role": "user", "content": row["question"]}], "tools": row["tools"]})
+        # Match the learned output-token order used by the clean retrieval screen when requested.
+        if corrected_label_order:
+            prompt = prompt.replace(
+                "A = direct answer.\nB = tool call.\nC = request for more information.\nD = cannot answer.",
+                "A = cannot answer.\nB = request for more information.\nC = tool call.\nD = direct answer.",
+            )
+        prepared.append(ClassificationRow(prompt, LABEL_TO_ID[str(row["correct_answer"])], None))
+    return prepared
 
 
 def aggregate_metrics(labels: list[int], predictions: list[int]) -> dict[str, float]:
@@ -72,6 +82,7 @@ def main() -> int:
     parser.add_argument("--lora-rank", type=int, default=16)
     parser.add_argument("--max-length", type=int, default=4096)
     parser.add_argument("--batch-size", type=int, default=1)
+    parser.add_argument("--corrected-learned-label-order", action="store_true")
     args = parser.parse_args()
     # Require a worker output directory so the watchdog can monitor test progress.
     output_dir = args.output_dir or (args.output.parent if args.output else None)
@@ -80,10 +91,12 @@ def main() -> int:
     output_dir.mkdir(parents=True, exist_ok=True)
     output_path = output_dir / "metrics.json"
     # Require W&B before loading any official test rows or model weights.
+    from dotenv import load_dotenv
+    load_dotenv(".env")
     import wandb
     if not os.getenv("WANDB_API_KEY"):
         raise RuntimeError("WANDB_API_KEY is required for the official test measurement.")
-    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name=f"qwen-when2call-test-{args.checkpoint.name}", job_type="official-test-measurement", config={"checkpoint": str(args.checkpoint), "base_model": args.model, "dataset": f"{DATASET_NAME}:test/mcq", "black_box": True, "selection_complete": True, "max_length": args.max_length})
+    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name=f"qwen-when2call-test-{args.checkpoint.name}", job_type="official-test-measurement", config={"checkpoint": str(args.checkpoint), "base_model": args.model, "dataset": f"{DATASET_NAME}:test/mcq", "black_box": True, "selection_complete": True, "max_length": args.max_length, "corrected_learned_label_order": args.corrected_learned_label_order})
     atexit.register(run.finish)
     # Load the frozen adapter and official examples only after the measurement run is registered.
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -94,7 +107,7 @@ def main() -> int:
         raise TypeError("The Qwen checkpoint did not produce a PEFT model.")
     model.load_adapter(str(args.checkpoint), adapter_name="frozen")
     model.set_adapter("frozen")
-    rows = prepare_test_rows(load_official_rows())
+    rows = prepare_test_rows(load_official_rows(), args.corrected_learned_label_order)
     label_ids = [tokenizer.encode(f" {letter}", add_special_tokens=False)[0] for letter in "ABCD"]
     predictions = []
     model.eval()
@@ -109,7 +122,7 @@ def main() -> int:
     # Log and save only the permitted aggregate metrics and non-label operational metadata.
     run.log({"test/accuracy": metrics["accuracy"], "test/macro_f1": metrics["macro_f1"]})
     run.summary.update({"test_accuracy": metrics["accuracy"], "test_macro_f1": metrics["macro_f1"], "black_box": True, "selection_complete": True})
-    result = {"dataset": DATASET_NAME, "split": "test/mcq", "test_loaded": True, "official_test_loaded": True, "test_measurement_only": True, "black_box": True, "checkpoint": str(args.checkpoint), "base_model": args.model, "examples": len(rows), "official_test_metrics": metrics, "metrics": metrics, "wandb_run_id": run.id, "wandb_run_url": run.url}
+    result = {"dataset": DATASET_NAME, "split": "test/mcq", "test_loaded": True, "official_test_loaded": True, "test_measurement_only": True, "black_box": True, "checkpoint": str(args.checkpoint), "base_model": args.model, "prompt_label_order": "A=cannot_answer, B=request_for_info, C=tool_call, D=direct" if args.corrected_learned_label_order else "historical training prompt order", "training_metrics_source": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json", "training_metrics": {"epoch": 2, "examples": 500, "training_loss": 0.408354387068056, "accuracy": 0.96, "macro_f1": 0.7201450925439365}, "examples": len(rows), "official_test_metrics": metrics, "metrics": metrics, "wandb_run_id": run.id, "wandb_run_url": run.url}
     result["output_dir"] = str(output_dir)
     output_path.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     write_heartbeat(output_dir / "heartbeat.json", "completed")

@@ -4,61 +4,10 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "fresh_base_bfcl_when2call_data_exploration_v1",
-  "current_hypothesis": "OpenAI embedding retrieval may improve Qwen prompting when the pool source, embedded content, and number of demonstrations match the task. The previous trial cannot answer this because it searched only train_sft, omitted K=2, used TF-IDF, and used an incorrect demonstration label mapping.",
+  "current_hypothesis": "The first corrected OpenAI screen shows zero-shot Qwen exceeds every retrieval prompt on clean validation (94.2% versus 81.6% best retrieved prompt). First complete the required aggregate test measurement for the clean-selected corrected zero-shot candidate; then assess whether the screen result replicates before expanding retrieval variants.",
   "active_experiment": {
-    "pid": 187755,
+    "pid": 189102,
     "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_when2call_dynamic_retrieval",
-      "--output-dir",
-      "outputs/when2call-openai-pool-feature-k-screen-20270333",
-      "--sample-seed",
-      "20270332",
-      "--split-seed",
-      "20270327",
-      "--max-validation-examples",
-      "500",
-      "--qwen-checkpoint",
-      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
-      "--batch-size",
-      "1",
-      "--embedding-model",
-      "text-embedding-3-small",
-      "--embedding-dimensions",
-      "1536",
-      "--cache-dir",
-      "outputs/when2call-openai-embedding-cache"
-    ],
-    "started_at": "2026-10-27T04:53:56.993009+00:00"
-  },
-  "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.evaluate_when2call_dynamic_retrieval",
-    "--output-dir",
-    "outputs/when2call-openai-pool-feature-k-screen-20270333",
-    "--sample-seed",
-    "20270332",
-    "--split-seed",
-    "20270327",
-    "--max-validation-examples",
-    "500",
-    "--qwen-checkpoint",
-    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
-    "--batch-size",
-    "1",
-    "--embedding-model",
-    "text-embedding-3-small",
-    "--embedding-dimensions",
-    "1536",
-    "--cache-dir",
-    "outputs/when2call-openai-embedding-cache"
-  ],
-  "worker_queue": [
-    [
       "python",
       "-u",
       "-m",
@@ -81,6 +30,46 @@
       "1536",
       "--cache-dir",
       "outputs/when2call-openai-embedding-cache"
+    ],
+    "started_at": "2026-10-27T05:32:02.491085+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_when2call_dynamic_retrieval",
+    "--output-dir",
+    "outputs/when2call-openai-pool-feature-k-replication-20270335",
+    "--sample-seed",
+    "20270334",
+    "--split-seed",
+    "20270327",
+    "--max-validation-examples",
+    "500",
+    "--qwen-checkpoint",
+    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "--batch-size",
+    "1",
+    "--embedding-model",
+    "text-embedding-3-small",
+    "--embedding-dimensions",
+    "1536",
+    "--cache-dir",
+    "outputs/when2call-openai-embedding-cache"
+  ],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_qwen_when2call_test",
+      "--checkpoint",
+      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "--model",
+      "Qwen/Qwen2.5-1.5B-Instruct",
+      "--output-dir",
+      "outputs/when2call-openai-corrected-zero-shot-test-20270347",
+      "--corrected-learned-label-order"
     ],
     [
       "python",
@@ -238,10 +227,10 @@
     "macro_f1": 0.48337889372616516,
     "selection": "clean validation only"
   },
-  "last_heartbeat": "2026-10-27T04:53:56.993022+00:00",
-  "last_action": "Confirmed the current factor screen remains active and the latest completed run has all evidence. Added a same-sample 320-token prompt comparison behind the existing queue.",
+  "last_heartbeat": "2026-10-27T05:32:02.491103+00:00",
+  "last_action": "The first OpenAI retrieval screen completed. Its training probe and clean-validation metrics are recorded, but the corrected-mapping aggregate black-box test measurement is missing. Queued that report-only measurement first after the already-running replication and before other queued experiments.",
   "watchdog_enabled": true,
-  "research_log_size": 1364043,
+  "research_log_size": 1365070,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -249,9 +238,9 @@
     "-m",
     "experiments.evaluate_when2call_dynamic_retrieval",
     "--output-dir",
-    "outputs/when2call-openai-pool-feature-k-screen-20270333",
+    "outputs/when2call-openai-pool-feature-k-replication-20270335",
     "--sample-seed",
-    "20270332",
+    "20270334",
     "--split-seed",
     "20270327",
     "--max-validation-examples",
@@ -280,7 +269,7 @@
     "artifact": "outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json",
     "selection": "Report-only aggregate benchmark result. Test labels were not used for candidate selection."
   },
-  "next_hypothesis": "Retrieved examples may need more than 160 tokens to preserve action-relevant tool details. Compare 320-token demonstrations against the 64-token and 160-token caps on the same validation sample.",
+  "next_hypothesis": "If the clean-sample replication confirms retrieval prompts remain below zero-shot, test whether retrieval is useful only as a selective fallback under high neighbor similarity or disagreement. Do not inspect test labels or row-level test outcomes.",
   "post_queue_report_required": {
     "required": true,
     "trigger": "After the family confidence-routing validation and aggregate test pass.",
@@ -317,9 +306,9 @@
     "selection_use": "none"
   },
   "evidence_audit": {
-    "latest_completed_experiment": "when2call-dynamic-retrieval-clean-20270327",
+    "latest_completed_experiment": "when2call-openai-pool-feature-k-screen-20270333",
     "training_metrics_recorded": true,
-    "training_metrics_scope": "Evaluation-only run; linked frozen Qwen checkpoint training probe.",
+    "training_metrics_scope": "Evaluation-only screen; linked the frozen Qwen epoch-2 training probe.",
     "training_metrics_sources": [
       {
         "path": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json",
@@ -332,67 +321,35 @@
       }
     ],
     "clean_validation_recorded": true,
-    "clean_validation_source": "outputs/when2call-dynamic-retrieval-clean-20270327/metrics.json",
+    "clean_validation_source": "outputs/when2call-openai-pool-feature-k-screen-20270333/metrics.json",
     "clean_validation_examples": 500,
-    "clean_validation_metrics": {
-      "question_only_knn_1": {
-        "accuracy": 0.526,
-        "macro_f1": 0.5256793592468508
-      },
-      "question_only_knn_3": {
-        "accuracy": 0.648,
-        "macro_f1": 0.6457326892109501
-      },
-      "question_only_knn_5": {
-        "accuracy": 0.656,
-        "macro_f1": 0.6535554875199407
-      },
-      "question_and_tools_knn_1": {
-        "accuracy": 0.61,
-        "macro_f1": 0.6037084757611846
-      },
-      "question_and_tools_knn_3": {
-        "accuracy": 0.608,
-        "macro_f1": 0.6033737514367584
-      },
-      "question_and_tools_knn_5": {
-        "accuracy": 0.606,
-        "macro_f1": 0.60248758025917
-      },
-      "question_only_qwen_1shot": {
-        "accuracy": 0.648,
-        "macro_f1": 0.7611467803135674
-      },
-      "question_only_qwen_3shot": {
-        "accuracy": 0.516,
-        "macro_f1": 0.625206721792478
-      },
-      "question_and_tools_qwen_1shot": {
-        "accuracy": 0.65,
-        "macro_f1": 0.752160544665898
-      },
-      "question_and_tools_qwen_3shot": {
-        "accuracy": 0.538,
-        "macro_f1": 0.6224452589763765
-      },
-      "qwen_zero_shot": {
-        "accuracy": 0.948,
-        "macro_f1": 0.9719572666122256
-      }
+    "clean_validation_best_accuracy": {
+      "method": "qwen_zero_shot_corrected_mapping",
+      "accuracy": 0.942,
+      "macro_f1": 0.967059240237315
     },
-    "clean_validation_split_seed": 20270327,
-    "clean_validation_sample_seed": 20270328,
-    "aggregate_black_box_test_metrics_recorded": true,
-    "aggregate_black_box_test_source": "outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json",
-    "aggregate_black_box_test_examples": 3652,
-    "aggregate_black_box_test_metrics": {
-      "qwen_sft": {
-        "accuracy": 0.7026286966046003,
-        "macro_f1": 0.5279759197297567
-      }
+    "best_retrieval_accuracy": {
+      "method": "train_sft_tools_only_qwen_3shot",
+      "accuracy": 0.816,
+      "macro_f1": 0.8396969463228173
     },
-    "aggregate_black_box_test_scope": "Existing aggregate report for the frozen zero-shot Qwen checkpoint selected by the clean screen. Retrieved few-shot candidates were not test-evaluated.",
-    "aggregate_black_box_test_selection_policy": "Report-only. Test labels were not used for selection."
+    "aggregate_black_box_test_metrics_recorded": false,
+    "aggregate_black_box_test_source": null,
+    "aggregate_black_box_test_scope": "Required corrected-mapping measurement is queued. The existing epoch-2 aggregate report used a different prompt order and is not attached as evidence for this validation screen.",
+    "aggregate_black_box_test_selection_policy": "Will be report-only. Test labels will not be used for selection.",
+    "missing_measurement_command": [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_qwen_when2call_test",
+      "--checkpoint",
+      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "--model",
+      "Qwen/Qwen2.5-1.5B-Instruct",
+      "--output-dir",
+      "outputs/when2call-openai-corrected-zero-shot-test-20270347",
+      "--corrected-learned-label-order"
+    ]
   },
   "duplicate_worker_failure": {
     "pid": 103632,

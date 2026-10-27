@@ -106704,3 +106704,489 @@ The active factor screen remains in progress, and the latest completed retrieval
 ## Longer retrieved-demonstration ablation, queued 2026-10-27
 
 The active full-factor screen is still running. Added a controlled 320-token per-demonstration cap comparison on split/sample seeds 20270327/20270332, using the same Qwen checkpoint and cached `text-embedding-3-small` vectors. This tests whether retaining more schema and query detail helps compared with 64-token and 160-token demonstrations. The command is queued after the existing comparisons. Test metrics are report-only.
+
+## when2call-openai-pool-feature-k-screen-20270333
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_when2call_dynamic_retrieval",
+    "--output-dir",
+    "outputs/when2call-openai-pool-feature-k-screen-20270333",
+    "--sample-seed",
+    "20270332",
+    "--split-seed",
+    "20270327",
+    "--max-validation-examples",
+    "500",
+    "--qwen-checkpoint",
+    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "--batch-size",
+    "1",
+    "--embedding-model",
+    "text-embedding-3-small",
+    "--embedding-dimensions",
+    "1536",
+    "--cache-dir",
+    "outputs/when2call-openai-embedding-cache"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "when2call-openai-pool-feature-k-screen-20270333",
+  "failure_reason": null,
+  "metadata": {
+    "all_clean_development_questions_excluded_from_retrieval": true,
+    "embedding_cache": {
+      "train_pref_plus_train_sft_question_and_tools": {
+        "training": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-train_pref_plus_train_sft_question_and_tools-training-0ab55e739fd2dead88d6322e.npz",
+        "validation": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-question_and_tools-validation-43161f73d07ea2e560aed438.npz"
+      },
+      "train_pref_plus_train_sft_question_only": {
+        "training": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-train_pref_plus_train_sft_question_only-training-9969d9d3f2e13b45298d6a32.npz",
+        "validation": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-question_only-validation-4de94adc676fbc3275c0664a.npz"
+      },
+      "train_pref_plus_train_sft_tools_only": {
+        "training": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-train_pref_plus_train_sft_tools_only-training-27b2140fc6c79a1f1bf25f70.npz",
+        "validation": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-tools_only-validation-f3eec60de5b6919e10f25873.npz"
+      },
+      "train_pref_question_and_tools": {
+        "training": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-train_pref_question_and_tools-training-dbacea59cc861a99f2f05aee.npz",
+        "validation": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-question_and_tools-validation-43161f73d07ea2e560aed438.npz"
+      },
+      "train_pref_question_only": {
+        "training": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-train_pref_question_only-training-835ed2ac16be46f1fef2ad49.npz",
+        "validation": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-question_only-validation-4de94adc676fbc3275c0664a.npz"
+      },
+      "train_pref_tools_only": {
+        "training": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-train_pref_tools_only-training-cad8e23a266adfc09c964c79.npz",
+        "validation": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-tools_only-validation-f3eec60de5b6919e10f25873.npz"
+      },
+      "train_sft_question_and_tools": {
+        "training": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-train_sft_question_and_tools-training-8de4a4943ca9811df3a68f2d.npz",
+        "validation": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-question_and_tools-validation-43161f73d07ea2e560aed438.npz"
+      },
+      "train_sft_question_only": {
+        "training": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-train_sft_question_only-training-2c374d65a8c9d83acbd7fd17.npz",
+        "validation": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-question_only-validation-4de94adc676fbc3275c0664a.npz"
+      },
+      "train_sft_tools_only": {
+        "training": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-train_sft_tools_only-training-d5632c0ae91dceec41dfb131.npz",
+        "validation": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-tools_only-validation-f3eec60de5b6919e10f25873.npz"
+      }
+    },
+    "embedding_cache_usage": {
+      "train_pref_plus_train_sft_question_and_tools": {
+        "training": {
+          "api_calls": 259,
+          "cache_hit": false,
+          "embedding_count": 16518,
+          "input_tokens": 1254013
+        },
+        "validation": {
+          "api_calls": 0,
+          "cache_hit": true,
+          "embedding_count": 500,
+          "input_tokens": 0
+        }
+      },
+      "train_pref_plus_train_sft_question_only": {
+        "training": {
+          "api_calls": 259,
+          "cache_hit": false,
+          "embedding_count": 16518,
+          "input_tokens": 359696
+        },
+        "validation": {
+          "api_calls": 0,
+          "cache_hit": true,
+          "embedding_count": 500,
+          "input_tokens": 0
+        }
+      },
+      "train_pref_plus_train_sft_tools_only": {
+        "training": {
+          "api_calls": 259,
+          "cache_hit": false,
+          "embedding_count": 16518,
+          "input_tokens": 5192380
+        },
+        "validation": {
+          "api_calls": 0,
+          "cache_hit": true,
+          "embedding_count": 500,
+          "input_tokens": 0
+        }
+      },
+      "train_pref_question_and_tools": {
+        "training": {
+          "api_calls": 127,
+          "cache_hit": false,
+          "embedding_count": 8068,
+          "input_tokens": 634231
+        },
+        "validation": {
+          "api_calls": 0,
+          "cache_hit": true,
+          "embedding_count": 500,
+          "input_tokens": 0
+        }
+      },
+      "train_pref_question_only": {
+        "training": {
+          "api_calls": 127,
+          "cache_hit": false,
+          "embedding_count": 8068,
+          "input_tokens": 180985
+        },
+        "validation": {
+          "api_calls": 0,
+          "cache_hit": true,
+          "embedding_count": 500,
+          "input_tokens": 0
+        }
+      },
+      "train_pref_tools_only": {
+        "training": {
+          "api_calls": 127,
+          "cache_hit": false,
+          "embedding_count": 8068,
+          "input_tokens": 2639585
+        },
+        "validation": {
+          "api_calls": 0,
+          "cache_hit": true,
+          "embedding_count": 500,
+          "input_tokens": 0
+        }
+      },
+      "train_sft_question_and_tools": {
+        "training": {
+          "api_calls": 184,
+          "cache_hit": false,
+          "embedding_count": 11727,
+          "input_tokens": 861296
+        },
+        "validation": {
+          "api_calls": 8,
+          "cache_hit": false,
+          "embedding_count": 500,
+          "input_tokens": 37662
+        }
+      },
+      "train_sft_question_only": {
+        "training": {
+          "api_calls": 184,
+          "cache_hit": false,
+          "embedding_count": 11727,
+          "input_tokens": 248737
+        },
+        "validation": {
+          "api_calls": 8,
+          "cache_hit": false,
+          "embedding_count": 500,
+          "input_tokens": 10679
+        }
+      },
+      "train_sft_tools_only": {
+        "training": {
+          "api_calls": 184,
+          "cache_hit": false,
+          "embedding_count": 11727,
+          "input_tokens": 3524061
+        },
+        "validation": {
+          "api_calls": 8,
+          "cache_hit": false,
+          "embedding_count": 500,
+          "input_tokens": 153765
+        }
+      }
+    },
+    "embedding_dimensions": 1536,
+    "embedding_model": "text-embedding-3-small",
+    "few_shot_k": [
+      1,
+      2,
+      3
+    ],
+    "git_commit": "f0d30a63a4bd86ecffd9ba8223eda2c77f7e1573",
+    "label_mapping": {
+      "A": "cannot_answer",
+      "B": "request_for_info",
+      "C": "tool_call",
+      "D": "direct"
+    },
+    "label_vote_k": [
+      1,
+      3,
+      5
+    ],
+    "official_test_loaded": false,
+    "qwen_checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "retrieval_algorithm": "OpenAI cosine similarity",
+    "retrieval_features": [
+      "question only",
+      "tool schemas only",
+      "question and tool schemas"
+    ],
+    "retrieval_pool_sizes": {
+      "train_pref": 8068,
+      "train_pref_plus_train_sft": 16518,
+      "train_sft": 11727
+    },
+    "runtime_seconds": 2229.0524067878723,
+    "sample_seed": 20270332,
+    "split_seed": 20270327,
+    "status": "completed",
+    "training_performed": false,
+    "union_policy": "train_pref precedence, then unique train_sft questions",
+    "validation_examples": 500,
+    "validation_metrics": {
+      "qwen_zero_shot_corrected_mapping": {
+        "accuracy": 0.942,
+        "macro_f1": 0.967059240237315
+      },
+      "train_pref_plus_train_sft_question_and_tools_label_vote_1": {
+        "accuracy": 0.48,
+        "macro_f1": 0.519029470943307
+      },
+      "train_pref_plus_train_sft_question_and_tools_label_vote_3": {
+        "accuracy": 0.554,
+        "macro_f1": 0.5785254502669096
+      },
+      "train_pref_plus_train_sft_question_and_tools_label_vote_5": {
+        "accuracy": 0.576,
+        "macro_f1": 0.6008237165110305
+      },
+      "train_pref_plus_train_sft_question_and_tools_qwen_1shot": {
+        "accuracy": 0.59,
+        "macro_f1": 0.6842893604135574
+      },
+      "train_pref_plus_train_sft_question_and_tools_qwen_2shot": {
+        "accuracy": 0.65,
+        "macro_f1": 0.7211988459763821
+      },
+      "train_pref_plus_train_sft_question_and_tools_qwen_3shot": {
+        "accuracy": 0.658,
+        "macro_f1": 0.7128075979296435
+      },
+      "train_pref_plus_train_sft_question_only_label_vote_1": {
+        "accuracy": 0.5,
+        "macro_f1": 0.5389159008084838
+      },
+      "train_pref_plus_train_sft_question_only_label_vote_3": {
+        "accuracy": 0.53,
+        "macro_f1": 0.5634868240083621
+      },
+      "train_pref_plus_train_sft_question_only_label_vote_5": {
+        "accuracy": 0.604,
+        "macro_f1": 0.6291500056625635
+      },
+      "train_pref_plus_train_sft_question_only_qwen_1shot": {
+        "accuracy": 0.61,
+        "macro_f1": 0.7062685463972433
+      },
+      "train_pref_plus_train_sft_question_only_qwen_2shot": {
+        "accuracy": 0.618,
+        "macro_f1": 0.710853119944029
+      },
+      "train_pref_plus_train_sft_question_only_qwen_3shot": {
+        "accuracy": 0.64,
+        "macro_f1": 0.7092430578057574
+      },
+      "train_pref_plus_train_sft_tools_only_label_vote_1": {
+        "accuracy": 0.61,
+        "macro_f1": 0.6695965937793174
+      },
+      "train_pref_plus_train_sft_tools_only_label_vote_3": {
+        "accuracy": 0.584,
+        "macro_f1": 0.6202531074465925
+      },
+      "train_pref_plus_train_sft_tools_only_label_vote_5": {
+        "accuracy": 0.602,
+        "macro_f1": 0.6330683709237688
+      },
+      "train_pref_plus_train_sft_tools_only_qwen_1shot": {
+        "accuracy": 0.716,
+        "macro_f1": 0.7961232191902626
+      },
+      "train_pref_plus_train_sft_tools_only_qwen_2shot": {
+        "accuracy": 0.718,
+        "macro_f1": 0.7776098476747225
+      },
+      "train_pref_plus_train_sft_tools_only_qwen_3shot": {
+        "accuracy": 0.768,
+        "macro_f1": 0.8103989181879648
+      },
+      "train_pref_question_and_tools_label_vote_1": {
+        "accuracy": 0.396,
+        "macro_f1": 0.4675944601317736
+      },
+      "train_pref_question_and_tools_label_vote_3": {
+        "accuracy": 0.396,
+        "macro_f1": 0.4711208545281198
+      },
+      "train_pref_question_and_tools_label_vote_5": {
+        "accuracy": 0.39,
+        "macro_f1": 0.4677259535047345
+      },
+      "train_pref_question_and_tools_qwen_1shot": {
+        "accuracy": 0.564,
+        "macro_f1": 0.6844310492568626
+      },
+      "train_pref_question_and_tools_qwen_2shot": {
+        "accuracy": 0.634,
+        "macro_f1": 0.7232579263808987
+      },
+      "train_pref_question_and_tools_qwen_3shot": {
+        "accuracy": 0.644,
+        "macro_f1": 0.7163594973025228
+      },
+      "train_pref_question_only_label_vote_1": {
+        "accuracy": 0.39,
+        "macro_f1": 0.46272093602190695
+      },
+      "train_pref_question_only_label_vote_3": {
+        "accuracy": 0.398,
+        "macro_f1": 0.4666610766392755
+      },
+      "train_pref_question_only_label_vote_5": {
+        "accuracy": 0.414,
+        "macro_f1": 0.48066492567296104
+      },
+      "train_pref_question_only_qwen_1shot": {
+        "accuracy": 0.58,
+        "macro_f1": 0.6972610722610724
+      },
+      "train_pref_question_only_qwen_2shot": {
+        "accuracy": 0.626,
+        "macro_f1": 0.7358737753474596
+      },
+      "train_pref_question_only_qwen_3shot": {
+        "accuracy": 0.632,
+        "macro_f1": 0.7229420059933016
+      },
+      "train_pref_tools_only_label_vote_1": {
+        "accuracy": 0.456,
+        "macro_f1": 0.5369111001744888
+      },
+      "train_pref_tools_only_label_vote_3": {
+        "accuracy": 0.436,
+        "macro_f1": 0.5165274328290811
+      },
+      "train_pref_tools_only_label_vote_5": {
+        "accuracy": 0.428,
+        "macro_f1": 0.518735748372082
+      },
+      "train_pref_tools_only_qwen_1shot": {
+        "accuracy": 0.658,
+        "macro_f1": 0.7602001354861767
+      },
+      "train_pref_tools_only_qwen_2shot": {
+        "accuracy": 0.718,
+        "macro_f1": 0.7921900133474793
+      },
+      "train_pref_tools_only_qwen_3shot": {
+        "accuracy": 0.73,
+        "macro_f1": 0.792095238095238
+      },
+      "train_sft_question_and_tools_label_vote_1": {
+        "accuracy": 0.574,
+        "macro_f1": 0.5713923510638725
+      },
+      "train_sft_question_and_tools_label_vote_3": {
+        "accuracy": 0.628,
+        "macro_f1": 0.6214033316506815
+      },
+      "train_sft_question_and_tools_label_vote_5": {
+        "accuracy": 0.642,
+        "macro_f1": 0.636591020752886
+      },
+      "train_sft_question_and_tools_qwen_1shot": {
+        "accuracy": 0.682,
+        "macro_f1": 0.74837158808933
+      },
+      "train_sft_question_and_tools_qwen_2shot": {
+        "accuracy": 0.694,
+        "macro_f1": 0.7446498887176854
+      },
+      "train_sft_question_and_tools_qwen_3shot": {
+        "accuracy": 0.744,
+        "macro_f1": 0.769573874950219
+      },
+      "train_sft_question_only_label_vote_1": {
+        "accuracy": 0.608,
+        "macro_f1": 0.6080000000000001
+      },
+      "train_sft_question_only_label_vote_3": {
+        "accuracy": 0.606,
+        "macro_f1": 0.6059227608611287
+      },
+      "train_sft_question_only_label_vote_5": {
+        "accuracy": 0.65,
+        "macro_f1": 0.6499873995463836
+      },
+      "train_sft_question_only_qwen_1shot": {
+        "accuracy": 0.708,
+        "macro_f1": 0.7822549019607843
+      },
+      "train_sft_question_only_qwen_2shot": {
+        "accuracy": 0.72,
+        "macro_f1": 0.7862797845966463
+      },
+      "train_sft_question_only_qwen_3shot": {
+        "accuracy": 0.732,
+        "macro_f1": 0.7785240151354735
+      },
+      "train_sft_tools_only_label_vote_1": {
+        "accuracy": 0.694,
+        "macro_f1": 0.6939400122423995
+      },
+      "train_sft_tools_only_label_vote_3": {
+        "accuracy": 0.644,
+        "macro_f1": 0.6440000000000001
+      },
+      "train_sft_tools_only_label_vote_5": {
+        "accuracy": 0.634,
+        "macro_f1": 0.6336703032729456
+      },
+      "train_sft_tools_only_qwen_1shot": {
+        "accuracy": 0.774,
+        "macro_f1": 0.8205419686465163
+      },
+      "train_sft_tools_only_qwen_2shot": {
+        "accuracy": 0.794,
+        "macro_f1": 0.8343800035580857
+      },
+      "train_sft_tools_only_qwen_3shot": {
+        "accuracy": 0.816,
+        "macro_f1": 0.8396969463228173
+      }
+    },
+    "validation_source": "nvidia/When2Call train_sft",
+    "wandb_run_id": "irta2qip",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/irta2qip"
+  },
+  "metrics_path": "/workspace/post-training/outputs/when2call-openai-pool-feature-k-screen-20270333/metrics.json",
+  "official_test_loaded": false,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/when2call-openai-pool-feature-k-screen-20270333",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-27T04:53:56.993009+00:00",
+  "status": "completed",
+  "test_status": "not measured",
+  "timestamp": "2026-10-27T05:32:02.820753+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "irta2qip",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/irta2qip"
+}
+```
+
+## Completed OpenAI retrieval screen and required aggregate measurement
+
+The screen completed on 500 clean validation examples. The clean-selected baseline was corrected-mapping zero-shot Qwen at 0.942 accuracy and 0.967059 macro F1. The best retrieved prompt was train_sft tools-only K=3 at 0.816 accuracy and 0.839697 macro F1. Source checkpoint training evidence is linked to `outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json` (epoch 2, 500-example probe, accuracy 0.960000, macro F1 0.720145, loss 0.408354). A matching aggregate black-box measurement is missing because the existing Qwen report uses a different prompt order. The corrected zero-shot test measurement is queued before further queued experiments, after the clean replication that had already started. The test evaluator saves only aggregate metrics and source training evidence. Test labels remain report-only.
