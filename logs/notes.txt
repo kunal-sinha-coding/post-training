@@ -7526,3 +7526,6 @@ Scalar temperatures did not improve clean-validation accuracy over the request-c
 2026-10-27: Commit name: Correct queued K=2 retrieval command. Removed a duplicate later K=3 argument that would have overridden the intended K=2 setting. The active 15% probability-weight refinement is unchanged.
 
 2026-10-27: Commit name: Preserve K=2 in queued retrieval run. Verified the queued K=2 clean command keeps exactly one --k 2 option, with no later override.
+
+
+2026-10-27: Commit name: Explore larger preference mixtures. Audited the completed 15% preference/SFT K=2 experiment. Training probe evidence links frozen Qwen epoch 2 (500 examples, 0.9600 accuracy, 0.72015 macro F1, loss 0.40835). Clean validation on 500 rows selected K=2 at 0.9540 accuracy and 0.97533 macro F1, versus zero-shot at 0.9420 and 0.96706. Full aggregate test metrics on 3,652 rows were 0.68538 accuracy and 0.51529 macro F1 versus zero-shot at 0.68045 and 0.51193. Test labels were report-only. Added 30% and 35% preference/SFT retrieval pools and queued clean-validation comparisons followed by forced aggregate-only test reports.

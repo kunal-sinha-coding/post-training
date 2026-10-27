@@ -93,7 +93,7 @@ def main() -> int:
     parser.add_argument("--label-disagreement-fallback-k1", action="store_true")
     parser.add_argument("--require-neighbor-match-zero-shot", action="store_true")
     parser.add_argument("--probability-average", action="store_true")
-    parser.add_argument("--retrieval-pool", choices=("train_sft", "train_pref", "train_pref_plus_train_sft", "train_pref_10pct_plus_train_sft", "train_pref_15pct_plus_train_sft", "train_pref_20pct_plus_train_sft", "train_pref_25pct_plus_train_sft"), default="train_sft")
+    parser.add_argument("--retrieval-pool", choices=("train_sft", "train_pref", "train_pref_plus_train_sft", "train_pref_10pct_plus_train_sft", "train_pref_15pct_plus_train_sft", "train_pref_20pct_plus_train_sft", "train_pref_25pct_plus_train_sft", "train_pref_30pct_plus_train_sft", "train_pref_35pct_plus_train_sft"), default="train_sft")
     parser.add_argument("--retrieval-weights", type=float, nargs="+", default=[0.25, 0.5, 0.75])
     args = parser.parse_args()
     # Keep every clean-validation evaluation within the declared sample cap.
