@@ -11055,3 +11055,27 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.7_k1": {"accuracy": 0.946, "macro_f1": 0.9672277869555217}}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## when2call-similarity-gate-k2-label-consensus-20270371
+
+Timestamp: 2026-10-27T09:57:14.116945+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_when2call_similarity_gated_retrieval", "--output-dir", "outputs/when2call-similarity-gate-k2-label-consensus-20270371", "--split-seed", "20270327", "--sample-seed", "20270332", "--max-validation-examples", "500", "--qwen-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--embedding-model", "text-embedding-3-small", "--embedding-dimensions", "1536", "--cache-dir", "outputs/when2call-openai-embedding-cache", "--batch-size", "1", "--gate-quantiles", "0.65", "0.7", "0.75", "0.8", "--feature", "tools_only", "--gate-score", "absolute", "--k", "2", "--label-consensus-gate"]. Output: /workspace/post-training/outputs/when2call-similarity-gate-k2-label-consensus-20270371. W&B run: ascni5m6.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## when2call-similarity-gate-k2-label-consensus-test-20270372
+
+Timestamp: 2026-10-27T10:11:16.383823+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_when2call_similarity_gate_test_screen", "--output-dir", "outputs/when2call-similarity-gate-k2-label-consensus-test-20270372", "--clean-metrics", "outputs/when2call-similarity-gate-k2-label-consensus-20270371/metrics.json", "--sample-seed", "20270372", "--max-test-examples", "500", "--split-seed", "20270327", "--validation-sample-seed", "20270332", "--qwen-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--embedding-model", "text-embedding-3-small", "--embedding-dimensions", "1536", "--cache-dir", "outputs/when2call-openai-embedding-cache", "--batch-size", "1", "--feature", "tools_only", "--label-consensus-gate", "--force-screen"]. Output: /workspace/post-training/outputs/when2call-similarity-gate-k2-label-consensus-test-20270372. W&B run: jc9c8ly6.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: True. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.65_k2_consensus": {"accuracy": 0.958, "macro_f1": 0.9765279486582649}}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
