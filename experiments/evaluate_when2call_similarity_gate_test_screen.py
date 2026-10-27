@@ -129,7 +129,7 @@ def main() -> int:
     gate_score = clean.get("gate_score", "absolute")
     gate_prefix = "gate_top_" if gate_score == "absolute" else "margin_gate_top_"
     gate_key = max((key for key in validation_metrics if key.startswith(gate_prefix)), key=lambda key: (validation_metrics[key]["accuracy"], validation_metrics[key]["macro_f1"]))
-    quantile = gate_key.removeprefix(gate_prefix).split("_k", 1)[0]
+    quantile = gate_key.removeprefix(gate_prefix).split("_", 1)[0]
     k = int(clean.get("k", 3))
     threshold_key = "gate_thresholds_from_unlabeled_validation_similarities" if gate_score == "absolute" else "gate_thresholds_from_unlabeled_validation_scores"
     threshold = clean[threshold_key][quantile]

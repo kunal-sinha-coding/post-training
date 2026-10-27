@@ -11367,3 +11367,51 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "margin_gate_top_0.75_k1_probavg_w0.55": {"accuracy": 0.912, "macro_f1": 0.9459397800400318}}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## when2call-similarity-gate-sft-tools-consensus-k3-20270396
+
+Timestamp: 2026-10-27T13:11:20.836095+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_when2call_similarity_gated_retrieval", "--output-dir", "outputs/when2call-similarity-gate-sft-tools-consensus-k3-20270396", "--split-seed", "20270327", "--sample-seed", "20270332", "--max-validation-examples", "500", "--qwen-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--embedding-model", "text-embedding-3-small", "--embedding-dimensions", "1536", "--cache-dir", "outputs/when2call-openai-embedding-cache", "--batch-size", "1", "--gate-quantiles", "0.65", "0.7", "0.75", "--feature", "tools_only", "--gate-score", "absolute", "--k", "3", "--label-consensus-gate", "--probability-average", "--retrieval-weights", "0.55", "--retrieval-pool", "train_sft"]. Output: /workspace/post-training/outputs/when2call-similarity-gate-sft-tools-consensus-k3-20270396. W&B run: 66e45fps.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## when2call-similarity-gate-sft-tools-consensus-k3-test-20270397
+
+Timestamp: 2026-10-27T13:11:51.494374+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_when2call_similarity_gate_test_screen", "--output-dir", "outputs/when2call-similarity-gate-sft-tools-consensus-k3-test-20270397", "--clean-metrics", "outputs/when2call-similarity-gate-sft-tools-consensus-k3-20270396/metrics.json", "--sample-seed", "20270397", "--max-test-examples", "500", "--split-seed", "20270327", "--validation-sample-seed", "20270332", "--qwen-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--embedding-model", "text-embedding-3-small", "--embedding-dimensions", "1536", "--cache-dir", "outputs/when2call-openai-embedding-cache", "--batch-size", "1", "--feature", "tools_only", "--label-consensus-gate", "--probability-average"]. Output: /workspace/post-training/outputs/when2call-similarity-gate-sft-tools-consensus-k3-test-20270397. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## when2call-similarity-gate-sft-tools-neighbor-match-k1-20270398
+
+Timestamp: 2026-10-27T13:15:53.091786+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_when2call_similarity_gated_retrieval", "--output-dir", "outputs/when2call-similarity-gate-sft-tools-neighbor-match-k1-20270398", "--split-seed", "20270327", "--sample-seed", "20270332", "--max-validation-examples", "500", "--qwen-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--embedding-model", "text-embedding-3-small", "--embedding-dimensions", "1536", "--cache-dir", "outputs/when2call-openai-embedding-cache", "--batch-size", "1", "--gate-quantiles", "0.65", "0.7", "0.75", "--feature", "tools_only", "--gate-score", "absolute", "--k", "1", "--probability-average", "--retrieval-weights", "0.55", "--retrieval-pool", "train_sft", "--require-neighbor-match-zero-shot"]. Output: /workspace/post-training/outputs/when2call-similarity-gate-sft-tools-neighbor-match-k1-20270398. W&B run: 1no04vo3.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## when2call-similarity-gate-sft-tools-neighbor-match-k1-test-20270399
+
+Timestamp: 2026-10-27T13:16:23.407069+00:00. Status: skipped.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_when2call_similarity_gate_test_screen", "--output-dir", "outputs/when2call-similarity-gate-sft-tools-neighbor-match-k1-test-20270399", "--clean-metrics", "outputs/when2call-similarity-gate-sft-tools-neighbor-match-k1-20270398/metrics.json", "--sample-seed", "20270399", "--max-test-examples", "500", "--split-seed", "20270327", "--validation-sample-seed", "20270332", "--qwen-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--embedding-model", "text-embedding-3-small", "--embedding-dimensions", "1536", "--cache-dir", "outputs/when2call-openai-embedding-cache", "--batch-size", "1", "--feature", "tools_only", "--probability-average", "--require-neighbor-match-zero-shot"]. Output: /workspace/post-training/outputs/when2call-similarity-gate-sft-tools-neighbor-match-k1-test-20270399. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.7_k1_qwen_agree_probavg_w0.55": {"accuracy": 0.94, "macro_f1": 0.9659767939086124}}}. Failure reason: No similarity gate improved clean-validation accuracy over zero-shot..
+
+This record was written automatically. Candidate selection must use clean validation only.
