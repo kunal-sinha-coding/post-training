@@ -4,16 +4,16 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "fresh_base_bfcl_when2call_data_exploration_v1",
-  "current_hypothesis": "The clean-selected train_pref gated blend scores 0.916 validation accuracy and 0.68483 full-test accuracy. Test whether a preference-first, question-deduplicated union of train_pref and train_sft provides more useful neighbors under the same K=1 probability gate.",
+  "current_hypothesis": "Adding the query text to the tool-schema retrieval embedding may distinguish intent among queries with similar available tools. Compare this to tools-only retrieval with the same SFT pool, K=1 probability blend, and clean split.",
   "active_experiment": {
-    "pid": 210415,
+    "pid": 211836,
     "command": [
       "python",
       "-u",
       "-m",
       "experiments.evaluate_when2call_similarity_gated_retrieval",
       "--output-dir",
-      "outputs/when2call-similarity-gate-pref-first-union-k1-probavg-20270387",
+      "outputs/when2call-similarity-gate-sft-question-tools-k1-probavg-20270389",
       "--split-seed",
       "20270327",
       "--sample-seed",
@@ -35,7 +35,7 @@
       "0.7",
       "0.75",
       "--feature",
-      "tools_only",
+      "question_and_tools",
       "--gate-score",
       "absolute",
       "--k",
@@ -44,9 +44,9 @@
       "--retrieval-weights",
       "0.55",
       "--retrieval-pool",
-      "train_pref_plus_train_sft"
+      "train_sft"
     ],
-    "started_at": "2026-10-27T12:21:29.276247+00:00"
+    "started_at": "2026-10-27T12:45:11.007953+00:00"
   },
   "worker_command": [
     "python",
@@ -54,7 +54,7 @@
     "-m",
     "experiments.evaluate_when2call_similarity_gated_retrieval",
     "--output-dir",
-    "outputs/when2call-similarity-gate-pref-first-union-k1-probavg-20270387",
+    "outputs/when2call-similarity-gate-sft-question-tools-k1-probavg-20270389",
     "--split-seed",
     "20270327",
     "--sample-seed",
@@ -76,7 +76,7 @@
     "0.7",
     "0.75",
     "--feature",
-    "tools_only",
+    "question_and_tools",
     "--gate-score",
     "absolute",
     "--k",
@@ -85,42 +85,9 @@
     "--retrieval-weights",
     "0.55",
     "--retrieval-pool",
-    "train_pref_plus_train_sft"
+    "train_sft"
   ],
-  "worker_queue": [
-    [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_when2call_similarity_gate_test_screen",
-      "--output-dir",
-      "outputs/when2call-similarity-gate-pref-first-union-k1-probavg-test-20270388",
-      "--clean-metrics",
-      "outputs/when2call-similarity-gate-pref-first-union-k1-probavg-20270387/metrics.json",
-      "--sample-seed",
-      "20270388",
-      "--max-test-examples",
-      "500",
-      "--split-seed",
-      "20270327",
-      "--validation-sample-seed",
-      "20270332",
-      "--qwen-checkpoint",
-      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
-      "--embedding-model",
-      "text-embedding-3-small",
-      "--embedding-dimensions",
-      "1536",
-      "--cache-dir",
-      "outputs/when2call-openai-embedding-cache",
-      "--batch-size",
-      "1",
-      "--feature",
-      "tools_only",
-      "--probability-average",
-      "--force-screen"
-    ]
-  ],
+  "worker_queue": [],
   "_previous_command": [
     "python",
     "-u",
@@ -153,10 +120,10 @@
     "macro_f1": 0.48337889372616516,
     "selection": "clean validation only"
   },
-  "last_heartbeat": "2026-10-27T12:21:29.276260+00:00",
-  "last_action": "Watchdog started validation worker pid 210415.",
+  "last_heartbeat": "2026-10-27T12:45:11.007962+00:00",
+  "last_action": "Watchdog started validation worker pid 211836.",
   "watchdog_enabled": true,
-  "research_log_size": 1419397,
+  "research_log_size": 1423499,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -164,7 +131,7 @@
     "-m",
     "experiments.evaluate_when2call_similarity_gated_retrieval",
     "--output-dir",
-    "outputs/when2call-similarity-gate-pref-first-union-k1-probavg-20270387",
+    "outputs/when2call-similarity-gate-sft-question-tools-k1-probavg-20270389",
     "--split-seed",
     "20270327",
     "--sample-seed",
@@ -186,7 +153,7 @@
     "0.7",
     "0.75",
     "--feature",
-    "tools_only",
+    "question_and_tools",
     "--gate-score",
     "absolute",
     "--k",
@@ -195,13 +162,13 @@
     "--retrieval-weights",
     "0.55",
     "--retrieval-pool",
-    "train_pref_plus_train_sft"
+    "train_sft"
   ],
   "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-27T12:20:58.780190+00:00",
-  "planning_ack_deadline": "2026-10-27T12:22:58.780209+00:00",
-  "planning_attempts": 14,
+  "planning_notified_at": "2026-10-27T12:44:40.461582+00:00",
+  "planning_ack_deadline": "2026-10-27T12:46:40.461606+00:00",
+  "planning_attempts": 17,
   "best_observed_test": {
     "method": "single_average",
     "accuracy": 0.7154983570646222,
@@ -210,7 +177,7 @@
     "artifact": "outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json",
     "selection": "Report-only aggregate benchmark result. Test labels were not used for candidate selection."
   },
-  "next_hypothesis": "Preference rows may supply useful label diversity while SFT-only questions may add coverage. Compare the preference-first deduplicated union under the same K=1 tools-only probability blend and clean-selected similarity quantiles.",
+  "next_hypothesis": "If question-plus-tools retrieval improves clean-validation accuracy over zero-shot, use the fixed clean-selected gate for an aggregate-only test screen. If it does not, explore a separate label-free retrieval representation or augmentation hypothesis without tuning on test labels.",
   "post_queue_report_required": {
     "required": true,
     "trigger": "After the family confidence-routing validation and aggregate test pass.",
@@ -247,9 +214,9 @@
     "selection_use": "none"
   },
   "evidence_audit": {
-    "latest_completed_experiment": "when2call-similarity-gate-train-pref-k1-probavg-test-20270386",
+    "latest_completed_experiment": "when2call-similarity-gate-pref-first-union-k1-probavg-test-20270388",
     "training_metrics_recorded": true,
-    "training_metrics_scope": "Retrieval did not train; metrics from the frozen Qwen epoch-2 checkpoint are linked.",
+    "training_metrics_scope": "Retrieval itself did not train. The frozen Qwen epoch-2 checkpoint has a recorded 500-row training probe and epoch training loss.",
     "training_metrics_sources": [
       {
         "path": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json",
@@ -262,43 +229,44 @@
       }
     ],
     "clean_validation_recorded": true,
-    "clean_validation_source": "outputs/when2call-similarity-gate-train-pref-k1-probavg-20270385/metrics.json",
+    "clean_validation_source": "outputs/when2call-similarity-gate-pref-first-union-k1-probavg-20270387/metrics.json",
     "clean_validation_examples": 500,
-    "clean_validation_best_accuracy": {
-      "method": "gate_top_0.7_k1_probavg_w0.55 and gate_top_0.75_k1_probavg_w0.55",
-      "accuracy": 0.916,
-      "macro_f1": 0.9535126120491975
-    },
     "clean_validation_zero_shot": {
       "accuracy": 0.942,
       "macro_f1": 0.967059240237315
     },
+    "clean_validation_best": {
+      "method": "gate_top_0.65_k1_probavg_w0.55 (tie with q=0.70 and q=0.75)",
+      "accuracy": 0.922,
+      "macro_f1": 0.9568296577618576
+    },
     "aggregate_black_box_test_metrics_recorded": true,
-    "aggregate_black_box_test_source": "outputs/when2call-similarity-gate-train-pref-k1-probavg-test-20270386/metrics.json",
+    "aggregate_black_box_test_source": "outputs/when2call-similarity-gate-pref-first-union-k1-probavg-test-20270388/metrics.json",
     "aggregate_black_box_test_examples": 3652,
+    "test_sample_examples": 500,
+    "test_sample_metrics": {
+      "zero_shot": {
+        "accuracy": 0.696,
+        "macro_f1": 0.5237915692425749
+      },
+      "selected_gate": {
+        "accuracy": 0.704,
+        "macro_f1": 0.5289747900403964
+      }
+    },
     "aggregate_black_box_test_metrics": {
       "zero_shot": {
         "accuracy": 0.6804490690032858,
         "macro_f1": 0.511927570670597
       },
-      "gate_top_0.7_k1_probavg_w0.55": {
-        "accuracy": 0.6848302300109529,
-        "macro_f1": 0.5148663577315737
-      }
-    },
-    "test_sample_examples": 500,
-    "test_sample_metrics": {
-      "zero_shot": {
-        "accuracy": 0.68,
-        "macro_f1": 0.5105844302365131
-      },
-      "gate_top_0.7_k1_probavg_w0.55": {
-        "accuracy": 0.686,
-        "macro_f1": 0.5141243090855793
+      "preference_first_union_gate": {
+        "accuracy": 0.6861993428258488,
+        "macro_f1": 0.5155557292214522
       }
     },
     "full_test_evaluated": true,
-    "aggregate_black_box_test_selection_policy": "Candidate and threshold were selected by clean validation. Test labels were used only for aggregate metrics and did not guide the next experiment."
+    "test_labels_used_for_selection": false,
+    "aggregate_black_box_test_selection_policy": "Clean validation selected the method and gate. The fixed test sample triggered full aggregate measurement under the predeclared sample-accuracy gate. Test labels were used only to compute aggregate metrics, with no per-example outcomes saved."
   },
   "duplicate_worker_failure": {
     "pid": 103632,
