@@ -153,6 +153,32 @@
       "1536",
       "--cache-dir",
       "outputs/when2call-openai-embedding-cache"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_when2call_dynamic_retrieval",
+      "--output-dir",
+      "outputs/when2call-openai-short-demo-prompt-screen-20270343",
+      "--sample-seed",
+      "20270332",
+      "--split-seed",
+      "20270327",
+      "--max-validation-examples",
+      "500",
+      "--qwen-checkpoint",
+      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "--batch-size",
+      "1",
+      "--per-demo-tokens",
+      "64",
+      "--embedding-model",
+      "text-embedding-3-small",
+      "--embedding-dimensions",
+      "1536",
+      "--cache-dir",
+      "outputs/when2call-openai-embedding-cache"
     ]
   ],
   "_previous_command": [
@@ -187,7 +213,7 @@
     "selection": "clean validation only"
   },
   "last_heartbeat": "2026-10-27T04:53:56.993022+00:00",
-  "last_action": "Verified the active OpenAI screen, preserved all queued runs, and appended an independent-split stability screen. Test labels remain report-only.",
+  "last_action": "Confirmed no evidence is missing for the latest completed candidate. Left the active screen and queued runs unchanged, then appended a same-sample shorter-demo prompt comparison.",
   "watchdog_enabled": true,
   "research_log_size": 1364043,
   "stop_command": "STOP",
@@ -228,7 +254,7 @@
     "artifact": "outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json",
     "selection": "Report-only aggregate benchmark result. Test labels were not used for candidate selection."
   },
-  "next_hypothesis": "The clean retrieval findings may depend on one particular SFT development partition. Evaluate the same OpenAI pool, feature, and K screen on an independent split before deciding that any configuration generalizes.",
+  "next_hypothesis": "Shorter retrieved demonstrations may reduce prompt distraction while preserving the useful label and action pattern. Compare a 64-token per-demo cap against the current 160-token cap on the same clean sample.",
   "post_queue_report_required": {
     "required": true,
     "trigger": "After the family confidence-routing validation and aggregate test pass.",

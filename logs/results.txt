@@ -106696,3 +106696,7 @@ The latest completed retrieval screen has recorded training-probe, clean-validat
 ## Independent-split retrieval stability screen, queued 2026-10-27
 
 Hypothesis: The measured retrieval differences may depend on one SFT split. After the current source, feature, and K screen, its replication, the larger-embedding comparison, and the extra small-embedding sample, run the same full OpenAI factor screen on a distinct split with seeds 20270340/20270342. Use 500 clean examples and the same frozen Qwen epoch-2 adapter. Black-box test remains report-only.
+
+## Shorter retrieved-demonstration ablation, queued 2026-10-27
+
+The active factor screen remains in progress, and the latest completed retrieval candidate has all required training, clean-validation, and aggregate black-box evidence. Added a controlled comparison using the same 20270327/20270332 clean split and sample, the same Qwen checkpoint, and the same OpenAI small embedding cache, with the per-demonstration cap reduced from 160 tokens to 64. The experiment tests whether shorter demonstrations reduce prompt distraction. Test metrics remain report-only.
