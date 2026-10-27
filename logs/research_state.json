@@ -6,18 +6,18 @@
   "protocol": "fresh_base_bfcl_when2call_data_exploration_v1",
   "current_hypothesis": "Across eleven independent clean samples, full-cannot mix 50 remains ahead of mix 60 in mean accuracy. The margin is small, and the 20270205 sample also favors mix 50. Continue fresh clean replications before drawing a firm conclusion.",
   "active_experiment": {
-    "pid": 175475,
+    "pid": 175862,
     "command": [
       "python",
       "-u",
       "-m",
       "experiments.evaluate_existing_when2call_hybrid_validation",
       "--output-dir",
-      "outputs/qwen-single-encoder48-route-replication-20270203",
+      "outputs/qwen-single-encoder48-route-replication-20270207",
       "--split-seed",
-      "20270203",
+      "20270207",
       "--sample-seed",
-      "20270204",
+      "20270208",
       "--max-validation-examples",
       "500",
       "--qwen-checkpoint",
@@ -27,7 +27,7 @@
       "--encoder-checkpoint",
       "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
     ],
-    "started_at": "2026-10-27T03:08:44.003480+00:00"
+    "started_at": "2026-10-27T03:10:44.616698+00:00"
   },
   "worker_command": [
     "python",
@@ -35,11 +35,11 @@
     "-m",
     "experiments.evaluate_existing_when2call_hybrid_validation",
     "--output-dir",
-    "outputs/qwen-single-encoder48-route-replication-20270203",
+    "outputs/qwen-single-encoder48-route-replication-20270207",
     "--split-seed",
-    "20270203",
+    "20270207",
     "--sample-seed",
-    "20270204",
+    "20270208",
     "--max-validation-examples",
     "500",
     "--qwen-checkpoint",
@@ -56,11 +56,11 @@
       "-m",
       "experiments.evaluate_existing_when2call_hybrid_validation",
       "--output-dir",
-      "outputs/qwen-single-encoder48-route-replication-20270207",
+      "outputs/qwen-single-encoder48-route-replication-20270209",
       "--split-seed",
-      "20270207",
+      "20270209",
       "--sample-seed",
-      "20270208",
+      "20270210",
       "--max-validation-examples",
       "500",
       "--qwen-checkpoint",
@@ -88,9 +88,9 @@
     "outputs/test-clean-validation-smooth0075-wd002-weight75-25.json"
   ],
   "experiment_queue": [
-    "Allow the active 20270205 clean validation to finish.",
-    "Run the skipped 20270203/20270204 clean sample next, then a distinct 20270207/20270208 clean sample.",
-    "Recompute clean-only accuracy and macro F1 means. Keep aggregate test results report-only."
+    "Finish the active 20270207/20270208 clean screen.",
+    "Run a distinct 20270209/20270210 clean screen.",
+    "Recompute clean-only accuracy and macro F1 means across twelve samples. Keep aggregate black-box results report-only."
   ],
   "best_validation": {
     "experiment": "qwen-when2call-fullpool-sft-validation-base-seed20261062",
@@ -101,8 +101,8 @@
     "macro_f1": 0.48337889372616516,
     "selection": "clean validation only"
   },
-  "last_heartbeat": "2026-10-27T03:08:44.003494+00:00",
-  "last_action": "Recorded completed 20270205 clean validation. The source training metrics and matching 3652-row aggregate test report are present. The 20270203 clean validation is active and 20270207 remains queued.",
+  "last_heartbeat": "2026-10-27T03:10:44.616712+00:00",
+  "last_action": "The 20270205 evidence audit is complete. The 20270207 clean screen is active, and one further distinct clean replication is queued to resolve the small mean gap between 50 and 60 percent full-cannot mixing.",
   "watchdog_enabled": true,
   "research_log_size": 1225293,
   "stop_command": "STOP",
@@ -112,11 +112,11 @@
     "-m",
     "experiments.evaluate_existing_when2call_hybrid_validation",
     "--output-dir",
-    "outputs/qwen-single-encoder48-route-replication-20270203",
+    "outputs/qwen-single-encoder48-route-replication-20270207",
     "--split-seed",
-    "20270203",
+    "20270207",
     "--sample-seed",
-    "20270204",
+    "20270208",
     "--max-validation-examples",
     "500",
     "--qwen-checkpoint",
@@ -126,7 +126,12 @@
     "--encoder-checkpoint",
     "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
   ],
-  "recording_jobs": [],
+  "recording_jobs": [
+    {
+      "pid": 175861,
+      "experiment_id": "qwen-single-encoder48-route-replication-20270203"
+    }
+  ],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-27T03:05:11.794061+00:00",
   "planning_ack_deadline": "2026-10-27T03:07:11.794086+00:00",
@@ -140,7 +145,7 @@
     "metrics": "outputs/qwen-three-encoder-gate-test-20261082/aggregate-comparison.json",
     "selection": "Reported as the highest aggregate score in this frozen comparison only. Test metrics did not select the candidate; clean validation selected the entropy gate."
   },
-  "next_hypothesis": "After the active 20270203 run and queued 20270207 run finish, recompute clean-only means and intervals for full-cannot 50 and 60 percent. Do not use aggregate test results to choose a route.",
+  "next_hypothesis": "The 11-sample clean mean gap between the full-cannot 50 and 60 percent routes is 0.00145 accuracy. One more independent 500-row sample will test whether the ranking remains stable before narrowing the clean-selected route family.",
   "post_queue_report_required": {
     "required": true,
     "trigger": "After the family confidence-routing validation and aggregate test pass.",
