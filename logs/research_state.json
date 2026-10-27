@@ -4,30 +4,10 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "fresh_base_bfcl_when2call_data_exploration_v1",
-  "current_hypothesis": "Dynamic retrieval may improve clean accuracy when examples are selected using both the request and available tool descriptions. Compare sparse TF-IDF nearest-label voting and retrieved Qwen demonstrations against a same-run zero-shot baseline. The retrieval pool excludes exact normalized validation questions.",
-  "active_experiment": {},
-  "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.evaluate_existing_when2call_hybrid_validation",
-    "--output-dir",
-    "outputs/qwen-single-encoder48-route-replication-20270325",
-    "--split-seed",
-    "20270325",
-    "--sample-seed",
-    "20270326",
-    "--max-validation-examples",
-    "500",
-    "--qwen-checkpoint",
-    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
-    "--batch-size",
-    "1",
-    "--encoder-checkpoint",
-    "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
-  ],
-  "worker_queue": [
-    [
+  "current_hypothesis": "Dynamic retrieval may improve clean accuracy when examples are selected using both the request and available tool descriptions. Compare sparse TF-IDF nearest-label voting and retrieved Qwen demonstrations against a same-run zero-shot baseline. The retrieval pool excludes exact normalized validation questions. The sparse TF-IDF index is stored as compressed JSON and keyed by the exact training texts, labels, and retrieval mode so later samples can reuse it safely.",
+  "active_experiment": {
+    "pid": 185684,
+    "command": [
       "python",
       "-u",
       "-m",
@@ -45,6 +25,27 @@
       "--batch-size",
       "1"
     ],
+    "started_at": "2026-10-27T04:31:39.651965+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_when2call_dynamic_retrieval",
+    "--output-dir",
+    "outputs/when2call-dynamic-retrieval-clean-20270327",
+    "--split-seed",
+    "20270327",
+    "--sample-seed",
+    "20270328",
+    "--max-validation-examples",
+    "500",
+    "--qwen-checkpoint",
+    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "--batch-size",
+    "1"
+  ],
+  "worker_queue": [
     [
       "python",
       "-u",
@@ -53,7 +54,7 @@
       "--output-dir",
       "outputs/when2call-dynamic-retrieval-clean-20270329",
       "--split-seed",
-      "20270329",
+      "20270327",
       "--sample-seed",
       "20270330",
       "--max-validation-examples",
@@ -82,7 +83,7 @@
   ],
   "experiment_queue": [
     "Run the first 500-row clean retrieval screen on split/sample seeds 20270327/20270328. Compare question-only and question-plus-tools TF-IDF retrieval, kNN k=1/3/5, and Qwen one-shot/three-shot prompting against zero-shot Qwen.",
-    "Repeat the same retrieval screen on split/sample seeds 20270329/20270330 only after the first screen completes. Use clean validation for comparison and retain aggregate test as report-only."
+    "Repeat on a second 500-row sample using the same split seed 20270327 and sample seed 20270330 so the cached train-only sparse index can be reused. Compare clean metrics only."
   ],
   "best_validation": {
     "experiment": "qwen-when2call-fullpool-sft-validation-base-seed20261062",
@@ -93,8 +94,8 @@
     "macro_f1": 0.48337889372616516,
     "selection": "clean validation only"
   },
-  "last_heartbeat": "2026-10-27T04:19:55.597765+00:00",
-  "last_action": "Stopped the previous watchdog and supervisor at user request, audited the latest completed run, cleared the old queue, and registered two clean dynamic retrieval screens.",
+  "last_heartbeat": "2026-10-27T04:31:39.651977+00:00",
+  "last_action": "Watchdog started validation worker pid 185684.",
   "watchdog_enabled": true,
   "research_log_size": 1361253,
   "stop_command": "STOP",

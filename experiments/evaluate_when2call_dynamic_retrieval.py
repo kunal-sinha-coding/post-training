@@ -7,6 +7,8 @@ label voting and Qwen few-shot prompts, and saves aggregate validation metrics o
 from __future__ import annotations
 
 import argparse
+import gzip
+import hashlib
 import json
 import math
 import os
@@ -108,8 +110,25 @@ def retrieval_text(example: object, mode: str) -> str:
     return question + "\n" + " ".join(tool_features)
 
 
-def retrieve(train: list, validation: list, mode: str) -> list[list[int]]:
-    # Rank training examples by sparse TF-IDF cosine similarity without external packages.
+def retrieval_cache_key(train: list, mode: str) -> str:
+    # Bind each retrieval cache to its mode, training texts, inferred labels, and row identifiers.
+    digest = hashlib.sha256(mode.encode())
+    for example in train:
+        payload = f"\n{example.source_id}\t{example.label}\t{retrieval_text(example, mode)}"
+        digest.update(payload.encode("utf-8"))
+    return digest.hexdigest()
+
+
+def load_or_build_index(train: list, mode: str, cache_path: Path) -> dict:
+    # Reuse a compressed sparse TF-IDF index only when its training rows and feature mode match.
+    cache_key = retrieval_cache_key(train, mode)
+    if cache_path.exists():
+        # Ignore a cache from any other train split or retrieval representation.
+        with gzip.open(cache_path, "rt", encoding="utf-8") as stream:
+            cached = json.load(stream)
+        if cached.get("cache_key") == cache_key:
+            return cached
+    # Build document counts and inverse frequencies from the training partition only.
     documents = [Counter(retrieval_tokens(retrieval_text(item, mode))) for item in train]
     document_frequency = Counter()
     for counts in documents:
@@ -118,23 +137,36 @@ def retrieve(train: list, validation: list, mode: str) -> list[list[int]]:
     postings = defaultdict(list)
     norms = [0.0] * len(documents)
     for document_index, counts in enumerate(documents):
-        weighted = {token: (1 + math.log(frequency)) * inverse_frequency[token] for token, frequency in counts.items() if token in inverse_frequency}
+        weighted = {token: (1 + math.log(frequency)) * inverse_frequency[token] for token, frequency in counts.items()}
         norms[document_index] = math.sqrt(sum(value * value for value in weighted.values()))
         for token, value in weighted.items():
-            postings[token].append((document_index, value))
+            postings[token].append([document_index, value])
+    index = {"cache_key": cache_key, "mode": mode, "inverse_frequency": inverse_frequency, "postings": dict(postings), "norms": norms}
+    # Save the weighted sparse index so later runs on the same training split can reuse it.
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
+    with gzip.open(cache_path, "wt", encoding="utf-8") as stream:
+        json.dump(index, stream, separators=(",", ":"))
+    return index
+
+
+def retrieve(train: list, validation: list, mode: str, index: dict) -> list[list[int]]:
+    # Rank validation rows by cosine similarity against a saved or newly built training index.
+    inverse_frequency = index["inverse_frequency"]
+    postings = index["postings"]
+    norms = index["norms"]
     ranked_rows = []
-    # Rank each validation row against the training-only sparse index.
+    # Transform and rank each validation query without using its label.
     for example in validation:
         query_counts = Counter(retrieval_tokens(retrieval_text(example, mode)))
         query = {token: (1 + math.log(frequency)) * inverse_frequency[token] for token, frequency in query_counts.items() if token in inverse_frequency}
         query_norm = math.sqrt(sum(value * value for value in query.values())) or 1.0
         dot_products = defaultdict(float)
         for token, query_weight in query.items():
-            for document_index, document_weight in postings[token]:
+            for document_index, document_weight in postings.get(token, []):
                 dot_products[document_index] += query_weight * document_weight
         ranked = sorted(dot_products.items(), key=lambda item: (-item[1] / (query_norm * norms[item[0]]) if norms[item[0]] else 0.0, item[0]))[:8]
         selected = [index for index, _ in ranked]
-        # Fill empty-similarity slots with stable training indices for complete vote lists.
+        # Fill zero-similarity slots with stable training rows for complete vote lists.
         if len(selected) < 8:
             selected_set = set(selected)
             selected.extend(index for index in range(len(train)) if index not in selected_set and len(selected) < 8)
@@ -182,6 +214,7 @@ def main() -> int:
     parser.add_argument("--batch-size", type=int, default=1)
     parser.add_argument("--max-length", type=int, default=4096)
     parser.add_argument("--per-demo-tokens", type=int, default=160)
+    parser.add_argument("--cache-dir", type=Path, default=Path("outputs/when2call-dynamic-retrieval-cache"))
     args = parser.parse_args()
     # Enforce the project sample cap before loading validation data.
     if not 1 <= args.max_validation_examples <= 500:
@@ -261,6 +294,8 @@ def main() -> int:
             "split_seed": args.split_seed, "sample_seed": args.sample_seed,
             "retrieval_features": ["question only", "question and tool schemas"],
             "retrieval_algorithm": "word unigram and bigram TF-IDF cosine similarity",
+            "retrieval_index_cache": cache_files,
+            "retrieval_cache_format": "compressed JSON with sparse postings, inverse frequencies, and row norms",
             "few_shot_settings": [1, 3], "per_demo_token_cap": args.per_demo_tokens,
             "qwen_checkpoint": args.qwen_checkpoint,
             "qwen_adapter_sha256": artifact_digest(Path(args.qwen_checkpoint) / "adapter_model.safetensors"),
