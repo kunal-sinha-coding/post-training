@@ -55,10 +55,14 @@ def main() -> int:
     parser.add_argument("--label-disagreement-fallback-k1", action="store_true")
     parser.add_argument("--require-neighbor-match-zero-shot", action="store_true")
     parser.add_argument("--probability-average", action="store_true")
+    parser.add_argument("--retrieval-weights", type=float, nargs="+", default=[0.25, 0.5, 0.75])
     args = parser.parse_args()
     # Keep every clean-validation evaluation within the declared sample cap.
     if not 1 <= args.max_validation_examples <= 500:
         raise ValueError("Clean validation must use between 1 and 500 examples.")
+    # Restrict probability fusion to convex averages of the two frozen predictions.
+    if any(weight < 0 or weight > 1 for weight in args.retrieval_weights):
+        raise ValueError("Retrieval probability weights must be between zero and one.")
     # Load local service credentials before creating API clients.
     from dotenv import load_dotenv
     load_dotenv(".env")
@@ -66,7 +70,7 @@ def main() -> int:
         raise RuntimeError("WANDB_API_KEY and OPENAI_API_KEY are required.")
     from openai import OpenAI
     import wandb
-    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name="when2call-similarity-gated-retrieval", job_type="clean-validation", config={"split_seed": args.split_seed, "sample_seed": args.sample_seed, "embedding_model": args.embedding_model, "embedding_dimensions": args.embedding_dimensions, "retrieval_pool": "train_sft", "retrieval_features": args.feature, "gate_score": args.gate_score, "k": args.k, "gate_quantiles": args.gate_quantiles, "label_consensus_gate": args.label_consensus_gate, "label_disagreement_fallback_k1": args.label_disagreement_fallback_k1, "require_neighbor_match_zero_shot": args.require_neighbor_match_zero_shot, "probability_average": args.probability_average, "official_test_loaded": False})
+    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name="when2call-similarity-gated-retrieval", job_type="clean-validation", config={"split_seed": args.split_seed, "sample_seed": args.sample_seed, "embedding_model": args.embedding_model, "embedding_dimensions": args.embedding_dimensions, "retrieval_pool": "train_sft", "retrieval_features": args.feature, "gate_score": args.gate_score, "k": args.k, "gate_quantiles": args.gate_quantiles, "label_consensus_gate": args.label_consensus_gate, "label_disagreement_fallback_k1": args.label_disagreement_fallback_k1, "require_neighbor_match_zero_shot": args.require_neighbor_match_zero_shot, "probability_average": args.probability_average, "retrieval_weights": args.retrieval_weights, "official_test_loaded": False})
     started = time.time()
     args.output_dir.mkdir(parents=True, exist_ok=True)
     write_heartbeat(args.output_dir / "heartbeat.json", "load-clean-data")
@@ -129,17 +133,19 @@ def main() -> int:
                 demos = [train[int(row_index)] for row_index in selected_neighbors] if use_demos else []
                 prompt = retrieval.prompt_with_demos(tokenizer, target, demos, 4096, 160)
                 prompts.append(ClassificationRow(prompt, target.label, None))
-            # Average frozen zero-shot and retrieval probabilities when testing probability fusion.
+            # Compare each clean-declared retrieval weight using the same zero-shot and retrieval distributions.
             retrieval_output = score_prompts(model, tokenizer, prompts, device, args.batch_size, args.output_dir, key, args.probability_average)
             if args.probability_average:
-                methods[key] = ((zero_probabilities + retrieval_output) / 2).argmax(-1).tolist()
+                for weight in args.retrieval_weights:
+                    weighted_key = f"{key}_w{weight:g}"
+                    methods[weighted_key] = ((1 - weight) * zero_probabilities + weight * retrieval_output).argmax(-1).tolist()
             else:
                 methods[key] = retrieval_output
         # Save only aggregate clean metrics and the label-free gate thresholds.
         metrics = {name: {key: metric_values(labels, predictions, list(range(len(LABELS))))[key] for key in ("accuracy", "macro_f1")} for name, predictions in methods.items()}
         for name, values in metrics.items():
             run.log({f"validation/{name}/accuracy": values["accuracy"], f"validation/{name}/macro_f1": values["macro_f1"]})
-        record = {"status": "completed", "training_performed": False, "official_test_loaded": False, "validation_source": "nvidia/When2Call train_sft", "validation_examples": len(validation), "qwen_checkpoint": args.qwen_checkpoint, "retrieval_pool": "train_sft", "retrieval_feature": args.feature, "gate_score": args.gate_score, "k": args.k, "label_consensus_gate": args.label_consensus_gate, "label_disagreement_fallback_k1": args.label_disagreement_fallback_k1, "require_neighbor_match_zero_shot": args.require_neighbor_match_zero_shot, "probability_average": args.probability_average, "embedding_model": args.embedding_model, "embedding_dimensions": args.embedding_dimensions, "gate_quantiles": args.gate_quantiles, "gate_thresholds_from_unlabeled_validation_scores": thresholds, "gate_thresholds_from_unlabeled_validation_similarities": thresholds, "embedding_cache": {"training": train_cache, "validation": validation_cache}, "embedding_usage": {"training": train_usage, "validation": validation_usage}, "validation_metrics": metrics, "training_metrics_source": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json", "aggregate_test_loaded": False, "git_commit": os.popen("git rev-parse HEAD").read().strip(), "wandb_run_id": run.id, "wandb_run_url": run.url, "runtime_seconds": time.time() - started}
+        record = {"status": "completed", "training_performed": False, "official_test_loaded": False, "validation_source": "nvidia/When2Call train_sft", "validation_examples": len(validation), "qwen_checkpoint": args.qwen_checkpoint, "retrieval_pool": "train_sft", "retrieval_feature": args.feature, "gate_score": args.gate_score, "k": args.k, "label_consensus_gate": args.label_consensus_gate, "label_disagreement_fallback_k1": args.label_disagreement_fallback_k1, "require_neighbor_match_zero_shot": args.require_neighbor_match_zero_shot, "probability_average": args.probability_average, "retrieval_weights": args.retrieval_weights, "embedding_model": args.embedding_model, "embedding_dimensions": args.embedding_dimensions, "gate_quantiles": args.gate_quantiles, "gate_thresholds_from_unlabeled_validation_scores": thresholds, "gate_thresholds_from_unlabeled_validation_similarities": thresholds, "embedding_cache": {"training": train_cache, "validation": validation_cache}, "embedding_usage": {"training": train_usage, "validation": validation_usage}, "validation_metrics": metrics, "training_metrics_source": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json", "aggregate_test_loaded": False, "git_commit": os.popen("git rev-parse HEAD").read().strip(), "wandb_run_id": run.id, "wandb_run_url": run.url, "runtime_seconds": time.time() - started}
         (args.output_dir / "metrics.json").write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
         run.summary.update({"status": "completed", "output_dir": str(args.output_dir)})
         write_heartbeat(args.output_dir / "heartbeat.json", "completed")
