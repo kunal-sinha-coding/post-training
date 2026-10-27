@@ -1797,3 +1797,12 @@ Source-specific result `when2call-similarity-gate-train-pref-k1-probavg-test-202
 
 Source-specific result `when2call-similarity-gate-pref-first-union-k1-probavg-test-20270388` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.65_k1_probavg_w0.55": {"accuracy": 0.922, "macro_f1": 0.9568296577618576}}}. These values are not ranked against other splits.
 | Candidate | when2call-similarity-gate-sft-question-tools-k1-probavg-test-20270390 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-sft-question-tools-k1-probavg-test-20270390/metrics.json) | failed_or_incomplete |
+| Candidate | when2call-similarity-gate-sft-question-tools-k1-probavg-20270389 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-sft-question-tools-k1-probavg-20270389/metrics.json) | completed |
+
+Source-specific result `when2call-similarity-gate-sft-question-tools-k1-probavg-test-20270390` has status skipped. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.75_k1_probavg_w0.55": {"accuracy": 0.894, "macro_f1": 0.9346029244374399}}}. These values are not ranked against other splits.
+| Candidate | when2call-similarity-gate-sft-question-only-k1-probavg-20270391 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-sft-question-only-k1-probavg-20270391/metrics.json) | completed |
+
+Source-specific result `when2call-similarity-gate-sft-question-only-k1-probavg-test-20270392` has status skipped. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.75_k1_probavg_w0.55": {"accuracy": 0.896, "macro_f1": 0.9352423291492329}}}. These values are not ranked against other splits.
+| Candidate | when2call-similarity-gate-sft-tools-margin-k1-probavg-20270393 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-sft-tools-margin-k1-probavg-20270393/metrics.json) | completed |
+
+Source-specific result `when2call-similarity-gate-sft-tools-margin-k1-probavg-test-20270394` has status skipped. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "margin_gate_top_0.75_k1_probavg_w0.55": {"accuracy": 0.912, "macro_f1": 0.9459397800400318}}}. These values are not ranked against other splits.
