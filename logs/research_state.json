@@ -194,6 +194,30 @@
       "1536",
       "--cache-dir",
       "outputs/when2call-openai-embedding-cache"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_when2call_similarity_gated_retrieval",
+      "--output-dir",
+      "outputs/when2call-openai-similarity-gate-20270349",
+      "--split-seed",
+      "20270327",
+      "--sample-seed",
+      "20270332",
+      "--max-validation-examples",
+      "500",
+      "--qwen-checkpoint",
+      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "--embedding-model",
+      "text-embedding-3-small",
+      "--embedding-dimensions",
+      "1536",
+      "--cache-dir",
+      "outputs/when2call-openai-embedding-cache",
+      "--batch-size",
+      "1"
     ]
   ],
   "_previous_command": [
@@ -216,7 +240,8 @@
     "The completed 20270327 TF-IDF screen selected zero-shot Qwen on clean accuracy. Its one-shot and three-shot Qwen settings scored lower.",
     "Run the corrected Qwen-only sparse and OpenAI embedding comparison on a fresh capped sample using split/sample seeds 20270327/20270332. Compare question-only and question-plus-tools retrieval, kNN k=1/3/5, and Qwen one-shot/three-shot prompts with the zero-shot baseline. Reuse cached train indexes/vectors where exact cache keys match.",
     "OpenAI-only clean screen: compare train_sft, train_pref, and preference-first deduplicated union; question-only, tool-schema-only, and question-plus-tools embeddings; direct label votes K=1/3/5; and Qwen prompts with K=1/2/3. Use corrected learned label mapping and cap clean validation at 500.",
-    "Replicate the same OpenAI-only comparison with a distinct clean-validation sample seed. Use only clean validation to choose a finalist. Run the aggregate black-box evaluation only after the retrieval candidate is frozen."
+    "Replicate the same OpenAI-only comparison with a distinct clean-validation sample seed. Use only clean validation to choose a finalist. Run the aggregate black-box evaluation only after the retrieval candidate is frozen.",
+    "After the missing aggregate test report, evaluate a similarity-gated fallback: train_sft tools-only OpenAI retrieval, K=3, gate thresholds from unlabeled validation-similarity quantiles, and zero-shot fallback. Select by clean validation only."
   ],
   "best_validation": {
     "experiment": "qwen-when2call-fullpool-sft-validation-base-seed20261062",
@@ -228,7 +253,7 @@
     "selection": "clean validation only"
   },
   "last_heartbeat": "2026-10-27T05:32:02.491103+00:00",
-  "last_action": "The first OpenAI retrieval screen completed. Its training probe and clean-validation metrics are recorded, but the corrected-mapping aggregate black-box test measurement is missing. Queued that report-only measurement first after the already-running replication and before other queued experiments.",
+  "last_action": "Queued the missing corrected-mapping aggregate test measurement immediately after the already-running replication. Appended a clean-validation-only similarity-gated retrieval hypothesis after existing queued work.",
   "watchdog_enabled": true,
   "research_log_size": 1365070,
   "stop_command": "STOP",
@@ -269,7 +294,7 @@
     "artifact": "outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json",
     "selection": "Report-only aggregate benchmark result. Test labels were not used for candidate selection."
   },
-  "next_hypothesis": "If the clean-sample replication confirms retrieval prompts remain below zero-shot, test whether retrieval is useful only as a selective fallback under high neighbor similarity or disagreement. Do not inspect test labels or row-level test outcomes.",
+  "next_hypothesis": "The best retrieved prompt may help only when its nearest training example is strongly similar to the validation query. Use label-free similarity quantiles to gate train_sft tools-only K=3 demonstrations and retain zero-shot Qwen for lower-similarity rows.",
   "post_queue_report_required": {
     "required": true,
     "trigger": "After the family confidence-routing validation and aggregate test pass.",

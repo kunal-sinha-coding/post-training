@@ -107190,3 +107190,7 @@ The complete setup and observed results are recorded below. Source validation sp
 ## Completed OpenAI retrieval screen and required aggregate measurement
 
 The screen completed on 500 clean validation examples. The clean-selected baseline was corrected-mapping zero-shot Qwen at 0.942 accuracy and 0.967059 macro F1. The best retrieved prompt was train_sft tools-only K=3 at 0.816 accuracy and 0.839697 macro F1. Source checkpoint training evidence is linked to `outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json` (epoch 2, 500-example probe, accuracy 0.960000, macro F1 0.720145, loss 0.408354). A matching aggregate black-box measurement is missing because the existing Qwen report uses a different prompt order. The corrected zero-shot test measurement is queued before further queued experiments, after the clean replication that had already started. The test evaluator saves only aggregate metrics and source training evidence. Test labels remain report-only.
+
+## Similarity-gated retrieval fallback, queued
+
+Hypothesis: Retrieval may harm low-similarity queries but help where the nearest train_sft tool-schema example is strongly related. After the required corrected-mapping aggregate test measurement and existing queue, compare zero-shot, always-retrieve K=3, and zero-shot fallback gates at the 50th, 75th, and 90th percentile of unlabeled clean-validation similarity scores. Use text-embedding-3-small, tool-schema-only retrieval, and 500 clean validation examples. Select only on clean validation.
