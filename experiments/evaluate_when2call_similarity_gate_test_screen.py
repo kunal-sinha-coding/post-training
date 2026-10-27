@@ -1,7 +1,7 @@
 """Screen a clean-selected retrieval gate on a bounded black-box test sample.
 
-The flow selects a fixed gate from clean-validation metrics, samples test row indices without labels,
-embeds test inputs, and reports aggregate metrics with an optional full-test follow-up.
+The flow selects a gate on clean validation, samples test rows without label-based sampling, and
+reports aggregate-only metrics, with an option to always measure the full test set.
 """
 from __future__ import annotations
 
@@ -107,7 +107,10 @@ def main() -> int:
     parser.add_argument("--cache-dir", type=Path, default=Path("outputs/when2call-openai-embedding-cache"))
     parser.add_argument("--batch-size", type=int, default=1)
     parser.add_argument("--feature", choices=("question_only", "tools_only", "question_and_tools"), default="tools_only")
+    # Allow a clean-selected candidate to be screened even when clean accuracy ties baseline.
     parser.add_argument("--force-screen", action="store_true")
+    # Force full aggregate reporting without using sampled test scores as a gate.
+    parser.add_argument("--full-test", action="store_true")
     parser.add_argument("--label-consensus-gate", action="store_true")
     parser.add_argument("--label-disagreement-fallback-k1", action="store_true")
     parser.add_argument("--require-neighbor-match-zero-shot", action="store_true")
@@ -138,7 +141,7 @@ def main() -> int:
     selected_clean = validation_metrics[gate_key]
     baseline_clean = validation_metrics["zero_shot"]
     # Register the test-only measurement before opening official test rows or model weights.
-    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name="when2call-similarity-gate-test-screen", job_type="black-box-test-screen", config={"qwen_checkpoint": args.qwen_checkpoint, "retrieval_pool": clean.get("retrieval_pool", "train_sft"), "clean_selected_method": gate_key, "clean_gate_threshold": threshold, "retrieval_feature": args.feature, "gate_score": gate_score, "k": k, "force_screen": args.force_screen, "label_consensus_gate": args.label_consensus_gate, "label_disagreement_fallback_k1": args.label_disagreement_fallback_k1, "require_neighbor_match_zero_shot": args.require_neighbor_match_zero_shot, "probability_average": args.probability_average, "retrieval_weight": retrieval_weight, "sample_seed": args.sample_seed, "max_test_examples": args.max_test_examples, "test_labels_used_for_selection": False, "black_box": True})
+    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name="when2call-similarity-gate-test-screen", job_type="black-box-test-screen", config={"qwen_checkpoint": args.qwen_checkpoint, "retrieval_pool": clean.get("retrieval_pool", "train_sft"), "clean_selected_method": gate_key, "clean_gate_threshold": threshold, "retrieval_feature": args.feature, "gate_score": gate_score, "k": k, "force_screen": args.force_screen, "full_test": args.full_test, "label_consensus_gate": args.label_consensus_gate, "label_disagreement_fallback_k1": args.label_disagreement_fallback_k1, "require_neighbor_match_zero_shot": args.require_neighbor_match_zero_shot, "probability_average": args.probability_average, "retrieval_weight": retrieval_weight, "sample_seed": args.sample_seed, "max_test_examples": args.max_test_examples, "test_labels_used_for_selection": False, "black_box": True})
     started = time.time()
     args.output_dir.mkdir(parents=True, exist_ok=True)
     write_heartbeat(args.output_dir / "heartbeat.json", "clean-candidate-check")
@@ -186,8 +189,8 @@ def main() -> int:
         full_cache = None
         full_usage = None
         full_count = 0
-        # Run full evaluation only when the gate beats zero-shot accuracy on the fixed sample.
-        if sample_metrics[gate_key]["accuracy"] > sample_metrics["zero_shot"]["accuracy"]:
+        # Run full evaluation when explicitly requested or when the fixed sample favors the gate.
+        if args.full_test or sample_metrics[gate_key]["accuracy"] > sample_metrics["zero_shot"]["accuracy"]:
             full_examples, full_labels = make_examples(list(enumerate(official_rows)))
             full_text = [retrieval.retrieval_text(row, args.feature) for row in full_examples]
             full_vectors, full_usage, full_cache = retrieval.load_or_create_embeddings(client, full_text, args.embedding_model, args.embedding_dimensions, args.feature, "test_full", args.cache_dir)
@@ -207,7 +210,7 @@ def main() -> int:
             run.log({f"full_test/{name}/{metric}": value for name, values in full_metrics.items() for metric, value in values.items()})
         # Save aggregate metrics and metadata only, with no row predictions or labels.
         run.summary.update({"black_box": True, "sample_examples": len(sampled), "sample_metrics": sample_metrics, "full_test_metrics": full_metrics, "test_labels_used_for_selection": False})
-        result = {"status": "completed", "measurement_type": "aggregate_only_black_box_test_sample", "dataset": "nvidia/When2Call", "split": "test/mcq", "official_test_loaded": True, "test_labels_used_for_selection": False, "per_example_outcomes_saved": False, "sample_method": "uniform random row-index sample without label access", "sample_seed": args.sample_seed, "test_sample_examples": len(sampled), "full_test_evaluated": full_metrics is not None, "full_test_examples": full_count, "checkpoint": args.qwen_checkpoint, "retrieval_pool": clean.get("retrieval_pool", "train_sft"), "selected_method": gate_key, "retrieval_feature": args.feature, "gate_score": gate_score, "k": k, "label_consensus_gate": args.label_consensus_gate, "label_disagreement_fallback_k1": args.label_disagreement_fallback_k1, "require_neighbor_match_zero_shot": args.require_neighbor_match_zero_shot, "probability_average": args.probability_average, "retrieval_weight": retrieval_weight, "selection_source": "clean validation only", "full_test_gate": "Run full evaluation only when selected gate accuracy exceeds zero-shot accuracy on the fixed sample.", "clean_metrics_source": str(args.clean_metrics), "clean_validation_examples": clean["validation_examples"], "clean_validation_metrics": {"zero_shot": baseline_clean, gate_key: selected_clean}, "gate_threshold": threshold, "training_metrics_source": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json", "training_metrics": {"epoch": 2, "examples": 500, "training_loss": 0.408354387068056, "accuracy": 0.96, "macro_f1": 0.7201450925439365}, "test_sample_metrics": sample_metrics, "full_test_metrics": full_metrics, "embedding_cache": {"training": train_cache, "test_sample": sample_cache, "test_full": full_cache}, "embedding_usage": {"training": train_usage, "test_sample": sample_usage, "test_full": full_usage}, "runtime_seconds": time.time() - started, "wandb_run_id": run.id, "wandb_run_url": run.url}
+        result = {"status": "completed", "measurement_type": "aggregate_only_black_box_test_sample", "dataset": "nvidia/When2Call", "split": "test/mcq", "official_test_loaded": True, "test_labels_used_for_selection": False, "per_example_outcomes_saved": False, "sample_method": "uniform random row-index sample without label access", "sample_seed": args.sample_seed, "test_sample_examples": len(sampled), "full_test_evaluated": full_metrics is not None, "full_test_examples": full_count, "checkpoint": args.qwen_checkpoint, "retrieval_pool": clean.get("retrieval_pool", "train_sft"), "selected_method": gate_key, "retrieval_feature": args.feature, "gate_score": gate_score, "k": k, "label_consensus_gate": args.label_consensus_gate, "label_disagreement_fallback_k1": args.label_disagreement_fallback_k1, "require_neighbor_match_zero_shot": args.require_neighbor_match_zero_shot, "probability_average": args.probability_average, "retrieval_weight": retrieval_weight, "selection_source": "clean validation only", "full_test_gate": "Full evaluation was forced after clean validation selection." if args.full_test else "Run full evaluation only when selected gate accuracy exceeds zero-shot accuracy on the fixed sample.", "clean_metrics_source": str(args.clean_metrics), "clean_validation_examples": clean["validation_examples"], "clean_validation_metrics": {"zero_shot": baseline_clean, gate_key: selected_clean}, "gate_threshold": threshold, "training_metrics_source": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json", "training_metrics": {"epoch": 2, "examples": 500, "training_loss": 0.408354387068056, "accuracy": 0.96, "macro_f1": 0.7201450925439365}, "test_sample_metrics": sample_metrics, "full_test_metrics": full_metrics, "embedding_cache": {"training": train_cache, "test_sample": sample_cache, "test_full": full_cache}, "embedding_usage": {"training": train_usage, "test_sample": sample_usage, "test_full": full_usage}, "runtime_seconds": time.time() - started, "wandb_run_id": run.id, "wandb_run_url": run.url}
         (args.output_dir / "metrics.json").write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
         write_heartbeat(args.output_dir / "heartbeat.json", "completed")
     except BaseException as error:
