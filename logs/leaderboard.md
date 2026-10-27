@@ -1793,3 +1793,7 @@ Source-specific result `when2call-similarity-gate-k1-probability-local-test-2027
 | Candidate | when2call-similarity-gate-train-pref-k1-probavg-20270385 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-train-pref-k1-probavg-20270385/metrics.json) | completed |
 
 Source-specific result `when2call-similarity-gate-train-pref-k1-probavg-test-20270386` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.7_k1_probavg_w0.55": {"accuracy": 0.916, "macro_f1": 0.9535126120491975}}}. These values are not ranked against other splits.
+| Candidate | when2call-similarity-gate-pref-first-union-k1-probavg-20270387 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-pref-first-union-k1-probavg-20270387/metrics.json) | completed |
+
+Source-specific result `when2call-similarity-gate-pref-first-union-k1-probavg-test-20270388` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.65_k1_probavg_w0.55": {"accuracy": 0.922, "macro_f1": 0.9568296577618576}}}. These values are not ranked against other splits.
+| Candidate | when2call-similarity-gate-sft-question-tools-k1-probavg-test-20270390 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-sft-question-tools-k1-probavg-test-20270390/metrics.json) | failed_or_incomplete |
