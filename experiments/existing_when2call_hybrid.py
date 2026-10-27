@@ -5,6 +5,7 @@ training or development selection. One aggregate measurement scores each model o
 restores source row order after encoder batching, and compares fixed hybrids and baselines.
 The initial suite preserves both encoder families. The single-fusion suite compares fixed pooling rules.
 The single-route suite tests a class-specialized encoder route. The single-weighted suite tests a fixed asymmetric blend. The single-adaptive suite tests confidence-weighted pooling and selective overrides. The single-rules suite routes by visible question and tool features. The single-pool-grid suite compares broad fixed weights and standardized log-score pooling. The single-disagree suite tests model-output disagreement and class-specialist routing. The single-request-confidence suite tests confidence-filtered request_for_info routing. The single-stacker suite tests a clean-validation-fitted linear meta-classifier.
+The seed-pair suite combines two declared encoder checkpoints with Qwen using fixed confidence routes.
 Official predictions, labels, probabilities, and per-class statistics remain in memory only.
 """
 from __future__ import annotations
@@ -37,6 +38,7 @@ QWEN = "outputs/qwen-when2call-sft-15b-seed20261022"
 QWEN_BASE = "Qwen/Qwen2.5-1.5B-Instruct"
 STACKER_ARTIFACT = "outputs/existing-when2call-stacker-20261025/stacker.json"
 METHODS = ("single_average", "single_gate", "ensemble_average", "ensemble_gate", "ensemble_request_conf_60", "ensemble_request_conf_80")
+SEED_PAIR_METHODS = ("ensemble_average", "ensemble_gate", "ensemble_request_conf_60", "ensemble_request_conf_80")
 SINGLE_METHODS = ("single_average", "single_gate", "single_geometric", "single_rank")
 SINGLE_RULES = {"average": "Arithmetic mean of the two probability vectors with equal weights.", "gate": "Choose the lower-entropy probability vector with encoder first on exact ties.", "geometric": "Softmax of the equal mean of log probabilities clamped below at 1e-8.", "rank": "Sum equal Borda rank points from both experts. Average rank points for tied probabilities. Add 1e-6 times arithmetic mean probability, clamp below at 1e-12, and normalize."}
 ROUTE_METHODS = ("single_average", "single_gate", "single_encoder_refusal")
@@ -79,7 +81,22 @@ def suite_definition(name: str) -> dict:
         return {"encoders": [ENCODERS[2]], "weights": [1.0], "single_index": 0, "methods": list(REQUEST_CONFIDENCE_METHODS), "primary": "single_request_conf_60"}
     if name == "single-stacker":
         return {"encoders": [ENCODERS[2]], "weights": [1.0], "single_index": 0, "methods": list(STACKER_METHODS), "primary": "single_stacker"}
+    if name == "seed-pair":
+        return {"encoders": [], "weights": [], "single_index": 0, "methods": list(SEED_PAIR_METHODS), "primary": "ensemble_request_conf_60"}
     raise ValueError("Unknown frozen suite: " + name)
+
+
+def resolve_suite(name: str, encoder_checkpoints: list[str] | None = None) -> dict:
+    # Freeze caller-declared encoder checkpoints for seed-pair tests and keep old suites unchanged.
+    suite = suite_definition(name)
+    if name == "seed-pair":
+        if not encoder_checkpoints or len(encoder_checkpoints) < 2 or len(set(encoder_checkpoints)) != len(encoder_checkpoints):
+            raise ValueError("The seed-pair suite requires at least two unique encoder checkpoints.")
+        suite["encoders"] = list(encoder_checkpoints)
+        suite["weights"] = [1.0 / len(encoder_checkpoints)] * len(encoder_checkpoints)
+    elif encoder_checkpoints:
+        raise ValueError("Custom encoder checkpoints are only supported by the seed-pair suite.")
+    return suite
 
 
 def encoder_families(logits: torch.Tensor, weights: list[float]) -> tuple[torch.Tensor, torch.Tensor]:
@@ -231,7 +248,7 @@ def input_route_mask(rows: list, rule: str, device: torch.device) -> torch.Tenso
 def prepare(args: object, run: object) -> dict:
     # Freeze only the selected suite artifacts and exact rules before opening official examples.
     suite_name = getattr(args, "suite", "initial")
-    suite = suite_definition(suite_name)
+    suite = resolve_suite(suite_name, getattr(args, "encoder_checkpoints", None))
     qwen_checkpoint = str(getattr(args, "qwen_checkpoint", QWEN))
     stacker_artifact = str(getattr(args, "stacker_artifact", STACKER_ARTIFACT))
     methods = list(getattr(args, "methods", None) or suite["methods"])
@@ -252,6 +269,9 @@ def prepare(args: object, run: object) -> dict:
     if suite_name == "initial":
         config["fusion_rules"] = {"request_conf_60": REQUEST_CONFIDENCE_RULES["request_conf_60"], "request_conf_80": REQUEST_CONFIDENCE_RULES["request_conf_80"]}
         config["hypothesis"] = "Apply the clean-validation-supported request-confidence route to the fixed three-encoder family. Compare two fixed thresholds with average and entropy gating; do not tune on test metrics."
+    if suite_name == "seed-pair":
+        config["fusion_rules"] = {"request_conf_60": REQUEST_CONFIDENCE_RULES["request_conf_60"], "request_conf_80": REQUEST_CONFIDENCE_RULES["request_conf_80"]}
+        config["hypothesis"] = "Measure the clean-validation-supported equal-logit encoder pair with Qwen average, entropy gate, and fixed request-confidence routes. Candidate rules and thresholds are frozen before aggregate test loading."
     if suite_name == "single-fusion":
         config["fusion_rules"] = SINGLE_RULES
         config["hypothesis"] = "Geometric consensus tests shared support while ordinal Borda fusion tests robustness to unequal expert confidence scales. Arithmetic averaging and entropy gating are unchanged controls."
@@ -290,12 +310,14 @@ def prepare(args: object, run: object) -> dict:
 def verify_frozen(config: dict) -> None:
     # Reject changed artifacts or method definitions before the official loader is imported or called.
     suite_name = config.get("suite", "initial")
-    suite = suite_definition(suite_name)
+    suite = resolve_suite(suite_name, config.get("encoders") if suite_name == "seed-pair" else None)
     if not config["selection_complete"] or config["encoders"] != suite["encoders"] or not config.get("qwen_checkpoint") or not config["methods"] or any(method not in suite["methods"] for method in config["methods"]) or config["primary_method"] not in config["methods"] or config["encoder_logit_weights"] != suite["weights"]:
         raise ValueError("Frozen existing-model comparison configuration changed.")
     # Reject changed confidence thresholds for the predeclared three-encoder family.
     if suite_name == "initial" and config.get("fusion_rules") != {"request_conf_60": REQUEST_CONFIDENCE_RULES["request_conf_60"], "request_conf_80": REQUEST_CONFIDENCE_RULES["request_conf_80"]}:
         raise ValueError("Frozen three-encoder confidence rules changed.")
+    if suite_name == "seed-pair" and (config.get("fusion_rules") != {"request_conf_60": REQUEST_CONFIDENCE_RULES["request_conf_60"], "request_conf_80": REQUEST_CONFIDENCE_RULES["request_conf_80"]} or config.get("qwen_base") != QWEN_BASE or config.get("max_length") != 4096 or config.get("qwen_output_permutation") != [0, 1, 2, 3] or config.get("family_probability_weights") != [0.5, 0.5]):
+        raise ValueError("Frozen encoder seed-pair rules changed.")
     if suite_name == "single-fusion" and (config.get("fusion_rules") != SINGLE_RULES or config.get("single_encoder_index") != 0 or config.get("qwen_base") != QWEN_BASE or config.get("max_length") != 4096 or config.get("qwen_output_permutation") != [0, 1, 2, 3] or config.get("family_probability_weights") != [0.5, 0.5]):
         raise ValueError("Frozen single-fusion rules changed.")
     if suite_name == "single-route" and (config.get("fusion_rules") != ROUTE_RULES or config.get("single_encoder_index") != 0 or config.get("qwen_base") != QWEN_BASE or config.get("max_length") != 4096 or config.get("qwen_output_permutation") != [0, 1, 2, 3] or config.get("family_probability_weights") != [0.5, 0.5]):
@@ -363,6 +385,10 @@ def test(args: object, run: object) -> dict:
         encoder_scores.append(encoder_logits(checkpoint, examples, args, device))
     if config.get("suite", "initial") == "initial":
         single, ensemble = encoder_families(torch.stack(encoder_scores), config["encoder_logit_weights"])
+    elif config.get("suite") == "seed-pair":
+        single = encoder_scores[config["single_encoder_index"]].softmax(-1)
+        weights = torch.tensor(config["encoder_logit_weights"], dtype=encoder_scores[0].dtype).view(-1, 1, 1)
+        ensemble = (torch.stack(encoder_scores) * weights).sum(0).softmax(-1)
     else:
         single, ensemble = encoder_scores[0].softmax(-1), None
     del encoder_scores
@@ -410,8 +436,9 @@ def main() -> int:
     parser.add_argument("mode", choices=("prepare", "test"))
     parser.add_argument("--work-dir", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
-    parser.add_argument("--suite", choices=("initial", "single-fusion", "single-route", "single-weighted", "single-adaptive", "single-rules", "single-pool-grid", "single-disagree", "single-request-confidence", "single-stacker"), default="initial")
+    parser.add_argument("--suite", choices=("initial", "seed-pair", "single-fusion", "single-route", "single-weighted", "single-adaptive", "single-rules", "single-pool-grid", "single-disagree", "single-request-confidence", "single-stacker"), default="initial")
     parser.add_argument("--qwen-checkpoint", default=QWEN)
+    parser.add_argument("--encoder-checkpoint", action="append", dest="encoder_checkpoints", help="Encoder checkpoint. Repeat for the seed-pair suite.")
     parser.add_argument("--stacker-artifact", default=STACKER_ARTIFACT)
     parser.add_argument("--methods", nargs="*")
     parser.add_argument("--primary-method")
@@ -422,7 +449,7 @@ def main() -> int:
         raise RuntimeError("WANDB_API_KEY is required.")
     args.work_dir.mkdir(parents=True, exist_ok=True)
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    suite = suite_definition(args.suite)
+    suite = resolve_suite(args.suite, args.encoder_checkpoints)
     metadata = {"command": [sys.executable, *sys.argv], "git_commit": subprocess.check_output(["git", "-c", "safe.directory=/workspace/post-training", "rev-parse", "HEAD"], text=True).strip(), "configuration": {key: str(value) if isinstance(value, Path) else value for key, value in vars(args).items()}, "suite": args.suite, "encoders": suite["encoders"], "encoder_logit_weights": suite["weights"], "qwen_checkpoint": args.qwen_checkpoint, "stacker_artifact": args.stacker_artifact, "max_length": 4096, "primary_method": args.primary_method or suite["primary"]}
     run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name="existing-when2call-hybrid-" + args.suite + "-" + args.mode, job_type="existing-hybrid-" + args.mode, config=metadata)
     started = time.time()
