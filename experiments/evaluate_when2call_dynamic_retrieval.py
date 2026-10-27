@@ -1,8 +1,8 @@
-"""Evaluate nearest-neighbor and retrieved-example prompting on clean When2Call validation.
+"""Evaluate sparse and OpenAI embedding retrieval with Qwen on clean When2Call validation.
 
-The flow loads only train_sft, makes a stratified train and validation split, builds
-TF-IDF indexes from training rows, retrieves examples for each validation row, evaluates
-label voting and Qwen few-shot prompts, and saves aggregate validation metrics only.
+The flow loads only train_sft, makes a stratified train and validation split, builds or
+loads keyed retrieval caches from training rows, retrieves examples, scores Qwen prompts,
+and saves aggregate validation metrics without loading official test rows.
 """
 from __future__ import annotations
 
@@ -19,6 +19,7 @@ import time
 from collections import Counter, defaultdict
 from pathlib import Path
 
+import numpy as np
 import torch
 
 from experiments.clean_validation_baseline import load_sft_training_rows, split_examples
@@ -174,6 +175,63 @@ def retrieve(train: list, validation: list, mode: str, index: dict) -> list[list
     return ranked_rows
 
 
+def embedding_text_digest(texts: list[str], model_name: str, mode: str, role: str) -> str:
+    # Identify vectors by model, input representation, data role, and exact ordered text.
+    digest = hashlib.sha256(f"{model_name}|{mode}|{role}|char-cap-24000-v1".encode())
+    for text in texts:
+        digest.update(len(text).to_bytes(8, "big"))
+        digest.update(text.encode("utf-8"))
+    return digest.hexdigest()
+
+
+def load_or_create_embeddings(client: object, texts: list[str], model_name: str, dimensions: int, mode: str, role: str, cache_dir: Path) -> tuple[np.ndarray, dict, str]:
+    # Reuse a cached OpenAI vector file only when its complete metadata key matches.
+    bounded_texts = [text[:24000] for text in texts]
+    digest = embedding_text_digest(bounded_texts, model_name, mode, role)
+    cache_path = cache_dir / model_name.replace("/", "_") / f"d{dimensions}-{mode}-{role}-{digest[:24]}.npz"
+    metadata = {"model": model_name, "dimensions": dimensions, "mode": mode, "role": role, "input_sha256": digest, "character_cap": 24000, "strategy_version": 1}
+    if cache_path.exists():
+        # Do not reuse vectors from another model or text representation.
+        with np.load(cache_path, allow_pickle=False) as cached:
+            saved_metadata = json.loads(str(cached["metadata"].item()))
+            if saved_metadata == metadata:
+                return cached["vectors"].astype(np.float32), {"cache_hit": True, "api_calls": 0, "input_tokens": 0, "embedding_count": len(texts)}, str(cache_path)
+    # Request vectors in fixed-size batches and preserve the API response order.
+    vectors = []
+    api_calls = 0
+    input_tokens = 0
+    for start in range(0, len(bounded_texts), 64):
+        batch = bounded_texts[start:start + 64]
+        response = None
+        # Retry transient errors up to two times after the initial request.
+        for attempt in range(3):
+            try:
+                response = client.embeddings.create(model=model_name, input=batch, dimensions=dimensions)
+                break
+            except Exception:
+                if attempt == 2:
+                    raise
+                time.sleep(2 ** attempt)
+        api_calls += 1
+        input_tokens += int(getattr(response.usage, "prompt_tokens", 0) or 0)
+        vectors.extend(item.embedding for item in sorted(response.data, key=lambda item: item.index))
+    array = np.asarray(vectors, dtype=np.float32)
+    # Write the compressed vectors atomically with metadata for future cache validation.
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = cache_path.with_suffix(".tmp.npz")
+    np.savez_compressed(temporary, vectors=array, metadata=json.dumps(metadata, sort_keys=True))
+    temporary.replace(cache_path)
+    return array, {"cache_hit": False, "api_calls": api_calls, "input_tokens": input_tokens, "embedding_count": len(texts)}, str(cache_path)
+
+
+def dense_neighbors(train_vectors: np.ndarray, validation_vectors: np.ndarray, count: int = 8) -> list[list[int]]:
+    # Rank OpenAI vectors by cosine similarity and return stable top neighbors.
+    train_norms = np.linalg.norm(train_vectors, axis=1, keepdims=True).clip(min=1e-12)
+    validation_norms = np.linalg.norm(validation_vectors, axis=1, keepdims=True).clip(min=1e-12)
+    similarities = (validation_vectors / validation_norms) @ (train_vectors / train_norms).T
+    return np.argsort(-similarities, axis=1)[:, :count].tolist()
+
+
 def knn_predictions(train: list, neighbors: list[list[int]], k: int) -> list[int]:
     # Vote among the top k retrieved labels and break ties by the nearest example.
     predictions = []
@@ -215,20 +273,28 @@ def main() -> int:
     parser.add_argument("--max-length", type=int, default=4096)
     parser.add_argument("--per-demo-tokens", type=int, default=160)
     parser.add_argument("--cache-dir", type=Path, default=Path("outputs/when2call-dynamic-retrieval-cache"))
+    parser.add_argument("--embedding-model", default="text-embedding-3-small")
+    parser.add_argument("--embedding-dimensions", type=int, default=1536)
     args = parser.parse_args()
     # Enforce the project sample cap before loading validation data.
     if not 1 <= args.max_validation_examples <= 500:
         raise ValueError("Clean validation must use between 1 and 500 examples.")
-    # Require W&B so every experiment has a durable metric trace.
+    # Load local credentials before initializing W&B or OpenAI clients.
+    from dotenv import load_dotenv
+    load_dotenv(".env")
+    # Require both service credentials before starting an API-backed evaluation.
     if not os.getenv("WANDB_API_KEY"):
         raise RuntimeError("WANDB_API_KEY is required for validation experiments.")
+    if not os.getenv("OPENAI_API_KEY"):
+        raise RuntimeError("OPENAI_API_KEY is required for OpenAI embedding retrieval.")
+    from openai import OpenAI
     import wandb
     run = wandb.init(
         project=os.getenv("WANDB_PROJECT", "when2call-research"),
         entity=os.getenv("WANDB_ENTITY"),
         name="when2call-dynamic-retrieval-clean-validation",
         job_type="clean-validation",
-        config={"split_seed": args.split_seed, "sample_seed": args.sample_seed, "max_validation_examples": args.max_validation_examples, "qwen_checkpoint": args.qwen_checkpoint, "retrieval_pool": "train_sft split training partition", "retrieval_methods": ["question_only_tfidf", "question_and_tools_tfidf"], "official_test_loaded": False},
+        config={"split_seed": args.split_seed, "sample_seed": args.sample_seed, "max_validation_examples": args.max_validation_examples, "qwen_checkpoint": args.qwen_checkpoint, "retrieval_pool": "train_sft split training partition", "retrieval_methods": ["question_only_tfidf", "question_and_tools_tfidf", "question_only_openai_embedding", "question_and_tools_openai_embedding"], "embedding_model": args.embedding_model, "embedding_dimensions": args.embedding_dimensions, "official_test_loaded": False},
     )
     started = time.time()
     args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -243,22 +309,43 @@ def main() -> int:
         model.load_adapter(args.qwen_checkpoint, adapter_name="frozen")
         model.set_adapter("frozen")
         model.eval()
+        client = OpenAI()
+        embedding_usage = {}
+        embedding_cache_files = {}
         results = {}
         neighbor_sets = {}
-        # Compare retrieval features with and without the available tool schemas.
-        # Compare retrieval features with and without the available tool schemas.
+        cache_files = {}
+        # Compare sparse retrieval features with and without the available tool schemas.
         for mode in ("question_only", "question_and_tools"):
-            indices = retrieve(train, validation, mode)
+            cache_path = args.cache_dir / f"split-{args.split_seed}-{mode}.json.gz"
+            index = load_or_build_index(train, mode, cache_path)
+            cache_files[mode] = str(cache_path)
+            indices = retrieve(train, validation, mode, index)
             neighbor_sets[mode] = indices
-            # Measure majority-label voting at three neighborhood sizes.
             # Measure majority-label voting at three neighborhood sizes.
             for k in (1, 3, 5):
                 predictions = knn_predictions(train, indices, k)
                 metrics = metric_values(labels, predictions, list(range(len(LABELS))))
                 results[f"{mode}_knn_{k}"] = {key: metrics[key] for key in ("accuracy", "macro_f1")}
                 run.log({f"validation/{mode}_knn_{k}/accuracy": metrics["accuracy"], f"validation/{mode}_knn_{k}/macro_f1": metrics["macro_f1"]})
-        # Compare one-shot and three-shot prompting for both retrieval representations.
+        # Compute or load dense embeddings for each separately keyed text representation.
         for mode in ("question_only", "question_and_tools"):
+            train_texts = [retrieval_text(item, mode) for item in train]
+            validation_texts = [retrieval_text(item, mode) for item in validation]
+            train_vectors, train_usage, train_cache = load_or_create_embeddings(client, train_texts, args.embedding_model, args.embedding_dimensions, mode, "train", args.cache_dir)
+            validation_vectors, validation_usage, validation_cache = load_or_create_embeddings(client, validation_texts, args.embedding_model, args.embedding_dimensions, mode, "validation", args.cache_dir)
+            dense_mode = f"openai_{mode}"
+            neighbor_sets[dense_mode] = dense_neighbors(train_vectors, validation_vectors)
+            embedding_usage[mode] = {"train": train_usage, "validation": validation_usage}
+            embedding_cache_files[mode] = {"train": train_cache, "validation": validation_cache}
+            # Measure nearest-label voting with three neighborhood sizes.
+            for k in (1, 3, 5):
+                predictions = knn_predictions(train, neighbor_sets[dense_mode], k)
+                metrics = metric_values(labels, predictions, list(range(len(LABELS))))
+                results[f"{dense_mode}_knn_{k}"] = {key: metrics[key] for key in ("accuracy", "macro_f1")}
+                run.log({f"validation/{dense_mode}_knn_{k}/accuracy": metrics["accuracy"], f"validation/{dense_mode}_knn_{k}/macro_f1": metrics["macro_f1"]})
+        # Compare one-shot and three-shot prompting using every declared retrieval mode.
+        for mode in ("question_only", "question_and_tools", "openai_question_only", "openai_question_and_tools"):
             # Build each prompt with neighbors selected only from the training partition.
             for shots in (1, 3):
                 prompts = []
@@ -293,9 +380,14 @@ def main() -> int:
             "retrieval_training_examples": len(train), "exact_question_duplicates_excluded": True,
             "split_seed": args.split_seed, "sample_seed": args.sample_seed,
             "retrieval_features": ["question only", "question and tool schemas"],
-            "retrieval_algorithm": "word unigram and bigram TF-IDF cosine similarity",
+            "sparse_retrieval_algorithm": "word unigram and bigram TF-IDF cosine similarity",
             "retrieval_index_cache": cache_files,
             "retrieval_cache_format": "compressed JSON with sparse postings, inverse frequencies, and row norms",
+            "dense_retrieval_model": args.embedding_model,
+            "dense_retrieval_dimensions": args.embedding_dimensions,
+            "dense_retrieval_cache": embedding_cache_files,
+            "dense_retrieval_cache_format": "compressed vectors keyed by model, feature mode, data role, and exact ordered text digest",
+            "embedding_api_usage": embedding_usage,
             "few_shot_settings": [1, 3], "per_demo_token_cap": args.per_demo_tokens,
             "qwen_checkpoint": args.qwen_checkpoint,
             "qwen_adapter_sha256": artifact_digest(Path(args.qwen_checkpoint) / "adapter_model.safetensors"),
