@@ -1772,3 +1772,6 @@ Source-specific result `when2call-similarity-gate-k1-thresholds-test-20270370` h
 | Candidate | when2call-similarity-gate-k2-label-consensus-20270371 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-k2-label-consensus-20270371/metrics.json) | completed |
 
 Source-specific result `when2call-similarity-gate-k2-label-consensus-test-20270372` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.65_k2_consensus": {"accuracy": 0.958, "macro_f1": 0.9765279486582649}}}. These values are not ranked against other splits.
+| Candidate | when2call-similarity-gate-k2-disagreement-fallback-k1-20270373 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-k2-disagreement-fallback-k1-20270373/metrics.json) | completed |
+
+Source-specific result `when2call-similarity-gate-k2-disagreement-fallback-k1-test-20270374` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.7_k2_fallback_k1": {"accuracy": 0.952, "macro_f1": 0.9704004522441787}}}. These values are not ranked against other splits.
