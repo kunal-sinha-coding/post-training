@@ -1806,3 +1806,5 @@ Source-specific result `when2call-similarity-gate-sft-question-only-k1-probavg-t
 | Candidate | when2call-similarity-gate-sft-tools-margin-k1-probavg-20270393 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-sft-tools-margin-k1-probavg-20270393/metrics.json) | completed |
 
 Source-specific result `when2call-similarity-gate-sft-tools-margin-k1-probavg-test-20270394` has status skipped. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "margin_gate_top_0.75_k1_probavg_w0.55": {"accuracy": 0.912, "macro_f1": 0.9459397800400318}}}. These values are not ranked against other splits.
+
+Source-specific result `when2call-similarity-gate-sft-tools-margin-k1-probavg-forced-test-20270395` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "margin_gate_top_0.75_k1_probavg_w0.55": {"accuracy": 0.912, "macro_f1": 0.9459397800400318}}}. These values are not ranked against other splits.

@@ -11355,3 +11355,15 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "margin_gate_top_0.75_k1_probavg_w0.55": {"accuracy": 0.912, "macro_f1": 0.9459397800400318}}}. Failure reason: No similarity gate improved clean-validation accuracy over zero-shot..
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## when2call-similarity-gate-sft-tools-margin-k1-probavg-forced-test-20270395
+
+Timestamp: 2026-10-27T13:06:19.659149+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_when2call_similarity_gate_test_screen", "--output-dir", "outputs/when2call-similarity-gate-sft-tools-margin-k1-probavg-forced-test-20270395", "--clean-metrics", "outputs/when2call-similarity-gate-sft-tools-margin-k1-probavg-20270393/metrics.json", "--sample-seed", "20270395", "--max-test-examples", "500", "--split-seed", "20270327", "--validation-sample-seed", "20270332", "--qwen-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--embedding-model", "text-embedding-3-small", "--embedding-dimensions", "1536", "--cache-dir", "outputs/when2call-openai-embedding-cache", "--batch-size", "1", "--feature", "tools_only", "--probability-average", "--force-screen"]. Output: /workspace/post-training/outputs/when2call-similarity-gate-sft-tools-margin-k1-probavg-forced-test-20270395. W&B run: eei3tnbk.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: True. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "margin_gate_top_0.75_k1_probavg_w0.55": {"accuracy": 0.912, "macro_f1": 0.9459397800400318}}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

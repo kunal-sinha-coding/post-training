@@ -115229,3 +115229,153 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": null
 }
 ```
+
+## when2call-similarity-gate-sft-tools-margin-k1-probavg-forced-test-20270395
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_when2call_similarity_gate_test_screen",
+    "--output-dir",
+    "outputs/when2call-similarity-gate-sft-tools-margin-k1-probavg-forced-test-20270395",
+    "--clean-metrics",
+    "outputs/when2call-similarity-gate-sft-tools-margin-k1-probavg-20270393/metrics.json",
+    "--sample-seed",
+    "20270395",
+    "--max-test-examples",
+    "500",
+    "--split-seed",
+    "20270327",
+    "--validation-sample-seed",
+    "20270332",
+    "--qwen-checkpoint",
+    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "--embedding-model",
+    "text-embedding-3-small",
+    "--embedding-dimensions",
+    "1536",
+    "--cache-dir",
+    "outputs/when2call-openai-embedding-cache",
+    "--batch-size",
+    "1",
+    "--feature",
+    "tools_only",
+    "--probability-average",
+    "--force-screen"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "when2call-similarity-gate-sft-tools-margin-k1-probavg-forced-test-20270395",
+  "failure_reason": null,
+  "metadata": {
+    "checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "clean_metrics_source": "outputs/when2call-similarity-gate-sft-tools-margin-k1-probavg-20270393/metrics.json",
+    "clean_validation_examples": 500,
+    "clean_validation_metrics": {
+      "margin_gate_top_0.75_k1_probavg_w0.55": {
+        "accuracy": 0.912,
+        "macro_f1": 0.9459397800400318
+      },
+      "zero_shot": {
+        "accuracy": 0.942,
+        "macro_f1": 0.967059240237315
+      }
+    },
+    "dataset": "nvidia/When2Call",
+    "embedding_cache": {
+      "test_full": null,
+      "test_sample": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-tools_only-test_sample-b4b0c46458a78132a6b2e45a.npz",
+      "training": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-train_sft_tools_only-training-d5632c0ae91dceec41dfb131.npz"
+    },
+    "embedding_usage": {
+      "test_full": null,
+      "test_sample": {
+        "api_calls": 8,
+        "cache_hit": false,
+        "embedding_count": 500,
+        "input_tokens": 336616
+      },
+      "training": {
+        "api_calls": 0,
+        "cache_hit": true,
+        "embedding_count": 11727,
+        "input_tokens": 0
+      }
+    },
+    "full_test_evaluated": false,
+    "full_test_examples": 0,
+    "full_test_gate": "Run full evaluation only when selected gate accuracy exceeds zero-shot accuracy on the fixed sample.",
+    "full_test_metrics": null,
+    "gate_score": "margin",
+    "gate_threshold": 0.05452948808670044,
+    "k": 1,
+    "label_consensus_gate": false,
+    "label_disagreement_fallback_k1": false,
+    "measurement_type": "aggregate_only_black_box_test_sample",
+    "official_test_loaded": true,
+    "per_example_outcomes_saved": false,
+    "probability_average": true,
+    "require_neighbor_match_zero_shot": false,
+    "retrieval_feature": "tools_only",
+    "retrieval_pool": "train_sft",
+    "retrieval_weight": 0.55,
+    "runtime_seconds": 189.9658055305481,
+    "sample_method": "uniform random row-index sample without label access",
+    "sample_seed": 20270395,
+    "selected_method": "margin_gate_top_0.75_k1_probavg_w0.55",
+    "selection_source": "clean validation only",
+    "split": "test/mcq",
+    "status": "completed",
+    "test_labels_used_for_selection": false,
+    "test_sample_examples": 500,
+    "test_sample_metrics": {
+      "margin_gate_top_0.75_k1_probavg_w0.55": {
+        "accuracy": 0.688,
+        "macro_f1": 0.515697799536433
+      },
+      "zero_shot": {
+        "accuracy": 0.688,
+        "macro_f1": 0.515697799536433
+      }
+    },
+    "training_metrics": {
+      "accuracy": 0.96,
+      "epoch": 2,
+      "examples": 500,
+      "macro_f1": 0.7201450925439365,
+      "training_loss": 0.408354387068056
+    },
+    "training_metrics_source": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json",
+    "wandb_run_id": "eei3tnbk",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/eei3tnbk"
+  },
+  "metrics_path": "/workspace/post-training/outputs/when2call-similarity-gate-sft-tools-margin-k1-probavg-forced-test-20270395/metrics.json",
+  "official_test_loaded": true,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/when2call-similarity-gate-sft-tools-margin-k1-probavg-forced-test-20270395",
+  "source_validation_metrics": {
+    "clean_validation_metrics": {
+      "margin_gate_top_0.75_k1_probavg_w0.55": {
+        "accuracy": 0.912,
+        "macro_f1": 0.9459397800400318
+      },
+      "zero_shot": {
+        "accuracy": 0.942,
+        "macro_f1": 0.967059240237315
+      }
+    }
+  },
+  "started_at": "2026-10-27T13:02:18.606113+00:00",
+  "status": "completed",
+  "test_status": "not measured",
+  "timestamp": "2026-10-27T13:06:19.659149+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "eei3tnbk",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/eei3tnbk"
+}
+```
