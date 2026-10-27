@@ -1813,3 +1813,10 @@ Source-specific result `when2call-similarity-gate-sft-tools-margin-k1-probavg-fo
 | Candidate | when2call-similarity-gate-sft-tools-neighbor-match-k1-20270398 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-sft-tools-neighbor-match-k1-20270398/metrics.json) | completed |
 
 Source-specific result `when2call-similarity-gate-sft-tools-neighbor-match-k1-test-20270399` has status skipped. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.7_k1_qwen_agree_probavg_w0.55": {"accuracy": 0.94, "macro_f1": 0.9659767939086124}}}. These values are not ranked against other splits.
+
+Source-specific result `when2call-similarity-gate-sft-tools-neighbor-match-k1-forced-test-20270400` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.7_k1_qwen_agree_probavg_w0.55": {"accuracy": 0.94, "macro_f1": 0.9659767939086124}}}. These values are not ranked against other splits.
+
+Source-specific result `when2call-similarity-gate-sft-tools-consensus-k3-test-20270401` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.65_consensus_probavg_w0.55": {"accuracy": 0.946, "macro_f1": 0.9701686613139424}}}. These values are not ranked against other splits.
+| Candidate | when2call-similarity-gate-sft-tools-consensus-k3-weight-sweep-20270402 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-sft-tools-consensus-k3-weight-sweep-20270402/metrics.json) | completed |
+
+Source-specific result `when2call-similarity-gate-sft-tools-consensus-k3-weight-sweep-test-20270403` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.65_consensus_probavg_w0.7": {"accuracy": 0.948, "macro_f1": 0.9712423570516697}}}. These values are not ranked against other splits.
