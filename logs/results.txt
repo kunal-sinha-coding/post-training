@@ -106692,3 +106692,7 @@ Queued setup: Qwen2.5-1.5B epoch-2 adapter. OpenAI `text-embedding-3-small`, 153
 ## OpenAI embedding model and clean-sample follow-ups, queued 2026-10-27
 
 The latest completed retrieval screen has recorded training-probe, clean-validation, and report-only aggregate black-box evidence. No measurement recovery is required before the active experiment. The queue retains the active small-embedding factor screen and its first replication, then adds a `text-embedding-3-large` comparison (3072 dimensions, split seed 20270327, sample seed 20270336) and an additional `text-embedding-3-small` stability sample (sample seed 20270338). Both use 500 clean validation examples and the same Qwen epoch-2 checkpoint. Test labels will not select candidates.
+
+## Independent-split retrieval stability screen, queued 2026-10-27
+
+Hypothesis: The measured retrieval differences may depend on one SFT split. After the current source, feature, and K screen, its replication, the larger-embedding comparison, and the extra small-embedding sample, run the same full OpenAI factor screen on a distinct split with seeds 20270340/20270342. Use 500 clean examples and the same frozen Qwen epoch-2 adapter. Black-box test remains report-only.

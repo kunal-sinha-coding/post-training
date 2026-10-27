@@ -129,6 +129,30 @@
       "text-embedding-3-small",
       "--embedding-dimensions",
       "1536"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_when2call_dynamic_retrieval",
+      "--output-dir",
+      "outputs/when2call-openai-small-embedding-independent-split-20270341",
+      "--sample-seed",
+      "20270342",
+      "--split-seed",
+      "20270340",
+      "--max-validation-examples",
+      "500",
+      "--qwen-checkpoint",
+      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "--batch-size",
+      "1",
+      "--embedding-model",
+      "text-embedding-3-small",
+      "--embedding-dimensions",
+      "1536",
+      "--cache-dir",
+      "outputs/when2call-openai-embedding-cache"
     ]
   ],
   "_previous_command": [
@@ -163,7 +187,7 @@
     "selection": "clean validation only"
   },
   "last_heartbeat": "2026-10-27T04:53:56.993022+00:00",
-  "last_action": "Kept the active OpenAI retrieval screen and its existing replication. Appended a larger-embedding comparison and one additional small-embedding clean-sample replication. Candidate selection remains clean-validation-only.",
+  "last_action": "Verified the active OpenAI screen, preserved all queued runs, and appended an independent-split stability screen. Test labels remain report-only.",
   "watchdog_enabled": true,
   "research_log_size": 1364043,
   "stop_command": "STOP",
@@ -204,7 +228,7 @@
     "artifact": "outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json",
     "selection": "Report-only aggregate benchmark result. Test labels were not used for candidate selection."
   },
-  "next_hypothesis": "A larger text-embedding-3-large representation may improve semantic neighbor quality over text-embedding-3-small. A third independent clean sample will estimate whether any advantage from the small-model screen is stable.",
+  "next_hypothesis": "The clean retrieval findings may depend on one particular SFT development partition. Evaluate the same OpenAI pool, feature, and K screen on an independent split before deciding that any configuration generalizes.",
   "post_queue_report_required": {
     "required": true,
     "trigger": "After the family confidence-routing validation and aggregate test pass.",
