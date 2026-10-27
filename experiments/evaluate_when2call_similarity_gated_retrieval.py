@@ -34,11 +34,12 @@ def build_retrieval_pool(args: argparse.Namespace, pool_name: str) -> tuple[list
     train_pref = [row for row in train_pref if normalize(row) not in held_questions]
     if pool_name == "train_pref":
         return train_pref, validation
-    # Add a deterministic one-to-three preference and SFT mixture without duplicate questions.
-    if pool_name == "train_pref_25pct_plus_train_sft":
+    # Add a deterministic preference and SFT mixture without duplicate questions.
+    if pool_name in ("train_pref_10pct_plus_train_sft", "train_pref_25pct_plus_train_sft"):
         sft_questions = {normalize(row) for row in train_sft}
         eligible_pref = [row for row in train_pref if normalize(row) not in sft_questions]
-        preference_count = min(len(eligible_pref), max(1, round(len(train_sft) / 3)))
+        preference_fraction = 0.1 if pool_name == "train_pref_10pct_plus_train_sft" else 0.25
+        preference_count = min(len(eligible_pref), max(1, round(len(train_sft) * preference_fraction / (1 - preference_fraction))))
         sampled_pref = random.Random(args.sample_seed).sample(eligible_pref, preference_count)
         return train_sft + sampled_pref, validation
     # Give preference rows precedence and add only new SFT questions to the union.
@@ -86,7 +87,7 @@ def main() -> int:
     parser.add_argument("--label-disagreement-fallback-k1", action="store_true")
     parser.add_argument("--require-neighbor-match-zero-shot", action="store_true")
     parser.add_argument("--probability-average", action="store_true")
-    parser.add_argument("--retrieval-pool", choices=("train_sft", "train_pref", "train_pref_plus_train_sft", "train_pref_25pct_plus_train_sft"), default="train_sft")
+    parser.add_argument("--retrieval-pool", choices=("train_sft", "train_pref", "train_pref_plus_train_sft", "train_pref_10pct_plus_train_sft", "train_pref_25pct_plus_train_sft"), default="train_sft")
     parser.add_argument("--retrieval-weights", type=float, nargs="+", default=[0.25, 0.5, 0.75])
     args = parser.parse_args()
     # Keep every clean-validation evaluation within the declared sample cap.
