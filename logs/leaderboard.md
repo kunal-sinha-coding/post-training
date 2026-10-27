@@ -1775,3 +1775,6 @@ Source-specific result `when2call-similarity-gate-k2-label-consensus-test-202703
 | Candidate | when2call-similarity-gate-k2-disagreement-fallback-k1-20270373 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-k2-disagreement-fallback-k1-20270373/metrics.json) | completed |
 
 Source-specific result `when2call-similarity-gate-k2-disagreement-fallback-k1-test-20270374` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.7_k2_fallback_k1": {"accuracy": 0.952, "macro_f1": 0.9704004522441787}}}. These values are not ranked against other splits.
+| Candidate | when2call-similarity-gate-k1-qwen-agreement-20270375 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-k1-qwen-agreement-20270375/metrics.json) | completed |
+
+Source-specific result `when2call-similarity-gate-k1-qwen-agreement-test-20270376` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.7_k1_qwen_agree": {"accuracy": 0.93, "macro_f1": 0.9576859434002291}}}. These values are not ranked against other splits.

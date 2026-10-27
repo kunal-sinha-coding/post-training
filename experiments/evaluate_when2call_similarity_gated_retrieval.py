@@ -20,7 +20,7 @@ from experiments.train_qwen_when2call import ClassificationRow, label_token_ids,
 from experiments.train_when2call_jina import LABELS, metric_values
 
 
-def score_prompts(model: object, tokenizer: object, prompts: list[ClassificationRow], device: torch.device, batch_size: int, output_dir: Path, phase: str) -> list[int]:
+def score_prompts(model: object, tokenizer: object, prompts: list[ClassificationRow], device: torch.device, batch_size: int, output_dir: Path, phase: str, return_probabilities: bool = False) -> list[int] | np.ndarray:
     """Score prompts as one of the four learned action tokens."""
     # Run bounded inference batches and record the current validation position.
     predictions = []
@@ -28,8 +28,10 @@ def score_prompts(model: object, tokenizer: object, prompts: list[Classification
         for start in range(0, len(prompts), batch_size):
             write_heartbeat(output_dir / "heartbeat.json", phase, start)
             logits = score_rows(model, tokenizer, prompts[start:start + batch_size], label_token_ids(tokenizer), device, 4096)
-            predictions.extend(logits.argmax(-1).tolist())
-    return predictions
+            # Retain normalized class probabilities only when the fusion experiment requests them.
+            batch_output = torch.softmax(logits.float(), dim=-1) if return_probabilities else logits.argmax(-1)
+            predictions.extend(batch_output.cpu().tolist())
+    return np.asarray(predictions) if return_probabilities else predictions
 
 
 def main() -> int:
@@ -52,6 +54,7 @@ def main() -> int:
     parser.add_argument("--label-consensus-gate", action="store_true")
     parser.add_argument("--label-disagreement-fallback-k1", action="store_true")
     parser.add_argument("--require-neighbor-match-zero-shot", action="store_true")
+    parser.add_argument("--probability-average", action="store_true")
     args = parser.parse_args()
     # Keep every clean-validation evaluation within the declared sample cap.
     if not 1 <= args.max_validation_examples <= 500:
@@ -63,7 +66,7 @@ def main() -> int:
         raise RuntimeError("WANDB_API_KEY and OPENAI_API_KEY are required.")
     from openai import OpenAI
     import wandb
-    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name="when2call-similarity-gated-retrieval", job_type="clean-validation", config={"split_seed": args.split_seed, "sample_seed": args.sample_seed, "embedding_model": args.embedding_model, "embedding_dimensions": args.embedding_dimensions, "retrieval_pool": "train_sft", "retrieval_features": args.feature, "gate_score": args.gate_score, "k": args.k, "gate_quantiles": args.gate_quantiles, "label_consensus_gate": args.label_consensus_gate, "label_disagreement_fallback_k1": args.label_disagreement_fallback_k1, "require_neighbor_match_zero_shot": args.require_neighbor_match_zero_shot, "official_test_loaded": False})
+    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name="when2call-similarity-gated-retrieval", job_type="clean-validation", config={"split_seed": args.split_seed, "sample_seed": args.sample_seed, "embedding_model": args.embedding_model, "embedding_dimensions": args.embedding_dimensions, "retrieval_pool": "train_sft", "retrieval_features": args.feature, "gate_score": args.gate_score, "k": args.k, "gate_quantiles": args.gate_quantiles, "label_consensus_gate": args.label_consensus_gate, "label_disagreement_fallback_k1": args.label_disagreement_fallback_k1, "require_neighbor_match_zero_shot": args.require_neighbor_match_zero_shot, "probability_average": args.probability_average, "official_test_loaded": False})
     started = time.time()
     args.output_dir.mkdir(parents=True, exist_ok=True)
     write_heartbeat(args.output_dir / "heartbeat.json", "load-clean-data")
@@ -94,7 +97,9 @@ def main() -> int:
         model.eval()
         labels = [row.label for row in validation]
         zero_prompts = [ClassificationRow(retrieval.INSTRUCTION + row.text + "\nAction label:", row.label, None) for row in validation]
-        zero_predictions = score_prompts(model, tokenizer, zero_prompts, device, args.batch_size, args.output_dir, "zero-shot")
+        zero_output = score_prompts(model, tokenizer, zero_prompts, device, args.batch_size, args.output_dir, "zero-shot", args.probability_average)
+        zero_probabilities = zero_output if args.probability_average else None
+        zero_predictions = zero_output.argmax(-1).tolist() if args.probability_average else zero_output
         # Score the always-retrieve control and each label-free similarity gate.
         methods = {"zero_shot": zero_predictions}
         suffix = "" if args.k == 3 else f"_k{args.k}"
@@ -104,6 +109,8 @@ def main() -> int:
             suffix += "_fallback_k1"
         if args.require_neighbor_match_zero_shot:
             suffix += "_qwen_agree"
+        if args.probability_average:
+            suffix += "_probavg"
         for key, gate in [(f"always_k{args.k}", None)] + [(f"{gate_prefix}_{q}{suffix}", thresholds[str(q)]) for q in args.gate_quantiles]:
             prompts = []
             for index, target in enumerate(validation):
@@ -122,12 +129,17 @@ def main() -> int:
                 demos = [train[int(row_index)] for row_index in selected_neighbors] if use_demos else []
                 prompt = retrieval.prompt_with_demos(tokenizer, target, demos, 4096, 160)
                 prompts.append(ClassificationRow(prompt, target.label, None))
-            methods[key] = score_prompts(model, tokenizer, prompts, device, args.batch_size, args.output_dir, key)
+            # Average frozen zero-shot and retrieval probabilities when testing probability fusion.
+            retrieval_output = score_prompts(model, tokenizer, prompts, device, args.batch_size, args.output_dir, key, args.probability_average)
+            if args.probability_average:
+                methods[key] = ((zero_probabilities + retrieval_output) / 2).argmax(-1).tolist()
+            else:
+                methods[key] = retrieval_output
         # Save only aggregate clean metrics and the label-free gate thresholds.
         metrics = {name: {key: metric_values(labels, predictions, list(range(len(LABELS))))[key] for key in ("accuracy", "macro_f1")} for name, predictions in methods.items()}
         for name, values in metrics.items():
             run.log({f"validation/{name}/accuracy": values["accuracy"], f"validation/{name}/macro_f1": values["macro_f1"]})
-        record = {"status": "completed", "training_performed": False, "official_test_loaded": False, "validation_source": "nvidia/When2Call train_sft", "validation_examples": len(validation), "qwen_checkpoint": args.qwen_checkpoint, "retrieval_pool": "train_sft", "retrieval_feature": args.feature, "gate_score": args.gate_score, "k": args.k, "label_consensus_gate": args.label_consensus_gate, "label_disagreement_fallback_k1": args.label_disagreement_fallback_k1, "require_neighbor_match_zero_shot": args.require_neighbor_match_zero_shot, "embedding_model": args.embedding_model, "embedding_dimensions": args.embedding_dimensions, "gate_quantiles": args.gate_quantiles, "gate_thresholds_from_unlabeled_validation_scores": thresholds, "gate_thresholds_from_unlabeled_validation_similarities": thresholds, "embedding_cache": {"training": train_cache, "validation": validation_cache}, "embedding_usage": {"training": train_usage, "validation": validation_usage}, "validation_metrics": metrics, "training_metrics_source": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json", "aggregate_test_loaded": False, "git_commit": os.popen("git rev-parse HEAD").read().strip(), "wandb_run_id": run.id, "wandb_run_url": run.url, "runtime_seconds": time.time() - started}
+        record = {"status": "completed", "training_performed": False, "official_test_loaded": False, "validation_source": "nvidia/When2Call train_sft", "validation_examples": len(validation), "qwen_checkpoint": args.qwen_checkpoint, "retrieval_pool": "train_sft", "retrieval_feature": args.feature, "gate_score": args.gate_score, "k": args.k, "label_consensus_gate": args.label_consensus_gate, "label_disagreement_fallback_k1": args.label_disagreement_fallback_k1, "require_neighbor_match_zero_shot": args.require_neighbor_match_zero_shot, "probability_average": args.probability_average, "embedding_model": args.embedding_model, "embedding_dimensions": args.embedding_dimensions, "gate_quantiles": args.gate_quantiles, "gate_thresholds_from_unlabeled_validation_scores": thresholds, "gate_thresholds_from_unlabeled_validation_similarities": thresholds, "embedding_cache": {"training": train_cache, "validation": validation_cache}, "embedding_usage": {"training": train_usage, "validation": validation_usage}, "validation_metrics": metrics, "training_metrics_source": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json", "aggregate_test_loaded": False, "git_commit": os.popen("git rev-parse HEAD").read().strip(), "wandb_run_id": run.id, "wandb_run_url": run.url, "runtime_seconds": time.time() - started}
         (args.output_dir / "metrics.json").write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
         run.summary.update({"status": "completed", "output_dir": str(args.output_dir)})
         write_heartbeat(args.output_dir / "heartbeat.json", "completed")

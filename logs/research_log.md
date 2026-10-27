@@ -11103,3 +11103,27 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.7_k2_fallback_k1": {"accuracy": 0.952, "macro_f1": 0.9704004522441787}}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## when2call-similarity-gate-k1-qwen-agreement-20270375
+
+Timestamp: 2026-10-27T10:38:24.702394+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_when2call_similarity_gated_retrieval", "--output-dir", "outputs/when2call-similarity-gate-k1-qwen-agreement-20270375", "--split-seed", "20270327", "--sample-seed", "20270332", "--max-validation-examples", "500", "--qwen-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--embedding-model", "text-embedding-3-small", "--embedding-dimensions", "1536", "--cache-dir", "outputs/when2call-openai-embedding-cache", "--batch-size", "1", "--gate-quantiles", "0.65", "0.7", "0.75", "0.8", "--feature", "tools_only", "--gate-score", "absolute", "--k", "1", "--require-neighbor-match-zero-shot"]. Output: /workspace/post-training/outputs/when2call-similarity-gate-k1-qwen-agreement-20270375. W&B run: thbzmrgb.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## when2call-similarity-gate-k1-qwen-agreement-test-20270376
+
+Timestamp: 2026-10-27T10:41:56.263827+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_when2call_similarity_gate_test_screen", "--output-dir", "outputs/when2call-similarity-gate-k1-qwen-agreement-test-20270376", "--clean-metrics", "outputs/when2call-similarity-gate-k1-qwen-agreement-20270375/metrics.json", "--sample-seed", "20270376", "--max-test-examples", "500", "--split-seed", "20270327", "--validation-sample-seed", "20270332", "--qwen-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--embedding-model", "text-embedding-3-small", "--embedding-dimensions", "1536", "--cache-dir", "outputs/when2call-openai-embedding-cache", "--batch-size", "1", "--feature", "tools_only", "--require-neighbor-match-zero-shot", "--force-screen"]. Output: /workspace/post-training/outputs/when2call-similarity-gate-k1-qwen-agreement-test-20270376. W&B run: kgovga7t.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: True. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.7_k1_qwen_agree": {"accuracy": 0.93, "macro_f1": 0.9576859434002291}}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
