@@ -44,6 +44,62 @@ def fingerprint_rows(rows: list[object]) -> str:
     return hashlib.sha256("\n".join(row_hashes).encode()).hexdigest()
 
 
+def reorder_schema_keys(value: object, rng: random.Random) -> object:
+    """Reorder JSON object keys recursively without changing schema meaning."""
+    # Rebuild each object in a deterministic random key order and preserve list order.
+    if isinstance(value, dict):
+        keys = list(value)
+        rng.shuffle(keys)
+        return {key: reorder_schema_keys(value[key], rng) for key in keys}
+    # Apply the same key-order transform to every schema in an array.
+    if isinstance(value, list):
+        return [reorder_schema_keys(item, rng) for item in value]
+    # Leave scalar values unchanged.
+    return value
+
+
+def augment_preference_rows(rows: list[ClassificationRow], mode: str, seed: int) -> list[ClassificationRow]:
+    """Create label-preserving prompt variants for the requested augmentation."""
+    # Use one fixed random stream so each saved run can recreate the same variants.
+    rng = random.Random(seed)
+    augmented = []
+    for row in rows:
+        prompt = row.prompt
+        # Find the serialized tool section while keeping the action instruction fixed.
+        marker = "\nAvailable tools:\n"
+        if marker not in prompt:
+            continue
+        prefix, tool_section = prompt.split(marker, 1)
+        tool_text, label_suffix = tool_section.rsplit("\nAction label:", 1)
+        tools = tool_text.splitlines()
+        # Shuffle available tools to reduce dependence on their presentation order.
+        if mode == "tool_order" and len(tools) > 1:
+            original = list(tools)
+            rng.shuffle(tools)
+            if tools == original:
+                tools = tools[1:] + tools[:1]
+        # Reorder JSON schema keys while preserving all names, descriptions, and values.
+        elif mode == "schema_key_order":
+            reordered = []
+            for tool in tools:
+                try:
+                    schema = json.loads(tool)
+                    reordered.append(json.dumps(reorder_schema_keys(schema, rng), separators=(",", ":")))
+                except (json.JSONDecodeError, TypeError):
+                    reordered.append(tool)
+            tools = reordered
+        # Add a short neutral wrapper to vary the user-request surface form.
+        elif mode == "request_context":
+            question_marker = "Question: "
+            if question_marker in prefix:
+                prefix = prefix.replace(question_marker, "Question: The user asks for help with this request: ", 1)
+        # Keep only variants that changed the model input.
+        augmented_prompt = prefix + marker + "\n".join(tools) + "\nAction label:" + label_suffix
+        if augmented_prompt != row.prompt:
+            augmented.append(ClassificationRow(augmented_prompt, row.label, row.rejected_label))
+    return augmented
+
+
 def main() -> int:
     """Train on all preference rows and record fixed-epoch results."""
     # Parse fixed model, training, evaluation, and output controls.
@@ -67,6 +123,8 @@ def main() -> int:
     parser.add_argument("--weight-decay", type=float, default=0.01)
     parser.add_argument("--lora-rank", type=int, default=16)
     parser.add_argument("--evaluate-baseline", action="store_true")
+    parser.add_argument("--augmentation-mode", choices=("none", "tool_order", "schema_key_order", "request_context"), default="none")
+    parser.add_argument("--augmentation-seed", type=int, default=20261066)
     args = parser.parse_args()
     # Require online W&B before loading the model or benchmark data.
     if not os.getenv("WANDB_API_KEY"):
@@ -79,7 +137,8 @@ def main() -> int:
         raise RuntimeError(f"Expected 9,000 When2Call preference rows but found {len(preference_rows)}.")
     bfcl_train, bfcl_validation = load_labeled_rows(args.bfcl_data)
     bfcl_rows = bfcl_train + bfcl_validation
-    training_rows = preference_rows + (bfcl_rows if args.include_full_bfcl else [])
+    augmented_rows = augment_preference_rows(preference_rows, args.augmentation_mode, args.augmentation_seed) if args.augmentation_mode != "none" else []
+    training_rows = preference_rows + augmented_rows + (bfcl_rows if args.include_full_bfcl else [])
     if args.validation_source == "bfcl":
         validation_rows = bfcl_validation
     elif args.validation_source == "sft":
@@ -110,7 +169,7 @@ def main() -> int:
     training_eval_rows = sample_stratified(training_rows, min(args.training_eval_sample_size, len(training_rows)), args.training_eval_seed)
     label_counts = dict(sorted(Counter(row.label for row in training_rows).items()))
     data_fingerprint = fingerprint_rows(training_rows)
-    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name=args.output_dir.name, job_type="when2call-fullpool-sft", config=config | {"dataset": DATASET_NAME + ":train_pref" + (" + BFCL" if args.include_full_bfcl else ""), "train_examples": len(training_rows), "preference_train_examples": len(preference_rows), "bfcl_train_examples": len(training_rows) - len(preference_rows), "validation_source": args.validation_source, "validation_examples": len(validation_rows), "official_test_selection": False})
+    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name=args.output_dir.name, job_type="when2call-fullpool-sft-augmentation", config=config | {"dataset": DATASET_NAME + ":train_pref" + (" + augmented preference prompts" if augmented_rows else "") + (" + BFCL" if args.include_full_bfcl else ""), "train_examples": len(training_rows), "preference_train_examples": len(preference_rows), "augmentation_mode": args.augmentation_mode, "augmented_examples": len(augmented_rows), "bfcl_train_examples": len(training_rows) - len(preference_rows) - len(augmented_rows), "validation_source": args.validation_source, "validation_examples": len(validation_rows), "official_test_selection": False})
     atexit.register(run.finish)
     # Fix random sources before initializing the base model and fresh LoRA adapter.
     random.seed(args.seed)
@@ -164,7 +223,7 @@ def main() -> int:
         "config": config,
         "base_model": args.model,
         "base_model_checkpoint": "Qwen/Qwen2.5-1.5B-Instruct before any task adapter training",
-        "data": {"dataset": DATASET_NAME, "split": "train_pref", "preference_examples": len(preference_rows), "bfcl_train_examples": len(training_rows) - len(preference_rows), "bfcl_file": str(args.bfcl_data), "bfcl_sha256": hashlib.sha256(args.bfcl_data.read_bytes()).hexdigest(), "label_counts": label_counts, "prompt_label_fingerprint": data_fingerprint},
+        "data": {"dataset": DATASET_NAME, "split": "train_pref", "preference_examples": len(preference_rows), "augmentation_mode": args.augmentation_mode, "augmentation_seed": args.augmentation_seed, "augmented_examples": len(augmented_rows), "bfcl_train_examples": len(training_rows) - len(preference_rows) - len(augmented_rows), "bfcl_file": str(args.bfcl_data), "bfcl_sha256": hashlib.sha256(args.bfcl_data.read_bytes()).hexdigest(), "label_counts": label_counts, "prompt_label_fingerprint": data_fingerprint},
         "validation_source": args.validation_source,
         "validation_examples": len(validation_rows),
         "best_validation_accuracy": best_validation_accuracy,
