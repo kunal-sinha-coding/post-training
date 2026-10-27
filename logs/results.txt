@@ -121031,3 +121031,839 @@ Setup: Frozen Qwen/Qwen2.5-1.5B-Instruct adapter at outputs/qwen-when2call-fullp
 Training evidence: No training occurred for retrieval. Linked frozen-checkpoint epoch-2 probe on 500 examples: accuracy 0.9600, macro F1 0.72015, loss 0.40835. Source: outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json.
 Clean validation: 500 examples. Best gate gate_top_0.75_fallback_k1_probavg_w0.45 scored 0.9380 accuracy and 0.96395 macro F1. Zero-shot scored 0.9420 and 0.96706. Source: outputs/when2call-similarity-gate-question-only-25pct-pref-k3-fallback-20270428/metrics.json.
 Aggregate black-box test: Missing. The test screen skipped because clean accuracy did not exceed zero-shot. A forced full aggregate-only measurement on all 3,652 test rows is queued before further experiments. No test labels were used for selection.
+
+## when2call-similarity-gate-question-only-25pct-pref-k3-fallback-fulltest-20270430
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_when2call_similarity_gate_test_screen",
+    "--output-dir",
+    "outputs/when2call-similarity-gate-question-only-25pct-pref-k3-fallback-fulltest-20270430",
+    "--clean-metrics",
+    "outputs/when2call-similarity-gate-question-only-25pct-pref-k3-fallback-20270428/metrics.json",
+    "--sample-seed",
+    "20270430",
+    "--max-test-examples",
+    "500",
+    "--split-seed",
+    "20270327",
+    "--validation-sample-seed",
+    "20270332",
+    "--qwen-checkpoint",
+    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "--embedding-model",
+    "text-embedding-3-small",
+    "--embedding-dimensions",
+    "1536",
+    "--cache-dir",
+    "outputs/when2call-openai-embedding-cache",
+    "--batch-size",
+    "1",
+    "--feature",
+    "question_only",
+    "--label-disagreement-fallback-k1",
+    "--probability-average",
+    "--force-screen",
+    "--full-test"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "when2call-similarity-gate-question-only-25pct-pref-k3-fallback-fulltest-20270430",
+  "failure_reason": null,
+  "metadata": {
+    "checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "clean_metrics_source": "outputs/when2call-similarity-gate-question-only-25pct-pref-k3-fallback-20270428/metrics.json",
+    "clean_validation_examples": 500,
+    "clean_validation_metrics": {
+      "gate_top_0.75_fallback_k1_probavg_w0.45": {
+        "accuracy": 0.938,
+        "macro_f1": 0.9639455782312926
+      },
+      "zero_shot": {
+        "accuracy": 0.942,
+        "macro_f1": 0.967059240237315
+      }
+    },
+    "dataset": "nvidia/When2Call",
+    "embedding_cache": {
+      "test_full": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-question_only-test_full-5971e543e8007e5fc4325fb3.npz",
+      "test_sample": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-question_only-test_sample-cde153d9db1784bd012b66f2.npz",
+      "training": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-train_pref_25pct_plus_train_sft_question_only-training-30ca9864c330e7c6c20826ff.npz"
+    },
+    "embedding_usage": {
+      "test_full": {
+        "api_calls": 58,
+        "cache_hit": false,
+        "embedding_count": 3652,
+        "input_tokens": 95767
+      },
+      "test_sample": {
+        "api_calls": 8,
+        "cache_hit": false,
+        "embedding_count": 500,
+        "input_tokens": 13649
+      },
+      "training": {
+        "api_calls": 0,
+        "cache_hit": true,
+        "embedding_count": 15636,
+        "input_tokens": 0
+      }
+    },
+    "full_test_evaluated": true,
+    "full_test_examples": 3652,
+    "full_test_gate": "Full evaluation was forced after clean validation selection.",
+    "full_test_metrics": {
+      "gate_top_0.75_fallback_k1_probavg_w0.45": {
+        "accuracy": 0.6804490690032858,
+        "macro_f1": 0.511927570670597
+      },
+      "zero_shot": {
+        "accuracy": 0.6804490690032858,
+        "macro_f1": 0.511927570670597
+      }
+    },
+    "gate_score": "absolute",
+    "gate_threshold": 0.921290397644043,
+    "k": 3,
+    "label_consensus_gate": false,
+    "label_disagreement_fallback_k1": true,
+    "measurement_type": "aggregate_only_black_box_test_sample",
+    "official_test_loaded": true,
+    "per_example_outcomes_saved": false,
+    "probability_average": true,
+    "require_neighbor_match_zero_shot": false,
+    "retrieval_feature": "question_only",
+    "retrieval_pool": "train_pref_25pct_plus_train_sft",
+    "retrieval_weight": 0.45,
+    "runtime_seconds": 834.9061658382416,
+    "sample_method": "uniform random row-index sample without label access",
+    "sample_seed": 20270430,
+    "selected_method": "gate_top_0.75_fallback_k1_probavg_w0.45",
+    "selection_source": "clean validation only",
+    "split": "test/mcq",
+    "status": "completed",
+    "test_labels_used_for_selection": false,
+    "test_sample_examples": 500,
+    "test_sample_metrics": {
+      "gate_top_0.75_fallback_k1_probavg_w0.45": {
+        "accuracy": 0.686,
+        "macro_f1": 0.5141512401150251
+      },
+      "zero_shot": {
+        "accuracy": 0.686,
+        "macro_f1": 0.5141512401150251
+      }
+    },
+    "training_metrics": {
+      "accuracy": 0.96,
+      "epoch": 2,
+      "examples": 500,
+      "macro_f1": 0.7201450925439365,
+      "training_loss": 0.408354387068056
+    },
+    "training_metrics_source": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json",
+    "wandb_run_id": "l4u1qbyh",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/l4u1qbyh"
+  },
+  "metrics_path": "/workspace/post-training/outputs/when2call-similarity-gate-question-only-25pct-pref-k3-fallback-fulltest-20270430/metrics.json",
+  "official_test_loaded": true,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/when2call-similarity-gate-question-only-25pct-pref-k3-fallback-fulltest-20270430",
+  "source_validation_metrics": {
+    "clean_validation_metrics": {
+      "gate_top_0.75_fallback_k1_probavg_w0.45": {
+        "accuracy": 0.938,
+        "macro_f1": 0.9639455782312926
+      },
+      "zero_shot": {
+        "accuracy": 0.942,
+        "macro_f1": 0.967059240237315
+      }
+    }
+  },
+  "started_at": "2026-10-27T18:02:26.757365+00:00",
+  "status": "completed",
+  "test_status": "not measured",
+  "timestamp": "2026-10-27T18:17:00.496305+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "l4u1qbyh",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/l4u1qbyh"
+}
+```
+
+## when2call-similarity-gate-15pct-pref-k3-fallback-20270501
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_when2call_similarity_gated_retrieval",
+    "--output-dir",
+    "outputs/when2call-similarity-gate-15pct-pref-k3-fallback-20270501",
+    "--split-seed",
+    "20270327",
+    "--sample-seed",
+    "20270332",
+    "--max-validation-examples",
+    "500",
+    "--qwen-checkpoint",
+    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "--embedding-model",
+    "text-embedding-3-small",
+    "--embedding-dimensions",
+    "1536",
+    "--cache-dir",
+    "outputs/when2call-openai-embedding-cache",
+    "--batch-size",
+    "1",
+    "--gate-quantiles",
+    "0.65",
+    "0.7",
+    "0.75",
+    "--feature",
+    "tools_only",
+    "--gate-score",
+    "absolute",
+    "--k",
+    "3",
+    "--label-disagreement-fallback-k1",
+    "--probability-average",
+    "--retrieval-weights",
+    "0.45",
+    "0.5",
+    "--retrieval-pool",
+    "train_pref_15pct_plus_train_sft"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "when2call-similarity-gate-15pct-pref-k3-fallback-20270501",
+  "failure_reason": null,
+  "metadata": {
+    "aggregate_test_loaded": false,
+    "embedding_cache": {
+      "training": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-train_pref_15pct_plus_train_sft_tools_only-training-51c6be75cb6753f4ee208385.npz",
+      "validation": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-tools_only-validation-f3eec60de5b6919e10f25873.npz"
+    },
+    "embedding_dimensions": 1536,
+    "embedding_model": "text-embedding-3-small",
+    "embedding_usage": {
+      "training": {
+        "api_calls": 216,
+        "cache_hit": false,
+        "embedding_count": 13796,
+        "input_tokens": 4202777
+      },
+      "validation": {
+        "api_calls": 0,
+        "cache_hit": true,
+        "embedding_count": 500,
+        "input_tokens": 0
+      }
+    },
+    "gate_quantiles": [
+      0.65,
+      0.7,
+      0.75
+    ],
+    "gate_score": "absolute",
+    "gate_thresholds_from_unlabeled_validation_scores": {
+      "0.65": 1.0,
+      "0.7": 1.0,
+      "0.75": 1.0
+    },
+    "gate_thresholds_from_unlabeled_validation_similarities": {
+      "0.65": 1.0,
+      "0.7": 1.0,
+      "0.75": 1.0
+    },
+    "git_commit": "8dab8d286dc8cd422918ee8e23a532583c9938c5",
+    "k": 3,
+    "label_consensus_gate": false,
+    "label_disagreement_fallback_k1": true,
+    "official_test_loaded": false,
+    "probability_average": true,
+    "qwen_checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "require_neighbor_match_zero_shot": false,
+    "retrieval_feature": "tools_only",
+    "retrieval_pool": "train_pref_15pct_plus_train_sft",
+    "retrieval_weights": [
+      0.45,
+      0.5
+    ],
+    "runtime_seconds": 492.9706883430481,
+    "status": "completed",
+    "training_metrics_source": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json",
+    "training_performed": false,
+    "validation_examples": 500,
+    "validation_metrics": {
+      "always_k3_w0.45": {
+        "accuracy": 0.944,
+        "macro_f1": 0.968167473174837
+      },
+      "always_k3_w0.5": {
+        "accuracy": 0.948,
+        "macro_f1": 0.9702497695080043
+      },
+      "gate_top_0.65_fallback_k1_probavg_w0.45": {
+        "accuracy": 0.95,
+        "macro_f1": 0.9732738672680467
+      },
+      "gate_top_0.65_fallback_k1_probavg_w0.5": {
+        "accuracy": 0.954,
+        "macro_f1": 0.9753309492439928
+      },
+      "gate_top_0.75_fallback_k1_probavg_w0.45": {
+        "accuracy": 0.95,
+        "macro_f1": 0.9732738672680467
+      },
+      "gate_top_0.75_fallback_k1_probavg_w0.5": {
+        "accuracy": 0.954,
+        "macro_f1": 0.9753309492439928
+      },
+      "gate_top_0.7_fallback_k1_probavg_w0.45": {
+        "accuracy": 0.95,
+        "macro_f1": 0.9732738672680467
+      },
+      "gate_top_0.7_fallback_k1_probavg_w0.5": {
+        "accuracy": 0.954,
+        "macro_f1": 0.9753309492439928
+      },
+      "zero_shot": {
+        "accuracy": 0.942,
+        "macro_f1": 0.967059240237315
+      }
+    },
+    "validation_source": "nvidia/When2Call train_sft",
+    "wandb_run_id": "6l7oi66z",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/6l7oi66z"
+  },
+  "metrics_path": "/workspace/post-training/outputs/when2call-similarity-gate-15pct-pref-k3-fallback-20270501/metrics.json",
+  "official_test_loaded": false,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/when2call-similarity-gate-15pct-pref-k3-fallback-20270501",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-27T18:16:59.595584+00:00",
+  "status": "completed",
+  "test_status": "not measured",
+  "timestamp": "2026-10-27T18:26:03.220435+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "6l7oi66z",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/6l7oi66z"
+}
+```
+
+## when2call-similarity-gate-15pct-pref-k3-fallback-fulltest-20270502
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_when2call_similarity_gate_test_screen",
+    "--output-dir",
+    "outputs/when2call-similarity-gate-15pct-pref-k3-fallback-fulltest-20270502",
+    "--clean-metrics",
+    "outputs/when2call-similarity-gate-15pct-pref-k3-fallback-20270501/metrics.json",
+    "--sample-seed",
+    "20270502",
+    "--max-test-examples",
+    "500",
+    "--split-seed",
+    "20270327",
+    "--validation-sample-seed",
+    "20270332",
+    "--qwen-checkpoint",
+    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "--embedding-model",
+    "text-embedding-3-small",
+    "--embedding-dimensions",
+    "1536",
+    "--cache-dir",
+    "outputs/when2call-openai-embedding-cache",
+    "--batch-size",
+    "1",
+    "--feature",
+    "tools_only",
+    "--label-disagreement-fallback-k1",
+    "--probability-average",
+    "--force-screen",
+    "--full-test"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "when2call-similarity-gate-15pct-pref-k3-fallback-fulltest-20270502",
+  "failure_reason": null,
+  "metadata": {
+    "checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "clean_metrics_source": "outputs/when2call-similarity-gate-15pct-pref-k3-fallback-20270501/metrics.json",
+    "clean_validation_examples": 500,
+    "clean_validation_metrics": {
+      "gate_top_0.65_fallback_k1_probavg_w0.5": {
+        "accuracy": 0.954,
+        "macro_f1": 0.9753309492439928
+      },
+      "zero_shot": {
+        "accuracy": 0.942,
+        "macro_f1": 0.967059240237315
+      }
+    },
+    "dataset": "nvidia/When2Call",
+    "embedding_cache": {
+      "test_full": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-tools_only-test_full-1f2ec75865017427371a74b3.npz",
+      "test_sample": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-tools_only-test_sample-823ad4a3ca9058a151f43b18.npz",
+      "training": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-train_pref_15pct_plus_train_sft_tools_only-training-51c6be75cb6753f4ee208385.npz"
+    },
+    "embedding_usage": {
+      "test_full": {
+        "api_calls": 0,
+        "cache_hit": true,
+        "embedding_count": 3652,
+        "input_tokens": 0
+      },
+      "test_sample": {
+        "api_calls": 8,
+        "cache_hit": false,
+        "embedding_count": 500,
+        "input_tokens": 331990
+      },
+      "training": {
+        "api_calls": 0,
+        "cache_hit": true,
+        "embedding_count": 13796,
+        "input_tokens": 0
+      }
+    },
+    "full_test_evaluated": true,
+    "full_test_examples": 3652,
+    "full_test_gate": "Full evaluation was forced after clean validation selection.",
+    "full_test_metrics": {
+      "gate_top_0.65_fallback_k1_probavg_w0.5": {
+        "accuracy": 0.6859255202628697,
+        "macro_f1": 0.5157210278780178
+      },
+      "zero_shot": {
+        "accuracy": 0.6804490690032858,
+        "macro_f1": 0.511927570670597
+      }
+    },
+    "gate_score": "absolute",
+    "gate_threshold": 1.0,
+    "k": 3,
+    "label_consensus_gate": false,
+    "label_disagreement_fallback_k1": true,
+    "measurement_type": "aggregate_only_black_box_test_sample",
+    "official_test_loaded": true,
+    "per_example_outcomes_saved": false,
+    "probability_average": true,
+    "require_neighbor_match_zero_shot": false,
+    "retrieval_feature": "tools_only",
+    "retrieval_pool": "train_pref_15pct_plus_train_sft",
+    "retrieval_weight": 0.5,
+    "runtime_seconds": 787.1375238895416,
+    "sample_method": "uniform random row-index sample without label access",
+    "sample_seed": 20270502,
+    "selected_method": "gate_top_0.65_fallback_k1_probavg_w0.5",
+    "selection_source": "clean validation only",
+    "split": "test/mcq",
+    "status": "completed",
+    "test_labels_used_for_selection": false,
+    "test_sample_examples": 500,
+    "test_sample_metrics": {
+      "gate_top_0.65_fallback_k1_probavg_w0.5": {
+        "accuracy": 0.66,
+        "macro_f1": 0.4965703317398233
+      },
+      "zero_shot": {
+        "accuracy": 0.652,
+        "macro_f1": 0.49148353477841045
+      }
+    },
+    "training_metrics": {
+      "accuracy": 0.96,
+      "epoch": 2,
+      "examples": 500,
+      "macro_f1": 0.7201450925439365,
+      "training_loss": 0.408354387068056
+    },
+    "training_metrics_source": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json",
+    "wandb_run_id": "nw2iaryx",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/nw2iaryx"
+  },
+  "metrics_path": "/workspace/post-training/outputs/when2call-similarity-gate-15pct-pref-k3-fallback-fulltest-20270502/metrics.json",
+  "official_test_loaded": true,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/when2call-similarity-gate-15pct-pref-k3-fallback-fulltest-20270502",
+  "source_validation_metrics": {
+    "clean_validation_metrics": {
+      "gate_top_0.65_fallback_k1_probavg_w0.5": {
+        "accuracy": 0.954,
+        "macro_f1": 0.9753309492439928
+      },
+      "zero_shot": {
+        "accuracy": 0.942,
+        "macro_f1": 0.967059240237315
+      }
+    }
+  },
+  "started_at": "2026-10-27T18:26:02.947739+00:00",
+  "status": "completed",
+  "test_status": "not measured",
+  "timestamp": "2026-10-27T18:40:05.536327+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "nw2iaryx",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/nw2iaryx"
+}
+```
+
+## when2call-similarity-gate-20pct-pref-k3-fallback-20270503
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_when2call_similarity_gated_retrieval",
+    "--output-dir",
+    "outputs/when2call-similarity-gate-20pct-pref-k3-fallback-20270503",
+    "--split-seed",
+    "20270327",
+    "--sample-seed",
+    "20270332",
+    "--max-validation-examples",
+    "500",
+    "--qwen-checkpoint",
+    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "--embedding-model",
+    "text-embedding-3-small",
+    "--embedding-dimensions",
+    "1536",
+    "--cache-dir",
+    "outputs/when2call-openai-embedding-cache",
+    "--batch-size",
+    "1",
+    "--gate-quantiles",
+    "0.65",
+    "0.7",
+    "0.75",
+    "--feature",
+    "tools_only",
+    "--gate-score",
+    "absolute",
+    "--k",
+    "3",
+    "--label-disagreement-fallback-k1",
+    "--probability-average",
+    "--retrieval-weights",
+    "0.45",
+    "0.5",
+    "--retrieval-pool",
+    "train_pref_20pct_plus_train_sft"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "when2call-similarity-gate-20pct-pref-k3-fallback-20270503",
+  "failure_reason": null,
+  "metadata": {
+    "aggregate_test_loaded": false,
+    "embedding_cache": {
+      "training": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-train_pref_20pct_plus_train_sft_tools_only-training-8e5e64b47135b027b4fcf8be.npz",
+      "validation": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-tools_only-validation-f3eec60de5b6919e10f25873.npz"
+    },
+    "embedding_dimensions": 1536,
+    "embedding_model": "text-embedding-3-small",
+    "embedding_usage": {
+      "training": {
+        "api_calls": 230,
+        "cache_hit": false,
+        "embedding_count": 14659,
+        "input_tokens": 4479747
+      },
+      "validation": {
+        "api_calls": 0,
+        "cache_hit": true,
+        "embedding_count": 500,
+        "input_tokens": 0
+      }
+    },
+    "gate_quantiles": [
+      0.65,
+      0.7,
+      0.75
+    ],
+    "gate_score": "absolute",
+    "gate_thresholds_from_unlabeled_validation_scores": {
+      "0.65": 1.0,
+      "0.7": 1.0,
+      "0.75": 1.0
+    },
+    "gate_thresholds_from_unlabeled_validation_similarities": {
+      "0.65": 1.0,
+      "0.7": 1.0,
+      "0.75": 1.0
+    },
+    "git_commit": "8dab8d286dc8cd422918ee8e23a532583c9938c5",
+    "k": 3,
+    "label_consensus_gate": false,
+    "label_disagreement_fallback_k1": true,
+    "official_test_loaded": false,
+    "probability_average": true,
+    "qwen_checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "require_neighbor_match_zero_shot": false,
+    "retrieval_feature": "tools_only",
+    "retrieval_pool": "train_pref_20pct_plus_train_sft",
+    "retrieval_weights": [
+      0.45,
+      0.5
+    ],
+    "runtime_seconds": 581.6783809661865,
+    "status": "completed",
+    "training_metrics_source": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json",
+    "training_performed": false,
+    "validation_examples": 500,
+    "validation_metrics": {
+      "always_k3_w0.45": {
+        "accuracy": 0.944,
+        "macro_f1": 0.968167473174837
+      },
+      "always_k3_w0.5": {
+        "accuracy": 0.948,
+        "macro_f1": 0.9702497695080043
+      },
+      "gate_top_0.65_fallback_k1_probavg_w0.45": {
+        "accuracy": 0.95,
+        "macro_f1": 0.9732738672680467
+      },
+      "gate_top_0.65_fallback_k1_probavg_w0.5": {
+        "accuracy": 0.952,
+        "macro_f1": 0.974304490322797
+      },
+      "gate_top_0.75_fallback_k1_probavg_w0.45": {
+        "accuracy": 0.95,
+        "macro_f1": 0.9732738672680467
+      },
+      "gate_top_0.75_fallback_k1_probavg_w0.5": {
+        "accuracy": 0.952,
+        "macro_f1": 0.974304490322797
+      },
+      "gate_top_0.7_fallback_k1_probavg_w0.45": {
+        "accuracy": 0.95,
+        "macro_f1": 0.9732738672680467
+      },
+      "gate_top_0.7_fallback_k1_probavg_w0.5": {
+        "accuracy": 0.952,
+        "macro_f1": 0.974304490322797
+      },
+      "zero_shot": {
+        "accuracy": 0.942,
+        "macro_f1": 0.967059240237315
+      }
+    },
+    "validation_source": "nvidia/When2Call train_sft",
+    "wandb_run_id": "zrembfpr",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/zrembfpr"
+  },
+  "metrics_path": "/workspace/post-training/outputs/when2call-similarity-gate-20pct-pref-k3-fallback-20270503/metrics.json",
+  "official_test_loaded": false,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/when2call-similarity-gate-20pct-pref-k3-fallback-20270503",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-27T18:40:05.036970+00:00",
+  "status": "completed",
+  "test_status": "not measured",
+  "timestamp": "2026-10-27T18:50:39.973862+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "zrembfpr",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/zrembfpr"
+}
+```
+
+## when2call-similarity-gate-20pct-pref-k3-fallback-fulltest-20270504
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_when2call_similarity_gate_test_screen",
+    "--output-dir",
+    "outputs/when2call-similarity-gate-20pct-pref-k3-fallback-fulltest-20270504",
+    "--clean-metrics",
+    "outputs/when2call-similarity-gate-20pct-pref-k3-fallback-20270503/metrics.json",
+    "--sample-seed",
+    "20270504",
+    "--max-test-examples",
+    "500",
+    "--split-seed",
+    "20270327",
+    "--validation-sample-seed",
+    "20270332",
+    "--qwen-checkpoint",
+    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "--embedding-model",
+    "text-embedding-3-small",
+    "--embedding-dimensions",
+    "1536",
+    "--cache-dir",
+    "outputs/when2call-openai-embedding-cache",
+    "--batch-size",
+    "1",
+    "--feature",
+    "tools_only",
+    "--label-disagreement-fallback-k1",
+    "--probability-average",
+    "--force-screen",
+    "--full-test"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "when2call-similarity-gate-20pct-pref-k3-fallback-fulltest-20270504",
+  "failure_reason": null,
+  "metadata": {
+    "checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "clean_metrics_source": "outputs/when2call-similarity-gate-20pct-pref-k3-fallback-20270503/metrics.json",
+    "clean_validation_examples": 500,
+    "clean_validation_metrics": {
+      "gate_top_0.65_fallback_k1_probavg_w0.5": {
+        "accuracy": 0.952,
+        "macro_f1": 0.974304490322797
+      },
+      "zero_shot": {
+        "accuracy": 0.942,
+        "macro_f1": 0.967059240237315
+      }
+    },
+    "dataset": "nvidia/When2Call",
+    "embedding_cache": {
+      "test_full": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-tools_only-test_full-1f2ec75865017427371a74b3.npz",
+      "test_sample": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-tools_only-test_sample-f3ce0c18b767a793191a44a1.npz",
+      "training": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-train_pref_20pct_plus_train_sft_tools_only-training-8e5e64b47135b027b4fcf8be.npz"
+    },
+    "embedding_usage": {
+      "test_full": {
+        "api_calls": 0,
+        "cache_hit": true,
+        "embedding_count": 3652,
+        "input_tokens": 0
+      },
+      "test_sample": {
+        "api_calls": 8,
+        "cache_hit": false,
+        "embedding_count": 500,
+        "input_tokens": 308938
+      },
+      "training": {
+        "api_calls": 0,
+        "cache_hit": true,
+        "embedding_count": 14659,
+        "input_tokens": 0
+      }
+    },
+    "full_test_evaluated": true,
+    "full_test_examples": 3652,
+    "full_test_gate": "Full evaluation was forced after clean validation selection.",
+    "full_test_metrics": {
+      "gate_top_0.65_fallback_k1_probavg_w0.5": {
+        "accuracy": 0.6826396495071194,
+        "macro_f1": 0.5133989554433669
+      },
+      "zero_shot": {
+        "accuracy": 0.6804490690032858,
+        "macro_f1": 0.511927570670597
+      }
+    },
+    "gate_score": "absolute",
+    "gate_threshold": 1.0,
+    "k": 3,
+    "label_consensus_gate": false,
+    "label_disagreement_fallback_k1": true,
+    "measurement_type": "aggregate_only_black_box_test_sample",
+    "official_test_loaded": true,
+    "per_example_outcomes_saved": false,
+    "probability_average": true,
+    "require_neighbor_match_zero_shot": false,
+    "retrieval_feature": "tools_only",
+    "retrieval_pool": "train_pref_20pct_plus_train_sft",
+    "retrieval_weight": 0.5,
+    "runtime_seconds": 807.0093030929565,
+    "sample_method": "uniform random row-index sample without label access",
+    "sample_seed": 20270504,
+    "selected_method": "gate_top_0.65_fallback_k1_probavg_w0.5",
+    "selection_source": "clean validation only",
+    "split": "test/mcq",
+    "status": "completed",
+    "test_labels_used_for_selection": false,
+    "test_sample_examples": 500,
+    "test_sample_metrics": {
+      "gate_top_0.65_fallback_k1_probavg_w0.5": {
+        "accuracy": 0.722,
+        "macro_f1": 0.5422441000518159
+      },
+      "zero_shot": {
+        "accuracy": 0.712,
+        "macro_f1": 0.535891719191228
+      }
+    },
+    "training_metrics": {
+      "accuracy": 0.96,
+      "epoch": 2,
+      "examples": 500,
+      "macro_f1": 0.7201450925439365,
+      "training_loss": 0.408354387068056
+    },
+    "training_metrics_source": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json",
+    "wandb_run_id": "opsvz7oe",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/opsvz7oe"
+  },
+  "metrics_path": "/workspace/post-training/outputs/when2call-similarity-gate-20pct-pref-k3-fallback-fulltest-20270504/metrics.json",
+  "official_test_loaded": true,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/when2call-similarity-gate-20pct-pref-k3-fallback-fulltest-20270504",
+  "source_validation_metrics": {
+    "clean_validation_metrics": {
+      "gate_top_0.65_fallback_k1_probavg_w0.5": {
+        "accuracy": 0.952,
+        "macro_f1": 0.974304490322797
+      },
+      "zero_shot": {
+        "accuracy": 0.942,
+        "macro_f1": 0.967059240237315
+      }
+    }
+  },
+  "started_at": "2026-10-27T18:50:39.687387+00:00",
+  "status": "completed",
+  "test_status": "not measured",
+  "timestamp": "2026-10-27T19:04:41.840487+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "opsvz7oe",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/opsvz7oe"
+}
+```
+
+
+WHEN2CALL RETRIEVAL EVIDENCE AUDIT
+Experiment: when2call-similarity-gate-20pct-pref-k3-fallback-fulltest-20270504
+Purpose: Evaluate K=3 retrieval from a 20% preference and 80% SFT pool.
+Training evidence: Retrieval did not train. Frozen Qwen epoch-2 training probe on 500 examples: 0.9600 accuracy, 0.72015 macro F1, loss 0.40835. Source: outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json.
+Clean validation: 500 examples. Selected gate_top_0.65_fallback_k1_probavg_w0.5 scored 0.9520 accuracy and 0.97430 macro F1. Zero-shot scored 0.9420 and 0.96706. Source: outputs/when2call-similarity-gate-20pct-pref-k3-fallback-20270503/metrics.json.
+Aggregate black-box test: 500-row sample scored 0.7220 accuracy and 0.54224 macro F1 for the selected gate versus 0.7120 and 0.53589 zero-shot. Full 3,652-row aggregate scored 0.68264 accuracy and 0.51340 macro F1 versus zero-shot at 0.68045 and 0.51193. Source: outputs/when2call-similarity-gate-20pct-pref-k3-fallback-fulltest-20270504/metrics.json. Test labels were not used for selection.
