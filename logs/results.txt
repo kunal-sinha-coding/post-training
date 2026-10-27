@@ -107194,3 +107194,57 @@ The screen completed on 500 clean validation examples. The clean-selected baseli
 ## Similarity-gated retrieval fallback, queued
 
 Hypothesis: Retrieval may harm low-similarity queries but help where the nearest train_sft tool-schema example is strongly related. After the required corrected-mapping aggregate test measurement and existing queue, compare zero-shot, always-retrieve K=3, and zero-shot fallback gates at the 50th, 75th, and 90th percentile of unlabeled clean-validation similarity scores. Use text-embedding-3-small, tool-schema-only retrieval, and 500 clean validation examples. Select only on clean validation.
+
+## Seed-only repeats discontinued
+
+The user directed that experiments must not be repeated with different seeds as a default. The active 27-combination clean-validation replication was stopped before completion. Two queued seed-only repetitions, one using another 500-row sample and one using a new split, were removed. No metrics from the stopped replication are treated as completed results. Future work will change a substantive method component instead. The corrected zero-shot aggregate baseline measurement and distinct embedding, prompt-length, and similarity-gating hypotheses remain queued.
+
+## when2call-openai-pool-feature-k-replication-20270335
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_when2call_dynamic_retrieval",
+    "--output-dir",
+    "outputs/when2call-openai-pool-feature-k-replication-20270335",
+    "--sample-seed",
+    "20270334",
+    "--split-seed",
+    "20270327",
+    "--max-validation-examples",
+    "500",
+    "--qwen-checkpoint",
+    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "--batch-size",
+    "1",
+    "--embedding-model",
+    "text-embedding-3-small",
+    "--embedding-dimensions",
+    "1536",
+    "--cache-dir",
+    "outputs/when2call-openai-embedding-cache"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "when2call-openai-pool-feature-k-replication-20270335",
+  "failure_reason": null,
+  "metadata": {},
+  "metrics_path": "/workspace/post-training/outputs/when2call-openai-pool-feature-k-replication-20270335/metrics.json",
+  "official_test_loaded": null,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/when2call-openai-pool-feature-k-replication-20270335",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-27T05:32:02.491085+00:00",
+  "status": "failed_or_incomplete",
+  "test_status": "not measured",
+  "timestamp": "2026-10-27T05:47:34.376919+00:00",
+  "train_metrics": {},
+  "wandb_run_id": null,
+  "wandb_run_url": null
+}
+```
