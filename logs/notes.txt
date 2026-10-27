@@ -7514,3 +7514,6 @@ Scalar temperatures did not improve clean-validation accuracy over the request-c
 
 
 2026-10-27: Commit name: Record missing retrieval test measurement. The latest question-only test screen was marked skipped because its clean-selected gate scored 0.9380 validation accuracy against 0.9420 zero-shot. The frozen Qwen epoch-2 training probe is linked at 0.9600 accuracy, 0.72015 macro F1, and 0.40835 loss. Clean macro F1 was 0.96395 versus zero-shot at 0.96706. The screen did not record aggregate black-box test metrics. Queued a forced aggregate-only full-test measurement first, then distinct 15% and 20% preference/SFT mixture clean comparisons and full aggregate screens. Test labels will be report-only.
+
+
+2026-10-27: Commit name: Re-arm aggregate retrieval measurement. The initial queue update was replaced by the watchdog planning handoff before it launched. Restored the required forced aggregate-only full-test measurement as the first command, then queued distinct 15% and 20% preference/SFT clean comparisons and full aggregate screens. Candidate selection uses clean validation only.
