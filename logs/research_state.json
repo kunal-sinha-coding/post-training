@@ -4,20 +4,20 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "fresh_base_bfcl_when2call_data_exploration_v1",
-  "current_hypothesis": "The best clean-validation choice in the first TF-IDF trial was zero-shot Qwen, not retrieved demonstrations. Test whether dense OpenAI text embeddings retrieve better examples than TF-IDF while keeping Qwen as the standalone target. Only Qwen retrieval prompts are compared; encoder ensembling is deferred.",
+  "current_hypothesis": "OpenAI embedding retrieval may improve Qwen prompting when the pool source, embedded content, and number of demonstrations match the task. The previous trial cannot answer this because it searched only train_sft, omitted K=2, used TF-IDF, and used an incorrect demonstration label mapping.",
   "active_experiment": {
-    "pid": 186596,
+    "pid": 187755,
     "command": [
       "python",
       "-u",
       "-m",
       "experiments.evaluate_when2call_dynamic_retrieval",
       "--output-dir",
-      "outputs/when2call-dynamic-retrieval-openai-20270331",
-      "--split-seed",
-      "20270327",
+      "outputs/when2call-openai-pool-feature-k-screen-20270333",
       "--sample-seed",
       "20270332",
+      "--split-seed",
+      "20270327",
       "--max-validation-examples",
       "500",
       "--qwen-checkpoint",
@@ -29,9 +29,9 @@
       "--embedding-dimensions",
       "1536",
       "--cache-dir",
-      "outputs/when2call-dynamic-retrieval-cache"
+      "outputs/when2call-openai-embedding-cache"
     ],
-    "started_at": "2026-10-27T04:40:45.884030+00:00"
+    "started_at": "2026-10-27T04:53:56.993009+00:00"
   },
   "worker_command": [
     "python",
@@ -39,11 +39,11 @@
     "-m",
     "experiments.evaluate_when2call_dynamic_retrieval",
     "--output-dir",
-    "outputs/when2call-dynamic-retrieval-openai-20270331",
-    "--split-seed",
-    "20270327",
+    "outputs/when2call-openai-pool-feature-k-screen-20270333",
     "--sample-seed",
     "20270332",
+    "--split-seed",
+    "20270327",
     "--max-validation-examples",
     "500",
     "--qwen-checkpoint",
@@ -55,9 +55,34 @@
     "--embedding-dimensions",
     "1536",
     "--cache-dir",
-    "outputs/when2call-dynamic-retrieval-cache"
+    "outputs/when2call-openai-embedding-cache"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_when2call_dynamic_retrieval",
+      "--output-dir",
+      "outputs/when2call-openai-pool-feature-k-replication-20270335",
+      "--sample-seed",
+      "20270334",
+      "--split-seed",
+      "20270327",
+      "--max-validation-examples",
+      "500",
+      "--qwen-checkpoint",
+      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "--batch-size",
+      "1",
+      "--embedding-model",
+      "text-embedding-3-small",
+      "--embedding-dimensions",
+      "1536",
+      "--cache-dir",
+      "outputs/when2call-openai-embedding-cache"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -76,7 +101,9 @@
   ],
   "experiment_queue": [
     "The completed 20270327 TF-IDF screen selected zero-shot Qwen on clean accuracy. Its one-shot and three-shot Qwen settings scored lower.",
-    "Run the corrected Qwen-only sparse and OpenAI embedding comparison on a fresh capped sample using split/sample seeds 20270327/20270332. Compare question-only and question-plus-tools retrieval, kNN k=1/3/5, and Qwen one-shot/three-shot prompts with the zero-shot baseline. Reuse cached train indexes/vectors where exact cache keys match."
+    "Run the corrected Qwen-only sparse and OpenAI embedding comparison on a fresh capped sample using split/sample seeds 20270327/20270332. Compare question-only and question-plus-tools retrieval, kNN k=1/3/5, and Qwen one-shot/three-shot prompts with the zero-shot baseline. Reuse cached train indexes/vectors where exact cache keys match.",
+    "OpenAI-only clean screen: compare train_sft, train_pref, and preference-first deduplicated union; question-only, tool-schema-only, and question-plus-tools embeddings; direct label votes K=1/3/5; and Qwen prompts with K=1/2/3. Use corrected learned label mapping and cap clean validation at 500.",
+    "Replicate the same OpenAI-only comparison with a distinct clean-validation sample seed. Use only clean validation to choose a finalist. Run the aggregate black-box evaluation only after the retrieval candidate is frozen."
   ],
   "best_validation": {
     "experiment": "qwen-when2call-fullpool-sft-validation-base-seed20261062",
@@ -87,10 +114,10 @@
     "macro_f1": 0.48337889372616516,
     "selection": "clean validation only"
   },
-  "last_heartbeat": "2026-10-27T04:40:45.884043+00:00",
-  "last_action": "Watchdog started validation worker pid 186596.",
+  "last_heartbeat": "2026-10-27T04:53:56.993022+00:00",
+  "last_action": "Watchdog started validation worker pid 187755.",
   "watchdog_enabled": true,
-  "research_log_size": 1363012,
+  "research_log_size": 1364043,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -98,11 +125,11 @@
     "-m",
     "experiments.evaluate_when2call_dynamic_retrieval",
     "--output-dir",
-    "outputs/when2call-dynamic-retrieval-openai-20270331",
-    "--split-seed",
-    "20270327",
+    "outputs/when2call-openai-pool-feature-k-screen-20270333",
     "--sample-seed",
     "20270332",
+    "--split-seed",
+    "20270327",
     "--max-validation-examples",
     "500",
     "--qwen-checkpoint",
@@ -114,13 +141,13 @@
     "--embedding-dimensions",
     "1536",
     "--cache-dir",
-    "outputs/when2call-dynamic-retrieval-cache"
+    "outputs/when2call-openai-embedding-cache"
   ],
   "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-27T04:39:45.387502+00:00",
-  "planning_ack_deadline": "2026-10-27T04:41:45.387527+00:00",
-  "planning_attempts": 86,
+  "planning_notified_at": "2026-10-27T04:52:26.486594+00:00",
+  "planning_ack_deadline": "2026-10-27T04:54:26.486618+00:00",
+  "planning_attempts": 90,
   "best_observed_test": {
     "method": "single_average",
     "accuracy": 0.7154983570646222,
@@ -129,7 +156,7 @@
     "artifact": "outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json",
     "selection": "Report-only aggregate benchmark result. Test labels were not used for candidate selection."
   },
-  "next_hypothesis": "Repeat the declared retrieval comparison on a second clean split to check stability. Select only from clean validation. Measure aggregate black-box performance only after a candidate is frozen.",
+  "next_hypothesis": "Compare train_sft, train_pref, and a preference-first deduplicated union across question-only, tool-schema-only, and question-plus-tools embeddings. Test Qwen with K=1, 2, and 3 demonstrations. Select only on capped clean validation, then replicate the strongest settings on a fresh clean sample.",
   "post_queue_report_required": {
     "required": true,
     "trigger": "After the family confidence-routing validation and aggregate test pass.",
@@ -168,7 +195,7 @@
   "evidence_audit": {
     "latest_completed_experiment": "when2call-dynamic-retrieval-clean-20270327",
     "training_metrics_recorded": true,
-    "training_metrics_scope": "No training in this evaluation. The frozen epoch-2 Qwen checkpoint training probe is linked.",
+    "training_metrics_scope": "Evaluation-only run; linked frozen Qwen checkpoint training probe.",
     "training_metrics_sources": [
       {
         "path": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json",
@@ -237,12 +264,11 @@
     "aggregate_black_box_test_metrics": {
       "qwen_sft": {
         "accuracy": 0.7026286966046003,
-        "macro_f1": 0.5279759197297567,
-        "macro_f1_present_classes": 0.7039678929730089
+        "macro_f1": 0.5279759197297567
       }
     },
-    "aggregate_black_box_test_scope": "The clean-selected candidate is zero-shot Qwen. This existing report measures that frozen Qwen checkpoint. The weaker few-shot settings were rejected by clean validation and were not evaluated on test.",
-    "aggregate_black_box_test_selection_policy": "Report-only. Test labels were not used for candidate selection."
+    "aggregate_black_box_test_scope": "Existing aggregate report for the frozen zero-shot Qwen checkpoint selected by the clean screen. Retrieved few-shot candidates were not test-evaluated.",
+    "aggregate_black_box_test_selection_policy": "Report-only. Test labels were not used for selection."
   },
   "duplicate_worker_failure": {
     "pid": 103632,

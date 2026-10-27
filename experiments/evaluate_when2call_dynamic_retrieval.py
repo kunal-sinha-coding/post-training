@@ -1,8 +1,8 @@
-"""Evaluate sparse and OpenAI embedding retrieval with Qwen on clean When2Call validation.
+"""Evaluate cached OpenAI retrieval pools and few-shot counts on clean When2Call validation.
 
-The flow loads only train_sft, makes a stratified train and validation split, builds or
-loads keyed retrieval caches from training rows, retrieves examples, scores Qwen prompts,
-and saves aggregate validation metrics without loading official test rows.
+The flow creates a clean SFT validation split, excludes its questions from SFT and preference
+retrieval pools, caches OpenAI embeddings, scores Qwen with zero to three examples, and saves
+validation metrics without loading official test rows.
 """
 from __future__ import annotations
 
@@ -30,16 +30,17 @@ from experiments.train_qwen_when2call import (
     load_model,
     score_rows,
     write_heartbeat,
+    load_rows as load_preference_rows,
 )
 from experiments.train_when2call_jina import LABELS, metric_values, prepare_train_examples
 
 
 QWEN_BASE = "Qwen/Qwen2.5-1.5B-Instruct"
 QWEN_CHECKPOINT = "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02"
-LABEL_TO_LETTER = {0: "D", 1: "C", 2: "B", 3: "A"}
+LABEL_TO_LETTER = {0: "A", 1: "B", 2: "C", 3: "D"}
 INSTRUCTION = (
     "Classify the required assistant action. Return exactly one label: A, B, C, or D.\n"
-    "A = direct answer. B = tool call. C = request for more information. D = cannot answer.\n\n"
+    "A = cannot answer. B = request for more information. C = tool call. D = direct answer.\n\n"
 )
 
 
@@ -48,20 +49,21 @@ def question_text(example: object) -> str:
     return example.text.split("\nAvailable tools:\n", 1)[0]
 
 
-def build_sampled_split(args: argparse.Namespace) -> tuple[list, list]:
+def build_sampled_split(args: argparse.Namespace) -> tuple[list, list, set[str]]:
     # Create one clean split and cap its validation side with a fixed stratified sample.
     examples = prepare_train_examples(load_sft_training_rows())
-    train, validation = split_examples(examples, 0.2, args.split_seed)
+    train, full_validation = split_examples(examples, 0.2, args.split_seed)
+    full_held_questions = {" ".join(question_text(item).casefold().split()) for item in full_validation}
     grouped = {label: [] for label in range(len(LABELS))}
     # Group held-out rows by inferred label before applying the fixed sample cap.
-    for example in validation:
+    for example in full_validation:
         grouped[example.label].append(example)
     # Shuffle each class with one explicit seed so the capped validation sample is repeatable.
     rng = random.Random(args.sample_seed)
     # Randomize within each class before computing proportional sample quotas.
     for items in grouped.values():
         rng.shuffle(items)
-    total = len(validation)
+    total = len(full_validation)
     quotas = {label: len(items) * args.max_validation_examples / total for label, items in grouped.items()}
     counts = {label: min(len(grouped[label]), int(quotas[label])) for label in grouped}
     # Distribute leftover slots by the largest fractional quota.
@@ -75,10 +77,9 @@ def build_sampled_split(args: argparse.Namespace) -> tuple[list, list]:
     # Restore a seeded mixed order after class-wise sampling.
     validation = [example for label in grouped for example in grouped[label][:counts[label]]]
     rng.shuffle(validation)
-    # Remove exact normalized question matches so retrieval cannot copy a duplicate validation row.
-    held_questions = {" ".join(question_text(item).casefold().split()) for item in validation}
-    train = [item for item in train if " ".join(question_text(item).casefold().split()) not in held_questions]
-    return train, validation
+    # Remove all clean-development questions from training and every retrieval source.
+    train = [item for item in train if " ".join(question_text(item).casefold().split()) not in full_held_questions]
+    return train, validation, full_held_questions
 
 
 def retrieval_tokens(text: str) -> list[str]:
@@ -92,6 +93,8 @@ def retrieval_text(example: object, mode: str) -> str:
     question = question_text(example)
     if mode == "question_only":
         return question
+    if mode == "tools_only":
+        return example.text.partition("\nAvailable tools:\n")[2]
     tool_lines = example.text.partition("\nAvailable tools:\n")[2].splitlines()
     tool_features = []
     for line in tool_lines:
@@ -262,17 +265,17 @@ def prompt_with_demos(tokenizer: object, target: object, demos: list, max_length
 
 
 def main() -> int:
-    # Run the declared clean retrieval comparison and save model and data provenance.
+    # Run the OpenAI-only retrieval screen and save clean-validation evidence.
     parser = argparse.ArgumentParser()
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--split-seed", type=int, default=20270327)
-    parser.add_argument("--sample-seed", type=int, default=20270328)
+    parser.add_argument("--sample-seed", type=int, default=20270332)
     parser.add_argument("--max-validation-examples", type=int, default=500)
     parser.add_argument("--qwen-checkpoint", default=QWEN_CHECKPOINT)
     parser.add_argument("--batch-size", type=int, default=1)
     parser.add_argument("--max-length", type=int, default=4096)
     parser.add_argument("--per-demo-tokens", type=int, default=160)
-    parser.add_argument("--cache-dir", type=Path, default=Path("outputs/when2call-dynamic-retrieval-cache"))
+    parser.add_argument("--cache-dir", type=Path, default=Path("outputs/when2call-openai-embedding-cache"))
     parser.add_argument("--embedding-model", default="text-embedding-3-small")
     parser.add_argument("--embedding-dimensions", type=int, default=1536)
     args = parser.parse_args()
@@ -283,25 +286,38 @@ def main() -> int:
     from dotenv import load_dotenv
     load_dotenv(".env")
     # Require both service credentials before starting an API-backed evaluation.
-    if not os.getenv("WANDB_API_KEY"):
-        raise RuntimeError("WANDB_API_KEY is required for validation experiments.")
-    if not os.getenv("OPENAI_API_KEY"):
-        raise RuntimeError("OPENAI_API_KEY is required for OpenAI embedding retrieval.")
+    if not os.getenv("WANDB_API_KEY") or not os.getenv("OPENAI_API_KEY"):
+        raise RuntimeError("WANDB_API_KEY and OPENAI_API_KEY are required.")
     from openai import OpenAI
     import wandb
     run = wandb.init(
         project=os.getenv("WANDB_PROJECT", "when2call-research"),
         entity=os.getenv("WANDB_ENTITY"),
-        name="when2call-dynamic-retrieval-clean-validation",
+        name="when2call-openai-retrieval-clean-validation",
         job_type="clean-validation",
-        config={"split_seed": args.split_seed, "sample_seed": args.sample_seed, "max_validation_examples": args.max_validation_examples, "qwen_checkpoint": args.qwen_checkpoint, "retrieval_pool": "train_sft split training partition", "retrieval_methods": ["question_only_tfidf", "question_and_tools_tfidf", "question_only_openai_embedding", "question_and_tools_openai_embedding"], "embedding_model": args.embedding_model, "embedding_dimensions": args.embedding_dimensions, "official_test_loaded": False},
+        config={"split_seed": args.split_seed, "sample_seed": args.sample_seed, "max_validation_examples": args.max_validation_examples, "qwen_checkpoint": args.qwen_checkpoint, "retrieval_pools": ["train_sft", "train_pref", "train_pref_plus_train_sft"], "retrieval_features": ["question_only", "tools_only", "question_and_tools"], "few_shot_k": [1, 2, 3], "embedding_model": args.embedding_model, "embedding_dimensions": args.embedding_dimensions, "official_test_loaded": False},
     )
     started = time.time()
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    write_heartbeat(args.output_dir / "heartbeat.json", "retrieval-validation")
+    write_heartbeat(args.output_dir / "heartbeat.json", "openai-retrieval-validation")
     try:
-        train, validation = build_sampled_split(args)
-        labels = [item.label for item in validation]
+        train_sft, validation, held_questions = build_sampled_split(args)
+        # Exclude every clean-development question from each retrieval source.
+        pref_rows = prepare_train_examples(load_preference_rows())
+        clean = lambda rows: [row for row in rows if " ".join(question_text(row).casefold().split()) not in held_questions]
+        train_sft = clean(train_sft)
+        train_pref = clean(pref_rows)
+        # Build a preference-first union and keep one row per normalized question.
+        union = list(train_pref)
+        union_questions = {" ".join(question_text(row).casefold().split()) for row in union}
+        for row in train_sft:
+            # Add only the first SFT row for a question that is absent from preference data.
+            normalized = " ".join(question_text(row).casefold().split())
+            if normalized not in union_questions:
+                union.append(row)
+                union_questions.add(normalized)
+        pools = {"train_sft": train_sft, "train_pref": train_pref, "train_pref_plus_train_sft": union}
+        labels = [row.label for row in validation]
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         model, tokenizer = load_model(QWEN_BASE, device, 16)
         if not hasattr(model, "load_adapter"):
@@ -310,91 +326,53 @@ def main() -> int:
         model.set_adapter("frozen")
         model.eval()
         client = OpenAI()
-        embedding_usage = {}
-        embedding_cache_files = {}
         results = {}
-        neighbor_sets = {}
         cache_files = {}
-        # Compare sparse retrieval features with and without the available tool schemas.
-        for mode in ("question_only", "question_and_tools"):
-            cache_path = args.cache_dir / f"split-{args.split_seed}-{mode}.json.gz"
-            index = load_or_build_index(train, mode, cache_path)
-            cache_files[mode] = str(cache_path)
-            indices = retrieve(train, validation, mode, index)
-            neighbor_sets[mode] = indices
-            # Measure majority-label voting at three neighborhood sizes.
-            for k in (1, 3, 5):
-                predictions = knn_predictions(train, indices, k)
-                metrics = metric_values(labels, predictions, list(range(len(LABELS))))
-                results[f"{mode}_knn_{k}"] = {key: metrics[key] for key in ("accuracy", "macro_f1")}
-                run.log({f"validation/{mode}_knn_{k}/accuracy": metrics["accuracy"], f"validation/{mode}_knn_{k}/macro_f1": metrics["macro_f1"]})
-        # Compute or load dense embeddings for each separately keyed text representation.
-        for mode in ("question_only", "question_and_tools"):
-            train_texts = [retrieval_text(item, mode) for item in train]
-            validation_texts = [retrieval_text(item, mode) for item in validation]
-            train_vectors, train_usage, train_cache = load_or_create_embeddings(client, train_texts, args.embedding_model, args.embedding_dimensions, mode, "train", args.cache_dir)
-            validation_vectors, validation_usage, validation_cache = load_or_create_embeddings(client, validation_texts, args.embedding_model, args.embedding_dimensions, mode, "validation", args.cache_dir)
-            dense_mode = f"openai_{mode}"
-            neighbor_sets[dense_mode] = dense_neighbors(train_vectors, validation_vectors)
-            embedding_usage[mode] = {"train": train_usage, "validation": validation_usage}
-            embedding_cache_files[mode] = {"train": train_cache, "validation": validation_cache}
-            # Measure nearest-label voting with three neighborhood sizes.
-            for k in (1, 3, 5):
-                predictions = knn_predictions(train, neighbor_sets[dense_mode], k)
-                metrics = metric_values(labels, predictions, list(range(len(LABELS))))
-                results[f"{dense_mode}_knn_{k}"] = {key: metrics[key] for key in ("accuracy", "macro_f1")}
-                run.log({f"validation/{dense_mode}_knn_{k}/accuracy": metrics["accuracy"], f"validation/{dense_mode}_knn_{k}/macro_f1": metrics["macro_f1"]})
-        # Compare one-shot and three-shot prompting using every declared retrieval mode.
-        for mode in ("question_only", "question_and_tools", "openai_question_only", "openai_question_and_tools"):
-            # Build each prompt with neighbors selected only from the training partition.
-            for shots in (1, 3):
-                prompts = []
-                for target, indices in zip(validation, neighbor_sets[mode]):
-                    demos = [train[index] for index in indices[:shots]]
-                    prompt = prompt_with_demos(tokenizer, target, demos, args.max_length, args.per_demo_tokens)
-                    prompts.append(ClassificationRow(prompt, target.label, None))
-                predictions = []
-                # Score one batch at a time to keep inference memory bounded.
-                with torch.inference_mode():
-                    for start in range(0, len(prompts), args.batch_size):
-                        write_heartbeat(args.output_dir / "heartbeat.json", f"qwen-{mode}-{shots}shot", start)
-                        logits = score_rows(model, tokenizer, prompts[start:start + args.batch_size], label_token_ids(tokenizer), device, args.max_length)
-                        predictions.extend(logits.argmax(-1).tolist())
-                metrics = metric_values(labels, predictions, list(range(len(LABELS))))
-                results[f"{mode}_qwen_{shots}shot"] = {key: metrics[key] for key in ("accuracy", "macro_f1")}
-                run.log({f"validation/{mode}_{shots}shot/accuracy": metrics["accuracy"], f"validation/{mode}_{shots}shot/macro_f1": metrics["macro_f1"]})
-        # Measure zero-shot Qwen once so retrieval prompts have a same-run reference.
-        zero_shot = [ClassificationRow(INSTRUCTION + item.text + "\nAction label:", item.label, None) for item in validation]
+        usage = {}
+        neighbors = {}
+        # Embed each training pool and input representation with a persistent, metadata-keyed cache.
+        for pool_name, pool in pools.items():
+            for feature in ("question_only", "tools_only", "question_and_tools"):
+                mode = f"{pool_name}_{feature}"
+                train_texts = [retrieval_text(row, feature) for row in pool]
+                validation_texts = [retrieval_text(row, feature) for row in validation]
+                train_vectors, train_usage, train_cache = load_or_create_embeddings(client, train_texts, args.embedding_model, args.embedding_dimensions, mode, "training", args.cache_dir)
+                validation_vectors, validation_usage, validation_cache = load_or_create_embeddings(client, validation_texts, args.embedding_model, args.embedding_dimensions, feature, "validation", args.cache_dir)
+                neighbors[mode] = dense_neighbors(train_vectors, validation_vectors, count=5)
+                cache_files[mode] = {"training": train_cache, "validation": validation_cache}
+                usage[mode] = {"training": train_usage, "validation": validation_usage}
+                # Record direct retrieved-label votes as diagnostics separate from few-shot prompting.
+                for vote_k in (1, 3, 5):
+                    predictions = knn_predictions(pool, neighbors[mode], vote_k)
+                    metrics = metric_values(labels, predictions, list(range(len(LABELS))))
+                    results[f"{mode}_label_vote_{vote_k}"] = {key: metrics[key] for key in ("accuracy", "macro_f1")}
+                    run.log({f"validation/{mode}/label_vote_{vote_k}/accuracy": metrics["accuracy"], f"validation/{mode}/label_vote_{vote_k}/macro_f1": metrics["macro_f1"]})
+                # Score one, two, and three retrieved demonstrations for this source and feature mode.
+                for shots in (1, 2, 3):
+                    prompts = []
+                    for target, indices in zip(validation, neighbors[mode]):
+                        demos = [pool[index] for index in indices[:shots]]
+                        prompts.append(ClassificationRow(prompt_with_demos(tokenizer, target, demos, args.max_length, args.per_demo_tokens), target.label, None))
+                    predictions = []
+                    with torch.inference_mode():
+                        for start_index in range(0, len(prompts), args.batch_size):
+                            write_heartbeat(args.output_dir / "heartbeat.json", f"qwen-{mode}-{shots}shot", start_index)
+                            logits = score_rows(model, tokenizer, prompts[start_index:start_index + args.batch_size], label_token_ids(tokenizer), device, args.max_length)
+                            predictions.extend(logits.argmax(-1).tolist())
+                    metrics = metric_values(labels, predictions, list(range(len(LABELS))))
+                    results[f"{mode}_qwen_{shots}shot"] = {key: metrics[key] for key in ("accuracy", "macro_f1")}
+                    run.log({f"validation/{mode}/qwen_{shots}shot/accuracy": metrics["accuracy"], f"validation/{mode}/qwen_{shots}shot/macro_f1": metrics["macro_f1"]})
+        # Measure the corrected zero-shot baseline once on the identical clean-validation rows.
+        prompts = [ClassificationRow(INSTRUCTION + row.text + "\nAction label:", row.label, None) for row in validation]
         predictions = []
         with torch.inference_mode():
-            for start in range(0, len(zero_shot), args.batch_size):
-                write_heartbeat(args.output_dir / "heartbeat.json", "qwen-zero-shot", start)
-                logits = score_rows(model, tokenizer, zero_shot[start:start + args.batch_size], label_token_ids(tokenizer), device, args.max_length)
+            for start_index in range(0, len(prompts), args.batch_size):
+                logits = score_rows(model, tokenizer, prompts[start_index:start_index + args.batch_size], label_token_ids(tokenizer), device, args.max_length)
                 predictions.extend(logits.argmax(-1).tolist())
         metrics = metric_values(labels, predictions, list(range(len(LABELS))))
-        results["qwen_zero_shot"] = {key: metrics[key] for key in ("accuracy", "macro_f1")}
-        run.log({"validation/qwen_zero_shot/accuracy": metrics["accuracy"], "validation/qwen_zero_shot/macro_f1": metrics["macro_f1"]})
-        record = {
-            "status": "completed", "training_performed": False, "official_test_loaded": False,
-            "validation_source": "nvidia/When2Call train_sft", "validation_examples": len(validation),
-            "retrieval_training_examples": len(train), "exact_question_duplicates_excluded": True,
-            "split_seed": args.split_seed, "sample_seed": args.sample_seed,
-            "retrieval_features": ["question only", "question and tool schemas"],
-            "sparse_retrieval_algorithm": "word unigram and bigram TF-IDF cosine similarity",
-            "retrieval_index_cache": cache_files,
-            "retrieval_cache_format": "compressed JSON with sparse postings, inverse frequencies, and row norms",
-            "dense_retrieval_model": args.embedding_model,
-            "dense_retrieval_dimensions": args.embedding_dimensions,
-            "dense_retrieval_cache": embedding_cache_files,
-            "dense_retrieval_cache_format": "compressed vectors keyed by model, feature mode, data role, and exact ordered text digest",
-            "embedding_api_usage": embedding_usage,
-            "few_shot_settings": [1, 3], "per_demo_token_cap": args.per_demo_tokens,
-            "qwen_checkpoint": args.qwen_checkpoint,
-            "qwen_adapter_sha256": artifact_digest(Path(args.qwen_checkpoint) / "adapter_model.safetensors"),
-            "validation_metrics": results,
-            "git_commit": subprocess.check_output(["git", "-c", "safe.directory=/workspace/post-training", "rev-parse", "HEAD"], text=True).strip(),
-            "wandb_run_id": run.id, "wandb_run_url": run.url, "runtime_seconds": time.time() - started,
-        }
+        results["qwen_zero_shot_corrected_mapping"] = {key: metrics[key] for key in ("accuracy", "macro_f1")}
+        run.log({"validation/qwen_zero_shot_corrected_mapping/accuracy": metrics["accuracy"], "validation/qwen_zero_shot_corrected_mapping/macro_f1": metrics["macro_f1"]})
+        record = {"status": "completed", "training_performed": False, "official_test_loaded": False, "validation_source": "nvidia/When2Call train_sft", "validation_examples": len(validation), "retrieval_pool_sizes": {name: len(pool) for name, pool in pools.items()}, "all_clean_development_questions_excluded_from_retrieval": True, "union_policy": "train_pref precedence, then unique train_sft questions", "split_seed": args.split_seed, "sample_seed": args.sample_seed, "retrieval_features": ["question only", "tool schemas only", "question and tool schemas"], "retrieval_algorithm": "OpenAI cosine similarity", "embedding_model": args.embedding_model, "embedding_dimensions": args.embedding_dimensions, "embedding_cache": cache_files, "embedding_cache_usage": usage, "few_shot_k": [1, 2, 3], "label_vote_k": [1, 3, 5], "label_mapping": {"A": "cannot_answer", "B": "request_for_info", "C": "tool_call", "D": "direct"}, "qwen_checkpoint": args.qwen_checkpoint, "validation_metrics": results, "git_commit": subprocess.check_output(["git", "-c", "safe.directory=/workspace/post-training", "rev-parse", "HEAD"], text=True).strip(), "wandb_run_id": run.id, "wandb_run_url": run.url, "runtime_seconds": time.time() - started}
         (args.output_dir / "metrics.json").write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
         run.summary.update({"status": "completed", "validation_examples": len(validation), "output_dir": str(args.output_dir)})
         write_heartbeat(args.output_dir / "heartbeat.json", "completed")
