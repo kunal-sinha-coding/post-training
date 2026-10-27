@@ -7517,3 +7517,5 @@ Scalar temperatures did not improve clean-validation accuracy over the request-c
 
 
 2026-10-27: Commit name: Re-arm aggregate retrieval measurement. The initial queue update was replaced by the watchdog planning handoff before it launched. Restored the required forced aggregate-only full-test measurement as the first command, then queued distinct 15% and 20% preference/SFT clean comparisons and full aggregate screens. Candidate selection uses clean validation only.
+
+2026-10-27: Commit name: Record forced retrieval test launch. The watchdog consumed the first command and launched the forced full aggregate test measurement for the question-only retrieval candidate as PID 228301. Four distinct 15% and 20% mixture comparison commands remain queued. Research state is active with planning disabled.
