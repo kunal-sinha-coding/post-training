@@ -4,42 +4,19 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "fresh_base_bfcl_when2call_data_exploration_v1",
-  "current_hypothesis": "Across twenty-four independent clean samples, full-cannot mix 50 averages 0.968250 accuracy and 0.977106 macro F1. Mix 60 averages 0.966917 accuracy and 0.974542 macro F1. The latest 20270301 sample favors mix 50, but recent samples have alternated, so confirm with more clean draws.",
-  "active_experiment": {
-    "pid": 180294,
-    "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_existing_when2call_hybrid_validation",
-      "--output-dir",
-      "outputs/qwen-single-encoder48-route-replication-20270303",
-      "--split-seed",
-      "20270303",
-      "--sample-seed",
-      "20270304",
-      "--max-validation-examples",
-      "500",
-      "--qwen-checkpoint",
-      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
-      "--batch-size",
-      "1",
-      "--encoder-checkpoint",
-      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
-    ],
-    "started_at": "2026-10-27T03:40:31.131676+00:00"
-  },
+  "current_hypothesis": "Across twenty-six independent clean samples, full-cannot mix 50 averages 0.967538 accuracy and 0.976684 macro F1. Mix 60 averages 0.966077 and 0.974006. The recent two samples tied on accuracy. More fresh samples will test whether the small 50 percent lead holds.",
+  "active_experiment": {},
   "worker_command": [
     "python",
     "-u",
     "-m",
     "experiments.evaluate_existing_when2call_hybrid_validation",
     "--output-dir",
-    "outputs/qwen-single-encoder48-route-replication-20270303",
+    "outputs/qwen-single-encoder48-route-replication-20270305",
     "--split-seed",
-    "20270303",
+    "20270305",
     "--sample-seed",
-    "20270304",
+    "20270306",
     "--max-validation-examples",
     "500",
     "--qwen-checkpoint",
@@ -56,11 +33,31 @@
       "-m",
       "experiments.evaluate_existing_when2call_hybrid_validation",
       "--output-dir",
-      "outputs/qwen-single-encoder48-route-replication-20270305",
+      "outputs/qwen-single-encoder48-route-replication-20270307",
       "--split-seed",
-      "20270305",
+      "20270307",
       "--sample-seed",
-      "20270306",
+      "20270308",
+      "--max-validation-examples",
+      "500",
+      "--qwen-checkpoint",
+      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "--batch-size",
+      "1",
+      "--encoder-checkpoint",
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_existing_when2call_hybrid_validation",
+      "--output-dir",
+      "outputs/qwen-single-encoder48-route-replication-20270309",
+      "--split-seed",
+      "20270309",
+      "--sample-seed",
+      "20270310",
       "--max-validation-examples",
       "500",
       "--qwen-checkpoint",
@@ -88,9 +85,9 @@
     "outputs/test-clean-validation-smooth0075-wd002-weight75-25.json"
   ],
   "experiment_queue": [
-    "Run a clean route screen with split/sample seeds 20270303/20270304.",
-    "Run a second distinct clean route screen with seeds 20270305/20270306.",
-    "Recompute clean-only means across twenty-six samples before changing the ranking."
+    "Run a 500-row clean screen with split/sample seeds 20270307/20270308.",
+    "Run a distinct 500-row clean screen with seeds 20270309/20270310.",
+    "Recompute clean-only candidate means across twenty-eight samples."
   ],
   "best_validation": {
     "experiment": "qwen-when2call-fullpool-sft-validation-base-seed20261062",
@@ -101,10 +98,10 @@
     "macro_f1": 0.48337889372616516,
     "selection": "clean validation only"
   },
-  "last_heartbeat": "2026-10-27T03:40:31.131691+00:00",
-  "last_action": "Watchdog started validation worker pid 180294.",
+  "last_heartbeat": "2026-10-27T03:42:31.708615+00:00",
+  "last_action": "Audited the completed 20270305 validation. Linked training metrics, 500-row clean metrics, and the matching 3652-row aggregate test report are present. Queued two distinct clean replications. Test metrics remain report-only.",
   "watchdog_enabled": true,
-  "research_log_size": 1296002,
+  "research_log_size": 1306869,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -112,11 +109,11 @@
     "-m",
     "experiments.evaluate_existing_when2call_hybrid_validation",
     "--output-dir",
-    "outputs/qwen-single-encoder48-route-replication-20270303",
+    "outputs/qwen-single-encoder48-route-replication-20270307",
     "--split-seed",
-    "20270303",
+    "20270307",
     "--sample-seed",
-    "20270304",
+    "20270308",
     "--max-validation-examples",
     "500",
     "--qwen-checkpoint",
@@ -128,9 +125,9 @@
   ],
   "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-27T03:39:30.603967+00:00",
-  "planning_ack_deadline": "2026-10-27T03:41:30.603992+00:00",
-  "planning_attempts": 80,
+  "planning_notified_at": "2026-10-27T03:44:33.661553+00:00",
+  "planning_ack_deadline": "2026-10-27T03:46:33.661574+00:00",
+  "planning_attempts": 81,
   "best_observed_test": {
     "method": "three_encoder_qwen_equal_probability_average",
     "accuracy": 0.7113910186199343,
@@ -140,7 +137,7 @@
     "metrics": "outputs/qwen-three-encoder-gate-test-20261082/aggregate-comparison.json",
     "selection": "Reported as the highest aggregate score in this frozen comparison only. Test metrics did not select the candidate; clean validation selected the entropy gate."
   },
-  "next_hypothesis": "Run two fresh independent clean route evaluations. Compare full-cannot mix 50 and 60 with the simple average by clean accuracy and macro F1. Use aggregate test metrics only as a fixed report, never for selection.",
+  "next_hypothesis": "Run two new clean replications of the frozen Qwen and encoder-48 route family. Compare mix 50, mix 60, and simple averaging by clean accuracy and macro F1. Do not use aggregate test scores for selection.",
   "post_queue_report_required": {
     "required": true,
     "trigger": "After the family confidence-routing validation and aggregate test pass.",
@@ -177,9 +174,9 @@
     "selection_use": "none"
   },
   "evidence_audit": {
-    "latest_completed_experiment": "qwen-single-encoder48-route-replication-20270301",
+    "latest_completed_experiment": "qwen-single-encoder48-route-replication-20270305",
     "training_metrics_recorded": true,
-    "training_metrics_scope": "The latest experiment is inference-only. Training metrics are linked for the frozen source Qwen epoch-2 and encoder-48 checkpoints.",
+    "training_metrics_scope": "Latest validation is inference-only. Source training metrics are linked for the frozen Qwen epoch-2 and encoder-48 checkpoints.",
     "training_metrics_sources": [
       {
         "path": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json",
@@ -199,212 +196,212 @@
       }
     ],
     "clean_validation_recorded": true,
-    "clean_validation_source": "outputs/qwen-single-encoder48-route-replication-20270301/metrics.json",
+    "clean_validation_source": "outputs/qwen-single-encoder48-route-replication-20270305/metrics.json",
     "clean_validation_examples": 500,
     "clean_validation_metrics": {
       "encoder_single": {
-        "accuracy": 0.902,
-        "macro_f1": 0.9393024815560027
+        "accuracy": 0.916,
+        "macro_f1": 0.9488603156049094
       },
       "qwen_sft": {
-        "accuracy": 0.952,
-        "macro_f1": 0.9692428334930732
+        "accuracy": 0.932,
+        "macro_f1": 0.95672049018905
       },
       "single_average": {
-        "accuracy": 0.958,
-        "macro_f1": 0.9743312629399586
+        "accuracy": 0.928,
+        "macro_f1": 0.9546218629721686
       },
       "single_gate": {
-        "accuracy": 0.954,
-        "macro_f1": 0.9721704781704783
+        "accuracy": 0.93,
+        "macro_f1": 0.9556733093318459
       },
       "single_entropy_weighted": {
-        "accuracy": 0.956,
-        "macro_f1": 0.9732531120331951
+        "accuracy": 0.93,
+        "macro_f1": 0.9556733093318459
       },
       "single_margin_weighted": {
-        "accuracy": 0.958,
-        "macro_f1": 0.9743312629399586
+        "accuracy": 0.928,
+        "macro_f1": 0.9546218629721686
       },
       "single_encoder_confident": {
-        "accuracy": 0.958,
-        "macro_f1": 0.9743312629399586
+        "accuracy": 0.932,
+        "macro_f1": 0.95672049018905
       },
       "single_qwen_w10": {
-        "accuracy": 0.952,
-        "macro_f1": 0.9692428334930732
+        "accuracy": 0.93,
+        "macro_f1": 0.9556733093318459
       },
       "single_qwen_w25": {
-        "accuracy": 0.952,
-        "macro_f1": 0.9692428334930732
+        "accuracy": 0.93,
+        "macro_f1": 0.9556733093318459
       },
       "single_qwen_w40": {
-        "accuracy": 0.954,
-        "macro_f1": 0.9713067144611505
+        "accuracy": 0.93,
+        "macro_f1": 0.9556733093318459
       },
       "single_qwen_w60": {
-        "accuracy": 0.924,
-        "macro_f1": 0.9539017544759
+        "accuracy": 0.926,
+        "macro_f1": 0.9545106643535054
       },
       "single_qwen_w75": {
-        "accuracy": 0.906,
-        "macro_f1": 0.9418010752688173
+        "accuracy": 0.92,
+        "macro_f1": 0.9511130510694019
       },
       "single_qwen_w90": {
-        "accuracy": 0.904,
-        "macro_f1": 0.9406284760845385
+        "accuracy": 0.916,
+        "macro_f1": 0.9488603156049094
       },
       "single_geometric": {
-        "accuracy": 0.96,
-        "macro_f1": 0.9754049586776861
+        "accuracy": 0.93,
+        "macro_f1": 0.9586290175135742
       },
       "single_geometric_qwen": {
-        "accuracy": 0.956,
-        "macro_f1": 0.9723802426199644
+        "accuracy": 0.93,
+        "macro_f1": 0.9556733093318459
       },
       "single_geometric_encoder": {
         "accuracy": 0.932,
-        "macro_f1": 0.9593977366307551
+        "macro_f1": 0.9577096346132715
       },
       "single_standardized_logits": {
-        "accuracy": 0.952,
-        "macro_f1": 0.9711564501143659
+        "accuracy": 0.932,
+        "macro_f1": 0.9587375249289709
       },
       "single_disagreement_qwen": {
-        "accuracy": 0.952,
-        "macro_f1": 0.9692428334930732
+        "accuracy": 0.932,
+        "macro_f1": 0.95672049018905
       },
       "single_encoder_cannot_answer": {
-        "accuracy": 0.952,
-        "macro_f1": 0.9670807581802022
+        "accuracy": 0.938,
+        "macro_f1": 0.9587240613113396
       },
       "single_encoder_request_for_info": {
-        "accuracy": 0.96,
-        "macro_f1": 0.9706618464961068
+        "accuracy": 0.952,
+        "macro_f1": 0.9684690278674681
       },
       "single_encoder_request_or_cannot_answer": {
-        "accuracy": 0.96,
-        "macro_f1": 0.9686204059019545
+        "accuracy": 0.958,
+        "macro_f1": 0.970535332961004
       },
       "single_encoder_request_or_cannot_answer_conf_40": {
-        "accuracy": 0.96,
-        "macro_f1": 0.9686204059019545
+        "accuracy": 0.958,
+        "macro_f1": 0.970535332961004
       },
       "single_encoder_request_or_cannot_answer_conf_50": {
-        "accuracy": 0.96,
-        "macro_f1": 0.9686204059019545
+        "accuracy": 0.958,
+        "macro_f1": 0.970535332961004
       },
       "single_encoder_request_or_cannot_answer_conf_60": {
-        "accuracy": 0.96,
-        "macro_f1": 0.9696051858141206
+        "accuracy": 0.958,
+        "macro_f1": 0.970535332961004
       },
       "single_encoder_request_or_cannot_answer_conf_65": {
-        "accuracy": 0.96,
-        "macro_f1": 0.9696051858141206
+        "accuracy": 0.956,
+        "macro_f1": 0.9694707690535074
       },
       "single_encoder_request_or_cannot_answer_conf_70": {
-        "accuracy": 0.96,
-        "macro_f1": 0.9705793331370047
+        "accuracy": 0.954,
+        "macro_f1": 0.9684018242245809
       },
       "single_encoder_request_or_cannot_answer_conf_80": {
-        "accuracy": 0.964,
-        "macro_f1": 0.9746245214489055
+        "accuracy": 0.952,
+        "macro_f1": 0.9673756755416729
       },
       "single_encoder_request_or_cannot_answer_conf_90": {
-        "accuracy": 0.962,
-        "macro_f1": 0.9735641653038892
+        "accuracy": 0.95,
+        "macro_f1": 0.9672841170735755
       },
       "single_encoder_request_or_cannot_answer_mix_25": {
-        "accuracy": 0.952,
-        "macro_f1": 0.9692428334930732
+        "accuracy": 0.932,
+        "macro_f1": 0.95672049018905
       },
       "single_encoder_request_or_cannot_answer_mix_40": {
-        "accuracy": 0.954,
-        "macro_f1": 0.9703208069030624
+        "accuracy": 0.932,
+        "macro_f1": 0.95672049018905
       },
       "single_encoder_request_or_cannot_answer_mix_50": {
-        "accuracy": 0.964,
-        "macro_f1": 0.976553066706094
+        "accuracy": 0.942,
+        "macro_f1": 0.9620752984389349
       },
       "single_encoder_request_or_cannot_answer_mix_60": {
-        "accuracy": 0.962,
-        "macro_f1": 0.9725860418694832
+        "accuracy": 0.952,
+        "macro_f1": 0.9673756755416729
       },
       "single_encoder_request_full_cannot_mix_25": {
-        "accuracy": 0.96,
-        "macro_f1": 0.9706618464961068
+        "accuracy": 0.952,
+        "macro_f1": 0.9684690278674681
       },
       "single_encoder_request_full_cannot_mix_40": {
-        "accuracy": 0.96,
-        "macro_f1": 0.9706618464961068
+        "accuracy": 0.952,
+        "macro_f1": 0.9684690278674681
       },
       "single_encoder_request_full_cannot_mix_50": {
-        "accuracy": 0.964,
-        "macro_f1": 0.9736996767558037
+        "accuracy": 0.956,
+        "macro_f1": 0.9705426420508423
       },
       "single_encoder_request_full_cannot_mix_60": {
-        "accuracy": 0.96,
-        "macro_f1": 0.9696326530612246
+        "accuracy": 0.956,
+        "macro_f1": 0.9695091842780961
       },
       "single_encoder_request_full_cannot_mix_75": {
         "accuracy": 0.958,
-        "macro_f1": 0.9675985452408067
+        "macro_f1": 0.970535332961004
       },
       "single_encoder_request_cannot_mix_r75_c40": {
-        "accuracy": 0.958,
-        "macro_f1": 0.9696105428796223
+        "accuracy": 0.952,
+        "macro_f1": 0.9684690278674681
       },
       "single_encoder_request_cannot_mix_r75_c50": {
-        "accuracy": 0.962,
-        "macro_f1": 0.9726482303961262
+        "accuracy": 0.956,
+        "macro_f1": 0.9705426420508423
       },
       "single_encoder_request_cannot_mix_r75_c60": {
-        "accuracy": 0.958,
-        "macro_f1": 0.9685725971370143
+        "accuracy": 0.956,
+        "macro_f1": 0.9695091842780961
       },
       "single_encoder_tool_call": {
-        "accuracy": 0.894,
-        "macro_f1": 0.9394399460188934
+        "accuracy": 0.89,
+        "macro_f1": 0.9343534035459584
       },
       "single_encoder_direct": {
-        "accuracy": 0.952,
-        "macro_f1": 0.9692428334930732
+        "accuracy": 0.932,
+        "macro_f1": 0.95672049018905
       },
       "single_request_conf_40": {
-        "accuracy": 0.96,
-        "macro_f1": 0.9706618464961068
+        "accuracy": 0.952,
+        "macro_f1": 0.9684690278674681
       },
       "single_request_conf_50": {
-        "accuracy": 0.96,
-        "macro_f1": 0.9706618464961068
+        "accuracy": 0.952,
+        "macro_f1": 0.9684690278674681
       },
       "single_request_conf_60": {
-        "accuracy": 0.962,
-        "macro_f1": 0.9726734390080318
+        "accuracy": 0.952,
+        "macro_f1": 0.9684690278674681
       },
       "single_request_conf_70": {
-        "accuracy": 0.96,
-        "macro_f1": 0.9716219926483545
+        "accuracy": 0.948,
+        "macro_f1": 0.9663535475289913
       },
       "single_request_conf_80": {
-        "accuracy": 0.962,
-        "macro_f1": 0.9736333087451849
+        "accuracy": 0.948,
+        "macro_f1": 0.9663535475289913
       },
       "single_encoder_no_tools": {
-        "accuracy": 0.952,
-        "macro_f1": 0.9692428334930732
+        "accuracy": 0.932,
+        "macro_f1": 0.95672049018905
       },
       "single_encoder_many_tools": {
-        "accuracy": 0.928,
-        "macro_f1": 0.9543744917321768
+        "accuracy": 0.934,
+        "macro_f1": 0.9586904440545283
       },
       "single_encoder_short_question": {
-        "accuracy": 0.906,
-        "macro_f1": 0.9416629084853951
+        "accuracy": 0.924,
+        "macro_f1": 0.9533415145472208
       },
       "single_encoder_long_question": {
-        "accuracy": 0.948,
-        "macro_f1": 0.9670734400193318
+        "accuracy": 0.924,
+        "macro_f1": 0.9522930629741775
       }
     },
     "aggregate_black_box_test_metrics_recorded": true,
@@ -557,11 +554,11 @@
         "macro_f1_present_classes": 0.7039678929730089
       }
     },
-    "aggregate_black_box_test_scope": "Report-only metrics for the same frozen Qwen epoch-2 and encoder-48 route family. Selection uses clean validation only.",
+    "aggregate_black_box_test_scope": "Report-only metrics for the same frozen Qwen epoch-2 plus encoder-48 candidate family. Selection uses clean validation only.",
     "test_labels_used_for_selection": false,
     "aggregate_black_box_test_measurement_queued": false,
     "aggregate_black_box_test_queued_command": null,
-    "evidence_cross_run_note": "Latest clean inference evaluates the same frozen Qwen epoch-2 and encoder-48 checkpoints represented in the aggregate report over 3652 rows. Source training metrics, latest clean metrics, and aggregate test metrics are all present.",
+    "evidence_cross_run_note": "The latest clean evaluation uses the same frozen Qwen epoch-2 and encoder-48 candidates measured by the existing aggregate report over 3652 rows. Source training, clean, and aggregate test evidence are recorded.",
     "additional_clean_selected_candidate": {
       "candidates_ranked_by_clean_mean_accuracy": [
         "single_encoder_request_full_cannot_mix_50",
@@ -569,19 +566,19 @@
       ],
       "clean_summary": {
         "single_encoder_request_full_cannot_mix_50": {
-          "accuracy_mean": 0.9682499999999999,
-          "macro_f1_mean": 0.9771061491512346,
-          "n_samples": 24,
+          "accuracy_mean": 0.9675384615384615,
+          "macro_f1_mean": 0.9766840299455984,
+          "n_samples": 26,
           "examples_per_sample": 500
         },
         "single_encoder_request_full_cannot_mix_60": {
-          "accuracy_mean": 0.9669166666666666,
-          "macro_f1_mean": 0.9745424281532405,
-          "n_samples": 24,
+          "accuracy_mean": 0.966076923076923,
+          "macro_f1_mean": 0.9740057358075588,
+          "n_samples": 26,
           "examples_per_sample": 500
         }
       },
-      "selection_basis": "Mean accuracy across twenty-four independent 500-row clean-validation samples. Aggregate test labels and scores were not used.",
+      "selection_basis": "Mean accuracy across twenty-six independent 500-row clean-validation samples. Aggregate test labels and scores were not used.",
       "aggregate_test_measurement_status": "recorded report-only",
       "aggregate_test_metrics": {
         "single_encoder_request_full_cannot_mix_50": {
@@ -600,315 +597,315 @@
     "additional_candidate_aggregate_test_command": null,
     "clean_validation_replication_summary": {
       "encoder_single": {
-        "accuracy_mean": 0.9175833333333334,
-        "macro_f1_mean": 0.9476400633699434,
-        "n_samples": 24,
+        "accuracy_mean": 0.9177692307692309,
+        "macro_f1_mean": 0.9476753212445528,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "qwen_sft": {
-        "accuracy_mean": 0.9526666666666666,
-        "macro_f1_mean": 0.9707344892095543,
-        "n_samples": 24,
+        "accuracy_mean": 0.9516923076923077,
+        "macro_f1_mean": 0.9700991265073996,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_average": {
-        "accuracy_mean": 0.9575,
-        "macro_f1_mean": 0.974434287073978,
-        "n_samples": 24,
+        "accuracy_mean": 0.9562307692307692,
+        "macro_f1_mean": 0.9735519795080303,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_gate": {
-        "accuracy_mean": 0.9568333333333333,
-        "macro_f1_mean": 0.9738031583211595,
-        "n_samples": 24,
+        "accuracy_mean": 0.9556153846153846,
+        "macro_f1_mean": 0.9729304593281826,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_entropy_weighted": {
-        "accuracy_mean": 0.9565833333333332,
-        "macro_f1_mean": 0.9738660161315353,
-        "n_samples": 24,
+        "accuracy_mean": 0.9554615384615384,
+        "macro_f1_mean": 0.9730678619596094,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_margin_weighted": {
-        "accuracy_mean": 0.9569166666666665,
-        "macro_f1_mean": 0.9738845626274069,
-        "n_samples": 24,
+        "accuracy_mean": 0.9556923076923076,
+        "macro_f1_mean": 0.9730445415573493,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_encoder_confident": {
-        "accuracy_mean": 0.9566666666666667,
-        "macro_f1_mean": 0.9735872837012091,
-        "n_samples": 24,
+        "accuracy_mean": 0.9555384615384614,
+        "macro_f1_mean": 0.9727714666350439,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_qwen_w10": {
-        "accuracy_mean": 0.9525833333333332,
-        "macro_f1_mean": 0.9706901258866146,
-        "n_samples": 24,
+        "accuracy_mean": 0.9515384615384614,
+        "macro_f1_mean": 0.9700178995609475,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_qwen_w25": {
-        "accuracy_mean": 0.9520833333333333,
-        "macro_f1_mean": 0.9705465408022932,
-        "n_samples": 24,
+        "accuracy_mean": 0.951076923076923,
+        "macro_f1_mean": 0.9698853594831124,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_qwen_w40": {
-        "accuracy_mean": 0.9526666666666666,
-        "macro_f1_mean": 0.9711406210239143,
-        "n_samples": 24,
+        "accuracy_mean": 0.9516923076923077,
+        "macro_f1_mean": 0.970511598591454,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_qwen_w60": {
-        "accuracy_mean": 0.9344166666666668,
-        "macro_f1_mean": 0.9592145649555764,
-        "n_samples": 24,
+        "accuracy_mean": 0.9341538461538461,
+        "macro_f1_mean": 0.9589373661676335,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_qwen_w75": {
-        "accuracy_mean": 0.9241666666666667,
-        "macro_f1_mean": 0.952057407633146,
-        "n_samples": 24,
+        "accuracy_mean": 0.9243076923076923,
+        "macro_f1_mean": 0.9520828914803616,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_qwen_w90": {
-        "accuracy_mean": 0.9215,
-        "macro_f1_mean": 0.9501981824914898,
-        "n_samples": 24,
+        "accuracy_mean": 0.9215384615384615,
+        "macro_f1_mean": 0.9501945261331807,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_geometric": {
-        "accuracy_mean": 0.95725,
-        "macro_f1_mean": 0.9746739590150413,
-        "n_samples": 24,
+        "accuracy_mean": 0.956,
+        "macro_f1_mean": 0.9738500085916442,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_geometric_qwen": {
-        "accuracy_mean": 0.9525833333333332,
-        "macro_f1_mean": 0.9710637048734702,
-        "n_samples": 24,
+        "accuracy_mean": 0.9516153846153845,
+        "macro_f1_mean": 0.9704422425215858,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_geometric_encoder": {
-        "accuracy_mean": 0.9390000000000001,
-        "macro_f1_mean": 0.9616889655493007,
-        "n_samples": 24,
+        "accuracy_mean": 0.9385384615384615,
+        "macro_f1_mean": 0.9612670518818791,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_standardized_logits": {
-        "accuracy_mean": 0.9543333333333334,
-        "macro_f1_mean": 0.9722153752355268,
-        "n_samples": 24,
+        "accuracy_mean": 0.9535384615384614,
+        "macro_f1_mean": 0.9717033374308298,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_disagreement_qwen": {
-        "accuracy_mean": 0.9526666666666666,
-        "macro_f1_mean": 0.9707344892095543,
-        "n_samples": 24,
+        "accuracy_mean": 0.9516923076923077,
+        "macro_f1_mean": 0.9700991265073996,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_encoder_cannot_answer": {
-        "accuracy_mean": 0.9558333333333332,
-        "macro_f1_mean": 0.9701097123262836,
-        "n_samples": 24,
+        "accuracy_mean": 0.9546923076923076,
+        "macro_f1_mean": 0.9692835474942437,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_encoder_request_for_info": {
-        "accuracy_mean": 0.9628333333333333,
-        "macro_f1_mean": 0.9736463925607967,
-        "n_samples": 24,
+        "accuracy_mean": 0.9622307692307692,
+        "macro_f1_mean": 0.9733695584272822,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_encoder_request_or_cannot_answer": {
-        "accuracy_mean": 0.9659999999999999,
-        "macro_f1_mean": 0.9731560822087347,
-        "n_samples": 24,
+        "accuracy_mean": 0.9652307692307692,
+        "macro_f1_mean": 0.9726874285655895,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_encoder_request_or_cannot_answer_conf_40": {
-        "accuracy_mean": 0.9659999999999999,
-        "macro_f1_mean": 0.9731560822087347,
-        "n_samples": 24,
+        "accuracy_mean": 0.9652307692307692,
+        "macro_f1_mean": 0.9726874285655895,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_encoder_request_or_cannot_answer_conf_50": {
-        "accuracy_mean": 0.9654166666666666,
-        "macro_f1_mean": 0.9730150296351002,
-        "n_samples": 24,
+        "accuracy_mean": 0.9646923076923077,
+        "macro_f1_mean": 0.9725572261899271,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_encoder_request_or_cannot_answer_conf_60": {
-        "accuracy_mean": 0.9655,
-        "macro_f1_mean": 0.9737844249070541,
-        "n_samples": 24,
+        "accuracy_mean": 0.964923076923077,
+        "macro_f1_mean": 0.973459417533972,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_encoder_request_or_cannot_answer_conf_65": {
-        "accuracy_mean": 0.9650833333333333,
-        "macro_f1_mean": 0.9736470193882244,
-        "n_samples": 24,
+        "accuracy_mean": 0.9644615384615385,
+        "macro_f1_mean": 0.973291636904764,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_encoder_request_or_cannot_answer_conf_70": {
-        "accuracy_mean": 0.9648333333333333,
-        "macro_f1_mean": 0.9741260092394644,
-        "n_samples": 24,
+        "accuracy_mean": 0.964076923076923,
+        "macro_f1_mean": 0.9736517233545078,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_encoder_request_or_cannot_answer_conf_80": {
-        "accuracy_mean": 0.96525,
-        "macro_f1_mean": 0.9755594007464311,
-        "n_samples": 24,
+        "accuracy_mean": 0.9643846153846153,
+        "macro_f1_mean": 0.9749353867192883,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_encoder_request_or_cannot_answer_conf_90": {
-        "accuracy_mean": 0.9644166666666667,
-        "macro_f1_mean": 0.9760903341711878,
-        "n_samples": 24,
+        "accuracy_mean": 0.9636153846153845,
+        "macro_f1_mean": 0.9755743699485987,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_encoder_request_or_cannot_answer_mix_25": {
-        "accuracy_mean": 0.9529166666666665,
-        "macro_f1_mean": 0.9709064584080901,
-        "n_samples": 24,
+        "accuracy_mean": 0.9519230769230769,
+        "macro_f1_mean": 0.9702578673060481,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_encoder_request_or_cannot_answer_mix_40": {
-        "accuracy_mean": 0.9544166666666666,
-        "macro_f1_mean": 0.971860880764389,
-        "n_samples": 24,
+        "accuracy_mean": 0.9534615384615385,
+        "macro_f1_mean": 0.9712580127252016,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_encoder_request_or_cannot_answer_mix_50": {
-        "accuracy_mean": 0.9633333333333333,
-        "macro_f1_mean": 0.9772410618453927,
-        "n_samples": 24,
+        "accuracy_mean": 0.9622307692307692,
+        "macro_f1_mean": 0.9764708086672432,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_encoder_request_or_cannot_answer_mix_60": {
-        "accuracy_mean": 0.9651666666666666,
-        "macro_f1_mean": 0.9750656098857,
-        "n_samples": 24,
+        "accuracy_mean": 0.9643076923076923,
+        "macro_f1_mean": 0.9744795797709211,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_encoder_request_full_cannot_mix_25": {
-        "accuracy_mean": 0.9629166666666666,
-        "macro_f1_mean": 0.9737299892280059,
-        "n_samples": 24,
+        "accuracy_mean": 0.9623076923076923,
+        "macro_f1_mean": 0.9734467245816294,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_encoder_request_full_cannot_mix_40": {
-        "accuracy_mean": 0.9634999999999999,
-        "macro_f1_mean": 0.9740754292521848,
-        "n_samples": 24,
+        "accuracy_mean": 0.9629230769230769,
+        "macro_f1_mean": 0.9738057180128438,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_encoder_request_full_cannot_mix_50": {
-        "accuracy_mean": 0.9682499999999999,
-        "macro_f1_mean": 0.9771061491512346,
-        "n_samples": 24,
+        "accuracy_mean": 0.9675384615384615,
+        "macro_f1_mean": 0.9766840299455984,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_encoder_request_full_cannot_mix_60": {
-        "accuracy_mean": 0.9669166666666666,
-        "macro_f1_mean": 0.9745424281532405,
-        "n_samples": 24,
+        "accuracy_mean": 0.966076923076923,
+        "macro_f1_mean": 0.9740057358075588,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_encoder_request_full_cannot_mix_75": {
-        "accuracy_mean": 0.9662499999999999,
-        "macro_f1_mean": 0.973572545588515,
-        "n_samples": 24,
+        "accuracy_mean": 0.9655384615384615,
+        "macro_f1_mean": 0.9731499268510008,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_encoder_request_cannot_mix_r75_c40": {
-        "accuracy_mean": 0.96175,
-        "macro_f1_mean": 0.9736165773045559,
-        "n_samples": 24,
+        "accuracy_mean": 0.9613076923076923,
+        "macro_f1_mean": 0.973419613444884,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_encoder_request_cannot_mix_r75_c50": {
-        "accuracy_mean": 0.9664999999999999,
-        "macro_f1_mean": 0.9766439877933503,
-        "n_samples": 24,
+        "accuracy_mean": 0.965923076923077,
+        "macro_f1_mean": 0.9762945208203205,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_encoder_request_cannot_mix_r75_c60": {
-        "accuracy_mean": 0.9651666666666666,
-        "macro_f1_mean": 0.974070265695238,
-        "n_samples": 24,
+        "accuracy_mean": 0.9644615384615385,
+        "macro_f1_mean": 0.9736064676192624,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_encoder_tool_call": {
-        "accuracy_mean": 0.9042500000000001,
-        "macro_f1_mean": 0.9447556687818498,
-        "n_samples": 24,
+        "accuracy_mean": 0.9042307692307693,
+        "macro_f1_mean": 0.9446260532002536,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_encoder_direct": {
-        "accuracy_mean": 0.9526666666666666,
-        "macro_f1_mean": 0.9707344892095543,
-        "n_samples": 24,
+        "accuracy_mean": 0.9516923076923077,
+        "macro_f1_mean": 0.9700991265073996,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_request_conf_40": {
-        "accuracy_mean": 0.9628333333333333,
-        "macro_f1_mean": 0.9736463925607967,
-        "n_samples": 24,
+        "accuracy_mean": 0.9622307692307692,
+        "macro_f1_mean": 0.9733695584272822,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_request_conf_50": {
-        "accuracy_mean": 0.9624166666666666,
-        "macro_f1_mean": 0.9734697337595798,
-        "n_samples": 24,
+        "accuracy_mean": 0.9618461538461538,
+        "macro_f1_mean": 0.9732064887646205,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_request_conf_60": {
-        "accuracy_mean": 0.9620000000000001,
-        "macro_f1_mean": 0.9736619607205017,
-        "n_samples": 24,
+        "accuracy_mean": 0.9615384615384616,
+        "macro_f1_mean": 0.9734992500688104,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_request_conf_70": {
-        "accuracy_mean": 0.9610833333333333,
-        "macro_f1_mean": 0.9736753182006815,
-        "n_samples": 24,
+        "accuracy_mean": 0.9604615384615384,
+        "macro_f1_mean": 0.9733899392352965,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_request_conf_80": {
-        "accuracy_mean": 0.9608333333333333,
-        "macro_f1_mean": 0.9741486702316435,
-        "n_samples": 24,
+        "accuracy_mean": 0.9602307692307691,
+        "macro_f1_mean": 0.973826879571569,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_encoder_no_tools": {
-        "accuracy_mean": 0.9526666666666666,
-        "macro_f1_mean": 0.9707344892095543,
-        "n_samples": 24,
+        "accuracy_mean": 0.9516923076923077,
+        "macro_f1_mean": 0.9700991265073996,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_encoder_many_tools": {
-        "accuracy_mean": 0.9316666666666666,
-        "macro_f1_mean": 0.9562778902964596,
-        "n_samples": 24,
+        "accuracy_mean": 0.9316923076923077,
+        "macro_f1_mean": 0.9561925844413612,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_encoder_short_question": {
-        "accuracy_mean": 0.92575,
-        "macro_f1_mean": 0.952740973305342,
-        "n_samples": 24,
+        "accuracy_mean": 0.9258461538461538,
+        "macro_f1_mean": 0.9527596484397645,
+        "n_samples": 26,
         "examples_per_sample": 500
       },
       "single_encoder_long_question": {
-        "accuracy_mean": 0.9445,
-        "macro_f1_mean": 0.9658604843914752,
-        "n_samples": 24,
+        "accuracy_mean": 0.9436153846153845,
+        "macro_f1_mean": 0.9652289869259311,
+        "n_samples": 26,
         "examples_per_sample": 500
       }
     },
-    "clean_validation_split_seed": 20270301,
-    "clean_validation_sample_seed": 20270302,
-    "clean_validation_sample_indices_sha256": "01abdf9d550720e980db8d1aac04527d578841a21deeab85a6bd5c93a62fd399"
+    "clean_validation_split_seed": 20270305,
+    "clean_validation_sample_seed": 20270306,
+    "clean_validation_sample_indices_sha256": "9327fb04561ce52b23e5c6eae7506b202e4c8d3088336b5302b8ff463dc6b749"
   },
   "duplicate_worker_failure": {
     "pid": 103632,
