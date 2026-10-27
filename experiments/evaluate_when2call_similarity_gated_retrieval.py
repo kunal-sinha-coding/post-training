@@ -46,6 +46,7 @@ def main() -> int:
     parser.add_argument("--cache-dir", type=Path, default=Path("outputs/when2call-openai-embedding-cache"))
     parser.add_argument("--batch-size", type=int, default=1)
     parser.add_argument("--gate-quantiles", type=float, nargs="+", default=[0.5, 0.75, 0.9])
+    parser.add_argument("--feature", choices=("tools_only", "question_and_tools"), default="tools_only")
     args = parser.parse_args()
     # Keep every clean-validation evaluation within the declared sample cap.
     if not 1 <= args.max_validation_examples <= 500:
@@ -57,7 +58,7 @@ def main() -> int:
         raise RuntimeError("WANDB_API_KEY and OPENAI_API_KEY are required.")
     from openai import OpenAI
     import wandb
-    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name="when2call-similarity-gated-retrieval", job_type="clean-validation", config={"split_seed": args.split_seed, "sample_seed": args.sample_seed, "embedding_model": args.embedding_model, "embedding_dimensions": args.embedding_dimensions, "retrieval_pool": "train_sft", "retrieval_features": "tool schemas only", "k": 3, "gate_quantiles": args.gate_quantiles, "official_test_loaded": False})
+    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name="when2call-similarity-gated-retrieval", job_type="clean-validation", config={"split_seed": args.split_seed, "sample_seed": args.sample_seed, "embedding_model": args.embedding_model, "embedding_dimensions": args.embedding_dimensions, "retrieval_pool": "train_sft", "retrieval_features": args.feature, "k": 3, "gate_quantiles": args.gate_quantiles, "official_test_loaded": False})
     started = time.time()
     args.output_dir.mkdir(parents=True, exist_ok=True)
     write_heartbeat(args.output_dir / "heartbeat.json", "load-clean-data")
@@ -66,10 +67,10 @@ def main() -> int:
         train, validation, _ = retrieval.build_sampled_split(args)
         # Build cached embeddings using the same cache keys as the completed OpenAI screen.
         client = OpenAI()
-        train_text = [retrieval.retrieval_text(row, "tools_only") for row in train]
-        validation_text = [retrieval.retrieval_text(row, "tools_only") for row in validation]
-        train_vectors, train_usage, train_cache = retrieval.load_or_create_embeddings(client, train_text, args.embedding_model, args.embedding_dimensions, "train_sft_tools_only", "training", args.cache_dir)
-        validation_vectors, validation_usage, validation_cache = retrieval.load_or_create_embeddings(client, validation_text, args.embedding_model, args.embedding_dimensions, "tools_only", "validation", args.cache_dir)
+        train_text = [retrieval.retrieval_text(row, args.feature) for row in train]
+        validation_text = [retrieval.retrieval_text(row, args.feature) for row in validation]
+        train_vectors, train_usage, train_cache = retrieval.load_or_create_embeddings(client, train_text, args.embedding_model, args.embedding_dimensions, f"train_sft_{args.feature}", "training", args.cache_dir)
+        validation_vectors, validation_usage, validation_cache = retrieval.load_or_create_embeddings(client, validation_text, args.embedding_model, args.embedding_dimensions, args.feature, "validation", args.cache_dir)
         # Compute cosine scores and nearest three examples without reading validation labels.
         train_vectors = train_vectors / np.linalg.norm(train_vectors, axis=1, keepdims=True).clip(min=1e-12)
         validation_vectors = validation_vectors / np.linalg.norm(validation_vectors, axis=1, keepdims=True).clip(min=1e-12)
@@ -100,7 +101,7 @@ def main() -> int:
         metrics = {name: {key: metric_values(labels, predictions, list(range(len(LABELS))))[key] for key in ("accuracy", "macro_f1")} for name, predictions in methods.items()}
         for name, values in metrics.items():
             run.log({f"validation/{name}/accuracy": values["accuracy"], f"validation/{name}/macro_f1": values["macro_f1"]})
-        record = {"status": "completed", "training_performed": False, "official_test_loaded": False, "validation_source": "nvidia/When2Call train_sft", "validation_examples": len(validation), "qwen_checkpoint": args.qwen_checkpoint, "retrieval_pool": "train_sft", "retrieval_feature": "tool schemas only", "embedding_model": args.embedding_model, "embedding_dimensions": args.embedding_dimensions, "k": 3, "gate_quantiles": args.gate_quantiles, "gate_thresholds_from_unlabeled_validation_similarities": thresholds, "embedding_cache": {"training": train_cache, "validation": validation_cache}, "embedding_usage": {"training": train_usage, "validation": validation_usage}, "validation_metrics": metrics, "training_metrics_source": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json", "aggregate_test_loaded": False, "git_commit": os.popen("git rev-parse HEAD").read().strip(), "wandb_run_id": run.id, "wandb_run_url": run.url, "runtime_seconds": time.time() - started}
+        record = {"status": "completed", "training_performed": False, "official_test_loaded": False, "validation_source": "nvidia/When2Call train_sft", "validation_examples": len(validation), "qwen_checkpoint": args.qwen_checkpoint, "retrieval_pool": "train_sft", "retrieval_feature": args.feature, "embedding_model": args.embedding_model, "embedding_dimensions": args.embedding_dimensions, "k": 3, "gate_quantiles": args.gate_quantiles, "gate_thresholds_from_unlabeled_validation_similarities": thresholds, "embedding_cache": {"training": train_cache, "validation": validation_cache}, "embedding_usage": {"training": train_usage, "validation": validation_usage}, "validation_metrics": metrics, "training_metrics_source": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json", "aggregate_test_loaded": False, "git_commit": os.popen("git rev-parse HEAD").read().strip(), "wandb_run_id": run.id, "wandb_run_url": run.url, "runtime_seconds": time.time() - started}
         (args.output_dir / "metrics.json").write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
         run.summary.update({"status": "completed", "output_dir": str(args.output_dir)})
         write_heartbeat(args.output_dir / "heartbeat.json", "completed")

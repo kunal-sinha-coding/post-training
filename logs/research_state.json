@@ -176,6 +176,66 @@
       "outputs/when2call-openai-embedding-cache",
       "--batch-size",
       "1"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_when2call_similarity_gated_retrieval",
+      "--output-dir",
+      "outputs/when2call-similarity-gate-question-plus-tools-20270355",
+      "--split-seed",
+      "20270327",
+      "--sample-seed",
+      "20270332",
+      "--max-validation-examples",
+      "500",
+      "--qwen-checkpoint",
+      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "--embedding-model",
+      "text-embedding-3-small",
+      "--embedding-dimensions",
+      "1536",
+      "--cache-dir",
+      "outputs/when2call-openai-embedding-cache",
+      "--batch-size",
+      "1",
+      "--gate-quantiles",
+      "0.5",
+      "0.75",
+      "0.9",
+      "--feature",
+      "question_and_tools"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_when2call_similarity_gate_test_screen",
+      "--output-dir",
+      "outputs/when2call-similarity-gate-question-plus-tools-test-20270356",
+      "--clean-metrics",
+      "outputs/when2call-similarity-gate-question-plus-tools-20270355/metrics.json",
+      "--sample-seed",
+      "20270356",
+      "--max-test-examples",
+      "500",
+      "--split-seed",
+      "20270327",
+      "--validation-sample-seed",
+      "20270332",
+      "--qwen-checkpoint",
+      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "--embedding-model",
+      "text-embedding-3-small",
+      "--embedding-dimensions",
+      "1536",
+      "--cache-dir",
+      "outputs/when2call-openai-embedding-cache",
+      "--batch-size",
+      "1",
+      "--feature",
+      "question_and_tools"
     ]
   ],
   "_previous_command": [
@@ -211,7 +271,7 @@
     "selection": "clean validation only"
   },
   "last_heartbeat": "2026-10-27T07:38:32.195145+00:00",
-  "last_action": "Confirmed the gated-retrieval test measurement is active. Appended distinct stricter-tail and larger-embedding gated-retrieval commands with staged aggregate-only test screens.",
+  "last_action": "Queued the question-plus-tool similarity feature probe and its staged aggregate-only test screen after the existing gate refinements.",
   "watchdog_enabled": true,
   "research_log_size": 1371201,
   "stop_command": "STOP",
@@ -256,7 +316,7 @@
     "artifact": "outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json",
     "selection": "Report-only aggregate benchmark result. Test labels were not used for candidate selection."
   },
-  "next_hypothesis": "The 500-row clean screen found a small accuracy gain from similarity-gated retrieval. After the required test measurement and stricter-tail probe, test whether the larger text-embedding-3-large representation provides a more useful similarity signal for gating. Use clean validation for candidate selection and an aggregate-only 500-row test screen, with full test only if the fixed sample gate passes.",
+  "next_hypothesis": "The active fixed-sample gate passed its accuracy screen and is being measured on the full test set. Continue this promising retrieval branch with stricter cosine-tail gates, a larger embedding model, and a distinct question-plus-tool representation. Compare feature and gate variants on 500 clean-validation examples; only clean-selected candidates proceed to aggregate-only test screening.",
   "post_queue_report_required": {
     "required": true,
     "trigger": "After the family confidence-routing validation and aggregate test pass.",
@@ -320,7 +380,7 @@
       "macro_f1": 0.967059240237315
     },
     "aggregate_black_box_test_metrics_recorded": false,
-    "aggregate_black_box_test_source": null,
+    "aggregate_black_box_test_source": "outputs/when2call-similarity-gate-test-screen-20270349/metrics.json (written after full-test evaluation completes)",
     "aggregate_black_box_test_scope": "Not loaded by the clean-validation evaluator. Queue the user-authorized aggregate-only 500-row test screen before another experiment. It will run full test only if the clean-selected gate beats zero-shot accuracy on the fixed test sample.",
     "aggregate_black_box_test_selection_policy": "No individual test rows or labels are saved or inspected. Test labels are used only inside the evaluator to compute aggregate metrics and to trigger the predeclared full-evaluation gate.",
     "missing_measurement_command": [
@@ -350,7 +410,8 @@
       "outputs/when2call-openai-embedding-cache",
       "--batch-size",
       "1"
-    ]
+    ],
+    "aggregate_black_box_test_measurement_status": "In progress. The current 500-row sample passed the predeclared accuracy gate; full test scoring is underway."
   },
   "duplicate_worker_failure": {
     "pid": 103632,
