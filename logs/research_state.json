@@ -4,16 +4,16 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "fresh_base_bfcl_when2call_data_exploration_v1",
-  "current_hypothesis": "K=3 disagreement fallback remains the strongest clean-validation branch, while K=2 did not improve it. A margin gate may identify uniquely relevant examples better than absolute similarity when using K=3 fallback.",
+  "current_hypothesis": "The K=3 absolute-similarity fallback is stronger on clean validation than the K=3 margin gate. Preference examples may add useful coverage when disagreements fall back to the nearest neighbor.",
   "active_experiment": {
-    "pid": 221376,
+    "pid": 222262,
     "command": [
       "python",
       "-u",
       "-m",
       "experiments.evaluate_when2call_similarity_gated_retrieval",
       "--output-dir",
-      "outputs/when2call-similarity-gate-sft-tools-k3-fallback-margin-20270414",
+      "outputs/when2call-similarity-gate-pref-k3-fallback-20270416",
       "--split-seed",
       "20270327",
       "--sample-seed",
@@ -31,15 +31,13 @@
       "--batch-size",
       "1",
       "--gate-quantiles",
-      "0.5",
       "0.65",
+      "0.7",
       "0.75",
-      "0.85",
-      "0.95",
       "--feature",
       "tools_only",
       "--gate-score",
-      "margin",
+      "absolute",
       "--k",
       "3",
       "--label-disagreement-fallback-k1",
@@ -47,11 +45,10 @@
       "--retrieval-weights",
       "0.45",
       "0.5",
-      "0.55",
       "--retrieval-pool",
-      "train_sft"
+      "train_pref"
     ],
-    "started_at": "2026-10-27T15:38:33.756297+00:00"
+    "started_at": "2026-10-27T15:49:38.154408+00:00"
   },
   "worker_command": [
     "python",
@@ -59,7 +56,7 @@
     "-m",
     "experiments.evaluate_when2call_similarity_gated_retrieval",
     "--output-dir",
-    "outputs/when2call-similarity-gate-sft-tools-k3-fallback-margin-20270414",
+    "outputs/when2call-similarity-gate-pref-k3-fallback-20270416",
     "--split-seed",
     "20270327",
     "--sample-seed",
@@ -77,15 +74,13 @@
     "--batch-size",
     "1",
     "--gate-quantiles",
-    "0.5",
     "0.65",
+    "0.7",
     "0.75",
-    "0.85",
-    "0.95",
     "--feature",
     "tools_only",
     "--gate-score",
-    "margin",
+    "absolute",
     "--k",
     "3",
     "--label-disagreement-fallback-k1",
@@ -93,9 +88,8 @@
     "--retrieval-weights",
     "0.45",
     "0.5",
-    "0.55",
     "--retrieval-pool",
-    "train_sft"
+    "train_pref"
   ],
   "worker_queue": [
     [
@@ -104,11 +98,84 @@
       "-m",
       "experiments.evaluate_when2call_similarity_gate_test_screen",
       "--output-dir",
-      "outputs/when2call-similarity-gate-sft-tools-k3-fallback-margin-test-20270415",
+      "outputs/when2call-similarity-gate-pref-k3-fallback-test-20270417",
       "--clean-metrics",
-      "outputs/when2call-similarity-gate-sft-tools-k3-fallback-margin-20270414/metrics.json",
+      "outputs/when2call-similarity-gate-pref-k3-fallback-20270416/metrics.json",
       "--sample-seed",
-      "20270415",
+      "20270417",
+      "--max-test-examples",
+      "500",
+      "--split-seed",
+      "20270327",
+      "--validation-sample-seed",
+      "20270332",
+      "--qwen-checkpoint",
+      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "--embedding-model",
+      "text-embedding-3-small",
+      "--embedding-dimensions",
+      "1536",
+      "--cache-dir",
+      "outputs/when2call-openai-embedding-cache",
+      "--batch-size",
+      "1",
+      "--feature",
+      "tools_only",
+      "--label-disagreement-fallback-k1",
+      "--probability-average"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_when2call_similarity_gated_retrieval",
+      "--output-dir",
+      "outputs/when2call-similarity-gate-union-k3-fallback-20270418",
+      "--split-seed",
+      "20270327",
+      "--sample-seed",
+      "20270332",
+      "--max-validation-examples",
+      "500",
+      "--qwen-checkpoint",
+      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "--embedding-model",
+      "text-embedding-3-small",
+      "--embedding-dimensions",
+      "1536",
+      "--cache-dir",
+      "outputs/when2call-openai-embedding-cache",
+      "--batch-size",
+      "1",
+      "--gate-quantiles",
+      "0.65",
+      "0.7",
+      "0.75",
+      "--feature",
+      "tools_only",
+      "--gate-score",
+      "absolute",
+      "--k",
+      "3",
+      "--label-disagreement-fallback-k1",
+      "--probability-average",
+      "--retrieval-weights",
+      "0.45",
+      "0.5",
+      "--retrieval-pool",
+      "train_pref_plus_train_sft"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_when2call_similarity_gate_test_screen",
+      "--output-dir",
+      "outputs/when2call-similarity-gate-union-k3-fallback-test-20270419",
+      "--clean-metrics",
+      "outputs/when2call-similarity-gate-union-k3-fallback-20270418/metrics.json",
+      "--sample-seed",
+      "20270419",
       "--max-test-examples",
       "500",
       "--split-seed",
@@ -163,10 +230,10 @@
     "macro_f1": 0.48337889372616516,
     "selection": "clean validation only"
   },
-  "last_heartbeat": "2026-10-27T15:38:33.756310+00:00",
-  "last_action": "Watchdog started validation worker pid 221376.",
+  "last_heartbeat": "2026-10-27T15:49:38.154420+00:00",
+  "last_action": "Watchdog started validation worker pid 222262.",
   "watchdog_enabled": true,
-  "research_log_size": 1459356,
+  "research_log_size": 1462228,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -174,7 +241,7 @@
     "-m",
     "experiments.evaluate_when2call_similarity_gated_retrieval",
     "--output-dir",
-    "outputs/when2call-similarity-gate-sft-tools-k3-fallback-margin-20270414",
+    "outputs/when2call-similarity-gate-pref-k3-fallback-20270416",
     "--split-seed",
     "20270327",
     "--sample-seed",
@@ -192,15 +259,13 @@
     "--batch-size",
     "1",
     "--gate-quantiles",
-    "0.5",
     "0.65",
+    "0.7",
     "0.75",
-    "0.85",
-    "0.95",
     "--feature",
     "tools_only",
     "--gate-score",
-    "margin",
+    "absolute",
     "--k",
     "3",
     "--label-disagreement-fallback-k1",
@@ -208,15 +273,14 @@
     "--retrieval-weights",
     "0.45",
     "0.5",
-    "0.55",
     "--retrieval-pool",
-    "train_sft"
+    "train_pref"
   ],
   "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-27T15:38:03.254021+00:00",
-  "planning_ack_deadline": "2026-10-27T15:40:03.254046+00:00",
-  "planning_attempts": 25,
+  "planning_notified_at": "2026-10-27T15:48:36.863398+00:00",
+  "planning_ack_deadline": "2026-10-27T15:50:36.863423+00:00",
+  "planning_attempts": 26,
   "best_observed_test": {
     "method": "single_average",
     "accuracy": 0.7154983570646222,
@@ -225,7 +289,7 @@
     "artifact": "outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json",
     "selection": "Report-only aggregate benchmark result. Test labels were not used for candidate selection."
   },
-  "next_hypothesis": "If the margin gate improves clean validation, refine its clean-selected threshold and blend. If it does not, test another distinct retrieval signal or prompt representation.",
+  "next_hypothesis": "If preference-only retrieval helps, test whether the deduplicated preference-plus-SFT union adds useful coverage. Otherwise keep the SFT pool and explore a new representation or gating signal.",
   "post_queue_report_required": {
     "required": true,
     "trigger": "After the family confidence-routing validation and aggregate test pass.",
@@ -262,9 +326,9 @@
     "selection_use": "none"
   },
   "evidence_audit": {
-    "latest_completed_experiment": "when2call-similarity-gate-sft-tools-k2-fallback-test-20270413",
+    "latest_completed_experiment": "when2call-similarity-gate-sft-tools-k3-fallback-margin-test-20270415",
     "training_metrics_recorded": true,
-    "training_metrics_scope": "Retrieval did not train. The test screen links the frozen Qwen epoch-2 training probe and loss.",
+    "training_metrics_scope": "Retrieval did not train. The test screen links the frozen Qwen epoch-2 training probe and epoch loss.",
     "training_metrics_sources": [
       {
         "path": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json",
@@ -277,45 +341,36 @@
       }
     ],
     "clean_validation_recorded": true,
-    "clean_validation_source": "outputs/when2call-similarity-gate-sft-tools-k2-fallback-20270412/metrics.json",
+    "clean_validation_source": "outputs/when2call-similarity-gate-sft-tools-k3-fallback-margin-20270414/metrics.json",
     "clean_validation_examples": 500,
     "clean_validation_zero_shot": {
       "accuracy": 0.942,
       "macro_f1": 0.967059240237315
     },
     "clean_validation_best": {
-      "method": "gate_top_0.65_k2_fallback_k1_probavg_w0.45",
-      "accuracy": 0.95,
-      "macro_f1": 0.9722771696310328
+      "method": "margin_gate_top_0.75_fallback_k1_probavg_w0.45",
+      "accuracy": 0.944,
+      "macro_f1": 0.9671789703535736
     },
     "aggregate_black_box_test_metrics_recorded": true,
-    "aggregate_black_box_test_source": "outputs/when2call-similarity-gate-sft-tools-k2-fallback-test-20270413/metrics.json",
+    "aggregate_black_box_test_source": "outputs/when2call-similarity-gate-sft-tools-k3-fallback-margin-test-20270415/metrics.json",
     "test_sample_examples": 500,
     "test_sample_metrics": {
       "zero_shot": {
-        "accuracy": 0.664,
-        "macro_f1": 0.5004899950772844
+        "accuracy": 0.656,
+        "macro_f1": 0.4935841282971002
       },
       "selected_gate": {
-        "accuracy": 0.672,
-        "macro_f1": 0.5054014186088773
+        "accuracy": 0.656,
+        "macro_f1": 0.4935841282971002
       }
     },
-    "full_test_evaluated": true,
-    "aggregate_black_box_test_examples": 3652,
-    "aggregate_black_box_test_metrics": {
-      "zero_shot": {
-        "accuracy": 0.6804490690032858,
-        "macro_f1": 0.511927570670597
-      },
-      "selected_gate": {
-        "accuracy": 0.6840087623220154,
-        "macro_f1": 0.5142872967933474
-      }
-    },
+    "full_test_evaluated": false,
+    "full_test_gate": "The predeclared full-test expansion requires test-sample accuracy above zero-shot. The sample tied, so no full-test evaluation ran.",
+    "aggregate_black_box_test_examples": 500,
     "test_labels_used_for_selection": false,
     "per_example_test_outcomes_saved": false,
-    "aggregate_black_box_test_selection_policy": "Clean validation selected the candidate and threshold. The 500-row sample triggered full aggregate reporting. Test labels were used only for aggregate metrics."
+    "aggregate_black_box_test_selection_policy": "Clean validation chose the gate. Test labels were used only for aggregate test-sample reporting."
   },
   "duplicate_worker_failure": {
     "pid": 103632,
