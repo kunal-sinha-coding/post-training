@@ -109,8 +109,8 @@ def evaluate(args: argparse.Namespace, run: object) -> dict:
     labels = torch.tensor([item.label for item in validation_examples])
     prefix = "ensemble" if len(raw_encoder_logits) > 1 else "single"
     candidates = {**encoder_members, "qwen_sft": qwen, f"{prefix}_average": (encoder + qwen) / 2, f"{prefix}_gate": hybrid_probabilities(encoder, qwen, "gate")}
-    # Screen fixed family-confidence routes when multiple encoders form one expert.
-    methods = ("ensemble_average", "ensemble_gate", "ensemble_request_conf_60", "ensemble_request_conf_80") if len(raw_encoder_logits) > 1 else tuple(dict.fromkeys((*ADAPTIVE_METHODS, *POOL_GRID_METHODS, *DISAGREE_METHODS, *REQUEST_CONFIDENCE_METHODS, *RULE_METHODS)))
+    # Screen fixed family-confidence thresholds when multiple encoders form one expert.
+    methods = ("ensemble_average", "ensemble_gate", "ensemble_request_conf_40", "ensemble_request_conf_50", "ensemble_request_conf_60", "ensemble_request_conf_70", "ensemble_request_conf_80") if len(raw_encoder_logits) > 1 else tuple(dict.fromkeys((*ADAPTIVE_METHODS, *POOL_GRID_METHODS, *DISAGREE_METHODS, *REQUEST_CONFIDENCE_METHODS, *RULE_METHODS)))
     for method in methods:
         if method in candidates or method in ("single_average", "single_gate", "ensemble_average", "ensemble_gate"):
             continue
