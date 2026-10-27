@@ -58,7 +58,7 @@ def score_method(model: object, tokenizer: object, prompts: list, device: torch.
 
 def prompts_for_gate(tokenizer: object, examples: list, train: list, vectors: np.ndarray, train_vectors: np.ndarray, threshold: float, gate_score: str, k: int) -> tuple[list, np.ndarray]:
     """Apply the frozen cosine threshold and construct zero-shot and gated prompts."""
-    # Rank examples by tools-only cosine similarity and preserve top-three neighbors.
+    # Rank examples with the selected cached input representation and preserve top-three neighbors.
     train_norms = np.linalg.norm(train_vectors, axis=1, keepdims=True).clip(min=1e-12)
     example_norms = np.linalg.norm(vectors, axis=1, keepdims=True).clip(min=1e-12)
     similarities = (vectors / example_norms) @ (train_vectors / train_norms).T
@@ -90,7 +90,7 @@ def main() -> int:
     parser.add_argument("--embedding-dimensions", type=int, default=1536)
     parser.add_argument("--cache-dir", type=Path, default=Path("outputs/when2call-openai-embedding-cache"))
     parser.add_argument("--batch-size", type=int, default=1)
-    parser.add_argument("--feature", choices=("tools_only", "question_and_tools"), default="tools_only")
+    parser.add_argument("--feature", choices=("question_only", "tools_only", "question_and_tools"), default="tools_only")
     parser.add_argument("--force-screen", action="store_true")
     args = parser.parse_args()
     # Enforce the black-box screening cap before opening any official test rows.

@@ -36,11 +36,12 @@ class StreamingOpenCodeGRPODataset(IterableDataset):
         self.expected_source_rows = int(config.get("opencode_expected_rows", 5_000_000))
         self.expected_opencode_rows = int(config["expected_opencode_train_samples"])
         self.expected_total_rows = int(config["expected_train_samples"])
+        self.expected_mbpp_prompt_rows = int(config.get("expected_mbpp_prompt_samples", self.expected_opencode_rows))
         self.epoch = 0
         if len(mbpp_records) != int(config["expected_mbpp_train_samples"]):
             raise ValueError(f"Loaded {len(mbpp_records)} MBPP rows, expected {config['expected_mbpp_train_samples']}.")
-        if self.expected_total_rows != self.expected_opencode_rows + len(mbpp_records):
-            raise ValueError("The configured total does not match the streamed OpenCode and MBPP task counts.")
+        if self.expected_total_rows != self.expected_opencode_rows + self.expected_mbpp_prompt_rows:
+            raise ValueError("The configured total does not match the requested OpenCode and MBPP prompt counts.")
 
     def __len__(self) -> int:
         # Give Trainer the exact one-epoch population without materializing its rows.
@@ -131,7 +132,7 @@ class StreamingOpenCodeGRPODataset(IterableDataset):
             yield record
 
     def __iter__(self) -> Iterator[dict[str, Any]]:
-        # Stream one online OpenCode pass and probabilistically interleave all original MBPP rows.
+        # Pair one OpenCode prompt with one MBPP prompt so each two-row GRPO microbatch is exactly balanced.
         from torch.utils.data import get_worker_info
 
         if get_worker_info() is not None:
@@ -139,30 +140,32 @@ class StreamingOpenCodeGRPODataset(IterableDataset):
         rng = random.Random(int(self.config.get("seed", 42)) + self.epoch)
         mbpp = list(self.mbpp_records)
         rng.shuffle(mbpp)
-        remaining = self.expected_total_rows
         emitted = 0
         source_emitted = 0
         buffer: list[dict[str, Any]] = []
         for record in self.eligible_records():
-            source_emitted += 1
-            while mbpp and rng.random() < len(mbpp) / max(1, remaining):
-                yield mbpp.pop()
-                remaining -= 1
-                emitted += 1
             buffer.append(record)
             if len(buffer) == 8:
                 yield buffer.pop(rng.randrange(len(buffer)))
-                remaining -= 1
+                source_emitted += 1
                 emitted += 1
-        while buffer or mbpp:
-            if mbpp and (not buffer or rng.random() < len(mbpp) / (len(mbpp) + len(buffer))):
-                record = mbpp.pop()
-            else:
-                record = buffer.pop(rng.randrange(len(buffer)))
-            yield record
-            remaining -= 1
+                if not mbpp:
+                    mbpp = list(self.mbpp_records)
+                    rng.shuffle(mbpp)
+                yield mbpp.pop()
+                emitted += 1
+        while buffer:
+            yield buffer.pop(rng.randrange(len(buffer)))
+            source_emitted += 1
+            emitted += 1
+            if not mbpp:
+                mbpp = list(self.mbpp_records)
+                rng.shuffle(mbpp)
+            yield mbpp.pop()
             emitted += 1
         if source_emitted != self.expected_opencode_rows:
             raise ValueError(f"Stream found {source_emitted} eligible OpenCode rows, expected {self.expected_opencode_rows}.")
+        if emitted - source_emitted != self.expected_mbpp_prompt_rows:
+            raise ValueError(f"Stream emitted {emitted - source_emitted} MBPP prompts, expected {self.expected_mbpp_prompt_rows}.")
         if emitted != self.expected_total_rows:
             raise ValueError(f"Stream emitted {emitted} training rows, expected {self.expected_total_rows}.")

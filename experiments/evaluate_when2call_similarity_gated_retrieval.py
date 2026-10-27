@@ -46,7 +46,7 @@ def main() -> int:
     parser.add_argument("--cache-dir", type=Path, default=Path("outputs/when2call-openai-embedding-cache"))
     parser.add_argument("--batch-size", type=int, default=1)
     parser.add_argument("--gate-quantiles", type=float, nargs="+", default=[0.5, 0.75, 0.9])
-    parser.add_argument("--feature", choices=("tools_only", "question_and_tools"), default="tools_only")
+    parser.add_argument("--feature", choices=("question_only", "tools_only", "question_and_tools"), default="tools_only")
     parser.add_argument("--gate-score", choices=("absolute", "margin"), default="absolute")
     parser.add_argument("--k", type=int, choices=(1, 2, 3), default=3)
     args = parser.parse_args()
