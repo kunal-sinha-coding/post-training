@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "fresh_base_bfcl_when2call_data_exploration_v1",
-  "current_hypothesis": "Across four independent 500-row clean samples, the request-or-cannot confidence-0.60 route averages 0.9645 accuracy, and the full-cannot 50-percent blend averages 0.9650. This small difference is not conclusive. Two more clean samples can help estimate whether class-specific probability mixing has a stable accuracy gain over the confidence route and Qwen.",
+  "current_hypothesis": "Across six independent 500-row clean samples, request-or-cannot confidence 0.60 and full-cannot 50-percent probability mixing tie at 0.96833 mean accuracy, while Qwen averages 0.952. Confidence 0.80 and request/cannot mix 0.50 have stronger mean macro F1. Two more clean samples will test whether the accuracy tie and F1 trade-off persist.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -12,11 +12,11 @@
     "-m",
     "experiments.evaluate_existing_when2call_hybrid_validation",
     "--output-dir",
-    "outputs/qwen-single-encoder48-route-replication-20270120",
+    "outputs/qwen-single-encoder48-route-replication-20270124",
     "--split-seed",
-    "20270120",
+    "20270124",
     "--sample-seed",
-    "20270121",
+    "20270125",
     "--max-validation-examples",
     "500",
     "--qwen-checkpoint",
@@ -33,11 +33,11 @@
       "-m",
       "experiments.evaluate_existing_when2call_hybrid_validation",
       "--output-dir",
-      "outputs/qwen-single-encoder48-route-replication-20270122",
+      "outputs/qwen-single-encoder48-route-replication-20270126",
       "--split-seed",
-      "20270122",
+      "20270126",
       "--sample-seed",
-      "20270123",
+      "20270127",
       "--max-validation-examples",
       "500",
       "--qwen-checkpoint",
@@ -53,11 +53,11 @@
       "-m",
       "experiments.evaluate_existing_when2call_hybrid_validation",
       "--output-dir",
-      "outputs/qwen-single-encoder48-route-replication-20270124",
+      "outputs/qwen-single-encoder48-route-replication-20270128",
       "--split-seed",
-      "20270124",
+      "20270128",
       "--sample-seed",
-      "20270125",
+      "20270129",
       "--max-validation-examples",
       "500",
       "--qwen-checkpoint",
@@ -85,8 +85,8 @@
     "outputs/test-clean-validation-smooth0075-wd002-weight75-25.json"
   ],
   "experiment_queue": [
-    "Run two new 500-row clean-validation screens for Qwen plus encoder 48 with the broad predeclared fusion and routing methods.",
-    "Aggregate the means across independent clean samples for Qwen, confidence routing, request/cannot mixing, and full-cannot mixing. Use existing aggregate test records only as report-only evidence."
+    "Run two additional deterministic 500-row clean screens with the same frozen Qwen and encoder-48 candidates.",
+    "Recompute clean-only mean accuracy and macro F1 across eight independent samples before deciding whether confidence routing or class-specific mixing is more stable."
   ],
   "best_validation": {
     "experiment": "qwen-when2call-fullpool-sft-validation-base-seed20261062",
@@ -97,10 +97,10 @@
     "macro_f1": 0.48337889372616516,
     "selection": "clean validation only"
   },
-  "last_heartbeat": "2026-10-27T02:46:30.914567+00:00",
-  "last_action": "Audited the 20270120 clean replication, source training metrics, and matching single-disagree aggregate test record. All evidence is present. Across four clean samples, the leading routes are close, so two additional clean replications are queued to reduce selection noise.",
+  "last_heartbeat": "2026-10-27T02:52:33.956550+00:00",
+  "last_action": "Audited the completed 20270124 clean replication and linked source training and aggregate test records. All evidence is present. Added two distinct clean-validation runs to extend the six-sample route comparison to eight samples.",
   "watchdog_enabled": true,
-  "research_log_size": 1187212,
+  "research_log_size": 1198095,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -108,11 +108,11 @@
     "-m",
     "experiments.evaluate_existing_when2call_hybrid_validation",
     "--output-dir",
-    "outputs/qwen-single-encoder48-route-replication-20270122",
+    "outputs/qwen-single-encoder48-route-replication-20270126",
     "--split-seed",
-    "20270122",
+    "20270126",
     "--sample-seed",
-    "20270123",
+    "20270127",
     "--max-validation-examples",
     "500",
     "--qwen-checkpoint",
@@ -124,9 +124,9 @@
   ],
   "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-27T02:48:32.879274+00:00",
-  "planning_ack_deadline": "2026-10-27T02:50:32.879329+00:00",
-  "planning_attempts": 72,
+  "planning_notified_at": "2026-10-27T02:54:35.770122+00:00",
+  "planning_ack_deadline": "2026-10-27T02:56:35.770146+00:00",
+  "planning_attempts": 73,
   "best_observed_test": {
     "method": "three_encoder_qwen_equal_probability_average",
     "accuracy": 0.7113910186199343,
@@ -136,7 +136,7 @@
     "metrics": "outputs/qwen-three-encoder-gate-test-20261082/aggregate-comparison.json",
     "selection": "Reported as the highest aggregate score in this frozen comparison only. Test metrics did not select the candidate; clean validation selected the entropy gate."
   },
-  "next_hypothesis": "Aggregate six fresh clean samples to compare Qwen, confidence-0.60 routing, request/cannot mixing, and full-cannot mixing. If a route has a repeatable clean advantage, retain it for aggregate reporting. Do not select by test labels or scores.",
+  "next_hypothesis": "After eight clean samples, select the route with the stronger mean accuracy and inspect macro F1 as a secondary metric. If accuracy remains tied, prefer the simpler fixed route. Existing aggregate tests stay report-only.",
   "post_queue_report_required": {
     "required": true,
     "trigger": "After the family confidence-routing validation and aggregate test pass.",
@@ -173,7 +173,7 @@
     "selection_use": "none"
   },
   "evidence_audit": {
-    "latest_completed_experiment": "qwen-single-encoder48-route-replication-20270120",
+    "latest_completed_experiment": "qwen-single-encoder48-route-replication-20270124",
     "training_metrics_recorded": true,
     "training_metrics_scope": "Inference-only clean validation. No training occurred in this run. Training metrics for the source Qwen epoch-2 checkpoint and encoder-48 checkpoint are linked below.",
     "training_metrics_sources": [
@@ -194,212 +194,212 @@
       }
     ],
     "clean_validation_recorded": true,
-    "clean_validation_source": "outputs/qwen-single-encoder48-route-replication-20270120/metrics.json",
+    "clean_validation_source": "outputs/qwen-single-encoder48-route-replication-20270124/metrics.json",
     "clean_validation_examples": 500,
     "clean_validation_metrics": {
       "encoder_single": {
-        "accuracy": 0.922,
-        "macro_f1": 0.9529703817839411
+        "accuracy": 0.93,
+        "macro_f1": 0.9534490161905484
       },
       "qwen_sft": {
-        "accuracy": 0.962,
-        "macro_f1": 0.9775918696164094
+        "accuracy": 0.956,
+        "macro_f1": 0.9695852534562213
       },
       "single_average": {
-        "accuracy": 0.966,
-        "macro_f1": 0.9815300704501787
+        "accuracy": 0.97,
+        "macro_f1": 0.9797897348831135
       },
       "single_gate": {
-        "accuracy": 0.962,
-        "macro_f1": 0.9784581625470956
+        "accuracy": 0.972,
+        "macro_f1": 0.9808243727598567
       },
       "single_entropy_weighted": {
-        "accuracy": 0.964,
-        "macro_f1": 0.9804650623561172
+        "accuracy": 0.97,
+        "macro_f1": 0.9797897348831135
       },
       "single_margin_weighted": {
-        "accuracy": 0.966,
-        "macro_f1": 0.9815300704501787
+        "accuracy": 0.97,
+        "macro_f1": 0.9797897348831135
       },
       "single_encoder_confident": {
-        "accuracy": 0.964,
-        "macro_f1": 0.9794710743801653
+        "accuracy": 0.97,
+        "macro_f1": 0.9797897348831135
       },
       "single_qwen_w10": {
-        "accuracy": 0.962,
-        "macro_f1": 0.9775918696164094
+        "accuracy": 0.956,
+        "macro_f1": 0.9695852534562213
       },
       "single_qwen_w25": {
-        "accuracy": 0.96,
-        "macro_f1": 0.9765358503063422
+        "accuracy": 0.958,
+        "macro_f1": 0.9716101956427823
       },
       "single_qwen_w40": {
         "accuracy": 0.958,
-        "macro_f1": 0.9754754941613258
+        "macro_f1": 0.9716101956427823
       },
       "single_qwen_w60": {
-        "accuracy": 0.932,
-        "macro_f1": 0.9603834898598068
+        "accuracy": 0.948,
+        "macro_f1": 0.9672420687816583
       },
       "single_qwen_w75": {
-        "accuracy": 0.922,
-        "macro_f1": 0.9529703817839411
+        "accuracy": 0.94,
+        "macro_f1": 0.9629032258064516
       },
       "single_qwen_w90": {
-        "accuracy": 0.926,
-        "macro_f1": 0.9552231172484337
+        "accuracy": 0.94,
+        "macro_f1": 0.9609340031875243
       },
       "single_geometric": {
         "accuracy": 0.966,
-        "macro_f1": 0.9815300704501787
+        "macro_f1": 0.977724506730592
       },
       "single_geometric_qwen": {
-        "accuracy": 0.96,
-        "macro_f1": 0.9765358503063422
+        "accuracy": 0.958,
+        "macro_f1": 0.9716101956427823
       },
       "single_geometric_encoder": {
-        "accuracy": 0.938,
-        "macro_f1": 0.9636347496745177
+        "accuracy": 0.954,
+        "macro_f1": 0.9704150830911394
       },
       "single_standardized_logits": {
-        "accuracy": 0.96,
-        "macro_f1": 0.9773916362746196
+        "accuracy": 0.962,
+        "macro_f1": 0.9766233766233766
       },
       "single_disagreement_qwen": {
-        "accuracy": 0.962,
-        "macro_f1": 0.9775918696164094
+        "accuracy": 0.956,
+        "macro_f1": 0.9695852534562213
       },
       "single_encoder_cannot_answer": {
         "accuracy": 0.964,
-        "macro_f1": 0.9774949787626355
+        "macro_f1": 0.9736845327749408
       },
       "single_encoder_request_for_info": {
-        "accuracy": 0.97,
-        "macro_f1": 0.9788153542858073
+        "accuracy": 0.968,
+        "macro_f1": 0.9738095238095239
       },
       "single_encoder_request_or_cannot_answer": {
-        "accuracy": 0.972,
-        "macro_f1": 0.9788362149400015
+        "accuracy": 0.976,
+        "macro_f1": 0.9779555576974823
       },
       "single_encoder_request_or_cannot_answer_conf_40": {
-        "accuracy": 0.972,
-        "macro_f1": 0.9788362149400015
+        "accuracy": 0.976,
+        "macro_f1": 0.9779555576974823
       },
       "single_encoder_request_or_cannot_answer_conf_50": {
-        "accuracy": 0.972,
-        "macro_f1": 0.9788362149400015
+        "accuracy": 0.978,
+        "macro_f1": 0.9799598393574297
       },
       "single_encoder_request_or_cannot_answer_conf_60": {
-        "accuracy": 0.97,
-        "macro_f1": 0.9777973797493568
+        "accuracy": 0.978,
+        "macro_f1": 0.9819276379721213
       },
       "single_encoder_request_or_cannot_answer_conf_65": {
-        "accuracy": 0.968,
-        "macro_f1": 0.9767543216514329
+        "accuracy": 0.978,
+        "macro_f1": 0.9819276379721213
       },
       "single_encoder_request_or_cannot_answer_conf_70": {
-        "accuracy": 0.97,
-        "macro_f1": 0.9787832873074448
+        "accuracy": 0.974,
+        "macro_f1": 0.9818464139960652
       },
       "single_encoder_request_or_cannot_answer_conf_80": {
-        "accuracy": 0.97,
-        "macro_f1": 0.9807376144087552
+        "accuracy": 0.974,
+        "macro_f1": 0.9818464139960652
       },
       "single_encoder_request_or_cannot_answer_conf_90": {
-        "accuracy": 0.97,
-        "macro_f1": 0.9816975464220876
+        "accuracy": 0.972,
+        "macro_f1": 0.9808116848733677
       },
       "single_encoder_request_or_cannot_answer_mix_25": {
-        "accuracy": 0.962,
-        "macro_f1": 0.9775918696164094
+        "accuracy": 0.958,
+        "macro_f1": 0.9716101956427823
       },
       "single_encoder_request_or_cannot_answer_mix_40": {
-        "accuracy": 0.962,
-        "macro_f1": 0.9775918696164094
+        "accuracy": 0.958,
+        "macro_f1": 0.9716101956427823
       },
       "single_encoder_request_or_cannot_answer_mix_50": {
-        "accuracy": 0.974,
-        "macro_f1": 0.9857465442131708
+        "accuracy": 0.97,
+        "macro_f1": 0.9797897348831135
       },
       "single_encoder_request_or_cannot_answer_mix_60": {
-        "accuracy": 0.972,
-        "macro_f1": 0.9807908499926683
+        "accuracy": 0.976,
+        "macro_f1": 0.9818910548369466
       },
       "single_encoder_request_full_cannot_mix_25": {
         "accuracy": 0.97,
-        "macro_f1": 0.9788153542858073
+        "macro_f1": 0.9758273171561264
       },
       "single_encoder_request_full_cannot_mix_40": {
         "accuracy": 0.97,
-        "macro_f1": 0.9788153542858073
+        "macro_f1": 0.9758273171561264
       },
       "single_encoder_request_full_cannot_mix_50": {
-        "accuracy": 0.978,
-        "macro_f1": 0.9848972869474915
+        "accuracy": 0.98,
+        "macro_f1": 0.982953447942824
       },
       "single_encoder_request_full_cannot_mix_60": {
-        "accuracy": 0.974,
-        "macro_f1": 0.9808567603748326
+        "accuracy": 0.98,
+        "macro_f1": 0.9819639278557115
       },
       "single_encoder_request_full_cannot_mix_75": {
-        "accuracy": 0.972,
-        "macro_f1": 0.9788362149400015
+        "accuracy": 0.98,
+        "macro_f1": 0.9819639278557115
       },
       "single_encoder_request_cannot_mix_r75_c40": {
         "accuracy": 0.966,
-        "macro_f1": 0.976758927549034
+        "macro_f1": 0.9757396667061209
       },
       "single_encoder_request_cannot_mix_r75_c50": {
-        "accuracy": 0.974,
-        "macro_f1": 0.9828405017921147
+        "accuracy": 0.976,
+        "macro_f1": 0.9828811579152333
       },
       "single_encoder_request_cannot_mix_r75_c60": {
-        "accuracy": 0.97,
-        "macro_f1": 0.9787832873074448
+        "accuracy": 0.976,
+        "macro_f1": 0.9818910548369466
       },
       "single_encoder_tool_call": {
-        "accuracy": 0.912,
-        "macro_f1": 0.9513251372673869
+        "accuracy": 0.91,
+        "macro_f1": 0.9447310751816127
       },
       "single_encoder_direct": {
-        "accuracy": 0.962,
-        "macro_f1": 0.9775918696164094
+        "accuracy": 0.956,
+        "macro_f1": 0.9695852534562213
       },
       "single_request_conf_40": {
-        "accuracy": 0.97,
-        "macro_f1": 0.9788153542858073
+        "accuracy": 0.968,
+        "macro_f1": 0.9738095238095239
       },
       "single_request_conf_50": {
-        "accuracy": 0.97,
-        "macro_f1": 0.9788153542858073
+        "accuracy": 0.968,
+        "macro_f1": 0.9738095238095239
       },
       "single_request_conf_60": {
-        "accuracy": 0.968,
-        "macro_f1": 0.9777892056028994
+        "accuracy": 0.966,
+        "macro_f1": 0.973762094479226
       },
       "single_request_conf_70": {
-        "accuracy": 0.966,
-        "macro_f1": 0.976758927549034
+        "accuracy": 0.962,
+        "macro_f1": 0.9726882336100773
       },
       "single_request_conf_80": {
-        "accuracy": 0.964,
-        "macro_f1": 0.976702170467517
+        "accuracy": 0.962,
+        "macro_f1": 0.9726882336100773
       },
       "single_encoder_no_tools": {
-        "accuracy": 0.962,
-        "macro_f1": 0.9775918696164094
+        "accuracy": 0.956,
+        "macro_f1": 0.9695852534562213
       },
       "single_encoder_many_tools": {
-        "accuracy": 0.944,
-        "macro_f1": 0.9660169349429912
+        "accuracy": 0.934,
+        "macro_f1": 0.9558573284714362
       },
       "single_encoder_short_question": {
-        "accuracy": 0.934,
-        "macro_f1": 0.960512548978079
+        "accuracy": 0.936,
+        "macro_f1": 0.9568981742894787
       },
       "single_encoder_long_question": {
         "accuracy": 0.95,
-        "macro_f1": 0.9702960792661041
+        "macro_f1": 0.9664072525561949
       }
     },
     "aggregate_black_box_test_metrics_recorded": true,
@@ -552,54 +552,82 @@
         "macro_f1_present_classes": 0.7039678929730089
       }
     },
-    "aggregate_black_box_test_scope": "Report-only results for the frozen single-disagree candidate family on 3652 aggregate test rows. This family includes the clean-screened routes. Test scores do not select candidates.",
+    "aggregate_black_box_test_scope": "Report-only results for the same frozen Qwen plus encoder-48 route family on 3652 rows. Candidate choice uses clean-validation means only.",
     "test_labels_used_for_selection": false,
     "aggregate_black_box_test_measurement_queued": false,
     "aggregate_black_box_test_queued_command": null,
-    "evidence_cross_run_note": "The newest clean validation uses the same Qwen epoch-2 and encoder-48 artifacts as the completed single-disagree aggregate test. Training metrics are linked from their source checkpoints.",
+    "evidence_cross_run_note": "The newest clean screen and the recorded single-disagree test pass use the same frozen Qwen epoch-2 and encoder-48 artifacts. The test pass covers the methods in the clean screen.",
     "additional_clean_selected_candidate": {
-      "method": "single_encoder_request_full_cannot_mix_50",
-      "validation_source": "outputs/qwen-single-encoder48-route-replication-20270120/metrics.json",
-      "accuracy": 0.978,
-      "macro_f1": 0.9848972869474915,
+      "candidates_tied_on_accuracy_mean": [
+        "single_encoder_request_or_cannot_answer_conf_60",
+        "single_encoder_request_full_cannot_mix_50"
+      ],
+      "selection_basis": "Mean accuracy across six independent clean samples; no test labels or scores used.",
+      "clean_summary": {
+        "single_encoder_request_or_cannot_answer_conf_60": {
+          "accuracy_mean": 0.9683333333333333,
+          "macro_f1_mean": 0.9760956850870297,
+          "n_samples": 6,
+          "examples_per_sample": 500
+        },
+        "single_encoder_request_full_cannot_mix_50": {
+          "accuracy_mean": 0.9683333333333333,
+          "macro_f1_mean": 0.9767798098708395,
+          "n_samples": 6,
+          "examples_per_sample": 500
+        }
+      },
       "aggregate_test_measurement_status": "recorded report-only",
       "aggregate_test_metrics": {
-        "accuracy": 0.7053669222343921,
-        "macro_f1": 0.5305806217914525,
-        "macro_f1_present_classes": 0.70744082905527
-      },
-      "selection_summary_across_four_clean_samples": {
-        "accuracy_mean": 0.965,
-        "macro_f1_mean": 0.9752203994736972,
-        "n_samples": 4,
-        "examples_per_sample": 500
+        "single_encoder_request_or_cannot_answer_conf_60": {
+          "accuracy": 0.6829134720700986,
+          "macro_f1": 0.5109302739559292,
+          "macro_f1_present_classes": 0.6812403652745722
+        },
+        "single_encoder_request_full_cannot_mix_50": {
+          "accuracy": 0.7053669222343921,
+          "macro_f1": 0.5305806217914525,
+          "macro_f1_present_classes": 0.70744082905527
+        }
       }
     },
     "additional_candidate_aggregate_test_measurement_queued": false,
     "additional_candidate_aggregate_test_command": null,
     "clean_validation_replication_summary": {
       "qwen_sft": {
-        "accuracy_mean": 0.9504999999999999,
-        "macro_f1_mean": 0.9698009952477757,
-        "n_samples": 4,
+        "accuracy_mean": 0.952,
+        "macro_f1_mean": 0.9702028696644032,
+        "n_samples": 6,
         "examples_per_sample": 500
       },
       "single_encoder_request_or_cannot_answer_conf_60": {
-        "accuracy_mean": 0.9644999999999999,
-        "macro_f1_mean": 0.9736939049333282,
-        "n_samples": 4,
+        "accuracy_mean": 0.9683333333333333,
+        "macro_f1_mean": 0.9760956850870297,
+        "n_samples": 6,
+        "examples_per_sample": 500
+      },
+      "single_encoder_request_or_cannot_answer_conf_80": {
+        "accuracy_mean": 0.9673333333333334,
+        "macro_f1_mean": 0.9778630733616384,
+        "n_samples": 6,
         "examples_per_sample": 500
       },
       "single_encoder_request_or_cannot_answer_mix_50": {
-        "accuracy_mean": 0.961,
-        "macro_f1_mean": 0.9764751487110923,
-        "n_samples": 4,
+        "accuracy_mean": 0.964,
+        "macro_f1_mean": 0.9780697982631933,
+        "n_samples": 6,
         "examples_per_sample": 500
       },
       "single_encoder_request_full_cannot_mix_50": {
-        "accuracy_mean": 0.965,
-        "macro_f1_mean": 0.9752203994736972,
-        "n_samples": 4,
+        "accuracy_mean": 0.9683333333333333,
+        "macro_f1_mean": 0.9767798098708395,
+        "n_samples": 6,
+        "examples_per_sample": 500
+      },
+      "single_encoder_request_cannot_mix_r75_c50": {
+        "accuracy_mean": 0.9663333333333334,
+        "macro_f1_mean": 0.9765648654367612,
+        "n_samples": 6,
         "examples_per_sample": 500
       }
     }
@@ -732,7 +760,7 @@
   ],
   "latest_aggregate_test_report": {
     "experiment": "qwen-single-disagree-encoder48-20270114",
-    "selection": "The candidate family was screened on clean validation. Aggregate scores are report-only.",
+    "selection": "All candidates are ranked by clean-validation means only. Test metrics are report-only.",
     "metrics": {
       "encoder_single": {
         "accuracy": 0.5922782037239869,
