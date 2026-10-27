@@ -1764,3 +1764,8 @@ Source-specific result `when2call-similarity-gate-k2-thresholds-test-20270365` h
 | Candidate | when2call-similarity-gate-k2-question-only-20270366 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-k2-question-only-20270366/metrics.json) | completed |
 
 Source-specific result `when2call-similarity-gate-k2-question-only-test-20270367` has status skipped. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.8_k2": {"accuracy": 0.88, "macro_f1": 0.9205707282913165}}}. These values are not ranked against other splits.
+
+Source-specific result `when2call-similarity-gate-k2-question-only-aggregate-20270368` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.8_k2": {"accuracy": 0.88, "macro_f1": 0.9205707282913165}}}. These values are not ranked against other splits.
+| Candidate | when2call-similarity-gate-k1-thresholds-20270369 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-k1-thresholds-20270369/metrics.json) | completed |
+
+Source-specific result `when2call-similarity-gate-k1-thresholds-test-20270370` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.7_k1": {"accuracy": 0.946, "macro_f1": 0.9672277869555217}}}. These values are not ranked against other splits.

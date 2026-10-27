@@ -49,6 +49,7 @@ def main() -> int:
     parser.add_argument("--feature", choices=("question_only", "tools_only", "question_and_tools"), default="tools_only")
     parser.add_argument("--gate-score", choices=("absolute", "margin"), default="absolute")
     parser.add_argument("--k", type=int, choices=(1, 2, 3), default=3)
+    parser.add_argument("--label-consensus-gate", action="store_true")
     args = parser.parse_args()
     # Keep every clean-validation evaluation within the declared sample cap.
     if not 1 <= args.max_validation_examples <= 500:
@@ -60,7 +61,7 @@ def main() -> int:
         raise RuntimeError("WANDB_API_KEY and OPENAI_API_KEY are required.")
     from openai import OpenAI
     import wandb
-    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name="when2call-similarity-gated-retrieval", job_type="clean-validation", config={"split_seed": args.split_seed, "sample_seed": args.sample_seed, "embedding_model": args.embedding_model, "embedding_dimensions": args.embedding_dimensions, "retrieval_pool": "train_sft", "retrieval_features": args.feature, "gate_score": args.gate_score, "k": args.k, "gate_quantiles": args.gate_quantiles, "official_test_loaded": False})
+    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name="when2call-similarity-gated-retrieval", job_type="clean-validation", config={"split_seed": args.split_seed, "sample_seed": args.sample_seed, "embedding_model": args.embedding_model, "embedding_dimensions": args.embedding_dimensions, "retrieval_pool": "train_sft", "retrieval_features": args.feature, "gate_score": args.gate_score, "k": args.k, "gate_quantiles": args.gate_quantiles, "label_consensus_gate": args.label_consensus_gate, "official_test_loaded": False})
     started = time.time()
     args.output_dir.mkdir(parents=True, exist_ok=True)
     write_heartbeat(args.output_dir / "heartbeat.json", "load-clean-data")
@@ -95,11 +96,16 @@ def main() -> int:
         # Score the always-retrieve control and each label-free similarity gate.
         methods = {"zero_shot": zero_predictions}
         suffix = "" if args.k == 3 else f"_k{args.k}"
+        if args.label_consensus_gate:
+            suffix += "_consensus"
         for key, gate in [(f"always_k{args.k}", None)] + [(f"{gate_prefix}_{q}{suffix}", thresholds[str(q)]) for q in args.gate_quantiles]:
             prompts = []
             for index, target in enumerate(validation):
                 use_demos = gate is None or gate_scores[index] >= gate
-                demos = [train[int(row_index)] for row_index in nearest[index, :args.k]] if use_demos else []
+                selected_neighbors = nearest[index, :args.k]
+                if args.label_consensus_gate and len({train[int(row_index)].label for row_index in selected_neighbors}) > 1:
+                    use_demos = False
+                demos = [train[int(row_index)] for row_index in selected_neighbors] if use_demos else []
                 prompt = retrieval.prompt_with_demos(tokenizer, target, demos, 4096, 160)
                 prompts.append(ClassificationRow(prompt, target.label, None))
             methods[key] = score_prompts(model, tokenizer, prompts, device, args.batch_size, args.output_dir, key)
@@ -107,7 +113,7 @@ def main() -> int:
         metrics = {name: {key: metric_values(labels, predictions, list(range(len(LABELS))))[key] for key in ("accuracy", "macro_f1")} for name, predictions in methods.items()}
         for name, values in metrics.items():
             run.log({f"validation/{name}/accuracy": values["accuracy"], f"validation/{name}/macro_f1": values["macro_f1"]})
-        record = {"status": "completed", "training_performed": False, "official_test_loaded": False, "validation_source": "nvidia/When2Call train_sft", "validation_examples": len(validation), "qwen_checkpoint": args.qwen_checkpoint, "retrieval_pool": "train_sft", "retrieval_feature": args.feature, "gate_score": args.gate_score, "k": args.k, "embedding_model": args.embedding_model, "embedding_dimensions": args.embedding_dimensions, "gate_quantiles": args.gate_quantiles, "gate_thresholds_from_unlabeled_validation_scores": thresholds, "gate_thresholds_from_unlabeled_validation_similarities": thresholds, "embedding_cache": {"training": train_cache, "validation": validation_cache}, "embedding_usage": {"training": train_usage, "validation": validation_usage}, "validation_metrics": metrics, "training_metrics_source": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json", "aggregate_test_loaded": False, "git_commit": os.popen("git rev-parse HEAD").read().strip(), "wandb_run_id": run.id, "wandb_run_url": run.url, "runtime_seconds": time.time() - started}
+        record = {"status": "completed", "training_performed": False, "official_test_loaded": False, "validation_source": "nvidia/When2Call train_sft", "validation_examples": len(validation), "qwen_checkpoint": args.qwen_checkpoint, "retrieval_pool": "train_sft", "retrieval_feature": args.feature, "gate_score": args.gate_score, "k": args.k, "label_consensus_gate": args.label_consensus_gate, "embedding_model": args.embedding_model, "embedding_dimensions": args.embedding_dimensions, "gate_quantiles": args.gate_quantiles, "gate_thresholds_from_unlabeled_validation_scores": thresholds, "gate_thresholds_from_unlabeled_validation_similarities": thresholds, "embedding_cache": {"training": train_cache, "validation": validation_cache}, "embedding_usage": {"training": train_usage, "validation": validation_usage}, "validation_metrics": metrics, "training_metrics_source": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json", "aggregate_test_loaded": False, "git_commit": os.popen("git rev-parse HEAD").read().strip(), "wandb_run_id": run.id, "wandb_run_url": run.url, "runtime_seconds": time.time() - started}
         (args.output_dir / "metrics.json").write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
         run.summary.update({"status": "completed", "output_dir": str(args.output_dir)})
         write_heartbeat(args.output_dir / "heartbeat.json", "completed")
