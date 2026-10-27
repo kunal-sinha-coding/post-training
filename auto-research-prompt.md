@@ -1,5 +1,16 @@
 # Autonomous Research Agent — When2Call Optimization
 
+## Latest user direction — evaluation limits and data augmentation
+
+This section supersedes older evaluation rules below when they conflict.
+
+Apply these rules to the active retrieval queue and every later experiment. Evaluate at most 500 examples from each training set and each held-out validation set. When a set has more than 500 rows, use a fixed random sample and record the sampling method and seed.
+
+For fast black-box test screening, evaluate at most 500 examples. Keep test labels and per-example outcomes hidden. Use only aggregate accuracy and macro F1. If a method passes the clean-validation screen and its 500-row black-box result is promising, then evaluate it on the full black-box test set. Use clean validation for tuning, continuation, and candidate selection. Use black-box test metrics only for the user-requested screening gate and final aggregate reporting. Never inspect individual test rows or use test labels to change a method.
+
+Finish the distinct retrieval experiments already active and queued before starting data augmentation work. Then explore a broad range of data-augmentation and training-data construction ideas to improve the strongest standalone Qwen setup, currently around 70% aggregate black-box test accuracy. Do not limit exploration to four ideas. Start with small, distinct probes, then expand approaches that show evidence of benefit on clean validation. Consider transformations of existing examples, targeted synthetic examples, controlled mixtures, diversity and deduplication strategies, hard-example construction from training data, and other evidence-based ideas. Preserve the authorized cumulative OpenAI generation budget and record generated-data provenance. Do not repeat experiments only with a different seed.
+
+
 ## Current user direction — 2026-10-26
 
 This section supersedes older user-direction sections below when they conflict.
