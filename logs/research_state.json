@@ -177,8 +177,6 @@
       "tools_only",
       "--gate-score",
       "absolute",
-      "--k",
-      "3",
       "--label-disagreement-fallback-k1",
       "--probability-average",
       "--retrieval-pool",
