@@ -11487,3 +11487,27 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.65_consensus_probavg_w0.6": {"accuracy": 0.948, "macro_f1": 0.9712423570516697}}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## when2call-similarity-gate-sft-tools-k3-disagreement-fallback-20270406
+
+Timestamp: 2026-10-27T14:20:11.249362+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_when2call_similarity_gated_retrieval", "--output-dir", "outputs/when2call-similarity-gate-sft-tools-k3-disagreement-fallback-20270406", "--split-seed", "20270327", "--sample-seed", "20270332", "--max-validation-examples", "500", "--qwen-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--embedding-model", "text-embedding-3-small", "--embedding-dimensions", "1536", "--cache-dir", "outputs/when2call-openai-embedding-cache", "--batch-size", "1", "--gate-quantiles", "0.65", "0.75", "0.85", "0.95", "--feature", "tools_only", "--gate-score", "absolute", "--k", "3", "--label-disagreement-fallback-k1", "--probability-average", "--retrieval-weights", "0.55", "0.7", "--retrieval-pool", "train_sft"]. Output: /workspace/post-training/outputs/when2call-similarity-gate-sft-tools-k3-disagreement-fallback-20270406. W&B run: y86nbjm0.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## when2call-similarity-gate-sft-tools-k3-disagreement-fallback-test-20270407
+
+Timestamp: 2026-10-27T14:34:13.671411+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_when2call_similarity_gate_test_screen", "--output-dir", "outputs/when2call-similarity-gate-sft-tools-k3-disagreement-fallback-test-20270407", "--clean-metrics", "outputs/when2call-similarity-gate-sft-tools-k3-disagreement-fallback-20270406/metrics.json", "--sample-seed", "20270407", "--max-test-examples", "500", "--split-seed", "20270327", "--validation-sample-seed", "20270332", "--qwen-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--embedding-model", "text-embedding-3-small", "--embedding-dimensions", "1536", "--cache-dir", "outputs/when2call-openai-embedding-cache", "--batch-size", "1", "--feature", "tools_only", "--label-disagreement-fallback-k1", "--probability-average"]. Output: /workspace/post-training/outputs/when2call-similarity-gate-sft-tools-k3-disagreement-fallback-test-20270407. W&B run: 9qpa283m.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: True. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.75_fallback_k1_probavg_w0.55": {"accuracy": 0.952, "macro_f1": 0.9733464377574705}}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
