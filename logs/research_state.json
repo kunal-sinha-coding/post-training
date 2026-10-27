@@ -4,39 +4,8 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "fresh_base_bfcl_when2call_data_exploration_v1",
-  "current_hypothesis": "The seed-48/49 family plus Qwen request-confidence routing improved clean accuracy on one shared sample. The aggregate test for that fixed pair is running. Next, compare seed-48 control partners 51 and 53, then the three-seed family on a common fresh clean sample. Each candidate receives its predeclared aggregate test report immediately after its clean screen and before the next candidate experiment. Test results are report-only.",
-  "active_experiment": {
-    "pid": 159131,
-    "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.existing_when2call_hybrid",
-      "test",
-      "--work-dir",
-      "outputs/qwen-encoder-seed-diversity-test-20261228",
-      "--suite",
-      "seed-pair",
-      "--qwen-checkpoint",
-      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
-      "--encoder-checkpoint",
-      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
-      "--encoder-checkpoint",
-      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261049",
-      "--methods",
-      "ensemble_average",
-      "ensemble_gate",
-      "ensemble_request_conf_60",
-      "ensemble_request_conf_80",
-      "--primary-method",
-      "ensemble_request_conf_60",
-      "--batch-size",
-      "1",
-      "--output-dir",
-      "outputs/qwen-encoder-seed-diversity-test-20261228"
-    ],
-    "started_at": "2026-10-27T00:11:36.118241+00:00"
-  },
+  "current_hypothesis": "On the shared 20261230 clean sample, request-confidence 0.60 matched or exceeded 0.80 across the two- and three-encoder families. A five-threshold sweep on the 48/51 family may find a cleaner confidence cutoff. Freeze all methods before aggregate test access, then replicate on another clean sample. Test metrics remain report-only.",
+  "active_experiment": {},
   "worker_command": [
     "python",
     "-u",
@@ -44,7 +13,7 @@
     "experiments.existing_when2call_hybrid",
     "test",
     "--work-dir",
-    "outputs/qwen-encoder-seed-diversity-test-20261228",
+    "outputs/qwen-encoder-seed-diversity-test-seed48-plus-51-plus-53-20261230",
     "--suite",
     "seed-pair",
     "--qwen-checkpoint",
@@ -52,7 +21,9 @@
     "--encoder-checkpoint",
     "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
     "--encoder-checkpoint",
-    "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261049",
+    "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261051",
+    "--encoder-checkpoint",
+    "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261053",
     "--methods",
     "ensemble_average",
     "ensemble_gate",
@@ -63,7 +34,7 @@
     "--batch-size",
     "1",
     "--output-dir",
-    "outputs/qwen-encoder-seed-diversity-test-20261228"
+    "outputs/qwen-encoder-seed-diversity-test-seed48-plus-51-plus-53-20261230"
   ],
   "worker_queue": [
     [
@@ -72,11 +43,11 @@
       "-m",
       "experiments.evaluate_existing_when2call_hybrid_validation",
       "--output-dir",
-      "outputs/qwen-encoder-seed-diversity-validation-seed48-plus-51-20261230",
+      "outputs/qwen-seed-pair-threshold-validation-20270102",
       "--split-seed",
-      "20261230",
+      "20270102",
       "--sample-seed",
-      "20261231",
+      "20270103",
       "--max-validation-examples",
       "500",
       "--qwen-checkpoint",
@@ -84,9 +55,9 @@
       "--batch-size",
       "1",
       "--encoder-checkpoint",
-      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261020261048",
       "--encoder-checkpoint",
-      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261051"
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261020261051"
     ],
     [
       "python",
@@ -95,26 +66,29 @@
       "experiments.existing_when2call_hybrid",
       "prepare",
       "--work-dir",
-      "outputs/qwen-encoder-seed-diversity-test-seed48-plus-51-20261230",
+      "outputs/qwen-seed-pair-threshold-test-20270102",
       "--suite",
       "seed-pair",
       "--qwen-checkpoint",
       "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
       "--encoder-checkpoint",
-      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261020261048",
       "--encoder-checkpoint",
-      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261051",
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261020261051",
       "--methods",
       "ensemble_average",
       "ensemble_gate",
+      "ensemble_request_conf_40",
+      "ensemble_request_conf_50",
       "ensemble_request_conf_60",
+      "ensemble_request_conf_70",
       "ensemble_request_conf_80",
       "--primary-method",
       "ensemble_request_conf_60",
       "--batch-size",
       "1",
       "--output-dir",
-      "outputs/qwen-encoder-seed-diversity-test-seed48-plus-51-20261230/prepare"
+      "outputs/qwen-seed-pair-threshold-test-20270102/prepare"
     ],
     [
       "python",
@@ -123,26 +97,29 @@
       "experiments.existing_when2call_hybrid",
       "test",
       "--work-dir",
-      "outputs/qwen-encoder-seed-diversity-test-seed48-plus-51-20261230",
+      "outputs/qwen-seed-pair-threshold-test-20270102",
       "--suite",
       "seed-pair",
       "--qwen-checkpoint",
       "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
       "--encoder-checkpoint",
-      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261020261048",
       "--encoder-checkpoint",
-      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261051",
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261020261051",
       "--methods",
       "ensemble_average",
       "ensemble_gate",
+      "ensemble_request_conf_40",
+      "ensemble_request_conf_50",
       "ensemble_request_conf_60",
+      "ensemble_request_conf_70",
       "ensemble_request_conf_80",
       "--primary-method",
       "ensemble_request_conf_60",
       "--batch-size",
       "1",
       "--output-dir",
-      "outputs/qwen-encoder-seed-diversity-test-seed48-plus-51-20261230"
+      "outputs/qwen-seed-pair-threshold-test-20270102"
     ],
     [
       "python",
@@ -150,11 +127,11 @@
       "-m",
       "experiments.evaluate_existing_when2call_hybrid_validation",
       "--output-dir",
-      "outputs/qwen-encoder-seed-diversity-validation-seed48-plus-53-20261230",
+      "outputs/qwen-seed-pair-threshold-validation-20270104",
       "--split-seed",
-      "20261230",
+      "20270104",
       "--sample-seed",
-      "20261231",
+      "20270105",
       "--max-validation-examples",
       "500",
       "--qwen-checkpoint",
@@ -162,149 +139,9 @@
       "--batch-size",
       "1",
       "--encoder-checkpoint",
-      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261020261048",
       "--encoder-checkpoint",
-      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261053"
-    ],
-    [
-      "python",
-      "-u",
-      "-m",
-      "experiments.existing_when2call_hybrid",
-      "prepare",
-      "--work-dir",
-      "outputs/qwen-encoder-seed-diversity-test-seed48-plus-53-20261230",
-      "--suite",
-      "seed-pair",
-      "--qwen-checkpoint",
-      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
-      "--encoder-checkpoint",
-      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
-      "--encoder-checkpoint",
-      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261053",
-      "--methods",
-      "ensemble_average",
-      "ensemble_gate",
-      "ensemble_request_conf_60",
-      "ensemble_request_conf_80",
-      "--primary-method",
-      "ensemble_request_conf_60",
-      "--batch-size",
-      "1",
-      "--output-dir",
-      "outputs/qwen-encoder-seed-diversity-test-seed48-plus-53-20261230/prepare"
-    ],
-    [
-      "python",
-      "-u",
-      "-m",
-      "experiments.existing_when2call_hybrid",
-      "test",
-      "--work-dir",
-      "outputs/qwen-encoder-seed-diversity-test-seed48-plus-53-20261230",
-      "--suite",
-      "seed-pair",
-      "--qwen-checkpoint",
-      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
-      "--encoder-checkpoint",
-      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
-      "--encoder-checkpoint",
-      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261053",
-      "--methods",
-      "ensemble_average",
-      "ensemble_gate",
-      "ensemble_request_conf_60",
-      "ensemble_request_conf_80",
-      "--primary-method",
-      "ensemble_request_conf_60",
-      "--batch-size",
-      "1",
-      "--output-dir",
-      "outputs/qwen-encoder-seed-diversity-test-seed48-plus-53-20261230"
-    ],
-    [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_existing_when2call_hybrid_validation",
-      "--output-dir",
-      "outputs/qwen-encoder-seed-diversity-validation-seed48-plus-51-plus-53-20261230",
-      "--split-seed",
-      "20261230",
-      "--sample-seed",
-      "20261231",
-      "--max-validation-examples",
-      "500",
-      "--qwen-checkpoint",
-      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
-      "--batch-size",
-      "1",
-      "--encoder-checkpoint",
-      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
-      "--encoder-checkpoint",
-      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261051",
-      "--encoder-checkpoint",
-      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261053"
-    ],
-    [
-      "python",
-      "-u",
-      "-m",
-      "experiments.existing_when2call_hybrid",
-      "prepare",
-      "--work-dir",
-      "outputs/qwen-encoder-seed-diversity-test-seed48-plus-51-plus-53-20261230",
-      "--suite",
-      "seed-pair",
-      "--qwen-checkpoint",
-      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
-      "--encoder-checkpoint",
-      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
-      "--encoder-checkpoint",
-      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261051",
-      "--encoder-checkpoint",
-      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261053",
-      "--methods",
-      "ensemble_average",
-      "ensemble_gate",
-      "ensemble_request_conf_60",
-      "ensemble_request_conf_80",
-      "--primary-method",
-      "ensemble_request_conf_60",
-      "--batch-size",
-      "1",
-      "--output-dir",
-      "outputs/qwen-encoder-seed-diversity-test-seed48-plus-51-plus-53-20261230/prepare"
-    ],
-    [
-      "python",
-      "-u",
-      "-m",
-      "experiments.existing_when2call_hybrid",
-      "test",
-      "--work-dir",
-      "outputs/qwen-encoder-seed-diversity-test-seed48-plus-51-plus-53-20261230",
-      "--suite",
-      "seed-pair",
-      "--qwen-checkpoint",
-      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
-      "--encoder-checkpoint",
-      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
-      "--encoder-checkpoint",
-      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261051",
-      "--encoder-checkpoint",
-      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261053",
-      "--methods",
-      "ensemble_average",
-      "ensemble_gate",
-      "ensemble_request_conf_60",
-      "ensemble_request_conf_80",
-      "--primary-method",
-      "ensemble_request_conf_60",
-      "--batch-size",
-      "1",
-      "--output-dir",
-      "outputs/qwen-encoder-seed-diversity-test-seed48-plus-51-plus-53-20261230"
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261020261051"
     ]
   ],
   "_previous_command": [
@@ -331,7 +168,8 @@
     "First complete the missing aggregate black-box measurement for the clean-selected fixed candidate set. Then replicate the class-specific blend comparison on two fresh clean samples. Candidate decisions use clean validation only.",
     "Compare the seed-20261048 encoder control, seed-20261049 encoder, and equal-logit combination of both on one shared clean-validation sample. Use a 500-example cap. If an alternate checkpoint or combined expert improves clean validation, queue its full aggregate black-box measurement before another model experiment. Never select with test metrics.",
     "First complete the missing aggregate test measurement for encoder seeds 48 and 49 combined with Qwen, using only four fixed candidates: encoder-family average, entropy gate, and request confidence thresholds 0.60 and 0.80. Then compare seed 48 control with seed 48 plus 51 and seed 48 plus 53 on a new shared clean sample.",
-    "After the running seed-48/49 aggregate measurement, test whether seed-48 plus 51 or seed-48 plus 53 provides clean-validation gains over the seed-48 control. Follow each candidate clean screen with its frozen aggregate test before starting the next candidate. Then test the three-seed family on clean validation and aggregate test."
+    "After the running seed-48/49 aggregate measurement, test whether seed-48 plus 51 or seed-48 plus 53 provides clean-validation gains over the seed-48 control. Follow each candidate clean screen with its frozen aggregate test before starting the next candidate. Then test the three-seed family on clean validation and aggregate test.",
+    "Run the five-threshold request-confidence sweep on the seed-48/51 encoder family using a 500-row clean sample. Measure all predeclared methods on the full aggregate test, then run an independent clean replication. Choose by clean validation only."
   ],
   "best_validation": {
     "experiment": "qwen-when2call-fullpool-sft-validation-base-seed20261062",
@@ -342,10 +180,10 @@
     "macro_f1": 0.48337889372616516,
     "selection": "clean validation only"
   },
-  "last_heartbeat": "2026-10-27T00:11:36.118255+00:00",
-  "last_action": "Preserved the active seed-48/49 aggregate test and queued a same-sample control, encoder-pair clean screens with aggregate reports immediately after each, and a three-encoder follow-up.",
+  "last_heartbeat": "2026-10-27T00:49:14.432325+00:00",
+  "last_action": "Audited the latest completed three-encoder aggregate benchmark. Training, clean-validation, and aggregate test evidence are recorded. Queued a fresh five-threshold clean screen, its frozen aggregate test measurement, and an independent clean replication.",
   "watchdog_enabled": true,
-  "research_log_size": 1117108,
+  "research_log_size": 1132031,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -353,11 +191,11 @@
     "-m",
     "experiments.evaluate_existing_when2call_hybrid_validation",
     "--output-dir",
-    "outputs/qwen-encoder-seed-diversity-validation-seed48-plus-51-20261230",
+    "outputs/qwen-seed-pair-threshold-validation-20270102",
     "--split-seed",
-    "20261230",
+    "20270102",
     "--sample-seed",
-    "20261231",
+    "20270103",
     "--max-validation-examples",
     "500",
     "--qwen-checkpoint",
@@ -371,9 +209,9 @@
   ],
   "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-27T00:09:35.169729+00:00",
-  "planning_ack_deadline": "2026-10-27T00:11:35.169753+00:00",
-  "planning_attempts": 64,
+  "planning_notified_at": "2026-10-27T01:02:23.801214+00:00",
+  "planning_ack_deadline": "2026-10-27T01:04:23.801238+00:00",
+  "planning_attempts": 66,
   "best_observed_test": {
     "method": "three_encoder_qwen_equal_probability_average",
     "accuracy": 0.7113910186199343,
@@ -383,7 +221,7 @@
     "metrics": "outputs/qwen-three-encoder-gate-test-20261082/aggregate-comparison.json",
     "selection": "Reported as the highest aggregate score in this frozen comparison only. Test metrics did not select the candidate; clean validation selected the entropy gate."
   },
-  "next_hypothesis": "The seed-48/49 family plus Qwen request-confidence routing improved clean accuracy on one shared sample. The aggregate test for that fixed pair is running. Next, compare seed-48 control partners 51 and 53, then the three-seed family on a common fresh clean sample. Each candidate receives its predeclared aggregate test report immediately after its clean screen and before the next candidate experiment. Test results are report-only.",
+  "next_hypothesis": "On the shared 20261230 clean sample, request-confidence 0.60 matched or exceeded 0.80 across the two- and three-encoder families. A five-threshold sweep on the 48/51 family may find a cleaner confidence cutoff. Freeze all methods before aggregate test access, then replicate on another clean sample. Test metrics remain report-only.",
   "post_queue_report_required": {
     "required": true,
     "trigger": "After the family confidence-routing validation and aggregate test pass.",
@@ -420,9 +258,9 @@
     "selection_use": "none"
   },
   "evidence_audit": {
-    "latest_completed_experiment": "qwen-encoder-seed-diversity-validation-encoder48-plus-49-20261228",
+    "latest_completed_experiment": "qwen-encoder-seed-diversity-test-seed48-plus-51-plus-53-20261230",
     "training_metrics_recorded": true,
-    "training_metrics_scope": "Validation-only comparison. Training metrics are linked from the Qwen source checkpoint and both encoder checkpoints.",
+    "training_metrics_scope": "Inference-only ensemble. Training records are linked from the Qwen checkpoint and all three frozen encoder checkpoints.",
     "training_metrics_sources": [
       {
         "path": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json",
@@ -433,65 +271,75 @@
         "examples": 500
       },
       {
-        "path": "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/metrics.json",
+        "path": "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261020261048/metrics.json",
         "accuracy": 0.9787919918561249,
         "macro_f1": 0.979498520571581,
         "examples": 5894
       },
       {
-        "path": "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261049/metrics.json",
-        "accuracy": 0.9850720949957591,
-        "macro_f1": 0.9853753949112835,
+        "path": "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261020261051/metrics.json",
+        "accuracy": 0.9837122497455039,
+        "macro_f1": 0.9841582538921555,
+        "examples": 5894
+      },
+      {
+        "path": "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261020261053/metrics.json",
+        "accuracy": 0.9840542832909245,
+        "macro_f1": 0.9842953806088719,
         "examples": 5895
       }
     ],
     "clean_validation_recorded": true,
-    "clean_validation_source": "outputs/qwen-encoder-seed-diversity-validation-encoder48-plus-49-20261228/metrics.json",
+    "clean_validation_source": "outputs/qwen-encoder-seed-diversity-validation-seed48-plus-51-plus-53-20261230/metrics.json",
     "clean_validation_examples": 500,
     "clean_validation_metrics": {
-      "encoder_0": {
-        "accuracy": 0.928,
-        "macro_f1": 0.95311297700887
-      },
-      "encoder_1": {
-        "accuracy": 0.906,
-        "macro_f1": 0.9403818436008085
-      },
       "encoder_ensemble": {
-        "accuracy": 0.918,
-        "macro_f1": 0.9474001307519089
+        "accuracy": 0.924,
+        "macro_f1": 0.9580577373570347
       },
       "qwen_sft": {
-        "accuracy": 0.948,
-        "macro_f1": 0.9672394043528064
+        "accuracy": 0.958,
+        "macro_f1": 0.9763775599291575
       },
       "ensemble_average": {
-        "accuracy": 0.948,
-        "macro_f1": 0.9670734400193318
+        "accuracy": 0.962,
+        "macro_f1": 0.9804559854324129
       },
       "ensemble_gate": {
-        "accuracy": 0.944,
-        "macro_f1": 0.9639039665970772
+        "accuracy": 0.962,
+        "macro_f1": 0.9804559854324129
       },
       "ensemble_request_conf_60": {
-        "accuracy": 0.954,
-        "macro_f1": 0.9704764664486485
+        "accuracy": 0.966,
+        "macro_f1": 0.9796653129410409
       },
       "ensemble_request_conf_80": {
-        "accuracy": 0.954,
-        "macro_f1": 0.9704764664486485
+        "accuracy": 0.964,
+        "macro_f1": 0.9786134841837912
       }
     },
-    "aggregate_black_box_test_metrics_recorded": false,
-    "aggregate_black_box_test_missing_measurement_queued": true,
-    "aggregate_black_box_test_queued_output": "outputs/qwen-encoder-seed-diversity-test-20261228",
+    "aggregate_black_box_test_metrics_recorded": true,
+    "aggregate_black_box_test_source": "outputs/qwen-encoder-seed-diversity-test-seed48-plus-51-plus-53-20261230/aggregate-comparison.json",
     "aggregate_black_box_test_examples": 3652,
-    "test_candidate_methods_frozen": [
-      "ensemble_average",
-      "ensemble_gate",
-      "ensemble_request_conf_60",
-      "ensemble_request_conf_80"
-    ],
+    "aggregate_black_box_test_metrics": {
+      "ensemble_average": {
+        "accuracy": 0.7086527929901424,
+        "macro_f1": 0.5312958053942771
+      },
+      "ensemble_gate": {
+        "accuracy": 0.708105147864184,
+        "macro_f1": 0.5309954461844458
+      },
+      "ensemble_request_conf_60": {
+        "accuracy": 0.6960569550930996,
+        "macro_f1": 0.5239807634550437
+      },
+      "ensemble_request_conf_80": {
+        "accuracy": 0.6990690032858707,
+        "macro_f1": 0.5259654893718502
+      }
+    },
+    "aggregate_black_box_test_scope": "Report only. Candidate selection uses clean validation, not test labels or scores.",
     "test_labels_used_for_selection": false
   },
   "duplicate_worker_failure": {
