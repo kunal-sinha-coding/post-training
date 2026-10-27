@@ -47,6 +47,7 @@ def main() -> int:
     parser.add_argument("--batch-size", type=int, default=1)
     parser.add_argument("--gate-quantiles", type=float, nargs="+", default=[0.5, 0.75, 0.9])
     parser.add_argument("--feature", choices=("tools_only", "question_and_tools"), default="tools_only")
+    parser.add_argument("--gate-score", choices=("absolute", "margin"), default="absolute")
     args = parser.parse_args()
     # Keep every clean-validation evaluation within the declared sample cap.
     if not 1 <= args.max_validation_examples <= 500:
@@ -58,7 +59,7 @@ def main() -> int:
         raise RuntimeError("WANDB_API_KEY and OPENAI_API_KEY are required.")
     from openai import OpenAI
     import wandb
-    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name="when2call-similarity-gated-retrieval", job_type="clean-validation", config={"split_seed": args.split_seed, "sample_seed": args.sample_seed, "embedding_model": args.embedding_model, "embedding_dimensions": args.embedding_dimensions, "retrieval_pool": "train_sft", "retrieval_features": args.feature, "k": 3, "gate_quantiles": args.gate_quantiles, "official_test_loaded": False})
+    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name="when2call-similarity-gated-retrieval", job_type="clean-validation", config={"split_seed": args.split_seed, "sample_seed": args.sample_seed, "embedding_model": args.embedding_model, "embedding_dimensions": args.embedding_dimensions, "retrieval_pool": "train_sft", "retrieval_features": args.feature, "gate_score": args.gate_score, "k": 3, "gate_quantiles": args.gate_quantiles, "official_test_loaded": False})
     started = time.time()
     args.output_dir.mkdir(parents=True, exist_ok=True)
     write_heartbeat(args.output_dir / "heartbeat.json", "load-clean-data")
@@ -76,8 +77,11 @@ def main() -> int:
         validation_vectors = validation_vectors / np.linalg.norm(validation_vectors, axis=1, keepdims=True).clip(min=1e-12)
         similarities = validation_vectors @ train_vectors.T
         nearest = np.argsort(-similarities, axis=1)[:, :3]
-        nearest_similarity = similarities.max(axis=1)
-        thresholds = {str(q): float(np.quantile(nearest_similarity, q)) for q in args.gate_quantiles}
+        ranked_similarities = np.sort(similarities, axis=1)
+        nearest_similarity = ranked_similarities[:, -1]
+        gate_scores = nearest_similarity if args.gate_score == "absolute" else nearest_similarity - ranked_similarities[:, -2]
+        gate_prefix = "gate_top" if args.gate_score == "absolute" else "margin_gate_top"
+        thresholds = {str(q): float(np.quantile(gate_scores, q)) for q in args.gate_quantiles}
         # Load the frozen Qwen adapter after candidate retrieval rules are fixed.
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         model, tokenizer = load_model(retrieval.QWEN_BASE, device, 16)
@@ -89,10 +93,10 @@ def main() -> int:
         zero_predictions = score_prompts(model, tokenizer, zero_prompts, device, args.batch_size, args.output_dir, "zero-shot")
         # Score the always-retrieve control and each label-free similarity gate.
         methods = {"zero_shot": zero_predictions}
-        for key, gate in [("always_k3", None)] + [(f"gate_top_{q}", thresholds[str(q)]) for q in args.gate_quantiles]:
+        for key, gate in [("always_k3", None)] + [(f"{gate_prefix}_{q}", thresholds[str(q)]) for q in args.gate_quantiles]:
             prompts = []
             for index, target in enumerate(validation):
-                use_demos = gate is None or nearest_similarity[index] >= gate
+                use_demos = gate is None or gate_scores[index] >= gate
                 demos = [train[int(row_index)] for row_index in nearest[index]] if use_demos else []
                 prompt = retrieval.prompt_with_demos(tokenizer, target, demos, 4096, 160)
                 prompts.append(ClassificationRow(prompt, target.label, None))
@@ -101,7 +105,7 @@ def main() -> int:
         metrics = {name: {key: metric_values(labels, predictions, list(range(len(LABELS))))[key] for key in ("accuracy", "macro_f1")} for name, predictions in methods.items()}
         for name, values in metrics.items():
             run.log({f"validation/{name}/accuracy": values["accuracy"], f"validation/{name}/macro_f1": values["macro_f1"]})
-        record = {"status": "completed", "training_performed": False, "official_test_loaded": False, "validation_source": "nvidia/When2Call train_sft", "validation_examples": len(validation), "qwen_checkpoint": args.qwen_checkpoint, "retrieval_pool": "train_sft", "retrieval_feature": args.feature, "embedding_model": args.embedding_model, "embedding_dimensions": args.embedding_dimensions, "k": 3, "gate_quantiles": args.gate_quantiles, "gate_thresholds_from_unlabeled_validation_similarities": thresholds, "embedding_cache": {"training": train_cache, "validation": validation_cache}, "embedding_usage": {"training": train_usage, "validation": validation_usage}, "validation_metrics": metrics, "training_metrics_source": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json", "aggregate_test_loaded": False, "git_commit": os.popen("git rev-parse HEAD").read().strip(), "wandb_run_id": run.id, "wandb_run_url": run.url, "runtime_seconds": time.time() - started}
+        record = {"status": "completed", "training_performed": False, "official_test_loaded": False, "validation_source": "nvidia/When2Call train_sft", "validation_examples": len(validation), "qwen_checkpoint": args.qwen_checkpoint, "retrieval_pool": "train_sft", "retrieval_feature": args.feature, "gate_score": args.gate_score, "embedding_model": args.embedding_model, "embedding_dimensions": args.embedding_dimensions, "k": 3, "gate_quantiles": args.gate_quantiles, "gate_thresholds_from_unlabeled_validation_scores": thresholds, "gate_thresholds_from_unlabeled_validation_similarities": thresholds, "embedding_cache": {"training": train_cache, "validation": validation_cache}, "embedding_usage": {"training": train_usage, "validation": validation_usage}, "validation_metrics": metrics, "training_metrics_source": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json", "aggregate_test_loaded": False, "git_commit": os.popen("git rev-parse HEAD").read().strip(), "wandb_run_id": run.id, "wandb_run_url": run.url, "runtime_seconds": time.time() - started}
         (args.output_dir / "metrics.json").write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
         run.summary.update({"status": "completed", "output_dir": str(args.output_dir)})
         write_heartbeat(args.output_dir / "heartbeat.json", "completed")
