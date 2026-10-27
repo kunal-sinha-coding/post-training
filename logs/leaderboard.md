@@ -1781,3 +1781,6 @@ Source-specific result `when2call-similarity-gate-k1-qwen-agreement-test-2027037
 | Candidate | when2call-similarity-gate-k1-probability-average-20270377 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-k1-probability-average-20270377/metrics.json) | completed |
 
 Source-specific result `when2call-similarity-gate-k1-probability-average-test-20270378` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.65_k1_probavg": {"accuracy": 0.95, "macro_f1": 0.9722771696310328}}}. These values are not ranked against other splits.
+| Candidate | when2call-similarity-gate-k1-probability-weights-20270379 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-k1-probability-weights-20270379/metrics.json) | completed |
+
+Source-specific result `when2call-similarity-gate-k1-probability-weights-test-20270380` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.65_k1_probavg_w0.5": {"accuracy": 0.95, "macro_f1": 0.9722771696310328}}}. These values are not ranked against other splits.
