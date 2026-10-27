@@ -6,18 +6,18 @@
   "protocol": "fresh_base_bfcl_when2call_data_exploration_v1",
   "current_hypothesis": "Across ten independent clean samples, the full-cannot 50-percent blend averages 0.9686 accuracy and 0.977280 macro F1, while the 60-percent blend averages 0.9672 and 0.974356. The 0.0014 accuracy gap may be sampling noise. Two fresh clean samples will check whether this ranking persists.",
   "active_experiment": {
-    "pid": 175088,
+    "pid": 175475,
     "command": [
       "python",
       "-u",
       "-m",
       "experiments.evaluate_existing_when2call_hybrid_validation",
       "--output-dir",
-      "outputs/qwen-single-encoder48-route-replication-20270205",
+      "outputs/qwen-single-encoder48-route-replication-20270203",
       "--split-seed",
-      "20270205",
+      "20270203",
       "--sample-seed",
-      "20270206",
+      "20270204",
       "--max-validation-examples",
       "500",
       "--qwen-checkpoint",
@@ -27,7 +27,7 @@
       "--encoder-checkpoint",
       "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
     ],
-    "started_at": "2026-10-27T03:06:43.033522+00:00"
+    "started_at": "2026-10-27T03:08:44.003480+00:00"
   },
   "worker_command": [
     "python",
@@ -35,11 +35,11 @@
     "-m",
     "experiments.evaluate_existing_when2call_hybrid_validation",
     "--output-dir",
-    "outputs/qwen-single-encoder48-route-replication-20270205",
+    "outputs/qwen-single-encoder48-route-replication-20270203",
     "--split-seed",
-    "20270205",
+    "20270203",
     "--sample-seed",
-    "20270206",
+    "20270204",
     "--max-validation-examples",
     "500",
     "--qwen-checkpoint",
@@ -49,7 +49,28 @@
     "--encoder-checkpoint",
     "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_existing_when2call_hybrid_validation",
+      "--output-dir",
+      "outputs/qwen-single-encoder48-route-replication-20270207",
+      "--split-seed",
+      "20270207",
+      "--sample-seed",
+      "20270208",
+      "--max-validation-examples",
+      "500",
+      "--qwen-checkpoint",
+      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "--batch-size",
+      "1",
+      "--encoder-checkpoint",
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -67,9 +88,9 @@
     "outputs/test-clean-validation-smooth0075-wd002-weight75-25.json"
   ],
   "experiment_queue": [
-    "Run a fresh 500-row clean screen on the frozen Qwen and encoder-48 checkpoints using split/sample seeds 20270203/20270204.",
-    "Run a second distinct 500-row clean screen with split/sample seeds 20270205/20270206.",
-    "Recompute ten-plus-sample clean accuracy and macro F1 means before deciding whether to retain full-cannot mix 50 percent."
+    "Allow the active 20270205 clean validation to finish.",
+    "Run the skipped 20270203/20270204 clean sample next, then a distinct 20270207/20270208 clean sample.",
+    "Recompute clean-only accuracy and macro F1 means. Keep aggregate test results report-only."
   ],
   "best_validation": {
     "experiment": "qwen-when2call-fullpool-sft-validation-base-seed20261062",
@@ -80,8 +101,8 @@
     "macro_f1": 0.48337889372616516,
     "selection": "clean validation only"
   },
-  "last_heartbeat": "2026-10-27T03:06:43.033535+00:00",
-  "last_action": "Watchdog started validation worker pid 175088.",
+  "last_heartbeat": "2026-10-27T03:08:44.003494+00:00",
+  "last_action": "Watchdog started validation worker pid 175475.",
   "watchdog_enabled": true,
   "research_log_size": 1219852,
   "stop_command": "STOP",
@@ -91,11 +112,11 @@
     "-m",
     "experiments.evaluate_existing_when2call_hybrid_validation",
     "--output-dir",
-    "outputs/qwen-single-encoder48-route-replication-20270205",
+    "outputs/qwen-single-encoder48-route-replication-20270203",
     "--split-seed",
-    "20270205",
+    "20270203",
     "--sample-seed",
-    "20270206",
+    "20270204",
     "--max-validation-examples",
     "500",
     "--qwen-checkpoint",
@@ -105,7 +126,12 @@
     "--encoder-checkpoint",
     "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
   ],
-  "recording_jobs": [],
+  "recording_jobs": [
+    {
+      "pid": 175474,
+      "experiment_id": "qwen-single-encoder48-route-replication-20270205"
+    }
+  ],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-27T03:05:11.794061+00:00",
   "planning_ack_deadline": "2026-10-27T03:07:11.794086+00:00",
