@@ -51,7 +51,32 @@
     "--batch-size",
     "1"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_existing_when2call_hybrid_validation",
+      "--output-dir",
+      "outputs/qwen-tool-rich-synth-only-three-encoder-clean-validation-20261028",
+      "--qwen-checkpoint",
+      "outputs/qwen-tool-rich-boundary-synth-only-20261028/epoch-01",
+      "--encoder-checkpoint",
+      "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065",
+      "--encoder-checkpoint",
+      "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061",
+      "--encoder-checkpoint",
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
+      "--split-seed",
+      "20261091",
+      "--sample-seed",
+      "20261092",
+      "--max-validation-examples",
+      "500",
+      "--batch-size",
+      "1"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -79,7 +104,7 @@
     "selection": "clean validation only"
   },
   "last_heartbeat": "2026-10-28T21:19:53.241905+00:00",
-  "last_action": "Watchdog started validation worker pid 304263.",
+  "last_action": "Queued three-encoder clean-validation screen behind active aggregate test measurement.",
   "watchdog_enabled": true,
   "research_log_size": 1687300,
   "stop_command": "STOP",
@@ -118,7 +143,7 @@
     "wandb_run_id": "vrfnnoq2",
     "selection": "Aggregate test result reported for ranking only. It was not used for candidate selection."
   },
-  "next_hypothesis": "The tool-rich synthetic-only Qwen plus encoder confidence route was selected on clean validation at 0.976 accuracy, versus 0.962 for Qwen alone. Freeze that exact route and measure it once on the full aggregate black-box test set. Do not inspect individual examples or use test labels or aggregate test metrics for selection. After reporting the benchmark, continue training-data experiments based on clean validation.",
+  "next_hypothesis": "The clean-validation-selected tool-rich synthetic-only Qwen plus one encoder reached 0.976 accuracy. After the pending aggregate-only benchmark completes, test whether the established three-encoder family improves validation through encoder diversity. Keep candidate selection on clean validation only.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
