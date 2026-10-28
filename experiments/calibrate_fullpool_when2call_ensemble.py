@@ -50,6 +50,8 @@ def main() -> int:
     # Freeze the source sample and calibration settings before model inference.
     parser = argparse.ArgumentParser()
     parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument("--qwen-checkpoint", type=Path, default=Path(QWEN_CHECKPOINT))
+    parser.add_argument("--encoder-checkpoint", type=Path, default=Path(ENCODERS[2]))
     parser.add_argument("--split-seed", type=int, default=20261078)
     parser.add_argument("--sample-seed", type=int, default=20261079)
     parser.add_argument("--meta-split-seed", type=int, default=20261080)
@@ -68,7 +70,7 @@ def main() -> int:
         entity=os.getenv("WANDB_ENTITY"),
         name="fullpool-qwen-encoder-temperature-validation",
         job_type="clean-validation",
-        config={"encoder": ENCODERS[2], "qwen_checkpoint": QWEN_CHECKPOINT, "source": "nvidia/When2Call train_sft", "split_seed": args.split_seed, "sample_seed": args.sample_seed, "meta_split_seed": args.meta_split_seed, "max_examples": args.max_examples, "official_test_loaded": False},
+        config={"encoder": str(args.encoder_checkpoint), "qwen_checkpoint": str(args.qwen_checkpoint), "source": "nvidia/When2Call train_sft", "split_seed": args.split_seed, "sample_seed": args.sample_seed, "meta_split_seed": args.meta_split_seed, "max_examples": args.max_examples, "official_test_loaded": False},
     )
     started = time.time()
     try:
@@ -86,9 +88,9 @@ def main() -> int:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         jina_training.MAX_LENGTH = 4096
         write_heartbeat(args.output_dir / "heartbeat.json", "encoder-scoring")
-        encoder = encoder_logits(ENCODERS[2], [examples[index] for index in all_indices], args, device).softmax(-1)
+        encoder = encoder_logits(str(args.encoder_checkpoint), [examples[index] for index in all_indices], args, device).softmax(-1)
         model, tokenizer = load_model(QWEN_BASE, device, 16)
-        model.load_adapter(QWEN_CHECKPOINT, adapter_name="frozen")
+        model.load_adapter(str(args.qwen_checkpoint), adapter_name="frozen")
         model.set_adapter("frozen")
         model.eval()
         qwen_scores = []
@@ -107,6 +109,12 @@ def main() -> int:
             "qwen_sft": qwen,
             "encoder_single": encoder,
             "single_average": (encoder + qwen) / 2,
+            "single_entropy_weighted": hybrid_probabilities(encoder, qwen, "entropy_weighted"),
+            "single_margin_weighted": hybrid_probabilities(encoder, qwen, "margin_weighted"),
+            "single_gate": hybrid_probabilities(encoder, qwen, "gate"),
+            "single_encoder_confident": hybrid_probabilities(encoder, qwen, "encoder_confident"),
+            "single_qwen_weighted": hybrid_probabilities(encoder, qwen, "qwen_weighted"),
+            "single_geometric": hybrid_probabilities(encoder, qwen, "geometric"),
             "single_request_conf_60": hybrid_probabilities(encoder, qwen, "request_conf_60"),
             "qwen_temperature": qwen_calibrated,
             "encoder_temperature": encoder_calibrated,
@@ -117,10 +125,34 @@ def main() -> int:
         validation_metrics = {name: metric_summary(labels[validation_positions], probability[validation_positions]) for name, probability in candidates.items()}
         for name, values in validation_metrics.items():
             run.log({f"validation/{name}/accuracy": values["accuracy"], f"validation/{name}/macro_f1": values["macro_f1"]})
-        # Save only temperatures, disjoint partition fingerprints, and aggregate metrics.
-        result = {"status": "completed", "official_test_loaded": False, "training_examples": len(fitting), "validation_examples": len(validation), "sampled_examples": len(sampled), "fit_indices_sha256": hashlib.sha256(",".join(map(str, fitting)).encode()).hexdigest(), "validation_indices_sha256": hashlib.sha256(",".join(map(str, validation)).encode()).hexdigest(), "temperatures": {"qwen": qwen_temperature, "encoder": encoder_temperature}, "training_metrics": fit_metrics, "heldout_validation_metrics": validation_metrics, "selection_metric": "clean validation accuracy", "artifacts": {str(path): artifact_digest(path) for path in (Path(ENCODERS[2]) / "model_state.pt", Path(QWEN_CHECKPOINT) / "adapter_model.safetensors")}, "runtime_seconds": time.time() - started, "git_commit": subprocess.check_output(["git", "-c", "safe.directory=/workspace/post-training", "rev-parse", "HEAD"], text=True).strip(), "wandb_run_id": run.id, "wandb_run_url": run.url}
+        # Select only supported fusion methods with clean held-out accuracy and macro F1.
+        selection_methods = ["single_average", "single_gate", "single_entropy_weighted", "single_margin_weighted", "single_encoder_confident", "single_request_conf_60"]
+        selected_method = max(selection_methods, key=lambda name: (validation_metrics[name]["accuracy"], validation_metrics[name]["macro_f1"], name == "single_entropy_weighted"))
+        # Save disjoint clean metrics, source fingerprints, and exact checkpoint provenance.
+        result = {
+            "status": "completed",
+            "official_test_loaded": False,
+            "training_examples": len(fitting),
+            "validation_examples": len(validation),
+            "sampled_examples": len(sampled),
+            "fit_indices_sha256": hashlib.sha256(",".join(map(str, fitting)).encode()).hexdigest(),
+            "validation_indices_sha256": hashlib.sha256(",".join(map(str, validation)).encode()).hexdigest(),
+            "temperatures": {"qwen": qwen_temperature, "encoder": encoder_temperature},
+            "training_metrics": fit_metrics,
+            "heldout_validation_metrics": validation_metrics,
+            "selection_methods": selection_methods,
+            "selected_method": selected_method,
+            "selection_metric": "clean held-out validation accuracy, with macro F1 as tie-breaker",
+            "qwen_checkpoint": str(args.qwen_checkpoint),
+            "encoder_checkpoint": str(args.encoder_checkpoint),
+            "artifacts": {str(path): artifact_digest(path) for path in (args.encoder_checkpoint / "model_state.pt", args.qwen_checkpoint / "adapter_model.safetensors")},
+            "runtime_seconds": time.time() - started,
+            "git_commit": subprocess.check_output(["git", "-c", "safe.directory=/workspace/post-training", "rev-parse", "HEAD"], text=True).strip(),
+            "wandb_run_id": run.id,
+            "wandb_run_url": run.url,
+        }
         (args.output_dir / "metrics.json").write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
-        run.summary.update({"status": "completed", "qwen_temperature": qwen_temperature, "encoder_temperature": encoder_temperature, "output_dir": str(args.output_dir)})
+        run.summary.update({"status": "completed", "qwen_temperature": qwen_temperature, "encoder_temperature": encoder_temperature, "selected_method": selected_method, "output_dir": str(args.output_dir)})
         write_heartbeat(args.output_dir / "heartbeat.json", "completed")
         print(json.dumps({"temperatures": result["temperatures"], "validation": validation_metrics}, indent=2))
     except BaseException as error:

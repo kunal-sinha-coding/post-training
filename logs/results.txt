@@ -139490,3 +139490,570 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/f22zdrte"
 }
 ```
+
+## qwen-pref900-synth450-fullpool-high-similarity-lr5e6-20261028
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.train_qwen_when2call_fullpool",
+    "--output-dir",
+    "outputs/qwen-pref900-synth450-fullpool-high-similarity-lr5e6-20261028",
+    "--adapter-checkpoint",
+    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "--preference-train-sample-size",
+    "900",
+    "--validation-source",
+    "sft",
+    "--validation-sample-size",
+    "500",
+    "--validation-seed",
+    "20261053",
+    "--training-eval-sample-size",
+    "500",
+    "--training-eval-seed",
+    "20261059",
+    "--eval-batch-size",
+    "8",
+    "--epochs",
+    "1",
+    "--seed",
+    "20261087",
+    "--learning-rate",
+    "5e-6",
+    "--augmentation-jsonl",
+    "outputs/when2call-synthetic-medium-pilots-20261028/accepted_all_high_similarity_450.jsonl"
+  ],
+  "development_metrics": {
+    "accuracy": 0.956,
+    "confusion_matrix": [
+      [
+        243,
+        2,
+        5,
+        0
+      ],
+      [
+        3,
+        235,
+        11,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0
+      ]
+    ],
+    "examples": 500,
+    "macro_f1": 0.4862363481299319
+  },
+  "exit_code": "unknown",
+  "experiment_id": "qwen-pref900-synth450-fullpool-high-similarity-lr5e6-20261028",
+  "failure_reason": null,
+  "metadata": {
+    "base_model": "Qwen/Qwen2.5-1.5B-Instruct",
+    "base_model_checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "baseline_black_box_test_metrics": null,
+    "baseline_clean_validation_metrics": null,
+    "best_validation_accuracy": 0.956,
+    "config": {
+      "adapter_checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "augmentation_jsonl": "outputs/when2call-synthetic-medium-pilots-20261028/accepted_all_high_similarity_450.jsonl",
+      "augmentation_mode": "none",
+      "augmentation_seed": 20261066,
+      "baseline_test_accuracy": null,
+      "baseline_test_macro_f1": null,
+      "baseline_test_source": null,
+      "baseline_validation_accuracy": null,
+      "baseline_validation_macro_f1": null,
+      "batch_size": 1,
+      "bfcl_data": "data/bfcl_when2call_labeled.jsonl",
+      "epochs": 1,
+      "eval_batch_size": 8,
+      "evaluate_baseline": false,
+      "include_full_bfcl": false,
+      "learning_rate": 5e-06,
+      "lora_rank": 16,
+      "max_length": 4096,
+      "model": "Qwen/Qwen2.5-1.5B-Instruct",
+      "output_dir": "outputs/qwen-pref900-synth450-fullpool-high-similarity-lr5e6-20261028",
+      "preference_train_sample_size": 900,
+      "seed": 20261087,
+      "stop_on_test_non_improvement": false,
+      "stop_on_validation_non_improvement": false,
+      "synthetic_only": false,
+      "test_sample_seed": 20261070,
+      "test_sample_size": null,
+      "training_eval_sample_size": 500,
+      "training_eval_seed": 20261059,
+      "validation_sample_size": 500,
+      "validation_seed": 20261053,
+      "validation_source": "sft",
+      "weight_decay": 0.01
+    },
+    "data": {
+      "augmentation_jsonl": "outputs/when2call-synthetic-medium-pilots-20261028/accepted_all_high_similarity_450.jsonl",
+      "augmentation_jsonl_sha256": "db089d5dd81ba1041d983a6dfcbf30b4a4db8d4c95bd3ef09737765853fc52d9",
+      "augmentation_mode": "synthetic_pilot",
+      "augmentation_seed": 20261066,
+      "augmented_examples": 450,
+      "bfcl_file": "data/bfcl_when2call_labeled.jsonl",
+      "bfcl_sha256": "a4b817a01c109603c00fe9e682f11eb636afc139894a92d4960bde8bddfda27f",
+      "bfcl_train_examples": 0,
+      "dataset": "nvidia/When2Call",
+      "label_counts": {
+        "0": 450,
+        "1": 450,
+        "2": 450
+      },
+      "preference_examples": 900,
+      "preference_sample_seed": 20261087,
+      "preference_sample_size": 900,
+      "prompt_label_fingerprint": "6470e0adff8f1b08731b5f355b9fe02accadd2b00556b5682a7303784945c605",
+      "split": "train_pref"
+    },
+    "device": "cuda",
+    "epoch_records": [
+      {
+        "black_box_test_metrics": {
+          "accuracy": 0.7163198247535597,
+          "examples": 3652,
+          "macro_f1": 0.536241233068669,
+          "sample_method": "full test split",
+          "sample_seed": null
+        },
+        "checkpoint": "outputs/qwen-pref900-synth450-fullpool-high-similarity-lr5e6-20261028/epoch-01",
+        "epoch": 1,
+        "heldout_validation_metrics": {
+          "accuracy": 0.956,
+          "confusion_matrix": [
+            [
+              243,
+              2,
+              5,
+              0
+            ],
+            [
+              3,
+              235,
+              11,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              0
+            ]
+          ],
+          "examples": 500,
+          "macro_f1": 0.4862363481299319
+        },
+        "step": 1350,
+        "training_evaluation_examples": 500,
+        "training_evaluation_fingerprint": "0e0b34c157c74ecd34e8220dba7832ae7fbbef8cb6531d12458b5c40b7ff083d",
+        "training_loss": 0.16702336153011754,
+        "training_metrics": {
+          "accuracy": 0.976,
+          "confusion_matrix": [
+            [
+              167,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              164,
+              2,
+              0
+            ],
+            [
+              1,
+              8,
+              157,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "examples": 500,
+          "macro_f1": 0.7319382719050861
+        },
+        "validation_examples": 500,
+        "validation_source": "sft"
+      }
+    ],
+    "experiment": "qwen25_1p5b_all_when2call_trainpref_sft",
+    "optimizer_steps": 1350,
+    "purpose": "Train on the selected When2Call preference rows and optional synthetic examples, then report each epoch.",
+    "selection_procedure": "Clean held-out validation controls continuation unless the user explicitly enables --stop-on-test-non-improvement; then the same aggregate black-box test accuracy controls continuation for this declared pilot only.",
+    "test_label_use": "Test labels are accessed only inside the evaluator to compute aggregate accuracy and macro F1. Under the user's explicit pilot stopping rule, aggregate accuracy may control continuation. No individual test rows, labels, predictions, or correctness values are saved.",
+    "training_evaluation_examples_per_epoch": 500,
+    "training_loss_by_epoch": [
+      0.16702336153011754
+    ],
+    "validation_examples": 500,
+    "validation_source": "sft",
+    "wandb_run_id": "6pizxdnd",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/6pizxdnd"
+  },
+  "metrics_path": "/workspace/post-training/outputs/qwen-pref900-synth450-fullpool-high-similarity-lr5e6-20261028/metrics.json",
+  "official_test_loaded": null,
+  "official_test_metrics": {
+    "accuracy": 0.7163198247535597,
+    "examples": 3652,
+    "macro_f1": 0.536241233068669,
+    "sample_method": "full test split",
+    "sample_seed": null
+  },
+  "output_dir": "/workspace/post-training/outputs/qwen-pref900-synth450-fullpool-high-similarity-lr5e6-20261028",
+  "source_validation_metrics": {
+    "heldout_validation_metrics": {
+      "accuracy": 0.956,
+      "confusion_matrix": [
+        [
+          243,
+          2,
+          5,
+          0
+        ],
+        [
+          3,
+          235,
+          11,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0
+        ]
+      ],
+      "examples": 500,
+      "macro_f1": 0.4862363481299319
+    }
+  },
+  "started_at": "2026-10-28T15:41:44.313045+00:00",
+  "status": "completed",
+  "test_status": "measured",
+  "timestamp": "2026-10-28T15:58:17.984564+00:00",
+  "train_metrics": {
+    "accuracy": 0.976,
+    "confusion_matrix": [
+      [
+        167,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        164,
+        2,
+        0
+      ],
+      [
+        1,
+        8,
+        157,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "examples": 500,
+    "macro_f1": 0.7319382719050861
+  },
+  "wandb_run_id": "6pizxdnd",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/6pizxdnd"
+}
+```
+
+## tool-rich-qwen-encoder-clean-validation-20261028
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.calibrate_fullpool_when2call_ensemble",
+    "--output-dir",
+    "outputs/tool-rich-qwen-encoder-clean-validation-20261028",
+    "--qwen-checkpoint",
+    "outputs/qwen-pref900-synth450-tool-rich-20261028/epoch-01",
+    "--encoder-checkpoint",
+    "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
+    "--split-seed",
+    "20261088",
+    "--sample-seed",
+    "20261089",
+    "--meta-split-seed",
+    "20261090",
+    "--max-examples",
+    "500",
+    "--batch-size",
+    "1"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "tool-rich-qwen-encoder-clean-validation-20261028",
+  "failure_reason": null,
+  "metadata": {
+    "artifacts": {
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/model_state.pt": "815459d76b8c2e9fb7ba44e2f3867379ab096766cf9f1c807a08921be26593b5",
+      "outputs/qwen-pref900-synth450-tool-rich-20261028/epoch-01/adapter_model.safetensors": "cbb683919c2202516df9885fecabc3fd4345fd154d8b35580a8431ee56c30f48"
+    },
+    "encoder_checkpoint": "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
+    "fit_indices_sha256": "fd032a68f500812c83832bf51cc81eec09f3e961b595f726ad1e7b708d4140f3",
+    "git_commit": "67d4bd293f532655d11fe32103d29d21d1628512",
+    "heldout_validation_metrics": {
+      "encoder_single": {
+        "accuracy": 0.9437751004016064,
+        "macro_f1": 0.9663389830508474
+      },
+      "encoder_temperature": {
+        "accuracy": 0.9437751004016064,
+        "macro_f1": 0.9663389830508474
+      },
+      "qwen_sft": {
+        "accuracy": 0.927710843373494,
+        "macro_f1": 0.9601349014181944
+      },
+      "qwen_temperature": {
+        "accuracy": 0.927710843373494,
+        "macro_f1": 0.9601349014181944
+      },
+      "single_average": {
+        "accuracy": 0.9357429718875502,
+        "macro_f1": 0.9624523821725687
+      },
+      "single_encoder_confident": {
+        "accuracy": 0.9357429718875502,
+        "macro_f1": 0.9624523821725687
+      },
+      "single_entropy_weighted": {
+        "accuracy": 0.9357429718875502,
+        "macro_f1": 0.9624523821725687
+      },
+      "single_gate": {
+        "accuracy": 0.9317269076305221,
+        "macro_f1": 0.9602175255609688
+      },
+      "single_geometric": {
+        "accuracy": 0.9397590361445783,
+        "macro_f1": 0.9666598346655735
+      },
+      "single_margin_weighted": {
+        "accuracy": 0.9357429718875502,
+        "macro_f1": 0.9624523821725687
+      },
+      "single_qwen_weighted": {
+        "accuracy": 0.927710843373494,
+        "macro_f1": 0.9601349014181944
+      },
+      "single_request_conf_60": {
+        "accuracy": 0.9558232931726908,
+        "macro_f1": 0.975392626186277
+      },
+      "temperature_average": {
+        "accuracy": 0.9437751004016064,
+        "macro_f1": 0.9663389830508474
+      },
+      "temperature_request_conf_60": {
+        "accuracy": 0.9558232931726908,
+        "macro_f1": 0.975392626186277
+      }
+    },
+    "official_test_loaded": false,
+    "qwen_checkpoint": "outputs/qwen-pref900-synth450-tool-rich-20261028/epoch-01",
+    "runtime_seconds": 105.25052666664124,
+    "sampled_examples": 500,
+    "selected_method": "single_entropy_weighted",
+    "selection_methods": [
+      "single_average",
+      "single_gate",
+      "single_entropy_weighted",
+      "single_margin_weighted",
+      "single_encoder_confident"
+    ],
+    "selection_metric": "clean held-out validation accuracy, with macro F1 as tie-breaker",
+    "status": "completed",
+    "temperatures": {
+      "encoder": 1.6463382259000376,
+      "qwen": 2.592748946223156
+    },
+    "training_examples": 251,
+    "training_metrics": {
+      "encoder_single": {
+        "accuracy": 0.8924302788844621,
+        "macro_f1": 0.930203572912339
+      },
+      "encoder_temperature": {
+        "accuracy": 0.8924302788844621,
+        "macro_f1": 0.930203572912339
+      },
+      "qwen_sft": {
+        "accuracy": 0.9083665338645418,
+        "macro_f1": 0.9477861319966583
+      },
+      "qwen_temperature": {
+        "accuracy": 0.9083665338645418,
+        "macro_f1": 0.9477861319966583
+      },
+      "single_average": {
+        "accuracy": 0.9163346613545816,
+        "macro_f1": 0.9505928853754941
+      },
+      "single_encoder_confident": {
+        "accuracy": 0.9203187250996016,
+        "macro_f1": 0.9510004431264274
+      },
+      "single_entropy_weighted": {
+        "accuracy": 0.9203187250996016,
+        "macro_f1": 0.9510004431264274
+      },
+      "single_gate": {
+        "accuracy": 0.9203187250996016,
+        "macro_f1": 0.9510004431264274
+      },
+      "single_geometric": {
+        "accuracy": 0.9203187250996016,
+        "macro_f1": 0.9549062049062049
+      },
+      "single_margin_weighted": {
+        "accuracy": 0.9163346613545816,
+        "macro_f1": 0.9486477233824033
+      },
+      "single_qwen_weighted": {
+        "accuracy": 0.9083665338645418,
+        "macro_f1": 0.9477861319966583
+      },
+      "single_request_conf_60": {
+        "accuracy": 0.9442231075697212,
+        "macro_f1": 0.9630743801652892
+      },
+      "temperature_average": {
+        "accuracy": 0.9203187250996016,
+        "macro_f1": 0.9532513721936289
+      },
+      "temperature_request_conf_60": {
+        "accuracy": 0.9442231075697212,
+        "macro_f1": 0.9630743801652892
+      }
+    },
+    "validation_examples": 249,
+    "validation_indices_sha256": "4fc91b9e02b1b41154971223fdaf3453ff76b5c4584d637e15866d4a7a0dc3b3",
+    "wandb_run_id": "xfhrc6hk",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/xfhrc6hk"
+  },
+  "metrics_path": "/workspace/post-training/outputs/tool-rich-qwen-encoder-clean-validation-20261028/metrics.json",
+  "official_test_loaded": false,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/tool-rich-qwen-encoder-clean-validation-20261028",
+  "source_validation_metrics": {
+    "heldout_validation_metrics": {
+      "encoder_single": {
+        "accuracy": 0.9437751004016064,
+        "macro_f1": 0.9663389830508474
+      },
+      "encoder_temperature": {
+        "accuracy": 0.9437751004016064,
+        "macro_f1": 0.9663389830508474
+      },
+      "qwen_sft": {
+        "accuracy": 0.927710843373494,
+        "macro_f1": 0.9601349014181944
+      },
+      "qwen_temperature": {
+        "accuracy": 0.927710843373494,
+        "macro_f1": 0.9601349014181944
+      },
+      "single_average": {
+        "accuracy": 0.9357429718875502,
+        "macro_f1": 0.9624523821725687
+      },
+      "single_encoder_confident": {
+        "accuracy": 0.9357429718875502,
+        "macro_f1": 0.9624523821725687
+      },
+      "single_entropy_weighted": {
+        "accuracy": 0.9357429718875502,
+        "macro_f1": 0.9624523821725687
+      },
+      "single_gate": {
+        "accuracy": 0.9317269076305221,
+        "macro_f1": 0.9602175255609688
+      },
+      "single_geometric": {
+        "accuracy": 0.9397590361445783,
+        "macro_f1": 0.9666598346655735
+      },
+      "single_margin_weighted": {
+        "accuracy": 0.9357429718875502,
+        "macro_f1": 0.9624523821725687
+      },
+      "single_qwen_weighted": {
+        "accuracy": 0.927710843373494,
+        "macro_f1": 0.9601349014181944
+      },
+      "single_request_conf_60": {
+        "accuracy": 0.9558232931726908,
+        "macro_f1": 0.975392626186277
+      },
+      "temperature_average": {
+        "accuracy": 0.9437751004016064,
+        "macro_f1": 0.9663389830508474
+      },
+      "temperature_request_conf_60": {
+        "accuracy": 0.9558232931726908,
+        "macro_f1": 0.975392626186277
+      }
+    }
+  },
+  "started_at": "2026-10-28T15:58:17.873799+00:00",
+  "status": "completed",
+  "test_status": "not measured",
+  "timestamp": "2026-10-28T16:00:49.497207+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "xfhrc6hk",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/xfhrc6hk"
+}
+```

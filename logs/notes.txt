@@ -7736,3 +7736,7 @@ are terminated then try again. If it still fails, a git process
 may have crashed in this repository earlier:
 remove the file manually to continue.
 . The result remains local and the worker queue continues.
+
+2026-10-28T16:00:58.180777+00:00: Commit `Record experiment synchronization failure` records the failed commit or push for tool-rich-qwen-encoder-clean-validation-20261028: Command '['git', '-c', 'safe.directory=/workspace/post-training', 'add', '--', 'logs/experiment_records.jsonl', 'logs/research_log.md', 'logs/leaderboard.md', 'logs/results.txt', 'logs/notes.txt', 'logs/research_state.json']' died with <Signals.SIGBUS: 7>.. The result remains local and the worker queue continues.
+
+Commit `Select tool-rich Qwen encoder fusion on clean validation`: Added checkpoint overrides and fixed fusion candidates to the clean-validation calibration flow. The tool-rich Qwen plus Jina screen selected the fixed request-confidence route at 95.58% accuracy and 97.54% macro F1 on 249 held-out SFT rows, above the Qwen-only 92.77% accuracy and 96.01% macro F1. Recorded the selection procedure and queued frozen preparation followed by a single full aggregate test measurement. Test labels were not used for selection.

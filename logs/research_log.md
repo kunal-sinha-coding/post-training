@@ -12759,3 +12759,31 @@ Clean development accuracy: 0.956. Clean development macro F1: 0.485745450939560
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.956, "macro_f1": 0.4857454509395607, "confusion_matrix": [[243, 2, 5, 0], [4, 235, 10, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-pref900-synth450-fullpool-high-similarity-lr5e6-20261028
+
+Timestamp: 2026-10-28T15:58:17.984564+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-pref900-synth450-fullpool-high-similarity-lr5e6-20261028", "--adapter-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--preference-train-sample-size", "900", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261087", "--learning-rate", "5e-6", "--augmentation-jsonl", "outputs/when2call-synthetic-medium-pilots-20261028/accepted_all_high_similarity_450.jsonl"]. Output: /workspace/post-training/outputs/qwen-pref900-synth450-fullpool-high-similarity-lr5e6-20261028. W&B run: 6pizxdnd.
+
+Clean development accuracy: 0.956. Clean development macro F1: 0.4862363481299319. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7163198247535597, "macro_f1": 0.536241233068669, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.956, "macro_f1": 0.4862363481299319, "confusion_matrix": [[243, 2, 5, 0], [3, 235, 11, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## tool-rich-qwen-encoder-clean-validation-20261028
+
+Timestamp: 2026-10-28T16:00:49.497207+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.calibrate_fullpool_when2call_ensemble", "--output-dir", "outputs/tool-rich-qwen-encoder-clean-validation-20261028", "--qwen-checkpoint", "outputs/qwen-pref900-synth450-tool-rich-20261028/epoch-01", "--encoder-checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--split-seed", "20261088", "--sample-seed", "20261089", "--meta-split-seed", "20261090", "--max-examples", "500", "--batch-size", "1"]. Output: /workspace/post-training/outputs/tool-rich-qwen-encoder-clean-validation-20261028. W&B run: xfhrc6hk.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"qwen_sft": {"accuracy": 0.927710843373494, "macro_f1": 0.9601349014181944}, "encoder_single": {"accuracy": 0.9437751004016064, "macro_f1": 0.9663389830508474}, "single_average": {"accuracy": 0.9357429718875502, "macro_f1": 0.9624523821725687}, "single_entropy_weighted": {"accuracy": 0.9357429718875502, "macro_f1": 0.9624523821725687}, "single_margin_weighted": {"accuracy": 0.9357429718875502, "macro_f1": 0.9624523821725687}, "single_gate": {"accuracy": 0.9317269076305221, "macro_f1": 0.9602175255609688}, "single_encoder_confident": {"accuracy": 0.9357429718875502, "macro_f1": 0.9624523821725687}, "single_qwen_weighted": {"accuracy": 0.927710843373494, "macro_f1": 0.9601349014181944}, "single_geometric": {"accuracy": 0.9397590361445783, "macro_f1": 0.9666598346655735}, "single_request_conf_60": {"accuracy": 0.9558232931726908, "macro_f1": 0.975392626186277}, "qwen_temperature": {"accuracy": 0.927710843373494, "macro_f1": 0.9601349014181944}, "encoder_temperature": {"accuracy": 0.9437751004016064, "macro_f1": 0.9663389830508474}, "temperature_average": {"accuracy": 0.9437751004016064, "macro_f1": 0.9663389830508474}, "temperature_request_conf_60": {"accuracy": 0.9558232931726908, "macro_f1": 0.975392626186277}}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## Tool-rich Qwen plus Jina clean-validation screen
+
+Compared the tool-rich Qwen adapter with the fixed Jina encoder on a stratified 500-row SFT sample split into 251 fitting rows and 249 held-out validation rows. The Qwen baseline scored 0.927711 accuracy and 0.960135 macro F1 on held-out validation. The predeclared `single_request_conf_60` route scored 0.955823 accuracy and 0.975393 macro F1 and was selected by clean validation only. The route uses the encoder when its top class is `request_for_info` and its top probability is at least 0.60, and uses Qwen otherwise. No test data was loaded. The frozen configuration and full aggregate measurement are queued.
