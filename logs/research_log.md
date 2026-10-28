@@ -12827,3 +12827,27 @@ This record was written automatically. Candidate selection must use clean valida
 ## Tool-rich Qwen plus Jina route sweep
 
 A single 500-example clean SFT validation sweep compared the predeclared encoder and Qwen fusion rules. The best validation method was `single_encoder_request_full_cannot_mix_60`, with 0.940 accuracy and 0.954209 macro F1, compared with tool-rich Qwen alone at 0.902 accuracy and 0.939963 macro F1. This rule uses encoder probabilities for `request_for_info`, a 60% encoder and 40% Qwen blend when the encoder predicts `cannot_answer`, and Qwen probabilities for other encoder predictions. It was selected only by clean validation. Frozen preparation and full aggregate test measurement are queued.
+
+## prepare
+
+Timestamp: 2026-10-28T16:16:30.033622+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.existing_when2call_hybrid", "prepare", "--work-dir", "outputs/tool-rich-qwen-encoder-fullroute60-20261028/frozen", "--output-dir", "outputs/tool-rich-qwen-encoder-fullroute60-20261028/prepare", "--suite", "single-disagree", "--qwen-checkpoint", "outputs/qwen-pref900-synth450-tool-rich-20261028/epoch-01", "--methods", "single_encoder_request_full_cannot_mix_60", "--primary-method", "single_encoder_request_full_cannot_mix_60", "--batch-size", "1"]. Output: /workspace/post-training/outputs/tool-rich-qwen-encoder-fullroute60-20261028/prepare. W&B run: xs9482uo.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Test status: queued. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## test
+
+Timestamp: 2026-10-28T16:25:35.152324+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.existing_when2call_hybrid", "test", "--work-dir", "outputs/tool-rich-qwen-encoder-fullroute60-20261028/frozen", "--output-dir", "outputs/tool-rich-qwen-encoder-fullroute60-20261028/test", "--suite", "single-disagree", "--qwen-checkpoint", "outputs/qwen-pref900-synth450-tool-rich-20261028/epoch-01", "--methods", "single_encoder_request_full_cannot_mix_60", "--primary-method", "single_encoder_request_full_cannot_mix_60", "--batch-size", "1"]. Output: /workspace/post-training/outputs/tool-rich-qwen-encoder-fullroute60-20261028/test. W&B run: rghv75bf.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: True. Test status: measured. Official test metrics: {"accuracy": 0.7029025191675794, "macro_f1": 0.5260650854403114, "macro_f1_present_classes": 0.7014201139204151}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

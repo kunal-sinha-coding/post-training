@@ -7768,3 +7768,16 @@ remove the file manually to continue.
 . The result remains local and the worker queue continues.
 
 Commit `Queue tool-rich Qwen full-route encoder measurement`: Recorded the 500-example validation sweep and selected the fixed request and cannot-answer class route by clean validation accuracy, with macro F1 reported. The route scored 94.00% accuracy and 95.42% macro F1 versus Qwen-only 90.20% and 94.00%. Queued frozen configuration and one full aggregate test measurement. The earlier request-confidence ensemble scored 72.65% aggregate accuracy versus 73.30% for Qwen and did not improve it. Test metrics remain reporting-only.
+
+2026-10-28T16:16:35.060826+00:00: Commit `Record research experiment prepare` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-28T16:16:45.824722+00:00: Commit `Record experiment synchronization failure` records the failed commit or push for prepare: fatal: Unable to create '/workspace/post-training/.git/index.lock': File exists.
+
+Another git process seems to be running in this repository, e.g.
+an editor opened by 'git commit'. Please make sure all processes
+are terminated then try again. If it still fails, a git process
+may have crashed in this repository earlier:
+remove the file manually to continue.
+. The result remains local and the worker queue continues.
+
+2026-10-28T16:25:39.557860+00:00: Commit `Record research experiment test` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
