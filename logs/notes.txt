@@ -7906,3 +7906,8 @@ Commit name: Queue aggregate benchmark for validation-selected tool-rich hybrid.
 The latest completed training run is `qwen-multiturn-context-boundary-replay900-20261028`. Its metrics record training on 500 examples (0.982 accuracy, 0.737498 macro F1), clean validation on 500 examples (0.946 accuracy, 0.483552 macro F1), and aggregate black-box test on all 3,652 examples (0.712760 accuracy, 0.531509 macro F1). All evidence types are present.
 
 The clean-validation-only tool-rich synthetic-only fusion screen scored 0.976 accuracy and 0.983808 macro F1 on 500 examples for `single_encoder_request_or_cannot_answer_conf_90`. Its Qwen-only baseline scored 0.962 accuracy and 0.976376 macro F1. Queued the frozen prepare and aggregate-test commands for that single validation-selected rule. The test phase reports aggregate metrics only and does not inspect individual rows or use test results for selection.
+
+## 2026-10-28: Verify frozen hybrid preparation launch
+Commit name: Verify validation-selected hybrid benchmark preparation.
+
+The watchdog launched the frozen hybrid preparation command for `single_encoder_request_or_cannot_answer_conf_90` using the tool-rich synthetic-only Qwen checkpoint and the trained encoder. PID 304003 is active. The following queued command runs the aggregate-only test measurement with the same frozen config. Test labels will be used only for that aggregate report and not for candidate selection.
