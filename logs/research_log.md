@@ -12867,3 +12867,7 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## Balanced boundary synthetic data pilot
+
+Generated 250 complete-versus-missing-required-value pairs and 250 plausible unsupported requests from train_pref-only anchors. Structural checks and a separate high-confidence label judge accepted 219 pairs and 229 unsupported requests, for 667 trainer-ready rows. The class counts are tool_call 219, request_for_info 219, and cannot_answer 229. The OpenAI API estimate is $0.1362, bringing tracked generation spend to $1.1121 of the $10 cap. No validation or test data was used in generation. Queued one synthetic-only epoch from the clean-validation-best checkpoint, with a 500-row train probe, 500-row clean validation, and full aggregate test measurement.
