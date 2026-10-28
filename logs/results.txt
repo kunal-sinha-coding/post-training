@@ -127212,3 +127212,81 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/ea85cko2"
 }
 ```
+
+## when2call-synthetic-medium-pilots-20261028
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.generate_when2call_synthetic_pilots",
+    "--output-dir",
+    "outputs/when2call-synthetic-medium-pilots-20261028",
+    "--examples-per-strategy",
+    "900",
+    "--workers",
+    "24",
+    "--seed",
+    "20261080",
+    "--max-cost-usd",
+    "2.0"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "when2call-synthetic-medium-pilots-20261028",
+  "failure_reason": null,
+  "metadata": {
+    "accepted_per_strategy": {
+      "composed_tool_call": 895,
+      "missing_required_info": 569,
+      "new_tool_call": 893,
+      "unsupported_capability": 896
+    },
+    "concurrency": 24,
+    "cost_ledger": "outputs/when2call-synthetic-medium-pilots-20261028/cost-ledger.json",
+    "estimated_cost_usd": 0.9247967000000001,
+    "examples_requested_per_strategy": 900,
+    "model": "gpt-6-luna",
+    "official_test_loaded": false,
+    "seed": 20261080,
+    "source": "nvidia/When2Call:train_pref",
+    "source_examples": 9000,
+    "status": "completed",
+    "strategies": {
+      "composed_tool_call": {
+        "label": "tool_call",
+        "source_label": "tool_call"
+      },
+      "missing_required_info": {
+        "label": "request_for_info",
+        "source_label": "request_for_info"
+      },
+      "new_tool_call": {
+        "label": "tool_call",
+        "source_label": "tool_call"
+      },
+      "unsupported_capability": {
+        "label": "cannot_answer",
+        "source_label": "cannot_answer"
+      }
+    },
+    "test_labels_used": false
+  },
+  "metrics_path": "/workspace/post-training/outputs/when2call-synthetic-medium-pilots-20261028/metrics.json",
+  "official_test_loaded": false,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/when2call-synthetic-medium-pilots-20261028",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-28T03:46:10.400525+00:00",
+  "status": "completed",
+  "test_status": "not measured",
+  "timestamp": "2026-10-28T04:00:29.215249+00:00",
+  "train_metrics": {},
+  "wandb_run_id": null,
+  "wandb_run_url": null
+}
+```

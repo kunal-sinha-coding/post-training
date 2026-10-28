@@ -1915,3 +1915,4 @@ Source-specific result `when2call-similarity-gate-30pct-pref-k3-question-tools-f
 | Candidate | qwen-when2call-synthetic-continuation-composed_tool_call-20261028 | 0.89 | 0.46884397930951516 | [metrics](/workspace/post-training/outputs/qwen-when2call-synthetic-continuation-composed_tool_call-20261028/metrics.json) | completed |
 
 | qwen-when2call-synthetic-continuation-composed_tool_call-20261028 | 0.634 | 0.46319329070880505 | ea85cko2 | Aggregate-only frozen test measurement |
+| Candidate | when2call-synthetic-medium-pilots-20261028 | — | — | [metrics](/workspace/post-training/outputs/when2call-synthetic-medium-pilots-20261028/metrics.json) | completed |

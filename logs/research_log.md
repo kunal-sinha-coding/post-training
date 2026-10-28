@@ -12246,3 +12246,15 @@ Queued synthetic continuation commands use evaluation batch size 8 to reduce the
 
 
 The expanded GPT-6 Luna generation batch completed with 893 new-tool, 568 missing-information, 896 unsupported-capability, and 895 composed-tool examples. Cost was $0.924797; cumulative generation spend is $0.975910 of the $10 cap. No official test examples or labels were loaded during generation.
+
+## when2call-synthetic-medium-pilots-20261028
+
+Timestamp: 2026-10-28T04:00:29.215249+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.generate_when2call_synthetic_pilots", "--output-dir", "outputs/when2call-synthetic-medium-pilots-20261028", "--examples-per-strategy", "900", "--workers", "24", "--seed", "20261080", "--max-cost-usd", "2.0"]. Output: /workspace/post-training/outputs/when2call-synthetic-medium-pilots-20261028. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
