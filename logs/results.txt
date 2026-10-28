@@ -126104,3 +126104,92 @@ Purpose and setup are recorded in the epoch-01 entry above. The experiment train
 | 2 | 0.9820 | 0.736828 | 0.9480 | 0.485551 | 0.659365 | 0.468468 | 0.266147 |
 
 Clean validation improved from 0.946 to 0.948, so the run completed its planned second epoch. Test metrics are report-only. Test accuracy decreased by 0.877 percentage points from epoch 1 to epoch 2 and remains below the known standalone Qwen benchmark. No test labels selected the checkpoint.
+
+## when2call-synthetic-pilots-20261028
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.generate_when2call_synthetic_pilots",
+    "--output-dir",
+    "outputs/when2call-synthetic-pilots-20261028",
+    "--examples-per-strategy",
+    "50",
+    "--workers",
+    "24",
+    "--seed",
+    "20261069",
+    "--max-cost-usd",
+    "1.0"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "when2call-synthetic-pilots-20261028",
+  "failure_reason": null,
+  "metadata": {
+    "accepted_per_strategy": {
+      "composed_tool_call": 50,
+      "missing_required_info": 31,
+      "new_tool_call": 49,
+      "unsupported_capability": 50
+    },
+    "concurrency": 24,
+    "cost_ledger": "outputs/when2call-synthetic-pilots-20261028/cost-ledger.json",
+    "estimated_cost_usd": 0.051113599999999995,
+    "examples_requested_per_strategy": 50,
+    "model": "gpt-6-luna",
+    "official_test_loaded": false,
+    "seed": 20261069,
+    "source": "nvidia/When2Call:train_pref",
+    "source_examples": 9000,
+    "status": "completed",
+    "strategies": {
+      "composed_tool_call": {
+        "label": "tool_call",
+        "source_label": "tool_call"
+      },
+      "missing_required_info": {
+        "label": "request_for_info",
+        "source_label": "request_for_info"
+      },
+      "new_tool_call": {
+        "label": "tool_call",
+        "source_label": "tool_call"
+      },
+      "unsupported_capability": {
+        "label": "cannot_answer",
+        "source_label": "cannot_answer"
+      }
+    },
+    "test_labels_used": false
+  },
+  "metrics_path": "/workspace/post-training/outputs/when2call-synthetic-pilots-20261028/metrics.json",
+  "official_test_loaded": false,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/when2call-synthetic-pilots-20261028",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-28T02:48:26.278799+00:00",
+  "status": "completed",
+  "test_status": "not measured",
+  "timestamp": "2026-10-28T02:50:27.470611+00:00",
+  "train_metrics": {},
+  "wandb_run_id": null,
+  "wandb_run_url": null
+}
+```
+
+
+## synthetic-data-generation-pilot-20261028
+
+Purpose: Create small in-distribution synthetic training pilots to test distinct example-construction strategies.
+
+Setup: GPT-6 Luna Responses API. Source: only `nvidia/When2Call:train_pref` (9,000 rows). Four strategies requested 50 examples each: new tool calls over an existing schema set, missing required information, unsupported capabilities, and tool calls over composed tool sets. Each generation request ran under an asynchronous semaphore with concurrency 24. Each candidate passed structural checks and a separate GPT-6 Luna action-label judgment. Run cost cap: $1.00. Lifetime authorized generation cap: $10.00. No test data or labels were loaded.
+
+Accepted examples: 49 new tool-call, 31 request-for-information, 50 cannot-answer, and 50 composed-tool-call examples, for 180 total. The request-for-information pilot accepted fewer examples because schema validation rejected missing fields with defaults and malformed argument sets. The API ledger records 455 requests, 338,901 input tokens, 34,447 output tokens, two errors, and estimated cost $0.0511136.
+
+Status: Generation completed in approximately two minutes. Four separate one-epoch Qwen pilots are queued. The first run uses original preference data plus the 49 new-tool-call examples. Training and clean-validation probes are capped at 500 examples. The initial aggregate-only black-box screen is capped at 500 rows; full evaluation is reserved for promising candidates.

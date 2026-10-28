@@ -47,10 +47,18 @@ def load_labeled_rows(path: Path) -> tuple[list[ClassificationRow], list[Classif
     return train_rows, validation_rows
 
 
-def evaluate_black_box(model: object, tokenizer: object, label_ids: list[int], device: torch.device, max_length: int, batch_size: int) -> dict:
-    """Return aggregate accuracy and macro F1 for the report-only When2Call test measurement."""
-    # Score the active adapter and discard every per-example prediction after aggregate reduction.
-    rows = prepare_test_rows(load_official_rows())
+def evaluate_black_box(model: object, tokenizer: object, label_ids: list[int], device: torch.device, max_length: int, batch_size: int, sample_size: int | None = None, sample_seed: int = 20261070) -> dict:
+    """Return aggregate-only metrics on all official test rows or a uniform index sample."""
+    # Sample row indices uniformly without reading labels when a fast black-box screen is requested.
+    raw_rows = load_official_rows()
+    sampled = sample_size is not None and sample_size < len(raw_rows)
+    if sampled:
+        if sample_size < 1:
+            raise ValueError("The black-box sample size must be positive.")
+        indices = sorted(random.Random(sample_seed).sample(range(len(raw_rows)), sample_size))
+        raw_rows = raw_rows.select(indices) if hasattr(raw_rows, "select") else [raw_rows[index] for index in indices]
+    # Score the selected rows and discard every per-example prediction after aggregate reduction.
+    rows = prepare_test_rows(raw_rows)
     predictions = []
     model.eval()
     with torch.no_grad():
@@ -58,7 +66,7 @@ def evaluate_black_box(model: object, tokenizer: object, label_ids: list[int], d
             scores = score_rows(model, tokenizer, rows[start:start + batch_size], label_ids, device, max_length)
             predictions.extend(scores.argmax(dim=-1).cpu().tolist())
     labels = [row.label for row in rows]
-    return aggregate_metrics(labels, predictions) | {"examples": len(rows)}
+    return aggregate_metrics(labels, predictions) | {"examples": len(rows), "sample_seed": sample_seed if sampled else None, "sample_method": "uniform row-index sample without label access" if sampled else "full test split"}
 
 
 def main() -> int:

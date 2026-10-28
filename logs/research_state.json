@@ -4,16 +4,18 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "fresh_base_bfcl_when2call_data_exploration_v1",
-  "current_hypothesis": "Label-preserving changes to the 9,000 When2Call preference prompts may improve robustness without adding label noise. Compare tool-order permutations, JSON schema key-order changes, and a neutral request-context wrapper, training from the same Qwen base and stopping by clean validation only.",
+  "current_hypothesis": "Several small synthetic data construction strategies may add useful in-distribution signal if they create new requests over real When2Call tool schemas and produce consistent action labels. Compare four 50-example pilots separately before expanding any strategy.",
   "active_experiment": {
-    "pid": 251550,
+    "pid": 255477,
     "command": [
       "python",
       "-u",
       "-m",
       "experiments.train_qwen_when2call_fullpool",
       "--output-dir",
-      "outputs/qwen-when2call-aug-schema-key-order-20261027",
+      "outputs/qwen-when2call-synthetic-pilot-new-tool-call-20261028",
+      "--augmentation-jsonl",
+      "outputs/when2call-synthetic-pilots-20261028/new_tool_call.jsonl",
       "--validation-source",
       "sft",
       "--validation-sample-size",
@@ -25,16 +27,15 @@
       "--training-eval-seed",
       "20261059",
       "--epochs",
-      "2",
-      "--stop-on-validation-non-improvement",
+      "1",
       "--seed",
       "20261055",
-      "--augmentation-mode",
-      "schema_key_order",
-      "--augmentation-seed",
-      "20261066"
+      "--test-sample-size",
+      "500",
+      "--test-sample-seed",
+      "20261070"
     ],
-    "started_at": "2026-10-28T01:47:48.784091+00:00"
+    "started_at": "2026-10-28T02:50:27.218421+00:00"
   },
   "worker_command": [
     "python",
@@ -42,7 +43,9 @@
     "-m",
     "experiments.train_qwen_when2call_fullpool",
     "--output-dir",
-    "outputs/qwen-when2call-aug-schema-key-order-20261027",
+    "outputs/qwen-when2call-synthetic-pilot-new-tool-call-20261028",
+    "--augmentation-jsonl",
+    "outputs/when2call-synthetic-pilots-20261028/new_tool_call.jsonl",
     "--validation-source",
     "sft",
     "--validation-sample-size",
@@ -54,14 +57,13 @@
     "--training-eval-seed",
     "20261059",
     "--epochs",
-    "2",
-    "--stop-on-validation-non-improvement",
+    "1",
     "--seed",
     "20261055",
-    "--augmentation-mode",
-    "schema_key_order",
-    "--augmentation-seed",
-    "20261066"
+    "--test-sample-size",
+    "500",
+    "--test-sample-seed",
+    "20261070"
   ],
   "worker_queue": [
     [
@@ -70,7 +72,9 @@
       "-m",
       "experiments.train_qwen_when2call_fullpool",
       "--output-dir",
-      "outputs/qwen-when2call-aug-request-context-20261027",
+      "outputs/qwen-when2call-synthetic-pilot-missing-required-info-20261028",
+      "--augmentation-jsonl",
+      "outputs/when2call-synthetic-pilots-20261028/missing_required_info.jsonl",
       "--validation-source",
       "sft",
       "--validation-sample-size",
@@ -82,36 +86,13 @@
       "--training-eval-seed",
       "20261059",
       "--epochs",
-      "2",
-      "--stop-on-validation-non-improvement",
+      "1",
       "--seed",
       "20261055",
-      "--augmentation-mode",
-      "request_context",
-      "--augmentation-seed",
-      "20261066"
-    ],
-    [
-      "python",
-      "-u",
-      "-m",
-      "experiments.augment_when2call_questions",
-      "--output",
-      "outputs/when2call-question-paraphrase-gpt6-luna-pilot-20261028/augmented.jsonl",
-      "--ledger",
-      "outputs/when2call-question-paraphrase-gpt6-luna-pilot-20261028/cost-ledger.json",
-      "--summary",
-      "outputs/when2call-question-paraphrase-gpt6-luna-pilot-20261028/summary.json",
-      "--limit",
-      "1000",
-      "--sample-seed",
-      "20261067",
-      "--workers",
-      "16",
-      "--prior-spend-usd",
-      "0.0",
-      "--max-cost-usd",
-      "0.5"
+      "--test-sample-size",
+      "500",
+      "--test-sample-seed",
+      "20261070"
     ],
     [
       "python",
@@ -119,9 +100,9 @@
       "-m",
       "experiments.train_qwen_when2call_fullpool",
       "--output-dir",
-      "outputs/qwen-when2call-aug-gpt6-luna-paraphrase-pilot-20261028",
+      "outputs/qwen-when2call-synthetic-pilot-unsupported-capability-20261028",
       "--augmentation-jsonl",
-      "outputs/when2call-question-paraphrase-gpt6-luna-pilot-20261028/augmented.jsonl",
+      "outputs/when2call-synthetic-pilots-20261028/unsupported_capability.jsonl",
       "--validation-source",
       "sft",
       "--validation-sample-size",
@@ -133,34 +114,13 @@
       "--training-eval-seed",
       "20261059",
       "--epochs",
-      "2",
-      "--stop-on-validation-non-improvement",
+      "1",
       "--seed",
-      "20261055"
-    ],
-    [
-      "python",
-      "-u",
-      "-m",
-      "experiments.augment_when2call_questions",
-      "--output",
-      "outputs/when2call-question-concise-gpt6-luna-pilot-20261028/augmented.jsonl",
-      "--ledger",
-      "outputs/when2call-question-concise-gpt6-luna-pilot-20261028/cost-ledger.json",
-      "--summary",
-      "outputs/when2call-question-concise-gpt6-luna-pilot-20261028/summary.json",
-      "--limit",
+      "20261055",
+      "--test-sample-size",
       "500",
-      "--sample-seed",
-      "20261068",
-      "--workers",
-      "16",
-      "--style",
-      "concise",
-      "--prior-spend-usd",
-      "0.0",
-      "--max-cost-usd",
-      "0.5"
+      "--test-sample-seed",
+      "20261070"
     ],
     [
       "python",
@@ -168,9 +128,9 @@
       "-m",
       "experiments.train_qwen_when2call_fullpool",
       "--output-dir",
-      "outputs/qwen-when2call-aug-gpt6-luna-concise-pilot-20261028",
+      "outputs/qwen-when2call-synthetic-pilot-composed-tool-call-20261028",
       "--augmentation-jsonl",
-      "outputs/when2call-question-concise-gpt6-luna-pilot-20261028/augmented.jsonl",
+      "outputs/when2call-synthetic-pilots-20261028/composed_tool_call.jsonl",
       "--validation-source",
       "sft",
       "--validation-sample-size",
@@ -182,10 +142,13 @@
       "--training-eval-seed",
       "20261059",
       "--epochs",
-      "2",
-      "--stop-on-validation-non-improvement",
+      "1",
       "--seed",
-      "20261055"
+      "20261055",
+      "--test-sample-size",
+      "500",
+      "--test-sample-seed",
+      "20261070"
     ]
   ],
   "_previous_command": [
@@ -220,10 +183,10 @@
     "macro_f1": 0.48337889372616516,
     "selection": "clean validation only"
   },
-  "last_heartbeat": "2026-10-28T01:47:48.784108+00:00",
-  "last_action": "Verified the latest completed tool-order experiment has training, clean-validation, and aggregate black-box metrics. The schema-key-order run is active. Appended distinct concise-paraphrase generation and training commands after the existing queue; test labels remain report-only.",
+  "last_heartbeat": "2026-10-28T02:50:27.218438+00:00",
+  "last_action": "Generated 180 label-checked synthetic examples across four pilots in about two minutes at $0.0511 API spend. The new-tool-call Qwen training pilot is active with 500-row training and validation probes and a 500-row aggregate test screen.",
   "watchdog_enabled": true,
-  "research_log_size": 1528125,
+  "research_log_size": 1531350,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -231,7 +194,9 @@
     "-m",
     "experiments.train_qwen_when2call_fullpool",
     "--output-dir",
-    "outputs/qwen-when2call-aug-schema-key-order-20261027",
+    "outputs/qwen-when2call-synthetic-pilot-new-tool-call-20261028",
+    "--augmentation-jsonl",
+    "outputs/when2call-synthetic-pilots-20261028/new_tool_call.jsonl",
     "--validation-source",
     "sft",
     "--validation-sample-size",
@@ -243,14 +208,13 @@
     "--training-eval-seed",
     "20261059",
     "--epochs",
-    "2",
-    "--stop-on-validation-non-improvement",
+    "1",
     "--seed",
     "20261055",
-    "--augmentation-mode",
-    "schema_key_order",
-    "--augmentation-seed",
-    "20261066"
+    "--test-sample-size",
+    "500",
+    "--test-sample-seed",
+    "20261070"
   ],
   "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
@@ -265,7 +229,7 @@
     "artifact": "outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json",
     "selection": "Report-only aggregate benchmark result. Test labels were not used for candidate selection."
   },
-  "next_hypothesis": "After the broad label-preserving formatting probes and natural paraphrase pilot, test whether concise request paraphrases improve clean validation by reducing dependence on verbose surface wording. Generate at most 500 variants from train_pref, inherit labels only after numeric and length checks, enforce the per-run API cap, then train original rows plus accepted variants. Select and stop only with clean validation.",
+  "next_hypothesis": "Use clean validation to compare the four synthetic construction pilots against the same base training setup. Expand only the strategy with useful clean-validation signal and no clear aggregate black-box decline. Keep test labels and per-example outcomes hidden.",
   "post_queue_report_required": {
     "required": true,
     "trigger": "After the family confidence-routing validation and aggregate test pass.",
@@ -276,9 +240,11 @@
   "paused_at": null,
   "api_generation_budget": {
     "cap_usd": 10.0,
-    "spent_usd": 0.0,
+    "spent_usd": 0.0511136,
     "since": "2026-10-26",
-    "generation_started": false
+    "generation_started": true,
+    "current_pilot_cap_usd": 1.0,
+    "last_ledger": "outputs/when2call-synthetic-pilots-20261028/cost-ledger.json"
   },
   "future_policy": {
     "evaluation_frequency": "At every epoch boundary.",
@@ -289,7 +255,7 @@
     "full_test_evaluation": true,
     "test_metrics_use": "Aggregate report only, never use test labels or per-example outcomes for selection."
   },
-  "open_ended_phase": "Explore When2Call train_pref augmentation. Finish the active schema-key-order run, then the queued request-context, natural paraphrase generation and training jobs. Next test concise semantic paraphrases from a capped stratified train_pref sample under a separate generation cost cap. Keep all generation within the $10 lifetime budget. Use 500-row training and clean validation probes, full aggregate black-box evaluation, and clean-validation-only selection.",
+  "open_ended_phase": "Generate four fast 50-example synthetic pilots from train_pref anchors using concurrent GPT-6 Luna Responses API calls: new tool calls, missing required information, unsupported capabilities, and composed tool sets. Independently judge labels and validate tool arguments. Then train four separate one-epoch candidates on all 9,000 preference examples plus each small pilot. Keep training and validation evaluation at 500 examples maximum; use 500-row aggregate black-box screens before full test evaluation of promising candidates.",
   "posthoc_validation_required": {
     "experiment": "qwen-when2call-plus-full-bfcl-base-seed20261056",
     "checkpoints": [
@@ -415,11 +381,11 @@
     "reason": "Shared heartbeat.tmp collision while duplicate command targeted the same output directory. No checkpoint or evaluation was saved."
   },
   "stopped_experiment": {
-    "experiment": "outputs/when2call-similarity-gate-25pct-pref-k3-tools-20270527",
-    "pid": 244125,
-    "reason": "User explicitly directed that retrieval exploration stop before this clean-validation run completed."
+    "experiment": "qwen-when2call-aug-schema-key-order-20261027",
+    "pid": 251550,
+    "reason": "User explicitly directed us to stop the prior formatting and paraphrase work. The process was terminated at training step 8,588 before the epoch ended, so no checkpoint evaluation or training/validation/test metrics were produced."
   },
-  "queue_cleared_reason": "User directed the loop to stop retrieval and explore augmentation of the existing 9,000 When2Call preference examples.",
+  "queue_cleared_reason": "User explicitly stopped tool-order, schema-key-order, neutral request-context, and paraphrase augmentation and replaced the queue with small synthetic-data pilots.",
   "failed_experiment": {
     "experiment_id": "when2call-dynamic-retrieval-clean-20270329",
     "status": "failed_or_incomplete",
@@ -677,5 +643,5 @@
     "examples": 3652,
     "artifact": "outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json"
   },
-  "updated_at": "2026-10-28T01:52:22+00:00"
+  "updated_at": "2026-10-28T02:50:58+00:00"
 }

@@ -12159,3 +12159,38 @@ The tool-order experiment has complete training, clean-validation, and aggregate
 The latest completed experiment, `qwen-when2call-aug-tool-order-20261027`, has all required evidence: 500-row training and clean-validation probes at both epochs and aggregate-only metrics on all 3,652 black-box test rows. At epoch 2, training accuracy was 0.9820 and macro F1 was 0.736828; clean validation accuracy was 0.9480 and macro F1 was 0.485551; test accuracy was 0.659365 and macro F1 was 0.468468. Test metrics did not control selection. The schema-key-order worker is active, followed by request-context training, natural paraphrase generation and training.
 
 Added a separate concise-paraphrase hypothesis after the current queue. Concise paraphrases may improve robustness to request wording while retaining every constraint, named entity, date, and number. The queued generator reads only train_pref, samples at most 500 rows, inherits the original labels, caches outputs, and has a $0.50 run cap. The following training job uses the original 9,000 examples plus accepted concise variants, with capped train and clean validation probes, full aggregate test reports, and clean-validation-only stopping and selection.
+
+
+## 2026-10-28 switch to synthetic-data pilots
+
+The user stopped tool-order, schema-key-order, neutral request-context, and paraphrase augmentation. The active schema-key-order run was terminated at optimizer step 8,588 before its first epoch evaluation; it produced no checkpoint metrics. The old queue was cleared.
+
+The replacement plan generates four small, distinct synthetic pilots from `train_pref` anchors with unchanged real tool schemas: 50 new tool-call requests, 50 requests missing a required input, 50 unsupported-capability requests, and 50 tool-call requests using composed tool sets. GPT-6 Luna Responses API requests use an asynchronous semaphore with 24 concurrent slots and a $1 pilot cap under the $10 lifetime authorization. Each generated candidate receives structural checks and an independent action-label judgment. Test data is not loaded for generation.
+
+After generation, each pilot receives a separate one-epoch fresh-base Qwen run on the 9,000 preference rows plus that pilot. Training and clean validation evaluation use at most 500 examples. Black-box screening uses aggregate metrics only, with full test evaluation reserved for candidates that pass clean validation and look promising. Candidate selection remains based on clean validation.
+
+## when2call-synthetic-pilots-20261028
+
+Timestamp: 2026-10-28T02:50:27.470611+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.generate_when2call_synthetic_pilots", "--output-dir", "outputs/when2call-synthetic-pilots-20261028", "--examples-per-strategy", "50", "--workers", "24", "--seed", "20261069", "--max-cost-usd", "1.0"]. Output: /workspace/post-training/outputs/when2call-synthetic-pilots-20261028. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+
+## Synthetic data pilot generation, 2026-10-28
+
+Generated 180 accepted examples in about two minutes with GPT-6 Luna through the Responses API, using 24 concurrent request slots and a $1.00 run cap. Source anchors came only from the 9,000-row `train_pref` split, and no official test data was loaded. Each example used a new request over original or composed tool schemas, passed structural checks, and matched the target action in a separate model judgment.
+
+| Strategy | Requested | Accepted | Target action |
+|---|---:|---:|---|
+| New tool-call requests over an existing tool set | 50 | 49 | tool_call |
+| Requests missing a required tool argument | 50 | 31 | request_for_info |
+| Requests for unsupported capabilities | 50 | 50 | cannot_answer |
+| New tool-call requests over composed tool sets | 50 | 50 | tool_call |
+
+The missing-information strategy accepted fewer rows because structural checks rejected cases where the selected argument had a schema default or required arguments were invalid. The API ledger records 455 requests, 338,901 input tokens, 34,447 output tokens, and estimated spend of $0.0511136. Two API errors were recorded. Candidate models have not yet been evaluated. The first one-epoch Qwen pilot is now training on the 9,000 originals plus the 49 accepted new-tool-call examples. Each pilot uses at most 500 training and clean-validation examples and a 500-row aggregate-only black-box screen. Full test evaluation will follow only for promising candidates.

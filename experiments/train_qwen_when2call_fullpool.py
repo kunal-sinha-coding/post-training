@@ -123,6 +123,8 @@ def main() -> int:
     parser.add_argument("--weight-decay", type=float, default=0.01)
     parser.add_argument("--lora-rank", type=int, default=16)
     parser.add_argument("--evaluate-baseline", action="store_true")
+    parser.add_argument("--test-sample-size", type=int)
+    parser.add_argument("--test-sample-seed", type=int, default=20261070)
     parser.add_argument("--augmentation-mode", choices=("none", "tool_order", "schema_key_order", "request_context"), default="none")
     parser.add_argument("--augmentation-seed", type=int, default=20261066)
     parser.add_argument("--augmentation-jsonl", type=Path)
@@ -188,7 +190,7 @@ def main() -> int:
     optimizer = torch.optim.AdamW((parameter for parameter in model.parameters() if parameter.requires_grad), lr=args.learning_rate, weight_decay=args.weight_decay)
     baseline_test = None
     if args.evaluate_baseline:
-        baseline_test = evaluate_black_box(model, tokenizer, label_ids, device, args.max_length, args.eval_batch_size)
+        baseline_test = evaluate_black_box(model, tokenizer, label_ids, device, args.max_length, args.eval_batch_size, args.test_sample_size, args.test_sample_seed)
         run.log({"baseline/test_accuracy": baseline_test["accuracy"], "baseline/test_macro_f1": baseline_test["macro_f1"]}, step=0)
     total_steps = len(training_rows) * args.epochs
     epoch_records = []
@@ -210,7 +212,7 @@ def main() -> int:
         write_heartbeat(heartbeat, "epoch_evaluation", global_step)
         training_metrics = evaluate(model, tokenizer, training_eval_rows, label_ids, device, args.max_length, args.eval_batch_size, heartbeat)
         validation_metrics = evaluate(model, tokenizer, validation_rows, label_ids, device, args.max_length, args.eval_batch_size, heartbeat) if validation_rows else None
-        test_metrics = evaluate_black_box(model, tokenizer, label_ids, device, args.max_length, args.eval_batch_size)
+        test_metrics = evaluate_black_box(model, tokenizer, label_ids, device, args.max_length, args.eval_batch_size, args.test_sample_size, args.test_sample_seed)
         record = {"epoch": epoch + 1, "step": global_step, "training_loss": epoch_loss, "training_metrics": training_metrics, "training_evaluation_examples": len(training_eval_rows), "training_evaluation_fingerprint": fingerprint_rows(training_eval_rows), "heldout_validation_metrics": validation_metrics, "validation_source": args.validation_source, "validation_examples": len(validation_rows), "black_box_test_metrics": test_metrics, "checkpoint": str(checkpoint_dir)}
         epoch_records.append(record)
         log_metrics = {"epoch": epoch + 1, "training/epoch_loss": epoch_loss, "training/accuracy": training_metrics["accuracy"], "training/macro_f1": training_metrics["macro_f1"], "test/accuracy": test_metrics["accuracy"], "test/macro_f1": test_metrics["macro_f1"]}
