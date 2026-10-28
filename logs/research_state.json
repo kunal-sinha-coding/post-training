@@ -6,53 +6,8 @@
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
   "current_hypothesis": "On the 249-example disjoint clean validation partition, routing confident request_for_info predictions to the encoder and all other predictions to tool-rich Qwen reached 0.955823 accuracy and 0.975393 macro F1, compared with 0.927711 and 0.960135 for Qwen alone. Freeze this exact route and measure it once on the full aggregate test. Afterward return to broad synthetic-data pilots selected only by clean validation.",
   "active_experiment": {
-    "pid": 287644,
+    "pid": 287891,
     "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.existing_when2call_hybrid",
-      "prepare",
-      "--work-dir",
-      "outputs/tool-rich-qwen-encoder-ensemble-20261028/frozen",
-      "--output-dir",
-      "outputs/tool-rich-qwen-encoder-ensemble-20261028/prepare",
-      "--suite",
-      "single-request-confidence",
-      "--qwen-checkpoint",
-      "outputs/qwen-pref900-synth450-tool-rich-20261028/epoch-01",
-      "--methods",
-      "single_request_conf_60",
-      "--primary-method",
-      "single_request_conf_60",
-      "--batch-size",
-      "1"
-    ],
-    "started_at": "2026-10-28T16:03:24.065778+00:00"
-  },
-  "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.existing_when2call_hybrid",
-    "prepare",
-    "--work-dir",
-    "outputs/tool-rich-qwen-encoder-ensemble-20261028/frozen",
-    "--output-dir",
-    "outputs/tool-rich-qwen-encoder-ensemble-20261028/prepare",
-    "--suite",
-    "single-request-confidence",
-    "--qwen-checkpoint",
-    "outputs/qwen-pref900-synth450-tool-rich-20261028/epoch-01",
-    "--methods",
-    "single_request_conf_60",
-    "--primary-method",
-    "single_request_conf_60",
-    "--batch-size",
-    "1"
-  ],
-  "worker_queue": [
-    [
       "python",
       "-u",
       "-m",
@@ -72,8 +27,31 @@
       "single_request_conf_60",
       "--batch-size",
       "1"
-    ]
+    ],
+    "started_at": "2026-10-28T16:04:25.134853+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "test",
+    "--work-dir",
+    "outputs/tool-rich-qwen-encoder-ensemble-20261028/frozen",
+    "--output-dir",
+    "outputs/tool-rich-qwen-encoder-ensemble-20261028/test",
+    "--suite",
+    "single-request-confidence",
+    "--qwen-checkpoint",
+    "outputs/qwen-pref900-synth450-tool-rich-20261028/epoch-01",
+    "--methods",
+    "single_request_conf_60",
+    "--primary-method",
+    "single_request_conf_60",
+    "--batch-size",
+    "1"
   ],
+  "worker_queue": [],
   "_previous_command": [
     "python",
     "-u",
@@ -100,8 +78,8 @@
     "macro_f1": 0.48337889372616516,
     "selection": "clean validation only"
   },
-  "last_heartbeat": "2026-10-28T16:03:24.065791+00:00",
-  "last_action": "Watchdog started validation worker pid 287644.",
+  "last_heartbeat": "2026-10-28T16:04:25.134864+00:00",
+  "last_action": "Watchdog started validation worker pid 287891.",
   "watchdog_enabled": true,
   "research_log_size": 1617207,
   "stop_command": "STOP",
@@ -110,11 +88,11 @@
     "-u",
     "-m",
     "experiments.existing_when2call_hybrid",
-    "prepare",
+    "test",
     "--work-dir",
     "outputs/tool-rich-qwen-encoder-ensemble-20261028/frozen",
     "--output-dir",
-    "outputs/tool-rich-qwen-encoder-ensemble-20261028/prepare",
+    "outputs/tool-rich-qwen-encoder-ensemble-20261028/test",
     "--suite",
     "single-request-confidence",
     "--qwen-checkpoint",
@@ -126,7 +104,12 @@
     "--batch-size",
     "1"
   ],
-  "recording_jobs": [],
+  "recording_jobs": [
+    {
+      "pid": 287890,
+      "experiment_id": "prepare"
+    }
+  ],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-28T16:02:53.036101+00:00",
   "planning_ack_deadline": "2026-10-28T16:04:53.036122+00:00",

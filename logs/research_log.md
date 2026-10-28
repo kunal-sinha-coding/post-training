@@ -12787,3 +12787,15 @@ This record was written automatically. Candidate selection must use clean valida
 ## Tool-rich Qwen plus Jina clean-validation screen
 
 Compared the tool-rich Qwen adapter with the fixed Jina encoder on a stratified 500-row SFT sample split into 251 fitting rows and 249 held-out validation rows. The Qwen baseline scored 0.927711 accuracy and 0.960135 macro F1 on held-out validation. The predeclared `single_request_conf_60` route scored 0.955823 accuracy and 0.975393 macro F1 and was selected by clean validation only. The route uses the encoder when its top class is `request_for_info` and its top probability is at least 0.60, and uses Qwen otherwise. No test data was loaded. The frozen configuration and full aggregate measurement are queued.
+
+## prepare
+
+Timestamp: 2026-10-28T16:04:25.351939+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.existing_when2call_hybrid", "prepare", "--work-dir", "outputs/tool-rich-qwen-encoder-ensemble-20261028/frozen", "--output-dir", "outputs/tool-rich-qwen-encoder-ensemble-20261028/prepare", "--suite", "single-request-confidence", "--qwen-checkpoint", "outputs/qwen-pref900-synth450-tool-rich-20261028/epoch-01", "--methods", "single_request_conf_60", "--primary-method", "single_request_conf_60", "--batch-size", "1"]. Output: /workspace/post-training/outputs/tool-rich-qwen-encoder-ensemble-20261028/prepare. W&B run: 61p0aqaq.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Test status: queued. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
