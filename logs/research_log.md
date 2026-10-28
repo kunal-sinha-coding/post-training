@@ -12567,3 +12567,15 @@ Clean development accuracy: 0.936. Clean development macro F1: 0.479842105263157
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.936, "macro_f1": 0.4798421052631579, "confusion_matrix": [[243, 1, 6, 0], [6, 225, 18, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-pref900-balanced-synth225-lr5e6-20261028
+
+Timestamp: 2026-10-28T10:56:01.243143+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-pref900-balanced-synth225-lr5e6-20261028", "--adapter-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--preference-train-sample-size", "900", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261087", "--learning-rate", "5e-6", "--augmentation-jsonl", "outputs/when2call-synthetic-medium-pilots-20261028/balanced_mix225.jsonl"]. Output: /workspace/post-training/outputs/qwen-pref900-balanced-synth225-lr5e6-20261028. W&B run: va1cjc8p.
+
+Clean development accuracy: 0.936. Clean development macro F1: 0.48038632673288206. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.6963307776560789, "macro_f1": 0.5163821245299334, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.936, "macro_f1": 0.48038632673288206, "confusion_matrix": [[241, 3, 6, 0], [3, 227, 19, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
