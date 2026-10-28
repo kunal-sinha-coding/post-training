@@ -12288,3 +12288,6 @@ Clean development accuracy: 0.936. Clean development macro F1: 0.469221607654729
 Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.962, "macro_f1": 0.48832640709774233, "examples": 500, "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+The expanded missing-information branch used 568 synthetic examples. Training-probe accuracy was 1.000 and macro F1 was 0.250 on 500 rows. Clean SFT validation was 0.936 accuracy and 0.469222 macro F1 on 500 rows. Full 3,652-row aggregate test was 0.444962 accuracy and 0.283200 macro F1, below the recorded Qwen baseline (0.702629, 0.527976). It stopped after one epoch because test accuracy did not improve.

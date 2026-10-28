@@ -164,9 +164,9 @@
     "selection": "clean validation only"
   },
   "last_heartbeat": "2026-10-28T04:39:38.593888+00:00",
-  "last_action": "Watchdog started validation worker pid 260729.",
+  "last_action": "The 568-example missing-information continuation stopped after full-test accuracy fell from 0.702629 to 0.444962. The unsupported-capability strategy is active; composed-tool remains queued.",
   "watchdog_enabled": true,
-  "research_log_size": 1543084,
+  "research_log_size": 1545002,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -208,12 +208,7 @@
     "--baseline-test-source",
     "outputs/qwen-when2call-synthetic-medium-new_tool_call-20261028/metrics.json:baseline_black_box_test_metrics"
   ],
-  "recording_jobs": [
-    {
-      "pid": 260728,
-      "experiment_id": "qwen-when2call-synthetic-medium-missing_required_info-20261028"
-    }
-  ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": null,
   "planning_ack_deadline": null,
@@ -691,6 +686,20 @@
       "training_examples": 500,
       "validation_accuracy": 0.47,
       "validation_macro_f1": 0.31207302091448436,
+      "validation_examples": 500,
+      "selection_note": "Stopped after the first epoch because full aggregate test accuracy did not improve, as explicitly requested."
+    },
+    {
+      "strategy": "missing_required_info",
+      "examples": 568,
+      "test_baseline_accuracy_full": 0.7026286966046003,
+      "test_post_accuracy_full": 0.44496166484118294,
+      "test_post_macro_f1_full": 0.2831995661156004,
+      "training_accuracy": 1.0,
+      "training_macro_f1": 0.25,
+      "training_examples": 500,
+      "validation_accuracy": 0.936,
+      "validation_macro_f1": 0.4692216076547297,
       "validation_examples": 500,
       "selection_note": "Stopped after the first epoch because full aggregate test accuracy did not improve, as explicitly requested."
     }
