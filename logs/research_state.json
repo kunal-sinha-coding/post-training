@@ -6,51 +6,8 @@
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
   "current_hypothesis": "The latest completed model run has complete train, clean-validation, and aggregate test evidence. The tool-rich replay run is still evaluating; existing queue entries test replay quantity and synthetic pool composition. All generated examples so far use single-turn requests. A new hypothesis is that multi-turn examples where a required value appears earlier in conversation will improve context use and distinguish inferable values from missing ones. Generate paired conversations from train_pref anchors, validate labels independently, and compare one replay continuation on clean validation.",
   "active_experiment": {
-    "pid": 301386,
+    "pid": 301682,
     "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_existing_when2call_hybrid_validation",
-      "--output-dir",
-      "outputs/qwen-combined-boundary-encoder-clean-validation-20261028",
-      "--qwen-checkpoint",
-      "outputs/qwen-combined-boundary-synth-replay-20261028/epoch-01",
-      "--encoder-checkpoint",
-      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
-      "--split-seed",
-      "20261091",
-      "--sample-seed",
-      "20261112",
-      "--max-validation-examples",
-      "500",
-      "--batch-size",
-      "1"
-    ],
-    "started_at": "2026-10-28T20:26:03.645574+00:00"
-  },
-  "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.evaluate_existing_when2call_hybrid_validation",
-    "--output-dir",
-    "outputs/qwen-combined-boundary-encoder-clean-validation-20261028",
-    "--qwen-checkpoint",
-    "outputs/qwen-combined-boundary-synth-replay-20261028/epoch-01",
-    "--encoder-checkpoint",
-    "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
-    "--split-seed",
-    "20261091",
-    "--sample-seed",
-    "20261112",
-    "--max-validation-examples",
-    "500",
-    "--batch-size",
-    "1"
-  ],
-  "worker_queue": [
-    [
       "python",
       "-u",
       "-m",
@@ -70,6 +27,29 @@
       "--batch-size",
       "1"
     ],
+    "started_at": "2026-10-28T20:28:34.353473+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_existing_when2call_hybrid_validation",
+    "--output-dir",
+    "outputs/qwen-tool-rich-synth-only-encoder-clean-validation-20261028",
+    "--qwen-checkpoint",
+    "outputs/qwen-tool-rich-boundary-synth-only-20261028/epoch-01",
+    "--encoder-checkpoint",
+    "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
+    "--split-seed",
+    "20261091",
+    "--sample-seed",
+    "20261113",
+    "--max-validation-examples",
+    "500",
+    "--batch-size",
+    "1"
+  ],
+  "worker_queue": [
     [
       "python",
       "-u",
@@ -128,10 +108,10 @@
     "macro_f1": 0.48337889372616516,
     "selection": "clean validation only"
   },
-  "last_heartbeat": "2026-10-28T20:26:03.645588+00:00",
-  "last_action": "Watchdog started validation worker pid 301386.",
+  "last_heartbeat": "2026-10-28T20:28:34.353487+00:00",
+  "last_action": "Watchdog started validation worker pid 301682.",
   "watchdog_enabled": true,
-  "research_log_size": 1665259,
+  "research_log_size": 1666785,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -139,15 +119,15 @@
     "-m",
     "experiments.evaluate_existing_when2call_hybrid_validation",
     "--output-dir",
-    "outputs/qwen-combined-boundary-encoder-clean-validation-20261028",
+    "outputs/qwen-tool-rich-synth-only-encoder-clean-validation-20261028",
     "--qwen-checkpoint",
-    "outputs/qwen-combined-boundary-synth-replay-20261028/epoch-01",
+    "outputs/qwen-tool-rich-boundary-synth-only-20261028/epoch-01",
     "--encoder-checkpoint",
     "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
     "--split-seed",
     "20261091",
     "--sample-seed",
-    "20261112",
+    "20261113",
     "--max-validation-examples",
     "500",
     "--batch-size",
@@ -155,8 +135,8 @@
   ],
   "recording_jobs": [
     {
-      "pid": 301385,
-      "experiment_id": "qwen-combined-boundary-synth-replay900-20261028"
+      "pid": 301681,
+      "experiment_id": "qwen-combined-boundary-encoder-clean-validation-20261028"
     }
   ],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
