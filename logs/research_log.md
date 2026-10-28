@@ -12955,3 +12955,15 @@ The next hypothesis is that examples built from source rows with several competi
 ## Tool-rich replay ablation queued
 
 The latest completed experiment, `qwen-rare-schema-boundary-synth-replay-20261028`, has training metrics on 500 rows (0.990 accuracy, 0.742485 macro F1), clean validation on 500 rows (0.952, 0.484707), and aggregate black-box metrics on all 3,652 rows (0.700438, 0.522924). All evidence types are present. The next tool-rich generation and replay training commands remain in order. Added a distinct synthetic-only continuation using that same generated pool and the same starting checkpoint after the replay run. This isolates the contribution of real-data replay. Candidate selection will use clean validation only.
+
+## when2call-tool-rich-boundary-pilot-20261028
+
+Timestamp: 2026-10-28T17:39:47.951147+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.generate_when2call_boundary_pilot", "--output-dir", "outputs/when2call-tool-rich-boundary-pilot-20261028", "--pairs", "250", "--unsupported", "250", "--workers", "24", "--seed", "20261102", "--max-cost-usd", "2.0", "--anchor-strategy", "tool_rich"]. Output: /workspace/post-training/outputs/when2call-tool-rich-boundary-pilot-20261028. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

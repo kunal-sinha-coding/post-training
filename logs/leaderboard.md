@@ -2077,3 +2077,4 @@ Source-specific result `tool-rich-qwen-encoder-validation-sweep-20261028` has st
 | Candidate | qwen-rare-schema-boundary-synth-replay-20261028 | 0.952 | 0.48470744405035987 | [metrics](/workspace/post-training/outputs/qwen-rare-schema-boundary-synth-replay-20261028/metrics.json) | completed |
 
 | qwen-rare-schema-boundary-synth-replay-20261028 | 0.7004381161007667 | 0.5229243220070774 | i9sw6nh9 | Aggregate-only frozen test measurement |
+| Candidate | when2call-tool-rich-boundary-pilot-20261028 | — | — | [metrics](/workspace/post-training/outputs/when2call-tool-rich-boundary-pilot-20261028/metrics.json) | completed |
