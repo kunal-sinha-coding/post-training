@@ -12411,3 +12411,15 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-pref900-balanced-synth450-wd005-20261028
+
+Timestamp: 2026-10-28T07:10:19.332712+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-pref900-balanced-synth450-wd005-20261028", "--adapter-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--augmentation-jsonl", "outputs/when2call-synthetic-medium-pilots-20261028/balanced_mix450.jsonl", "--preference-train-sample-size", "900", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261087", "--baseline-test-accuracy", "0.7020810514786419", "--baseline-test-macro-f1", "0.5276156270961326", "--baseline-validation-accuracy", "0.962", "--baseline-validation-macro-f1", "0.48832640709774233", "--baseline-test-source", "outputs/qwen-when2call-synthetic-medium-new_tool_call-20261028/metrics.json:baseline_black_box_test_metrics", "--weight-decay", "0.05"]. Output: /workspace/post-training/outputs/qwen-pref900-balanced-synth450-wd005-20261028. W&B run: 5ss8bi0g.
+
+Clean development accuracy: 0.93. Clean development macro F1: 0.4791453951398815. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.6903066812705367, "macro_f1": 0.5094647323557033, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.962, "macro_f1": 0.48832640709774233, "examples": 500, "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
