@@ -12887,3 +12887,15 @@ This record was written automatically. Candidate selection must use clean valida
 ## Paired-boundary synthetic-only result and replay hypothesis
 
 Continued the clean-validation-best Qwen checkpoint for one epoch on the 667 accepted synthetic boundary rows. The 500-row training probe reached 0.992 accuracy and 0.743902 macro F1. Clean validation on 500 rows was 0.940 accuracy and 0.479458 macro F1, below the base checkpoint at 0.958 and 0.486757. Full aggregate test metrics on 3,652 rows were 0.725630 accuracy and 0.539094 macro F1, compared with the base checkpoint at 0.722892 and 0.539668. The 0.274-point accuracy difference is within the declared noise band. Metrics from the aggregate test are reporting-only. The training-validation gap motivates a matched replay experiment with 667 stratified real preference rows plus the same 667 synthetic rows.
+
+## qwen-boundary-pair-synth667-replay667-20261028
+
+Timestamp: 2026-10-28T17:02:29.087446+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-boundary-pair-synth667-replay667-20261028", "--adapter-checkpoint", "outputs/qwen-pref900-synth450-high-similarity-lr5e6-20261028/epoch-01", "--preference-train-sample-size", "667", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261096", "--learning-rate", "5e-6", "--augmentation-jsonl", "outputs/when2call-counterfactual-boundary-pilot-20261028/balanced_boundary500.jsonl"]. Output: /workspace/post-training/outputs/qwen-boundary-pair-synth667-replay667-20261028. W&B run: veykjyuf.
+
+Clean development accuracy: 0.956. Clean development macro F1: 0.4862245151459944. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7157721796276013, "macro_f1": 0.5353333658276607, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.956, "macro_f1": 0.4862245151459944, "confusion_matrix": [[244, 1, 5, 0], [4, 234, 11, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
