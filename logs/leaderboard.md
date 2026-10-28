@@ -2136,3 +2136,6 @@ Source-specific result `qwen-tool-rich-large-replay900-encoder-clean-validation-
 | Candidate | qwen-tool-rich-large-boundary-replay1100-20261028 | 0.956 | 0.4867348420419424 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-large-boundary-replay1100-20261028/metrics.json) | completed |
 
 | qwen-tool-rich-large-boundary-replay1100-20261028 | 0.7223439211391018 | 0.5396833238846755 | n6xxrsjr | Aggregate-only frozen test measurement |
+| Candidate | qwen-tool-rich-large-boundary-replay1500-20261028 | 0.944 | 0.48298270180528413 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-large-boundary-replay1500-20261028/metrics.json) | completed |
+
+| qwen-tool-rich-large-boundary-replay1500-20261028 | 0.7105695509309967 | 0.5273809089136836 | nwme5v04 | Aggregate-only frozen test measurement |

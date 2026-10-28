@@ -7985,3 +7985,5 @@ Clean-validation accuracy was 0.956 for both the 900-real and 1,100-real replay 
 Commit name: Verify large tool-rich 1,500-real replay launch.
 
 The watchdog launched `qwen-tool-rich-large-boundary-replay1500-20261028` as PID 308142. It uses 1,500 real preference examples with the 994-row large tool-rich pool, same initialization, optimizer seed, and learning rate as the prior replay-dose comparisons. The run is active, planning is disabled, and the queue is empty because the command was promoted. The prior 1,100-real run has all required evidence recorded.
+
+2026-10-28T23:23:01.080417+00:00: Commit `Record research experiment qwen-tool-rich-large-boundary-replay1500-20261028` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
