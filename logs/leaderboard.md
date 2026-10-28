@@ -1945,3 +1945,6 @@ Source-specific result `when2call-similarity-gate-30pct-pref-k3-question-tools-f
 | Candidate | qwen-pref900-balanced-synth450-20261028 | 0.944 | 0.48254600367276423 | [metrics](/workspace/post-training/outputs/qwen-pref900-balanced-synth450-20261028/metrics.json) | completed |
 
 | qwen-pref900-balanced-synth450-20261028 | 0.7245345016429354 | 0.5426195610492254 | xwv8vlyg | Aggregate-only frozen test measurement |
+| Candidate | qwen-pref900-balanced-synth900-20261028 | 0.914 | 0.47457935189031997 | [metrics](/workspace/post-training/outputs/qwen-pref900-balanced-synth900-20261028/metrics.json) | completed |
+
+| qwen-pref900-balanced-synth900-20261028 | 0.6552573932092004 | 0.47638614956057185 | qql28x3k | Aggregate-only frozen test measurement |
