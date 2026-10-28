@@ -12327,3 +12327,15 @@ Follow-up hypothesis: the unsupported-capability examples may have useful signal
 
 
 The user stopped the balanced 900-row mixture at step 781 of 900 before epoch evaluation and cleared the queued learning-rate follow-up. No metrics were produced. The next authorized direction is to expand the unsupported-capability synthetic data and retrain from the best saved Qwen checkpoint.
+
+## qwen-when2call-synthetic-balanced900-20261028
+
+Timestamp: 2026-10-28T05:27:51.315517+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-when2call-synthetic-balanced900-20261028", "--adapter-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--synthetic-only", "--augmentation-jsonl", "outputs/when2call-synthetic-medium-pilots-20261028/balanced_mix900.jsonl", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "100", "--seed", "20261055", "--stop-on-test-non-improvement", "--baseline-test-accuracy", "0.7020810514786419", "--baseline-test-macro-f1", "0.5276156270961326", "--baseline-validation-accuracy", "0.962", "--baseline-validation-macro-f1", "0.48832640709774233", "--baseline-test-source", "outputs/qwen-when2call-synthetic-medium-new_tool_call-20261028/metrics.json:baseline_black_box_test_metrics"]. Output: /workspace/post-training/outputs/qwen-when2call-synthetic-balanced900-20261028. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
