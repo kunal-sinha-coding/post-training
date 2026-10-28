@@ -7971,3 +7971,5 @@ Queued a 1,100-real replay dose on the same large 994-row tool-rich pool. Earlie
 Commit name: Verify large tool-rich 1,100-real replay launch.
 
 The watchdog launched `qwen-tool-rich-large-boundary-replay1100-20261028` as PID 307220. It uses the same large tool-rich synthetic pool and starting checkpoint as the 900-real comparison. State is active with planning disabled, and the worker queue is empty because this command was promoted. The previous 900-real run has complete training, clean-validation, and aggregate test evidence.
+
+2026-10-28T22:50:23.719636+00:00: Commit `Record research experiment qwen-tool-rich-large-boundary-replay1100-20261028` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
