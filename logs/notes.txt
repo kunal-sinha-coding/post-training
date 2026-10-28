@@ -7955,3 +7955,5 @@ The watchdog launched `qwen-tool-rich-large-boundary-replay900-20261028` as PID 
 Commit name: Queue large-pool replay encoder screen.
 
 The large-pool 900-replay training run is active. Appended a 500-example clean-validation screen combining its checkpoint with the trained encoder. This tests whether the larger synthetic pool changes the Qwen error profile and its complementarity with the encoder. The screen follows the training run, uses the fixed clean-validation sample, and does not use test metrics for selection.
+
+2026-10-28T22:19:42.951113+00:00: Commit `Record research experiment qwen-tool-rich-large-boundary-replay900-20261028` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.

@@ -2128,3 +2128,6 @@ Source-specific result `qwen-tool-rich-synth-only-three-encoder-clean-validation
 | Candidate | qwen-tool-rich-large-boundary-synthetic-only-20261028 | 0.95 | 0.48363771417663637 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/metrics.json) | completed |
 
 | qwen-tool-rich-large-boundary-synthetic-only-20261028 | 0.73986856516977 | 0.551691354734442 | om086b0n | Aggregate-only frozen test measurement |
+| Candidate | qwen-tool-rich-large-boundary-replay900-20261028 | 0.956 | 0.48573553719008267 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-large-boundary-replay900-20261028/metrics.json) | completed |
+
+| qwen-tool-rich-large-boundary-replay900-20261028 | 0.7390470974808324 | 0.5516399070828788 | f95e2un2 | Aggregate-only frozen test measurement |
