@@ -329,6 +329,26 @@
       "5e-6",
       "--augmentation-jsonl",
       "outputs/when2call-combined-boundary-pilot-20261028/balanced_boundary_combined.jsonl"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_existing_when2call_hybrid_validation",
+      "--output-dir",
+      "outputs/qwen-combined-boundary-encoder-clean-validation-20261028",
+      "--qwen-checkpoint",
+      "outputs/qwen-combined-boundary-synth-replay-20261028/epoch-01",
+      "--encoder-checkpoint",
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
+      "--split-seed",
+      "20261091",
+      "--sample-seed",
+      "20261112",
+      "--max-validation-examples",
+      "500",
+      "--batch-size",
+      "1"
     ]
   ],
   "_previous_command": [
@@ -407,7 +427,7 @@
     "wandb_run_id": "vrfnnoq2",
     "selection": "Aggregate test result reported for ranking only. It was not used for candidate selection."
   },
-  "next_hypothesis": "After the existing 667-real plus combined-synthetic run, compare a 900-real replay dose on the same combined rare-schema and tool-rich synthetic pool and fixed clean-validation sample. A higher real replay dose may retain more in-domain preference signal; choose by clean validation only, and report aggregate black-box test metrics without inspecting individual rows or using them for selection.",
+  "next_hypothesis": "After the queued combined-pool Qwen replay, screen its ensemble with the trained encoder on at most 500 clean validation examples. The combined boundary data may shift Qwen errors toward cases where the encoder is stronger. Use clean validation only for any selection and reserve black-box test evaluation for report-only measurement after a candidate passes the screen.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."

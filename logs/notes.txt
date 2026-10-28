@@ -7834,3 +7834,10 @@ Commit name: Audit tool-rich replay and queue replay-dose comparison.
 The most recent completed model run was `qwen-tool-rich-boundary-synth-replay-20261028`. Its metrics file contains training metrics on 500 examples (0.990 accuracy, 0.742485 macro F1), clean validation on 500 When2Call SFT examples (0.946 accuracy, 0.483104 macro F1), and aggregate black-box test metrics on all 3,652 examples (0.707558 accuracy, 0.527922 macro F1). All three required evidence types are recorded. The aggregate test metrics remain report-only for candidate selection.
 
 The worker was active on the queued tool-rich synthetic-only comparison, with nine commands remaining after launch. The queue was not exhausted. A distinct follow-up was appended after the existing work: train on the already queued combined rare-schema and tool-rich synthetic pool with 900 real preference replay examples, using the same starting checkpoint and clean-validation sample as the queued 667-example combined-pool experiment. This tests whether a larger real replay dose preserves more in-domain signal. Selection remains clean-validation-only. State was synchronized to the latest completed run and remains active with planning disabled.
+
+## 2026-10-28: Queue clean-validation fusion screen for combined synthetic replay
+Commit name: Queue combined-pool encoder fusion validation screen.
+
+The latest completed Qwen run, `qwen-tool-rich-boundary-synth-replay-20261028`, has all required evidence in its metrics file: 500 training rows, 500 clean-validation rows, and aggregate metrics for the full 3,652-row black-box test set. The worker queue was not exhausted. The tool-rich synthetic-only comparison remained active.
+
+Appended a clean-validation-only encoder-fusion screen after the queued combined-pool replay. This tests whether the combined rare-schema and tool-rich data changes Qwen errors in a way that complements the trained encoder. The screen is limited to 500 clean validation examples. Test data is not used for candidate selection. The research state remains active with planning disabled.
