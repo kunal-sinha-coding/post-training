@@ -1970,3 +1970,6 @@ Source-specific result `qwen-pref900-balanced-synth450-encoder-validation-202610
 | Candidate | qwen-pref900-balanced-synth675-20261028 | 0.93 | 0.4802781300302723 | [metrics](/workspace/post-training/outputs/qwen-pref900-balanced-synth675-20261028/metrics.json) | completed |
 
 | qwen-pref900-balanced-synth675-20261028 | 0.6952354874041621 | 0.5217089475440718 | cu5w7a5j | Aggregate-only frozen test measurement |
+| Candidate | qwen-pref900-synth450-new-tool-call-only-20261028 | 0.94 | 0.48195448843689753 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth450-new-tool-call-only-20261028/metrics.json) | completed |
+
+| qwen-pref900-synth450-new-tool-call-only-20261028 | 0.7154983570646222 | 0.5354967070003608 | vi9c10kk | Aggregate-only frozen test measurement |
