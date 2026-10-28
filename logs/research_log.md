@@ -12223,3 +12223,8 @@ Clean development accuracy: 0.936. Clean development macro F1: 0.475972577984465
 Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.962, "macro_f1": 0.48832640709774233, "confusion_matrix": [[241, 4, 5, 0], [0, 240, 9, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+## 2026-10-28: Increase synthetic batches and use requested test stopping rule
+
+The user clarified that the initial 31 to 50 example batches are too small and authorized 500 to 1,000 accepted synthetic examples per strategy. The missing-information pilot changed matched 500-row aggregate test accuracy from 70.4% to 62.0%; unsupported-capability changed it from 70.4% to 76.2%, while clean validation fell from 96.2% to 93.6%. The user explicitly directed aggregate test accuracy to control continuation for these synthetic branches. The active composed-tool tiny pilot is left to finish. Replaced the remaining tiny queue with 900 requested examples per strategy, then four independent synthetic-only continuation runs from the Qwen epoch-02 adapter. Each large run evaluates up to 500 training rows, 500 clean validation rows, and the complete aggregate test each epoch, and stops at the first test-accuracy non-improvement. No per-example test outcomes are retained.

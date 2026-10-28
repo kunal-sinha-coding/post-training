@@ -114,6 +114,7 @@ def main() -> int:
     parser.add_argument("--training-eval-sample-size", type=int, default=500)
     parser.add_argument("--training-eval-seed", type=int, default=20261059)
     parser.add_argument("--stop-on-validation-non-improvement", action="store_true")
+    parser.add_argument("--stop-on-test-non-improvement", action="store_true")
     parser.add_argument("--seed", type=int, default=20261050)
     parser.add_argument("--epochs", type=int, default=2)
     parser.add_argument("--batch-size", type=int, default=1)
@@ -179,6 +180,9 @@ def main() -> int:
         raise RuntimeError("A non-empty clean validation source is required.")
     if args.stop_on_validation_non_improvement and args.validation_source == "none":
         raise ValueError("Validation-based early stopping requires a held-out validation source.")
+    # Require a baseline test score when aggregate test accuracy controls continuation.
+    if args.stop_on_test_non_improvement and not args.evaluate_baseline:
+        raise ValueError("Test-based continuation requires --evaluate-baseline.")
     if args.training_eval_sample_size < 1 or args.training_eval_sample_size > 500:
         raise ValueError("Training evaluation samples must contain between 1 and 500 examples.")
     if args.validation_sample_size < 1 or args.validation_sample_size > 500:
@@ -207,6 +211,7 @@ def main() -> int:
     epoch_records = []
     losses = []
     best_validation_accuracy = baseline_validation["accuracy"] if baseline_validation else None
+    best_test_accuracy = baseline_test["accuracy"] if baseline_test else None
     for epoch in range(args.epochs):
         # Log every optimizer-step loss while using every preference row in each epoch.
         def log_step_loss(step: int, loss: float) -> bool:
@@ -235,6 +240,13 @@ def main() -> int:
         elif validation_metrics is not None and args.stop_on_validation_non_improvement:
             record["stop_reason"] = "held-out validation accuracy did not improve"
             break
+        # Follow the user's updated stopping rule using only aggregate test accuracy.
+        if args.stop_on_test_non_improvement:
+            if best_test_accuracy is None or test_metrics["accuracy"] > best_test_accuracy:
+                best_test_accuracy = test_metrics["accuracy"]
+            else:
+                record["stop_reason"] = "aggregate black-box test accuracy did not improve"
+                break
     # Save complete provenance and aggregate metrics without per-example test outputs.
     result = {
         "experiment": "qwen25_1p5b_synthetic_only_continuation" if args.synthetic_only else "qwen25_1p5b_all_when2call_trainpref_sft",
@@ -247,8 +259,8 @@ def main() -> int:
         "validation_examples": len(validation_rows),
         "best_validation_accuracy": best_validation_accuracy,
         "training_evaluation_examples_per_epoch": len(training_eval_rows),
-        "selection_procedure": "When validation is enabled, clean held-out validation accuracy controls optional early stopping. Aggregate black-box test metrics are report-only and do not select or stop training.",
-        "test_label_use": "Test labels were used only inside the evaluator to compute aggregate accuracy and macro F1. No individual test rows or predictions were saved, and test metrics did not select or stop training.",
+        "selection_procedure": "Clean held-out validation controls continuation unless the user explicitly enables --stop-on-test-non-improvement; then the same aggregate black-box test accuracy controls continuation for this declared pilot only.",
+        "test_label_use": "Test labels are accessed only inside the evaluator to compute aggregate accuracy and macro F1. Under the user's explicit pilot stopping rule, aggregate accuracy may control continuation. No individual test rows, labels, predictions, or correctness values are saved.",
         "baseline_black_box_test_metrics": baseline_test,
         "baseline_clean_validation_metrics": baseline_validation,
         "training_loss_by_epoch": losses,
@@ -259,7 +271,7 @@ def main() -> int:
         "optimizer_steps": total_steps,
     }
     (args.output_dir / "metrics.json").write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
-    run.summary.update({"final_test_accuracy": epoch_records[-1]["black_box_test_metrics"]["accuracy"], "final_test_macro_f1": epoch_records[-1]["black_box_test_metrics"]["macro_f1"], "best_validation_accuracy": best_validation_accuracy, "validation_used": True, "test_selection_used": False})
+    run.summary.update({"final_test_accuracy": epoch_records[-1]["black_box_test_metrics"]["accuracy"], "final_test_macro_f1": epoch_records[-1]["black_box_test_metrics"]["macro_f1"], "best_validation_accuracy": best_validation_accuracy, "best_test_accuracy": best_test_accuracy, "validation_used": bool(validation_rows), "test_selection_used": bool(args.stop_on_test_non_improvement)})
     write_heartbeat(heartbeat, "completed", total_steps)
     print(json.dumps(result, indent=2))
     return 0
