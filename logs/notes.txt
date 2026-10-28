@@ -7725,3 +7725,14 @@ Commit `Queue full-pool synthetic selection pilots`: The latest completed 1,800-
 2026-10-28T15:41:46.879869+00:00: Commit `Record research experiment qwen-pref900-synth300-fullpool-high-similarity-lr5e6-20261028` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
 
 Commit `Refresh reported aggregate test leaderboard`: Updated the current leaderboard after auditing all recorded 3,652-row aggregate test results. The Qwen tool-rich 450-example pilot scored 0.733297 accuracy and 0.548167 macro F1, above the previous Qwen-plus-encoder report at 0.731380 and 0.546773. The 0.19-point accuracy gap is within the stated noise band. Added clean-validation scores beside aggregate test results to make the selection boundary visible. The tool-rich candidate's clean validation was 0.920, so its higher aggregate test score is report-only and did not select it. Updated the `best_observed_test` reporting pointer and left the active full-pool 450-row training worker and queue unchanged.
+
+2026-10-28T15:58:23.741685+00:00: Commit `Record research experiment qwen-pref900-synth450-fullpool-high-similarity-lr5e6-20261028` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-28T15:58:26.257137+00:00: Commit `Record experiment synchronization failure` records the failed commit or push for qwen-pref900-synth450-fullpool-high-similarity-lr5e6-20261028: fatal: Unable to create '/workspace/post-training/.git/index.lock': File exists.
+
+Another git process seems to be running in this repository, e.g.
+an editor opened by 'git commit'. Please make sure all processes
+are terminated then try again. If it still fails, a git process
+may have crashed in this repository earlier:
+remove the file manually to continue.
+. The result remains local and the worker queue continues.
