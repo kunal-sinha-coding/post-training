@@ -125726,3 +125726,381 @@ The complete setup and observed results are recorded below. Source validation sp
 Purpose: Test whether label-preserving tool-order permutations improve Qwen generalization from the 9,000 When2Call `train_pref` examples. Setup: start from `Qwen/Qwen2.5-1.5B-Instruct` with fresh rank-16 LoRA, learning rate 2e-5, weight decay 0.01, batch size 1, seed 20261055. Append one deterministically shuffled tool-order variant for every preference row with more than one tool. The source has 9,000 rows, of which 5,803 received variants, for 14,803 training rows. Evaluate up to 500 training rows, 500 held-out `train_sft` rows, and all 3,652 black-box test rows. Use clean validation for continuation and candidate selection. The full test measurement is report-only.
 
 Epoch 1 checkpoint: loss 0.566216, training accuracy 0.956000, training macro F1 0.717235; clean validation accuracy 0.946000, macro F1 0.483559; aggregate black-box test accuracy 0.668127, macro F1 0.468839. W&B run `cxm2b3nx`: https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/cxm2b3nx. The run remains active for epoch 2. No individual test outcomes were accessed or saved.
+
+## qwen-when2call-aug-tool-order-20261027
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.train_qwen_when2call_fullpool",
+    "--output-dir",
+    "outputs/qwen-when2call-aug-tool-order-20261027",
+    "--validation-source",
+    "sft",
+    "--validation-sample-size",
+    "500",
+    "--validation-seed",
+    "20261053",
+    "--training-eval-sample-size",
+    "500",
+    "--training-eval-seed",
+    "20261059",
+    "--epochs",
+    "2",
+    "--stop-on-validation-non-improvement",
+    "--seed",
+    "20261055",
+    "--augmentation-mode",
+    "tool_order",
+    "--augmentation-seed",
+    "20261066"
+  ],
+  "development_metrics": {
+    "accuracy": 0.948,
+    "confusion_matrix": [
+      [
+        244,
+        1,
+        5,
+        0
+      ],
+      [
+        1,
+        230,
+        18,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0
+      ]
+    ],
+    "examples": 500,
+    "macro_f1": 0.48555107526881724
+  },
+  "exit_code": "unknown",
+  "experiment_id": "qwen-when2call-aug-tool-order-20261027",
+  "failure_reason": null,
+  "metadata": {
+    "base_model": "Qwen/Qwen2.5-1.5B-Instruct",
+    "base_model_checkpoint": "Qwen/Qwen2.5-1.5B-Instruct before any task adapter training",
+    "baseline_black_box_test_metrics": null,
+    "best_validation_accuracy": 0.948,
+    "config": {
+      "augmentation_mode": "tool_order",
+      "augmentation_seed": 20261066,
+      "batch_size": 1,
+      "bfcl_data": "data/bfcl_when2call_labeled.jsonl",
+      "epochs": 2,
+      "eval_batch_size": 4,
+      "evaluate_baseline": false,
+      "include_full_bfcl": false,
+      "learning_rate": 2e-05,
+      "lora_rank": 16,
+      "max_length": 4096,
+      "model": "Qwen/Qwen2.5-1.5B-Instruct",
+      "output_dir": "outputs/qwen-when2call-aug-tool-order-20261027",
+      "seed": 20261055,
+      "stop_on_validation_non_improvement": true,
+      "training_eval_sample_size": 500,
+      "training_eval_seed": 20261059,
+      "validation_sample_size": 500,
+      "validation_seed": 20261053,
+      "validation_source": "sft",
+      "weight_decay": 0.01
+    },
+    "data": {
+      "augmentation_mode": "tool_order",
+      "augmentation_seed": 20261066,
+      "augmented_examples": 5803,
+      "bfcl_file": "data/bfcl_when2call_labeled.jsonl",
+      "bfcl_sha256": "a4b817a01c109603c00fe9e682f11eb636afc139894a92d4960bde8bddfda27f",
+      "bfcl_train_examples": 0,
+      "dataset": "nvidia/When2Call",
+      "label_counts": {
+        "0": 4608,
+        "1": 5119,
+        "2": 5072,
+        "3": 4
+      },
+      "preference_examples": 9000,
+      "prompt_label_fingerprint": "4b96d7a976b413209f5a3014beef25a7870c797a054423fc76c86a84e7ec9627",
+      "split": "train_pref"
+    },
+    "device": "cuda",
+    "epoch_records": [
+      {
+        "black_box_test_metrics": {
+          "accuracy": 0.6681270536692223,
+          "examples": 3652,
+          "macro_f1": 0.4688388892277187
+        },
+        "checkpoint": "outputs/qwen-when2call-aug-tool-order-20261027/epoch-01",
+        "epoch": 1,
+        "heldout_validation_metrics": {
+          "accuracy": 0.946,
+          "confusion_matrix": [
+            [
+              243,
+              1,
+              6,
+              0
+            ],
+            [
+              4,
+              230,
+              15,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              0
+            ]
+          ],
+          "examples": 500,
+          "macro_f1": 0.4835592369477912
+        },
+        "step": 14803,
+        "training_evaluation_examples": 500,
+        "training_evaluation_fingerprint": "5d6c692fad2f4e19a8704ba0b50626cf6b90cfc728332f65d93c9c3cb687571a",
+        "training_loss": 0.5662157292950353,
+        "training_metrics": {
+          "accuracy": 0.956,
+          "confusion_matrix": [
+            [
+              153,
+              0,
+              3,
+              0
+            ],
+            [
+              5,
+              162,
+              6,
+              0
+            ],
+            [
+              2,
+              6,
+              163,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "examples": 500,
+          "macro_f1": 0.7172345939324964
+        },
+        "validation_examples": 500,
+        "validation_source": "sft"
+      },
+      {
+        "black_box_test_metrics": {
+          "accuracy": 0.6593647316538883,
+          "examples": 3652,
+          "macro_f1": 0.46846782615854876
+        },
+        "checkpoint": "outputs/qwen-when2call-aug-tool-order-20261027/epoch-02",
+        "epoch": 2,
+        "heldout_validation_metrics": {
+          "accuracy": 0.948,
+          "confusion_matrix": [
+            [
+              244,
+              1,
+              5,
+              0
+            ],
+            [
+              1,
+              230,
+              18,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              0
+            ]
+          ],
+          "examples": 500,
+          "macro_f1": 0.48555107526881724
+        },
+        "step": 29606,
+        "training_evaluation_examples": 500,
+        "training_evaluation_fingerprint": "5d6c692fad2f4e19a8704ba0b50626cf6b90cfc728332f65d93c9c3cb687571a",
+        "training_loss": 0.2661474776538311,
+        "training_metrics": {
+          "accuracy": 0.982,
+          "confusion_matrix": [
+            [
+              156,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              167,
+              5,
+              0
+            ],
+            [
+              0,
+              3,
+              168,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "examples": 500,
+          "macro_f1": 0.7368275577030511
+        },
+        "validation_examples": 500,
+        "validation_source": "sft"
+      }
+    ],
+    "experiment": "qwen25_1p5b_all_when2call_trainpref_sft",
+    "optimizer_steps": 29606,
+    "purpose": "Train on all When2Call preference rows, optionally with BFCL, and report each epoch.",
+    "selection_procedure": "When validation is enabled, clean held-out validation accuracy controls optional early stopping. Aggregate black-box test metrics are report-only and do not select or stop training.",
+    "test_label_use": "Test labels were used only inside the evaluator to compute aggregate accuracy and macro F1. No individual test rows or predictions were saved, and test metrics did not select or stop training.",
+    "training_evaluation_examples_per_epoch": 500,
+    "training_loss_by_epoch": [
+      0.5662157292950353,
+      0.2661474776538311
+    ],
+    "validation_examples": 500,
+    "validation_source": "sft",
+    "wandb_run_id": "cxm2b3nx",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/cxm2b3nx"
+  },
+  "metrics_path": "/workspace/post-training/outputs/qwen-when2call-aug-tool-order-20261027/metrics.json",
+  "official_test_loaded": null,
+  "official_test_metrics": {
+    "accuracy": 0.6593647316538883,
+    "examples": 3652,
+    "macro_f1": 0.46846782615854876
+  },
+  "output_dir": "/workspace/post-training/outputs/qwen-when2call-aug-tool-order-20261027",
+  "source_validation_metrics": {
+    "heldout_validation_metrics": {
+      "accuracy": 0.948,
+      "confusion_matrix": [
+        [
+          244,
+          1,
+          5,
+          0
+        ],
+        [
+          1,
+          230,
+          18,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0
+        ]
+      ],
+      "examples": 500,
+      "macro_f1": 0.48555107526881724
+    }
+  },
+  "started_at": "2026-10-27T23:03:16.764618+00:00",
+  "status": "completed",
+  "test_status": "measured",
+  "timestamp": "2026-10-28T01:47:48.955042+00:00",
+  "train_metrics": {
+    "accuracy": 0.982,
+    "confusion_matrix": [
+      [
+        156,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        167,
+        5,
+        0
+      ],
+      [
+        0,
+        3,
+        168,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "examples": 500,
+    "macro_f1": 0.7368275577030511
+  },
+  "wandb_run_id": "cxm2b3nx",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/cxm2b3nx"
+}
+```
+
+
+## qwen-when2call-aug-tool-order-20261027 final results
+
+Purpose and setup are recorded in the epoch-01 entry above. The experiment trained the 9,000 When2Call preference rows plus 5,803 deterministic tool-order variants for two epochs from the same fresh Qwen 1.5B LoRA setup. Training and clean validation used 500 examples per epoch. The black-box test used all 3,652 examples. W&B run: cxm2b3nx (https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/cxm2b3nx).
+
+| Epoch | Train accuracy | Train macro F1 | Clean validation accuracy | Clean validation macro F1 | Aggregate test accuracy | Aggregate test macro F1 | Training loss |
+|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 0.9560 | 0.717235 | 0.9460 | 0.483559 | 0.668127 | 0.468839 | 0.566216 |
+| 2 | 0.9820 | 0.736828 | 0.9480 | 0.485551 | 0.659365 | 0.468468 | 0.266147 |
+
+Clean validation improved from 0.946 to 0.948, so the run completed its planned second epoch. Test metrics are report-only. Test accuracy decreased by 0.877 percentage points from epoch 1 to epoch 2 and remains below the known standalone Qwen benchmark. No test labels selected the checkpoint.

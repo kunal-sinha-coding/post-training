@@ -6,65 +6,8 @@
   "protocol": "fresh_base_bfcl_when2call_data_exploration_v1",
   "current_hypothesis": "Label-preserving changes to the 9,000 When2Call preference prompts may improve robustness without adding label noise. Compare tool-order permutations, JSON schema key-order changes, and a neutral request-context wrapper, training from the same Qwen base and stopping by clean validation only.",
   "active_experiment": {
-    "pid": 244609,
+    "pid": 251550,
     "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.train_qwen_when2call_fullpool",
-      "--output-dir",
-      "outputs/qwen-when2call-aug-tool-order-20261027",
-      "--validation-source",
-      "sft",
-      "--validation-sample-size",
-      "500",
-      "--validation-seed",
-      "20261053",
-      "--training-eval-sample-size",
-      "500",
-      "--training-eval-seed",
-      "20261059",
-      "--epochs",
-      "2",
-      "--stop-on-validation-non-improvement",
-      "--seed",
-      "20261055",
-      "--augmentation-mode",
-      "tool_order",
-      "--augmentation-seed",
-      "20261066"
-    ],
-    "started_at": "2026-10-27T23:03:16.764618+00:00"
-  },
-  "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.train_qwen_when2call_fullpool",
-    "--output-dir",
-    "outputs/qwen-when2call-aug-tool-order-20261027",
-    "--validation-source",
-    "sft",
-    "--validation-sample-size",
-    "500",
-    "--validation-seed",
-    "20261053",
-    "--training-eval-sample-size",
-    "500",
-    "--training-eval-seed",
-    "20261059",
-    "--epochs",
-    "2",
-    "--stop-on-validation-non-improvement",
-    "--seed",
-    "20261055",
-    "--augmentation-mode",
-    "tool_order",
-    "--augmentation-seed",
-    "20261066"
-  ],
-  "worker_queue": [
-    [
       "python",
       "-u",
       "-m",
@@ -91,6 +34,36 @@
       "--augmentation-seed",
       "20261066"
     ],
+    "started_at": "2026-10-28T01:47:48.784091+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.train_qwen_when2call_fullpool",
+    "--output-dir",
+    "outputs/qwen-when2call-aug-schema-key-order-20261027",
+    "--validation-source",
+    "sft",
+    "--validation-sample-size",
+    "500",
+    "--validation-seed",
+    "20261053",
+    "--training-eval-sample-size",
+    "500",
+    "--training-eval-seed",
+    "20261059",
+    "--epochs",
+    "2",
+    "--stop-on-validation-non-improvement",
+    "--seed",
+    "20261055",
+    "--augmentation-mode",
+    "schema_key_order",
+    "--augmentation-seed",
+    "20261066"
+  ],
+  "worker_queue": [
     [
       "python",
       "-u",
@@ -198,10 +171,10 @@
     "macro_f1": 0.48337889372616516,
     "selection": "clean validation only"
   },
-  "last_heartbeat": "2026-10-27T23:03:16.764630+00:00",
-  "last_action": "Added a cached GPT-6 Luna semantic-paraphrase pilot and its Qwen training command after the three queued representation-preserving augmentation probes.",
+  "last_heartbeat": "2026-10-28T01:47:48.784108+00:00",
+  "last_action": "Completed tool-order augmentation with all three evidence types recorded. Clean validation rose slightly while the aggregate test score fell. The watchdog launched the queued schema-key-order augmentation as the next sole worker.",
   "watchdog_enabled": true,
-  "research_log_size": 1524742,
+  "research_log_size": 1528125,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -209,7 +182,7 @@
     "-m",
     "experiments.train_qwen_when2call_fullpool",
     "--output-dir",
-    "outputs/qwen-when2call-aug-tool-order-20261027",
+    "outputs/qwen-when2call-aug-schema-key-order-20261027",
     "--validation-source",
     "sft",
     "--validation-sample-size",
@@ -226,11 +199,16 @@
     "--seed",
     "20261055",
     "--augmentation-mode",
-    "tool_order",
+    "schema_key_order",
     "--augmentation-seed",
     "20261066"
   ],
-  "recording_jobs": [],
+  "recording_jobs": [
+    {
+      "pid": 251549,
+      "experiment_id": "qwen-when2call-aug-tool-order-20261027"
+    }
+  ],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": null,
   "planning_ack_deadline": null,
@@ -280,60 +258,110 @@
     "selection_use": "none"
   },
   "evidence_audit": {
-    "latest_completed_experiment": "when2call-similarity-gate-30pct-pref-k3-weight-refine-fulltest-20270524",
+    "latest_completed_experiment": "qwen-when2call-aug-tool-order-20261027",
     "training_metrics_recorded": true,
-    "training_metrics_scope": "Retrieval experiment did not train. The report links the frozen Qwen epoch-2 training probe and loss.",
+    "training_metrics_scope": "Training used 14,803 examples including 5,803 label-preserving tool-order variants. Each epoch training probe sampled 500 examples.",
     "training_metrics_sources": [
       {
-        "path": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json",
-        "checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+        "path": "outputs/qwen-when2call-aug-tool-order-20261027/metrics.json",
+        "checkpoint": "outputs/qwen-when2call-aug-tool-order-20261027/epoch-01",
+        "epoch": 1,
+        "examples": 500,
+        "accuracy": 0.956,
+        "macro_f1": 0.7172345939324964,
+        "training_loss": 0.5662157292950353
+      },
+      {
+        "path": "outputs/qwen-when2call-aug-tool-order-20261027/metrics.json",
+        "checkpoint": "outputs/qwen-when2call-aug-tool-order-20261027/epoch-02",
         "epoch": 2,
         "examples": 500,
-        "accuracy": 0.96,
-        "macro_f1": 0.7201450925439365,
-        "training_loss": 0.408354387068056
+        "accuracy": 0.982,
+        "macro_f1": 0.7368275577030511,
+        "training_loss": 0.2661474776538311
       }
     ],
     "clean_validation_recorded": true,
-    "clean_validation_source": "outputs/when2call-similarity-gate-30pct-pref-k3-weight-refine-20270523/metrics.json",
+    "clean_validation_source": "nvidia/When2Call:train_sft",
     "clean_validation_examples": 500,
-    "clean_validation_zero_shot": {
-      "accuracy": 0.942,
-      "macro_f1": 0.967059240237315
+    "clean_validation_epoch_01": {
+      "accuracy": 0.946,
+      "macro_f1": 0.4835592369477912,
+      "confusion_matrix": [
+        [
+          243,
+          1,
+          6,
+          0
+        ],
+        [
+          4,
+          230,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0
+        ]
+      ],
+      "examples": 500
     },
-    "clean_validation_best": {
-      "method": "gate_top_0.65_fallback_k1_probavg_w0.5",
-      "accuracy": 0.956,
-      "macro_f1": 0.9763532692179255
+    "clean_validation_epoch_02": {
+      "accuracy": 0.948,
+      "macro_f1": 0.48555107526881724,
+      "confusion_matrix": [
+        [
+          244,
+          1,
+          5,
+          0
+        ],
+        [
+          1,
+          230,
+          18,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0
+        ]
+      ],
+      "examples": 500
     },
     "aggregate_black_box_test_metrics_recorded": true,
-    "aggregate_black_box_test_source": "outputs/when2call-similarity-gate-30pct-pref-k3-weight-refine-fulltest-20270524/metrics.json",
-    "test_sample_examples": 500,
-    "test_sample_metrics": {
-      "zero_shot": {
-        "accuracy": 0.662,
-        "macro_f1": 0.4985399353647276
-      },
-      "gate_top_0.65_fallback_k1_probavg_w0.5": {
-        "accuracy": 0.672,
-        "macro_f1": 0.5055394409090449
-      }
-    },
-    "full_test_evaluated": true,
+    "aggregate_black_box_test_source": "outputs/qwen-when2call-aug-tool-order-20261027/metrics.json",
     "aggregate_black_box_test_examples": 3652,
-    "aggregate_black_box_test_metrics": {
-      "zero_shot": {
-        "accuracy": 0.6804490690032858,
-        "macro_f1": 0.511927570670597
-      },
-      "gate_top_0.65_fallback_k1_probavg_w0.5": {
-        "accuracy": 0.6853778751369113,
-        "macro_f1": 0.5152938740359665
-      }
+    "aggregate_black_box_test_epoch_01": {
+      "accuracy": 0.6681270536692223,
+      "macro_f1": 0.4688388892277187,
+      "examples": 3652
+    },
+    "aggregate_black_box_test_epoch_02": {
+      "accuracy": 0.6593647316538883,
+      "macro_f1": 0.46846782615854876,
+      "examples": 3652
     },
     "test_labels_used_for_selection": false,
     "per_example_test_outcomes_saved": false,
-    "aggregate_black_box_test_selection_policy": "Clean validation selected the candidate. Test sample and full test metrics are aggregate-only reports."
+    "aggregate_black_box_test_selection_policy": "Test metrics are aggregate-only and report-only. Clean validation controlled continuation."
   },
   "duplicate_worker_failure": {
     "pid": 103632,

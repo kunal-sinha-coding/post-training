@@ -12135,3 +12135,20 @@ The training run uses the 9,000 When2Call preference examples plus 5,803 determi
 ## 2026-10-28 semantic paraphrase augmentation hypothesis
 
 Added a substantive augmentation path after the three low-risk presentation-invariance probes. The pilot samples 1,000 examples from the When2Call preference training split in label-stratified proportions. GPT-6 Luna rewrites only the user request, while the available tool names and original source label stay fixed. The output is cached, numeric changes are rejected, and the generation command has a $0.50 hard run cap under the existing $10 cumulative budget. If generation completes, train the original 9,000 rows plus accepted paraphrases from the same Qwen base. Training and clean validation remain capped at 500 examples, full black-box metrics are report-only, and clean validation controls early stopping.
+
+## qwen-when2call-aug-tool-order-20261027
+
+Timestamp: 2026-10-28T01:47:48.955042+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-when2call-aug-tool-order-20261027", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--epochs", "2", "--stop-on-validation-non-improvement", "--seed", "20261055", "--augmentation-mode", "tool_order", "--augmentation-seed", "20261066"]. Output: /workspace/post-training/outputs/qwen-when2call-aug-tool-order-20261027. W&B run: cxm2b3nx.
+
+Clean development accuracy: 0.948. Clean development macro F1: 0.48555107526881724. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.6593647316538883, "macro_f1": 0.46846782615854876, "examples": 3652}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.948, "macro_f1": 0.48555107526881724, "confusion_matrix": [[244, 1, 5, 0], [1, 230, 18, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+
+### Tool-order augmentation complete
+
+The tool-order experiment has complete training, clean-validation, and aggregate test evidence for both epochs. It used 9,000 original `train_pref` examples plus 5,803 prompt copies with permuted available-tool order. Epoch 1: train 0.9560/0.717235, clean validation 0.9460/0.483559, aggregate test 0.668127/0.468839. Epoch 2: train 0.9820/0.736828, clean validation 0.9480/0.485551, aggregate test 0.659365/0.468468. Validation improved slightly across epochs, while aggregate test accuracy declined. Test results remain report-only.
