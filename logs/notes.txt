@@ -7573,3 +7573,6 @@ Scalar temperatures did not improve clean-validation accuracy over the request-c
 2026-10-28: Record expanded synthetic generation spend. The concurrent generation job accepted 893 new-tool, 568 missing-information, 896 unsupported-capability, and 895 composed-tool examples. This meets the 500-1,000 target for each strategy. The run cost was $0.924797; cumulative authorized spend is $0.975910 of $10.
 
 2026-10-28T04:00:29.239002+00:00: Commit `Record research experiment when2call-synthetic-medium-pilots-20261028` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+
+2026-10-28: Reuse the recorded Qwen test baseline. The first expanded synthetic continuation had already started a full-test baseline evaluation. Updated the remaining queue to use the exact recorded Qwen epoch-02 aggregate test accuracy 0.7026286966046003 and macro F1 0.5279759197297567 from outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json, plus the matched 500-row clean validation baseline from the active pilot artifact. This avoids repeating the full baseline test inference before each synthetic strategy.

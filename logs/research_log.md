@@ -12258,3 +12258,6 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+The current new-tool run began a full baseline evaluation before this reuse adjustment. The other three large runs will compare against the already recorded Qwen epoch-02 full-test baseline (0.702629 accuracy, 0.527976 macro F1) and matched clean-validation baseline rather than rescore that fixed checkpoint. Each candidate still receives a full test evaluation after every training epoch.

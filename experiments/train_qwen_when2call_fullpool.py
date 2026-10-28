@@ -124,6 +124,11 @@ def main() -> int:
     parser.add_argument("--weight-decay", type=float, default=0.01)
     parser.add_argument("--lora-rank", type=int, default=16)
     parser.add_argument("--evaluate-baseline", action="store_true")
+    parser.add_argument("--baseline-test-accuracy", type=float)
+    parser.add_argument("--baseline-test-macro-f1", type=float)
+    parser.add_argument("--baseline-validation-accuracy", type=float)
+    parser.add_argument("--baseline-validation-macro-f1", type=float)
+    parser.add_argument("--baseline-test-source")
     parser.add_argument("--test-sample-size", type=int)
     parser.add_argument("--test-sample-seed", type=int, default=20261070)
     parser.add_argument("--augmentation-mode", choices=("none", "tool_order", "schema_key_order", "request_context"), default="none")
@@ -181,8 +186,8 @@ def main() -> int:
     if args.stop_on_validation_non_improvement and args.validation_source == "none":
         raise ValueError("Validation-based early stopping requires a held-out validation source.")
     # Require a baseline test score when aggregate test accuracy controls continuation.
-    if args.stop_on_test_non_improvement and not args.evaluate_baseline:
-        raise ValueError("Test-based continuation requires --evaluate-baseline.")
+    if args.stop_on_test_non_improvement and not (args.evaluate_baseline or args.baseline_test_accuracy is not None):
+        raise ValueError("Test-based continuation requires a measured or recorded baseline test accuracy.")
     if args.training_eval_sample_size < 1 or args.training_eval_sample_size > 500:
         raise ValueError("Training evaluation samples must contain between 1 and 500 examples.")
     if args.validation_sample_size < 1 or args.validation_sample_size > 500:
@@ -206,6 +211,12 @@ def main() -> int:
     if args.evaluate_baseline:
         baseline_validation = evaluate(model, tokenizer, validation_rows, label_ids, device, args.max_length, args.eval_batch_size, heartbeat) if validation_rows else None
         baseline_test = evaluate_black_box(model, tokenizer, label_ids, device, args.max_length, args.eval_batch_size, args.test_sample_size, args.test_sample_seed)
+    elif args.baseline_test_accuracy is not None:
+        # Reuse the recorded full-test baseline so each pilot does not rescore the same checkpoint.
+        baseline_test = {"accuracy": args.baseline_test_accuracy, "macro_f1": args.baseline_test_macro_f1, "examples": 3652, "source": args.baseline_test_source}
+        if args.baseline_validation_accuracy is not None:
+            baseline_validation = {"accuracy": args.baseline_validation_accuracy, "macro_f1": args.baseline_validation_macro_f1, "examples": len(validation_rows), "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"}
+    if baseline_test is not None:
         run.log({"baseline/test_accuracy": baseline_test["accuracy"], "baseline/test_macro_f1": baseline_test["macro_f1"], **({"baseline/validation_accuracy": baseline_validation["accuracy"], "baseline/validation_macro_f1": baseline_validation["macro_f1"]} if baseline_validation else {})}, step=0)
     total_steps = len(training_rows) * args.epochs
     epoch_records = []
