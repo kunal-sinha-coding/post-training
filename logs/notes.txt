@@ -7803,3 +7803,5 @@ Commit `Fix rare-schema worker ordering`: Corrected the worker queue after the w
 Queue order follow-up: The watchdog consumes the first item in `worker_queue` when the worker slot is empty. Placed generation at index zero and replay training at index one so the watchdog cannot skip generation.
 
 2026-10-28T17:11:47.491672+00:00: Commit `Record research experiment when2call-rare-schema-boundary-pilot-20261028` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-28T17:35:16.934702+00:00: Commit `Record research experiment qwen-rare-schema-boundary-synth-replay-20261028` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
