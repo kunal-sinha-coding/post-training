@@ -125,6 +125,7 @@ def main() -> int:
     parser.add_argument("--evaluate-baseline", action="store_true")
     parser.add_argument("--augmentation-mode", choices=("none", "tool_order", "schema_key_order", "request_context"), default="none")
     parser.add_argument("--augmentation-seed", type=int, default=20261066)
+    parser.add_argument("--augmentation-jsonl", type=Path)
     args = parser.parse_args()
     # Require online W&B before loading the model or benchmark data.
     if not os.getenv("WANDB_API_KEY"):
@@ -138,6 +139,11 @@ def main() -> int:
     bfcl_train, bfcl_validation = load_labeled_rows(args.bfcl_data)
     bfcl_rows = bfcl_train + bfcl_validation
     augmented_rows = augment_preference_rows(preference_rows, args.augmentation_mode, args.augmentation_seed) if args.augmentation_mode != "none" else []
+    # Load cached generated prompts without changing their inherited source labels.
+    if args.augmentation_jsonl:
+        with args.augmentation_jsonl.open(encoding="utf-8") as handle:
+            generated_rows = [json.loads(line) for line in handle if line.strip()]
+        augmented_rows.extend(ClassificationRow(item["prompt"], int(item["label"]), None) for item in generated_rows)
     training_rows = preference_rows + augmented_rows + (bfcl_rows if args.include_full_bfcl else [])
     if args.validation_source == "bfcl":
         validation_rows = bfcl_validation
@@ -169,7 +175,7 @@ def main() -> int:
     training_eval_rows = sample_stratified(training_rows, min(args.training_eval_sample_size, len(training_rows)), args.training_eval_seed)
     label_counts = dict(sorted(Counter(row.label for row in training_rows).items()))
     data_fingerprint = fingerprint_rows(training_rows)
-    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name=args.output_dir.name, job_type="when2call-fullpool-sft-augmentation", config=config | {"dataset": DATASET_NAME + ":train_pref" + (" + augmented preference prompts" if augmented_rows else "") + (" + BFCL" if args.include_full_bfcl else ""), "train_examples": len(training_rows), "preference_train_examples": len(preference_rows), "augmentation_mode": args.augmentation_mode, "augmented_examples": len(augmented_rows), "bfcl_train_examples": len(training_rows) - len(preference_rows) - len(augmented_rows), "validation_source": args.validation_source, "validation_examples": len(validation_rows), "official_test_selection": False})
+    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name=args.output_dir.name, job_type="when2call-fullpool-sft-augmentation", config=config | {"dataset": DATASET_NAME + ":train_pref" + (" + augmented preference prompts" if augmented_rows else "") + (" + BFCL" if args.include_full_bfcl else ""), "train_examples": len(training_rows), "preference_train_examples": len(preference_rows), "augmentation_mode": args.augmentation_mode if not args.augmentation_jsonl else "api_question_paraphrase", "augmentation_jsonl": str(args.augmentation_jsonl) if args.augmentation_jsonl else None, "augmented_examples": len(augmented_rows), "bfcl_train_examples": len(training_rows) - len(preference_rows) - len(augmented_rows), "validation_source": args.validation_source, "validation_examples": len(validation_rows), "official_test_selection": False})
     atexit.register(run.finish)
     # Fix random sources before initializing the base model and fresh LoRA adapter.
     random.seed(args.seed)
@@ -223,7 +229,7 @@ def main() -> int:
         "config": config,
         "base_model": args.model,
         "base_model_checkpoint": "Qwen/Qwen2.5-1.5B-Instruct before any task adapter training",
-        "data": {"dataset": DATASET_NAME, "split": "train_pref", "preference_examples": len(preference_rows), "augmentation_mode": args.augmentation_mode, "augmentation_seed": args.augmentation_seed, "augmented_examples": len(augmented_rows), "bfcl_train_examples": len(training_rows) - len(preference_rows) - len(augmented_rows), "bfcl_file": str(args.bfcl_data), "bfcl_sha256": hashlib.sha256(args.bfcl_data.read_bytes()).hexdigest(), "label_counts": label_counts, "prompt_label_fingerprint": data_fingerprint},
+        "data": {"dataset": DATASET_NAME, "split": "train_pref", "preference_examples": len(preference_rows), "augmentation_mode": args.augmentation_mode if not args.augmentation_jsonl else "api_question_paraphrase", "augmentation_seed": args.augmentation_seed, "augmentation_jsonl": str(args.augmentation_jsonl) if args.augmentation_jsonl else None, "augmentation_jsonl_sha256": hashlib.sha256(args.augmentation_jsonl.read_bytes()).hexdigest() if args.augmentation_jsonl else None, "augmented_examples": len(augmented_rows), "bfcl_train_examples": len(training_rows) - len(preference_rows) - len(augmented_rows), "bfcl_file": str(args.bfcl_data), "bfcl_sha256": hashlib.sha256(args.bfcl_data.read_bytes()).hexdigest(), "label_counts": label_counts, "prompt_label_fingerprint": data_fingerprint},
         "validation_source": args.validation_source,
         "validation_examples": len(validation_rows),
         "best_validation_accuracy": best_validation_accuracy,

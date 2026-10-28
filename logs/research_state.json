@@ -117,6 +117,53 @@
       "request_context",
       "--augmentation-seed",
       "20261066"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.augment_when2call_questions",
+      "--output",
+      "outputs/when2call-question-paraphrase-gpt6-luna-pilot-20261028/augmented.jsonl",
+      "--ledger",
+      "outputs/when2call-question-paraphrase-gpt6-luna-pilot-20261028/cost-ledger.json",
+      "--summary",
+      "outputs/when2call-question-paraphrase-gpt6-luna-pilot-20261028/summary.json",
+      "--limit",
+      "1000",
+      "--sample-seed",
+      "20261067",
+      "--workers",
+      "16",
+      "--prior-spend-usd",
+      "0.0",
+      "--max-cost-usd",
+      "0.5"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-when2call-aug-gpt6-luna-paraphrase-pilot-20261028",
+      "--augmentation-jsonl",
+      "outputs/when2call-question-paraphrase-gpt6-luna-pilot-20261028/augmented.jsonl",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--epochs",
+      "2",
+      "--stop-on-validation-non-improvement",
+      "--seed",
+      "20261055"
     ]
   ],
   "_previous_command": [
@@ -152,7 +199,7 @@
     "selection": "clean validation only"
   },
   "last_heartbeat": "2026-10-27T23:03:16.764630+00:00",
-  "last_action": "Watchdog started validation worker pid 244609.",
+  "last_action": "Added a cached GPT-6 Luna semantic-paraphrase pilot and its Qwen training command after the three queued representation-preserving augmentation probes.",
   "watchdog_enabled": true,
   "research_log_size": 1524742,
   "stop_command": "STOP",
@@ -196,7 +243,7 @@
     "artifact": "outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json",
     "selection": "Report-only aggregate benchmark result. Test labels were not used for candidate selection."
   },
-  "next_hypothesis": "Label-preserving changes to the 9,000 When2Call preference prompts may improve robustness without adding label noise. Compare tool-order permutations, JSON schema key-order changes, and a neutral request-context wrapper, training from the same Qwen base and stopping by clean validation only.",
+  "next_hypothesis": "After the three representation-preserving probes, test cached API paraphrases on a stratified 1,000-row sample from train_pref. Inherit source labels only when the request wording changes without changing meaning. Keep API generation spend below $0.50 for this pilot. Train the original 9,000 rows plus accepted variants and choose by clean validation.",
   "post_queue_report_required": {
     "required": true,
     "trigger": "After the family confidence-routing validation and aggregate test pass.",
@@ -220,7 +267,7 @@
     "full_test_evaluation": true,
     "test_metrics_use": "Aggregate report only, never use test labels or per-example outcomes for selection."
   },
-  "open_ended_phase": "Explore data augmentation on the 9,000 When2Call preference examples. Start with label-preserving prompt variations, then prioritize natural question paraphrases and targeted synthetic examples if validation supports expansion. Train each candidate from the same Qwen base, use at most 500 training and clean-validation examples for evaluation, and report full aggregate black-box test metrics without using test labels for selection.",
+  "open_ended_phase": "Explore data augmentation on the 9,000 When2Call preference examples. Test tool-order, schema-key-order, and neutral request wrappers first. Then generate cached semantic paraphrases on a stratified 1,000-row training sample with GPT-6 Luna under a $0.50 cost cap. Expand approaches that improve clean validation, and test targeted synthetic coverage or controlled mixtures next. Use at most 500 training and clean-validation examples for evaluation, full aggregate black-box metrics, and clean-validation-only selection.",
   "posthoc_validation_required": {
     "experiment": "qwen-when2call-plus-full-bfcl-base-seed20261056",
     "checkpoints": [
