@@ -146433,3 +146433,544 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/n6tbrim3"
 }
 ```
+
+## qwen-tool-rich-synth-only-encoder-clean-validation-20261028
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_existing_when2call_hybrid_validation",
+    "--output-dir",
+    "outputs/qwen-tool-rich-synth-only-encoder-clean-validation-20261028",
+    "--qwen-checkpoint",
+    "outputs/qwen-tool-rich-boundary-synth-only-20261028/epoch-01",
+    "--encoder-checkpoint",
+    "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
+    "--split-seed",
+    "20261091",
+    "--sample-seed",
+    "20261113",
+    "--max-validation-examples",
+    "500",
+    "--batch-size",
+    "1"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "qwen-tool-rich-synth-only-encoder-clean-validation-20261028",
+  "failure_reason": null,
+  "metadata": {
+    "aggregate_validation_metrics": {
+      "encoder_single": {
+        "accuracy": 0.916,
+        "macro_f1": 0.9510222626079055
+      },
+      "qwen_sft": {
+        "accuracy": 0.962,
+        "macro_f1": 0.9763761013761014
+      },
+      "single_average": {
+        "accuracy": 0.964,
+        "macro_f1": 0.9774501086741749
+      },
+      "single_disagreement_qwen": {
+        "accuracy": 0.962,
+        "macro_f1": 0.9763761013761014
+      },
+      "single_encoder_cannot_answer": {
+        "accuracy": 0.964,
+        "macro_f1": 0.9763996285735417
+      },
+      "single_encoder_confident": {
+        "accuracy": 0.964,
+        "macro_f1": 0.9774501086741749
+      },
+      "single_encoder_direct": {
+        "accuracy": 0.962,
+        "macro_f1": 0.9763761013761014
+      },
+      "single_encoder_long_question": {
+        "accuracy": 0.946,
+        "macro_f1": 0.9657308251332342
+      },
+      "single_encoder_many_tools": {
+        "accuracy": 0.942,
+        "macro_f1": 0.965674016822005
+      },
+      "single_encoder_no_tools": {
+        "accuracy": 0.962,
+        "macro_f1": 0.9763761013761014
+      },
+      "single_encoder_request_cannot_mix_r75_c40": {
+        "accuracy": 0.972,
+        "macro_f1": 0.9807908499926683
+      },
+      "single_encoder_request_cannot_mix_r75_c50": {
+        "accuracy": 0.974,
+        "macro_f1": 0.9818048780487805
+      },
+      "single_encoder_request_cannot_mix_r75_c60": {
+        "accuracy": 0.974,
+        "macro_f1": 0.9818048780487805
+      },
+      "single_encoder_request_for_info": {
+        "accuracy": 0.972,
+        "macro_f1": 0.9807908499926683
+      },
+      "single_encoder_request_full_cannot_mix_25": {
+        "accuracy": 0.972,
+        "macro_f1": 0.9807908499926683
+      },
+      "single_encoder_request_full_cannot_mix_40": {
+        "accuracy": 0.972,
+        "macro_f1": 0.9807908499926683
+      },
+      "single_encoder_request_full_cannot_mix_50": {
+        "accuracy": 0.974,
+        "macro_f1": 0.9818048780487805
+      },
+      "single_encoder_request_full_cannot_mix_60": {
+        "accuracy": 0.974,
+        "macro_f1": 0.9818048780487805
+      },
+      "single_encoder_request_full_cannot_mix_75": {
+        "accuracy": 0.974,
+        "macro_f1": 0.9818048780487805
+      },
+      "single_encoder_request_or_cannot_answer": {
+        "accuracy": 0.974,
+        "macro_f1": 0.9808188501046686
+      },
+      "single_encoder_request_or_cannot_answer_conf_40": {
+        "accuracy": 0.974,
+        "macro_f1": 0.9808188501046686
+      },
+      "single_encoder_request_or_cannot_answer_conf_50": {
+        "accuracy": 0.974,
+        "macro_f1": 0.9808188501046686
+      },
+      "single_encoder_request_or_cannot_answer_conf_60": {
+        "accuracy": 0.974,
+        "macro_f1": 0.9818048780487805
+      },
+      "single_encoder_request_or_cannot_answer_conf_65": {
+        "accuracy": 0.974,
+        "macro_f1": 0.9818048780487805
+      },
+      "single_encoder_request_or_cannot_answer_conf_70": {
+        "accuracy": 0.974,
+        "macro_f1": 0.9818048780487805
+      },
+      "single_encoder_request_or_cannot_answer_conf_80": {
+        "accuracy": 0.974,
+        "macro_f1": 0.9818048780487805
+      },
+      "single_encoder_request_or_cannot_answer_conf_90": {
+        "accuracy": 0.976,
+        "macro_f1": 0.9838083507120179
+      },
+      "single_encoder_request_or_cannot_answer_mix_25": {
+        "accuracy": 0.962,
+        "macro_f1": 0.9763761013761014
+      },
+      "single_encoder_request_or_cannot_answer_mix_40": {
+        "accuracy": 0.962,
+        "macro_f1": 0.9763761013761014
+      },
+      "single_encoder_request_or_cannot_answer_mix_50": {
+        "accuracy": 0.97,
+        "macro_f1": 0.9805866950331397
+      },
+      "single_encoder_request_or_cannot_answer_mix_60": {
+        "accuracy": 0.974,
+        "macro_f1": 0.9818048780487805
+      },
+      "single_encoder_short_question": {
+        "accuracy": 0.932,
+        "macro_f1": 0.9620610099974365
+      },
+      "single_encoder_tool_call": {
+        "accuracy": 0.904,
+        "macro_f1": 0.9455418502202644
+      },
+      "single_entropy_weighted": {
+        "accuracy": 0.964,
+        "macro_f1": 0.9774501086741749
+      },
+      "single_gate": {
+        "accuracy": 0.964,
+        "macro_f1": 0.9774501086741749
+      },
+      "single_geometric": {
+        "accuracy": 0.964,
+        "macro_f1": 0.9774501086741749
+      },
+      "single_geometric_encoder": {
+        "accuracy": 0.954,
+        "macro_f1": 0.9750733199174968
+      },
+      "single_geometric_qwen": {
+        "accuracy": 0.96,
+        "macro_f1": 0.975297619047619
+      },
+      "single_margin_weighted": {
+        "accuracy": 0.964,
+        "macro_f1": 0.9774501086741749
+      },
+      "single_qwen_w10": {
+        "accuracy": 0.962,
+        "macro_f1": 0.9763761013761014
+      },
+      "single_qwen_w25": {
+        "accuracy": 0.962,
+        "macro_f1": 0.9763761013761014
+      },
+      "single_qwen_w40": {
+        "accuracy": 0.96,
+        "macro_f1": 0.975297619047619
+      },
+      "single_qwen_w60": {
+        "accuracy": 0.934,
+        "macro_f1": 0.9623060432829726
+      },
+      "single_qwen_w75": {
+        "accuracy": 0.922,
+        "macro_f1": 0.9554900744416873
+      },
+      "single_qwen_w90": {
+        "accuracy": 0.92,
+        "macro_f1": 0.9543370518753884
+      },
+      "single_request_conf_40": {
+        "accuracy": 0.972,
+        "macro_f1": 0.9807908499926683
+      },
+      "single_request_conf_50": {
+        "accuracy": 0.972,
+        "macro_f1": 0.9807908499926683
+      },
+      "single_request_conf_60": {
+        "accuracy": 0.972,
+        "macro_f1": 0.9807908499926683
+      },
+      "single_request_conf_70": {
+        "accuracy": 0.972,
+        "macro_f1": 0.9807908499926683
+      },
+      "single_request_conf_80": {
+        "accuracy": 0.972,
+        "macro_f1": 0.9807908499926683
+      },
+      "single_standardized_logits": {
+        "accuracy": 0.962,
+        "macro_f1": 0.9763761013761014
+      }
+    },
+    "artifact_sha256": {
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/encoder_config.json": "0616e72a787934ed1fa3bec80e5da45239be1a1c267525c92960b83e9c44c12f",
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/model_state.pt": "815459d76b8c2e9fb7ba44e2f3867379ab096766cf9f1c807a08921be26593b5",
+      "outputs/qwen-tool-rich-boundary-synth-only-20261028/epoch-01/adapter_config.json": "5f36efeaadb8d9604bb840da595d6a88a206a74aaebb894e7c097eb20c5cbc05",
+      "outputs/qwen-tool-rich-boundary-synth-only-20261028/epoch-01/adapter_model.safetensors": "a13971c2adfabb35a43b6a76e9192ca7611a6f7d1a30442eff22e83a35f70852"
+    },
+    "candidate_methods": [
+      "encoder_single",
+      "qwen_sft",
+      "single_average",
+      "single_gate",
+      "single_entropy_weighted",
+      "single_margin_weighted",
+      "single_encoder_confident",
+      "single_qwen_w10",
+      "single_qwen_w25",
+      "single_qwen_w40",
+      "single_qwen_w60",
+      "single_qwen_w75",
+      "single_qwen_w90",
+      "single_geometric",
+      "single_geometric_qwen",
+      "single_geometric_encoder",
+      "single_standardized_logits",
+      "single_disagreement_qwen",
+      "single_encoder_cannot_answer",
+      "single_encoder_request_for_info",
+      "single_encoder_request_or_cannot_answer",
+      "single_encoder_request_or_cannot_answer_conf_40",
+      "single_encoder_request_or_cannot_answer_conf_50",
+      "single_encoder_request_or_cannot_answer_conf_60",
+      "single_encoder_request_or_cannot_answer_conf_65",
+      "single_encoder_request_or_cannot_answer_conf_70",
+      "single_encoder_request_or_cannot_answer_conf_80",
+      "single_encoder_request_or_cannot_answer_conf_90",
+      "single_encoder_request_or_cannot_answer_mix_25",
+      "single_encoder_request_or_cannot_answer_mix_40",
+      "single_encoder_request_or_cannot_answer_mix_50",
+      "single_encoder_request_or_cannot_answer_mix_60",
+      "single_encoder_request_full_cannot_mix_25",
+      "single_encoder_request_full_cannot_mix_40",
+      "single_encoder_request_full_cannot_mix_50",
+      "single_encoder_request_full_cannot_mix_60",
+      "single_encoder_request_full_cannot_mix_75",
+      "single_encoder_request_cannot_mix_r75_c40",
+      "single_encoder_request_cannot_mix_r75_c50",
+      "single_encoder_request_cannot_mix_r75_c60",
+      "single_encoder_tool_call",
+      "single_encoder_direct",
+      "single_request_conf_40",
+      "single_request_conf_50",
+      "single_request_conf_60",
+      "single_request_conf_70",
+      "single_request_conf_80",
+      "single_encoder_no_tools",
+      "single_encoder_many_tools",
+      "single_encoder_short_question",
+      "single_encoder_long_question"
+    ],
+    "encoder_checkpoints": [
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+    ],
+    "encoder_weights": [
+      1.0
+    ],
+    "git_commit": "53238017d285b2ef69a118b43d33faf119aad028",
+    "official_test_loaded": false,
+    "qwen_base": "Qwen/Qwen2.5-1.5B-Instruct",
+    "qwen_checkpoint": "outputs/qwen-tool-rich-boundary-synth-only-20261028/epoch-01",
+    "runtime_seconds": 83.30461502075195,
+    "sample_seed": 20261113,
+    "split_seed": 20261091,
+    "status": "completed",
+    "training_performed": false,
+    "validation_examples": 500,
+    "validation_indices_sha256": "7e3d29b7390a42b4bbbf495b88364d7521b1cb1a2d21f878a5c287a0a155f63c",
+    "validation_sample_cap": 500,
+    "validation_source": "nvidia/When2Call train_sft",
+    "validation_source_independent_of_training": true,
+    "wandb_run_id": "nfeo9ecy",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/nfeo9ecy"
+  },
+  "metrics_path": "/workspace/post-training/outputs/qwen-tool-rich-synth-only-encoder-clean-validation-20261028/metrics.json",
+  "official_test_loaded": false,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/qwen-tool-rich-synth-only-encoder-clean-validation-20261028",
+  "source_validation_metrics": {
+    "aggregate_validation_metrics": {
+      "encoder_single": {
+        "accuracy": 0.916,
+        "macro_f1": 0.9510222626079055
+      },
+      "qwen_sft": {
+        "accuracy": 0.962,
+        "macro_f1": 0.9763761013761014
+      },
+      "single_average": {
+        "accuracy": 0.964,
+        "macro_f1": 0.9774501086741749
+      },
+      "single_disagreement_qwen": {
+        "accuracy": 0.962,
+        "macro_f1": 0.9763761013761014
+      },
+      "single_encoder_cannot_answer": {
+        "accuracy": 0.964,
+        "macro_f1": 0.9763996285735417
+      },
+      "single_encoder_confident": {
+        "accuracy": 0.964,
+        "macro_f1": 0.9774501086741749
+      },
+      "single_encoder_direct": {
+        "accuracy": 0.962,
+        "macro_f1": 0.9763761013761014
+      },
+      "single_encoder_long_question": {
+        "accuracy": 0.946,
+        "macro_f1": 0.9657308251332342
+      },
+      "single_encoder_many_tools": {
+        "accuracy": 0.942,
+        "macro_f1": 0.965674016822005
+      },
+      "single_encoder_no_tools": {
+        "accuracy": 0.962,
+        "macro_f1": 0.9763761013761014
+      },
+      "single_encoder_request_cannot_mix_r75_c40": {
+        "accuracy": 0.972,
+        "macro_f1": 0.9807908499926683
+      },
+      "single_encoder_request_cannot_mix_r75_c50": {
+        "accuracy": 0.974,
+        "macro_f1": 0.9818048780487805
+      },
+      "single_encoder_request_cannot_mix_r75_c60": {
+        "accuracy": 0.974,
+        "macro_f1": 0.9818048780487805
+      },
+      "single_encoder_request_for_info": {
+        "accuracy": 0.972,
+        "macro_f1": 0.9807908499926683
+      },
+      "single_encoder_request_full_cannot_mix_25": {
+        "accuracy": 0.972,
+        "macro_f1": 0.9807908499926683
+      },
+      "single_encoder_request_full_cannot_mix_40": {
+        "accuracy": 0.972,
+        "macro_f1": 0.9807908499926683
+      },
+      "single_encoder_request_full_cannot_mix_50": {
+        "accuracy": 0.974,
+        "macro_f1": 0.9818048780487805
+      },
+      "single_encoder_request_full_cannot_mix_60": {
+        "accuracy": 0.974,
+        "macro_f1": 0.9818048780487805
+      },
+      "single_encoder_request_full_cannot_mix_75": {
+        "accuracy": 0.974,
+        "macro_f1": 0.9818048780487805
+      },
+      "single_encoder_request_or_cannot_answer": {
+        "accuracy": 0.974,
+        "macro_f1": 0.9808188501046686
+      },
+      "single_encoder_request_or_cannot_answer_conf_40": {
+        "accuracy": 0.974,
+        "macro_f1": 0.9808188501046686
+      },
+      "single_encoder_request_or_cannot_answer_conf_50": {
+        "accuracy": 0.974,
+        "macro_f1": 0.9808188501046686
+      },
+      "single_encoder_request_or_cannot_answer_conf_60": {
+        "accuracy": 0.974,
+        "macro_f1": 0.9818048780487805
+      },
+      "single_encoder_request_or_cannot_answer_conf_65": {
+        "accuracy": 0.974,
+        "macro_f1": 0.9818048780487805
+      },
+      "single_encoder_request_or_cannot_answer_conf_70": {
+        "accuracy": 0.974,
+        "macro_f1": 0.9818048780487805
+      },
+      "single_encoder_request_or_cannot_answer_conf_80": {
+        "accuracy": 0.974,
+        "macro_f1": 0.9818048780487805
+      },
+      "single_encoder_request_or_cannot_answer_conf_90": {
+        "accuracy": 0.976,
+        "macro_f1": 0.9838083507120179
+      },
+      "single_encoder_request_or_cannot_answer_mix_25": {
+        "accuracy": 0.962,
+        "macro_f1": 0.9763761013761014
+      },
+      "single_encoder_request_or_cannot_answer_mix_40": {
+        "accuracy": 0.962,
+        "macro_f1": 0.9763761013761014
+      },
+      "single_encoder_request_or_cannot_answer_mix_50": {
+        "accuracy": 0.97,
+        "macro_f1": 0.9805866950331397
+      },
+      "single_encoder_request_or_cannot_answer_mix_60": {
+        "accuracy": 0.974,
+        "macro_f1": 0.9818048780487805
+      },
+      "single_encoder_short_question": {
+        "accuracy": 0.932,
+        "macro_f1": 0.9620610099974365
+      },
+      "single_encoder_tool_call": {
+        "accuracy": 0.904,
+        "macro_f1": 0.9455418502202644
+      },
+      "single_entropy_weighted": {
+        "accuracy": 0.964,
+        "macro_f1": 0.9774501086741749
+      },
+      "single_gate": {
+        "accuracy": 0.964,
+        "macro_f1": 0.9774501086741749
+      },
+      "single_geometric": {
+        "accuracy": 0.964,
+        "macro_f1": 0.9774501086741749
+      },
+      "single_geometric_encoder": {
+        "accuracy": 0.954,
+        "macro_f1": 0.9750733199174968
+      },
+      "single_geometric_qwen": {
+        "accuracy": 0.96,
+        "macro_f1": 0.975297619047619
+      },
+      "single_margin_weighted": {
+        "accuracy": 0.964,
+        "macro_f1": 0.9774501086741749
+      },
+      "single_qwen_w10": {
+        "accuracy": 0.962,
+        "macro_f1": 0.9763761013761014
+      },
+      "single_qwen_w25": {
+        "accuracy": 0.962,
+        "macro_f1": 0.9763761013761014
+      },
+      "single_qwen_w40": {
+        "accuracy": 0.96,
+        "macro_f1": 0.975297619047619
+      },
+      "single_qwen_w60": {
+        "accuracy": 0.934,
+        "macro_f1": 0.9623060432829726
+      },
+      "single_qwen_w75": {
+        "accuracy": 0.922,
+        "macro_f1": 0.9554900744416873
+      },
+      "single_qwen_w90": {
+        "accuracy": 0.92,
+        "macro_f1": 0.9543370518753884
+      },
+      "single_request_conf_40": {
+        "accuracy": 0.972,
+        "macro_f1": 0.9807908499926683
+      },
+      "single_request_conf_50": {
+        "accuracy": 0.972,
+        "macro_f1": 0.9807908499926683
+      },
+      "single_request_conf_60": {
+        "accuracy": 0.972,
+        "macro_f1": 0.9807908499926683
+      },
+      "single_request_conf_70": {
+        "accuracy": 0.972,
+        "macro_f1": 0.9807908499926683
+      },
+      "single_request_conf_80": {
+        "accuracy": 0.972,
+        "macro_f1": 0.9807908499926683
+      },
+      "single_standardized_logits": {
+        "accuracy": 0.962,
+        "macro_f1": 0.9763761013761014
+      }
+    }
+  },
+  "started_at": "2026-10-28T20:28:34.353473+00:00",
+  "status": "completed",
+  "test_status": "not measured",
+  "timestamp": "2026-10-28T20:30:35.286163+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "nfeo9ecy",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/nfeo9ecy"
+}
+```
