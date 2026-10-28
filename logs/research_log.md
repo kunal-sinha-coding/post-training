@@ -13121,3 +13121,15 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-multiturn-context-boundary-replay-20261028
+
+Timestamp: 2026-10-28T20:00:58.754928+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-multiturn-context-boundary-replay-20261028", "--adapter-checkpoint", "outputs/qwen-pref900-synth450-high-similarity-lr5e6-20261028/epoch-01", "--preference-train-sample-size", "667", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261110", "--learning-rate", "5e-6", "--augmentation-jsonl", "outputs/when2call-multiturn-context-boundary-pilot-20261028/contextual_pairs.jsonl"]. Output: /workspace/post-training/outputs/qwen-multiturn-context-boundary-replay-20261028. W&B run: p1sprosm.
+
+Clean development accuracy: 0.958. Clean development macro F1: 0.48676659546601997. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.71960569550931, "macro_f1": 0.5380824178017376, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.958, "macro_f1": 0.48676659546601997, "confusion_matrix": [[243, 2, 5, 0], [3, 236, 10, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

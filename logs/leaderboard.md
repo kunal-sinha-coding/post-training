@@ -2101,3 +2101,6 @@ Source-specific result `qwen-tool-rich-trained-encoder-clean-validation-20261028
 
 | qwen-tool-rich-boundary-real667-control-20261028 | 0.7075575027382256 | 0.5286125414800158 | uj0ye42m | Aggregate-only frozen test measurement |
 | Candidate | when2call-multiturn-context-boundary-pilot-20261028 | — | — | [metrics](/workspace/post-training/outputs/when2call-multiturn-context-boundary-pilot-20261028/metrics.json) | completed |
+| Candidate | qwen-multiturn-context-boundary-replay-20261028 | 0.958 | 0.48676659546601997 | [metrics](/workspace/post-training/outputs/qwen-multiturn-context-boundary-replay-20261028/metrics.json) | completed |
+
+| qwen-multiturn-context-boundary-replay-20261028 | 0.71960569550931 | 0.5380824178017376 | p1sprosm | Aggregate-only frozen test measurement |
