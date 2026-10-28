@@ -12243,3 +12243,6 @@ This record was written automatically. Candidate selection must use clean valida
 
 
 Queued synthetic continuation commands use evaluation batch size 8 to reduce the time for full aggregate test evaluation at each epoch.
+
+
+The expanded GPT-6 Luna generation batch completed with 893 new-tool, 568 missing-information, 896 unsupported-capability, and 895 composed-tool examples. Cost was $0.924797; cumulative generation spend is $0.975910 of the $10 cap. No official test examples or labels were loaded during generation.

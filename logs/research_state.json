@@ -200,7 +200,7 @@
     "selection": "clean validation only"
   },
   "last_heartbeat": "2026-10-28T03:46:10.400542+00:00",
-  "last_action": "Watchdog started validation worker pid 258202.",
+  "last_action": "Generated medium synthetic batches and verified every strategy has 500-1,000 accepted rows. Estimated cumulative API generation spend is recorded from the cost ledger.",
   "watchdog_enabled": true,
   "research_log_size": 1539381,
   "stop_command": "STOP",
@@ -244,11 +244,18 @@
   "paused_at": null,
   "api_generation_budget": {
     "cap_usd": 10.0,
-    "spent_usd": 0.0511136,
+    "spent_usd": 0.9759103000000001,
     "since": "2026-10-26",
     "generation_started": true,
     "current_pilot_cap_usd": 2.0,
-    "last_ledger": "outputs/when2call-synthetic-pilots-20261028/cost-ledger.json"
+    "last_ledger": "outputs/when2call-synthetic-medium-pilots-20261028/cost-ledger.json",
+    "last_generation_summary": "outputs/when2call-synthetic-medium-pilots-20261028/metrics.json",
+    "accepted_examples": {
+      "new_tool_call": 893,
+      "missing_required_info": 568,
+      "unsupported_capability": 896,
+      "composed_tool_call": 895
+    }
   },
   "future_policy": {
     "evaluation_frequency": "At every epoch boundary.",

@@ -7568,3 +7568,6 @@ Scalar temperatures did not improve clean-validation accuracy over the request-c
 
 
 2026-10-28: Increase evaluation batch size for expanded synthetic runs. Set the four queued synthetic-only continuations to evaluation batch size 8 to reduce full-test evaluation time while keeping training and validation samples capped and all official test rows evaluated.
+
+
+2026-10-28: Record expanded synthetic generation spend. The concurrent generation job accepted 893 new-tool, 568 missing-information, 896 unsupported-capability, and 895 composed-tool examples. This meets the 500-1,000 target for each strategy. The run cost was $0.924797; cumulative authorized spend is $0.975910 of $10.
