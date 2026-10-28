@@ -145206,3 +145206,63 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/uj0ye42m"
 }
 ```
+
+## when2call-multiturn-context-boundary-pilot-20261028
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.generate_when2call_contextual_pilot",
+    "--output-dir",
+    "outputs/when2call-multiturn-context-boundary-pilot-20261028",
+    "--pairs",
+    "300",
+    "--workers",
+    "24",
+    "--seed",
+    "20261109",
+    "--max-cost-usd",
+    "2.0"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "when2call-multiturn-context-boundary-pilot-20261028",
+  "failure_reason": null,
+  "metadata": {
+    "accepted_pairs": 282,
+    "class_counts": {
+      "request_for_info": 282,
+      "tool_call": 282
+    },
+    "concurrency": 24,
+    "cost_ledger": "outputs/when2call-multiturn-context-boundary-pilot-20261028/cost-ledger.json",
+    "estimated_cost_usd": 0.0949191,
+    "generation_model": "gpt-6-luna",
+    "official_test_loaded": false,
+    "output_jsonl": "outputs/when2call-multiturn-context-boundary-pilot-20261028/contextual_pairs.jsonl",
+    "pairs_requested": 300,
+    "rows_written": 564,
+    "seed": 20261109,
+    "source": "nvidia/When2Call train_pref",
+    "status": "completed",
+    "test_labels_used": false
+  },
+  "metrics_path": "/workspace/post-training/outputs/when2call-multiturn-context-boundary-pilot-20261028/metrics.json",
+  "official_test_loaded": false,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/when2call-multiturn-context-boundary-pilot-20261028",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-28T19:39:49.444551+00:00",
+  "status": "completed",
+  "test_status": "not measured",
+  "timestamp": "2026-10-28T19:41:54.735510+00:00",
+  "train_metrics": {},
+  "wandb_run_id": null,
+  "wandb_run_url": null
+}
+```

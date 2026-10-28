@@ -13109,3 +13109,15 @@ Clean development accuracy: 0.95. Clean development macro F1: 0.4841750841750841
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.95, "macro_f1": 0.48417508417508415, "confusion_matrix": [[241, 3, 6, 0], [3, 234, 12, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## when2call-multiturn-context-boundary-pilot-20261028
+
+Timestamp: 2026-10-28T19:41:54.735510+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.generate_when2call_contextual_pilot", "--output-dir", "outputs/when2call-multiturn-context-boundary-pilot-20261028", "--pairs", "300", "--workers", "24", "--seed", "20261109", "--max-cost-usd", "2.0"]. Output: /workspace/post-training/outputs/when2call-multiturn-context-boundary-pilot-20261028. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
