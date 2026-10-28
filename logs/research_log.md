@@ -12917,3 +12917,7 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## Rare-schema queue sequencing correction
+
+The first queue update accidentally placed the training command in the immediate worker slot and left generation in no executable position. The watchdog therefore attempted training before the generated JSONL existed, and training exited with `FileNotFoundError` before loading a model. No training or evaluation occurred. Requeued rare-schema generation as the immediate worker and the replay experiment as the following command. The previous completed replay remains the latest completed experiment and has complete training, clean-validation, and aggregate black-box evidence.

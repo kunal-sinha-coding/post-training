@@ -104,7 +104,7 @@ def eligible_rows(rows: Any, prepared: list[Any], label: str) -> list[int]:
     return selected
 
 
-def build_jobs(rows: Any, prepared: list[Any], pair_count: int, unsupported_count: int, seed: int) -> list[dict[str, Any]]:
+def build_jobs(rows: Any, prepared: list[Any], pair_count: int, unsupported_count: int, seed: int, anchor_strategy: str) -> list[dict[str, Any]]:
     """Build a deterministic class-balanced set of train_pref generation jobs."""
     # Sample distinct source anchors for paired tool decisions and unsupported requests.
     rng = random.Random(seed)
@@ -114,9 +114,27 @@ def build_jobs(rows: Any, prepared: list[Any], pair_count: int, unsupported_coun
         raise RuntimeError("The train_pref split does not contain enough eligible source anchors.")
     rng.shuffle(tool_rows)
     rng.shuffle(unsupported_rows)
+    schema_frequency = {}
+    if anchor_strategy == "rare_schema":
+        # Count tool-schema occurrences only in train_pref rows to identify long-tail schemas.
+        for row in rows:
+            for raw in set(row.get("tools", [])):
+                signature = json.dumps(tool_object(raw) or raw, sort_keys=True, ensure_ascii=False)
+                schema_frequency[signature] = schema_frequency.get(signature, 0) + 1
+        # Prefer source examples with lower-frequency schemas while keeping randomized tie order.
+        def rarity(index: int) -> float:
+            signatures = [json.dumps(tool_object(raw) or raw, sort_keys=True, ensure_ascii=False) for raw in rows[index]["tools"]]
+            return sum(schema_frequency.get(signature, 0) for signature in signatures) / max(1, len(signatures))
+        tool_rows.sort(key=rarity)
+        unsupported_rows.sort(key=rarity)
     jobs = []
     for slot, index in enumerate(tool_rows[:pair_count]):
-        jobs.append({"kind": "pair", "slot": slot, "source_indices": [index], "source_request": source_request(rows[index]), "tools": list(rows[index]["tools"])})
+        job = {"kind": "pair", "slot": slot, "source_indices": [index], "source_request": source_request(rows[index]), "tools": list(rows[index]["tools"])}
+        if anchor_strategy == "rare_schema":
+            # Require the generator to ground the pair in the rarest schema available in its source row.
+            target_schema = min(job["tools"], key=lambda raw: schema_frequency.get(json.dumps(tool_object(raw) or raw, sort_keys=True, ensure_ascii=False), 0))
+            job["target_tool_name"] = schema_fields(target_schema)[0]
+        jobs.append(job)
     for slot, index in enumerate(unsupported_rows[:unsupported_count]):
         jobs.append({"kind": "unsupported", "slot": slot, "source_indices": [index], "source_request": source_request(rows[index]), "tools": list(rows[index]["tools"])})
     return jobs
@@ -126,8 +144,10 @@ def generation_prompt(job: dict[str, Any]) -> tuple[str, dict[str, Any]]:
     """Build the instruction and output schema for one generation job."""
     # Ask for a novel request that preserves source schemas and the intended decision boundary.
     context = {"source_request": job["source_request"], "available_tools": job["tools"]}
+    if job.get("target_tool_name"):
+        context["required_target_tool"] = job["target_tool_name"]
     if job["kind"] == "pair":
-        instruction = "Create a new scenario in the same general domain, not a paraphrase of the source. Select one listed tool and one required field with no default. Write two requests about the same task. The complete request must state all required information and have arguments for every required field. The incomplete request must differ only in one meaningful missing value for the selected required field. It must not imply that missing value, while it must give every other required value. Return valid JSON argument objects that match the selected schema."
+        instruction = "Create a new scenario in the same general domain, not a paraphrase of the source. If required_target_tool is provided, use that exact tool. Otherwise, select one listed tool. Select one required field with no default. Write two requests about the same task. The complete request must state all required information and have arguments for every required field. The incomplete request must differ only in one meaningful missing value for the selected required field. It must not imply that missing value, while it must give every other required value. Return valid JSON argument objects that match the selected schema."
         return f"{LABEL_DEFINITIONS}\n{instruction}\nSource context:\n{json.dumps(context, ensure_ascii=False)}", PAIR_FORMAT
     instruction = "Create one new, plausible request in the same broad domain as the source, not a paraphrase. Make it sound like it might use one of the listed tools, but require a capability that none of the listed schemas provide. It must not be answerable directly from stable knowledge. Do not alter the tools."
     return f"{LABEL_DEFINITIONS}\n{instruction}\nSource context:\n{json.dumps(context, ensure_ascii=False)}", UNSUPPORTED_FORMAT
@@ -141,6 +161,8 @@ def validate_pair(job: dict[str, Any], item: dict[str, Any]) -> tuple[bool, str]
     raw = schemas.get(name)
     if raw is None:
         return False, "unknown_tool"
+    if job.get("target_tool_name") and name != job["target_tool_name"]:
+        return False, "target_tool_mismatch"
     _, properties, required = schema_fields(raw)
     missing = str(item.get("missing_required_field", ""))
     if missing not in required or not properties:
@@ -262,13 +284,13 @@ async def run(args: argparse.Namespace) -> dict[str, Any]:
     # Load train_pref only and build unique anchors from its tool-call and cannot-answer rows.
     source_rows = load_rows()
     prepared = prepare_rows(source_rows)
-    jobs = build_jobs(source_rows, prepared, args.pairs, args.unsupported, args.seed)
+    jobs = build_jobs(source_rows, prepared, args.pairs, args.unsupported, args.seed, args.anchor_strategy)
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    output_path = args.output_dir / "balanced_boundary500.jsonl"
+    output_path = args.output_dir / f"balanced_boundary_{args.anchor_strategy}.jsonl"
     audit_path = args.output_dir / "generation-audit.jsonl"
     ledger_path = args.output_dir / "cost-ledger.json"
     seen = {normalize(source_request(row)) for row in source_rows}
-    ledger = {"model": MODEL, "source": "nvidia/When2Call train_pref", "input_price_per_million": INPUT_PRICE_PER_MILLION, "output_price_per_million": OUTPUT_PRICE_PER_MILLION, "requests": 0, "input_tokens": 0, "output_tokens": 0, "estimated_cost_usd": 0.0, "reserved_cost_usd": 0.0, "errors": 0, "rejected_structure": 0, "rejected_judgment": 0, "rejected_duplicate": 0, "max_cost_usd": args.max_cost_usd, "concurrency": args.workers, "seed": args.seed}
+    ledger = {"model": MODEL, "source": "nvidia/When2Call train_pref", "input_price_per_million": INPUT_PRICE_PER_MILLION, "output_price_per_million": OUTPUT_PRICE_PER_MILLION, "requests": 0, "input_tokens": 0, "output_tokens": 0, "estimated_cost_usd": 0.0, "reserved_cost_usd": 0.0, "errors": 0, "rejected_structure": 0, "rejected_judgment": 0, "rejected_duplicate": 0, "max_cost_usd": args.max_cost_usd, "concurrency": args.workers, "seed": args.seed, "anchor_strategy": args.anchor_strategy}
     atomic_json(ledger_path, ledger)
     output_path.write_text("", encoding="utf-8")
     audit_path.write_text("", encoding="utf-8")
@@ -296,7 +318,7 @@ async def run(args: argparse.Namespace) -> dict[str, Any]:
             if completed % 20 == 0 or completed == len(tasks):
                 print(json.dumps({"completed": completed, "total": len(tasks), "accepted_pairs": accepted_pairs, "accepted_unsupported": accepted_unsupported, "rows": 2 * accepted_pairs + accepted_unsupported, "estimated_cost_usd": ledger["estimated_cost_usd"]}), flush=True)
     await client.close()
-    summary = {"status": "completed", "source": "nvidia/When2Call train_pref", "pairs_requested": args.pairs, "unsupported_requested": args.unsupported, "accepted_pairs": accepted_pairs, "accepted_unsupported": accepted_unsupported, "rows_written": 2 * accepted_pairs + accepted_unsupported, "class_counts": {"tool_call": accepted_pairs, "request_for_info": accepted_pairs, "cannot_answer": accepted_unsupported}, "output_jsonl": str(output_path), "cost_ledger": str(ledger_path), "estimated_cost_usd": ledger["estimated_cost_usd"], "generation_model": MODEL, "concurrency": args.workers, "seed": args.seed, "official_test_loaded": False, "test_labels_used": False}
+    summary = {"status": "completed", "source": "nvidia/When2Call train_pref", "pairs_requested": args.pairs, "unsupported_requested": args.unsupported, "accepted_pairs": accepted_pairs, "accepted_unsupported": accepted_unsupported, "rows_written": 2 * accepted_pairs + accepted_unsupported, "class_counts": {"tool_call": accepted_pairs, "request_for_info": accepted_pairs, "cannot_answer": accepted_unsupported}, "output_jsonl": str(output_path), "anchor_strategy": args.anchor_strategy, "cost_ledger": str(ledger_path), "estimated_cost_usd": ledger["estimated_cost_usd"], "generation_model": MODEL, "concurrency": args.workers, "seed": args.seed, "official_test_loaded": False, "test_labels_used": False}
     atomic_json(args.output_dir / "metrics.json", summary)
     return summary
 
@@ -311,6 +333,7 @@ def main() -> int:
     parser.add_argument("--workers", type=int, default=24)
     parser.add_argument("--seed", type=int, default=20261095)
     parser.add_argument("--max-cost-usd", type=float, default=2.0)
+    parser.add_argument("--anchor-strategy", choices=("random", "rare_schema"), default="random")
     args = parser.parse_args()
     if not os.getenv("OPENAI_API_KEY"):
         raise RuntimeError("OPENAI_API_KEY is required.")
