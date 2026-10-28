@@ -12723,3 +12723,15 @@ Clean development accuracy: 0.934. Clean development macro F1: 0.478274118502515
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.934, "macro_f1": 0.47827411850251556, "confusion_matrix": [[244, 1, 5, 0], [8, 223, 18, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-pref900-synth300-high-similarity-lr5e6-multiepoch-20261028
+
+Timestamp: 2026-10-28T15:03:29.721496+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-pref900-synth300-high-similarity-lr5e6-multiepoch-20261028", "--preference-train-sample-size", "900", "--adapter-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--seed", "20261087", "--learning-rate", "5e-6", "--epochs", "3", "--augmentation-jsonl", "outputs/when2call-synthetic-medium-pilots-20261028/balanced_mix300_very_high_similarity.jsonl", "--stop-on-validation-non-improvement"]. Output: /workspace/post-training/outputs/qwen-pref900-synth300-high-similarity-lr5e6-multiepoch-20261028. W&B run: ohyhj368.
+
+Clean development accuracy: 0.956. Clean development macro F1: 0.4857550151850092. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7160460021905805, "macro_f1": 0.5360096269180538, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.956, "macro_f1": 0.4857550151850092, "confusion_matrix": [[243, 1, 6, 0], [5, 235, 9, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
