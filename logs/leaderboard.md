@@ -1,19 +1,20 @@
 # When2Call Validation and Official Test Leaderboard
 
-Aggregate official test accuracy and macro F1 may rank and select candidates. Keep individual test examples, labels, predictions, and correctness hidden. Scores below use all 3,652 test rows. Differences under 1 percentage point in accuracy are treated as likely noise.
+Aggregate official test accuracy and macro F1 are recorded for reporting only. Do not use test labels or test-derived metrics to select candidates. Keep individual test examples, labels, predictions, and correctness hidden. Scores below use all 3,652 test rows. Differences under 1 percentage point in accuracy are treated as likely noise.
 
-## Current aggregate test accuracy ranking — 2026-10-28
+## Reported aggregate test accuracy scores — 2026-10-28
 
-| Rank | Candidate | Test accuracy | Test macro F1 | Rows | Artifact |
+| Report rank | Candidate | Test accuracy | Test macro F1 | Rows | Artifact |
 | ---: | --- | ---: | ---: | ---: | --- |
-| 1 | Qwen continued on 900 real preference and 450 balanced synthetic examples | 0.724535 | 0.542620 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-balanced-synth450-20261028/metrics.json) |
-| 2 | Qwen plus Jina encoder 48, entropy weighted | 0.716046 | 0.537047 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-single-adaptive-encoder48-20270114/metrics.json) |
-| 2 | Qwen plus Jina encoder 48, margin weighted | 0.716046 | 0.536882 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-single-adaptive-encoder48-20270114/metrics.json) |
-| 4 | Qwen plus Jina encoder 48, equal probability average | 0.715498 | 0.536489 | 3,652 | [aggregate comparison](/workspace/post-training/outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json) |
-| 5 | Qwen plus Jina encoder 48, request or cannot-answer mix 50 | 0.713855 | 0.536071 | 3,652 | [aggregate comparison](/workspace/post-training/outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json) |
-| 6 | Qwen SFT alone | 0.702629 | 0.527976 | 3,652 | [aggregate comparison](/workspace/post-training/outputs/qwen-single-adaptive-encoder48-20270114/metrics.json) |
+| 1 | 900 real preference + 450 balanced synthetic Qwen, entropy-weighted with Jina encoder 48 | 0.731380 | 0.546773 | 3,652 | [aggregate comparison](/workspace/post-training/outputs/qwen-pref900-balanced-synth450-encoder-ensemble-20261028/test/aggregate-comparison.json) |
+| 2 | Qwen continued on 900 real preference and 450 balanced synthetic examples | 0.724535 | 0.542620 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-balanced-synth450-20261028/metrics.json) |
+| 3 | Qwen plus Jina encoder 48, entropy weighted | 0.716046 | 0.537047 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-single-adaptive-encoder48-20270114/metrics.json) |
+| 3 | Qwen plus Jina encoder 48, margin weighted | 0.716046 | 0.536882 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-single-adaptive-encoder48-20270114/metrics.json) |
+| 5 | Qwen plus Jina encoder 48, equal probability average | 0.715498 | 0.536489 | 3,652 | [aggregate comparison](/workspace/post-training/outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json) |
+| 6 | Qwen plus Jina encoder 48, request or cannot-answer mix 50 | 0.713855 | 0.536071 | 3,652 | [aggregate comparison](/workspace/post-training/outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json) |
+| 7 | Qwen SFT alone | 0.702629 | 0.527976 | 3,652 | [aggregate comparison](/workspace/post-training/outputs/qwen-single-adaptive-encoder48-20270114/metrics.json) |
 
-The 450-synthetic result ranks first by raw aggregate accuracy. Its 0.85 percentage-point lead over the entropy-weighted ensemble is within the stated noise band, so the ranking does not establish a significant gain. The 71.605% weighted ensemble and 71.550% equal average also differ by less than 1 percentage point and should be treated as a raw tie for practical purposes.
+This table reports aggregate test scores and does not select a candidate. The top ensemble scored 0.77 percentage points above its paired Qwen score, which is within the likely-noise band. Its clean validation accuracy was 0.940, below the paired Qwen score of 0.942, so clean validation does not support selecting the ensemble.
 
 ## Historical clean-validation snapshot for 2026-10-27 04:27 UTC
 
