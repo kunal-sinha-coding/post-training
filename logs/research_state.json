@@ -253,6 +253,44 @@
       "0.48832640709774233",
       "--baseline-test-source",
       "outputs/qwen-when2call-synthetic-medium-new_tool_call-20261028/metrics.json:baseline_black_box_test_metrics"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-pref900-real-only-control-20261028",
+      "--adapter-checkpoint",
+      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "--preference-train-sample-size",
+      "900",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "1",
+      "--seed",
+      "20261087",
+      "--baseline-test-accuracy",
+      "0.7020810514786419",
+      "--baseline-test-macro-f1",
+      "0.5276156270961326",
+      "--baseline-validation-accuracy",
+      "0.962",
+      "--baseline-validation-macro-f1",
+      "0.48832640709774233",
+      "--baseline-test-source",
+      "outputs/qwen-when2call-synthetic-medium-new_tool_call-20261028/metrics.json:baseline_black_box_test_metrics"
     ]
   ],
   "_previous_command": [
@@ -282,7 +320,7 @@
     "selection": "clean validation only"
   },
   "last_heartbeat": "2026-10-28T05:34:28.825429+00:00",
-  "last_action": "Confirmed latest completed evidence is complete and appended a distinct 225-example synthetic dose comparison.",
+  "last_action": "Verified complete evidence for the latest completed run and appended a matched real-only continuation control behind existing queued pilots.",
   "watchdog_enabled": true,
   "research_log_size": 1552693,
   "stop_command": "STOP",
@@ -339,7 +377,7 @@
     "artifact": "outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json",
     "selection": "Report-only aggregate benchmark result. Test labels were not used for candidate selection."
   },
-  "next_hypothesis": "Compare a 225-row balanced synthetic dose with the queued 450- and 900-row doses while holding the same 900-row real preference sample, checkpoint, and training seed fixed. Select only by clean validation.",
+  "next_hypothesis": "After the synthetic dose and optimization pilots, compare against continued training on the same 900 stratified real preference examples without synthetic data. This control isolates the added value of synthetic rows. Select by clean validation only.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
@@ -680,7 +718,7 @@
     "examples": 3652,
     "artifact": "outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json"
   },
-  "updated_at": "2026-10-28T05:38:52.792494+00:00",
+  "updated_at": "2026-10-28T05:39:50.711087+00:00",
   "synthetic_pilot_results": [
     {
       "strategy": "missing_required_info",
