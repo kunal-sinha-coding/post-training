@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
-  "current_hypothesis": "The latest completed model run has complete training, clean-validation, and aggregate test metrics. Tool-rich replay training is active and six follow-ups are queued. A new data-mix hypothesis is that increasing real replay from 667 to 900 while holding the 629-row tool-rich synthetic pool and checkpoint fixed will reduce forgetting and preserve synthetic gains. Select by clean validation only.",
+  "current_hypothesis": "The latest completed model run has complete evidence; the active tool-rich replay is in its full aggregate evaluation stage. Existing queued runs test synthetic-only training, pool combination, synthetic dose, encoder fusion, and a larger real replay fraction. A new matched control will train on the exact same 667 real train_pref sample and checkpoint as the active mixed run, with no synthetic rows. This isolates the added value of the tool-rich examples.",
   "active_experiment": {
     "pid": 294957,
     "command": [
@@ -252,6 +252,36 @@
       "5e-6",
       "--augmentation-jsonl",
       "outputs/when2call-tool-rich-boundary-pilot-20261028/balanced_boundary_tool_rich.jsonl"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-tool-rich-boundary-real667-control-20261028",
+      "--adapter-checkpoint",
+      "outputs/qwen-pref900-synth450-high-similarity-lr5e6-20261028/epoch-01",
+      "--preference-train-sample-size",
+      "667",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "1",
+      "--seed",
+      "20261103",
+      "--learning-rate",
+      "5e-6"
     ]
   ],
   "_previous_command": [
@@ -281,7 +311,7 @@
     "selection": "clean validation only"
   },
   "last_heartbeat": "2026-10-28T17:39:47.730996+00:00",
-  "last_action": "Audited the latest completed experiment, confirmed all evidence types, and appended a distinct 900-row real replay comparison after the existing queue.",
+  "last_action": "Audited complete evidence for the latest completed model experiment and appended a matched real-only control for the tool-rich synthetic mixture.",
   "watchdog_enabled": true,
   "research_log_size": 1641781,
   "stop_command": "STOP",
@@ -331,7 +361,7 @@
     "wandb_run_id": "vrfnnoq2",
     "selection": "Aggregate test result reported for ranking only. It was not used for candidate selection."
   },
-  "next_hypothesis": "After the current tool-rich and synthetic-pool experiments, compare 900 real preference rows plus the existing tool-rich synthetic pool against the 667-row replay version. Keep all optimizer settings and the clean-validation sample fixed. Aggregate test metrics are report-only.",
+  "next_hypothesis": "After the queued synthetic/data experiments, compare the active 667-real-plus-tool-rich run with a matched 667-real-only continuation using the same initial checkpoint and seed. Select by clean validation. Aggregate test metrics are report-only.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."

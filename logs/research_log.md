@@ -12989,3 +12989,9 @@ Added a distinct clean-validation screen for the encoder fusion methods on the t
 The latest completed model experiment remains the rare-schema replay. Its training metrics on 500 rows (0.990 accuracy, 0.742485 macro F1), clean validation on 500 rows (0.952, 0.484707), and aggregate-only test metrics on all 3,652 rows (0.700438, 0.522924) are present. The active tool-rich replay has no completed metrics artifact yet. The queue was active rather than exhausted.
 
 Appended a distinct replay-size experiment after the current queue. It uses 900 real train_pref examples plus the same tool-rich synthetic pool and checkpoint used by the 667-row replay. This tests whether more real-data replay reduces forgetting while other settings remain fixed. Selection uses clean validation only.
+
+## Matched real-only control queued
+
+The latest completed model experiment remains the rare-schema replay and records all three evidence types. Its 500-row training metrics are 0.990 accuracy and 0.742485 macro F1. Its 500-row clean validation is 0.952 and 0.484707. Its aggregate-only test metrics on 3,652 rows are 0.700438 and 0.522924. The active tool-rich replay is in evaluation; no measurement is missing.
+
+Appended a real-only control using the same clean-validation-best checkpoint, 667 real train_pref sample, and training seed as the active 667-real-plus-629-synthetic run. This tests the contribution of tool-rich synthetic data while matching the real-data dose. Evaluation uses the standard 500-row train and validation samples and full aggregate black-box reporting. Selection uses clean validation only.
