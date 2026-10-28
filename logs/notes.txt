@@ -7883,3 +7883,10 @@ Appended a synthetic-only run using the queued merge of the rare-schema and tool
 2026-10-28T20:30:37.704403+00:00: Commit `Record research experiment qwen-tool-rich-synth-only-encoder-clean-validation-20261028` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
 
 2026-10-28T20:46:48.164672+00:00: Commit `Record research experiment qwen-combined-boundary-synthetic-only-20261028` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+## 2026-10-28: Refresh evidence audit and queue clean-validation follow-ups
+Commit name: Refresh experiment evidence and queue validation-led follow-ups.
+
+The worker queue had drained and the watchdog handed planning back. The most recent completed run was `qwen-combined-boundary-synthetic-only-20261028`. Its metrics file records training on 500 examples (1.000 accuracy, 0.7500 macro F1), clean validation on 500 examples (0.948 accuracy, 0.4811 macro F1), and aggregate black-box test metrics on all 3,652 examples (0.73494 accuracy, 0.54711 macro F1). All evidence types are present. Aggregate test metrics are recorded only for reporting, not candidate selection.
+
+Recent clean-validation results include 0.960 accuracy for tool-rich replay with 900 real examples and 0.958 for multi-turn contextual replay with 667 real examples. Queued a 500-example clean-validation encoder-fusion screen for the tool-rich 900-replay checkpoint, then a contextual replay run with 900 real examples and the same contextual synthetic pool, checkpoint, and seed as the 667-example run. These tests follow clean-validation signal and do not select on black-box test labels or metrics.
