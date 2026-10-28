@@ -1922,3 +1922,6 @@ Source-specific result `when2call-similarity-gate-30pct-pref-k3-question-tools-f
 | Candidate | qwen-when2call-synthetic-medium-missing_required_info-20261028 | 0.936 | 0.4692216076547297 | [metrics](/workspace/post-training/outputs/qwen-when2call-synthetic-medium-missing_required_info-20261028/metrics.json) | completed |
 
 | qwen-when2call-synthetic-medium-missing_required_info-20261028 | 0.44496166484118294 | 0.2831995661156004 | 9fwcwm3l | Aggregate-only frozen test measurement |
+| Candidate | qwen-when2call-synthetic-medium-unsupported_capability-20261028 | 0.824 | 0.4151844532279315 | [metrics](/workspace/post-training/outputs/qwen-when2call-synthetic-medium-unsupported_capability-20261028/metrics.json) | completed |
+
+| qwen-when2call-synthetic-medium-unsupported_capability-20261028 | 0.7004381161007667 | 0.5111269785754893 | lgjak6pc | Aggregate-only frozen test measurement |
