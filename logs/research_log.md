@@ -12306,3 +12306,15 @@ This record was written automatically. Candidate selection must use clean valida
 
 
 The expanded unsupported-capability branch used 896 synthetic examples. Training-probe metrics on 500 rows were 1.000 accuracy and 0.250 macro F1. Clean validation on 500 rows was 0.824 accuracy and 0.415184 macro F1. Full test metrics on 3,652 rows fell from baseline 0.702081 accuracy and 0.527616 macro F1 to 0.700438 accuracy and 0.511127 macro F1. Accuracy declined 0.1643 points, so test stopping ended the branch at epoch 1.
+
+## qwen-when2call-synthetic-medium-composed_tool_call-20261028
+
+Timestamp: 2026-10-28T05:17:16.971182+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-when2call-synthetic-medium-composed_tool_call-20261028", "--adapter-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--synthetic-only", "--augmentation-jsonl", "outputs/when2call-synthetic-medium-pilots-20261028/composed_tool_call.jsonl", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "100", "--seed", "20261055", "--stop-on-test-non-improvement", "--baseline-test-accuracy", "0.7020810514786419", "--baseline-test-macro-f1", "0.5276156270961326", "--baseline-validation-accuracy", "0.962", "--baseline-validation-macro-f1", "0.48832640709774233", "--baseline-test-source", "outputs/qwen-when2call-synthetic-medium-new_tool_call-20261028/metrics.json:baseline_black_box_test_metrics"]. Output: /workspace/post-training/outputs/qwen-when2call-synthetic-medium-composed_tool_call-20261028. W&B run: p33avvxr.
+
+Clean development accuracy: 0.77. Clean development macro F1: 0.43217780234176695. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.5550383351588171, "macro_f1": 0.379499068106839, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.962, "macro_f1": 0.48832640709774233, "examples": 500, "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

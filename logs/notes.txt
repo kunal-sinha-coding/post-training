@@ -7591,3 +7591,5 @@ Scalar temperatures did not improve clean-validation accuracy over the request-c
 
 
 2026-10-28: Record unsupported-capability expanded continuation. Continuing the Qwen epoch-02 adapter on only 896 unsupported-capability examples reached 100% training-probe accuracy and 0.250 macro F1 on 500 sampled rows. Clean validation on 500 rows fell to 82.40% accuracy and 0.415184 macro F1. Full test on 3,652 rows fell from 70.2081% accuracy and 0.527616 macro F1 to 70.0438% and 0.511127. The test accuracy decline was 0.1643 percentage points, so the branch stopped after epoch 1 under the user-requested rule.
+
+2026-10-28T05:17:16.996203+00:00: Commit `Record research experiment qwen-when2call-synthetic-medium-composed_tool_call-20261028` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
