@@ -12983,3 +12983,9 @@ Queued a larger tool-rich synthetic dose after the existing tool-rich replay, sy
 The queue remains active, with one tool-rich replay run running and five data experiments queued. The latest completed model run is still the rare-schema replay. It has complete evidence: 500-row training (0.990 accuracy, 0.742485 macro F1), 500-row clean validation (0.952, 0.484707), and aggregate-only test metrics on 3,652 rows (0.700438, 0.522924).
 
 Added a distinct clean-validation screen for the encoder fusion methods on the tool-rich replay checkpoint after the queued data experiments. The earlier tool-rich Qwen plus encoder fusion did not improve the pre-continuation Qwen checkpoint. This screen tests whether tool-rich training changes model complementarity. It uses the fixed 500-row validation split, and no aggregate test evaluation is queued unless clean validation selects a fusion candidate.
+
+## Larger real replay fraction queued
+
+The latest completed model experiment remains the rare-schema replay. Its training metrics on 500 rows (0.990 accuracy, 0.742485 macro F1), clean validation on 500 rows (0.952, 0.484707), and aggregate-only test metrics on all 3,652 rows (0.700438, 0.522924) are present. The active tool-rich replay has no completed metrics artifact yet. The queue was active rather than exhausted.
+
+Appended a distinct replay-size experiment after the current queue. It uses 900 real train_pref examples plus the same tool-rich synthetic pool and checkpoint used by the 667-row replay. This tests whether more real-data replay reduces forgetting while other settings remain fixed. Selection uses clean validation only.
