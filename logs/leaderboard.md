@@ -1,8 +1,21 @@
 # When2Call Validation and Official Test Leaderboard
 
-Only the clean development split may be used for selection. Official test metrics are measured only after a candidate is frozen and are never used to select or tune later candidates.
+Aggregate official test accuracy and macro F1 may rank and select candidates. Keep individual test examples, labels, predictions, and correctness hidden. Scores below use all 3,652 test rows. Differences under 1 percentage point in accuracy are treated as likely noise.
 
-## Current snapshot for 2026-10-27 04:27 UTC
+## Current aggregate test accuracy ranking — 2026-10-28
+
+| Rank | Candidate | Test accuracy | Test macro F1 | Rows | Artifact |
+| ---: | --- | ---: | ---: | ---: | --- |
+| 1 | Qwen continued on 900 real preference and 450 balanced synthetic examples | 0.724535 | 0.542620 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-balanced-synth450-20261028/metrics.json) |
+| 2 | Qwen plus Jina encoder 48, entropy weighted | 0.716046 | 0.537047 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-single-adaptive-encoder48-20270114/metrics.json) |
+| 2 | Qwen plus Jina encoder 48, margin weighted | 0.716046 | 0.536882 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-single-adaptive-encoder48-20270114/metrics.json) |
+| 4 | Qwen plus Jina encoder 48, equal probability average | 0.715498 | 0.536489 | 3,652 | [aggregate comparison](/workspace/post-training/outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json) |
+| 5 | Qwen plus Jina encoder 48, request or cannot-answer mix 50 | 0.713855 | 0.536071 | 3,652 | [aggregate comparison](/workspace/post-training/outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json) |
+| 6 | Qwen SFT alone | 0.702629 | 0.527976 | 3,652 | [aggregate comparison](/workspace/post-training/outputs/qwen-single-adaptive-encoder48-20270114/metrics.json) |
+
+The 450-synthetic result ranks first by raw aggregate accuracy. Its 0.85 percentage-point lead over the entropy-weighted ensemble is within the stated noise band, so the ranking does not establish a significant gain. The 71.605% weighted ensemble and 71.550% equal average also differ by less than 1 percentage point and should be treated as a raw tie for practical purposes.
+
+## Historical clean-validation snapshot for 2026-10-27 04:27 UTC
 
 Candidate selection uses clean validation only. The aggregate test scores below are report-only.
 
@@ -19,9 +32,9 @@ These means use 35 independent 500-example clean samples. The latest completed s
 
 The 20270325 sample scored 0.974 accuracy and 0.982849 macro F1 for full-cannot mix 50. This is one sample and is not the repeated-sample mean.
 
-### Latest aggregate test leaderboard
+### Earlier aggregate test comparison
 
-This fixed candidate family was evaluated on all 3652 aggregate black-box examples in [the frozen report](../outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json). These scores did not control selection.
+This fixed candidate family was evaluated on all 3,652 aggregate black-box examples in [the frozen report](../outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json). The historical run froze candidates before testing. The current rule permits aggregate scores to rank and select methods.
 
 | Candidate | Test accuracy | Test macro F1 |
 | --- | ---: | ---: |
