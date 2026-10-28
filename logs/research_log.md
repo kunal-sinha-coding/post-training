@@ -12871,3 +12871,15 @@ This record was written automatically. Candidate selection must use clean valida
 ## Balanced boundary synthetic data pilot
 
 Generated 250 complete-versus-missing-required-value pairs and 250 plausible unsupported requests from train_pref-only anchors. Structural checks and a separate high-confidence label judge accepted 219 pairs and 229 unsupported requests, for 667 trainer-ready rows. The class counts are tool_call 219, request_for_info 219, and cannot_answer 229. The OpenAI API estimate is $0.1362, bringing tracked generation spend to $1.1121 of the $10 cap. No validation or test data was used in generation. Queued one synthetic-only epoch from the clean-validation-best checkpoint, with a 500-row train probe, 500-row clean validation, and full aggregate test measurement.
+
+## qwen-boundary-pair-synth667-from-bestval-20261028
+
+Timestamp: 2026-10-28T16:45:52.540847+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-boundary-pair-synth667-from-bestval-20261028", "--adapter-checkpoint", "outputs/qwen-pref900-synth450-high-similarity-lr5e6-20261028/epoch-01", "--synthetic-only", "--augmentation-jsonl", "outputs/when2call-counterfactual-boundary-pilot-20261028/balanced_boundary500.jsonl", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261096", "--learning-rate", "5e-6"]. Output: /workspace/post-training/outputs/qwen-boundary-pair-synth667-from-bestval-20261028. W&B run: nu5paaya.
+
+Clean development accuracy: 0.94. Clean development macro F1: 0.4794584500466853. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7256297918948521, "macro_f1": 0.5390937791163531, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.94, "macro_f1": 0.4794584500466853, "confusion_matrix": [[244, 1, 5, 0], [9, 226, 14, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

@@ -2066,3 +2066,6 @@ Source-specific result `tool-rich-qwen-encoder-validation-sweep-20261028` has st
 | Candidate | test | — | — | [metrics](/workspace/post-training/outputs/tool-rich-qwen-encoder-fullroute60-20261028/test/metrics.json) | completed |
 
 | test | 0.7029025191675794 | 0.5260650854403114 | rghv75bf | Aggregate-only frozen test measurement |
+| Candidate | qwen-boundary-pair-synth667-from-bestval-20261028 | 0.94 | 0.4794584500466853 | [metrics](/workspace/post-training/outputs/qwen-boundary-pair-synth667-from-bestval-20261028/metrics.json) | completed |
+
+| qwen-boundary-pair-synth667-from-bestval-20261028 | 0.7256297918948521 | 0.5390937791163531 | nu5paaya | Aggregate-only frozen test measurement |
