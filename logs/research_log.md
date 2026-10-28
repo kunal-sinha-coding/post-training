@@ -12211,3 +12211,15 @@ Clean development accuracy: 0.966. Clean development macro F1: 0.487360672033373
 Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.962, "macro_f1": 0.48832640709774233, "confusion_matrix": [[241, 4, 5, 0], [0, 240, 9, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-when2call-synthetic-continuation-unsupported_capability-20261028
+
+Timestamp: 2026-10-28T03:41:15.335856+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-20261028", "--adapter-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--synthetic-only", "--augmentation-jsonl", "outputs/when2call-synthetic-pilots-20261028/unsupported_capability.jsonl", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--test-sample-size", "500", "--test-sample-seed", "20261070", "--epochs", "1", "--seed", "20261055", "--evaluate-baseline", "--stop-on-validation-non-improvement"]. Output: /workspace/post-training/outputs/qwen-when2call-synthetic-continuation-unsupported_capability-20261028. W&B run: 482bar42.
+
+Clean development accuracy: 0.936. Clean development macro F1: 0.4759725779844653. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.762, "macro_f1": 0.5678377216705945, "examples": 500, "sample_seed": 20261070, "sample_method": "uniform row-index sample without label access"}.
+
+Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.962, "macro_f1": 0.48832640709774233, "confusion_matrix": [[241, 4, 5, 0], [0, 240, 9, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

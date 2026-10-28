@@ -126532,3 +126532,343 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/jg6ytavb"
 }
 ```
+
+## qwen-when2call-synthetic-continuation-unsupported_capability-20261028
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.train_qwen_when2call_fullpool",
+    "--output-dir",
+    "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-20261028",
+    "--adapter-checkpoint",
+    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "--synthetic-only",
+    "--augmentation-jsonl",
+    "outputs/when2call-synthetic-pilots-20261028/unsupported_capability.jsonl",
+    "--validation-source",
+    "sft",
+    "--validation-sample-size",
+    "500",
+    "--validation-seed",
+    "20261053",
+    "--training-eval-sample-size",
+    "500",
+    "--training-eval-seed",
+    "20261059",
+    "--test-sample-size",
+    "500",
+    "--test-sample-seed",
+    "20261070",
+    "--epochs",
+    "1",
+    "--seed",
+    "20261055",
+    "--evaluate-baseline",
+    "--stop-on-validation-non-improvement"
+  ],
+  "development_metrics": {
+    "accuracy": 0.936,
+    "confusion_matrix": [
+      [
+        244,
+        1,
+        5,
+        0
+      ],
+      [
+        14,
+        224,
+        11,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0
+      ]
+    ],
+    "examples": 500,
+    "macro_f1": 0.4759725779844653
+  },
+  "exit_code": "unknown",
+  "experiment_id": "qwen-when2call-synthetic-continuation-unsupported_capability-20261028",
+  "failure_reason": null,
+  "metadata": {
+    "base_model": "Qwen/Qwen2.5-1.5B-Instruct",
+    "base_model_checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "baseline_black_box_test_metrics": {
+      "accuracy": 0.704,
+      "examples": 500,
+      "macro_f1": 0.5272613116908001,
+      "sample_method": "uniform row-index sample without label access",
+      "sample_seed": 20261070
+    },
+    "baseline_clean_validation_metrics": {
+      "accuracy": 0.962,
+      "confusion_matrix": [
+        [
+          241,
+          4,
+          5,
+          0
+        ],
+        [
+          0,
+          240,
+          9,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0
+        ]
+      ],
+      "examples": 500,
+      "macro_f1": 0.48832640709774233
+    },
+    "best_validation_accuracy": 0.962,
+    "config": {
+      "adapter_checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "augmentation_jsonl": "outputs/when2call-synthetic-pilots-20261028/unsupported_capability.jsonl",
+      "augmentation_mode": "none",
+      "augmentation_seed": 20261066,
+      "batch_size": 1,
+      "bfcl_data": "data/bfcl_when2call_labeled.jsonl",
+      "epochs": 1,
+      "eval_batch_size": 4,
+      "evaluate_baseline": true,
+      "include_full_bfcl": false,
+      "learning_rate": 2e-05,
+      "lora_rank": 16,
+      "max_length": 4096,
+      "model": "Qwen/Qwen2.5-1.5B-Instruct",
+      "output_dir": "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-20261028",
+      "seed": 20261055,
+      "stop_on_validation_non_improvement": true,
+      "synthetic_only": true,
+      "test_sample_seed": 20261070,
+      "test_sample_size": 500,
+      "training_eval_sample_size": 500,
+      "training_eval_seed": 20261059,
+      "validation_sample_size": 500,
+      "validation_seed": 20261053,
+      "validation_source": "sft",
+      "weight_decay": 0.01
+    },
+    "data": {
+      "augmentation_jsonl": "outputs/when2call-synthetic-pilots-20261028/unsupported_capability.jsonl",
+      "augmentation_jsonl_sha256": "3dd13741b778b3c9921822857d4e560cb80cb4252ce7588b3d8a74a0741aebd9",
+      "augmentation_mode": "synthetic_pilot",
+      "augmentation_seed": 20261066,
+      "augmented_examples": 50,
+      "bfcl_file": "data/bfcl_when2call_labeled.jsonl",
+      "bfcl_sha256": "a4b817a01c109603c00fe9e682f11eb636afc139894a92d4960bde8bddfda27f",
+      "bfcl_train_examples": 0,
+      "dataset": "synthetic pilot only",
+      "label_counts": {
+        "0": 50
+      },
+      "preference_examples": 0,
+      "prompt_label_fingerprint": "dbb6ce8cd9e3724d030900561a073ec03a41ddaa325df85f7230494d60d6d5db",
+      "split": "synthetic_pilot"
+    },
+    "device": "cuda",
+    "epoch_records": [
+      {
+        "black_box_test_metrics": {
+          "accuracy": 0.762,
+          "examples": 500,
+          "macro_f1": 0.5678377216705945,
+          "sample_method": "uniform row-index sample without label access",
+          "sample_seed": 20261070
+        },
+        "checkpoint": "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-20261028/epoch-01",
+        "epoch": 1,
+        "heldout_validation_metrics": {
+          "accuracy": 0.936,
+          "confusion_matrix": [
+            [
+              244,
+              1,
+              5,
+              0
+            ],
+            [
+              14,
+              224,
+              11,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              0
+            ]
+          ],
+          "examples": 500,
+          "macro_f1": 0.4759725779844653
+        },
+        "step": 50,
+        "stop_reason": "held-out validation accuracy did not improve",
+        "training_evaluation_examples": 50,
+        "training_evaluation_fingerprint": "dbb6ce8cd9e3724d030900561a073ec03a41ddaa325df85f7230494d60d6d5db",
+        "training_loss": 0.1947460800409044,
+        "training_metrics": {
+          "accuracy": 1.0,
+          "confusion_matrix": [
+            [
+              50,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "examples": 50,
+          "macro_f1": 0.25
+        },
+        "validation_examples": 500,
+        "validation_source": "sft"
+      }
+    ],
+    "experiment": "qwen25_1p5b_synthetic_only_continuation",
+    "optimizer_steps": 50,
+    "purpose": "Continue the saved When2Call adapter using only a small synthetic pilot set.",
+    "selection_procedure": "When validation is enabled, clean held-out validation accuracy controls optional early stopping. Aggregate black-box test metrics are report-only and do not select or stop training.",
+    "test_label_use": "Test labels were used only inside the evaluator to compute aggregate accuracy and macro F1. No individual test rows or predictions were saved, and test metrics did not select or stop training.",
+    "training_evaluation_examples_per_epoch": 50,
+    "training_loss_by_epoch": [
+      0.1947460800409044
+    ],
+    "validation_examples": 500,
+    "validation_source": "sft",
+    "wandb_run_id": "482bar42",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/482bar42"
+  },
+  "metrics_path": "/workspace/post-training/outputs/qwen-when2call-synthetic-continuation-unsupported_capability-20261028/metrics.json",
+  "official_test_loaded": null,
+  "official_test_metrics": {
+    "accuracy": 0.762,
+    "examples": 500,
+    "macro_f1": 0.5678377216705945,
+    "sample_method": "uniform row-index sample without label access",
+    "sample_seed": 20261070
+  },
+  "output_dir": "/workspace/post-training/outputs/qwen-when2call-synthetic-continuation-unsupported_capability-20261028",
+  "source_validation_metrics": {
+    "baseline_clean_validation_metrics": {
+      "accuracy": 0.962,
+      "confusion_matrix": [
+        [
+          241,
+          4,
+          5,
+          0
+        ],
+        [
+          0,
+          240,
+          9,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0
+        ]
+      ],
+      "examples": 500,
+      "macro_f1": 0.48832640709774233
+    }
+  },
+  "started_at": "2026-10-28T03:36:36.120701+00:00",
+  "status": "completed",
+  "test_status": "measured",
+  "timestamp": "2026-10-28T03:41:15.335856+00:00",
+  "train_metrics": {
+    "accuracy": 1.0,
+    "confusion_matrix": [
+      [
+        50,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "examples": 50,
+    "macro_f1": 0.25
+  },
+  "wandb_run_id": "482bar42",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/482bar42"
+}
+```
