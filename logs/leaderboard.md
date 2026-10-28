@@ -1963,3 +1963,6 @@ Source-specific result `qwen-pref900-balanced-synth450-encoder-validation-202610
 | Candidate | qwen-pref900-balanced-synth225-20261028 | 0.908 | 0.4723372993275053 | [metrics](/workspace/post-training/outputs/qwen-pref900-balanced-synth225-20261028/metrics.json) | completed |
 
 | qwen-pref900-balanced-synth225-20261028 | 0.6790799561883899 | 0.4983931167646126 | tb6120hc | Aggregate-only frozen test measurement |
+| Candidate | qwen-pref900-real-only-control-20261028 | 0.946 | 0.4830703072812291 | [metrics](/workspace/post-training/outputs/qwen-pref900-real-only-control-20261028/metrics.json) | completed |
+
+| qwen-pref900-real-only-control-20261028 | 0.7100219058050383 | 0.5279863786053464 | 3mdfew3k | Aggregate-only frozen test measurement |
