@@ -130056,3 +130056,155 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/lfs3zh32"
 }
 ```
+
+## prepare
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "prepare",
+    "--work-dir",
+    "outputs/qwen-pref900-balanced-synth450-encoder-ensemble-20261028",
+    "--suite",
+    "single-adaptive",
+    "--qwen-checkpoint",
+    "outputs/qwen-pref900-balanced-synth450-20261028/epoch-01",
+    "--methods",
+    "single_entropy_weighted",
+    "--primary-method",
+    "single_entropy_weighted",
+    "--batch-size",
+    "1",
+    "--output-dir",
+    "outputs/qwen-pref900-balanced-synth450-encoder-ensemble-20261028/prepare"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "prepare",
+  "failure_reason": null,
+  "metadata": {
+    "command": [
+      "/usr/local/bin/python",
+      "/workspace/post-training/experiments/existing_when2call_hybrid.py",
+      "prepare",
+      "--work-dir",
+      "outputs/qwen-pref900-balanced-synth450-encoder-ensemble-20261028",
+      "--suite",
+      "single-adaptive",
+      "--qwen-checkpoint",
+      "outputs/qwen-pref900-balanced-synth450-20261028/epoch-01",
+      "--methods",
+      "single_entropy_weighted",
+      "--primary-method",
+      "single_entropy_weighted",
+      "--batch-size",
+      "1",
+      "--output-dir",
+      "outputs/qwen-pref900-balanced-synth450-encoder-ensemble-20261028/prepare"
+    ],
+    "configuration": {
+      "batch_size": 1,
+      "encoder_checkpoints": null,
+      "methods": [
+        "single_entropy_weighted"
+      ],
+      "mode": "prepare",
+      "output_dir": "outputs/qwen-pref900-balanced-synth450-encoder-ensemble-20261028/prepare",
+      "primary_method": "single_entropy_weighted",
+      "qwen_checkpoint": "outputs/qwen-pref900-balanced-synth450-20261028/epoch-01",
+      "stacker_artifact": "outputs/existing-when2call-stacker-20261025/stacker.json",
+      "suite": "single-adaptive",
+      "work_dir": "outputs/qwen-pref900-balanced-synth450-encoder-ensemble-20261028"
+    },
+    "encoder_logit_weights": [
+      1.0
+    ],
+    "encoders": [
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+    ],
+    "frozen_configuration": {
+      "artifact_sha256": {
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/encoder_config.json": "0616e72a787934ed1fa3bec80e5da45239be1a1c267525c92960b83e9c44c12f",
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/model_state.pt": "815459d76b8c2e9fb7ba44e2f3867379ab096766cf9f1c807a08921be26593b5",
+        "outputs/qwen-pref900-balanced-synth450-20261028/epoch-01/adapter_config.json": "e79b2250cf6f27faa9a1d58e61ec37e206d829b56b1131e6c820b58a8498e84b",
+        "outputs/qwen-pref900-balanced-synth450-20261028/epoch-01/adapter_model.safetensors": "e7b30852ad6ad6587c7031c4338e6ffbd074755653e642b62ed4b245a6eda936",
+        "outputs/when2call-jina-v2-small/latest/tokenizer.json": "e9f999ac74497843ed9f4303246a8f43d9f100ee8aab8e133667903f447ceb48"
+      },
+      "development_selection_performed": false,
+      "encoder_logit_weights": [
+        1.0
+      ],
+      "encoders": [
+        "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+      ],
+      "family_probability_weights": [
+        0.5,
+        0.5
+      ],
+      "fusion_rules": {
+        "encoder_confident": "Use encoder probabilities only when its top-two probability margin is at least 0.50 and exceeds the Qwen margin. Otherwise use Qwen probabilities.",
+        "entropy_weighted": "Weight each expert by 1 minus its normalized predictive entropy, with equal weights if both are uniform.",
+        "margin_weighted": "Weight each expert by its top probability minus its second highest probability, with equal weights if both margins are zero."
+      },
+      "historical_selection_limitation": "Existing encoder approaches were identified in prior research with repeated official benchmark inspection. This fixed comparison is a benchmark measurement, not a new independent generalization estimate.",
+      "hypothesis": "Test distinct adaptive ensemble mechanisms in one frozen score pass: soft weights from predictive entropy, soft weights from top-two margins, and a fixed high-margin encoder override. Compare with equal averaging and minimum-entropy gating. No thresholds are swept.",
+      "label_order": [
+        "cannot_answer",
+        "request_for_info",
+        "tool_call",
+        "direct"
+      ],
+      "max_length": 4096,
+      "methods": [
+        "single_entropy_weighted"
+      ],
+      "metric_definition": "Primary macro F1 includes all four declared classes. The present-class macro F1 diagnostic permits comparison with historical encoder reports.",
+      "primary_method": "single_entropy_weighted",
+      "qwen_base": "Qwen/Qwen2.5-1.5B-Instruct",
+      "qwen_checkpoint": "outputs/qwen-pref900-balanced-synth450-20261028/epoch-01",
+      "qwen_mapping": "Historical adapter training used LABEL_TO_ID directly despite reversed ABCD descriptions in its prompt. Preserve learned identity indices.",
+      "qwen_output_permutation": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "selection_complete": true,
+      "single_encoder_index": 0,
+      "suite": "single-adaptive",
+      "test_status": "queued",
+      "training_performed": false,
+      "validation_limitation": "Existing encoder warm starts saw all train_pref rows. Clean source validation is used to select the frozen fusion rule. Test metrics are report-only."
+    },
+    "git_commit": "ba0f237c98cab441ffbfcf2ae02d9cbaeb79e5bf",
+    "max_length": 4096,
+    "primary_method": "single_entropy_weighted",
+    "qwen_checkpoint": "outputs/qwen-pref900-balanced-synth450-20261028/epoch-01",
+    "runtime_seconds": 1.0951883792877197,
+    "stacker_artifact": "outputs/existing-when2call-stacker-20261025/stacker.json",
+    "status": "completed",
+    "suite": "single-adaptive",
+    "test_status": "queued",
+    "wandb_run_id": "2h8s6hpt",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/2h8s6hpt"
+  },
+  "metrics_path": "/workspace/post-training/outputs/qwen-pref900-balanced-synth450-encoder-ensemble-20261028/prepare/metrics.json",
+  "official_test_loaded": null,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/qwen-pref900-balanced-synth450-encoder-ensemble-20261028/prepare",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-28T06:44:09.712131+00:00",
+  "status": "completed",
+  "test_status": "queued",
+  "timestamp": "2026-10-28T06:45:10.966089+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "2h8s6hpt",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/2h8s6hpt"
+}
+```

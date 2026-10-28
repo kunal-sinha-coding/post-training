@@ -6,53 +6,8 @@
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
   "current_hypothesis": "Continue synthetic-data dose and controlled setting probes while testing the current 450-synthetic accuracy leader with the strongest established Jina plus Qwen entropy-weighted ensemble. A new Qwen accuracy leader must receive a frozen, validation-first encoder-ensemble follow-up.",
   "active_experiment": {
-    "pid": 267513,
+    "pid": 267748,
     "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.existing_when2call_hybrid",
-      "prepare",
-      "--work-dir",
-      "outputs/qwen-pref900-balanced-synth450-encoder-ensemble-20261028",
-      "--suite",
-      "single-adaptive",
-      "--qwen-checkpoint",
-      "outputs/qwen-pref900-balanced-synth450-20261028/epoch-01",
-      "--methods",
-      "single_entropy_weighted",
-      "--primary-method",
-      "single_entropy_weighted",
-      "--batch-size",
-      "1",
-      "--output-dir",
-      "outputs/qwen-pref900-balanced-synth450-encoder-ensemble-20261028/prepare"
-    ],
-    "started_at": "2026-10-28T06:44:09.712131+00:00"
-  },
-  "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.existing_when2call_hybrid",
-    "prepare",
-    "--work-dir",
-    "outputs/qwen-pref900-balanced-synth450-encoder-ensemble-20261028",
-    "--suite",
-    "single-adaptive",
-    "--qwen-checkpoint",
-    "outputs/qwen-pref900-balanced-synth450-20261028/epoch-01",
-    "--methods",
-    "single_entropy_weighted",
-    "--primary-method",
-    "single_entropy_weighted",
-    "--batch-size",
-    "1",
-    "--output-dir",
-    "outputs/qwen-pref900-balanced-synth450-encoder-ensemble-20261028/prepare"
-  ],
-  "worker_queue": [
-    [
       "python",
       "-u",
       "-m",
@@ -73,6 +28,30 @@
       "--output-dir",
       "outputs/qwen-pref900-balanced-synth450-encoder-ensemble-20261028/test"
     ],
+    "started_at": "2026-10-28T06:45:10.554491+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "test",
+    "--work-dir",
+    "outputs/qwen-pref900-balanced-synth450-encoder-ensemble-20261028",
+    "--suite",
+    "single-adaptive",
+    "--qwen-checkpoint",
+    "outputs/qwen-pref900-balanced-synth450-20261028/epoch-01",
+    "--methods",
+    "single_entropy_weighted",
+    "--primary-method",
+    "single_entropy_weighted",
+    "--batch-size",
+    "1",
+    "--output-dir",
+    "outputs/qwen-pref900-balanced-synth450-encoder-ensemble-20261028/test"
+  ],
+  "worker_queue": [
     [
       "python",
       "-u",
@@ -220,17 +199,17 @@
     "macro_f1": 0.48337889372616516,
     "selection": "clean validation only"
   },
-  "last_heartbeat": "2026-10-28T06:44:09.712146+00:00",
-  "last_action": "Watchdog started validation worker pid 267513.",
+  "last_heartbeat": "2026-10-28T06:45:10.554505+00:00",
+  "last_action": "Watchdog started validation worker pid 267748.",
   "watchdog_enabled": true,
-  "research_log_size": 1558298,
+  "research_log_size": 1563587,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
     "-u",
     "-m",
     "experiments.existing_when2call_hybrid",
-    "prepare",
+    "test",
     "--work-dir",
     "outputs/qwen-pref900-balanced-synth450-encoder-ensemble-20261028",
     "--suite",
@@ -244,12 +223,12 @@
     "--batch-size",
     "1",
     "--output-dir",
-    "outputs/qwen-pref900-balanced-synth450-encoder-ensemble-20261028/prepare"
+    "outputs/qwen-pref900-balanced-synth450-encoder-ensemble-20261028/test"
   ],
   "recording_jobs": [
     {
-      "pid": 267512,
-      "experiment_id": "qwen-pref900-balanced-synth450-encoder-validation-20261028"
+      "pid": 267747,
+      "experiment_id": "prepare"
     }
   ],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
