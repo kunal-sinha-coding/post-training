@@ -12899,3 +12899,21 @@ Clean development accuracy: 0.956. Clean development macro F1: 0.486224515145994
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.956, "macro_f1": 0.4862245151459944, "confusion_matrix": [[244, 1, 5, 0], [4, 234, 11, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## Rare-schema synthetic coverage pilot queued
+
+The latest completed replay experiment has all required evidence: training metrics on 500 rows (0.982 accuracy, 0.736403 macro F1), clean SFT validation on 500 rows (0.956, 0.486225), and aggregate-only black-box metrics on all 3,652 rows (0.715772, 0.535333). It restored validation close to the starting checkpoint, but aggregate test metrics remain report-only. The tool-rich Qwen plus Jina encoder was already tested: the fixed request-confidence route scored 0.726451 aggregate accuracy versus 0.733023 for Qwen alone, and the clean-validation-selected class route scored 0.702903. Neither improved the Qwen score.
+
+Queued a new train_pref-only synthetic generation pilot. It selects underrepresented tool schemas, asks the generator to use the selected exact tool, filters schema validity and high-confidence labels, and uses 24 concurrent API requests under a $2 pilot cap. If at least 500 rows are generated, the next worker continues the clean-validation-best Qwen checkpoint with 667 replay preference examples plus the generated rows. Evaluation uses up to 500 training rows, 500 clean validation rows, and the full aggregate black-box test. Candidate selection uses clean validation only.
+
+## qwen-rare-schema-boundary-synth-replay-20261028
+
+Timestamp: 2026-10-28T17:07:36.174260+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-rare-schema-boundary-synth-replay-20261028", "--adapter-checkpoint", "outputs/qwen-pref900-synth450-high-similarity-lr5e6-20261028/epoch-01", "--preference-train-sample-size", "667", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261101", "--learning-rate", "5e-6", "--augmentation-jsonl", "outputs/when2call-rare-schema-boundary-pilot-20261028/balanced_boundary_rare_schema.jsonl"]. Output: /workspace/post-training/outputs/qwen-rare-schema-boundary-synth-replay-20261028. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

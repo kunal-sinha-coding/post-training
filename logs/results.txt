@@ -142161,3 +142161,61 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/veykjyuf"
 }
 ```
+
+## qwen-rare-schema-boundary-synth-replay-20261028
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.train_qwen_when2call_fullpool",
+    "--output-dir",
+    "outputs/qwen-rare-schema-boundary-synth-replay-20261028",
+    "--adapter-checkpoint",
+    "outputs/qwen-pref900-synth450-high-similarity-lr5e6-20261028/epoch-01",
+    "--preference-train-sample-size",
+    "667",
+    "--validation-source",
+    "sft",
+    "--validation-sample-size",
+    "500",
+    "--validation-seed",
+    "20261053",
+    "--training-eval-sample-size",
+    "500",
+    "--training-eval-seed",
+    "20261059",
+    "--eval-batch-size",
+    "8",
+    "--epochs",
+    "1",
+    "--seed",
+    "20261101",
+    "--learning-rate",
+    "5e-6",
+    "--augmentation-jsonl",
+    "outputs/when2call-rare-schema-boundary-pilot-20261028/balanced_boundary_rare_schema.jsonl"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "qwen-rare-schema-boundary-synth-replay-20261028",
+  "failure_reason": null,
+  "metadata": {},
+  "metrics_path": "/workspace/post-training/outputs/qwen-rare-schema-boundary-synth-replay-20261028/metrics.json",
+  "official_test_loaded": null,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/qwen-rare-schema-boundary-synth-replay-20261028",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-28T17:07:05.553083+00:00",
+  "status": "failed_or_incomplete",
+  "test_status": "not measured",
+  "timestamp": "2026-10-28T17:07:36.174260+00:00",
+  "train_metrics": {},
+  "wandb_run_id": null,
+  "wandb_run_url": null
+}
+```
