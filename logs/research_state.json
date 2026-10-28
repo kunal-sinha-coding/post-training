@@ -1,7 +1,7 @@
 {
-  "status": "awaiting_codex_planning",
+  "status": "active",
   "planning_owner": "codex_primary",
-  "planning_required": true,
+  "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
   "current_hypothesis": "The latest completed model run has complete train, clean-validation, and aggregate test evidence. The tool-rich replay run is still evaluating; existing queue entries test replay quantity and synthetic pool composition. All generated examples so far use single-turn requests. A new hypothesis is that multi-turn examples where a required value appears earlier in conversation will improve context use and distinguish inferable values from missing ones. Generate paired conversations from train_pref anchors, validate labels independently, and compare one replay continuation on clean validation.",
@@ -38,7 +38,51 @@
     "--augmentation-jsonl",
     "outputs/when2call-tool-rich-large-boundary-pilot-20261028/balanced_boundary_tool_rich.jsonl"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-tool-rich-boundary-replay900-continued-20261028",
+      "--adapter-checkpoint",
+      "outputs/qwen-tool-rich-boundary-replay900-20261028/epoch-01",
+      "--preference-train-sample-size",
+      "900",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "3",
+      "--stop-on-validation-non-improvement",
+      "--seed",
+      "20261108",
+      "--learning-rate",
+      "5e-6",
+      "--augmentation-jsonl",
+      "outputs/when2call-tool-rich-boundary-pilot-20261028/balanced_boundary_tool_rich.jsonl",
+      "--baseline-test-accuracy",
+      "0.7278203723986857",
+      "--baseline-test-macro-f1",
+      "0.5446447229603346",
+      "--baseline-test-source",
+      "outputs/qwen-tool-rich-boundary-replay900-20261028/metrics.json",
+      "--baseline-validation-accuracy",
+      "0.96",
+      "--baseline-validation-macro-f1",
+      "0.4872873318653768"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -66,17 +110,12 @@
     "selection": "clean validation only"
   },
   "last_heartbeat": "2026-10-28T22:51:21.365225+00:00",
-  "last_action": "Watchdog handed planning control to the primary Codex process.",
+  "last_action": "Audited 1,500-real run evidence and queued up to three continuation epochs on the best clean-validation recipe with validation-only stopping.",
   "watchdog_enabled": true,
-  "research_log_size": 1700750,
+  "research_log_size": 1702293,
   "stop_command": "STOP",
   "next_experiment": null,
-  "recording_jobs": [
-    {
-      "pid": 308790,
-      "experiment_id": "qwen-tool-rich-large-boundary-replay1500-20261028"
-    }
-  ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-28T23:22:58.971476+00:00",
   "planning_ack_deadline": "2026-10-28T23:24:58.971500+00:00",
@@ -90,7 +129,7 @@
     "wandb_run_id": "vrfnnoq2",
     "selection": "Aggregate test result reported for ranking only. It was not used for candidate selection."
   },
-  "next_hypothesis": "With the large 994-row tool-rich pool, clean-validation accuracy was 0.956 at both 900 and 1,100 real examples, while training accuracy rose from 0.986 to 0.992. Test whether a 1,500-real dose, about 60 percent of the combined pool, shifts the model toward the preference distribution and improves clean validation. Hold the checkpoint, synthetic pool, seed, learning rate, and capped evaluations fixed. Do not select by test metrics.",
+  "next_hypothesis": "The 1,500-real large-pool run fell to 0.944 clean-validation accuracy. The small tool-rich pool with 900 real examples remains the best clean-validation recipe at 0.960. Test whether continued optimization of that fixed recipe improves validation before stopping. Start from its saved checkpoint, permit up to three additional epochs, and stop immediately when clean-validation accuracy fails to improve over the checkpoint or a prior continuation epoch. Test metrics are measured each epoch but are not used for stopping or selection.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
@@ -134,22 +173,22 @@
     "selection_use": "none"
   },
   "evidence_audit": {
-    "latest_completed_experiment": "qwen-tool-rich-large-boundary-replay1100-20261028",
+    "latest_completed_experiment": "qwen-tool-rich-large-boundary-replay1500-20261028",
     "training_metrics_recorded": true,
-    "training_metrics_source": "outputs/qwen-tool-rich-large-boundary-replay1100-20261028/metrics.json:epoch_records[0].training_metrics",
+    "training_metrics_source": "outputs/qwen-tool-rich-large-boundary-replay1500-20261028/metrics.json:epoch_records[0].training_metrics",
     "training_examples": 500,
-    "training_accuracy": 0.992,
-    "training_macro_f1": 0.7439436077731717,
+    "training_accuracy": 0.986,
+    "training_macro_f1": 0.7394192921368362,
     "clean_validation_recorded": true,
-    "clean_validation_source": "outputs/qwen-tool-rich-large-boundary-replay1100-20261028/metrics.json:epoch_records[0].heldout_validation_metrics; nvidia/When2Call train_sft",
+    "clean_validation_source": "outputs/qwen-tool-rich-large-boundary-replay1500-20261028/metrics.json:epoch_records[0].heldout_validation_metrics; nvidia/When2Call train_sft",
     "clean_validation_examples": 500,
-    "clean_validation_accuracy": 0.956,
-    "clean_validation_macro_f1": 0.4867348420419424,
+    "clean_validation_accuracy": 0.944,
+    "clean_validation_macro_f1": 0.48298270180528413,
     "aggregate_black_box_test_metrics_recorded": true,
-    "aggregate_black_box_test_source": "outputs/qwen-tool-rich-large-boundary-replay1100-20261028/metrics.json:epoch_records[0].black_box_test_metrics",
+    "aggregate_black_box_test_source": "outputs/qwen-tool-rich-large-boundary-replay1500-20261028/metrics.json:epoch_records[0].black_box_test_metrics",
     "aggregate_black_box_test_examples": 3652,
-    "aggregate_black_box_test_accuracy": 0.7223439211391018,
-    "aggregate_black_box_test_macro_f1": 0.5396833238846755,
+    "aggregate_black_box_test_accuracy": 0.7105695509309967,
+    "aggregate_black_box_test_macro_f1": 0.5273809089136836,
     "candidate_selection": "Clean held-out validation only. Aggregate black-box test metrics are report-only and were not used to select the next experiment."
   },
   "duplicate_worker_failure": {
@@ -272,11 +311,11 @@
     }
   ],
   "latest_aggregate_test_report": {
-    "experiment": "qwen-tool-rich-large-boundary-replay1100-20261028",
+    "experiment": "qwen-tool-rich-large-boundary-replay1500-20261028",
     "selection": "Reporting only; not used for candidate selection.",
     "metrics": {
-      "accuracy": 0.7223439211391018,
-      "macro_f1": 0.5396833238846755,
+      "accuracy": 0.7105695509309967,
+      "macro_f1": 0.5273809089136836,
       "examples": 3652
     }
   },
@@ -387,7 +426,7 @@
     "ensemble_aggregate_test_accuracy": 0.7313800657174151,
     "test_metric_use": "Reporting only; not used for candidate selection."
   },
-  "latest_completed_experiment": "qwen-tool-rich-large-boundary-replay1100-20261028",
+  "latest_completed_experiment": "qwen-tool-rich-large-boundary-replay1500-20261028",
   "evidence_policy": {
     "selection_metric": "clean held-out validation only",
     "aggregate_test": "reporting only; never use test-derived metrics for candidate selection",
