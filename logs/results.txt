@@ -125402,3 +125402,327 @@ The complete setup and observed results are recorded below. Source validation sp
 ### Audit supplement for `when2call-similarity-gate-30pct-pref-k3-weight-refine-fulltest-20270524`
 
 The auto-generated index record above leaves its top-level `official_test_metrics` field empty. The experiment output `outputs/when2call-similarity-gate-30pct-pref-k3-weight-refine-fulltest-20270524/metrics.json` contains the aggregate measurement: on all 3,652 test rows, the clean-selected gate scored 0.6853778751 accuracy and 0.5152938740 macro F1. Zero-shot scored 0.6804490690 accuracy and 0.5119275707 macro F1. The frozen Qwen training probe (500 examples) scored 0.9600 accuracy, 0.7201450925 macro F1, and 0.4083543871 loss. Clean validation (500 examples) scored 0.9560 accuracy and 0.9763532692 macro F1 for the selected gate, versus zero-shot at 0.9420 and 0.9670592402. The full test values are report-only. Candidate selection used clean validation only. No per-example test outcomes were saved.
+
+## when2call-similarity-gate-30pct-pref-k3-question-tools-20270525
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_when2call_similarity_gated_retrieval",
+    "--output-dir",
+    "outputs/when2call-similarity-gate-30pct-pref-k3-question-tools-20270525",
+    "--retrieval-pool",
+    "train_pref_30pct_plus_train_sft",
+    "--feature",
+    "question_and_tools",
+    "--split-seed",
+    "20270327",
+    "--sample-seed",
+    "20270332",
+    "--max-validation-examples",
+    "500",
+    "--qwen-checkpoint",
+    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "--embedding-model",
+    "text-embedding-3-small",
+    "--embedding-dimensions",
+    "1536",
+    "--cache-dir",
+    "outputs/when2call-openai-embedding-cache",
+    "--batch-size",
+    "1",
+    "--gate-quantiles",
+    "0.4",
+    "0.65",
+    "--k",
+    "3",
+    "--label-disagreement-fallback-k1",
+    "--probability-average",
+    "--retrieval-weights",
+    "0.4",
+    "0.5"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "when2call-similarity-gate-30pct-pref-k3-question-tools-20270525",
+  "failure_reason": null,
+  "metadata": {
+    "aggregate_test_loaded": false,
+    "embedding_cache": {
+      "training": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-train_pref_30pct_plus_train_sft_question_and_tools-training-c75a0d696a5242b4579570ed.npz",
+      "validation": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-question_and_tools-validation-43161f73d07ea2e560aed438.npz"
+    },
+    "embedding_dimensions": 1536,
+    "embedding_model": "text-embedding-3-small",
+    "embedding_usage": {
+      "training": {
+        "api_calls": 259,
+        "cache_hit": false,
+        "embedding_count": 16570,
+        "input_tokens": 1237235
+      },
+      "validation": {
+        "api_calls": 0,
+        "cache_hit": true,
+        "embedding_count": 500,
+        "input_tokens": 0
+      }
+    },
+    "gate_quantiles": [
+      0.4,
+      0.65
+    ],
+    "gate_score": "absolute",
+    "gate_thresholds_from_unlabeled_validation_scores": {
+      "0.4": 0.8339503407478333,
+      "0.65": 0.9128182530403137
+    },
+    "gate_thresholds_from_unlabeled_validation_similarities": {
+      "0.4": 0.8339503407478333,
+      "0.65": 0.9128182530403137
+    },
+    "git_commit": "488f308290f15c0919a237d222c1e3ce3f56a0f3",
+    "k": 3,
+    "label_consensus_gate": false,
+    "label_disagreement_fallback_k1": true,
+    "official_test_loaded": false,
+    "probability_average": true,
+    "qwen_checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "require_neighbor_match_zero_shot": false,
+    "retrieval_feature": "question_and_tools",
+    "retrieval_pool": "train_pref_30pct_plus_train_sft",
+    "retrieval_weights": [
+      0.4,
+      0.5
+    ],
+    "runtime_seconds": 366.2006528377533,
+    "status": "completed",
+    "training_metrics_source": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json",
+    "training_performed": false,
+    "validation_examples": 500,
+    "validation_metrics": {
+      "always_k3_w0.4": {
+        "accuracy": 0.942,
+        "macro_f1": 0.9651469915135025
+      },
+      "always_k3_w0.5": {
+        "accuracy": 0.938,
+        "macro_f1": 0.9629617136110643
+      },
+      "gate_top_0.4_fallback_k1_probavg_w0.4": {
+        "accuracy": 0.936,
+        "macro_f1": 0.9619443974987325
+      },
+      "gate_top_0.4_fallback_k1_probavg_w0.5": {
+        "accuracy": 0.936,
+        "macro_f1": 0.9619141780324156
+      },
+      "gate_top_0.65_fallback_k1_probavg_w0.4": {
+        "accuracy": 0.94,
+        "macro_f1": 0.9650278293135437
+      },
+      "gate_top_0.65_fallback_k1_probavg_w0.5": {
+        "accuracy": 0.942,
+        "macro_f1": 0.966071097944825
+      },
+      "zero_shot": {
+        "accuracy": 0.942,
+        "macro_f1": 0.967059240237315
+      }
+    },
+    "validation_source": "nvidia/When2Call train_sft",
+    "wandb_run_id": "khw5uam1",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/khw5uam1"
+  },
+  "metrics_path": "/workspace/post-training/outputs/when2call-similarity-gate-30pct-pref-k3-question-tools-20270525/metrics.json",
+  "official_test_loaded": false,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/when2call-similarity-gate-30pct-pref-k3-question-tools-20270525",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-27T22:39:10.239791+00:00",
+  "status": "completed",
+  "test_status": "not measured",
+  "timestamp": "2026-10-27T22:46:11.562231+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "khw5uam1",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/khw5uam1"
+}
+```
+
+## when2call-similarity-gate-30pct-pref-k3-question-tools-fulltest-20270526
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_when2call_similarity_gate_test_screen",
+    "--output-dir",
+    "outputs/when2call-similarity-gate-30pct-pref-k3-question-tools-fulltest-20270526",
+    "--clean-metrics",
+    "outputs/when2call-similarity-gate-30pct-pref-k3-question-tools-20270525/metrics.json",
+    "--sample-seed",
+    "20270526",
+    "--max-test-examples",
+    "500",
+    "--split-seed",
+    "20270327",
+    "--validation-sample-seed",
+    "20270332",
+    "--qwen-checkpoint",
+    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "--embedding-model",
+    "text-embedding-3-small",
+    "--embedding-dimensions",
+    "1536",
+    "--cache-dir",
+    "outputs/when2call-openai-embedding-cache",
+    "--batch-size",
+    "1",
+    "--feature",
+    "question_and_tools",
+    "--label-disagreement-fallback-k1",
+    "--probability-average",
+    "--force-screen",
+    "--full-test"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "when2call-similarity-gate-30pct-pref-k3-question-tools-fulltest-20270526",
+  "failure_reason": null,
+  "metadata": {
+    "checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "clean_metrics_source": "outputs/when2call-similarity-gate-30pct-pref-k3-question-tools-20270525/metrics.json",
+    "clean_validation_examples": 500,
+    "clean_validation_metrics": {
+      "gate_top_0.65_fallback_k1_probavg_w0.5": {
+        "accuracy": 0.942,
+        "macro_f1": 0.966071097944825
+      },
+      "zero_shot": {
+        "accuracy": 0.942,
+        "macro_f1": 0.967059240237315
+      }
+    },
+    "dataset": "nvidia/When2Call",
+    "embedding_cache": {
+      "test_full": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-question_and_tools-test_full-8f69884d92df57c93cdc8692.npz",
+      "test_sample": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-question_and_tools-test_sample-8bb53ec59567a3b36d293a31.npz",
+      "training": "outputs/when2call-openai-embedding-cache/text-embedding-3-small/d1536-train_pref_30pct_plus_train_sft_question_and_tools-training-c75a0d696a5242b4579570ed.npz"
+    },
+    "embedding_usage": {
+      "test_full": {
+        "api_calls": 58,
+        "cache_hit": false,
+        "embedding_count": 3652,
+        "input_tokens": 462224
+      },
+      "test_sample": {
+        "api_calls": 8,
+        "cache_hit": false,
+        "embedding_count": 500,
+        "input_tokens": 61660
+      },
+      "training": {
+        "api_calls": 0,
+        "cache_hit": true,
+        "embedding_count": 16570,
+        "input_tokens": 0
+      }
+    },
+    "full_test_evaluated": true,
+    "full_test_examples": 3652,
+    "full_test_gate": "Full evaluation was forced after clean validation selection.",
+    "full_test_metrics": {
+      "gate_top_0.65_fallback_k1_probavg_w0.5": {
+        "accuracy": 0.6804490690032858,
+        "macro_f1": 0.511927570670597
+      },
+      "zero_shot": {
+        "accuracy": 0.6804490690032858,
+        "macro_f1": 0.511927570670597
+      }
+    },
+    "gate_score": "absolute",
+    "gate_threshold": 0.9128182530403137,
+    "k": 3,
+    "label_consensus_gate": false,
+    "label_disagreement_fallback_k1": true,
+    "measurement_type": "aggregate_only_black_box_test_sample",
+    "official_test_loaded": true,
+    "per_example_outcomes_saved": false,
+    "probability_average": true,
+    "require_neighbor_match_zero_shot": false,
+    "retrieval_feature": "question_and_tools",
+    "retrieval_pool": "train_pref_30pct_plus_train_sft",
+    "retrieval_weight": 0.5,
+    "runtime_seconds": 814.4245834350586,
+    "sample_method": "uniform random row-index sample without label access",
+    "sample_seed": 20270526,
+    "selected_method": "gate_top_0.65_fallback_k1_probavg_w0.5",
+    "selection_source": "clean validation only",
+    "split": "test/mcq",
+    "status": "completed",
+    "test_labels_used_for_selection": false,
+    "test_sample_examples": 500,
+    "test_sample_metrics": {
+      "gate_top_0.65_fallback_k1_probavg_w0.5": {
+        "accuracy": 0.694,
+        "macro_f1": 0.5211607131748224
+      },
+      "zero_shot": {
+        "accuracy": 0.694,
+        "macro_f1": 0.5211607131748224
+      }
+    },
+    "training_metrics": {
+      "accuracy": 0.96,
+      "epoch": 2,
+      "examples": 500,
+      "macro_f1": 0.7201450925439365,
+      "training_loss": 0.408354387068056
+    },
+    "training_metrics_source": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json",
+    "wandb_run_id": "oca8k8i7",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/oca8k8i7"
+  },
+  "metrics_path": "/workspace/post-training/outputs/when2call-similarity-gate-30pct-pref-k3-question-tools-fulltest-20270526/metrics.json",
+  "official_test_loaded": true,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/when2call-similarity-gate-30pct-pref-k3-question-tools-fulltest-20270526",
+  "source_validation_metrics": {
+    "clean_validation_metrics": {
+      "gate_top_0.65_fallback_k1_probavg_w0.5": {
+        "accuracy": 0.942,
+        "macro_f1": 0.966071097944825
+      },
+      "zero_shot": {
+        "accuracy": 0.942,
+        "macro_f1": 0.967059240237315
+      }
+    }
+  },
+  "started_at": "2026-10-27T22:46:11.200360+00:00",
+  "status": "completed",
+  "test_status": "not measured",
+  "timestamp": "2026-10-27T23:00:13.504738+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "oca8k8i7",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/oca8k8i7"
+}
+```
+
+
+## qwen-when2call-aug-tool-order-20261027 epoch-01 checkpoint
+
+Purpose: Test whether label-preserving tool-order permutations improve Qwen generalization from the 9,000 When2Call `train_pref` examples. Setup: start from `Qwen/Qwen2.5-1.5B-Instruct` with fresh rank-16 LoRA, learning rate 2e-5, weight decay 0.01, batch size 1, seed 20261055. Append one deterministically shuffled tool-order variant for every preference row with more than one tool. The source has 9,000 rows, of which 5,803 received variants, for 14,803 training rows. Evaluate up to 500 training rows, 500 held-out `train_sft` rows, and all 3,652 black-box test rows. Use clean validation for continuation and candidate selection. The full test measurement is report-only.
+
+Epoch 1 checkpoint: loss 0.566216, training accuracy 0.956000, training macro F1 0.717235; clean validation accuracy 0.946000, macro F1 0.483559; aggregate black-box test accuracy 0.668127, macro F1 0.468839. W&B run `cxm2b3nx`: https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/cxm2b3nx. The run remains active for epoch 2. No individual test outcomes were accessed or saved.

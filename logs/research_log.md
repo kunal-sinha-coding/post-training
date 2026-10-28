@@ -12125,3 +12125,8 @@ This record was written automatically. Candidate selection must use clean valida
 The user explicitly stopped retrieval exploration. The active 25% preference-pool retrieval validation process was terminated, and its remaining retrieval work was removed. No completed metrics were produced for the interrupted run. The last finished experiment remains the May 24 30% preference K=3 weighted retrieval screen; its training probe, clean validation, and full aggregate test evidence are recorded.
 
 The queue now tests three label-preserving prompt transformations on the full 9,000-row When2Call `train_pref` set: available-tool order permutation, JSON schema key-order permutation, and a neutral request-context wrapper. Each run starts from the same base model, evaluates up to 500 training and 500 clean validation rows, evaluates the full black-box test set each epoch, and uses clean validation accuracy for early stopping.
+
+
+### Tool-order augmentation, epoch 1 checkpoint
+
+The training run uses the 9,000 When2Call preference examples plus 5,803 deterministic tool-order permutations, for 14,803 rows. It starts from the Qwen2.5-1.5B-Instruct base with fresh rank-16 LoRA, learning rate 2e-5, weight decay 0.01, batch size 1, and seed 20261055. W&B run `cxm2b3nx` records the exact config and per-step loss. Epoch 1 metrics are training accuracy 0.956000 and macro F1 0.717235 on 500 rows, clean `train_sft` validation accuracy 0.946000 and macro F1 0.483559 on 500 rows, and full 3,652-row aggregate black-box test accuracy 0.668127 and macro F1 0.468839. The full test is report-only. The run is continuing to epoch 2 because clean-validation accuracy improved over the recorded 0.942 baseline.
