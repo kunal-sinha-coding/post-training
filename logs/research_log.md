@@ -12591,3 +12591,15 @@ Clean development accuracy: 0.948. Clean development macro F1: 0.483137519020180
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.948, "macro_f1": 0.4831375190201801, "confusion_matrix": [[242, 2, 6, 0], [5, 232, 12, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-pref900-synth450-high-similarity-lr5e6-20261028
+
+Timestamp: 2026-10-28T11:31:41.847738+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-pref900-synth450-high-similarity-lr5e6-20261028", "--adapter-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--preference-train-sample-size", "900", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261087", "--learning-rate", "5e-6", "--augmentation-jsonl", "outputs/when2call-synthetic-medium-pilots-20261028/balanced_mix450_high_similarity.jsonl"]. Output: /workspace/post-training/outputs/qwen-pref900-synth450-high-similarity-lr5e6-20261028. W&B run: sjxtcita.
+
+Clean development accuracy: 0.958. Clean development macro F1: 0.48675701919302516. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7228915662650602, "macro_f1": 0.5396677118047506, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.958, "macro_f1": 0.48675701919302516, "confusion_matrix": [[244, 1, 5, 0], [4, 235, 10, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
