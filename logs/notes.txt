@@ -7945,3 +7945,8 @@ Commit name: Queue large tool-rich pool with 900-example replay.
 The latest completed run, `qwen-tool-rich-large-boundary-synthetic-only-20261028`, records training metrics on 500 examples (0.996 accuracy, 0.746930 macro F1), clean validation on 500 examples (0.950 accuracy, 0.483638 macro F1), and aggregate black-box test metrics on all 3,652 examples (0.739869 accuracy, 0.551691 macro F1). All evidence is present. The aggregate test result is report-only and was not used to select the next experiment.
 
 The tool-rich synthetic pool contains 994 accepted rows. A distinct run is queued with 900 real preference replay examples plus that large pool. The earlier small-pool 900-replay run reached 0.960 clean validation, while the large-pool 667-replay run reached 0.942. This experiment tests whether the larger pool and 900 real examples retain clean-validation performance. It uses the same checkpoint, seed, learning rate, and capped train and validation samples as the small-pool 900-replay comparison.
+
+## 2026-10-28: Verify large-pool replay launch
+Commit name: Verify large tool-rich replay launch.
+
+The watchdog launched `qwen-tool-rich-large-boundary-replay900-20261028` as PID 306027. It uses 900 real preference examples and the 994-row large synthetic pool. The run is active, the queue is empty because this command was promoted, and state remains active with planning disabled. The latest completed synthetic-only run has all three evidence types recorded.
