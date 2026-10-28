@@ -7801,3 +7801,5 @@ Commit `Queue rare-schema synthetic pilot`: Audited the most recent replay run a
 Commit `Fix rare-schema worker ordering`: Corrected the worker queue after the watchdog attempted the replay command before the rare-schema generator created its input. The failed training process exited on a missing JSONL file before model load. Generation is now first, followed by replay training. The latest completed experiment remains the 667-real plus 667-synthetic replay run with all three evidence types recorded.
 
 Queue order follow-up: The watchdog consumes the first item in `worker_queue` when the worker slot is empty. Placed generation at index zero and replay training at index one so the watchdog cannot skip generation.
+
+2026-10-28T17:11:47.491672+00:00: Commit `Record research experiment when2call-rare-schema-boundary-pilot-20261028` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.

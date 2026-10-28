@@ -142219,3 +142219,71 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": null
 }
 ```
+
+## when2call-rare-schema-boundary-pilot-20261028
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.generate_when2call_boundary_pilot",
+    "--output-dir",
+    "outputs/when2call-rare-schema-boundary-pilot-20261028",
+    "--pairs",
+    "250",
+    "--unsupported",
+    "250",
+    "--workers",
+    "24",
+    "--seed",
+    "20261100",
+    "--max-cost-usd",
+    "2.0",
+    "--anchor-strategy",
+    "rare_schema"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "when2call-rare-schema-boundary-pilot-20261028",
+  "failure_reason": null,
+  "metadata": {
+    "accepted_pairs": 211,
+    "accepted_unsupported": 233,
+    "anchor_strategy": "rare_schema",
+    "class_counts": {
+      "cannot_answer": 233,
+      "request_for_info": 211,
+      "tool_call": 211
+    },
+    "concurrency": 24,
+    "cost_ledger": "outputs/when2call-rare-schema-boundary-pilot-20261028/cost-ledger.json",
+    "estimated_cost_usd": 0.1273544,
+    "generation_model": "gpt-6-luna",
+    "official_test_loaded": false,
+    "output_jsonl": "outputs/when2call-rare-schema-boundary-pilot-20261028/balanced_boundary_rare_schema.jsonl",
+    "pairs_requested": 250,
+    "rows_written": 655,
+    "seed": 20261100,
+    "source": "nvidia/When2Call train_pref",
+    "status": "completed",
+    "test_labels_used": false,
+    "unsupported_requested": 250
+  },
+  "metrics_path": "/workspace/post-training/outputs/when2call-rare-schema-boundary-pilot-20261028/metrics.json",
+  "official_test_loaded": false,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/when2call-rare-schema-boundary-pilot-20261028",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-28T17:08:37.880582+00:00",
+  "status": "completed",
+  "test_status": "not measured",
+  "timestamp": "2026-10-28T17:11:44.916515+00:00",
+  "train_metrics": {},
+  "wandb_run_id": null,
+  "wandb_run_url": null
+}
+```

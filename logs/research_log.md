@@ -12921,3 +12921,15 @@ This record was written automatically. Candidate selection must use clean valida
 ## Rare-schema queue sequencing correction
 
 The first queue update accidentally placed the training command in the immediate worker slot and left generation in no executable position. The watchdog therefore attempted training before the generated JSONL existed, and training exited with `FileNotFoundError` before loading a model. No training or evaluation occurred. Requeued rare-schema generation as the immediate worker and the replay experiment as the following command. The previous completed replay remains the latest completed experiment and has complete training, clean-validation, and aggregate black-box evidence.
+
+## when2call-rare-schema-boundary-pilot-20261028
+
+Timestamp: 2026-10-28T17:11:44.916515+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.generate_when2call_boundary_pilot", "--output-dir", "outputs/when2call-rare-schema-boundary-pilot-20261028", "--pairs", "250", "--unsupported", "250", "--workers", "24", "--seed", "20261100", "--max-cost-usd", "2.0", "--anchor-strategy", "rare_schema"]. Output: /workspace/post-training/outputs/when2call-rare-schema-boundary-pilot-20261028. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
