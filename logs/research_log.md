@@ -13205,3 +13205,15 @@ Clean development accuracy: 0.946. Clean development macro F1: 0.483552039890068
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.946, "macro_f1": 0.4835520398900681, "confusion_matrix": [[243, 2, 5, 0], [3, 230, 16, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-tool-rich-synth-only-encoder-blackbox-20261028
+
+Timestamp: 2026-10-28T21:19:53.440726+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.existing_when2call_hybrid", "prepare", "--work-dir", "outputs/qwen-tool-rich-synth-only-encoder-blackbox-20261028/work", "--output-dir", "outputs/qwen-tool-rich-synth-only-encoder-blackbox-20261028", "--suite", "single-disagree", "--qwen-checkpoint", "outputs/qwen-tool-rich-boundary-synth-only-20261028/epoch-01", "--methods", "single_encoder_request_or_cannot_answer_conf_90", "--primary-method", "single_encoder_request_or_cannot_answer_conf_90", "--batch-size", "1"]. Output: /workspace/post-training/outputs/qwen-tool-rich-synth-only-encoder-blackbox-20261028. W&B run: cc96lv2g.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Test status: queued. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

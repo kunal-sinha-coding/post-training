@@ -6,53 +6,8 @@
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
   "current_hypothesis": "The latest completed model run has complete train, clean-validation, and aggregate test evidence. The tool-rich replay run is still evaluating; existing queue entries test replay quantity and synthetic pool composition. All generated examples so far use single-turn requests. A new hypothesis is that multi-turn examples where a required value appears earlier in conversation will improve context use and distinguish inferable values from missing ones. Generate paired conversations from train_pref anchors, validate labels independently, and compare one replay continuation on clean validation.",
   "active_experiment": {
-    "pid": 304003,
+    "pid": 304263,
     "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.existing_when2call_hybrid",
-      "prepare",
-      "--work-dir",
-      "outputs/qwen-tool-rich-synth-only-encoder-blackbox-20261028/work",
-      "--output-dir",
-      "outputs/qwen-tool-rich-synth-only-encoder-blackbox-20261028",
-      "--suite",
-      "single-disagree",
-      "--qwen-checkpoint",
-      "outputs/qwen-tool-rich-boundary-synth-only-20261028/epoch-01",
-      "--methods",
-      "single_encoder_request_or_cannot_answer_conf_90",
-      "--primary-method",
-      "single_encoder_request_or_cannot_answer_conf_90",
-      "--batch-size",
-      "1"
-    ],
-    "started_at": "2026-10-28T21:18:52.651757+00:00"
-  },
-  "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.existing_when2call_hybrid",
-    "prepare",
-    "--work-dir",
-    "outputs/qwen-tool-rich-synth-only-encoder-blackbox-20261028/work",
-    "--output-dir",
-    "outputs/qwen-tool-rich-synth-only-encoder-blackbox-20261028",
-    "--suite",
-    "single-disagree",
-    "--qwen-checkpoint",
-    "outputs/qwen-tool-rich-boundary-synth-only-20261028/epoch-01",
-    "--methods",
-    "single_encoder_request_or_cannot_answer_conf_90",
-    "--primary-method",
-    "single_encoder_request_or_cannot_answer_conf_90",
-    "--batch-size",
-    "1"
-  ],
-  "worker_queue": [
-    [
       "python",
       "-u",
       "-m",
@@ -72,8 +27,31 @@
       "single_encoder_request_or_cannot_answer_conf_90",
       "--batch-size",
       "1"
-    ]
+    ],
+    "started_at": "2026-10-28T21:19:53.241892+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "test",
+    "--work-dir",
+    "outputs/qwen-tool-rich-synth-only-encoder-blackbox-20261028/work",
+    "--output-dir",
+    "outputs/qwen-tool-rich-synth-only-encoder-blackbox-20261028",
+    "--suite",
+    "single-disagree",
+    "--qwen-checkpoint",
+    "outputs/qwen-tool-rich-boundary-synth-only-20261028/epoch-01",
+    "--methods",
+    "single_encoder_request_or_cannot_answer_conf_90",
+    "--primary-method",
+    "single_encoder_request_or_cannot_answer_conf_90",
+    "--batch-size",
+    "1"
   ],
+  "worker_queue": [],
   "_previous_command": [
     "python",
     "-u",
@@ -100,8 +78,8 @@
     "macro_f1": 0.48337889372616516,
     "selection": "clean validation only"
   },
-  "last_heartbeat": "2026-10-28T21:18:52.651766+00:00",
-  "last_action": "Watchdog started validation worker pid 304003.",
+  "last_heartbeat": "2026-10-28T21:19:53.241905+00:00",
+  "last_action": "Watchdog started validation worker pid 304263.",
   "watchdog_enabled": true,
   "research_log_size": 1686252,
   "stop_command": "STOP",
@@ -110,7 +88,7 @@
     "-u",
     "-m",
     "experiments.existing_when2call_hybrid",
-    "prepare",
+    "test",
     "--work-dir",
     "outputs/qwen-tool-rich-synth-only-encoder-blackbox-20261028/work",
     "--output-dir",
@@ -126,7 +104,12 @@
     "--batch-size",
     "1"
   ],
-  "recording_jobs": [],
+  "recording_jobs": [
+    {
+      "pid": 304262,
+      "experiment_id": "qwen-tool-rich-synth-only-encoder-blackbox-20261028"
+    }
+  ],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-28T21:18:21.543488+00:00",
   "planning_ack_deadline": "2026-10-28T21:20:21.543511+00:00",
