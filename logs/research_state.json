@@ -73,7 +73,28 @@
     "--augmentation-jsonl",
     "outputs/when2call-tool-rich-large-boundary-pilot-20261028/balanced_boundary_tool_rich.jsonl"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_existing_when2call_hybrid_validation",
+      "--output-dir",
+      "outputs/qwen-tool-rich-large-replay900-encoder-clean-validation-20261028",
+      "--qwen-checkpoint",
+      "outputs/qwen-tool-rich-large-boundary-replay900-20261028/epoch-01",
+      "--encoder-checkpoint",
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
+      "--split-seed",
+      "20261091",
+      "--sample-seed",
+      "20261092",
+      "--max-validation-examples",
+      "500",
+      "--batch-size",
+      "1"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -101,7 +122,7 @@
     "selection": "clean validation only"
   },
   "last_heartbeat": "2026-10-28T21:54:04.150683+00:00",
-  "last_action": "Watchdog started validation worker pid 306027.",
+  "last_action": "Queued clean-validation fusion screen behind active large-pool replay.",
   "watchdog_enabled": true,
   "research_log_size": 1692174,
   "stop_command": "STOP",
@@ -151,7 +172,7 @@
     "wandb_run_id": "vrfnnoq2",
     "selection": "Aggregate test result reported for ranking only. It was not used for candidate selection."
   },
-  "next_hypothesis": "The 994-example tool-rich pool used without real replay reached 0.950 clean validation. The small 629-example pool with 900 real replay reached 0.960, while the larger pool with 667 real replay reached 0.942. Test whether the larger pool with 900 real examples preserves the cleaner-validation result. Keep the checkpoint, optimizer seed, learning rate, and evaluation samples fixed to isolate the replay and pool-size mixture. Select by clean validation only.",
+  "next_hypothesis": "After the large-pool 900-replay run, screen its fusion with the trained encoder on the fixed 500-example clean validation sample. A larger synthetic pool may shift the Qwen error profile and change complementarity. Keep test metrics report-only and select by clean validation.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."

@@ -7950,3 +7950,8 @@ The tool-rich synthetic pool contains 994 accepted rows. A distinct run is queue
 Commit name: Verify large tool-rich replay launch.
 
 The watchdog launched `qwen-tool-rich-large-boundary-replay900-20261028` as PID 306027. It uses 900 real preference examples and the 994-row large synthetic pool. The run is active, the queue is empty because this command was promoted, and state remains active with planning disabled. The latest completed synthetic-only run has all three evidence types recorded.
+
+## 2026-10-28: Queue encoder screen for large-pool replay checkpoint
+Commit name: Queue large-pool replay encoder screen.
+
+The large-pool 900-replay training run is active. Appended a 500-example clean-validation screen combining its checkpoint with the trained encoder. This tests whether the larger synthetic pool changes the Qwen error profile and its complementarity with the encoder. The screen follows the training run, uses the fixed clean-validation sample, and does not use test metrics for selection.
