@@ -7895,3 +7895,5 @@ Recent clean-validation results include 0.960 accuracy for tool-rich replay with
 Commit name: Verify validation screen launch after queue refresh.
 
 The watchdog advanced the queue and launched `qwen-tool-rich-replay900-encoder-clean-validation-20261028` as PID 302605. One contextual replay-dose experiment remains queued. Research state is active with planning disabled, and the latest completed synthetic-only experiment has complete training, clean-validation, and aggregate test measurements. Candidate selection remains based only on clean validation.
+
+2026-10-28T20:50:15.808634+00:00: Commit `Record research experiment qwen-tool-rich-replay900-encoder-clean-validation-20261028` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
