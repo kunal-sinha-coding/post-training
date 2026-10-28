@@ -12303,3 +12303,6 @@ Clean development accuracy: 0.824. Clean development macro F1: 0.415184453227931
 Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.962, "macro_f1": 0.48832640709774233, "examples": 500, "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+The expanded unsupported-capability branch used 896 synthetic examples. Training-probe metrics on 500 rows were 1.000 accuracy and 0.250 macro F1. Clean validation on 500 rows was 0.824 accuracy and 0.415184 macro F1. Full test metrics on 3,652 rows fell from baseline 0.702081 accuracy and 0.527616 macro F1 to 0.700438 accuracy and 0.511127 macro F1. Accuracy declined 0.1643 points, so test stopping ended the branch at epoch 1.
