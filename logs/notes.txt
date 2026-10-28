@@ -7841,3 +7841,10 @@ Commit name: Queue combined-pool encoder fusion validation screen.
 The latest completed Qwen run, `qwen-tool-rich-boundary-synth-replay-20261028`, has all required evidence in its metrics file: 500 training rows, 500 clean-validation rows, and aggregate metrics for the full 3,652-row black-box test set. The worker queue was not exhausted. The tool-rich synthetic-only comparison remained active.
 
 Appended a clean-validation-only encoder-fusion screen after the queued combined-pool replay. This tests whether the combined rare-schema and tool-rich data changes Qwen errors in a way that complements the trained encoder. The screen is limited to 500 clean validation examples. Test data is not used for candidate selection. The research state remains active with planning disabled.
+
+## 2026-10-28: Queue encoder screen for tool-rich synthetic-only checkpoint
+Commit name: Queue encoder screen for synthetic-only checkpoint.
+
+The latest completed experiment, `qwen-tool-rich-boundary-synth-replay-20261028`, records training metrics on 500 examples, clean-validation metrics on 500 examples, and aggregate black-box metrics on all 3,652 test examples. The worker queue was not exhausted. The tool-rich synthetic-only training run remained active.
+
+Appended a clean-validation-only encoder fusion screen for the synthetic-only checkpoint. This is distinct from the queued encoder screen for the real-replay checkpoint. It tests whether removing replay changes the Qwen error profile enough to alter complementarity with the encoder. The validation screen is limited to 500 examples, and aggregate black-box test metrics remain unavailable for selection.
