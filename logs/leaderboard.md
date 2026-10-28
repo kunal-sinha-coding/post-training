@@ -2006,3 +2006,6 @@ Source-specific result `qwen-pref900-balanced-synth450-encoder-validation-202610
 | Candidate | qwen-pref900-synth450-high-similarity-lr5e6-20261028 | 0.958 | 0.48675701919302516 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth450-high-similarity-lr5e6-20261028/metrics.json) | completed |
 
 | qwen-pref900-synth450-high-similarity-lr5e6-20261028 | 0.7228915662650602 | 0.5396677118047506 | sjxtcita | Aggregate-only frozen test measurement |
+| Candidate | qwen-pref900-synth450-composed-call-balanced-lr5e6-20261028 | 0.95 | 0.4841577984702361 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth450-composed-call-balanced-lr5e6-20261028/metrics.json) | completed |
+
+| qwen-pref900-synth450-composed-call-balanced-lr5e6-20261028 | 0.7141292442497261 | 0.5331646214591756 | 3za9u6jx | Aggregate-only frozen test measurement |
