@@ -81,6 +81,37 @@
       "5e-6",
       "--augmentation-jsonl",
       "outputs/when2call-tool-rich-boundary-pilot-20261028/balanced_boundary_tool_rich.jsonl"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-tool-rich-boundary-synth-only-20261028",
+      "--adapter-checkpoint",
+      "outputs/qwen-pref900-synth450-high-similarity-lr5e6-20261028/epoch-01",
+      "--synthetic-only",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "1",
+      "--seed",
+      "20261104",
+      "--learning-rate",
+      "5e-6",
+      "--augmentation-jsonl",
+      "outputs/when2call-tool-rich-boundary-pilot-20261028/balanced_boundary_tool_rich.jsonl"
     ]
   ],
   "_previous_command": [
@@ -110,7 +141,7 @@
     "selection": "clean validation only"
   },
   "last_heartbeat": "2026-10-28T17:37:15.890959+00:00",
-  "last_action": "Watchdog started validation worker pid 294620.",
+  "last_action": "Confirmed complete evidence for the latest completed experiment and appended a distinct synthetic-only ablation after the active generation and replay run.",
   "watchdog_enabled": true,
   "research_log_size": 1640304,
   "stop_command": "STOP",
@@ -148,7 +179,7 @@
     "wandb_run_id": "vrfnnoq2",
     "selection": "Aggregate test result reported for ranking only. It was not used for candidate selection."
   },
-  "next_hypothesis": "Compare a high-tool-count synthetic pool plus 667 stratified real train_pref examples against the same clean-validation-best Qwen checkpoint using 500-row training and clean-validation samples. Full aggregate black-box metrics remain report-only.",
+  "next_hypothesis": "After the queued tool-rich replay run, compare synthetic-only continuation on the exact same generated pool and starting checkpoint. This isolates whether any clean-validation signal comes from the generated examples themselves or from real-data replay. Use one epoch, 500-row train and clean-validation evaluation, and full aggregate black-box reporting. Select only on clean validation.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
