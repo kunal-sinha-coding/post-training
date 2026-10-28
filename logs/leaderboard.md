@@ -1,20 +1,23 @@
 # When2Call Validation and Official Test Leaderboard
 
-Aggregate official test accuracy and macro F1 are recorded for reporting only. Do not use test labels or test-derived metrics to select candidates. Keep individual test examples, labels, predictions, and correctness hidden. Scores below use all 3,652 test rows. Differences under 1 percentage point in accuracy are treated as likely noise.
+Aggregate official test accuracy and macro F1 are reported only. Do not use test labels or test-derived metrics to select candidates. Keep individual test examples, labels, predictions, and correctness hidden. Scores below use all 3,652 test rows. Accuracy gaps under 1 percentage point are treated as likely noise. Clean validation is the selection signal.
 
-## Reported aggregate test accuracy scores — 2026-10-28
+## Current aggregate test ranking — 2026-10-28
 
-| Report rank | Candidate | Test accuracy | Test macro F1 | Rows | Artifact |
-| ---: | --- | ---: | ---: | ---: | --- |
-| 1 | 900 real preference + 450 balanced synthetic Qwen, entropy-weighted with Jina encoder 48 | 0.731380 | 0.546773 | 3,652 | [aggregate comparison](/workspace/post-training/outputs/qwen-pref900-balanced-synth450-encoder-ensemble-20261028/test/aggregate-comparison.json) |
-| 2 | Qwen continued on 900 real preference and 450 balanced synthetic examples | 0.724535 | 0.542620 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-balanced-synth450-20261028/metrics.json) |
-| 3 | Qwen plus Jina encoder 48, entropy weighted | 0.716046 | 0.537047 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-single-adaptive-encoder48-20270114/metrics.json) |
-| 3 | Qwen plus Jina encoder 48, margin weighted | 0.716046 | 0.536882 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-single-adaptive-encoder48-20270114/metrics.json) |
-| 5 | Qwen plus Jina encoder 48, equal probability average | 0.715498 | 0.536489 | 3,652 | [aggregate comparison](/workspace/post-training/outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json) |
-| 6 | Qwen plus Jina encoder 48, request or cannot-answer mix 50 | 0.713855 | 0.536071 | 3,652 | [aggregate comparison](/workspace/post-training/outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json) |
-| 7 | Qwen SFT alone | 0.702629 | 0.527976 | 3,652 | [aggregate comparison](/workspace/post-training/outputs/qwen-single-adaptive-encoder48-20270114/metrics.json) |
+| Report rank | Candidate | Test accuracy | Test macro F1 | Clean validation accuracy | Clean validation macro F1 | Rows | Artifact |
+| ---: | --- | ---: | ---: | ---: | ---: | ---: | --- |
+| 1 | Qwen continued on 900 real preference and 450 tool-rich synthetic examples | 0.733297 | 0.548167 | 0.920 | 0.475334 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth450-tool-rich-20261028/metrics.json) |
+| 2 | 900 real preference + 450 balanced synthetic Qwen, entropy-weighted with Jina encoder 48 | 0.731380 | 0.546773 | 0.940 | 0.962763 | 3,652 | [aggregate comparison](/workspace/post-training/outputs/qwen-pref900-balanced-synth450-encoder-ensemble-20261028/test/aggregate-comparison.json) |
+| 3 | Qwen continued on 900 real preference and 600 high-similarity synthetic examples, learning rate 5e-6 | 0.725904 | 0.540824 | 0.952 | 0.484177 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth600-high-similarity-lr5e6-20261028/metrics.json) |
+| 4 | Qwen continued on 900 real preference and 450 balanced synthetic examples | 0.724535 | 0.542620 | 0.944 | 0.482546 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-balanced-synth450-20261028/metrics.json) |
+| 4 | Qwen continued on 900 real preference and 450 balanced synthetic examples, learning rate 5e-6 | 0.724535 | 0.541374 | 0.952 | 0.483702 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-balanced-synth450-lr5e6-20261028/metrics.json) |
+| 6 | Qwen continued on 900 real preference and 450 balanced synthetic examples, learning rate 1e-5 | 0.723439 | 0.540659 | 0.952 | 0.484707 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-balanced-synth450-lr1e5-20261028/metrics.json) |
+| 7 | Qwen continued on 900 real preference and 450 high-similarity synthetic examples, learning rate 5e-6 | 0.722892 | 0.539668 | 0.958 | 0.486757 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth450-high-similarity-lr5e6-20261028/metrics.json) |
+| 8 | Qwen continued on 900 real preference and 375 high-similarity synthetic examples, learning rate 5e-6 | 0.720427 | 0.538857 | 0.952 | 0.484678 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth375-high-similarity-lr5e6-20261028/metrics.json) |
+| 9 | Qwen continued on 900 real preference and 150 high-similarity synthetic examples, learning rate 5e-6 | 0.719880 | 0.536653 | 0.956 | 0.486225 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth150-high-similarity-lr5e6-20261028/metrics.json) |
+| 10 | Qwen continued on 900 real preference and 300 full-pool high-similarity synthetic examples, learning rate 5e-6 | 0.719058 | 0.538917 | 0.956 | 0.485745 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth300-fullpool-high-similarity-lr5e6-20261028/metrics.json) |
 
-This table reports aggregate test scores and does not select a candidate. The top ensemble scored 0.77 percentage points above its paired Qwen score, which is within the likely-noise band. Its clean validation accuracy was 0.940, below the paired Qwen score of 0.942, so clean validation does not support selecting the ensemble.
+The top test score is 0.19 percentage points above the Qwen-plus-encoder score, within the likely-noise band. Its clean validation accuracy is 0.920, below the 0.958 scored by the 450-row high-similarity Qwen continuation. Therefore, the aggregate test ranking is descriptive only and does not select a candidate. The 450-row full-pool high-similarity pilot is still running and is not included.
 
 ## Historical clean-validation snapshot for 2026-10-27 04:27 UTC
 
