@@ -7966,3 +7966,8 @@ Commit name: Queue large tool-rich 1,100-real replay dose.
 The latest completed run, `qwen-tool-rich-large-boundary-replay900-20261028`, records training metrics on 500 examples (0.986 accuracy, 0.739440 macro F1), clean validation on 500 examples (0.956 accuracy, 0.485736 macro F1), and aggregate black-box metrics on 3,652 examples (0.739047 accuracy, 0.551640 macro F1). The encoder fusion screen for this checkpoint reached 0.954 validation accuracy, below Qwen alone at 0.956. All required training-run evidence is present.
 
 Queued a 1,100-real replay dose on the same large 994-row tool-rich pool. Earlier clean validation rose from 0.942 at 667 real examples to 0.956 at 900. The new run holds the starting checkpoint, pool, seed, learning rate, and capped evaluation samples fixed. Candidate selection remains clean-validation-only.
+
+## 2026-10-28: Verify 1,100-real replay launch
+Commit name: Verify large tool-rich 1,100-real replay launch.
+
+The watchdog launched `qwen-tool-rich-large-boundary-replay1100-20261028` as PID 307220. It uses the same large tool-rich synthetic pool and starting checkpoint as the 900-real comparison. State is active with planning disabled, and the worker queue is empty because this command was promoted. The previous 900-real run has complete training, clean-validation, and aggregate test evidence.
