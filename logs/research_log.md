@@ -12883,3 +12883,7 @@ Clean development accuracy: 0.94. Clean development macro F1: 0.4794584500466853
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.94, "macro_f1": 0.4794584500466853, "confusion_matrix": [[244, 1, 5, 0], [9, 226, 14, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## Paired-boundary synthetic-only result and replay hypothesis
+
+Continued the clean-validation-best Qwen checkpoint for one epoch on the 667 accepted synthetic boundary rows. The 500-row training probe reached 0.992 accuracy and 0.743902 macro F1. Clean validation on 500 rows was 0.940 accuracy and 0.479458 macro F1, below the base checkpoint at 0.958 and 0.486757. Full aggregate test metrics on 3,652 rows were 0.725630 accuracy and 0.539094 macro F1, compared with the base checkpoint at 0.722892 and 0.539668. The 0.274-point accuracy difference is within the declared noise band. Metrics from the aggregate test are reporting-only. The training-validation gap motivates a matched replay experiment with 667 stratified real preference rows plus the same 667 synthetic rows.
