@@ -12321,3 +12321,6 @@ This record was written automatically. Candidate selection must use clean valida
 
 
 The final single-strategy large pilot used 895 composed-tool examples. It had 1.000 training-probe accuracy and 0.250 macro F1 on 500 rows, clean validation of 0.770 accuracy and 0.432178 macro F1 on 500 rows, and full-test accuracy 0.555038 with macro F1 0.379499. Baseline was 0.702081 accuracy and 0.527616 macro F1. The branch stopped after one epoch. All four single-strategy runs failed to improve full-test accuracy. The next hypothesis is that balancing synthetic examples across tool_call, request_for_info, and cannot_answer avoids single-class drift. A deterministic 900-row balanced mix has been queued from the accepted synthetic files, with no replay of the 9,000 original rows.
+
+
+Follow-up hypothesis: the unsupported-capability examples may have useful signal at a lower learning rate. The 896-row 2e-5 run reached 0.700438 full-test accuracy versus a 0.702081 baseline. The 50-row pilot reached 0.762 on a 500-row sample, which is report-only and too small to establish a gain. After the current balanced-mix experiment, run the same unsupported data from the best Qwen adapter at 5e-6 and stop on the first full-test accuracy non-improvement.

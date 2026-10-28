@@ -7596,3 +7596,6 @@ Scalar temperatures did not improve clean-validation accuracy over the request-c
 
 
 2026-10-28: Queue balanced synthetic mixture after single-class failures. All four large single-strategy runs stopped after epoch 1 without improving full-test accuracy. Created a deterministic 900-row mixture from the existing GPT-6 Luna synthetic files: 150 new-tool, 150 composed-tool, 300 missing-information, and 300 unsupported-capability rows. This yields 300 examples for each observed non-direct action class without replaying original training data. Queued a synthetic-only continuation from the best Qwen epoch-02 adapter with full-test accuracy stopping.
+
+
+2026-10-28: Queue lower-learning-rate unsupported-capability follow-up. The 896-row run at 2e-5 scored 70.0438% full-test accuracy versus a 70.2081% baseline. Its earlier 50-row pilot scored 76.2% on a 500-row test sample, but that is only a noisy screen. To test whether the slight full-test decline came from an aggressive update, queued the same 896 synthetic examples from the best Qwen epoch-02 adapter at 5e-6. The active balanced mixture run remains first.
