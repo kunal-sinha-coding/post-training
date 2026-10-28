@@ -12851,3 +12851,7 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## Encoder fusion and next synthetic hypothesis
+
+On the full 3,652-row aggregate benchmark, the tool-rich Qwen request-confidence route scored 0.726451 accuracy and 0.545033 macro F1, below tool-rich Qwen alone at 0.733023 and 0.548067. A clean-validation-selected class route scored 0.702903 accuracy and 0.526065 macro F1, also below the same Qwen baseline. These test metrics are reporting-only. The next queued pilot generates balanced synthetic examples from train_pref only: 250 paired complete-versus-missing-required-value boundary pairs and 250 plausible unsupported requests. Generation uses a concurrency cap, a $2 pilot cap within the existing $10 total limit, schema checks, and a separate high-confidence judge. Training will use the strongest clean-validation Qwen checkpoint and will start only if at least 500 rows pass.

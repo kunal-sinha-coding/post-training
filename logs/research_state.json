@@ -1,10 +1,10 @@
 {
-  "status": "awaiting_codex_planning",
+  "status": "active",
   "planning_owner": "codex_primary",
-  "planning_required": true,
+  "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
-  "current_hypothesis": "The 500-example clean validation sweep scored the predeclared request_full_cannot_mix_60 route at 0.940 accuracy and 0.954209 macro F1, above tool-rich Qwen at 0.902 and 0.939963. Freeze this route and measure it once on all 3,652 aggregate test rows. The earlier request_conf_60 ensemble result was lower than Qwen by 0.66 percentage points, so report but do not select from that test result.",
+  "current_hypothesis": "The tested tool-rich Qwen encoder rules scored higher on clean SFT validation but lower on the aggregate benchmark. Shift the next experiment to training-data signal. Generate a balanced 750-row synthetic pilot from train_pref anchors: 250 paired complete-versus-missing-required-value boundary pairs and 250 plausible unsupported-capability examples. Train only if at least 500 examples pass structural checks and an independent high-confidence label check.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -27,7 +27,26 @@
     "--batch-size",
     "1"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.generate_when2call_boundary_pilot",
+      "--output-dir",
+      "outputs/when2call-counterfactual-boundary-pilot-20261028",
+      "--pairs",
+      "250",
+      "--unsupported",
+      "250",
+      "--workers",
+      "24",
+      "--seed",
+      "20261095",
+      "--max-cost-usd",
+      "2.0"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -55,21 +74,33 @@
     "selection": "clean validation only"
   },
   "last_heartbeat": "2026-10-28T16:19:01.859183+00:00",
-  "last_action": "Watchdog handed planning control to the primary Codex process.",
+  "last_action": "Queued the first new balanced synthetic pilot. It uses paired required-argument boundary examples plus plausible unsupported requests, with concurrent generation, a cost ledger, deterministic structural validation, and a separate high-confidence label judge.",
   "watchdog_enabled": true,
-  "research_log_size": 1626268,
+  "research_log_size": 1627351,
   "stop_command": "STOP",
-  "next_experiment": null,
-  "recording_jobs": [
-    {
-      "pid": 289715,
-      "experiment_id": "test"
-    }
+  "next_experiment": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.generate_when2call_boundary_pilot",
+    "--output-dir",
+    "outputs/when2call-counterfactual-boundary-pilot-20261028",
+    "--pairs",
+    "250",
+    "--unsupported",
+    "250",
+    "--workers",
+    "24",
+    "--seed",
+    "20261095",
+    "--max-cost-usd",
+    "2.0"
   ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-28T16:25:36.736099+00:00",
-  "planning_ack_deadline": "2026-10-28T16:27:36.736119+00:00",
-  "planning_attempts": 59,
+  "planning_notified_at": "2026-10-28T16:27:40.068311+00:00",
+  "planning_ack_deadline": "2026-10-28T16:29:40.068334+00:00",
+  "planning_attempts": 60,
   "best_observed_test": {
     "method": "qwen-pref900-synth450-tool-rich-20261028",
     "accuracy": 0.7332968236582694,
@@ -79,7 +110,7 @@
     "wandb_run_id": "vrfnnoq2",
     "selection": "Aggregate test result reported for ranking only. It was not used for candidate selection."
   },
-  "next_hypothesis": "After measuring the clean-validation-selected full class route, assess whether any fusion family has a stable validation signal. If fusion does not help aggregate reporting, broaden synthetic data pilots with semantically grounded counterfactual pairs, schema-grounded novel tool requests, and independent label-confidence filtering, starting from the strongest clean-validation Qwen checkpoint.",
+  "next_hypothesis": "Continue from the best clean-validation Qwen checkpoint, outputs/qwen-pref900-synth450-high-similarity-lr5e6-20261028/epoch-01. After generation, train one synthetic-only epoch on the accepted balanced pilot, evaluate at most 500 training examples and 500 clean SFT validation examples, and report full aggregate test metrics. Keep API use under the existing $10 total budget; this pilot has a $2 cap.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
@@ -438,5 +469,19 @@
       "--batch-size",
       "1"
     ]
+  },
+  "synthetic_boundary_pilot": {
+    "status": "queued",
+    "requested_pairs": 250,
+    "requested_unsupported": 250,
+    "target_rows": 750,
+    "minimum_rows_before_training": 500,
+    "generation_model": "gpt-6-luna",
+    "concurrency": 24,
+    "pilot_cost_cap_usd": 2.0,
+    "global_budget_cap_usd": 10.0,
+    "source": "nvidia/When2Call train_pref only",
+    "training_checkpoint": "outputs/qwen-pref900-synth450-high-similarity-lr5e6-20261028/epoch-01",
+    "test_selection": "Aggregate black-box test metrics are report-only. Clean validation selects candidates."
   }
 }
