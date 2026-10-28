@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
-  "current_hypothesis": "The middle lexical-similarity synthetic subset did not improve clean validation over the matched real-only continuation. Test two matched 450-row class-balanced subsets from the low and high ends of the generated-request to source-anchor similarity distribution. Hold the 900 real preference sample, base adapter, validation sample, training seed, and one-epoch schedule constant. Select only by clean validation.",
+  "current_hypothesis": "The active low- and queued high-anchor-similarity pilots test novelty extremes. After them, compare two class-balanced 450-row mixtures that hold the unsupported-capability and missing-information strata fixed while changing the tool-call stratum from single-source new-tool calls to composed calls. Select only on clean validation.",
   "active_experiment": {
     "pid": 273436,
     "command": [
@@ -99,6 +99,66 @@
       "20261087",
       "--augmentation-jsonl",
       "outputs/when2call-synthetic-medium-pilots-20261028/balanced_mix450_high_similarity.jsonl"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-pref900-synth450-single-source-balanced-20261028",
+      "--adapter-checkpoint",
+      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "--preference-train-sample-size",
+      "900",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "1",
+      "--seed",
+      "20261087",
+      "--augmentation-jsonl",
+      "outputs/when2call-synthetic-medium-pilots-20261028/single_source_balanced_450.jsonl"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-pref900-synth450-composed-call-balanced-20261028",
+      "--adapter-checkpoint",
+      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "--preference-train-sample-size",
+      "900",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "1",
+      "--seed",
+      "20261087",
+      "--augmentation-jsonl",
+      "outputs/when2call-synthetic-medium-pilots-20261028/composed_call_balanced_450.jsonl"
     ]
   ],
   "_previous_command": [
@@ -176,7 +236,7 @@
     "wandb_run_id": "8dk2r7b5",
     "selection": "Reported aggregate test measurement only. It was not used for candidate selection."
   },
-  "next_hypothesis": "If either similarity extreme improves clean validation by at least 1 percentage point over the matched real-only continuation, explore adjacent cutoffs within that band; otherwise broaden synthetic construction hypotheses without using test-derived selection.",
+  "next_hypothesis": "If the balanced single-source mix improves clean validation, expand that construction by varying realistic request phrasing and schema difficulty. If not, test other training-only mixture and filtering hypotheses before scaling generation.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
@@ -206,7 +266,7 @@
     "full_test_evaluation": true,
     "test_metrics_use": "The evaluator may use hidden labels internally to compute aggregate accuracy and macro F1 for reporting only. Never use test labels or test-derived metrics to select experiments, checkpoints, data mixtures, hyperparameters, prompts, or ensemble rules. Never inspect, print, save, or use individual test examples, labels, predictions, or correctness."
   },
-  "open_ended_phase": "Continue synthetic data exploration by testing broad, distinct construction hypotheses. Keep a matched sample of real preference data in training to reduce class drift. Use clean validation to select promising methods, then narrow around methods that improve it. Report full aggregate test metrics without using them for selection.",
+  "open_ended_phase": "Continue broad synthetic data exploration. Use clean validation to select promising methods, narrow around methods that improve it, and return to broader hypotheses when a direction fails. Aggregate black-box test metrics are report-only.",
   "posthoc_validation_required": {
     "experiment": "qwen-when2call-plus-full-bfcl-base-seed20261056",
     "checkpoints": [
@@ -367,7 +427,7 @@
       "examples": 3652
     }
   },
-  "updated_at": "2026-10-28T09:22:58.658804+00:00",
+  "updated_at": "2026-10-28T09:25:27.734882+00:00",
   "synthetic_pilot_results": [
     {
       "strategy": "missing_required_info",
