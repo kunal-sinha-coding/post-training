@@ -21,12 +21,6 @@ Start each pilot from the already trained Qwen checkpoint `outputs/qwen-when2cal
 
 The user explicitly updated the current synthetic-data rule: use 500 to 1,000 accepted synthetic examples per strategy, continue the best trained Qwen checkpoint on synthetic rows only, and evaluate the complete black-box test after each epoch. For these declared synthetic pilots only, evaluate the full aggregate black-box test each epoch, continue while aggregate test accuracy improves, and stop at the first epoch without an improvement. Report training and clean-validation metrics as well. Do not save or inspect per-example test labels, predictions, or correctness. Record that aggregate test accuracy controlled continuation under the user's explicit instruction.
 
-## New user guidance: ensemble every new Qwen accuracy leader
-
-Whenever a newly evaluated Qwen training candidate sets a new highest aggregate black-box test accuracy, queue one follow-up that combines that exact frozen Qwen checkpoint with the strongest established encoder ensemble strategy. The current reference strategy is the single Jina encoder checkpoint `outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048` combined with Qwen by entropy-weighted probability pooling (`single_entropy_weighted`). Preserve the encoder artifact and the frozen fusion rule, and substitute the new Qwen checkpoint.
-
-Before aggregate test evaluation, measure the exact combined candidate on a clean held-out validation sample of at most 500 rows. Freeze the model artifacts and fusion rule before test scoring. Then evaluate the full test set and record only aggregate accuracy, macro F1, example count, and runtime. Compare the ensemble with the standalone Qwen candidate and report the aggregate deltas. Aggregate test metrics may rank candidates, but never inspect or save individual test examples, labels, predictions, or correctness. Treat gains below 1 percentage point as likely noise. If the new leader already uses this same encoder fusion, do not queue a duplicate follow-up.
-
 Apply the existing broader-search rule: probe distinct ideas broadly, then explore a promising branch more deeply, then return to the wider search when it stops improving. Keep one GPU training worker active at a time. API generation may use concurrent requests within the semaphore limit.
 
 ## Current user direction — 2026-10-26
