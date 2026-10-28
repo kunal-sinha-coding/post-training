@@ -51,7 +51,28 @@
     "--batch-size",
     "1"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_existing_when2call_hybrid_validation",
+      "--output-dir",
+      "outputs/tool-rich-qwen-encoder-validation-sweep-20261028",
+      "--qwen-checkpoint",
+      "outputs/qwen-pref900-synth450-tool-rich-20261028/epoch-01",
+      "--encoder-checkpoint",
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
+      "--split-seed",
+      "20261091",
+      "--sample-seed",
+      "20261092",
+      "--max-validation-examples",
+      "500",
+      "--batch-size",
+      "1"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -79,37 +100,31 @@
     "selection": "clean validation only"
   },
   "last_heartbeat": "2026-10-28T16:04:25.134864+00:00",
-  "last_action": "Watchdog started validation worker pid 287891.",
+  "last_action": "Queued a clean-validation sweep over predeclared fusion and input-routing candidates behind the active aggregate ensemble measurement.",
   "watchdog_enabled": true,
-  "research_log_size": 1617207,
+  "research_log_size": 1618153,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
     "-u",
     "-m",
-    "experiments.existing_when2call_hybrid",
-    "test",
-    "--work-dir",
-    "outputs/tool-rich-qwen-encoder-ensemble-20261028/frozen",
+    "experiments.evaluate_existing_when2call_hybrid_validation",
     "--output-dir",
-    "outputs/tool-rich-qwen-encoder-ensemble-20261028/test",
-    "--suite",
-    "single-request-confidence",
+    "outputs/tool-rich-qwen-encoder-validation-sweep-20261028",
     "--qwen-checkpoint",
     "outputs/qwen-pref900-synth450-tool-rich-20261028/epoch-01",
-    "--methods",
-    "single_request_conf_60",
-    "--primary-method",
-    "single_request_conf_60",
+    "--encoder-checkpoint",
+    "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
+    "--split-seed",
+    "20261091",
+    "--sample-seed",
+    "20261092",
+    "--max-validation-examples",
+    "500",
     "--batch-size",
     "1"
   ],
-  "recording_jobs": [
-    {
-      "pid": 287890,
-      "experiment_id": "prepare"
-    }
-  ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-28T16:02:53.036101+00:00",
   "planning_ack_deadline": "2026-10-28T16:04:53.036122+00:00",
@@ -123,7 +138,7 @@
     "wandb_run_id": "vrfnnoq2",
     "selection": "Aggregate test result reported for ranking only. It was not used for candidate selection."
   },
-  "next_hypothesis": "If the frozen tool-rich Qwen plus Jina request-confidence route improves clean-source validation and aggregate reporting, probe the confidence threshold and class-specialist routes on clean validation, then freeze the best. Resume synthetic pilots after the fusion path is fully evaluated, including generator diversity, label-confidence filtering, and balanced mixtures from the accepted pool.",
+  "next_hypothesis": "The tool-rich Qwen plus encoder request-confidence route has a strong clean-validation signal. After its frozen full-test measurement, compare the full predeclared fusion and input-routing family on at most 500 clean SFT examples. Select one rule using clean validation only, then measure that frozen rule once on all aggregate test rows. After fusion exploration, resume broad synthetic data pilots.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
