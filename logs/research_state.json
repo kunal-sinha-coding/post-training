@@ -137,6 +137,55 @@
       "--stop-on-validation-non-improvement",
       "--seed",
       "20261055"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.augment_when2call_questions",
+      "--output",
+      "outputs/when2call-question-concise-gpt6-luna-pilot-20261028/augmented.jsonl",
+      "--ledger",
+      "outputs/when2call-question-concise-gpt6-luna-pilot-20261028/cost-ledger.json",
+      "--summary",
+      "outputs/when2call-question-concise-gpt6-luna-pilot-20261028/summary.json",
+      "--limit",
+      "500",
+      "--sample-seed",
+      "20261068",
+      "--workers",
+      "16",
+      "--style",
+      "concise",
+      "--prior-spend-usd",
+      "0.0",
+      "--max-cost-usd",
+      "0.5"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-when2call-aug-gpt6-luna-concise-pilot-20261028",
+      "--augmentation-jsonl",
+      "outputs/when2call-question-concise-gpt6-luna-pilot-20261028/augmented.jsonl",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--epochs",
+      "2",
+      "--stop-on-validation-non-improvement",
+      "--seed",
+      "20261055"
     ]
   ],
   "_previous_command": [
@@ -172,7 +221,7 @@
     "selection": "clean validation only"
   },
   "last_heartbeat": "2026-10-28T01:47:48.784108+00:00",
-  "last_action": "Completed tool-order augmentation with all three evidence types recorded. Clean validation rose slightly while the aggregate test score fell. The watchdog launched the queued schema-key-order augmentation as the next sole worker.",
+  "last_action": "Verified the latest completed tool-order experiment has training, clean-validation, and aggregate black-box metrics. The schema-key-order run is active. Appended distinct concise-paraphrase generation and training commands after the existing queue; test labels remain report-only.",
   "watchdog_enabled": true,
   "research_log_size": 1528125,
   "stop_command": "STOP",
@@ -203,12 +252,7 @@
     "--augmentation-seed",
     "20261066"
   ],
-  "recording_jobs": [
-    {
-      "pid": 251549,
-      "experiment_id": "qwen-when2call-aug-tool-order-20261027"
-    }
-  ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": null,
   "planning_ack_deadline": null,
@@ -221,7 +265,7 @@
     "artifact": "outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json",
     "selection": "Report-only aggregate benchmark result. Test labels were not used for candidate selection."
   },
-  "next_hypothesis": "After the three representation-preserving probes, test cached API paraphrases on a stratified 1,000-row sample from train_pref. Inherit source labels only when the request wording changes without changing meaning. Keep API generation spend below $0.50 for this pilot. Train the original 9,000 rows plus accepted variants and choose by clean validation.",
+  "next_hypothesis": "After the broad label-preserving formatting probes and natural paraphrase pilot, test whether concise request paraphrases improve clean validation by reducing dependence on verbose surface wording. Generate at most 500 variants from train_pref, inherit labels only after numeric and length checks, enforce the per-run API cap, then train original rows plus accepted variants. Select and stop only with clean validation.",
   "post_queue_report_required": {
     "required": true,
     "trigger": "After the family confidence-routing validation and aggregate test pass.",
@@ -245,7 +289,7 @@
     "full_test_evaluation": true,
     "test_metrics_use": "Aggregate report only, never use test labels or per-example outcomes for selection."
   },
-  "open_ended_phase": "Explore data augmentation on the 9,000 When2Call preference examples. Test tool-order, schema-key-order, and neutral request wrappers first. Then generate cached semantic paraphrases on a stratified 1,000-row training sample with GPT-6 Luna under a $0.50 cost cap. Expand approaches that improve clean validation, and test targeted synthetic coverage or controlled mixtures next. Use at most 500 training and clean-validation examples for evaluation, full aggregate black-box metrics, and clean-validation-only selection.",
+  "open_ended_phase": "Explore When2Call train_pref augmentation. Finish the active schema-key-order run, then the queued request-context, natural paraphrase generation and training jobs. Next test concise semantic paraphrases from a capped stratified train_pref sample under a separate generation cost cap. Keep all generation within the $10 lifetime budget. Use 500-row training and clean validation probes, full aggregate black-box evaluation, and clean-validation-only selection.",
   "posthoc_validation_required": {
     "experiment": "qwen-when2call-plus-full-bfcl-base-seed20261056",
     "checkpoints": [
@@ -633,5 +677,5 @@
     "examples": 3652,
     "artifact": "outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json"
   },
-  "updated_at": "2026-10-27T21:56:05.550025+00:00"
+  "updated_at": "2026-10-28T02:00:00+00:00"
 }

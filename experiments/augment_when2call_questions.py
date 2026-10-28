@@ -24,10 +24,16 @@ from experiments.train_qwen_when2call import load_rows, make_prompt, prepare_row
 MODEL = "gpt-6-luna"
 INPUT_PRICE_PER_MILLION = 0.10
 OUTPUT_PRICE_PER_MILLION = 0.50
-SYSTEM_PROMPT = """Rewrite only the user request as one natural alternative phrasing.
+SYSTEM_PROMPTS = {
+    "natural": """Rewrite only the user request as one natural alternative phrasing.
 Preserve its full meaning, intent, requested information, constraints, numbers, dates, and named entities.
 Do not answer the request. Do not add facts, requests, or details. Do not mention the action label.
-Return only the rewritten user request in the required JSON field."""
+Return only the rewritten user request in the required JSON field.""",
+    "concise": """Rewrite only the user request as a concise, natural alternative phrasing.
+Keep every requested action, constraint, number, date, and named entity. Preserve the full intent.
+Do not answer the request. Do not add, remove, or infer facts or requests. Do not mention the action label.
+Return only the rewritten user request in the required JSON field.""",
+}
 
 
 def normalized(text: str) -> str:
@@ -75,7 +81,7 @@ def stratified_sample(labels: list[int], limit: int, seed: int) -> list[int]:
     return sorted(selected)
 
 
-async def request_paraphrase(client: object, semaphore: asyncio.Semaphore, question: str, names: list[str]) -> tuple[str | None, int, int, str | None]:
+async def request_paraphrase(client: object, semaphore: asyncio.Semaphore, question: str, names: list[str], system_prompt: str) -> tuple[str | None, int, int, str | None]:
     """Request one structured paraphrase and return usage or an error type."""
     # Limit in-flight API calls while preserving direct, asynchronous Responses API requests.
     async with semaphore:
@@ -85,7 +91,7 @@ async def request_paraphrase(client: object, semaphore: asyncio.Semaphore, quest
                 reasoning={"effort": "none"},
                 max_output_tokens=150,
                 input=[
-                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "system", "content": system_prompt},
                     {"role": "user", "content": json.dumps({"request": question, "available_tool_names": names}, ensure_ascii=False)},
                 ],
                 text={"format": {"type": "json_schema", "name": "question_paraphrase", "strict": True, "schema": {"type": "object", "properties": {"paraphrase": {"type": "string"}}, "required": ["paraphrase"], "additionalProperties": False}}},
@@ -99,10 +105,10 @@ async def request_paraphrase(client: object, semaphore: asyncio.Semaphore, quest
             return None, 0, 0, type(error).__name__
 
 
-async def indexed_request(index: int, client: object, semaphore: asyncio.Semaphore, question: str, names: list[str]) -> tuple[int, str | None, int, int, str | None]:
+async def indexed_request(index: int, client: object, semaphore: asyncio.Semaphore, question: str, names: list[str], system_prompt: str) -> tuple[int, str | None, int, int, str | None]:
     """Attach the source index to one asynchronous generation result."""
     # Return the index with the result so completion order cannot change provenance.
-    result, input_tokens, output_tokens, error = await request_paraphrase(client, semaphore, question, names)
+    result, input_tokens, output_tokens, error = await request_paraphrase(client, semaphore, question, names, system_prompt)
     return index, result, input_tokens, output_tokens, error
 
 
@@ -137,8 +143,9 @@ async def generate(args: argparse.Namespace, run: object) -> dict:
     from openai import AsyncOpenAI
     client = AsyncOpenAI(timeout=90.0, max_retries=0)
     semaphore = asyncio.Semaphore(args.workers)
+    system_prompt = SYSTEM_PROMPTS[args.style]
     pending = [index for index in selected if index not in existing]
-    tasks = [asyncio.create_task(indexed_request(index, client, semaphore, source_question(source_rows[index]), tool_names(source_rows[index]))) for index in pending]
+    tasks = [asyncio.create_task(indexed_request(index, client, semaphore, source_question(source_rows[index]), tool_names(source_rows[index]), system_prompt)) for index in pending]
     # Append completed generations and update actual spend without storing test information.
     with args.output.open("a", encoding="utf-8") as handle:
         for task in asyncio.as_completed(tasks):
@@ -190,7 +197,7 @@ async def generate(args: argparse.Namespace, run: object) -> dict:
         await asyncio.gather(*tasks, return_exceptions=True)
     await client.close()
     # Record the final source, selection, and cost summary for reproduction.
-    result = {"status": "completed", "source_dataset": "nvidia/When2Call:train_pref", "source_examples": len(source_rows), "sample_indices": selected, "sample_seed": args.sample_seed, "model": MODEL, "output": str(args.output), "accepted": ledger["accepted"], "rejected": ledger["rejected"], "cost_ledger": str(args.ledger), "usage": ledger, "official_test_loaded": False, "wandb_run_id": run.id, "wandb_run_url": run.url}
+    result = {"status": "completed", "source_dataset": "nvidia/When2Call:train_pref", "source_examples": len(source_rows), "sample_indices": selected, "sample_seed": args.sample_seed, "style": args.style, "model": MODEL, "output": str(args.output), "accepted": ledger["accepted"], "rejected": ledger["rejected"], "cost_ledger": str(args.ledger), "usage": ledger, "official_test_loaded": False, "wandb_run_id": run.id, "wandb_run_url": run.url}
     args.summary.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     run.summary.update({"accepted": ledger["accepted"], "estimated_cost_usd": ledger["estimated_cost_usd"], "official_test_loaded": False})
     return result
@@ -206,6 +213,8 @@ def main() -> int:
     parser.add_argument("--limit", type=int, default=1000)
     parser.add_argument("--sample-seed", type=int, default=20261067)
     parser.add_argument("--workers", type=int, default=16)
+    # Select a distinct rewrite objective while preserving the same input and acceptance checks.
+    parser.add_argument("--style", choices=tuple(SYSTEM_PROMPTS), default="natural")
     parser.add_argument("--prior-spend-usd", type=float, default=0.0)
     parser.add_argument("--max-cost-usd", type=float, default=0.5)
     args = parser.parse_args()
@@ -218,7 +227,7 @@ def main() -> int:
         raise ValueError("The sample, concurrency, and remaining cost budget must be positive.")
     import wandb
     # Start an auditable run before loading the source examples.
-    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name=args.output.parent.name, job_type="when2call-question-paraphrase-generation", config={"command": [sys.executable, "-m", "experiments.augment_when2call_questions", *sys.argv[1:]], "model": MODEL, "limit": args.limit, "sample_seed": args.sample_seed, "workers": args.workers, "prior_spend_usd": args.prior_spend_usd, "max_cost_usd": args.max_cost_usd, "official_test_loaded": False})
+    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name=args.output.parent.name, job_type="when2call-question-paraphrase-generation", config={"command": [sys.executable, "-m", "experiments.augment_when2call_questions", *sys.argv[1:]], "model": MODEL, "limit": args.limit, "sample_seed": args.sample_seed, "workers": args.workers, "style": args.style, "prior_spend_usd": args.prior_spend_usd, "max_cost_usd": args.max_cost_usd, "official_test_loaded": False})
     started = time.time()
     try:
         asyncio.run(generate(args, run))

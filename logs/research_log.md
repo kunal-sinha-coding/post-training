@@ -12152,3 +12152,10 @@ This record was written automatically. Candidate selection must use clean valida
 ### Tool-order augmentation complete
 
 The tool-order experiment has complete training, clean-validation, and aggregate test evidence for both epochs. It used 9,000 original `train_pref` examples plus 5,803 prompt copies with permuted available-tool order. Epoch 1: train 0.9560/0.717235, clean validation 0.9460/0.483559, aggregate test 0.668127/0.468839. Epoch 2: train 0.9820/0.736828, clean validation 0.9480/0.485551, aggregate test 0.659365/0.468468. Validation improved slightly across epochs, while aggregate test accuracy declined. Test results remain report-only.
+
+
+## 2026-10-28 queue update: concise paraphrase augmentation
+
+The latest completed experiment, `qwen-when2call-aug-tool-order-20261027`, has all required evidence: 500-row training and clean-validation probes at both epochs and aggregate-only metrics on all 3,652 black-box test rows. At epoch 2, training accuracy was 0.9820 and macro F1 was 0.736828; clean validation accuracy was 0.9480 and macro F1 was 0.485551; test accuracy was 0.659365 and macro F1 was 0.468468. Test metrics did not control selection. The schema-key-order worker is active, followed by request-context training, natural paraphrase generation and training.
+
+Added a separate concise-paraphrase hypothesis after the current queue. Concise paraphrases may improve robustness to request wording while retaining every constraint, named entity, date, and number. The queued generator reads only train_pref, samples at most 500 rows, inherits the original labels, caches outputs, and has a $0.50 run cap. The following training job uses the original 9,000 examples plus accepted concise variants, with capped train and clean validation probes, full aggregate test reports, and clean-validation-only stopping and selection.

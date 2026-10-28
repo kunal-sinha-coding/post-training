@@ -1844,3 +1844,64 @@ Source-specific result `when2call-similarity-gate-pref-k3-fallback-test-20270417
 | Candidate | when2call-similarity-gate-union-k3-fallback-20270418 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-union-k3-fallback-20270418/metrics.json) | completed |
 
 Source-specific result `when2call-similarity-gate-union-k3-fallback-test-20270419` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.65_fallback_k1_probavg_w0.5": {"accuracy": 0.95, "macro_f1": 0.9722340969480558}}}. These values are not ranked against other splits.
+| Candidate | when2call-similarity-gate-25pct-pref-k3-fallback-20270420 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-25pct-pref-k3-fallback-20270420/metrics.json) | completed |
+
+Source-specific result `when2call-similarity-gate-25pct-pref-k3-fallback-test-20270421` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.75_fallback_k1_probavg_w0.5": {"accuracy": 0.954, "macro_f1": 0.9753309492439928}}}. These values are not ranked against other splits.
+| Candidate | when2call-similarity-gate-10pct-pref-k3-fallback-20270422 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-10pct-pref-k3-fallback-20270422/metrics.json) | completed |
+
+Source-specific result `when2call-similarity-gate-10pct-pref-k3-fallback-test-20270423` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.65_fallback_k1_probavg_w0.5": {"accuracy": 0.952, "macro_f1": 0.974304490322797}}}. These values are not ranked against other splits.
+| Candidate | when2call-similarity-gate-pref-only-k3-fallback-20270424 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-pref-only-k3-fallback-20270424/metrics.json) | completed |
+
+Source-specific result `when2call-similarity-gate-pref-only-k3-fallback-test-20270425` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.7_fallback_k1_probavg_w0.5": {"accuracy": 0.948, "macro_f1": 0.9711559460412922}}}. These values are not ranked against other splits.
+| Candidate | when2call-similarity-gate-question-and-tools-25pct-pref-k3-fallback-20270426 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-question-and-tools-25pct-pref-k3-fallback-20270426/metrics.json) | completed |
+
+Source-specific result `when2call-similarity-gate-question-and-tools-25pct-pref-k3-fallback-test-20270427` has status skipped. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.7_fallback_k1_probavg_w0.5": {"accuracy": 0.942, "macro_f1": 0.966071097944825}}}. These values are not ranked against other splits.
+| Candidate | when2call-similarity-gate-question-only-25pct-pref-k3-fallback-20270428 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-question-only-25pct-pref-k3-fallback-20270428/metrics.json) | completed |
+
+Source-specific result `when2call-similarity-gate-question-only-25pct-pref-k3-fallback-test-20270429` has status skipped. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.75_fallback_k1_probavg_w0.45": {"accuracy": 0.938, "macro_f1": 0.9639455782312926}}}. These values are not ranked against other splits.
+
+Source-specific result `when2call-similarity-gate-question-only-25pct-pref-k3-fallback-fulltest-20270430` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.75_fallback_k1_probavg_w0.45": {"accuracy": 0.938, "macro_f1": 0.9639455782312926}}}. These values are not ranked against other splits.
+| Candidate | when2call-similarity-gate-15pct-pref-k3-fallback-20270501 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-15pct-pref-k3-fallback-20270501/metrics.json) | completed |
+
+Source-specific result `when2call-similarity-gate-15pct-pref-k3-fallback-fulltest-20270502` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.65_fallback_k1_probavg_w0.5": {"accuracy": 0.954, "macro_f1": 0.9753309492439928}}}. These values are not ranked against other splits.
+| Candidate | when2call-similarity-gate-20pct-pref-k3-fallback-20270503 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-20pct-pref-k3-fallback-20270503/metrics.json) | completed |
+
+Source-specific result `when2call-similarity-gate-20pct-pref-k3-fallback-fulltest-20270504` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.65_fallback_k1_probavg_w0.5": {"accuracy": 0.952, "macro_f1": 0.974304490322797}}}. These values are not ranked against other splits.
+| Candidate | when2call-similarity-gate-15pct-pref-k3-weight-refine-20270505 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-15pct-pref-k3-weight-refine-20270505/metrics.json) | completed |
+
+Source-specific result `when2call-similarity-gate-15pct-pref-k3-weight-refine-fulltest-20270506` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.65_fallback_k1_probavg_w0.5": {"accuracy": 0.954, "macro_f1": 0.9753309492439928}}}. These values are not ranked against other splits.
+| Candidate | when2call-similarity-gate-15pct-pref-k2-fallback-20270507 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-15pct-pref-k2-fallback-20270507/metrics.json) | completed |
+
+Source-specific result `when2call-similarity-gate-15pct-pref-k2-fallback-fulltest-20270508` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.65_k2_fallback_k1_probavg_w0.5": {"accuracy": 0.954, "macro_f1": 0.9753309492439928}}}. These values are not ranked against other splits.
+| Candidate | when2call-similarity-gate-30pct-pref-k3-fallback-20270509 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-30pct-pref-k3-fallback-20270509/metrics.json) | completed |
+
+Source-specific result `when2call-similarity-gate-30pct-pref-k3-fallback-fulltest-20270510` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.65_fallback_k1_probavg_w0.5": {"accuracy": 0.956, "macro_f1": 0.9763532692179255}}}. These values are not ranked against other splits.
+| Candidate | when2call-similarity-gate-35pct-pref-k3-fallback-20270511 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-35pct-pref-k3-fallback-20270511/metrics.json) | completed |
+
+Source-specific result `when2call-similarity-gate-35pct-pref-k3-fallback-fulltest-20270512` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.75_fallback_k1_probavg_w0.5": {"accuracy": 0.952, "macro_f1": 0.9742570937591685}}}. These values are not ranked against other splits.
+| Candidate | when2call-similarity-gate-30pct-pref-k1-fallback-20270513 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-30pct-pref-k1-fallback-20270513/metrics.json) | completed |
+
+Source-specific result `when2call-similarity-gate-30pct-pref-k1-fallback-fulltest-20270514` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.65_k1_fallback_k1_probavg_w0.5": {"accuracy": 0.954, "macro_f1": 0.9743342516069788}}}. These values are not ranked against other splits.
+| Candidate | when2call-similarity-gate-30pct-pref-k3-margin-20270515 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-30pct-pref-k3-margin-20270515/metrics.json) | completed |
+
+Source-specific result `when2call-similarity-gate-30pct-pref-k3-margin-fulltest-20270516` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "margin_gate_top_0.65_fallback_k1_probavg_w0.5": {"accuracy": 0.942, "macro_f1": 0.9661314347749249}}}. These values are not ranked against other splits.
+| Candidate | when2call-similarity-gate-30pct-pref-k3-consensus-20270517 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-30pct-pref-k3-consensus-20270517/metrics.json) | completed |
+
+Source-specific result `when2call-similarity-gate-30pct-pref-k3-consensus-fulltest-20270518` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.65_consensus_probavg_w0.5": {"accuracy": 0.95, "macro_f1": 0.9732306348379727}}}. These values are not ranked against other splits.
+| Candidate | when2call-similarity-gate-30pct-pref-k3-qwen-match-20270519 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-30pct-pref-k3-qwen-match-20270519/metrics.json) | completed |
+
+Source-specific result `when2call-similarity-gate-30pct-pref-k3-qwen-match-fulltest-20270520` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.65_fallback_k1_qwen_agree_probavg_w0.5": {"accuracy": 0.942, "macro_f1": 0.967059240237315}}}. These values are not ranked against other splits.
+| Candidate | when2call-similarity-gate-30pct-pref-k3-lower-threshold-20270521 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-30pct-pref-k3-lower-threshold-20270521/metrics.json) | completed |
+
+Source-specific result `when2call-similarity-gate-30pct-pref-k3-lower-threshold-fulltest-20270522` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.4_fallback_k1_probavg_w0.5": {"accuracy": 0.956, "macro_f1": 0.9763532692179255}}}. These values are not ranked against other splits.
+
+Source-specific result `when2call-similarity-gate-30pct-pref-k3-lower-threshold-fulltest-20270522` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.4_fallback_k1_probavg_w0.5": {"accuracy": 0.956, "macro_f1": 0.9763532692179255}}}. These values are not ranked against other splits.
+| Candidate | when2call-similarity-gate-30pct-pref-k3-weight-refine-20270523 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-30pct-pref-k3-weight-refine-20270523/metrics.json) | completed |
+
+Source-specific result `when2call-similarity-gate-30pct-pref-k3-weight-refine-fulltest-20270524` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.65_fallback_k1_probavg_w0.5": {"accuracy": 0.956, "macro_f1": 0.9763532692179255}}}. These values are not ranked against other splits.
+| Candidate | when2call-similarity-gate-30pct-pref-k3-question-tools-20270525 | — | — | [metrics](/workspace/post-training/outputs/when2call-similarity-gate-30pct-pref-k3-question-tools-20270525/metrics.json) | completed |
+
+Source-specific result `when2call-similarity-gate-30pct-pref-k3-question-tools-fulltest-20270526` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"zero_shot": {"accuracy": 0.942, "macro_f1": 0.967059240237315}, "gate_top_0.65_fallback_k1_probavg_w0.5": {"accuracy": 0.942, "macro_f1": 0.966071097944825}}}. These values are not ranked against other splits.
+| Candidate | qwen-when2call-aug-tool-order-20261027 | 0.948 | 0.48555107526881724 | [metrics](/workspace/post-training/outputs/qwen-when2call-aug-tool-order-20261027/metrics.json) | completed |
+
+| qwen-when2call-aug-tool-order-20261027 | 0.6593647316538883 | 0.46846782615854876 | cxm2b3nx | Aggregate-only frozen test measurement |
