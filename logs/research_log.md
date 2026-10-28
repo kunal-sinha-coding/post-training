@@ -12240,3 +12240,6 @@ Clean development accuracy: 0.89. Clean development macro F1: 0.4688439793095151
 Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.962, "macro_f1": 0.48832640709774233, "confusion_matrix": [[241, 4, 5, 0], [0, 240, 9, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+Queued synthetic continuation commands use evaluation batch size 8 to reduce the time for full aggregate test evaluation at each epoch.
