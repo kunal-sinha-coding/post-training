@@ -13049,3 +13049,15 @@ Clean development accuracy: 0.954. Clean development macro F1: 0.485689806113261
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.954, "macro_f1": 0.4856898061132617, "confusion_matrix": [[244, 1, 5, 0], [4, 233, 12, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## when2call-tool-rich-large-boundary-pilot-20261028
+
+Timestamp: 2026-10-28T18:37:06.260650+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.generate_when2call_boundary_pilot", "--output-dir", "outputs/when2call-tool-rich-large-boundary-pilot-20261028", "--pairs", "400", "--unsupported", "400", "--workers", "24", "--seed", "20261106", "--max-cost-usd", "2.0", "--anchor-strategy", "tool_rich"]. Output: /workspace/post-training/outputs/when2call-tool-rich-large-boundary-pilot-20261028. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
