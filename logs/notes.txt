@@ -7994,3 +7994,8 @@ Commit name: Queue validation-stopped tool-rich continuation.
 The latest completed run, `qwen-tool-rich-large-boundary-replay1500-20261028`, records training metrics on 500 examples (0.986 accuracy, 0.739419 macro F1), clean validation on 500 examples (0.944 accuracy, 0.482983 macro F1), and aggregate black-box test metrics on all 3,652 examples (0.710570 accuracy, 0.527381 macro F1). All required evidence is present. Test metrics are report-only.
 
 The small tool-rich pool with 900 real replay examples remains the strongest recent clean-validation recipe at 0.960 accuracy and 0.487287 macro F1. Queued up to three additional epochs starting from that exact checkpoint, using the same 900 real rows and 629 synthetic rows. The previous checkpoint's aggregate test metrics are passed only as baseline metadata; the stopping rule uses clean-validation accuracy exclusively and stops at the first non-improving epoch. Each epoch reports training, clean validation, and aggregate test metrics.
+
+## 2026-10-28: Verify validation-stopped continuation launch
+Commit name: Verify validation-stopped continuation launch.
+
+The watchdog launched `qwen-tool-rich-boundary-replay900-continued-20261028` as PID 309035. The run starts from the 900-real small-pool checkpoint, permits up to three continuation epochs, and stops when clean-validation accuracy does not improve. The process is alive, state is active with planning disabled, and the worker queue is empty because the command was promoted. Test metrics are logged but are not part of the stop rule.
