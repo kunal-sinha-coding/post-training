@@ -148524,3 +148524,205 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/7lltawfq"
 }
 ```
+
+## qwen-tool-rich-synth-only-three-encoder-clean-validation-20261028
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_existing_when2call_hybrid_validation",
+    "--output-dir",
+    "outputs/qwen-tool-rich-synth-only-three-encoder-clean-validation-20261028",
+    "--qwen-checkpoint",
+    "outputs/qwen-tool-rich-boundary-synth-only-20261028/epoch-01",
+    "--encoder-checkpoint",
+    "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065",
+    "--encoder-checkpoint",
+    "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061",
+    "--encoder-checkpoint",
+    "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
+    "--split-seed",
+    "20261091",
+    "--sample-seed",
+    "20261092",
+    "--max-validation-examples",
+    "500",
+    "--batch-size",
+    "1"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "qwen-tool-rich-synth-only-three-encoder-clean-validation-20261028",
+  "failure_reason": null,
+  "metadata": {
+    "aggregate_validation_metrics": {
+      "encoder_0": {
+        "accuracy": 0.908,
+        "macro_f1": 0.9418160686998256
+      },
+      "encoder_1": {
+        "accuracy": 0.888,
+        "macro_f1": 0.9257035973726565
+      },
+      "encoder_2": {
+        "accuracy": 0.906,
+        "macro_f1": 0.9355387006952629
+      },
+      "encoder_ensemble": {
+        "accuracy": 0.914,
+        "macro_f1": 0.9420918367346938
+      },
+      "ensemble_average": {
+        "accuracy": 0.946,
+        "macro_f1": 0.9650694320032998
+      },
+      "ensemble_gate": {
+        "accuracy": 0.948,
+        "macro_f1": 0.9661563791483382
+      },
+      "ensemble_request_conf_40": {
+        "accuracy": 0.954,
+        "macro_f1": 0.9646179143794432
+      },
+      "ensemble_request_conf_50": {
+        "accuracy": 0.954,
+        "macro_f1": 0.9646179143794432
+      },
+      "ensemble_request_conf_60": {
+        "accuracy": 0.95,
+        "macro_f1": 0.9615573770491803
+      },
+      "ensemble_request_conf_70": {
+        "accuracy": 0.952,
+        "macro_f1": 0.9635795107597609
+      },
+      "ensemble_request_conf_80": {
+        "accuracy": 0.952,
+        "macro_f1": 0.9635795107597609
+      },
+      "qwen_sft": {
+        "accuracy": 0.944,
+        "macro_f1": 0.9631120053655265
+      }
+    },
+    "artifact_sha256": {
+      "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061/encoder_config.json": "0616e72a787934ed1fa3bec80e5da45239be1a1c267525c92960b83e9c44c12f",
+      "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061/model_state.pt": "ebafcdeaf992bd5e3a47eeee615f9b84e0de8a405229f350690d3eef92fbdfde",
+      "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065/encoder_config.json": "0616e72a787934ed1fa3bec80e5da45239be1a1c267525c92960b83e9c44c12f",
+      "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065/model_state.pt": "765fadef1e7f5fb87a972066bd2c67a75e4f274194112540527538b0c011bf52",
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/encoder_config.json": "0616e72a787934ed1fa3bec80e5da45239be1a1c267525c92960b83e9c44c12f",
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048/model_state.pt": "815459d76b8c2e9fb7ba44e2f3867379ab096766cf9f1c807a08921be26593b5",
+      "outputs/qwen-tool-rich-boundary-synth-only-20261028/epoch-01/adapter_config.json": "5f36efeaadb8d9604bb840da595d6a88a206a74aaebb894e7c097eb20c5cbc05",
+      "outputs/qwen-tool-rich-boundary-synth-only-20261028/epoch-01/adapter_model.safetensors": "a13971c2adfabb35a43b6a76e9192ca7611a6f7d1a30442eff22e83a35f70852"
+    },
+    "candidate_methods": [
+      "encoder_0",
+      "encoder_1",
+      "encoder_2",
+      "encoder_ensemble",
+      "qwen_sft",
+      "ensemble_average",
+      "ensemble_gate",
+      "ensemble_request_conf_40",
+      "ensemble_request_conf_50",
+      "ensemble_request_conf_60",
+      "ensemble_request_conf_70",
+      "ensemble_request_conf_80"
+    ],
+    "encoder_checkpoints": [
+      "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065",
+      "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061",
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+    ],
+    "encoder_weights": [
+      0.35625,
+      0.1375,
+      0.50625
+    ],
+    "git_commit": "a4b0f408b37fc123497a07e725e6fc123ae97909",
+    "official_test_loaded": false,
+    "qwen_base": "Qwen/Qwen2.5-1.5B-Instruct",
+    "qwen_checkpoint": "outputs/qwen-tool-rich-boundary-synth-only-20261028/epoch-01",
+    "runtime_seconds": 140.47012543678284,
+    "sample_seed": 20261092,
+    "split_seed": 20261091,
+    "status": "completed",
+    "training_performed": false,
+    "validation_examples": 500,
+    "validation_indices_sha256": "f8a78f642ed7dc4f6063c9af98249f67d18a8d6a06e8516537fa453d9b3c01ff",
+    "validation_sample_cap": 500,
+    "validation_source": "nvidia/When2Call train_sft",
+    "validation_source_independent_of_training": true,
+    "wandb_run_id": "g7em820o",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/g7em820o"
+  },
+  "metrics_path": "/workspace/post-training/outputs/qwen-tool-rich-synth-only-three-encoder-clean-validation-20261028/metrics.json",
+  "official_test_loaded": false,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/qwen-tool-rich-synth-only-three-encoder-clean-validation-20261028",
+  "source_validation_metrics": {
+    "aggregate_validation_metrics": {
+      "encoder_0": {
+        "accuracy": 0.908,
+        "macro_f1": 0.9418160686998256
+      },
+      "encoder_1": {
+        "accuracy": 0.888,
+        "macro_f1": 0.9257035973726565
+      },
+      "encoder_2": {
+        "accuracy": 0.906,
+        "macro_f1": 0.9355387006952629
+      },
+      "encoder_ensemble": {
+        "accuracy": 0.914,
+        "macro_f1": 0.9420918367346938
+      },
+      "ensemble_average": {
+        "accuracy": 0.946,
+        "macro_f1": 0.9650694320032998
+      },
+      "ensemble_gate": {
+        "accuracy": 0.948,
+        "macro_f1": 0.9661563791483382
+      },
+      "ensemble_request_conf_40": {
+        "accuracy": 0.954,
+        "macro_f1": 0.9646179143794432
+      },
+      "ensemble_request_conf_50": {
+        "accuracy": 0.954,
+        "macro_f1": 0.9646179143794432
+      },
+      "ensemble_request_conf_60": {
+        "accuracy": 0.95,
+        "macro_f1": 0.9615573770491803
+      },
+      "ensemble_request_conf_70": {
+        "accuracy": 0.952,
+        "macro_f1": 0.9635795107597609
+      },
+      "ensemble_request_conf_80": {
+        "accuracy": 0.952,
+        "macro_f1": 0.9635795107597609
+      },
+      "qwen_sft": {
+        "accuracy": 0.944,
+        "macro_f1": 0.9631120053655265
+      }
+    }
+  },
+  "started_at": "2026-10-28T21:27:24.393825+00:00",
+  "status": "completed",
+  "test_status": "not measured",
+  "timestamp": "2026-10-28T21:30:25.853246+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "g7em820o",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/g7em820o"
+}
+```

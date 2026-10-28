@@ -13229,3 +13229,15 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-tool-rich-synth-only-three-encoder-clean-validation-20261028
+
+Timestamp: 2026-10-28T21:30:25.853246+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_existing_when2call_hybrid_validation", "--output-dir", "outputs/qwen-tool-rich-synth-only-three-encoder-clean-validation-20261028", "--qwen-checkpoint", "outputs/qwen-tool-rich-boundary-synth-only-20261028/epoch-01", "--encoder-checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065", "--encoder-checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061", "--encoder-checkpoint", "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048", "--split-seed", "20261091", "--sample-seed", "20261092", "--max-validation-examples", "500", "--batch-size", "1"]. Output: /workspace/post-training/outputs/qwen-tool-rich-synth-only-three-encoder-clean-validation-20261028. W&B run: g7em820o.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {"aggregate_validation_metrics": {"encoder_0": {"accuracy": 0.908, "macro_f1": 0.9418160686998256}, "encoder_1": {"accuracy": 0.888, "macro_f1": 0.9257035973726565}, "encoder_2": {"accuracy": 0.906, "macro_f1": 0.9355387006952629}, "encoder_ensemble": {"accuracy": 0.914, "macro_f1": 0.9420918367346938}, "qwen_sft": {"accuracy": 0.944, "macro_f1": 0.9631120053655265}, "ensemble_average": {"accuracy": 0.946, "macro_f1": 0.9650694320032998}, "ensemble_gate": {"accuracy": 0.948, "macro_f1": 0.9661563791483382}, "ensemble_request_conf_40": {"accuracy": 0.954, "macro_f1": 0.9646179143794432}, "ensemble_request_conf_50": {"accuracy": 0.954, "macro_f1": 0.9646179143794432}, "ensemble_request_conf_60": {"accuracy": 0.95, "macro_f1": 0.9615573770491803}, "ensemble_request_conf_70": {"accuracy": 0.952, "macro_f1": 0.9635795107597609}, "ensemble_request_conf_80": {"accuracy": 0.952, "macro_f1": 0.9635795107597609}}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
