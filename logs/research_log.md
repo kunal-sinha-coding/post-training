@@ -12967,3 +12967,7 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## Combined synthetic pool hypothesis queued
+
+The latest completed model run, `qwen-rare-schema-boundary-synth-replay-20261028`, records all required evidence: 500-row training (0.990 accuracy, 0.742485 macro F1), 500-row clean validation (0.952, 0.484707), and 3,652-row aggregate black-box metrics (0.700438, 0.522924). Training and clean validation are below the prior replay. The tool-rich replay is active and its synthetic-only ablation is next. Added a later experiment to deduplicate and combine the rare-schema and tool-rich synthetic pools, then train with 667 real replay rows from the same checkpoint. This tests whether the two synthetic coverage strategies complement each other. Selection remains clean-validation-only.

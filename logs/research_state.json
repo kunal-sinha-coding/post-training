@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
-  "current_hypothesis": "Rare-schema anchored synthetic examples did not improve clean validation: the 500-row validation score was 0.952 accuracy and 0.484707 macro F1, below the previous replay score of 0.956 and 0.486225. Contexts with several competing tools may better match difficult tool-rich decisions. Generate balanced paired-boundary and unsupported examples from high-tool-count train_pref anchors, then test one real-data replay continuation. Select by clean validation only.",
+  "current_hypothesis": "The latest completed rare-schema replay has all required metrics and scored 0.952 clean-validation accuracy, below the previous replay result of 0.956. Tool-rich replay and synthetic-only runs are queued. A separate combination hypothesis is that rare-schema and tool-rich synthetic pools cover complementary cases. After the two queued comparisons, deduplicate and combine both generated pools, then train with 667 real replay examples from the same checkpoint. Select only by clean validation.",
   "active_experiment": {
     "pid": 294957,
     "command": [
@@ -104,6 +104,50 @@
       "5e-6",
       "--augmentation-jsonl",
       "outputs/when2call-tool-rich-boundary-pilot-20261028/balanced_boundary_tool_rich.jsonl"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.merge_when2call_synthetic_pools",
+      "--output-dir",
+      "outputs/when2call-combined-boundary-pilot-20261028",
+      "--input",
+      "outputs/when2call-rare-schema-boundary-pilot-20261028/balanced_boundary_rare_schema.jsonl",
+      "--input",
+      "outputs/when2call-tool-rich-boundary-pilot-20261028/balanced_boundary_tool_rich.jsonl"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-combined-boundary-synth-replay-20261028",
+      "--adapter-checkpoint",
+      "outputs/qwen-pref900-synth450-high-similarity-lr5e6-20261028/epoch-01",
+      "--preference-train-sample-size",
+      "667",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "1",
+      "--seed",
+      "20261105",
+      "--learning-rate",
+      "5e-6",
+      "--augmentation-jsonl",
+      "outputs/when2call-combined-boundary-pilot-20261028/balanced_boundary_combined.jsonl"
     ]
   ],
   "_previous_command": [
@@ -133,9 +177,9 @@
     "selection": "clean validation only"
   },
   "last_heartbeat": "2026-10-28T17:39:47.730996+00:00",
-  "last_action": "Watchdog started validation worker pid 294957.",
+  "last_action": "Audited complete evidence for the latest model experiment and queued a distinct combined-pool hypothesis after the active tool-rich experiment sequence.",
   "watchdog_enabled": true,
-  "research_log_size": 1640959,
+  "research_log_size": 1641781,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -169,12 +213,7 @@
     "--augmentation-jsonl",
     "outputs/when2call-tool-rich-boundary-pilot-20261028/balanced_boundary_tool_rich.jsonl"
   ],
-  "recording_jobs": [
-    {
-      "pid": 294956,
-      "experiment_id": "when2call-tool-rich-boundary-pilot-20261028"
-    }
-  ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": null,
   "planning_ack_deadline": null,
@@ -188,7 +227,7 @@
     "wandb_run_id": "vrfnnoq2",
     "selection": "Aggregate test result reported for ranking only. It was not used for candidate selection."
   },
-  "next_hypothesis": "After the queued tool-rich replay run, compare synthetic-only continuation on the exact same generated pool and starting checkpoint. This isolates whether any clean-validation signal comes from the generated examples themselves or from real-data replay. Use one epoch, 500-row train and clean-validation evaluation, and full aggregate black-box reporting. Select only on clean validation.",
+  "next_hypothesis": "After the queued tool-rich replay and synthetic-only runs, merge rare-schema and tool-rich pools with exact prompt deduplication and compare one mixed replay run using the existing 500-row train and validation probes. Report full aggregate test metrics only after selection.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
