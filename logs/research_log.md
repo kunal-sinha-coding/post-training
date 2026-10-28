@@ -12971,3 +12971,9 @@ This record was written automatically. Candidate selection must use clean valida
 ## Combined synthetic pool hypothesis queued
 
 The latest completed model run, `qwen-rare-schema-boundary-synth-replay-20261028`, records all required evidence: 500-row training (0.990 accuracy, 0.742485 macro F1), 500-row clean validation (0.952, 0.484707), and 3,652-row aggregate black-box metrics (0.700438, 0.522924). Training and clean validation are below the prior replay. The tool-rich replay is active and its synthetic-only ablation is next. Added a later experiment to deduplicate and combine the rare-schema and tool-rich synthetic pools, then train with 667 real replay rows from the same checkpoint. This tests whether the two synthetic coverage strategies complement each other. Selection remains clean-validation-only.
+
+## Tool-rich generation audit and larger-dose hypothesis
+
+The tool-rich generation pilot completed with 629 accepted examples: 198 tool_call, 198 request_for_info, and 233 cannot_answer. Estimated API cost was $0.1534617. Test data was not loaded. The active mixed replay training run has not yet produced a completed metrics artifact. The latest completed model run remains the rare-schema replay, with all three evidence types recorded.
+
+Queued a larger tool-rich synthetic dose after the existing tool-rich replay, synthetic-only, and combined-pool experiments. It requests 400 boundary pairs and 400 unsupported examples from high-tool-count train_pref anchors, then trains a one-epoch replay continuation from the same checkpoint. This tests dose response with clean-validation selection and report-only full aggregate test metrics.
