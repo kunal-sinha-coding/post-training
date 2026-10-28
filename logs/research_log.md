@@ -12199,3 +12199,15 @@ The missing-information strategy accepted fewer rows because structural checks r
 ## 2026-10-28: Correct synthetic pilot continuation setup
 
 The user clarified that small synthetic pilots are intended to save time. The first fresh-base run replayed the 9,000-row corpus and was stopped at optimizer step 4,672 before evaluation. It produced no checkpoint or metrics. Corrected the trainer to support loading the trained Qwen epoch-02 adapter and using only one synthetic JSONL as the training set. Queued four separate one-epoch pilots with a 500-row synthetic training probe, fixed 500-row clean validation, and paired 500-row aggregate test screens before and after training. No pilot replays the 9,000 When2Call rows.
+
+## qwen-when2call-synthetic-continuation-missing_required_info-20261028
+
+Timestamp: 2026-10-28T03:35:10.021185+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028", "--adapter-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--synthetic-only", "--augmentation-jsonl", "outputs/when2call-synthetic-pilots-20261028/missing_required_info.jsonl", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--test-sample-size", "500", "--test-sample-seed", "20261070", "--epochs", "1", "--seed", "20261055", "--evaluate-baseline", "--stop-on-validation-non-improvement"]. Output: /workspace/post-training/outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028. W&B run: jg6ytavb.
+
+Clean development accuracy: 0.966. Clean development macro F1: 0.4873606720333735. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.62, "macro_f1": 0.4682246190016527, "examples": 500, "sample_seed": 20261070, "sample_method": "uniform row-index sample without label access"}.
+
+Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.962, "macro_f1": 0.48832640709774233, "confusion_matrix": [[241, 4, 5, 0], [0, 240, 9, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

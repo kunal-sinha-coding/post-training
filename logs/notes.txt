@@ -7556,3 +7556,5 @@ Scalar temperatures did not improve clean-validation accuracy over the request-c
 
 
 2026-10-28: Correct synthetic pilot training source. The user clarified that the pilots must continue the existing trained Qwen adapter and train only on each small synthetic batch. Stopped the mistaken fresh-base replay at step 4,672 before evaluation. Added adapter-checkpoint and synthetic-only support to the Qwen trainer, updated the prompt and research state, and queued four one-epoch continuation pilots. Each pilot records baseline and post-training clean validation and 500-row aggregate test metrics, plus synthetic training metrics.
+
+2026-10-28T03:35:10.047900+00:00: Commit `Record research experiment qwen-when2call-synthetic-continuation-missing_required_info-20261028` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
