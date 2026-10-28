@@ -13001,3 +13001,15 @@ Appended a real-only control using the same clean-validation-best checkpoint, 66
 The latest completed model experiment remains the rare-schema replay and has all three evidence types recorded. Training metrics on 500 rows are 0.990 accuracy and 0.742485 macro F1. Clean validation on 500 rows is 0.952 and 0.484707. Aggregate-only test metrics on all 3,652 rows are 0.700438 and 0.522924. The tool-rich replay is still in evaluation; no required measurement is missing.
 
 Added a new synthetic-data hypothesis. Existing generated pools use single-turn requests, so they do not teach the model to recover a required value from earlier conversation. The queued generator creates paired multi-turn conversations with the same final request, where one history supplies the required value and the other omits it. It uses train_pref anchors, schema checks, a separate high-confidence label judge, and a $2 pilot cap. A one-epoch replay training command follows. Selection uses clean validation only.
+
+## qwen-tool-rich-boundary-synth-replay-20261028
+
+Timestamp: 2026-10-28T17:56:50.663957+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-tool-rich-boundary-synth-replay-20261028", "--adapter-checkpoint", "outputs/qwen-pref900-synth450-high-similarity-lr5e6-20261028/epoch-01", "--preference-train-sample-size", "667", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261103", "--learning-rate", "5e-6", "--augmentation-jsonl", "outputs/when2call-tool-rich-boundary-pilot-20261028/balanced_boundary_tool_rich.jsonl"]. Output: /workspace/post-training/outputs/qwen-tool-rich-boundary-synth-replay-20261028. W&B run: 0amv8mml.
+
+Clean development accuracy: 0.946. Clean development macro F1: 0.48310376492194673. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7075575027382256, "macro_f1": 0.5279216810135032, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.946, "macro_f1": 0.48310376492194673, "confusion_matrix": [[241, 3, 6, 0], [3, 232, 14, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
