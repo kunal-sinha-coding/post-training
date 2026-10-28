@@ -1,8 +1,8 @@
-"""Train base Qwen on all When2Call preference rows with optional BFCL data.
+"""Train Qwen on When2Call preference rows or continue a saved adapter on synthetic rows.
 
-The flow loads the complete preference split, optionally adds labeled BFCL rows, uses a separate
-clean validation source, and reports train, validation, and aggregate-only test metrics each epoch.
-Optional early stopping uses validation accuracy only.
+The flow loads the requested training rows, initializes or continues a Qwen LoRA adapter, evaluates
+fixed training and clean-validation samples, reports aggregate-only test metrics, and saves provenance.
+Optional early stopping uses clean-validation accuracy only.
 """
 from __future__ import annotations
 
@@ -128,17 +128,24 @@ def main() -> int:
     parser.add_argument("--augmentation-mode", choices=("none", "tool_order", "schema_key_order", "request_context"), default="none")
     parser.add_argument("--augmentation-seed", type=int, default=20261066)
     parser.add_argument("--augmentation-jsonl", type=Path)
+    parser.add_argument("--adapter-checkpoint", type=Path)
+    parser.add_argument("--synthetic-only", action="store_true")
     args = parser.parse_args()
     # Require online W&B before loading the model or benchmark data.
     if not os.getenv("WANDB_API_KEY"):
         raise RuntimeError("WANDB_API_KEY is required for Qwen experiments.")
     args.output_dir.mkdir(parents=True, exist_ok=True)
     config = {key: str(value) if isinstance(value, Path) else value for key, value in vars(args).items()}
-    # Load the full preference corpus and the fixed BFCL partitions before model setup.
-    preference_rows = prepare_rows(load_rows())
-    if len(preference_rows) != 9000:
+    # Load only the chosen source rows so synthetic continuation pilots do not replay the 9,000 originals.
+    # Avoid loading the original corpus during a synthetic-only continuation.
+    preference_rows = [] if args.synthetic_only else prepare_rows(load_rows())
+    if not args.synthetic_only and len(preference_rows) != 9000:
         raise RuntimeError(f"Expected 9,000 When2Call preference rows but found {len(preference_rows)}.")
-    bfcl_train, bfcl_validation = load_labeled_rows(args.bfcl_data)
+    # Require both the trained adapter and one explicit synthetic pilot for this mode.
+    if args.synthetic_only and (not args.adapter_checkpoint or not args.augmentation_jsonl):
+        raise ValueError("Synthetic-only continuation requires --adapter-checkpoint and --augmentation-jsonl.")
+    # Keep BFCL data out of the pilot path entirely.
+    bfcl_train, bfcl_validation = ([], []) if args.synthetic_only else load_labeled_rows(args.bfcl_data)
     bfcl_rows = bfcl_train + bfcl_validation
     augmented_rows = augment_preference_rows(preference_rows, args.augmentation_mode, args.augmentation_seed) if args.augmentation_mode != "none" else []
     # Load cached generated prompts without changing their inherited source labels.
@@ -146,7 +153,9 @@ def main() -> int:
         with args.augmentation_jsonl.open(encoding="utf-8") as handle:
             generated_rows = [json.loads(line) for line in handle if line.strip()]
         augmented_rows.extend(ClassificationRow(item["prompt"], int(item["label"]), None) for item in generated_rows)
-    training_rows = preference_rows + augmented_rows + (bfcl_rows if args.include_full_bfcl else [])
+    training_rows = (augmented_rows if args.synthetic_only else preference_rows + augmented_rows) + (bfcl_rows if args.include_full_bfcl else [])
+    if not training_rows:
+        raise ValueError("The selected training sources produced no rows.")
     if args.validation_source == "bfcl":
         validation_rows = bfcl_validation
     elif args.validation_source == "sft":
@@ -177,7 +186,7 @@ def main() -> int:
     training_eval_rows = sample_stratified(training_rows, min(args.training_eval_sample_size, len(training_rows)), args.training_eval_seed)
     label_counts = dict(sorted(Counter(row.label for row in training_rows).items()))
     data_fingerprint = fingerprint_rows(training_rows)
-    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name=args.output_dir.name, job_type="when2call-fullpool-sft-augmentation", config=config | {"dataset": DATASET_NAME + ":train_pref" + (" + augmented preference prompts" if augmented_rows else "") + (" + BFCL" if args.include_full_bfcl else ""), "train_examples": len(training_rows), "preference_train_examples": len(preference_rows), "augmentation_mode": args.augmentation_mode if not args.augmentation_jsonl else "api_question_paraphrase", "augmentation_jsonl": str(args.augmentation_jsonl) if args.augmentation_jsonl else None, "augmented_examples": len(augmented_rows), "bfcl_train_examples": len(training_rows) - len(preference_rows) - len(augmented_rows), "validation_source": args.validation_source, "validation_examples": len(validation_rows), "official_test_selection": False})
+    run = wandb.init(project=os.getenv("WANDB_PROJECT", "when2call-research"), entity=os.getenv("WANDB_ENTITY"), name=args.output_dir.name, job_type="when2call-synthetic-continuation" if args.synthetic_only else "when2call-fullpool-sft-augmentation", config=config | {"dataset": "synthetic-only continuation" if args.synthetic_only else DATASET_NAME + ":train_pref" + (" + augmented preference prompts" if augmented_rows else "") + (" + BFCL" if args.include_full_bfcl else ""), "train_examples": len(training_rows), "preference_train_examples": len(preference_rows), "augmentation_mode": args.augmentation_mode if not args.augmentation_jsonl else "synthetic_pilot", "augmentation_jsonl": str(args.augmentation_jsonl) if args.augmentation_jsonl else None, "augmented_examples": len(augmented_rows), "adapter_checkpoint": str(args.adapter_checkpoint) if args.adapter_checkpoint else None, "bfcl_train_examples": len(training_rows) - len(preference_rows) - len(augmented_rows), "validation_source": args.validation_source, "validation_examples": len(validation_rows), "official_test_selection": False})
     atexit.register(run.finish)
     # Fix random sources before initializing the base model and fresh LoRA adapter.
     random.seed(args.seed)
@@ -185,17 +194,19 @@ def main() -> int:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     heartbeat = args.output_dir / "heartbeat.json"
     write_heartbeat(heartbeat, "loading")
-    model, tokenizer = load_model(args.model, device, args.lora_rank)
+    model, tokenizer = load_model(args.model, device, args.lora_rank, str(args.adapter_checkpoint) if args.adapter_checkpoint else None)
     label_ids = label_token_ids(tokenizer)
     optimizer = torch.optim.AdamW((parameter for parameter in model.parameters() if parameter.requires_grad), lr=args.learning_rate, weight_decay=args.weight_decay)
     baseline_test = None
+    baseline_validation = None
     if args.evaluate_baseline:
+        baseline_validation = evaluate(model, tokenizer, validation_rows, label_ids, device, args.max_length, args.eval_batch_size, heartbeat) if validation_rows else None
         baseline_test = evaluate_black_box(model, tokenizer, label_ids, device, args.max_length, args.eval_batch_size, args.test_sample_size, args.test_sample_seed)
-        run.log({"baseline/test_accuracy": baseline_test["accuracy"], "baseline/test_macro_f1": baseline_test["macro_f1"]}, step=0)
+        run.log({"baseline/test_accuracy": baseline_test["accuracy"], "baseline/test_macro_f1": baseline_test["macro_f1"], **({"baseline/validation_accuracy": baseline_validation["accuracy"], "baseline/validation_macro_f1": baseline_validation["macro_f1"]} if baseline_validation else {})}, step=0)
     total_steps = len(training_rows) * args.epochs
     epoch_records = []
     losses = []
-    best_validation_accuracy = None
+    best_validation_accuracy = baseline_validation["accuracy"] if baseline_validation else None
     for epoch in range(args.epochs):
         # Log every optimizer-step loss while using every preference row in each epoch.
         def log_step_loss(step: int, loss: float) -> bool:
@@ -226,12 +237,12 @@ def main() -> int:
             break
     # Save complete provenance and aggregate metrics without per-example test outputs.
     result = {
-        "experiment": "qwen25_1p5b_all_when2call_trainpref_sft",
-        "purpose": "Train on all When2Call preference rows, optionally with BFCL, and report each epoch.",
+        "experiment": "qwen25_1p5b_synthetic_only_continuation" if args.synthetic_only else "qwen25_1p5b_all_when2call_trainpref_sft",
+        "purpose": "Continue the saved When2Call adapter using only a small synthetic pilot set." if args.synthetic_only else "Train on all When2Call preference rows, optionally with BFCL, and report each epoch.",
         "config": config,
         "base_model": args.model,
-        "base_model_checkpoint": "Qwen/Qwen2.5-1.5B-Instruct before any task adapter training",
-        "data": {"dataset": DATASET_NAME, "split": "train_pref", "preference_examples": len(preference_rows), "augmentation_mode": args.augmentation_mode if not args.augmentation_jsonl else "api_question_paraphrase", "augmentation_seed": args.augmentation_seed, "augmentation_jsonl": str(args.augmentation_jsonl) if args.augmentation_jsonl else None, "augmentation_jsonl_sha256": hashlib.sha256(args.augmentation_jsonl.read_bytes()).hexdigest() if args.augmentation_jsonl else None, "augmented_examples": len(augmented_rows), "bfcl_train_examples": len(training_rows) - len(preference_rows) - len(augmented_rows), "bfcl_file": str(args.bfcl_data), "bfcl_sha256": hashlib.sha256(args.bfcl_data.read_bytes()).hexdigest(), "label_counts": label_counts, "prompt_label_fingerprint": data_fingerprint},
+        "base_model_checkpoint": str(args.adapter_checkpoint) if args.adapter_checkpoint else "Qwen/Qwen2.5-1.5B-Instruct before any task adapter training",
+        "data": {"dataset": "synthetic pilot only" if args.synthetic_only else DATASET_NAME, "split": "synthetic_pilot" if args.synthetic_only else "train_pref", "preference_examples": len(preference_rows), "augmentation_mode": args.augmentation_mode if not args.augmentation_jsonl else "synthetic_pilot", "augmentation_seed": args.augmentation_seed, "augmentation_jsonl": str(args.augmentation_jsonl) if args.augmentation_jsonl else None, "augmentation_jsonl_sha256": hashlib.sha256(args.augmentation_jsonl.read_bytes()).hexdigest() if args.augmentation_jsonl else None, "augmented_examples": len(augmented_rows), "bfcl_train_examples": len(training_rows) - len(preference_rows) - len(augmented_rows), "bfcl_file": str(args.bfcl_data), "bfcl_sha256": hashlib.sha256(args.bfcl_data.read_bytes()).hexdigest(), "label_counts": label_counts, "prompt_label_fingerprint": data_fingerprint},
         "validation_source": args.validation_source,
         "validation_examples": len(validation_rows),
         "best_validation_accuracy": best_validation_accuracy,
@@ -239,6 +250,7 @@ def main() -> int:
         "selection_procedure": "When validation is enabled, clean held-out validation accuracy controls optional early stopping. Aggregate black-box test metrics are report-only and do not select or stop training.",
         "test_label_use": "Test labels were used only inside the evaluator to compute aggregate accuracy and macro F1. No individual test rows or predictions were saved, and test metrics did not select or stop training.",
         "baseline_black_box_test_metrics": baseline_test,
+        "baseline_clean_validation_metrics": baseline_validation,
         "training_loss_by_epoch": losses,
         "epoch_records": epoch_records,
         "wandb_run_id": run.id,

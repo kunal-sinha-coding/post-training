@@ -4,13 +4,15 @@
 
 This section supersedes all earlier augmentation directions when they conflict.
 
+The user clarified that the small pilot sets are for rapid signal checks. Start from the already trained Qwen checkpoint and continue training on only each synthetic pilot. Never replay the 9,000 original preference examples for a pilot.
+
 The user stopped and cleared the tool-order, schema-key-order, neutral request-context, and paraphrase work. Do not resume or queue those approaches.
 
 The current objective is to generate genuinely new synthetic When2Call examples. The examples must resemble the `train_pref` data in format, tool schemas, and task complexity, but they must introduce new scenarios and useful decision-boundary signal. Do not make paraphrases or small edits of source questions. Use only `train_pref` rows as source anchors. Never load test examples or labels for generation.
 
 Begin with several small, distinct pilots. Current pilot strategies are new tool-call requests on an existing tool set, requests that omit a required tool argument, requests for unsupported capabilities, and tool-call requests over composed tool sets. Generate 50 examples per strategy with GPT-6 Luna through the Responses API. Use asynchronous requests with a semaphore so generation proceeds concurrently. Run a separate model label check on each candidate and apply structural checks before saving it. Cache every result, record usage and spend, and keep the cumulative API generation spend below $10. The current generation command has a $1 cap.
 
-Train a separate one-epoch candidate on the 9,000 original preference rows plus each accepted pilot set. Use the same base model and training setup. Evaluate no more than 500 training examples and 500 clean held-out validation examples. Report accuracy and macro F1 for both. Follow the short black-box screen rule: use at most 500 test examples for a fast screen, then evaluate all test examples only for candidates that pass clean validation and look promising. Save aggregate metrics only. Never inspect or save individual test labels, predictions, or correctness.
+Start each pilot from the already trained Qwen checkpoint `outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02`. Continue training on only that pilot’s accepted synthetic examples. Do not reload or replay the 9,000 original preference examples. Run one short epoch per pilot. Compare the checkpoint before and after on the same fixed clean validation sample of at most 500 rows and the same fixed aggregate black-box test sample of at most 500 rows. Measure training performance on at most 500 rows from the synthetic pilot. Report accuracy and macro F1 for each measurement. Test metrics are aggregate-only and report-only. Never inspect or save individual test labels, predictions, or correctness. Run full-test aggregate evaluation only for a pilot that has useful clean-validation signal and no clear decline.
 
 Use clean validation for candidate selection. Keep aggregate black-box scores report-only unless the user explicitly gives a different screening rule. Do not expand a synthetic strategy unless its clean-validation results show useful signal and its aggregate screen does not show a clear decline. After the pilots, compare the strategies and expand only the promising branch. Do not repeat experiments only with a different seed.
 

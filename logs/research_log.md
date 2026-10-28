@@ -12194,3 +12194,8 @@ Generated 180 accepted examples in about two minutes with GPT-6 Luna through the
 | New tool-call requests over composed tool sets | 50 | 50 | tool_call |
 
 The missing-information strategy accepted fewer rows because structural checks rejected cases where the selected argument had a schema default or required arguments were invalid. The API ledger records 455 requests, 338,901 input tokens, 34,447 output tokens, and estimated spend of $0.0511136. Two API errors were recorded. Candidate models have not yet been evaluated. The first one-epoch Qwen pilot is now training on the 9,000 originals plus the 49 accepted new-tool-call examples. Each pilot uses at most 500 training and clean-validation examples and a 500-row aggregate-only black-box screen. Full test evaluation will follow only for promising candidates.
+
+
+## 2026-10-28: Correct synthetic pilot continuation setup
+
+The user clarified that small synthetic pilots are intended to save time. The first fresh-base run replayed the 9,000-row corpus and was stopped at optimizer step 4,672 before evaluation. It produced no checkpoint or metrics. Corrected the trainer to support loading the trained Qwen epoch-02 adapter and using only one synthetic JSONL as the training set. Queued four separate one-epoch pilots with a 500-row synthetic training probe, fixed 500-row clean validation, and paired 500-row aggregate test screens before and after training. No pilot replays the 9,000 When2Call rows.
