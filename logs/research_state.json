@@ -81,7 +81,7 @@
   "last_heartbeat": "2026-10-28T21:19:53.241905+00:00",
   "last_action": "Watchdog started validation worker pid 304263.",
   "watchdog_enabled": true,
-  "research_log_size": 1686252,
+  "research_log_size": 1687300,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -104,12 +104,7 @@
     "--batch-size",
     "1"
   ],
-  "recording_jobs": [
-    {
-      "pid": 304262,
-      "experiment_id": "qwen-tool-rich-synth-only-encoder-blackbox-20261028"
-    }
-  ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-28T21:18:21.543488+00:00",
   "planning_ack_deadline": "2026-10-28T21:20:21.543511+00:00",

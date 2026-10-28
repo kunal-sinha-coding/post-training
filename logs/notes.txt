@@ -7913,3 +7913,10 @@ Commit name: Verify validation-selected hybrid benchmark preparation.
 The watchdog launched the frozen hybrid preparation command for `single_encoder_request_or_cannot_answer_conf_90` using the tool-rich synthetic-only Qwen checkpoint and the trained encoder. PID 304003 is active. The following queued command runs the aggregate-only test measurement with the same frozen config. Test labels will be used only for that aggregate report and not for candidate selection.
 
 2026-10-28T21:19:55.913549+00:00: Commit `Record research experiment qwen-tool-rich-synth-only-encoder-blackbox-20261028` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+## 2026-10-28: Queue three-encoder validation screen behind benchmark measurement
+Commit name: Queue three-encoder clean-validation screen.
+
+The most recent completed training experiment, `qwen-multiturn-context-boundary-replay900-20261028`, records training metrics on 500 rows (0.982 accuracy, 0.737498 macro F1), clean validation on 500 rows (0.946 accuracy, 0.483552 macro F1), and aggregate black-box test metrics on all 3,652 rows (0.712760 accuracy, 0.531509 macro F1). All evidence types are present.
+
+The frozen aggregate benchmark for the validation-selected tool-rich synthetic-only Qwen plus one encoder is still ahead in the queue. Appended a clean-validation-only screen combining that Qwen checkpoint with the three established encoder checkpoints. This tests whether encoder diversity improves on the 0.976 single-encoder fusion accuracy. It is ordered after the aggregate-only measurement, and candidate selection remains clean-validation-only.
