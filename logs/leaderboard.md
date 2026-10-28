@@ -2120,3 +2120,6 @@ Source-specific result `qwen-tool-rich-replay900-encoder-clean-validation-202610
 
 | qwen-multiturn-context-boundary-replay900-20261028 | 0.7127601314348302 | 0.5315089010823895 | jj0cgjsn | Aggregate-only frozen test measurement |
 | Candidate | qwen-tool-rich-synth-only-encoder-blackbox-20261028 | — | — | [metrics](/workspace/post-training/outputs/qwen-tool-rich-synth-only-encoder-blackbox-20261028/metrics.json) | completed |
+| Candidate | qwen-tool-rich-synth-only-encoder-blackbox-20261028 | — | — | [metrics](/workspace/post-training/outputs/qwen-tool-rich-synth-only-encoder-blackbox-20261028/metrics.json) | completed |
+
+| qwen-tool-rich-synth-only-encoder-blackbox-20261028 | 0.7220700985761227 | 0.5386148191654794 | 7lltawfq | Aggregate-only frozen test measurement |

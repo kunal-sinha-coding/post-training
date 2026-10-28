@@ -7925,3 +7925,5 @@ The frozen aggregate benchmark for the validation-selected tool-rich synthetic-o
 Commit name: Confirm queued three-encoder clean-validation screen.
 
 The three-encoder validation screen is now appended behind the active aggregate benchmark measurement. The state was refreshed with the latest completed contextual replay metrics, all three of which are recorded. The active benchmark continues uninterrupted. Planning remains disabled and the research state remains active.
+
+2026-10-28T21:27:27.188569+00:00: Commit `Record research experiment qwen-tool-rich-synth-only-encoder-blackbox-20261028` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
