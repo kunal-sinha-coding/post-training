@@ -12261,3 +12261,15 @@ This record was written automatically. Candidate selection must use clean valida
 
 
 The current new-tool run began a full baseline evaluation before this reuse adjustment. The other three large runs will compare against the already recorded Qwen epoch-02 full-test baseline (0.702629 accuracy, 0.527976 macro F1) and matched clean-validation baseline rather than rescore that fixed checkpoint. Each candidate still receives a full test evaluation after every training epoch.
+
+## qwen-when2call-synthetic-medium-new_tool_call-20261028
+
+Timestamp: 2026-10-28T04:23:37.879732+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-when2call-synthetic-medium-new_tool_call-20261028", "--adapter-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--synthetic-only", "--augmentation-jsonl", "outputs/when2call-synthetic-medium-pilots-20261028/new_tool_call.jsonl", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "100", "--seed", "20261055", "--evaluate-baseline", "--stop-on-test-non-improvement"]. Output: /workspace/post-training/outputs/qwen-when2call-synthetic-medium-new_tool_call-20261028. W&B run: 062v17v0.
+
+Clean development accuracy: 0.47. Clean development macro F1: 0.31207302091448436. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.484118291347207, "macro_f1": 0.29131839817324423, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.962, "macro_f1": 0.48832640709774233, "confusion_matrix": [[241, 4, 5, 0], [0, 240, 9, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
