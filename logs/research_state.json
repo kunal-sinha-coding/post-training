@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
-  "current_hypothesis": "Single-class synthetic-only updates produced large test regressions and 0.25 training macro F1. Mixing class-balanced synthetic data with a matched sample of real preference examples may preserve the learned action distribution. Compare 450 and 900 synthetic rows against the same 900 real rows.",
+  "current_hypothesis": "Continue synthetic-data dose and controlled setting probes while testing the current 450-synthetic accuracy leader with the strongest established Jina plus Qwen entropy-weighted ensemble. A new Qwen accuracy leader must receive a frozen, validation-first encoder-ensemble follow-up.",
   "active_experiment": {
     "pid": 266140,
     "command": [
@@ -94,6 +94,62 @@
     "5e-6"
   ],
   "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_existing_when2call_hybrid_validation",
+      "--output-dir",
+      "outputs/qwen-pref900-balanced-synth450-encoder-validation-20261028",
+      "--qwen-checkpoint",
+      "outputs/qwen-pref900-balanced-synth450-20261028/epoch-01",
+      "--max-validation-examples",
+      "500",
+      "--batch-size",
+      "1"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.existing_when2call_hybrid",
+      "prepare",
+      "--work-dir",
+      "outputs/qwen-pref900-balanced-synth450-encoder-ensemble-20261028",
+      "--suite",
+      "single-adaptive",
+      "--qwen-checkpoint",
+      "outputs/qwen-pref900-balanced-synth450-20261028/epoch-01",
+      "--methods",
+      "single_entropy_weighted",
+      "--primary-method",
+      "single_entropy_weighted",
+      "--batch-size",
+      "1",
+      "--output-dir",
+      "outputs/qwen-pref900-balanced-synth450-encoder-ensemble-20261028/prepare"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.existing_when2call_hybrid",
+      "test",
+      "--work-dir",
+      "outputs/qwen-pref900-balanced-synth450-encoder-ensemble-20261028",
+      "--suite",
+      "single-adaptive",
+      "--qwen-checkpoint",
+      "outputs/qwen-pref900-balanced-synth450-20261028/epoch-01",
+      "--methods",
+      "single_entropy_weighted",
+      "--primary-method",
+      "single_entropy_weighted",
+      "--batch-size",
+      "1",
+      "--output-dir",
+      "outputs/qwen-pref900-balanced-synth450-encoder-ensemble-20261028/test"
+    ],
     [
       "python",
       "-u",
@@ -244,7 +300,7 @@
   "last_heartbeat": "2026-10-28T06:17:35.439516+00:00",
   "last_action": "Watchdog started validation worker pid 266140.",
   "watchdog_enabled": true,
-  "research_log_size": 1554546,
+  "research_log_size": 1556400,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -288,12 +344,7 @@
     "--learning-rate",
     "5e-6"
   ],
-  "recording_jobs": [
-    {
-      "pid": 266139,
-      "experiment_id": "qwen-pref900-balanced-synth900-20261028"
-    }
-  ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-28T05:33:58.286718+00:00",
   "planning_ack_deadline": "2026-10-28T05:35:58.286743+00:00",
@@ -594,5 +645,14 @@
       "validation_examples": 500,
       "selection_note": "Stopped after the first epoch because full aggregate test accuracy did not improve, as explicitly requested."
     }
-  ]
+  ],
+  "leaderboard_encoder_followup": {
+    "candidate": "qwen-pref900-balanced-synth450-20261028",
+    "qwen_checkpoint": "outputs/qwen-pref900-balanced-synth450-20261028/epoch-01",
+    "encoder_checkpoint": "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
+    "fusion_method": "single_entropy_weighted",
+    "status": "queued after active worker",
+    "validation_cap": 500,
+    "test_metrics": "aggregate only"
+  }
 }
