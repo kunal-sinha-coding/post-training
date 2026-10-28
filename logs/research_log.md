@@ -13025,3 +13025,15 @@ Clean development accuracy: 0.95. Clean development macro F1: 0.4826694717350781
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.95, "macro_f1": 0.4826694717350781, "confusion_matrix": [[244, 1, 5, 0], [8, 231, 10, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## when2call-combined-boundary-pilot-20261028
+
+Timestamp: 2026-10-28T18:10:54.068630+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.merge_when2call_synthetic_pools", "--output-dir", "outputs/when2call-combined-boundary-pilot-20261028", "--input", "outputs/when2call-rare-schema-boundary-pilot-20261028/balanced_boundary_rare_schema.jsonl", "--input", "outputs/when2call-tool-rich-boundary-pilot-20261028/balanced_boundary_tool_rich.jsonl"]. Output: /workspace/post-training/outputs/when2call-combined-boundary-pilot-20261028. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

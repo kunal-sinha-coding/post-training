@@ -143293,3 +143293,57 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/1ny9rvg6"
 }
 ```
+
+## when2call-combined-boundary-pilot-20261028
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.merge_when2call_synthetic_pools",
+    "--output-dir",
+    "outputs/when2call-combined-boundary-pilot-20261028",
+    "--input",
+    "outputs/when2call-rare-schema-boundary-pilot-20261028/balanced_boundary_rare_schema.jsonl",
+    "--input",
+    "outputs/when2call-tool-rich-boundary-pilot-20261028/balanced_boundary_tool_rich.jsonl"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "when2call-combined-boundary-pilot-20261028",
+  "failure_reason": null,
+  "metadata": {
+    "class_counts": {
+      "0": 466,
+      "1": 405,
+      "2": 401
+    },
+    "duplicate_prompts_removed": 12,
+    "input_pools": [
+      "outputs/when2call-rare-schema-boundary-pilot-20261028/balanced_boundary_rare_schema.jsonl",
+      "outputs/when2call-tool-rich-boundary-pilot-20261028/balanced_boundary_tool_rich.jsonl"
+    ],
+    "official_test_loaded": false,
+    "output_jsonl": "outputs/when2call-combined-boundary-pilot-20261028/balanced_boundary_combined.jsonl",
+    "rows_written": 1272,
+    "status": "completed",
+    "test_labels_used": false
+  },
+  "metrics_path": "/workspace/post-training/outputs/when2call-combined-boundary-pilot-20261028/metrics.json",
+  "official_test_loaded": false,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/when2call-combined-boundary-pilot-20261028",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-28T18:10:23.487535+00:00",
+  "status": "completed",
+  "test_status": "not measured",
+  "timestamp": "2026-10-28T18:10:54.068630+00:00",
+  "train_metrics": {},
+  "wandb_run_id": null,
+  "wandb_run_url": null
+}
+```
