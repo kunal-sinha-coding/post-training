@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
-  "current_hypothesis": "The latest completed model run has complete evidence; the active tool-rich replay is in its full aggregate evaluation stage. Existing queued runs test synthetic-only training, pool combination, synthetic dose, encoder fusion, and a larger real replay fraction. A new matched control will train on the exact same 667 real train_pref sample and checkpoint as the active mixed run, with no synthetic rows. This isolates the added value of the tool-rich examples.",
+  "current_hypothesis": "The latest completed model run has complete train, clean-validation, and aggregate test evidence. The tool-rich replay run is still evaluating; existing queue entries test replay quantity and synthetic pool composition. All generated examples so far use single-turn requests. A new hypothesis is that multi-turn examples where a required value appears earlier in conversation will improve context use and distinguish inferable values from missing ones. Generate paired conversations from train_pref anchors, validate labels independently, and compare one replay continuation on clean validation.",
   "active_experiment": {
     "pid": 294957,
     "command": [
@@ -282,6 +282,54 @@
       "20261103",
       "--learning-rate",
       "5e-6"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.generate_when2call_contextual_pilot",
+      "--output-dir",
+      "outputs/when2call-multiturn-context-boundary-pilot-20261028",
+      "--pairs",
+      "300",
+      "--workers",
+      "24",
+      "--seed",
+      "20261109",
+      "--max-cost-usd",
+      "2.0"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-multiturn-context-boundary-replay-20261028",
+      "--adapter-checkpoint",
+      "outputs/qwen-pref900-synth450-high-similarity-lr5e6-20261028/epoch-01",
+      "--preference-train-sample-size",
+      "667",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "1",
+      "--seed",
+      "20261110",
+      "--learning-rate",
+      "5e-6",
+      "--augmentation-jsonl",
+      "outputs/when2call-multiturn-context-boundary-pilot-20261028/contextual_pairs.jsonl"
     ]
   ],
   "_previous_command": [
@@ -311,7 +359,7 @@
     "selection": "clean validation only"
   },
   "last_heartbeat": "2026-10-28T17:39:47.730996+00:00",
-  "last_action": "Audited complete evidence for the latest completed model experiment and appended a matched real-only control for the tool-rich synthetic mixture.",
+  "last_action": "Confirmed complete evidence for the latest completed model run and appended a distinct multi-turn context generation pilot plus its replay training command.",
   "watchdog_enabled": true,
   "research_log_size": 1641781,
   "stop_command": "STOP",
@@ -361,7 +409,7 @@
     "wandb_run_id": "vrfnnoq2",
     "selection": "Aggregate test result reported for ranking only. It was not used for candidate selection."
   },
-  "next_hypothesis": "After the queued synthetic/data experiments, compare the active 667-real-plus-tool-rich run with a matched 667-real-only continuation using the same initial checkpoint and seed. Select by clean validation. Aggregate test metrics are report-only.",
+  "next_hypothesis": "After the existing queue, generate paired multi-turn conversations with the same final request, where one prior context supplies a required value and the other omits it. Train from the clean-validation-best checkpoint with 667 real replay examples and the generated pairs. Evaluate at most 500 training and validation rows and the full aggregate test. Select only by clean validation.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."

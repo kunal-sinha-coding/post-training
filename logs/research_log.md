@@ -12995,3 +12995,9 @@ Appended a distinct replay-size experiment after the current queue. It uses 900 
 The latest completed model experiment remains the rare-schema replay and records all three evidence types. Its 500-row training metrics are 0.990 accuracy and 0.742485 macro F1. Its 500-row clean validation is 0.952 and 0.484707. Its aggregate-only test metrics on 3,652 rows are 0.700438 and 0.522924. The active tool-rich replay is in evaluation; no measurement is missing.
 
 Appended a real-only control using the same clean-validation-best checkpoint, 667 real train_pref sample, and training seed as the active 667-real-plus-629-synthetic run. This tests the contribution of tool-rich synthetic data while matching the real-data dose. Evaluation uses the standard 500-row train and validation samples and full aggregate black-box reporting. Selection uses clean validation only.
+
+## Multi-turn contextual synthetic pilot queued
+
+The latest completed model experiment remains the rare-schema replay and has all three evidence types recorded. Training metrics on 500 rows are 0.990 accuracy and 0.742485 macro F1. Clean validation on 500 rows is 0.952 and 0.484707. Aggregate-only test metrics on all 3,652 rows are 0.700438 and 0.522924. The tool-rich replay is still in evaluation; no required measurement is missing.
+
+Added a new synthetic-data hypothesis. Existing generated pools use single-turn requests, so they do not teach the model to recover a required value from earlier conversation. The queued generator creates paired multi-turn conversations with the same final request, where one history supplies the required value and the other omits it. It uses train_pref anchors, schema checks, a separate high-confidence label judge, and a $2 pilot cap. A one-epoch replay training command follows. Selection uses clean validation only.
