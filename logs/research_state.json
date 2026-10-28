@@ -129,6 +129,48 @@
       "0.48832640709774233",
       "--baseline-test-source",
       "outputs/qwen-when2call-synthetic-medium-new_tool_call-20261028/metrics.json:baseline_black_box_test_metrics"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-pref900-balanced-synth450-lr5e6-20261028",
+      "--adapter-checkpoint",
+      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "--augmentation-jsonl",
+      "outputs/when2call-synthetic-medium-pilots-20261028/balanced_mix900.jsonl",
+      "--preference-train-sample-size",
+      "900",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "1",
+      "--seed",
+      "20261087",
+      "--baseline-test-accuracy",
+      "0.7020810514786419",
+      "--baseline-test-macro-f1",
+      "0.5276156270961326",
+      "--baseline-validation-accuracy",
+      "0.962",
+      "--baseline-validation-macro-f1",
+      "0.48832640709774233",
+      "--baseline-test-source",
+      "outputs/qwen-when2call-synthetic-medium-new_tool_call-20261028/metrics.json:baseline_black_box_test_metrics",
+      "--learning-rate",
+      "5e-6"
     ]
   ],
   "_previous_command": [
@@ -158,7 +200,7 @@
     "selection": "clean validation only"
   },
   "last_heartbeat": "2026-10-28T05:34:28.825429+00:00",
-  "last_action": "Watchdog started validation worker pid 263971.",
+  "last_action": "Verified all evidence for the latest completed experiment and appended a distinct lower-learning-rate mixture hypothesis behind the existing ratio pilots.",
   "watchdog_enabled": true,
   "research_log_size": 1552693,
   "stop_command": "STOP",
@@ -215,7 +257,7 @@
     "artifact": "outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json",
     "selection": "Report-only aggregate benchmark result. Test labels were not used for candidate selection."
   },
-  "next_hypothesis": "Use clean validation accuracy and macro F1 to compare the two synthetic ratios. If either improves clean validation without a material loss in accuracy, test a nearby ratio. Otherwise broaden synthetic generation hypotheses.",
+  "next_hypothesis": "After the 450 versus 900 synthetic ratio pilots, test whether a 5e-6 learning rate preserves the base model better than 2e-5 for the matched 900 real plus 450 balanced synthetic mixture. Select only by clean validation.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
@@ -556,7 +598,7 @@
     "examples": 3652,
     "artifact": "outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json"
   },
-  "updated_at": "2026-10-28T05:33:59.939212+00:00",
+  "updated_at": "2026-10-28T05:36:27.636927+00:00",
   "synthetic_pilot_results": [
     {
       "strategy": "missing_required_info",
