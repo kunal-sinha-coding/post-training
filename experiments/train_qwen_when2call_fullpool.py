@@ -134,6 +134,7 @@ def main() -> int:
     parser.add_argument("--augmentation-mode", choices=("none", "tool_order", "schema_key_order", "request_context"), default="none")
     parser.add_argument("--augmentation-seed", type=int, default=20261066)
     parser.add_argument("--augmentation-jsonl", type=Path)
+    parser.add_argument("--preference-train-sample-size", type=int)
     parser.add_argument("--adapter-checkpoint", type=Path)
     parser.add_argument("--synthetic-only", action="store_true")
     args = parser.parse_args()
@@ -147,6 +148,11 @@ def main() -> int:
     preference_rows = [] if args.synthetic_only else prepare_rows(load_rows())
     if not args.synthetic_only and len(preference_rows) != 9000:
         raise RuntimeError(f"Expected 9,000 When2Call preference rows but found {len(preference_rows)}.")
+    # Use a deterministic, source-proportion-preserving subset for short mixture pilots.
+    if args.preference_train_sample_size is not None:
+        if args.synthetic_only or not 1 <= args.preference_train_sample_size <= len(preference_rows):
+            raise ValueError("Preference sample size must be between 1 and the available preference rows.")
+        preference_rows = sample_stratified(preference_rows, args.preference_train_sample_size, args.seed)
     # Require both the trained adapter and one explicit synthetic pilot for this mode.
     if args.synthetic_only and (not args.adapter_checkpoint or not args.augmentation_jsonl):
         raise ValueError("Synthetic-only continuation requires --adapter-checkpoint and --augmentation-jsonl.")
@@ -261,11 +267,11 @@ def main() -> int:
     # Save complete provenance and aggregate metrics without per-example test outputs.
     result = {
         "experiment": "qwen25_1p5b_synthetic_only_continuation" if args.synthetic_only else "qwen25_1p5b_all_when2call_trainpref_sft",
-        "purpose": "Continue the saved When2Call adapter using only a small synthetic pilot set." if args.synthetic_only else "Train on all When2Call preference rows, optionally with BFCL, and report each epoch.",
+        "purpose": "Continue the saved When2Call adapter using only a synthetic pilot set." if args.synthetic_only else "Train on the selected When2Call preference rows and optional synthetic examples, then report each epoch.",
         "config": config,
         "base_model": args.model,
         "base_model_checkpoint": str(args.adapter_checkpoint) if args.adapter_checkpoint else "Qwen/Qwen2.5-1.5B-Instruct before any task adapter training",
-        "data": {"dataset": "synthetic pilot only" if args.synthetic_only else DATASET_NAME, "split": "synthetic_pilot" if args.synthetic_only else "train_pref", "preference_examples": len(preference_rows), "augmentation_mode": args.augmentation_mode if not args.augmentation_jsonl else "synthetic_pilot", "augmentation_seed": args.augmentation_seed, "augmentation_jsonl": str(args.augmentation_jsonl) if args.augmentation_jsonl else None, "augmentation_jsonl_sha256": hashlib.sha256(args.augmentation_jsonl.read_bytes()).hexdigest() if args.augmentation_jsonl else None, "augmented_examples": len(augmented_rows), "bfcl_train_examples": len(training_rows) - len(preference_rows) - len(augmented_rows), "bfcl_file": str(args.bfcl_data), "bfcl_sha256": hashlib.sha256(args.bfcl_data.read_bytes()).hexdigest(), "label_counts": label_counts, "prompt_label_fingerprint": data_fingerprint},
+        "data": {"dataset": "synthetic pilot only" if args.synthetic_only else DATASET_NAME, "split": "synthetic_pilot" if args.synthetic_only else "train_pref", "preference_examples": len(preference_rows), "preference_sample_seed": args.seed if args.preference_train_sample_size else None, "preference_sample_size": args.preference_train_sample_size, "augmentation_mode": args.augmentation_mode if not args.augmentation_jsonl else "synthetic_pilot", "augmentation_seed": args.augmentation_seed, "augmentation_jsonl": str(args.augmentation_jsonl) if args.augmentation_jsonl else None, "augmentation_jsonl_sha256": hashlib.sha256(args.augmentation_jsonl.read_bytes()).hexdigest() if args.augmentation_jsonl else None, "augmented_examples": len(augmented_rows), "bfcl_train_examples": len(training_rows) - len(preference_rows) - len(augmented_rows), "bfcl_file": str(args.bfcl_data), "bfcl_sha256": hashlib.sha256(args.bfcl_data.read_bytes()).hexdigest(), "label_counts": label_counts, "prompt_label_fingerprint": data_fingerprint},
         "validation_source": args.validation_source,
         "validation_examples": len(validation_rows),
         "best_validation_accuracy": best_validation_accuracy,
