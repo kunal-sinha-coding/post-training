@@ -7999,3 +7999,5 @@ The small tool-rich pool with 900 real replay examples remains the strongest rec
 Commit name: Verify validation-stopped continuation launch.
 
 The watchdog launched `qwen-tool-rich-boundary-replay900-continued-20261028` as PID 309035. The run starts from the 900-real small-pool checkpoint, permits up to three continuation epochs, and stops when clean-validation accuracy does not improve. The process is alive, state is active with planning disabled, and the worker queue is empty because the command was promoted. Test metrics are logged but are not part of the stop rule.
+
+2026-10-28T23:43:11.716973+00:00: Commit `Record research experiment qwen-tool-rich-boundary-replay900-continued-20261028` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
