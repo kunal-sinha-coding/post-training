@@ -2063,3 +2063,6 @@ Source-specific result `tool-rich-qwen-encoder-validation-sweep-20261028` has st
 | Candidate | test | — | — | [metrics](/workspace/post-training/outputs/tool-rich-qwen-encoder-fullroute60-20261028/test/metrics.json) | completed |
 
 | test | 0.7029025191675794 | 0.5260650854403114 | rghv75bf | Aggregate-only frozen test measurement |
+| Candidate | test | — | — | [metrics](/workspace/post-training/outputs/tool-rich-qwen-encoder-fullroute60-20261028/test/metrics.json) | completed |
+
+| test | 0.7029025191675794 | 0.5260650854403114 | rghv75bf | Aggregate-only frozen test measurement |

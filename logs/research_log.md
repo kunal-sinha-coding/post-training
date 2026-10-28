@@ -12855,3 +12855,15 @@ This record was written automatically. Candidate selection must use clean valida
 ## Encoder fusion and next synthetic hypothesis
 
 On the full 3,652-row aggregate benchmark, the tool-rich Qwen request-confidence route scored 0.726451 accuracy and 0.545033 macro F1, below tool-rich Qwen alone at 0.733023 and 0.548067. A clean-validation-selected class route scored 0.702903 accuracy and 0.526065 macro F1, also below the same Qwen baseline. These test metrics are reporting-only. The next queued pilot generates balanced synthetic examples from train_pref only: 250 paired complete-versus-missing-required-value boundary pairs and 250 plausible unsupported requests. Generation uses a concurrency cap, a $2 pilot cap within the existing $10 total limit, schema checks, and a separate high-confidence judge. Training will use the strongest clean-validation Qwen checkpoint and will start only if at least 500 rows pass.
+
+## test
+
+Timestamp: 2026-10-28T16:32:17.493696+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.existing_when2call_hybrid", "test", "--work-dir", "outputs/tool-rich-qwen-encoder-fullroute60-20261028/frozen", "--output-dir", "outputs/tool-rich-qwen-encoder-fullroute60-20261028/test", "--suite", "single-disagree", "--qwen-checkpoint", "outputs/qwen-pref900-synth450-tool-rich-20261028/epoch-01", "--methods", "single_encoder_request_full_cannot_mix_60", "--primary-method", "single_encoder_request_full_cannot_mix_60", "--batch-size", "1"]. Output: /workspace/post-training/outputs/tool-rich-qwen-encoder-fullroute60-20261028/test. W&B run: rghv75bf.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: True. Test status: measured. Official test metrics: {"accuracy": 0.7029025191675794, "macro_f1": 0.5260650854403114, "macro_f1_present_classes": 0.7014201139204151}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
