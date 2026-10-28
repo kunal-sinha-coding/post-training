@@ -297,6 +297,38 @@
       "5e-6",
       "--augmentation-jsonl",
       "outputs/when2call-multiturn-context-boundary-pilot-20261028/contextual_pairs.jsonl"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-combined-boundary-synth-replay900-20261028",
+      "--adapter-checkpoint",
+      "outputs/qwen-pref900-synth450-high-similarity-lr5e6-20261028/epoch-01",
+      "--preference-train-sample-size",
+      "900",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "1",
+      "--seed",
+      "20261105",
+      "--learning-rate",
+      "5e-6",
+      "--augmentation-jsonl",
+      "outputs/when2call-combined-boundary-pilot-20261028/balanced_boundary_combined.jsonl"
     ]
   ],
   "_previous_command": [
@@ -328,7 +360,7 @@
   "last_heartbeat": "2026-10-28T17:56:49.187389+00:00",
   "last_action": "Watchdog started validation worker pid 296463.",
   "watchdog_enabled": true,
-  "research_log_size": 1646748,
+  "research_log_size": 1648272,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -361,12 +393,7 @@
     "--augmentation-jsonl",
     "outputs/when2call-tool-rich-boundary-pilot-20261028/balanced_boundary_tool_rich.jsonl"
   ],
-  "recording_jobs": [
-    {
-      "pid": 296462,
-      "experiment_id": "qwen-tool-rich-boundary-synth-replay-20261028"
-    }
-  ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": null,
   "planning_ack_deadline": null,
@@ -380,7 +407,7 @@
     "wandb_run_id": "vrfnnoq2",
     "selection": "Aggregate test result reported for ranking only. It was not used for candidate selection."
   },
-  "next_hypothesis": "After the existing queue, generate paired multi-turn conversations with the same final request, where one prior context supplies a required value and the other omits it. Train from the clean-validation-best checkpoint with 667 real replay examples and the generated pairs. Evaluate at most 500 training and validation rows and the full aggregate test. Select only by clean validation.",
+  "next_hypothesis": "After the existing 667-real plus combined-synthetic run, compare a 900-real replay dose on the same combined rare-schema and tool-rich synthetic pool and fixed clean-validation sample. A higher real replay dose may retain more in-domain preference signal; choose by clean validation only, and report aggregate black-box test metrics without inspecting individual rows or using them for selection.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
@@ -424,25 +451,25 @@
     "selection_use": "none"
   },
   "evidence_audit": {
-    "latest_completed_experiment": "qwen-rare-schema-boundary-synth-replay-20261028",
+    "latest_completed_experiment": "qwen-tool-rich-boundary-synth-replay-20261028",
     "training_metrics_recorded": true,
-    "training_metrics_source": "outputs/qwen-rare-schema-boundary-synth-replay-20261028/metrics.json:epoch_records[0].training_metrics",
+    "training_metrics_source": "outputs/qwen-tool-rich-boundary-synth-replay-20261028/metrics.json:epoch_records[0].training_metrics",
     "training_examples": 500,
     "training_accuracy": 0.99,
-    "training_macro_f1": 0.7424849953325536,
+    "training_macro_f1": 0.7424851630193674,
     "clean_validation_recorded": true,
-    "clean_validation_source": "outputs/qwen-rare-schema-boundary-synth-replay-20261028/metrics.json:epoch_records[0].heldout_validation_metrics; nvidia/When2Call train_sft",
+    "clean_validation_source": "outputs/qwen-tool-rich-boundary-synth-replay-20261028/metrics.json:epoch_records[0].heldout_validation_metrics; nvidia/When2Call train_sft",
     "clean_validation_examples": 500,
-    "clean_validation_accuracy": 0.952,
-    "clean_validation_macro_f1": 0.48470744405035987,
+    "clean_validation_accuracy": 0.946,
+    "clean_validation_macro_f1": 0.48310376492194673,
     "aggregate_black_box_test_metrics_recorded": true,
-    "aggregate_black_box_test_source": "outputs/qwen-rare-schema-boundary-synth-replay-20261028/metrics.json:epoch_records[0].black_box_test_metrics",
+    "aggregate_black_box_test_source": "outputs/qwen-tool-rich-boundary-synth-replay-20261028/metrics.json:epoch_records[0].black_box_test_metrics",
     "aggregate_black_box_test_examples": 3652,
-    "aggregate_black_box_test_accuracy": 0.7004381161007667,
-    "aggregate_black_box_test_macro_f1": 0.5229243220070774,
+    "aggregate_black_box_test_accuracy": 0.7075575027382256,
+    "aggregate_black_box_test_macro_f1": 0.5279216810135032,
     "candidate_selection": "Clean held-out validation only. Aggregate black-box test metrics are report-only and were not used to select the next experiment.",
-    "run_started_at": "2026-10-28T17:11:40Z",
-    "run_completed_at": "2026-10-28T17:34:45Z"
+    "run_started_at": "2026-10-28T17:39:47.730987+00:00",
+    "run_completed_at": "2026-10-28T17:56:50.663957+00:00"
   },
   "duplicate_worker_failure": {
     "pid": 103632,
@@ -679,7 +706,7 @@
     "ensemble_aggregate_test_accuracy": 0.7313800657174151,
     "test_metric_use": "Reporting only; not used for candidate selection."
   },
-  "latest_completed_experiment": "qwen-pref1800-synth300-high-similarity-lr5e6-20261028",
+  "latest_completed_experiment": "qwen-tool-rich-boundary-synth-replay-20261028",
   "evidence_policy": {
     "selection_metric": "clean held-out validation only",
     "aggregate_test": "reporting only; never use test-derived metrics for candidate selection",
