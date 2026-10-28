@@ -2104,3 +2104,6 @@ Source-specific result `qwen-tool-rich-trained-encoder-clean-validation-20261028
 | Candidate | qwen-multiturn-context-boundary-replay-20261028 | 0.958 | 0.48676659546601997 | [metrics](/workspace/post-training/outputs/qwen-multiturn-context-boundary-replay-20261028/metrics.json) | completed |
 
 | qwen-multiturn-context-boundary-replay-20261028 | 0.71960569550931 | 0.5380824178017376 | p1sprosm | Aggregate-only frozen test measurement |
+| Candidate | qwen-combined-boundary-synth-replay900-20261028 | 0.948 | 0.4840723112892451 | [metrics](/workspace/post-training/outputs/qwen-combined-boundary-synth-replay900-20261028/metrics.json) | completed |
+
+| qwen-combined-boundary-synth-replay900-20261028 | 0.7185104052573932 | 0.5350605035707997 | oodi5olh | Aggregate-only frozen test measurement |
