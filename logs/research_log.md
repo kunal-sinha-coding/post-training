@@ -12977,3 +12977,9 @@ The latest completed model run, `qwen-rare-schema-boundary-synth-replay-20261028
 The tool-rich generation pilot completed with 629 accepted examples: 198 tool_call, 198 request_for_info, and 233 cannot_answer. Estimated API cost was $0.1534617. Test data was not loaded. The active mixed replay training run has not yet produced a completed metrics artifact. The latest completed model run remains the rare-schema replay, with all three evidence types recorded.
 
 Queued a larger tool-rich synthetic dose after the existing tool-rich replay, synthetic-only, and combined-pool experiments. It requests 400 boundary pairs and 400 unsupported examples from high-tool-count train_pref anchors, then trains a one-epoch replay continuation from the same checkpoint. This tests dose response with clean-validation selection and report-only full aggregate test metrics.
+
+## Trained tool-rich encoder fusion screen queued
+
+The queue remains active, with one tool-rich replay run running and five data experiments queued. The latest completed model run is still the rare-schema replay. It has complete evidence: 500-row training (0.990 accuracy, 0.742485 macro F1), 500-row clean validation (0.952, 0.484707), and aggregate-only test metrics on 3,652 rows (0.700438, 0.522924).
+
+Added a distinct clean-validation screen for the encoder fusion methods on the tool-rich replay checkpoint after the queued data experiments. The earlier tool-rich Qwen plus encoder fusion did not improve the pre-continuation Qwen checkpoint. This screen tests whether tool-rich training changes model complementarity. It uses the fixed 500-row validation split, and no aggregate test evaluation is queued unless clean validation selects a fusion candidate.

@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
-  "current_hypothesis": "The most recent completed model run has training, clean-validation, and aggregate black-box metrics. The tool-rich replay run is active, followed by a synthetic-only ablation and a combined-pool replay. A separate scale-up hypothesis is that the tool-rich synthetic signal may become useful at a larger dose. After the current comparisons, generate 400 boundary pairs and 400 unsupported requests from tool-rich train_pref anchors, then compare a replay continuation from the same checkpoint. Select only by clean validation.",
+  "current_hypothesis": "The latest completed model run has complete training, clean-validation, and aggregate test evidence. The queue remains active with tool-rich replay, synthetic-only, combined-pool, and larger-dose experiments. The original tool-rich Qwen plus encoder ensemble did not improve the pre-training checkpoint. A distinct follow-up hypothesis is that tool-rich synthetic continuation changes Qwen and encoder complementarity. Screen its fusion methods on the predeclared clean-validation sample after the training queue; do not evaluate on aggregate test unless a method wins clean validation.",
   "active_experiment": {
     "pid": 294957,
     "command": [
@@ -200,6 +200,26 @@
       "5e-6",
       "--augmentation-jsonl",
       "outputs/when2call-tool-rich-large-boundary-pilot-20261028/balanced_boundary_tool_rich.jsonl"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_existing_when2call_hybrid_validation",
+      "--output-dir",
+      "outputs/qwen-tool-rich-trained-encoder-clean-validation-20261028",
+      "--qwen-checkpoint",
+      "outputs/qwen-tool-rich-boundary-synth-replay-20261028/epoch-01",
+      "--encoder-checkpoint",
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048",
+      "--split-seed",
+      "20261091",
+      "--sample-seed",
+      "20261092",
+      "--max-validation-examples",
+      "500",
+      "--batch-size",
+      "1"
     ]
   ],
   "_previous_command": [
@@ -229,7 +249,7 @@
     "selection": "clean validation only"
   },
   "last_heartbeat": "2026-10-28T17:39:47.730996+00:00",
-  "last_action": "Confirmed no required evidence was missing, verified the active tool-rich replay worker and existing queue, then appended distinct larger-dose generation and replay commands.",
+  "last_action": "Audited complete evidence for the latest completed model run and appended a distinct clean-validation encoder-fusion screen for the trained tool-rich checkpoint.",
   "watchdog_enabled": true,
   "research_log_size": 1641781,
   "stop_command": "STOP",
@@ -279,7 +299,7 @@
     "wandb_run_id": "vrfnnoq2",
     "selection": "Aggregate test result reported for ranking only. It was not used for candidate selection."
   },
-  "next_hypothesis": "After existing tool-rich and combined-pool comparisons, test a larger tool-rich synthetic pool with 667 real replay rows. Use up to 500 training and validation rows and full aggregate black-box metrics. Do not use test labels or aggregate scores for selection.",
+  "next_hypothesis": "After the queued data experiments, run the fixed Qwen plus encoder fusion sweep on the tool-rich replay checkpoint using the established 500-row clean-validation split. Compare only by clean validation. Aggregate test metrics remain report-only.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
