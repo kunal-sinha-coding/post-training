@@ -7599,3 +7599,6 @@ Scalar temperatures did not improve clean-validation accuracy over the request-c
 
 
 2026-10-28: Queue lower-learning-rate unsupported-capability follow-up. The 896-row run at 2e-5 scored 70.0438% full-test accuracy versus a 70.2081% baseline. Its earlier 50-row pilot scored 76.2% on a 500-row test sample, but that is only a noisy screen. To test whether the slight full-test decline came from an aggressive update, queued the same 896 synthetic examples from the best Qwen epoch-02 adapter at 5e-6. The active balanced mixture run remains first.
+
+
+2026-10-28: Stop balanced synthetic run and clear previous queue. The user explicitly stopped qwen-when2call-synthetic-balanced900-20261028 at optimizer step 781 of 900 before evaluation, and cleared the lower-learning-rate follow-up. The next direction is to generate more unsupported-capability synthetic data and retrain from the existing best Qwen checkpoint because its 896-example screen was within 1% of baseline.

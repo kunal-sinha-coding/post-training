@@ -12324,3 +12324,6 @@ The final single-strategy large pilot used 895 composed-tool examples. It had 1.
 
 
 Follow-up hypothesis: the unsupported-capability examples may have useful signal at a lower learning rate. The 896-row 2e-5 run reached 0.700438 full-test accuracy versus a 0.702081 baseline. The 50-row pilot reached 0.762 on a 500-row sample, which is report-only and too small to establish a gain. After the current balanced-mix experiment, run the same unsupported data from the best Qwen adapter at 5e-6 and stop on the first full-test accuracy non-improvement.
+
+
+The user stopped the balanced 900-row mixture at step 781 of 900 before epoch evaluation and cleared the queued learning-rate follow-up. No metrics were produced. The next authorized direction is to expand the unsupported-capability synthetic data and retrain from the best saved Qwen checkpoint.
