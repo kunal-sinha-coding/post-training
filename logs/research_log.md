@@ -12273,3 +12273,6 @@ Clean development accuracy: 0.47. Clean development macro F1: 0.3120730209144843
 Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.962, "macro_f1": 0.48832640709774233, "confusion_matrix": [[241, 4, 5, 0], [0, 240, 9, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+The first medium synthetic branch used 893 new-tool examples and the saved epoch-02 Qwen adapter. On 500 training-probe rows, accuracy was 1.000 and macro F1 was 0.250. Clean validation on 500 rows was 0.470 accuracy and 0.312073 macro F1. Full 3,652-row test accuracy was 0.484118 and macro F1 was 0.291318, compared with the same run baseline of 0.702081 accuracy and 0.527616 macro F1. The branch stopped after epoch 1 under the user-requested test-accuracy rule. The next strategies use this exact baseline score for matched stopping decisions.

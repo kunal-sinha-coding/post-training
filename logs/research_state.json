@@ -120,15 +120,15 @@
       "20261055",
       "--stop-on-test-non-improvement",
       "--baseline-test-accuracy",
-      "0.7026286966046003",
+      "0.7020810514786419",
       "--baseline-test-macro-f1",
-      "0.5279759197297567",
+      "0.5276156270961326",
       "--baseline-validation-accuracy",
       "0.962",
       "--baseline-validation-macro-f1",
       "0.48832640709774233",
       "--baseline-test-source",
-      "outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json:qwen_sft"
+      "outputs/qwen-when2call-synthetic-medium-new_tool_call-20261028/metrics.json:baseline_black_box_test_metrics"
     ],
     [
       "python",
@@ -160,15 +160,15 @@
       "20261055",
       "--stop-on-test-non-improvement",
       "--baseline-test-accuracy",
-      "0.7026286966046003",
+      "0.7020810514786419",
       "--baseline-test-macro-f1",
-      "0.5279759197297567",
+      "0.5276156270961326",
       "--baseline-validation-accuracy",
       "0.962",
       "--baseline-validation-macro-f1",
       "0.48832640709774233",
       "--baseline-test-source",
-      "outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json:qwen_sft"
+      "outputs/qwen-when2call-synthetic-medium-new_tool_call-20261028/metrics.json:baseline_black_box_test_metrics"
     ]
   ],
   "_previous_command": [
@@ -204,9 +204,9 @@
     "selection": "clean validation only"
   },
   "last_heartbeat": "2026-10-28T04:23:33.566042+00:00",
-  "last_action": "Watchdog started validation worker pid 260021.",
+  "last_action": "The first 893-example continuation stopped after full-test accuracy fell from 0.702081 to 0.484118. Later strategies now use this exact batch-size-8 full-test baseline to avoid mismatch from the older batch-size-4 report.",
   "watchdog_enabled": true,
-  "research_log_size": 1540992,
+  "research_log_size": 1542533,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -248,12 +248,7 @@
     "--baseline-test-source",
     "outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json:qwen_sft"
   ],
-  "recording_jobs": [
-    {
-      "pid": 260020,
-      "experiment_id": "qwen-when2call-synthetic-medium-new_tool_call-20261028"
-    }
-  ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": null,
   "planning_ack_deadline": null,
@@ -690,5 +685,49 @@
     "examples": 3652,
     "artifact": "outputs/qwen-single-disagree-encoder48-20270114/aggregate-comparison.json"
   },
-  "updated_at": "2026-10-28T03:45:00+00:00"
+  "updated_at": "2026-10-28T03:45:00+00:00",
+  "synthetic_pilot_results": [
+    {
+      "strategy": "missing_required_info",
+      "examples": 31,
+      "test_baseline_accuracy_500": 0.704,
+      "test_post_accuracy_500": 0.62,
+      "validation_baseline_accuracy": 0.962,
+      "validation_post_accuracy": 0.966,
+      "selection_note": "500-row screen only; user later requested larger batches."
+    },
+    {
+      "strategy": "unsupported_capability",
+      "examples": 50,
+      "test_baseline_accuracy_500": 0.704,
+      "test_post_accuracy_500": 0.762,
+      "validation_baseline_accuracy": 0.962,
+      "validation_post_accuracy": 0.936,
+      "selection_note": "500-row screen only; user later requested larger batches."
+    },
+    {
+      "strategy": "composed_tool_call",
+      "examples": 50,
+      "test_baseline_accuracy_500": 0.704,
+      "test_post_accuracy_500": 0.634,
+      "validation_baseline_accuracy": 0.962,
+      "validation_post_accuracy": 0.89,
+      "selection_note": "500-row screen only; user later requested larger batches."
+    },
+    {
+      "strategy": "new_tool_call",
+      "examples": 893,
+      "test_baseline_accuracy_full": 0.7020810514786419,
+      "test_post_accuracy_full": 0.484118291347207,
+      "test_baseline_macro_f1_full": 0.5276156270961326,
+      "test_post_macro_f1_full": 0.29131839817324423,
+      "training_accuracy": 1.0,
+      "training_macro_f1": 0.25,
+      "training_examples": 500,
+      "validation_accuracy": 0.47,
+      "validation_macro_f1": 0.31207302091448436,
+      "validation_examples": 500,
+      "selection_note": "Stopped after the first epoch because full aggregate test accuracy did not improve, as explicitly requested."
+    }
+  ]
 }
