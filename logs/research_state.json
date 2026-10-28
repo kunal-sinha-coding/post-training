@@ -369,6 +369,37 @@
       "500",
       "--batch-size",
       "1"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-combined-boundary-synthetic-only-20261028",
+      "--adapter-checkpoint",
+      "outputs/qwen-pref900-synth450-high-similarity-lr5e6-20261028/epoch-01",
+      "--synthetic-only",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "1",
+      "--seed",
+      "20261114",
+      "--learning-rate",
+      "5e-6",
+      "--augmentation-jsonl",
+      "outputs/when2call-combined-boundary-pilot-20261028/balanced_boundary_combined.jsonl"
     ]
   ],
   "_previous_command": [
@@ -447,7 +478,7 @@
     "wandb_run_id": "vrfnnoq2",
     "selection": "Aggregate test result reported for ranking only. It was not used for candidate selection."
   },
-  "next_hypothesis": "After the active tool-rich synthetic-only Qwen run completes, screen its encoder ensemble on the fixed clean validation sample. Removing real preference replay may produce a different error profile from the replay checkpoint and may complement the encoder differently. Select by clean validation only; do not use aggregate test metrics for selection.",
+  "next_hypothesis": "Compare the combined rare-schema and tool-rich synthetic pool without real preference replay against the queued replay variants. The two synthetic sources may provide complementary boundary coverage, and synthetic-only training will show whether replay is needed to retain clean-validation performance. Select by clean validation only; aggregate test metrics are reporting-only.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."

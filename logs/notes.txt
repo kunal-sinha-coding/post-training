@@ -7848,3 +7848,10 @@ Commit name: Queue encoder screen for synthetic-only checkpoint.
 The latest completed experiment, `qwen-tool-rich-boundary-synth-replay-20261028`, records training metrics on 500 examples, clean-validation metrics on 500 examples, and aggregate black-box metrics on all 3,652 test examples. The worker queue was not exhausted. The tool-rich synthetic-only training run remained active.
 
 Appended a clean-validation-only encoder fusion screen for the synthetic-only checkpoint. This is distinct from the queued encoder screen for the real-replay checkpoint. It tests whether removing replay changes the Qwen error profile enough to alter complementarity with the encoder. The validation screen is limited to 500 examples, and aggregate black-box test metrics remain unavailable for selection.
+
+## 2026-10-28: Queue synthetic-only combined boundary pool experiment
+Commit name: Queue synthetic-only combined boundary pool experiment.
+
+The latest completed experiment remained `qwen-tool-rich-boundary-synth-replay-20261028`, with training metrics (500 examples), clean-validation metrics (500 examples), and aggregate black-box test metrics (3,652 examples) recorded. The active tool-rich synthetic-only run remained alive and the worker queue was not exhausted.
+
+Appended a synthetic-only run using the queued merge of the rare-schema and tool-rich pools. This tests whether the two synthetic sources provide complementary decision-boundary coverage without real preference replay. It starts from the established pref900 plus synth450 checkpoint, evaluates no more than 500 training and 500 clean-validation examples, and reports the aggregate black-box test metrics separately. Candidate selection will use clean validation only.
