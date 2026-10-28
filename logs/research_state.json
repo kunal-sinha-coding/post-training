@@ -5,41 +5,9 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
   "current_hypothesis": "Rare-schema anchored synthetic examples did not improve clean validation: the 500-row validation score was 0.952 accuracy and 0.484707 macro F1, below the previous replay score of 0.956 and 0.486225. Contexts with several competing tools may better match difficult tool-rich decisions. Generate balanced paired-boundary and unsupported examples from high-tool-count train_pref anchors, then test one real-data replay continuation. Select by clean validation only.",
-  "active_experiment": {},
-  "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.train_qwen_when2call_fullpool",
-    "--output-dir",
-    "outputs/qwen-rare-schema-boundary-synth-replay-20261028",
-    "--adapter-checkpoint",
-    "outputs/qwen-pref900-synth450-high-similarity-lr5e6-20261028/epoch-01",
-    "--preference-train-sample-size",
-    "667",
-    "--validation-source",
-    "sft",
-    "--validation-sample-size",
-    "500",
-    "--validation-seed",
-    "20261053",
-    "--training-eval-sample-size",
-    "500",
-    "--training-eval-seed",
-    "20261059",
-    "--eval-batch-size",
-    "8",
-    "--epochs",
-    "1",
-    "--seed",
-    "20261101",
-    "--learning-rate",
-    "5e-6",
-    "--augmentation-jsonl",
-    "outputs/when2call-rare-schema-boundary-pilot-20261028/balanced_boundary_rare_schema.jsonl"
-  ],
-  "worker_queue": [
-    [
+  "active_experiment": {
+    "pid": 294620,
+    "command": [
       "python",
       "-u",
       "-m",
@@ -59,6 +27,29 @@
       "--anchor-strategy",
       "tool_rich"
     ],
+    "started_at": "2026-10-28T17:37:15.890946+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.generate_when2call_boundary_pilot",
+    "--output-dir",
+    "outputs/when2call-tool-rich-boundary-pilot-20261028",
+    "--pairs",
+    "250",
+    "--unsupported",
+    "250",
+    "--workers",
+    "24",
+    "--seed",
+    "20261102",
+    "--max-cost-usd",
+    "2.0",
+    "--anchor-strategy",
+    "tool_rich"
+  ],
+  "worker_queue": [
     [
       "python",
       "-u",
@@ -118,10 +109,10 @@
     "macro_f1": 0.48337889372616516,
     "selection": "clean validation only"
   },
-  "last_heartbeat": null,
-  "last_action": "Queued tool-rich-context synthetic generation first, followed by its replay training measurement.",
+  "last_heartbeat": "2026-10-28T17:37:15.890959+00:00",
+  "last_action": "Watchdog started validation worker pid 294620.",
   "watchdog_enabled": true,
-  "research_log_size": 1639247,
+  "research_log_size": 1640304,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
