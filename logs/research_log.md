@@ -12228,3 +12228,15 @@ This record was written automatically. Candidate selection must use clean valida
 ## 2026-10-28: Increase synthetic batches and use requested test stopping rule
 
 The user clarified that the initial 31 to 50 example batches are too small and authorized 500 to 1,000 accepted synthetic examples per strategy. The missing-information pilot changed matched 500-row aggregate test accuracy from 70.4% to 62.0%; unsupported-capability changed it from 70.4% to 76.2%, while clean validation fell from 96.2% to 93.6%. The user explicitly directed aggregate test accuracy to control continuation for these synthetic branches. The active composed-tool tiny pilot is left to finish. Replaced the remaining tiny queue with 900 requested examples per strategy, then four independent synthetic-only continuation runs from the Qwen epoch-02 adapter. Each large run evaluates up to 500 training rows, 500 clean validation rows, and the complete aggregate test each epoch, and stops at the first test-accuracy non-improvement. No per-example test outcomes are retained.
+
+## qwen-when2call-synthetic-continuation-composed_tool_call-20261028
+
+Timestamp: 2026-10-28T03:46:14.420196+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-when2call-synthetic-continuation-composed_tool_call-20261028", "--adapter-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--synthetic-only", "--augmentation-jsonl", "outputs/when2call-synthetic-pilots-20261028/composed_tool_call.jsonl", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--test-sample-size", "500", "--test-sample-seed", "20261070", "--epochs", "1", "--seed", "20261055", "--evaluate-baseline", "--stop-on-validation-non-improvement"]. Output: /workspace/post-training/outputs/qwen-when2call-synthetic-continuation-composed_tool_call-20261028. W&B run: ea85cko2.
+
+Clean development accuracy: 0.89. Clean development macro F1: 0.46884397930951516. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.634, "macro_f1": 0.46319329070880505, "examples": 500, "sample_seed": 20261070, "sample_method": "uniform row-index sample without label access"}.
+
+Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.962, "macro_f1": 0.48832640709774233, "confusion_matrix": [[241, 4, 5, 0], [0, 240, 9, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
