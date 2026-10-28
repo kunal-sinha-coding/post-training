@@ -1,7 +1,7 @@
 {
-  "status": "awaiting_codex_planning",
+  "status": "active",
   "planning_owner": "codex_primary",
-  "planning_required": true,
+  "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
   "current_hypothesis": "The latest completed model run has complete train, clean-validation, and aggregate test evidence. The tool-rich replay run is still evaluating; existing queue entries test replay quantity and synthetic pool composition. All generated examples so far use single-turn requests. A new hypothesis is that multi-turn examples where a required value appears earlier in conversation will improve context use and distinguish inferable values from missing ones. Generate paired conversations from train_pref anchors, validate labels independently, and compare one replay continuation on clean validation.",
@@ -37,7 +37,40 @@
     "--augmentation-jsonl",
     "outputs/when2call-tool-rich-large-boundary-pilot-20261028/balanced_boundary_tool_rich.jsonl"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-tool-rich-large-boundary-replay900-20261028",
+      "--adapter-checkpoint",
+      "outputs/qwen-pref900-synth450-high-similarity-lr5e6-20261028/epoch-01",
+      "--preference-train-sample-size",
+      "900",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "1",
+      "--seed",
+      "20261108",
+      "--learning-rate",
+      "5e-6",
+      "--augmentation-jsonl",
+      "outputs/when2call-tool-rich-large-boundary-pilot-20261028/balanced_boundary_tool_rich.jsonl"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -65,17 +98,12 @@
     "selection": "clean validation only"
   },
   "last_heartbeat": "2026-10-28T21:32:26.913361+00:00",
-  "last_action": "Watchdog handed planning control to the primary Codex process.",
+  "last_action": "Recorded all latest metrics and queued the 994-example tool-rich pool with 900 real replay examples.",
   "watchdog_enabled": true,
-  "research_log_size": 1690646,
+  "research_log_size": 1692174,
   "stop_command": "STOP",
   "next_experiment": null,
-  "recording_jobs": [
-    {
-      "pid": 305841,
-      "experiment_id": "qwen-tool-rich-large-boundary-synthetic-only-20261028"
-    }
-  ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-28T21:53:03.543956+00:00",
   "planning_ack_deadline": "2026-10-28T21:55:03.543976+00:00",
@@ -89,7 +117,7 @@
     "wandb_run_id": "vrfnnoq2",
     "selection": "Aggregate test result reported for ranking only. It was not used for candidate selection."
   },
-  "next_hypothesis": "The small tool-rich pool had 629 accepted rows, while the larger pool has 994. The large-pool replay run had weak clean validation, so test whether removing real replay lets the larger synthetic pool improve clean validation. Hold the initialization, optimizer seed, learning rate, and evaluation samples fixed to isolate synthetic pool size. Select by clean validation only.",
+  "next_hypothesis": "The 994-example tool-rich pool used without real replay reached 0.950 clean validation. The small 629-example pool with 900 real replay reached 0.960, while the larger pool with 667 real replay reached 0.942. Test whether the larger pool with 900 real examples preserves the cleaner-validation result. Keep the checkpoint, optimizer seed, learning rate, and evaluation samples fixed to isolate the replay and pool-size mixture. Select by clean validation only.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
@@ -133,22 +161,22 @@
     "selection_use": "none"
   },
   "evidence_audit": {
-    "latest_completed_experiment": "qwen-multiturn-context-boundary-replay900-20261028",
+    "latest_completed_experiment": "qwen-tool-rich-large-boundary-synthetic-only-20261028",
     "training_metrics_recorded": true,
-    "training_metrics_source": "outputs/qwen-multiturn-context-boundary-replay900-20261028/metrics.json:epoch_records[0].training_metrics",
+    "training_metrics_source": "outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/metrics.json:epoch_records[0].training_metrics",
     "training_examples": 500,
-    "training_accuracy": 0.982,
-    "training_macro_f1": 0.7374981152937627,
+    "training_accuracy": 0.996,
+    "training_macro_f1": 0.7469304474030608,
     "clean_validation_recorded": true,
-    "clean_validation_source": "outputs/qwen-multiturn-context-boundary-replay900-20261028/metrics.json:epoch_records[0].heldout_validation_metrics; nvidia/When2Call train_sft",
+    "clean_validation_source": "outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/metrics.json:epoch_records[0].heldout_validation_metrics; nvidia/When2Call train_sft",
     "clean_validation_examples": 500,
-    "clean_validation_accuracy": 0.946,
-    "clean_validation_macro_f1": 0.4835520398900681,
+    "clean_validation_accuracy": 0.95,
+    "clean_validation_macro_f1": 0.48363771417663637,
     "aggregate_black_box_test_metrics_recorded": true,
-    "aggregate_black_box_test_source": "outputs/qwen-multiturn-context-boundary-replay900-20261028/metrics.json:epoch_records[0].black_box_test_metrics",
+    "aggregate_black_box_test_source": "outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/metrics.json:epoch_records[0].black_box_test_metrics",
     "aggregate_black_box_test_examples": 3652,
-    "aggregate_black_box_test_accuracy": 0.7127601314348302,
-    "aggregate_black_box_test_macro_f1": 0.5315089010823895,
+    "aggregate_black_box_test_accuracy": 0.73986856516977,
+    "aggregate_black_box_test_macro_f1": 0.551691354734442,
     "candidate_selection": "Clean held-out validation only. Aggregate black-box test metrics are report-only and were not used to select the next experiment."
   },
   "duplicate_worker_failure": {
@@ -271,14 +299,13 @@
     }
   ],
   "latest_aggregate_test_report": {
-    "experiment": "qwen-tool-rich-synth-only-encoder-blackbox-20261028",
-    "selection": "Reporting only; the candidate was selected by clean validation, and test metrics were not used for selection.",
+    "experiment": "qwen-tool-rich-large-boundary-synthetic-only-20261028",
+    "selection": "Reporting only; not used to select candidates.",
     "metrics": {
-      "accuracy": 0.7220700985761227,
-      "macro_f1": 0.5386148191654794,
+      "accuracy": 0.73986856516977,
+      "macro_f1": 0.551691354734442,
       "examples": 3652
-    },
-    "method": "single_encoder_request_or_cannot_answer_conf_90"
+    }
   },
   "updated_at": "2026-10-28T15:25:46.840487+00:00",
   "synthetic_pilot_results": [
@@ -387,7 +414,7 @@
     "ensemble_aggregate_test_accuracy": 0.7313800657174151,
     "test_metric_use": "Reporting only; not used for candidate selection."
   },
-  "latest_completed_experiment": "qwen-multiturn-context-boundary-replay900-20261028",
+  "latest_completed_experiment": "qwen-tool-rich-large-boundary-synthetic-only-20261028",
   "evidence_policy": {
     "selection_metric": "clean held-out validation only",
     "aggregate_test": "reporting only; never use test-derived metrics for candidate selection",
