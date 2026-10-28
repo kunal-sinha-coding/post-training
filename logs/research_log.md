@@ -12945,3 +12945,9 @@ Clean development accuracy: 0.952. Clean development macro F1: 0.484707444050359
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.952, "macro_f1": 0.48470744405035987, "confusion_matrix": [[241, 3, 6, 0], [3, 235, 11, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## Rare-schema replay result and tool-rich-context hypothesis
+
+The rare-schema pilot generated 655 accepted rows at an estimated API cost of $0.127354: 211 tool_call, 211 request_for_info, and 233 cannot_answer. The replay continuation used 667 real train_pref rows and 655 synthetic rows for 1,322 optimizer steps. Training metrics on 500 rows were 0.990 accuracy and 0.742485 macro F1. Clean SFT validation on 500 rows was 0.952 accuracy and 0.484707 macro F1, below the prior replay result of 0.956 and 0.486225. Full aggregate test metrics were 0.700438 accuracy and 0.522924 macro F1 on 3,652 rows; this score is report-only and did not select the next experiment.
+
+The next hypothesis is that examples built from source rows with several competing tools can improve decision-boundary learning. Queued a balanced tool-rich-context generation pilot and, after it, one replay continuation from the same checkpoint with 667 real preference rows. Training and validation evaluation are limited to 500 rows. Candidate selection uses clean validation only.

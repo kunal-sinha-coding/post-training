@@ -115,7 +115,7 @@ def build_jobs(rows: Any, prepared: list[Any], pair_count: int, unsupported_coun
     rng.shuffle(tool_rows)
     rng.shuffle(unsupported_rows)
     schema_frequency = {}
-    if anchor_strategy == "rare_schema":
+    if anchor_strategy in {"rare_schema", "tool_rich"}:
         # Count tool-schema occurrences only in train_pref rows to identify long-tail schemas.
         for row in rows:
             for raw in set(row.get("tools", [])):
@@ -125,8 +125,14 @@ def build_jobs(rows: Any, prepared: list[Any], pair_count: int, unsupported_coun
         def rarity(index: int) -> float:
             signatures = [json.dumps(tool_object(raw) or raw, sort_keys=True, ensure_ascii=False) for raw in rows[index]["tools"]]
             return sum(schema_frequency.get(signature, 0) for signature in signatures) / max(1, len(signatures))
-        tool_rows.sort(key=rarity)
-        unsupported_rows.sort(key=rarity)
+        if anchor_strategy == "rare_schema":
+            # Prefer uncommon schemas while preserving randomized order among equal-frequency rows.
+            tool_rows.sort(key=rarity)
+            unsupported_rows.sort(key=rarity)
+        else:
+            # Prefer source contexts with many available tools to create harder choice boundaries.
+            tool_rows.sort(key=lambda index: -len(rows[index]["tools"]))
+            unsupported_rows.sort(key=lambda index: -len(rows[index]["tools"]))
     jobs = []
     for slot, index in enumerate(tool_rows[:pair_count]):
         job = {"kind": "pair", "slot": slot, "source_indices": [index], "source_request": source_request(rows[index]), "tools": list(rows[index]["tools"])}
@@ -134,6 +140,9 @@ def build_jobs(rows: Any, prepared: list[Any], pair_count: int, unsupported_coun
             # Require the generator to ground the pair in the rarest schema available in its source row.
             target_schema = min(job["tools"], key=lambda raw: schema_frequency.get(json.dumps(tool_object(raw) or raw, sort_keys=True, ensure_ascii=False), 0))
             job["target_tool_name"] = schema_fields(target_schema)[0]
+        elif anchor_strategy == "tool_rich":
+            # Select a reproducible target tool from a source context with several alternatives.
+            job["target_tool_name"] = schema_fields(rng.choice(job["tools"]))[0]
         jobs.append(job)
     for slot, index in enumerate(unsupported_rows[:unsupported_count]):
         jobs.append({"kind": "unsupported", "slot": slot, "source_indices": [index], "source_request": source_request(rows[index]), "tools": list(rows[index]["tools"])})
@@ -333,7 +342,7 @@ def main() -> int:
     parser.add_argument("--workers", type=int, default=24)
     parser.add_argument("--seed", type=int, default=20261095)
     parser.add_argument("--max-cost-usd", type=float, default=2.0)
-    parser.add_argument("--anchor-strategy", choices=("random", "rare_schema"), default="random")
+    parser.add_argument("--anchor-strategy", choices=("random", "rare_schema", "tool_rich"), default="random")
     args = parser.parse_args()
     if not os.getenv("OPENAI_API_KEY"):
         raise RuntimeError("OPENAI_API_KEY is required.")
