@@ -12399,3 +12399,15 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## test
+
+Timestamp: 2026-10-28T06:53:12.519736+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.existing_when2call_hybrid", "test", "--work-dir", "outputs/qwen-pref900-balanced-synth450-encoder-ensemble-20261028", "--suite", "single-adaptive", "--qwen-checkpoint", "outputs/qwen-pref900-balanced-synth450-20261028/epoch-01", "--methods", "single_entropy_weighted", "--primary-method", "single_entropy_weighted", "--batch-size", "1", "--output-dir", "outputs/qwen-pref900-balanced-synth450-encoder-ensemble-20261028/test"]. Output: /workspace/post-training/outputs/qwen-pref900-balanced-synth450-encoder-ensemble-20261028/test. W&B run: 8dk2r7b5.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: True. Test status: measured. Official test metrics: {"accuracy": 0.7313800657174151, "macro_f1": 0.5467725950558193, "macro_f1_present_classes": 0.7290301267410925}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
