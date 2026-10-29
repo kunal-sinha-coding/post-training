@@ -8366,3 +8366,7 @@ The watchdog repeatedly reported the same stable size difference because researc
 2026-10-29T10:11:13.739234+00:00: Commit `Record research experiment when2call-tool-rich-low-share-expansion-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
 
 2026-10-29T10:11:34.867448+00:00: Commit `Record experiment synchronization failure` records the failed commit or push for when2call-tool-rich-low-share-expansion-20261029: Command '['git', '-c', 'safe.directory=/workspace/post-training', 'commit', '-m', 'Record research experiment when2call-tool-rich-low-share-expansion-20261029']' returned non-zero exit status 1.. The result remains local and the worker queue continues.
+
+2026-10-29: Record completed low-share data generation and active continuation.
+Commit name: Record low-share synthetic generation.
+The 400-pair plus 100-unsupported tool-rich synthetic generation completed and produced its audit, JSONL, and cost ledger. The estimated API cost was $0.1472608. The watchdog launched the dependent one-epoch continuation from the low-unsupported checkpoint. The training process is active, and its epoch evaluation will record training, clean validation, and aggregate black-box test metrics.

@@ -13839,3 +13839,15 @@ The latest completed trained experiment still has complete evidence: 500-row tra
 The latest completed model run is `qwen-tool-rich-paired-feasible-20pct-real-replay-20261029`. Its artifact records all three required evidence types: training 0.994000 accuracy / 0.745670 macro F1 on 500 sampled examples; clean validation 0.952000 / 0.484664 on 500 examples; and aggregate black-box test 0.739321 / 0.552219 on all 3652 rows. The test set was scored only as an aggregate. No test rows, labels, or predictions were inspected.
 
 Recent synthetic recipe comparisons show the low-unsupported tool-rich checkpoint has the strongest clean-validation result among these pilots at 0.956 accuracy / 0.486225 macro F1. The new queue first generates 400 matched tool-rich pairs plus 100 unsupported examples, then continues from that checkpoint for one epoch using the fixed training and validation settings. The hypothesis is that fresh examples at the lower unsupported share will improve coverage. Candidate selection remains clean-validation-only. The existing aggregate-test leaderboard leader remains the five-draw Qwen vote result at 0.741512 accuracy / 0.552921 macro F1, reported for ranking only.
+
+## when2call-tool-rich-low-share-expansion-20261029
+
+Timestamp: 2026-10-29T10:11:09.626713+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.generate_when2call_boundary_pilot", "--output-dir", "outputs/when2call-tool-rich-low-share-expansion-20261029", "--pairs", "400", "--unsupported", "100", "--workers", "24", "--seed", "20261158", "--max-cost-usd", "1.0", "--anchor-strategy", "tool_rich"]. Output: /workspace/post-training/outputs/when2call-tool-rich-low-share-expansion-20261029. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
