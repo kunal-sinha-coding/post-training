@@ -2427,3 +2427,6 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 | Candidate | qwen-fullpool-pref1000-replay-control-20261029 | 0.95 | 0.48567228595206535 | [metrics](/workspace/post-training/outputs/qwen-fullpool-pref1000-replay-control-20261029/metrics.json) | completed |
 
 | qwen-fullpool-pref1000-replay-control-20261029 | 0.6957831325301205 | 0.5197174248742366 | is36vkv9 | Aggregate-only frozen test measurement |
+
+| Candidate | qwen-fullpool-pref738-synth262-matched-20261029 | — | — | [metrics](/workspace/post-training/outputs/qwen-fullpool-pref738-synth262-matched-20261029/metrics.json) | Queued matched-size dose test with 738 real and 262 synthetic rows, 1,000 total. Clean-validation accuracy controls continuation. | queued |
+| Candidate | qwen-fullpool-pref900-synth100-matched-20261029 | — | — | [metrics](/workspace/post-training/outputs/qwen-fullpool-pref900-synth100-matched-20261029/metrics.json) | Queued lower synthetic dose with 900 real and 100 synthetic rows, 1,000 total. Clean-validation accuracy controls continuation. | queued |
