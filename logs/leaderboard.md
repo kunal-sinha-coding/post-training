@@ -2424,3 +2424,6 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 | Candidate | qwen-fullpool-balanced-tool-rich-real-replay-pref1000-20261029 | 0.948 | 0.48364052900135374 | [metrics](/workspace/post-training/outputs/qwen-fullpool-balanced-tool-rich-real-replay-pref1000-20261029/metrics.json) | completed |
 
 | qwen-fullpool-balanced-tool-rich-real-replay-pref1000-20261029 | 0.712486308871851 | 0.531766043794447 | mb3ucqdd | Aggregate-only frozen test measurement |
+| Candidate | qwen-fullpool-pref1000-replay-control-20261029 | 0.95 | 0.48567228595206535 | [metrics](/workspace/post-training/outputs/qwen-fullpool-pref1000-replay-control-20261029/metrics.json) | completed |
+
+| qwen-fullpool-pref1000-replay-control-20261029 | 0.6957831325301205 | 0.5197174248742366 | is36vkv9 | Aggregate-only frozen test measurement |

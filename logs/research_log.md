@@ -14732,3 +14732,15 @@ Clean development accuracy: 0.948. Clean development macro F1: 0.483640529001353
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.948, "macro_f1": 0.48364052900135374, "confusion_matrix": [[241, 3, 6, 0], [3, 233, 13, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-fullpool-pref1000-replay-control-20261029
+
+Timestamp: 2026-10-29T20:36:51.717127+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-fullpool-pref1000-replay-control-20261029", "--adapter-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--preference-train-sample-size", "1000", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "3", "--learning-rate", "5e-6", "--weight-decay", "0.01", "--baseline-validation-accuracy", "0.962", "--baseline-validation-macro-f1", "0.48832640709774233", "--stop-on-validation-non-improvement", "--seed", "20261204"]. Output: /workspace/post-training/outputs/qwen-fullpool-pref1000-replay-control-20261029. W&B run: is36vkv9.
+
+Clean development accuracy: 0.95. Clean development macro F1: 0.48567228595206535. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.6957831325301205, "macro_f1": 0.5197174248742366, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.95, "macro_f1": 0.48567228595206535, "confusion_matrix": [[240, 3, 7, 0], [0, 235, 14, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
