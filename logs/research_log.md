@@ -14050,3 +14050,10 @@ Clean development accuracy: 0.956. Clean development macro F1: 0.485248511241978
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.956, "macro_f1": 0.4852485112419789, "confusion_matrix": [[244, 1, 5, 0], [6, 234, 9, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+## 2026-10-29: Audit intermediate-dose run and queue a smaller tranche
+
+The latest completed model run is `qwen-tool-rich-mid-dose-synthetic-only-20261029`. Training is 0.991786 accuracy / 0.742923 macro F1 on 487 sampled rows; clean validation is 0.956000 / 0.485249 on 500 rows; aggregate black-box test is 0.733023 / 0.546420 on all 3652 rows. All three evidence types are present. No test examples or labels were inspected.
+
+The recent 336-row low-dose checkpoint reached 0.960 clean-validation accuracy. Fresh 338-row and 487-row continuations each reached 0.956. Queued a smaller fresh 100-pair plus 12-unsupported tranche from the 336-row checkpoint to test whether a smaller update can preserve the validation gain. Selection remains clean-validation-only.
