@@ -13671,3 +13671,9 @@ Clean development accuracy: 0.95. Clean development macro F1: 0.4831656314699792
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.95, "macro_f1": 0.48316563146997926, "confusion_matrix": [[243, 2, 5, 0], [6, 232, 11, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## 2026-10-29: Add a one-draw categorical prediction screen
+
+The latest completed training run, `qwen-fullpref-rare-schema-500-synthetic-only-20261029`, has complete training (0.992000 accuracy / 0.743816 macro F1, 500 rows), clean-validation (0.950000 / 0.483166, 500 rows), and aggregate black-box test evidence (0.725630 / 0.542877, 3652 rows). The current 500-row tool-rich training run remains active.
+
+The prior frozen Qwen screen tested greedy decoding and sampled majority votes with 3, 5, and 9 draws. It did not test one categorical draw. Added a single-draw candidate for each frozen Qwen checkpoint. This reuses one score pass per checkpoint and samples labels from the resulting class probabilities. The evaluator compares candidates on the fixed clean-validation sample before reporting full aggregate test metrics. It is queued after the active training to avoid GPU contention.

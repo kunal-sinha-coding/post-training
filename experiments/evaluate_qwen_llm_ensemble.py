@@ -124,8 +124,8 @@ def main() -> int:
     validation_rows, validation_source = load_validation_rows(args.validation_size, args.validation_seed)
     # Freeze the two-model weights and same-model vote counts before reading test rows.
     method_names = ["champion_greedy", "comparison_greedy", "llm_probability_mix_25", "llm_probability_mix_50", "llm_probability_mix_75"]
-    method_names += [f"champion_sample_vote_{votes}" for votes in (3, 5, 9)]
-    method_names += [f"comparison_sample_vote_{votes}" for votes in (3, 5, 9)]
+    method_names += [f"champion_sample_vote_{votes}" for votes in (1, 3, 5, 9)]
+    method_names += [f"comparison_sample_vote_{votes}" for votes in (1, 3, 5, 9)]
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     heartbeat = args.output_dir / "heartbeat.json"
     # Score both checkpoints sequentially on validation and retain only class probabilities.
