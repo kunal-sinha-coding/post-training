@@ -8479,3 +8479,7 @@ The latest completed 200-real-plus-tiny-synthetic run has training, clean-valida
 2026-10-29T13:15:09.326006+00:00: Commit `Record research experiment qwen-lowdose-best-pref400-control-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
 
 2026-10-29T13:30:49.685330+00:00: Commit `Record research experiment qwen-lowdose-best-pref400-plus-tiny-synth-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+Commit name: Audit latest research evidence and queue synthetic dosage follow-ups.
+Description: Confirmed that the latest completed 400-example plus tiny-synthetic run records training, clean-validation, and aggregate black-box test metrics. Recorded the audit and exact metrics. Confirmed the watchdog launched the 400-example plus 336-row low-dose synthetic experiment, then queued two distinct follow-ups for synthetic dosage and an independent generated pool. Selection remains based on clean validation only.
+Context: The aggregate black-box test metrics are reporting-only. No test examples or labels were inspected or used for selection. The active experiment was not modified or stopped.

@@ -166832,3 +166832,12 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/piwkoe82"
 }
 ```
+
+
+## 2026-10-29: Low-dose synthetic replay comparison
+
+Experiment: `qwen-lowdose-best-pref400-plus-tiny-synth-20261029`. Purpose: test whether a small synthetic tool-rich pool adds clean-validation signal to continued training from the low-dose synthetic-only checkpoint and 400 sampled When2Call preference examples. The recorded one-epoch run used seed 20261175, learning rate 5e-6, training and validation probes capped at 500 examples, validation source `nvidia/When2Call:train_sft` with fixed sample seed 20261053, and full aggregate black-box test evaluation on 3652 rows. Synthetic input: `outputs/when2call-tool-rich-tiny-replay-mix-20261029/balanced_boundary_tool_rich.jsonl`. Starting adapter: `outputs/qwen-tool-rich-low-dose-synthetic-only-20261029/epoch-01`. Exact command and full configuration are in `logs/research_log.md` and `outputs/qwen-lowdose-best-pref400-plus-tiny-synth-20261029/metrics.json`; W&B run `piwkoe82`.
+
+Results: training accuracy 0.988000 and macro F1 0.741344 on 500 examples; clean validation accuracy 0.948000 and macro F1 0.484093 on 500; aggregate black-box test accuracy 0.716867 and macro F1 0.535362 on all 3652. Test metrics were reported only and did not select the next experiment. No individual test examples, predictions, or labels were inspected or saved. The state audit confirms all three evidence types are present. Environment/device and optimizer step count are in the metrics artifact.
+
+Next experiment active at this update: `qwen-lowdose-best-pref400-plus-lowdose336-synth-20261029`, PID 349490. It uses the 336-row low-dose pool with 400 real examples. Two follow-ups are queued sequentially: 200 real plus the same low-dose pool to test dosage, then 400 real plus the independent low-dose follow-up pool to test synthetic sample robustness.

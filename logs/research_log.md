@@ -14186,3 +14186,10 @@ Clean development accuracy: 0.948. Clean development macro F1: 0.484093356821426
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.948, "macro_f1": 0.4840933568214265, "confusion_matrix": [[243, 2, 5, 0], [3, 231, 15, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+## 2026-10-29: Evidence audit and synthetic dosage follow-ups
+
+Most recent completed experiment: `qwen-lowdose-best-pref400-plus-tiny-synth-20261029`. The record contains all required evidence. Training probe: accuracy 0.988000 and macro F1 0.741344 on 500 examples. Clean validation: accuracy 0.948000 and macro F1 0.484093 on 500 examples. Aggregate black-box test: accuracy 0.716867 and macro F1 0.535362 on all 3652 examples. Metrics are in `outputs/qwen-lowdose-best-pref400-plus-tiny-synth-20261029/metrics.json`. No test examples or labels were inspected; aggregate test metrics are report-only.
+
+The active run is `qwen-lowdose-best-pref400-plus-lowdose336-synth-20261029`, launched by watchdog as PID 349490. It starts from `outputs/qwen-tool-rich-low-dose-synthetic-only-20261029/epoch-01`, adds 400 sampled preference examples and the 336-row low-dose synthetic pool, and evaluates the same 500-row train probe and clean validation plus the full test split. It is one experiment at a time. Two distinct follow-ups are queued: the same synthetic pool with 200 real examples to test the real/synthetic ratio, then 400 real examples with the independent low-dose follow-up pool to test whether the effect generalizes beyond one synthetic sample. Selection uses clean validation only.
