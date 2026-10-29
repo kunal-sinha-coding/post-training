@@ -14112,3 +14112,15 @@ Clean development accuracy: 0.96. Clean development macro F1: 0.4868037724669168
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.96, "macro_f1": 0.48680377246691686, "confusion_matrix": [[243, 2, 5, 0], [4, 237, 8, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-lowdose-best-pref200-fresh-synthetic-mix-20261029
+
+Timestamp: 2026-10-29T12:45:22.025693+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-lowdose-best-pref200-fresh-synthetic-mix-20261029", "--adapter-checkpoint", "outputs/qwen-tool-rich-low-dose-synthetic-only-20261029/epoch-01", "--preference-train-sample-size", "200", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261172", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.95", "--baseline-validation-macro-f1", "0.48363771417663637", "--augmentation-jsonl", "outputs/when2call-tool-rich-replay-mix-20261029/balanced_boundary_tool_rich.jsonl"]. Output: /workspace/post-training/outputs/qwen-lowdose-best-pref200-fresh-synthetic-mix-20261029. W&B run: 34xurrcs.
+
+Clean development accuracy: 0.956. Clean development macro F1: 0.4857454509395607. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7193318729463308, "macro_f1": 0.5384650254333796, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.956, "macro_f1": 0.4857454509395607, "confusion_matrix": [[243, 2, 5, 0], [4, 235, 10, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
