@@ -13863,3 +13863,8 @@ After that run, queue two one-epoch branches from its checkpoint. The control us
 ## 2026-10-29: Queue a rare-schema synthetic pilot
 
 The most recent completed model experiment still has training, clean-validation, and full aggregate black-box test measurements. The current low-share continuation remains active, followed by the two matched real-replay branches. Appended a new synthetic hypothesis after those commands. The generator will select 300 paired examples and 75 unsupported requests from train_pref using the existing rare-schema strategy. It targets uncommon tool schemas while keeping the unsupported share near the low-share recipe. A one-epoch continuation from the current low-share checkpoint will test whether this adds useful schema coverage. Training and validation probes are capped at 500; the full test split is scored only as an aggregate and is not used for selection.
+
+
+## 2026-10-29: Queue a near-zero unsupported-share boundary pilot
+
+The latest completed model experiment remains the 200-example real replay mixed with the 803-row tool-rich pool. Training, clean validation, and full aggregate test metrics are all recorded. The low-share expansion model is active and has not written its epoch metrics yet. The queue already contains matched real-replay controls and a rare-schema synthetic pilot. Added a further distinct recipe after those jobs: generate 300 tool-rich paired boundaries and one unsupported request, then continue from the low-share checkpoint for one epoch. This probes whether lowering the unsupported share further helps, based on the validation trend across prior share levels. Candidate selection uses clean validation only; test data remains aggregate-only.

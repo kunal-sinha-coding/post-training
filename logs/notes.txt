@@ -8378,3 +8378,7 @@ Audited the latest completed model run and confirmed that training, clean valida
 2026-10-29: Queue rare-schema synthetic coverage pilot.
 Commit name: Queue rare-schema synthetic pilot.
 The latest completed model run has complete training, clean-validation, and aggregate test records. The current low-share run and matched replay comparison remain ahead in the queue. Added a distinct rare-schema generation and training pair. The generator prioritizes uncommon train_pref tool schemas and creates 300 paired boundaries plus 75 unsupported requests. The trainer continues from the low-share checkpoint with fixed settings. This tests whether schema diversity improves clean validation.
+
+2026-10-29: Queue near-zero unsupported-share pilot.
+Commit name: Queue near-zero unsupported pilot.
+The latest completed model experiment has complete training, validation, and aggregate test evidence. The low-share expansion run remains active. Added a paired-boundary synthetic pilot with 300 pairs and one unsupported request after existing replay and rare-schema tasks. This tests whether the validation improvement continues when unsupported examples are nearly removed. The trainer uses a fixed one-epoch setup and clean-validation-only selection.
