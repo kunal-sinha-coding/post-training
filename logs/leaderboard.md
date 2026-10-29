@@ -2325,3 +2325,6 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 | Candidate | qwen-lowdose-best-pref200-plus-tiny-synth-20261029 | 0.956 | 0.4857454509395607 | [metrics](/workspace/post-training/outputs/qwen-lowdose-best-pref200-plus-tiny-synth-20261029/metrics.json) | completed |
 
 | qwen-lowdose-best-pref200-plus-tiny-synth-20261029 | 0.7111171960569551 | 0.5332730509457523 | x3pq7if1 | Aggregate-only frozen test measurement |
+| Candidate | qwen-lowdose-best-pref400-control-20261029 | 0.942 | 0.48200243125419184 | [metrics](/workspace/post-training/outputs/qwen-lowdose-best-pref400-control-20261029/metrics.json) | completed |
+
+| qwen-lowdose-best-pref400-control-20261029 | 0.7102957283680176 | 0.5296558233812415 | pauwppp4 | Aggregate-only frozen test measurement |

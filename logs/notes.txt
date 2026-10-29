@@ -8475,3 +8475,5 @@ The latest completed replay-plus-synthetic run has complete training, clean-vali
 2026-10-29: Queue matched 400-example replay branches.
 Commit name: Queue 400-example replay comparison.
 The latest completed 200-real-plus-tiny-synthetic run has training, clean-validation, and aggregate test metrics. Clean validation is 0.956 accuracy / 0.485745 macro F1. The matched 200-real-only control reached 0.960. Queued 400 real examples alone and with the same tiny synthetic pool from the low-dose checkpoint. The real-only branch is active, and the mixed branch is next.
+
+2026-10-29T13:15:09.326006+00:00: Commit `Record research experiment qwen-lowdose-best-pref400-control-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.

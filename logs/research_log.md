@@ -14162,3 +14162,15 @@ This record was written automatically. Candidate selection must use clean valida
 The latest completed model run is `qwen-lowdose-best-pref200-plus-tiny-synth-20261029`. Training is 1.000000 accuracy / 0.750000 macro F1 on 379 examples; clean validation is 0.956000 / 0.485745 on 500; full aggregate black-box test is 0.711117 / 0.533273 on all 3652. All evidence is present. No test examples or labels were inspected.
 
 The 200-real-only control from the low-dose checkpoint reached 0.960 clean-validation accuracy. Adding a fresh tiny synthetic pool reached 0.956. Queued a matched 400-real-only branch and a 400-real-plus-tiny-synthetic branch from the same checkpoint, using the same seed and validation sample. This tests whether more authentic replay helps and whether the small synthetic pool adds value at the higher replay ratio.
+
+## qwen-lowdose-best-pref400-control-20261029
+
+Timestamp: 2026-10-29T13:15:06.552789+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-lowdose-best-pref400-control-20261029", "--adapter-checkpoint", "outputs/qwen-tool-rich-low-dose-synthetic-only-20261029/epoch-01", "--preference-train-sample-size", "400", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261175", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.95", "--baseline-validation-macro-f1", "0.48363771417663637"]. Output: /workspace/post-training/outputs/qwen-lowdose-best-pref400-control-20261029. W&B run: pauwppp4.
+
+Clean development accuracy: 0.942. Clean development macro F1: 0.48200243125419184. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7102957283680176, "macro_f1": 0.5296558233812415, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.942, "macro_f1": 0.48200243125419184, "confusion_matrix": [[242, 2, 6, 0], [4, 229, 16, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
