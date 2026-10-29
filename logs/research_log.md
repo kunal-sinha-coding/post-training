@@ -13887,3 +13887,10 @@ This record was written automatically. Candidate selection must use clean valida
 The latest completed model experiment is `qwen-tool-rich-low-share-expansion-from-low-share-20261029`. Its evidence is complete: training 0.994000 accuracy / 0.745142 macro F1 on 500 sampled rows; clean validation 0.946000 / 0.483040 on 500 rows; aggregate black-box test 0.731928 / 0.546579 on all 3652 rows. No test examples or labels were inspected.
 
 The previous low-unsupported checkpoint had 0.956 clean-validation accuracy. Continuing it on a fresh 900-row synthetic pool produced 0.946 clean-validation accuracy. To test whether that drop reflects too large an incremental dose, queued a fresh 425-row pool made from 200 pairs and 25 unsupported examples, followed by a one-epoch synthetic-only continuation from the same starting checkpoint. Existing matched replay and rare-schema tasks remain ahead in the queue.
+
+
+## Recorder repair: when2call-tool-rich-low-share-expansion-20261029
+
+The experiment recorder failed while committing its record, but the data-generation run succeeded. The final generation summary reports 325 accepted paired boundaries and 92 accepted unsupported requests, for 742 rows total. The worker log shows all 500 requested jobs reached the final progress event. The watchdog then advanced to the dependent Qwen trainer. The run used `gpt-6-luna`, 24 concurrent requests, seed 20261158, and the tool-rich anchor strategy. No validation or test set was loaded, and no test labels were used. The generator does not initialize W&B, so the W&B run ID and URL are correctly null.
+
+The repaired record marks exit code 0 as inferred from the completed summary and output artifacts because the original recorder did not preserve the subprocess return code. The summary cost is $0.1472608; the token ledger separately reports $0.1440014 usage estimate plus $0.0345 reserved, so both source values are retained without reconciliation. The event remains a data-generation result, not a scored model candidate. The active training run and remaining queue were not changed.

@@ -307,9 +307,9 @@
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
   "last_heartbeat": "2026-10-29T10:24:56.023979+00:00",
-  "last_action": "Recorded complete evidence for the low-share expansion and queued a smaller-dose continuation after the existing replay and synthetic pilots.",
+  "last_action": "Repaired the completed data-generation record for when2call-tool-rich-low-share-expansion-20261029; preserved active worker and queue.",
   "watchdog_enabled": true,
-  "research_log_size": 1783150,
+  "research_log_size": 1784323,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -550,7 +550,7 @@
     "examples": 3652,
     "selection_use": "report-only; not used to choose the next experiment"
   },
-  "updated_at": "2026-10-29T10:26:27.870485+00:00",
+  "updated_at": "2026-10-29T10:30:07.013010+00:00",
   "synthetic_pilot_results": [
     {
       "strategy": "missing_required_info",

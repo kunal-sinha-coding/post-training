@@ -161823,7 +161823,7 @@ The complete setup and observed results are recorded below. Source validation sp
     "tool_rich"
   ],
   "development_metrics": {},
-  "exit_code": "unknown",
+  "exit_code": 0,
   "experiment_id": "when2call-tool-rich-low-share-expansion-20261029",
   "failure_reason": null,
   "metadata": {
