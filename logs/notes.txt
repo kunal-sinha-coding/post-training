@@ -8056,3 +8056,8 @@ Commit name: Record clean-validation benchmark queue and recorder updates.
 The experiment recorder finished the prior 800-real clean-validation screen and refreshed the experiment records, research log, leaderboard, and results files. Its aggregate result remains a validation-only screen. The frozen aggregate-test preparation process is active as PID 311089, and its test command remains next. A stale Git index lock from an earlier failed commit attempt was confirmed with no active Git process and removed before this commit. The 800-real Qwen training run continues to have all three required metric types recorded.
 
 2026-10-29T00:06:57.943762+00:00: Commit `Record research experiment qwen-tool-rich-replay800-encoder-blackbox-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+## 2026-10-29: Verify aggregate-test phase and downstream queue
+Commit name: Verify 800-real hybrid test phase launch.
+
+The watchdog completed hybrid preparation and launched the frozen aggregate-test phase for `single_encoder_request_or_cannot_answer_conf_90` as PID 311355. It will report aggregate metrics on the full test set only. The rare-schema generation pilot and its 900-real replay remain queued after this measurement. State remains active with planning disabled, and the 800-real Qwen run has complete training, validation, and aggregate-test metrics.
