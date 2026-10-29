@@ -8566,3 +8566,5 @@ Context: The latest preference continuation had complete training, clean-validat
 Commit name: Queue isolated rare-schema synthetic pilot.
 Description: Appended distinct generation and dependent training commands after the existing contextual pilots. Kept the active worker and existing queue intact.
 Context: The new hypothesis isolates whether rare-schema coverage adds signal beyond the best tool-rich checkpoint. Generation uses train_pref only with a $0.50 cap. Candidate selection remains clean-validation-only, and test scores are report-only.
+
+2026-10-29T16:58:59.415593+00:00: Commit `Record research experiment qwen-best-tool-rich-context-expansion-synth-only-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.

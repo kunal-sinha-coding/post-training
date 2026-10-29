@@ -14417,3 +14417,15 @@ Queued two distinct one-epoch continuation pilots from `outputs/qwen-tool-rich-l
 ## 2026-10-29: Queue isolated rare-schema continuation
 
 The queue was not empty: the 552-row contextual synthetic-only pilot was active, followed by its 200-row preference-anchored variant. Those commands remain unchanged. Added a bounded generation step for 167 rare-schema tool-call pairs and 166 unsupported requests from train_pref, capped at $0.50. Its dependent training command continues the current best tool-rich checkpoint on the generated pool only, for one epoch. Earlier mixed rare-schema and tool-rich training did not establish the value of rare schemas alone, so this tests schema diversity as a separate signal. Training and validation evaluations are capped at 500 examples. Full aggregate test metrics are report-only and cannot select the candidate.
+
+## qwen-best-tool-rich-context-expansion-synth-only-20261029
+
+Timestamp: 2026-10-29T16:58:55.259351+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--adapter-checkpoint", "outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/epoch-01", "--output-dir", "outputs/qwen-best-tool-rich-context-expansion-synth-only-20261029", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.95", "--baseline-validation-macro-f1", "0.48363771417663637", "--synthetic-only", "--seed", "20261189", "--augmentation-jsonl", "outputs/when2call-multiturn-context-expansion-20261029/contextual_pairs.jsonl"]. Output: /workspace/post-training/outputs/qwen-best-tool-rich-context-expansion-synth-only-20261029. W&B run: jr9vr1mv.
+
+Clean development accuracy: 0.954. Clean development macro F1: 0.48571754506046094. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.718236582694414, "macro_f1": 0.5371191398468783, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.954, "macro_f1": 0.48571754506046094, "confusion_matrix": [[242, 3, 5, 0], [2, 235, 12, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
