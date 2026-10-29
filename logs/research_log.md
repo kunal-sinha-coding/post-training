@@ -14521,3 +14521,15 @@ Clean development accuracy: 0.952. Clean development macro F1: 0.484707444050359
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.952, "macro_f1": 0.48470744405035987, "confusion_matrix": [[241, 3, 6, 0], [3, 235, 11, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-best-tool-rich-rare-schema-plus-pref500-encoder-fusion-20261029
+
+Timestamp: 2026-10-29T18:13:54.033197+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_qwen_five_vote_encoder_fusion", "--champion-checkpoint", "outputs/qwen-best-tool-rich-rare-schema-plus-pref500-20261029/epoch-01", "--output-dir", "outputs/qwen-best-tool-rich-rare-schema-plus-pref500-encoder-fusion-20261029", "--validation-size", "500", "--validation-seed", "20261053", "--batch-size", "1"]. Output: /workspace/post-training/outputs/qwen-best-tool-rich-rare-schema-plus-pref500-encoder-fusion-20261029. W&B run: 539qfrgb.
+
+Clean development accuracy: 0.954. Clean development macro F1: 0.48620233799491164. Official test loaded: True. Test status: measured. Official test metrics: {"accuracy": 0.7105695509309967, "macro_f1": 0.5318901383296435, "examples": 3652}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

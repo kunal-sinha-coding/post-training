@@ -2392,3 +2392,6 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 | Candidate | qwen-best-tool-rich-rare-schema-plus-pref500-20261029 | 0.952 | 0.48470744405035987 | [metrics](/workspace/post-training/outputs/qwen-best-tool-rich-rare-schema-plus-pref500-20261029/metrics.json) | completed |
 
 | qwen-best-tool-rich-rare-schema-plus-pref500-20261029 | 0.7050930996714129 | 0.5281361147849764 | u3ent69l | Aggregate-only frozen test measurement |
+| Candidate | qwen-best-tool-rich-rare-schema-plus-pref500-encoder-fusion-20261029 | 0.954 | 0.48620233799491164 | [metrics](/workspace/post-training/outputs/qwen-best-tool-rich-rare-schema-plus-pref500-encoder-fusion-20261029/metrics.json) | completed |
+
+| qwen-best-tool-rich-rare-schema-plus-pref500-encoder-fusion-20261029 | 0.7105695509309967 | 0.5318901383296435 | 539qfrgb | Aggregate-only frozen test measurement |
