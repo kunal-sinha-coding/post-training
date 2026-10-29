@@ -13677,3 +13677,15 @@ This record was written automatically. Candidate selection must use clean valida
 The latest completed training run, `qwen-fullpref-rare-schema-500-synthetic-only-20261029`, has complete training (0.992000 accuracy / 0.743816 macro F1, 500 rows), clean-validation (0.950000 / 0.483166, 500 rows), and aggregate black-box test evidence (0.725630 / 0.542877, 3652 rows). The current 500-row tool-rich training run remains active.
 
 The prior frozen Qwen screen tested greedy decoding and sampled majority votes with 3, 5, and 9 draws. It did not test one categorical draw. Added a single-draw candidate for each frozen Qwen checkpoint. This reuses one score pass per checkpoint and samples labels from the resulting class probabilities. The evaluator compares candidates on the fixed clean-validation sample before reporting full aggregate test metrics. It is queued after the active training to avoid GPU contention.
+
+## qwen-fullpref-tool-rich-expansion-500-synthetic-only-20261029
+
+Timestamp: 2026-10-29T07:34:36.722782+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-fullpref-tool-rich-expansion-500-synthetic-only-20261029", "--adapter-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--synthetic-only", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261144", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.962", "--baseline-validation-macro-f1", "0.48832640709774233", "--augmentation-jsonl", "outputs/when2call-tool-rich-expansion-500-stratified-20261029/balanced_boundary_tool_rich_500.jsonl"]. Output: /workspace/post-training/outputs/qwen-fullpref-tool-rich-expansion-500-synthetic-only-20261029. W&B run: pdd3kivl.
+
+Clean development accuracy: 0.946. Clean development macro F1: 0.480623824386614. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7245345016429354, "macro_f1": 0.5417553333731471, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.946, "macro_f1": 0.480623824386614, "confusion_matrix": [[244, 1, 5, 0], [10, 229, 10, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

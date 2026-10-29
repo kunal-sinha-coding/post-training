@@ -8246,3 +8246,5 @@ Recorded complete evidence for `qwen-fullpref-tool-rich-expansion-983-synthetic-
 Commit name: Add one-draw Qwen probability sampling screen.
 
 Confirmed complete training, clean-validation, and aggregate test evidence for `qwen-fullpref-rare-schema-500-synthetic-only-20261029`. Updated the evaluator to include one sampled label for both frozen Qwen checkpoints, alongside the existing greedy, 3, 5, and 9 vote candidates. One sample draws from the same probability vector and adds no model forward pass. Queued the comparison after the active training because it uses the same GPU. The clean-validation results guide candidate assessment; aggregate test metrics are reporting-only.
+
+2026-10-29T07:34:39.648266+00:00: Commit `Record research experiment qwen-fullpref-tool-rich-expansion-500-synthetic-only-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.

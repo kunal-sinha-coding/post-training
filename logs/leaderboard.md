@@ -2248,3 +2248,4 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 | Candidate | qwen-fullpref-rare-schema-500-synthetic-only-20261029 | 0.95 | 0.48316563146997926 | [metrics](/workspace/post-training/outputs/qwen-fullpref-rare-schema-500-synthetic-only-20261029/metrics.json) | completed |
 
 | qwen-fullpref-rare-schema-500-synthetic-only-20261029 | 0.7256297918948521 | 0.5428772587684952 | 1skea1xs | Aggregate-only frozen test measurement |
+                                                                                                                                                                                                                                                                                                                                                                                                                
