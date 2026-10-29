@@ -8661,3 +8661,11 @@ remove the file manually to continue.
 2026-10-29T18:48Z: The latest completed model run, qwen-fullpool-followup338-wd005-20261029, has training metrics (0.982249 accuracy, 0.730193 macro F1, 338 rows), clean-validation metrics (0.962000 accuracy, 0.488326 macro F1, 500 rows), and full aggregate black-box test metrics (0.702081 accuracy, 0.527464 macro F1, 3,652 rows). Validation tied the baseline, so it remains selected. The balanced synthetic pilot is active as PID 369147. Kept its validation-gated continuation first in queue and appended a distinct real-replay mixture experiment after it.
 
 2026-10-29T18:55:21.495678+00:00: Commit `Record research experiment qwen-fullpool-balanced-tool-rich-pilot-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-29T18:55:54.156323+00:00: Commit `Record research experiment qwen-fullpool-balanced-tool-rich-pilot-epoch2-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-29T18:55:56.699707+00:00: Commit `Record experiment synchronization failure` records the failed commit or push for qwen-fullpool-balanced-tool-rich-pilot-epoch2-20261029: error: read error while indexing logs/research_state.json: No such file or directory
+error: logs/research_state.json: failed to insert into database
+error: unable to index file 'logs/research_state.json'
+fatal: updating files failed
+. The result remains local and the worker queue continues.
