@@ -115,7 +115,7 @@
   "last_heartbeat": "2026-10-29T08:18:24.806919+00:00",
   "last_action": "Watchdog started validation worker pid 332828.",
   "watchdog_enabled": true,
-  "research_log_size": 1764014,
+  "research_log_size": 1765364,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -137,12 +137,7 @@
     "--anchor-strategy",
     "random"
   ],
-  "recording_jobs": [
-    {
-      "pid": 332827,
-      "experiment_id": "qwen-tool-rich-paired-unsupported-fresh-synthetic-only-20261029"
-    }
-  ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-29T07:58:16.629569+00:00",
   "planning_ack_deadline": "2026-10-29T08:00:16.629590+00:00",
