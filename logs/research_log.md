@@ -14551,3 +14551,9 @@ Clean development accuracy: 0.96. Clean development macro F1: 0.4878027620908606
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-fullpool-bestval-fivevote-three-encoder-fusion-20261029: evidence audit and next hypothesis
+
+This frozen inference run has complete applicable evidence. Training metrics are not applicable because it did not update model weights. Its source Qwen checkpoint records 0.960000 training accuracy and 0.720145 macro F1 on 500 examples. On clean validation, the selected 25% encoder probability blend scored 0.960000 accuracy and 0.487803 macro F1 on 500 examples, tying Qwen accuracy. The full aggregate black-box test score is 0.704545 accuracy and 0.529299 macro F1 on 3,652 examples. Test metrics are report-only.
+
+The recent synthetic-only runs reached 1.000 training accuracy while clean validation stayed flat or decreased. This supports one controlled regularization experiment. Continue from the full-pool checkpoint using the same 338 tool-rich follow-up examples, same seed, learning rate, epoch count, and evaluation samples. Increase only weight decay from 0.01 to 0.05. Use clean validation for selection and record full aggregate test metrics for reporting only.
