@@ -132,6 +132,24 @@
       "outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/metrics.json",
       "--augmentation-jsonl",
       "outputs/when2call-tool-rich-expansion-20261029/balanced_boundary_tool_rich.jsonl"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_qwen_llm_ensemble",
+      "--champion-checkpoint",
+      "outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/epoch-01",
+      "--comparison-checkpoint",
+      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "--output-dir",
+      "outputs/qwen-llm-ensemble-vote-screen-20261029",
+      "--validation-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--batch-size",
+      "4"
     ]
   ],
   "_previous_command": [
@@ -161,7 +179,7 @@
     "selection": "clean validation only"
   },
   "last_heartbeat": "2026-10-29T03:06:54.099508+00:00",
-  "last_action": "Watchdog started validation worker pid 319120.",
+  "last_action": "Confirmed prior Qwen-plus-encoder experiments, but no Qwen-to-Qwen fusion or repeated Qwen label-vote experiment. Added a clean-validation-first, aggregate-only test screen after the two queued champion continuations.",
   "watchdog_enabled": true,
   "research_log_size": 1727952,
   "stop_command": "STOP",
@@ -225,7 +243,7 @@
     "wandb_run_id": "vrfnnoq2",
     "selection": "Aggregate test result reported for ranking only. It was not used for candidate selection."
   },
-  "next_hypothesis": "The 994-example tool-rich synthetic checkpoint is the current aggregate-accuracy champion. Build directly on that exact checkpoint. First test one more epoch on the same 994 examples to test whether continued optimization helps. Then test one epoch on the distinct 983-example tool-rich expansion pool. Keep learning rate at the proven 5e-6 and all evaluation settings fixed. Use full aggregate test scores only at the black-box level; never inspect individual test rows, labels, predictions, or correctness.",
+  "next_hypothesis": "After the two direct champion continuations, screen LLM-to-LLM probability fusion and repeated one-token action-label voting on the fixed 500-row clean SFT validation sample. Compare the tool-rich champion with the full-preference Qwen checkpoint. Freeze all fusion weights and vote counts before measuring aggregate black-box test accuracy and macro F1. Do not store or inspect per-example test outcomes.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
