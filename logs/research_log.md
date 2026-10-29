@@ -13639,3 +13639,7 @@ Clean development accuracy: 0.956. Clean development macro F1: 0.485264043276049
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.956, "macro_f1": 0.4852640432760498, "confusion_matrix": [[242, 3, 5, 0], [4, 236, 9, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## 2026-10-29: Refresh evidence audit after 750-row pilot
+
+`qwen-fullpref-tool-rich-expansion-750-synthetic-only-20261029` completed with training accuracy 0.992000 and macro F1 0.743770 on 500 sampled rows; clean-validation accuracy 0.956000 and macro F1 0.485264 on 500 rows; and aggregate black-box test accuracy 0.710022 and macro F1 0.532709 on 3652 rows. All three evidence types are recorded. Test results are reporting-only. The 983-row tool-rich run is active at step 903, and the 500-row stratified rare-schema dose remains queued after it.
