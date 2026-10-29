@@ -14395,3 +14395,15 @@ This record was written automatically. Candidate selection must use clean valida
 ## Correction: five-vote Qwen plus encoder fusion
 
 The asynchronous recorder marked the aggregate test measurement missing because this frozen evaluator stores candidate metrics under `test_metrics`. The selected clean-validation candidate was `vote_frequency_encoder_25`: validation accuracy 0.948 and macro F1 0.4830963073852296 on 500 examples. Training metrics are not applicable because no model training occurred. Full aggregate black-box test metrics were accuracy 0.7404162102957283 and macro F1 0.5520617525220826 on 3652 examples. Candidate selection used clean validation only. The test set was used only for aggregate reporting; no row-level test data or labels were saved. The fusion did not beat the current five-vote leaderboard leader.
+
+## qwen-followup-checkpoint-plus-pref200-20261029
+
+Timestamp: 2026-10-29T16:41:40.897897+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-followup-checkpoint-plus-pref200-20261029", "--adapter-checkpoint", "outputs/qwen-fullpool-best-followup338-synthetic-only-20261029/epoch-01", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.962", "--baseline-validation-macro-f1", "0.48832640709774233", "--preference-train-sample-size", "200", "--seed", "20261185"]. Output: /workspace/post-training/outputs/qwen-followup-checkpoint-plus-pref200-20261029. W&B run: x22kzi8y.
+
+Clean development accuracy: 0.958. Clean development macro F1: 0.48677573278800274. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7127601314348302, "macro_f1": 0.5341475076686227, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.958, "macro_f1": 0.48677573278800274, "confusion_matrix": [[242, 3, 5, 0], [2, 237, 10, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

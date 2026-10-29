@@ -8556,3 +8556,5 @@ Context: This result is below the existing five-vote Qwen leader at 0.741512 acc
 Commit name: Repair the encoder fusion experiment record.
 Description: Added a correction record with clean-validation, aggregate black-box test, and all-candidate metrics. Updated the asynchronous recorder to recognize validation-selected inference evaluators.
 Context: The earlier recorder entry omitted nested test metrics even though the metrics artifact was complete. The selected 25% encoder blend did not exceed the current five-vote Qwen leaderboard leader.
+
+2026-10-29T16:41:52.060211+00:00: Commit `Record research experiment qwen-followup-checkpoint-plus-pref200-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
