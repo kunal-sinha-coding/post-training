@@ -13817,3 +13817,8 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+## 2026-10-29: Queue an intermediate unsupported-share comparison
+
+The latest completed trained run remains the 827-row random-anchor continuation. Training evidence is 0.992000 accuracy / 0.744897 macro F1 on 500 rows. Clean validation is 0.942000 / 0.481458 on 500 rows. Aggregate black-box test is 0.736309 / 0.548398 on all 3,652 rows. All three evidence types are present. The current feasible 803-row tool-rich pool has started its one-epoch continuation. The queue already compares approximately 23% and approximately 13% unsupported shares. Added a distinct approximately 30% unsupported-share pool with 400 tool-rich pairs, trained from the same champion and fixed settings. This brackets the prior 807-row result, which used about 23% unsupported examples and reached 0.958 validation, against the 994-row tool-rich result, which had a larger unsupported share and reached 0.950 validation. Test metrics remain report-only.
