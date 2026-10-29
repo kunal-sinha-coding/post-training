@@ -177273,3 +177273,404 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": null
 }
 ```
+
+## qwen-fullpool-tool-rich-expansion-2000-20261029
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.train_qwen_when2call_fullpool",
+    "--output-dir",
+    "outputs/qwen-fullpool-tool-rich-expansion-2000-20261029",
+    "--adapter-checkpoint",
+    "outputs/qwen-fullpool-pref738-synth262-matched-20261029/epoch-02",
+    "--augmentation-jsonl",
+    "outputs/when2call-tool-rich-balanced-expansion-20261029/balanced_boundary_tool_rich.jsonl",
+    "--preference-train-sample-size",
+    "1476",
+    "--validation-source",
+    "sft",
+    "--validation-sample-size",
+    "500",
+    "--validation-seed",
+    "20261053",
+    "--training-eval-sample-size",
+    "500",
+    "--training-eval-seed",
+    "20261059",
+    "--eval-batch-size",
+    "8",
+    "--epochs",
+    "3",
+    "--learning-rate",
+    "5e-6",
+    "--weight-decay",
+    "0.01",
+    "--baseline-validation-accuracy",
+    "0.962",
+    "--baseline-validation-macro-f1",
+    "0.48832640709774233",
+    "--stop-on-validation-non-improvement",
+    "--seed",
+    "20261206"
+  ],
+  "development_metrics": {
+    "accuracy": 0.948,
+    "confusion_matrix": [
+      [
+        242,
+        2,
+        6,
+        0
+      ],
+      [
+        4,
+        232,
+        13,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0
+      ]
+    ],
+    "examples": 500,
+    "macro_f1": 0.48362639605750446
+  },
+  "exit_code": "unknown",
+  "experiment_id": "qwen-fullpool-tool-rich-expansion-2000-20261029",
+  "failure_reason": null,
+  "metadata": {
+    "base_model": "Qwen/Qwen2.5-1.5B-Instruct",
+    "base_model_checkpoint": "outputs/qwen-fullpool-pref738-synth262-matched-20261029/epoch-02",
+    "baseline_black_box_test_metrics": null,
+    "baseline_clean_validation_metrics": null,
+    "best_validation_accuracy": 0.954,
+    "config": {
+      "adapter_checkpoint": "outputs/qwen-fullpool-pref738-synth262-matched-20261029/epoch-02",
+      "augmentation_jsonl": "outputs/when2call-tool-rich-balanced-expansion-20261029/balanced_boundary_tool_rich.jsonl",
+      "augmentation_mode": "none",
+      "augmentation_seed": 20261066,
+      "baseline_test_accuracy": null,
+      "baseline_test_macro_f1": null,
+      "baseline_test_source": null,
+      "baseline_validation_accuracy": 0.962,
+      "baseline_validation_macro_f1": 0.48832640709774233,
+      "batch_size": 1,
+      "bfcl_data": "data/bfcl_when2call_labeled.jsonl",
+      "epochs": 3,
+      "eval_batch_size": 8,
+      "evaluate_baseline": false,
+      "include_full_bfcl": false,
+      "learning_rate": 5e-06,
+      "lora_rank": 16,
+      "max_length": 4096,
+      "model": "Qwen/Qwen2.5-1.5B-Instruct",
+      "output_dir": "outputs/qwen-fullpool-tool-rich-expansion-2000-20261029",
+      "preference_train_sample_size": 1476,
+      "seed": 20261206,
+      "stop_on_test_non_improvement": false,
+      "stop_on_validation_non_improvement": true,
+      "synthetic_only": false,
+      "test_sample_seed": 20261070,
+      "test_sample_size": null,
+      "training_eval_sample_size": 500,
+      "training_eval_seed": 20261059,
+      "validation_sample_size": 500,
+      "validation_seed": 20261053,
+      "validation_source": "sft",
+      "weight_decay": 0.01
+    },
+    "data": {
+      "augmentation_jsonl": "outputs/when2call-tool-rich-balanced-expansion-20261029/balanced_boundary_tool_rich.jsonl",
+      "augmentation_jsonl_sha256": "5d8d0a868fda06f3c36aa2ec3cc5c871636716337283e0c162966055f8f3a711",
+      "augmentation_mode": "synthetic_pilot",
+      "augmentation_seed": 20261066,
+      "augmented_examples": 508,
+      "bfcl_file": "data/bfcl_when2call_labeled.jsonl",
+      "bfcl_sha256": "a4b817a01c109603c00fe9e682f11eb636afc139894a92d4960bde8bddfda27f",
+      "bfcl_train_examples": 0,
+      "dataset": "nvidia/When2Call",
+      "label_counts": {
+        "0": 684,
+        "1": 650,
+        "2": 650
+      },
+      "preference_examples": 1476,
+      "preference_sample_seed": 20261206,
+      "preference_sample_size": 1476,
+      "prompt_label_fingerprint": "b54f62a847001ce3e96f68674c1e82b3af1349f96c0bb1b501693c7e7add0745",
+      "split": "train_pref"
+    },
+    "device": "cuda",
+    "epoch_records": [
+      {
+        "black_box_test_metrics": {
+          "accuracy": 0.7061883899233297,
+          "examples": 3652,
+          "macro_f1": 0.5269940095051582,
+          "sample_method": "full test split",
+          "sample_seed": null
+        },
+        "checkpoint": "outputs/qwen-fullpool-tool-rich-expansion-2000-20261029/epoch-01",
+        "epoch": 1,
+        "heldout_validation_metrics": {
+          "accuracy": 0.954,
+          "confusion_matrix": [
+            [
+              242,
+              2,
+              6,
+              0
+            ],
+            [
+              3,
+              235,
+              11,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              0
+            ]
+          ],
+          "examples": 500,
+          "macro_f1": 0.4857211602283287
+        },
+        "step": 1984,
+        "training_evaluation_examples": 500,
+        "training_evaluation_fingerprint": "edd75b31f4564b177ca458cedd25d234ef052f93dfad18ccc4d2a75a727bb833",
+        "training_loss": 0.200349677659833,
+        "training_metrics": {
+          "accuracy": 0.986,
+          "confusion_matrix": [
+            [
+              170,
+              1,
+              1,
+              0
+            ],
+            [
+              1,
+              162,
+              1,
+              0
+            ],
+            [
+              0,
+              3,
+              161,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "examples": 500,
+          "macro_f1": 0.7394453265638437
+        },
+        "validation_examples": 500,
+        "validation_source": "sft"
+      },
+      {
+        "black_box_test_metrics": {
+          "accuracy": 0.7116648411829135,
+          "examples": 3652,
+          "macro_f1": 0.5308708219533633,
+          "sample_method": "full test split",
+          "sample_seed": null
+        },
+        "checkpoint": "outputs/qwen-fullpool-tool-rich-expansion-2000-20261029/epoch-02",
+        "epoch": 2,
+        "heldout_validation_metrics": {
+          "accuracy": 0.948,
+          "confusion_matrix": [
+            [
+              242,
+              2,
+              6,
+              0
+            ],
+            [
+              4,
+              232,
+              13,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              0
+            ]
+          ],
+          "examples": 500,
+          "macro_f1": 0.48362639605750446
+        },
+        "step": 3968,
+        "stop_reason": "held-out validation accuracy did not improve",
+        "training_evaluation_examples": 500,
+        "training_evaluation_fingerprint": "edd75b31f4564b177ca458cedd25d234ef052f93dfad18ccc4d2a75a727bb833",
+        "training_loss": 0.07393061524275968,
+        "training_metrics": {
+          "accuracy": 0.994,
+          "confusion_matrix": [
+            [
+              172,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              163,
+              0,
+              0
+            ],
+            [
+              1,
+              1,
+              162,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "examples": 500,
+          "macro_f1": 0.7454967807196069
+        },
+        "validation_examples": 500,
+        "validation_source": "sft"
+      }
+    ],
+    "experiment": "qwen25_1p5b_all_when2call_trainpref_sft",
+    "optimizer_steps": 5952,
+    "purpose": "Train on the selected When2Call preference rows and optional synthetic examples, then report each epoch.",
+    "selection_procedure": "Clean held-out validation controls continuation unless the user explicitly enables --stop-on-test-non-improvement; then the same aggregate black-box test accuracy controls continuation for this declared pilot only.",
+    "test_label_use": "Test labels are accessed only inside the evaluator to compute aggregate accuracy and macro F1. Under the user's explicit pilot stopping rule, aggregate accuracy may control continuation. No individual test rows, labels, predictions, or correctness values are saved.",
+    "training_evaluation_examples_per_epoch": 500,
+    "training_loss_by_epoch": [
+      0.200349677659833,
+      0.07393061524275968
+    ],
+    "validation_examples": 500,
+    "validation_source": "sft",
+    "wandb_run_id": "g77cn98h",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/g77cn98h"
+  },
+  "metrics_path": "/workspace/post-training/outputs/qwen-fullpool-tool-rich-expansion-2000-20261029/metrics.json",
+  "official_test_loaded": null,
+  "official_test_metrics": {
+    "accuracy": 0.7116648411829135,
+    "examples": 3652,
+    "macro_f1": 0.5308708219533633,
+    "sample_method": "full test split",
+    "sample_seed": null
+  },
+  "output_dir": "/workspace/post-training/outputs/qwen-fullpool-tool-rich-expansion-2000-20261029",
+  "source_validation_metrics": {
+    "heldout_validation_metrics": {
+      "accuracy": 0.948,
+      "confusion_matrix": [
+        [
+          242,
+          2,
+          6,
+          0
+        ],
+        [
+          4,
+          232,
+          13,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0
+        ]
+      ],
+      "examples": 500,
+      "macro_f1": 0.48362639605750446
+    }
+  },
+  "started_at": "2026-10-29T22:21:04.293322+00:00",
+  "status": "completed",
+  "test_status": "measured",
+  "timestamp": "2026-10-29T23:05:45.561221+00:00",
+  "train_metrics": {
+    "accuracy": 0.994,
+    "confusion_matrix": [
+      [
+        172,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        163,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        162,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "examples": 500,
+    "macro_f1": 0.7454967807196069
+  },
+  "wandb_run_id": "g77cn98h",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/g77cn98h"
+}
+```
