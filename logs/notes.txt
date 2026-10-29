@@ -8644,3 +8644,5 @@ remove the file manually to continue.
 . The result remains local and the worker queue continues.
 
 2026-10-29T18:40Z: Repaired research-state tracking after the watchdog used the next queued command to check the still-running active PID. PID 367159 remains in evaluation. The queued wrapper failed its preflight because the active run metrics were not yet available and made no model update. Restored worker_command to the active training command and requeued the gated balanced pilot after it.
+
+2026-10-29T18:41Z: Recorded the asynchronous recorder synchronization error for the premature balanced-pilot preflight. Its git commit collided with another repository commit. The wrapper exited before training because the active weight-decay metrics were not ready. The wrapper remains queued behind the accurately tracked live trainer and requires complete metrics before training.
