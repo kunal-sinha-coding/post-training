@@ -161103,3 +161103,63 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/nr2skozv"
 }
 ```
+
+## when2call-context-recoverability-300pairs-champion-20261029
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.generate_when2call_contextual_pilot",
+    "--output-dir",
+    "outputs/when2call-context-recoverability-300pairs-champion-20261029",
+    "--pairs",
+    "300",
+    "--workers",
+    "24",
+    "--seed",
+    "20261155",
+    "--max-cost-usd",
+    "1.0"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "when2call-context-recoverability-300pairs-champion-20261029",
+  "failure_reason": null,
+  "metadata": {
+    "accepted_pairs": 276,
+    "class_counts": {
+      "request_for_info": 276,
+      "tool_call": 276
+    },
+    "concurrency": 24,
+    "cost_ledger": "outputs/when2call-context-recoverability-300pairs-champion-20261029/cost-ledger.json",
+    "estimated_cost_usd": 0.0942295,
+    "generation_model": "gpt-6-luna",
+    "official_test_loaded": false,
+    "output_jsonl": "outputs/when2call-context-recoverability-300pairs-champion-20261029/contextual_pairs.jsonl",
+    "pairs_requested": 300,
+    "rows_written": 552,
+    "seed": 20261155,
+    "source": "nvidia/When2Call train_pref",
+    "status": "completed",
+    "test_labels_used": false
+  },
+  "metrics_path": "/workspace/post-training/outputs/when2call-context-recoverability-300pairs-champion-20261029/metrics.json",
+  "official_test_loaded": false,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/when2call-context-recoverability-300pairs-champion-20261029",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-29T09:31:45.920699+00:00",
+  "status": "completed",
+  "test_status": "not measured",
+  "timestamp": "2026-10-29T09:33:17.506723+00:00",
+  "train_metrics": {},
+  "wandb_run_id": null,
+  "wandb_run_url": null
+}
+```

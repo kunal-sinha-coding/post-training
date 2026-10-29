@@ -13892,3 +13892,15 @@ Clean development accuracy: 0.928. Clean development macro F1: 0.47420003350645.
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.928, "macro_f1": 0.47420003350645, "confusion_matrix": [[244, 1, 5, 0], [13, 220, 16, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## when2call-context-recoverability-300pairs-champion-20261029
+
+Timestamp: 2026-10-29T09:33:17.506723+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.generate_when2call_contextual_pilot", "--output-dir", "outputs/when2call-context-recoverability-300pairs-champion-20261029", "--pairs", "300", "--workers", "24", "--seed", "20261155", "--max-cost-usd", "1.0"]. Output: /workspace/post-training/outputs/when2call-context-recoverability-300pairs-champion-20261029. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
