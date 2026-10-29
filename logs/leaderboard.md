@@ -2411,3 +2411,9 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 | Candidate | qwen-fullpool-balanced-tool-rich-pilot-20261029 | 0.956 | 0.4852640432760498 | [metrics](/workspace/post-training/outputs/qwen-fullpool-balanced-tool-rich-pilot-20261029/metrics.json) | completed |
 
 | qwen-fullpool-balanced-tool-rich-pilot-20261029 | 0.7179627601314348 | 0.5385343177929207 | 83caeizm | Aggregate-only frozen test measurement |
+| Candidate | qwen-fullpool-balanced-tool-rich-pilot-epoch2-20261029 | 0.956 | 0.4852640432760498 | [metrics](/workspace/post-training/outputs/qwen-fullpool-balanced-tool-rich-pilot-epoch2-20261029/metrics.json) | skipped |
+
+| qwen-fullpool-balanced-tool-rich-pilot-epoch2-20261029 | 0.7179627601314348 | 0.5385343177929207 | not available | Aggregate-only frozen test measurement |
+| Candidate | qwen-fullpool-balanced-tool-rich-real-replay-20261029 | 0.952 | 0.4856621567581978 | [metrics](/workspace/post-training/outputs/qwen-fullpool-balanced-tool-rich-real-replay-20261029/metrics.json) | completed |
+
+| qwen-fullpool-balanced-tool-rich-real-replay-20261029 | 0.7130339539978094 | 0.5319289460866379 | ldt4dwl4 | Aggregate-only frozen test measurement |

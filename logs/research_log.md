@@ -14678,3 +14678,27 @@ Clean development accuracy: 0.956. Clean development macro F1: 0.485264043276049
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.956, "macro_f1": 0.4852640432760498, "confusion_matrix": [[242, 3, 5, 0], [4, 236, 9, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-fullpool-balanced-tool-rich-pilot-epoch2-20261029
+
+Timestamp: 2026-10-29T18:55:49.698798+00:00. Status: skipped.
+
+Setup: ["python", "-u", "-m", "experiments.continue_balanced_pilot_if_validation_improves", "--pilot-metrics", "outputs/qwen-fullpool-balanced-tool-rich-pilot-20261029/metrics.json", "--pilot-checkpoint", "outputs/qwen-fullpool-balanced-tool-rich-pilot-20261029/epoch-01", "--pilot-data", "outputs/when2call-tool-rich-balanced-pilot-20261029/balanced_boundary_tool_rich.jsonl", "--output-dir", "outputs/qwen-fullpool-balanced-tool-rich-pilot-epoch2-20261029", "--baseline-accuracy", "0.962", "--baseline-macro-f1", "0.48832640709774233"]. Output: /workspace/post-training/outputs/qwen-fullpool-balanced-tool-rich-pilot-epoch2-20261029. W&B run: not available.
+
+Clean development accuracy: 0.956. Clean development macro F1: 0.4852640432760498. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7179627601314348, "macro_f1": 0.5385343177929207, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {}. Failure reason: Clean validation did not improve over baseline..
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-fullpool-balanced-tool-rich-real-replay-20261029
+
+Timestamp: 2026-10-29T19:21:28.687421+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-fullpool-balanced-tool-rich-real-replay-20261029", "--adapter-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--augmentation-jsonl", "outputs/when2call-tool-rich-balanced-pilot-20261029/balanced_boundary_tool_rich.jsonl", "--preference-train-sample-size", "262", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "3", "--learning-rate", "5e-6", "--weight-decay", "0.01", "--baseline-validation-accuracy", "0.962", "--baseline-validation-macro-f1", "0.48832640709774233", "--stop-on-validation-non-improvement", "--seed", "20261203"]. Output: /workspace/post-training/outputs/qwen-fullpool-balanced-tool-rich-real-replay-20261029. W&B run: ldt4dwl4.
+
+Clean development accuracy: 0.952. Clean development macro F1: 0.4856621567581978. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7130339539978094, "macro_f1": 0.5319289460866379, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.952, "macro_f1": 0.4856621567581978, "confusion_matrix": [[243, 2, 5, 0], [2, 233, 14, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
