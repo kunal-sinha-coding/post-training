@@ -8318,3 +8318,8 @@ The feasible tool-rich generator completed with 309 accepted paired scenarios an
 Commit name: Add intermediate unsupported-share data recipe.
 
 Re-audited the latest completed model run and confirmed training 0.992000 / macro F1 0.744897 on 500 rows, clean validation 0.942000 / 0.481458 on 500 rows, and aggregate black-box test 0.736309 / 0.548398 on 3,652 rows. The current feasible tool-rich continuation is active. Added a separate 400-pair / 300-unsupported tool-rich recipe after the current and low-unsupported recipes. It tests an approximately 30% unsupported share against prior evidence at approximately 23% and a larger unsupported share. Both the data and model commands use the existing champion, fixed training settings, and clean-validation selection.
+
+## 2026-10-29: Queue a champion-based contextual synthetic pilot
+Commit name: Test context recoverability from the tool-rich champion.
+
+Verified that the latest completed training run has training, clean-validation, and aggregate black-box metrics recorded. Added a distinct 300-pair contextual recoverability generator and a one-epoch synthetic-only continuation from the tool-rich champion after the current unsupported-share experiments. This tests whether prior context containing a required value versus a paired context that omits it transfers when starting from the stronger checkpoint. An older contextual run had weak aggregate transfer, so this is a bounded check rather than an assumed improvement. Validation remains the selection criterion; test data are aggregate-only.

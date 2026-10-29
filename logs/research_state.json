@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
-  "current_hypothesis": "The latest completed trained model, the random-anchor 827-row pilot, has complete train, clean-validation, and aggregate test evidence: 0.992 / 0.744897, 0.942 / 0.481458, and 0.736309 / 0.548398. It underperforms the tool-rich champion on clean validation. The current feasible tool-rich recipe generated 803 rows and its continuation is active. Existing evidence suggests unsupported share may matter: the 807-row paired plus 187 unsupported recipe reached 0.958 validation, while the 994-row tool-rich recipe with a larger unsupported share reached 0.950.",
+  "current_hypothesis": "The latest completed trained model remains the 827-row random-anchor continuation with complete evidence: training 0.992 / 0.744897 on 500 rows, clean validation 0.942 / 0.481458 on 500 rows, and aggregate test 0.736309 / 0.548398 on 3652 rows. The feasible 803-row tool-rich continuation is active. The queue compares tool-rich unsupported shares near 13% and 30% against the prior stronger 23% recipe.",
   "active_experiment": {
     "pid": 334865,
     "command": [
@@ -189,6 +189,57 @@
       "0.48363771417663637",
       "--augmentation-jsonl",
       "outputs/when2call-tool-rich-paired-medium-unsupported-20261029/balanced_boundary_tool_rich.jsonl"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.generate_when2call_contextual_pilot",
+      "--output-dir",
+      "outputs/when2call-context-recoverability-300pairs-champion-20261029",
+      "--pairs",
+      "300",
+      "--workers",
+      "24",
+      "--seed",
+      "20261155",
+      "--max-cost-usd",
+      "1.0"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-context-recoverability-synthetic-only-champion-20261029",
+      "--adapter-checkpoint",
+      "outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/epoch-01",
+      "--synthetic-only",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "1",
+      "--seed",
+      "20261156",
+      "--learning-rate",
+      "5e-6",
+      "--baseline-validation-accuracy",
+      "0.95",
+      "--baseline-validation-macro-f1",
+      "0.48363771417663637",
+      "--augmentation-jsonl",
+      "outputs/when2call-context-recoverability-300pairs-champion-20261029/contextual_pairs.jsonl"
     ]
   ],
   "_previous_command": [
@@ -218,7 +269,7 @@
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
   "last_heartbeat": "2026-10-29T08:45:53.676625+00:00",
-  "last_action": "Added a distinct approximately 30% unsupported-share tool-rich recipe after the active 23% and queued approximately 13% recipes.",
+  "last_action": "Queued a distinct context-recoverability synthetic generation and champion continuation after the unsupported-share experiments.",
   "watchdog_enabled": true,
   "research_log_size": 1773206,
   "stop_command": "STOP",
@@ -271,7 +322,7 @@
     "wandb_run_id": "vrfnnoq2",
     "selection": "Aggregate test result reported for ranking only. It was not used for candidate selection."
   },
-  "next_hypothesis": "After the active 23% unsupported tool-rich run and queued 13% run, test a roughly 30% unsupported share with the same 400 tool-rich pairs, same champion checkpoint, and unchanged optimizer and validation settings. This brackets the 23% best-validation mixture between a lower and higher unsupported dose. Use clean validation for selection and aggregate test only as a black-box report.",
+  "next_hypothesis": "After the unsupported-share comparisons, test a 300-pair multi-turn context-recoverability pool from train_pref. Each pair differs in whether the required value is present earlier in the conversation. The prior contextual synthetic continuation had weak aggregate transfer and used an older checkpoint. Repeating this distinct recipe from the tool-rich champion will test whether the checkpoint is a material factor. Keep all training settings fixed and select by clean validation only.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
