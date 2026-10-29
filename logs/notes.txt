@@ -8612,3 +8612,16 @@ Context: The latest completed experiment has complete evidence. The fusion weigh
 2026-10-29T18:28:09.584560+00:00: Commit `Record research experiment qwen-fullpool-bestval-fivevote-three-encoder-fusion-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
 
 2026-10-29T18:31Z: Audited completed run qwen-fullpool-bestval-fivevote-three-encoder-fusion-20261029. Training was explicitly not applicable for frozen fusion; upstream checkpoint training evidence, clean validation, and full aggregate black-box metrics are recorded. The 25% encoder blend tied Qwen validation accuracy, so no further fixed-fusion sweep is queued. Queued a controlled weight-decay comparison because recent synthetic-only runs reached 100% training accuracy while clean validation remained flat or lower. All other training settings and data remain fixed.
+
+2026-10-29T18:32Z: Recorded the complete frozen fusion transfer audit for qwen-fullpool-bestval-fivevote-three-encoder-fusion-20261029. Training was not applicable. Clean validation tied Qwen, so the encoder branch is not being extended. Queued a low-cost balanced synthetic data generation after the active regularization trial, based on the 22/158/158 class imbalance in the prior 338-row tool-rich pool. The generated count and active trial clean-validation result will be reviewed before training.
+
+2026-10-29T18:34:08.464906+00:00: Commit `Record research experiment qwen-fullpool-followup338-wd005-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-29T18:34:09.574481+00:00: Commit `Record experiment synchronization failure` records the failed commit or push for qwen-fullpool-followup338-wd005-20261029: fatal: Unable to create '/workspace/post-training/.git/index.lock': File exists.
+
+Another git process seems to be running in this repository, e.g.
+an editor opened by 'git commit'. Please make sure all processes
+are terminated then try again. If it still fails, a git process
+may have crashed in this repository earlier:
+remove the file manually to continue.
+. The result remains local and the worker queue continues.

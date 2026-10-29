@@ -14557,3 +14557,21 @@ This record was written automatically. Candidate selection must use clean valida
 This frozen inference run has complete applicable evidence. Training metrics are not applicable because it did not update model weights. Its source Qwen checkpoint records 0.960000 training accuracy and 0.720145 macro F1 on 500 examples. On clean validation, the selected 25% encoder probability blend scored 0.960000 accuracy and 0.487803 macro F1 on 500 examples, tying Qwen accuracy. The full aggregate black-box test score is 0.704545 accuracy and 0.529299 macro F1 on 3,652 examples. Test metrics are report-only.
 
 The recent synthetic-only runs reached 1.000 training accuracy while clean validation stayed flat or decreased. This supports one controlled regularization experiment. Continue from the full-pool checkpoint using the same 338 tool-rich follow-up examples, same seed, learning rate, epoch count, and evaluation samples. Increase only weight decay from 0.01 to 0.05. Use clean validation for selection and record full aggregate test metrics for reporting only.
+
+## qwen-fullpool-bestval-fivevote-three-encoder-fusion-20261029: evidence audit and balanced-data hypothesis
+
+The frozen fusion experiment has all applicable evidence recorded. Training is not applicable because no weights changed; its source checkpoint recorded 0.960000 training accuracy and 0.720145 macro F1 on 500 rows. Clean validation selected the 25% encoder blend at 0.960000 accuracy and 0.487803 macro F1 on 500 rows, tying Qwen. Full aggregate black-box test metrics were 0.704545 accuracy and 0.529299 macro F1 on 3,652 rows. Test metrics are report-only.
+
+A prior successful 338-row synthetic pool contained 22 `cannot_answer`, 158 `request_for_info`, and 158 `tool_call` rows, while the sampled real preference data was approximately balanced across its three classes. Queued generation of 100 paired tool-call/request-for-info examples and 100 unsupported examples using tool-rich anchors, with a $0.50 cost cap. This generation waits behind the active weight-decay experiment. Review generation counts and the weight-decay clean-validation result before selecting a checkpoint for training.
+
+## qwen-fullpool-followup338-wd005-20261029
+
+Timestamp: 2026-10-29T18:34:06.191467+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-fullpool-followup338-wd005-20261029", "--adapter-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--synthetic-only", "--augmentation-jsonl", "outputs/when2call-tool-rich-low-dose-followup-20261029/balanced_boundary_tool_rich.jsonl", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--learning-rate", "5e-6", "--weight-decay", "0.05", "--baseline-validation-accuracy", "0.962", "--baseline-validation-macro-f1", "0.48832640709774233", "--seed", "20261183"]. Output: /workspace/post-training/outputs/qwen-fullpool-followup338-wd005-20261029. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
