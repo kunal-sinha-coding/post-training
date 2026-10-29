@@ -1,10 +1,10 @@
 {
-  "status": "awaiting_codex_planning",
+  "status": "active",
   "planning_owner": "codex_primary",
-  "planning_required": true,
+  "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
-  "current_hypothesis": "The latest combined synthetic-only pool has complete training, clean-validation, and aggregate-test evidence. It reached 0.946 validation accuracy, below the 0.950 tool-rich-only and rare-schema-only pilots. The clean-validation-best replay checkpoint reached 0.960 accuracy on the same 500-row clean validation sample.",
+  "current_hypothesis": "The latest 1,950-row tool-rich-only run records training accuracy 0.990, clean-validation accuracy 0.950, and aggregate test accuracy 0.737404. Its clean-validation accuracy is below the 0.960 starting checkpoint. The preceding 983-row tool-rich continuation also scored 0.954 clean-validation accuracy. Both runs used learning rate 5e-6 and synthetic-only data.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -48,7 +48,92 @@
     "--augmentation-jsonl",
     "outputs/when2call-two-tool-rich-pools-20261029/balanced_boundary_combined.jsonl"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-tool-rich-expansion-replay-lr1e6-20261029",
+      "--adapter-checkpoint",
+      "outputs/qwen-tool-rich-boundary-replay900-20261028/epoch-01",
+      "--synthetic-only",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "3",
+      "--stop-on-validation-non-improvement",
+      "--baseline-validation-accuracy",
+      "0.96",
+      "--baseline-validation-macro-f1",
+      "0.4872873318653768",
+      "--baseline-test-accuracy",
+      "0.7278203723986857",
+      "--baseline-test-macro-f1",
+      "0.5446447229603346",
+      "--baseline-test-source",
+      "outputs/qwen-tool-rich-boundary-replay900-20261028/metrics.json",
+      "--seed",
+      "20261127",
+      "--learning-rate",
+      "1e-6",
+      "--augmentation-jsonl",
+      "outputs/when2call-tool-rich-expansion-20261029/balanced_boundary_tool_rich.jsonl"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-tool-rich-expansion-500-dose-replay-20261029",
+      "--adapter-checkpoint",
+      "outputs/qwen-tool-rich-boundary-replay900-20261028/epoch-01",
+      "--synthetic-only",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "3",
+      "--stop-on-validation-non-improvement",
+      "--baseline-validation-accuracy",
+      "0.96",
+      "--baseline-validation-macro-f1",
+      "0.4872873318653768",
+      "--baseline-test-accuracy",
+      "0.7278203723986857",
+      "--baseline-test-macro-f1",
+      "0.5446447229603346",
+      "--baseline-test-source",
+      "outputs/qwen-tool-rich-boundary-replay900-20261028/metrics.json",
+      "--seed",
+      "20261128",
+      "--learning-rate",
+      "5e-6",
+      "--augmentation-jsonl",
+      "outputs/when2call-tool-rich-expansion-500-stratified-20261029/balanced_boundary_tool_rich_500.jsonl"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -76,21 +161,16 @@
     "selection": "clean validation only"
   },
   "last_heartbeat": "2026-10-29T02:10:07.582866+00:00",
-  "last_action": "Watchdog handed planning control to the primary Codex process.",
+  "last_action": "Queued lower-learning-rate and smaller-dose controlled tool-rich synthetic follow-ups.",
   "watchdog_enabled": true,
-  "research_log_size": 1724191,
+  "research_log_size": 1726072,
   "stop_command": "STOP",
   "next_experiment": null,
-  "recording_jobs": [
-    {
-      "pid": 317172,
-      "experiment_id": "qwen-tool-rich-two-pool-synthetic-only-20261029"
-    }
-  ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-29T02:27:45.300023+00:00",
-  "planning_ack_deadline": "2026-10-29T02:29:45.300051+00:00",
-  "planning_attempts": 15,
+  "planning_notified_at": "2026-10-29T02:29:46.857085+00:00",
+  "planning_ack_deadline": "2026-10-29T02:31:46.857110+00:00",
+  "planning_attempts": 16,
   "best_observed_test": {
     "method": "qwen-pref900-synth450-tool-rich-20261028",
     "accuracy": 0.7332968236582694,
@@ -100,7 +180,7 @@
     "wandb_run_id": "vrfnnoq2",
     "selection": "Aggregate test result reported for ranking only. It was not used for candidate selection."
   },
-  "next_hypothesis": "The active fresh-pool replay tests incremental tool-rich data. A distinct deduplicated 1,950-row pool now combines the earlier 994-row tool-rich set and the fresh 983-row set, removing 27 exact duplicate prompts. Train on this same-strategy larger pool from the fixed clean-validation-best checkpoint to test whether the previous mixed-pool drop came from mixing rare-schema data rather than from pool size. Use clean validation only for selection.",
+  "next_hypothesis": "The validation decline after synthetic-only continuation may reflect optimization drift or too much synthetic exposure per update. First keep the 983-row pool and reduce learning rate to 1e-6. Then keep learning rate at 5e-6 and reduce exposure to a 500-row stratified sample. Compare both with the same clean-validation-best checkpoint and stop when clean-validation accuracy does not improve over 0.960.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
@@ -109,21 +189,22 @@
   "paused_at": null,
   "api_generation_budget": {
     "cap_usd": 10.0,
-    "spent_usd": 1.8347793,
+    "spent_usd": 1.9262886,
     "since": "2026-10-26",
     "generation_started": true,
     "current_pilot_cap_usd": 1.0,
-    "last_ledger": "outputs/when2call-tool-rich-expansion-20261029/cost-ledger.json",
-    "last_generation_summary": "outputs/when2call-tool-rich-expansion-20261029/metrics.json",
+    "last_ledger": "outputs/when2call-multiturn-context-expansion-20261029/cost-ledger.json",
+    "last_generation_summary": "outputs/when2call-multiturn-context-expansion-20261029/metrics.json",
     "accepted_examples": {
       "new_tool_call": 893,
       "missing_required_info": 568,
       "unsupported_capability": 896,
       "composed_tool_call": 895
     },
-    "last_generation_summary_text": "Generated 983 tool-rich examples (306 paired tool-call/request pairs and 371 unsupported requests) at estimated cost $0.230929; test data was not loaded.",
+    "last_generation_summary_text": "Generated 552 multi-turn contextual rows from 276 judged pairs at estimated cost $0.091509; test data was not loaded.",
     "rare_schema_cost_recorded_usd": 0.21089090000000002,
-    "tool_rich_expansion_cost_recorded_usd": 0.2309291
+    "tool_rich_expansion_cost_recorded_usd": 0.2309291,
+    "contextual_expansion_cost_recorded_usd": 0.0915093
   },
   "future_policy": {
     "evaluation_frequency": "At the end of each one-epoch pilot.",
@@ -146,23 +227,23 @@
     "selection_use": "none"
   },
   "evidence_audit": {
-    "latest_completed_experiment": "qwen-tool-rich-plus-rare-schema-synthetic-only-20261029",
+    "latest_completed_experiment": "qwen-tool-rich-two-pool-synthetic-only-20261029",
     "training_metrics_recorded": true,
-    "training_metrics_source": "outputs/qwen-tool-rich-plus-rare-schema-synthetic-only-20261029/metrics.json:epoch_records[0].training_metrics",
+    "training_metrics_source": "outputs/qwen-tool-rich-two-pool-synthetic-only-20261029/metrics.json:epoch_records[0].training_metrics",
     "training_examples": 500,
-    "training_accuracy": 0.994,
-    "training_macro_f1": 0.7453394777265745,
+    "training_accuracy": 0.99,
+    "training_macro_f1": 0.7422078626759538,
     "clean_validation_recorded": true,
-    "clean_validation_source": "outputs/qwen-tool-rich-plus-rare-schema-synthetic-only-20261029/metrics.json:epoch_records[0].heldout_validation_metrics; nvidia/When2Call train_sft",
+    "clean_validation_source": "outputs/qwen-tool-rich-two-pool-synthetic-only-20261029/metrics.json:epoch_records[0].heldout_validation_metrics; nvidia/When2Call train_sft",
     "clean_validation_examples": 500,
-    "clean_validation_accuracy": 0.946,
-    "clean_validation_macro_f1": 0.4830396659707724,
+    "clean_validation_accuracy": 0.95,
+    "clean_validation_macro_f1": 0.4816657332059434,
     "aggregate_black_box_test_metrics_recorded": true,
-    "aggregate_black_box_test_source": "outputs/qwen-tool-rich-plus-rare-schema-synthetic-only-20261029/metrics.json:epoch_records[0].black_box_test_metrics",
+    "aggregate_black_box_test_source": "outputs/qwen-tool-rich-two-pool-synthetic-only-20261029/metrics.json:epoch_records[0].black_box_test_metrics",
     "aggregate_black_box_test_examples": 3652,
-    "aggregate_black_box_test_accuracy": 0.7316538882803943,
-    "aggregate_black_box_test_macro_f1": 0.5463245842919602,
-    "candidate_selection": "Clean held-out validation only. Aggregate black-box test metrics are report-only and were not used to select the next experiment."
+    "aggregate_black_box_test_accuracy": 0.7374041621029573,
+    "aggregate_black_box_test_macro_f1": 0.5484148001150332,
+    "candidate_selection": "Clean held-out validation only. Aggregate black-box test metrics are report-only."
   },
   "duplicate_worker_failure": {
     "pid": 103632,
@@ -284,15 +365,15 @@
     }
   ],
   "latest_aggregate_test_report": {
-    "experiment": "qwen-tool-rich-plus-rare-schema-synthetic-only-20261029",
+    "experiment": "qwen-tool-rich-two-pool-synthetic-only-20261029",
     "selection": "Reporting only; not used for candidate selection.",
     "metrics": {
-      "accuracy": 0.7316538882803943,
-      "macro_f1": 0.5463245842919602,
+      "accuracy": 0.7374041621029573,
+      "macro_f1": 0.5484148001150332,
       "examples": 3652
     }
   },
-  "updated_at": "2026-10-29T01:33:47.428366+00:00",
+  "updated_at": "2026-10-29T02:30:01.003793+00:00",
   "synthetic_pilot_results": [
     {
       "strategy": "missing_required_info",
@@ -399,7 +480,7 @@
     "ensemble_aggregate_test_accuracy": 0.7313800657174151,
     "test_metric_use": "Reporting only; not used for candidate selection."
   },
-  "latest_completed_experiment": "qwen-tool-rich-plus-rare-schema-synthetic-only-20261029",
+  "latest_completed_experiment": "qwen-tool-rich-two-pool-synthetic-only-20261029",
   "evidence_policy": {
     "selection_metric": "clean held-out validation only",
     "aggregate_test": "reporting only; never use test-derived metrics for candidate selection",

@@ -8117,3 +8117,10 @@ I queued a synthetic-only training experiment on this larger same-strategy pool 
 2026-10-29T02:08:10.185934+00:00: Commit `Record research experiment qwen-multiturn-context-synthetic-only-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
 
 2026-10-29T02:27:47.058262+00:00: Commit `Record research experiment qwen-tool-rich-two-pool-synthetic-only-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+## 2026-10-29: Queue controlled synthetic-drift follow-ups
+Commit name: Queue lower-rate and smaller-dose synthetic trials.
+
+The latest completed model run, `qwen-tool-rich-two-pool-synthetic-only-20261029`, has complete evidence: training 500 rows at 0.990 accuracy and 0.742208 macro F1, clean validation 500 rows at 0.950 accuracy and 0.481666 macro F1, and aggregate black-box test 3,652 rows at 0.737404 accuracy and 0.548415 macro F1. The previous 983-row tool-rich continuation had 0.954 clean-validation accuracy. Both are below the 0.960 clean-validation starting checkpoint. Aggregate test metrics were not used for selection.
+
+I queued two controlled hypotheses. First, keep the full fresh 983-row tool-rich pool but reduce learning rate from 5e-6 to 1e-6. Second, keep 5e-6 but use a fixed stratified 500-row subset of the same pool. Both start from the same clean-validation-best checkpoint, evaluate at most 500 training and validation rows, evaluate the full test set for reporting only, and stop on clean-validation accuracy non-improvement. I also accounted for the completed 552-row contextual generation at $0.091509, bringing tracked cumulative API spend to $1.926289 of the $10 cap.
