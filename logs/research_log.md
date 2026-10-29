@@ -14445,3 +14445,27 @@ Clean development accuracy: 0.952. Clean development macro F1: 0.485200226122089
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.952, "macro_f1": 0.4852002261220893, "confusion_matrix": [[241, 3, 6, 0], [2, 235, 12, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## when2call-rare-schema-expansion-20261029
+
+Timestamp: 2026-10-29T17:17:35.065759+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.generate_when2call_boundary_pilot", "--output-dir", "outputs/when2call-rare-schema-expansion-20261029", "--pairs", "167", "--unsupported", "166", "--workers", "24", "--seed", "20261191", "--max-cost-usd", "0.5", "--anchor-strategy", "rare_schema"]. Output: /workspace/post-training/outputs/when2call-rare-schema-expansion-20261029. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-best-tool-rich-rare-schema-synthetic-only-20261029
+
+Timestamp: 2026-10-29T17:29:05.998597+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-best-tool-rich-rare-schema-synthetic-only-20261029", "--adapter-checkpoint", "outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/epoch-01", "--synthetic-only", "--augmentation-jsonl", "outputs/when2call-rare-schema-expansion-20261029/balanced_boundary_rare_schema.jsonl", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.95", "--baseline-validation-macro-f1", "0.48363771417663637", "--seed", "20261192"]. Output: /workspace/post-training/outputs/qwen-best-tool-rich-rare-schema-synthetic-only-20261029. W&B run: 3wyby4xa.
+
+Clean development accuracy: 0.958. Clean development macro F1: 0.4862680412371134. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.735487404162103, "macro_f1": 0.5490504384332825, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.958, "macro_f1": 0.4862680412371134, "confusion_matrix": [[244, 1, 5, 0], [5, 235, 9, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
