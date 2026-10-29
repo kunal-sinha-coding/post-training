@@ -14236,3 +14236,8 @@ This record was written automatically. Candidate selection must use clean valida
 The latest completed run is `qwen-lowdose-best-pref400-plus-lowdose-followup336-synth-20261029`. Its complete metrics artifact records training accuracy 0.982000 and macro F1 0.738036 on 500 examples, clean validation accuracy 0.952000 and macro F1 0.484177 on 500 examples, and aggregate black-box test accuracy 0.736857 and macro F1 0.548823 on all 3652 examples. The run used 400 sampled When2Call `train_pref` rows and 338 synthetic examples from `outputs/when2call-tool-rich-low-dose-followup-20261029/balanced_boundary_tool_rich.jsonl`, starting at `outputs/qwen-tool-rich-low-dose-synthetic-only-20261029/epoch-01`; the synthetic file SHA-256 is recorded in the metrics artifact. All three evidence types are present. Test examples and labels were not inspected; test metrics are report-only.
 
 Evidence-based next hypotheses: compare the same 338-row synthetic pool with 200 real examples to test the replay ratio, then continue from the 200-real-only checkpoint on synthetic examples alone to test staged training. Both use the fixed 500-row clean validation set for selection and the full test split only for aggregate reporting. The queue is sequential.
+
+
+## 2026-10-29: Queue reverse-order continuation
+
+The current 200-real plus follow-up synthetic mixture remains active, with a real-then-synthetic continuation already queued. Added a distinct reverse-order hypothesis: train on 400 real preference rows after starting from the follow-up synthetic-only checkpoint. This tests whether real preference training after synthetic adaptation improves the fixed clean validation. The experiment is sequential behind existing queue entries. Test metrics remain report-only.

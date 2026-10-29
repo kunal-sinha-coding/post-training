@@ -8494,3 +8494,8 @@ Context: The aggregate black-box test metrics are reporting-only. No test exampl
 Commit name: Audit follow-up synthetic mixture and queue staged-training comparisons.
 Description: Reconciled the latest completed low-dose follow-up run with its complete metrics artifact. Updated the evidence audit and current clean-validation and aggregate reporting pointers. Queued a 200-real plus 338-synthetic mixture and a synthetic-only continuation from the 200-real checkpoint.
 Context: Training and clean validation are selection evidence. Aggregate black-box test metrics are reporting only. No test examples or labels were inspected or used for selection. The next experiments use the watchdog sequentially.
+
+
+Commit name: Queue reverse-order low-dose continuation.
+Description: Added one distinct follow-up that starts from the low-dose follow-up synthetic-only checkpoint and trains on 400 real preference examples. It tests training order against the already queued real-then-synthetic continuation.
+Context: The latest completed run has training, clean-validation, and full aggregate black-box test metrics. Test labels and examples are not used for selection. Existing active work remains running.
