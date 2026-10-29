@@ -8234,3 +8234,8 @@ Commit name: Record completed 750-row evidence and current worker progress.
 Updated research state to the latest completed run. Training measured 0.992000 accuracy and 0.743770 macro F1 on 500 rows. Clean validation measured 0.956000 and 0.485264 on 500 rows. Aggregate black-box test measured 0.710022 and 0.532709 on 3652 rows. The 983-row synthetic-only run is active; the 500-row rare-schema run remains queued. Candidate selection remains clean-validation-only.
 
 2026-10-29T07:05:05.726119+00:00: Commit `Record research experiment qwen-fullpref-tool-rich-expansion-983-synthetic-only-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+## 2026-10-29: Audit the 983-row run and queue a tool-rich dose comparison
+Commit name: Record full tool-rich pilot metrics and queue the 500-row dose.
+
+Recorded complete evidence for `qwen-fullpref-tool-rich-expansion-983-synthetic-only-20261029`: training 0.992000 accuracy / 0.743859 macro F1; clean validation 0.952000 / 0.483681; aggregate black-box test 0.730285 / 0.545244. The 500-row rare-schema run remains active. Queued a 500-row tool-rich subset after it to test dose with the same checkpoint and fixed setup. Test metrics are report-only.
