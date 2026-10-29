@@ -8287,3 +8287,8 @@ The last completed model run has complete training, clean-validation, and aggreg
 Commit name: Put the tool-rich generator before dependent training.
 
 Confirmed the latest completed random-anchor training run has training, clean-validation, and aggregate black-box test metrics recorded. The tool-rich continuation has not started because generation was skipped and its input file was missing. Set the generator as the first worker queue item, followed by its dependent trainer, with planning_required false and status active. The request is limited to 400 pairs and 200 unsupported requests, below the available source-anchor counts.
+
+## 2026-10-29: Verify corrected generator launch
+Commit name: Verify feasible tool-rich generation worker launch.
+
+Confirmed the watchdog launched the feasible tool-rich generator as the active worker, PID 334538. The trainer remains second in the queue and will start after generation completes. The latest completed model experiment remains the random-anchor pilot, with training, clean-validation, and aggregate test evidence recorded.
