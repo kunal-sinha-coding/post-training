@@ -2443,3 +2443,5 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 | qwen-fullpool-pref1000-replay-rank8-20261029 | 0.7018072289156626 | 0.5248010943051262 | rsjkaqzb | Aggregate-only frozen test measurement |
 
 | Candidate | qwen-fullpool-tool-rich-expansion-2000-20261029 | — | — | [metrics](/workspace/post-training/outputs/qwen-fullpool-tool-rich-expansion-2000-20261029/metrics.json) | Queued after bounded generation. Scales the matched 26.2% balanced synthetic mix to about 2,000 rows from the epoch-2 matched-mixture checkpoint. Clean validation controls continuation. | queued |
+
+| Candidate | qwen-fullpool-tool-rich-expansion-real-control-2000-20261029 | — | — | [metrics](/workspace/post-training/outputs/qwen-fullpool-tool-rich-expansion-real-control-2000-20261029/metrics.json) | Queued matched real-only control for the expanded approximately 2,000-row synthetic mixture. Clean-validation accuracy controls continuation. | queued |

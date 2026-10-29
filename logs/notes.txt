@@ -8708,3 +8708,6 @@ remove the file manually to continue.
 
 
 2026-10-29T22:17Z: Audited qwen-fullpool-pref1000-replay-rank8-20261029. Both epochs have training, clean-validation, and full aggregate test metrics. Epoch 2 was 0.994000 training accuracy and 0.745500 macro F1, 0.950000 clean-validation accuracy and 0.485176 macro F1, and 0.701807 aggregate test accuracy with 0.524801 macro F1. Validation fell from 0.954 at epoch 1. Queued bounded fresh tool-rich generation followed by a roughly 2,000-row trial at the previously baseline-tied 26.2% synthetic share. Test aggregates are report-only.
+
+
+2026-10-29T22:20Z: Added a same-checkpoint real-only control behind the planned expanded synthetic mixture. It uses 2,000 real preference rows versus the treatment target of 1,476 real plus about 524 fresh synthetic rows. Same seed and optimization settings will make the training dose comparison useful. The exact treatment row count depends on generation acceptance. Clean validation is used for selection; aggregate black-box metrics are report-only.
