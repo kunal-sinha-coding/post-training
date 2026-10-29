@@ -2274,3 +2274,6 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 
 | qwen-tool-rich-paired-medium-unsupported-synthetic-only-20261029 | 0.7300109529025192 | 0.538780951031164 | nr2skozv | Aggregate-only frozen test measurement |
 | Candidate | when2call-context-recoverability-300pairs-champion-20261029 | — | — | [metrics](/workspace/post-training/outputs/when2call-context-recoverability-300pairs-champion-20261029/metrics.json) | completed |
+| Candidate | qwen-context-recoverability-synthetic-only-champion-20261029 | 0.956 | 0.48575489159175045 | [metrics](/workspace/post-training/outputs/qwen-context-recoverability-synthetic-only-champion-20261029/metrics.json) | completed |
+
+| qwen-context-recoverability-synthetic-only-champion-20261029 | 0.721248630887185 | 0.5404721463742853 | jvelzrh2 | Aggregate-only frozen test measurement |

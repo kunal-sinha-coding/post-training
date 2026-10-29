@@ -13904,3 +13904,15 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-context-recoverability-synthetic-only-champion-20261029
+
+Timestamp: 2026-10-29T09:48:51.566973+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-context-recoverability-synthetic-only-champion-20261029", "--adapter-checkpoint", "outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/epoch-01", "--synthetic-only", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261156", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.95", "--baseline-validation-macro-f1", "0.48363771417663637", "--augmentation-jsonl", "outputs/when2call-context-recoverability-300pairs-champion-20261029/contextual_pairs.jsonl"]. Output: /workspace/post-training/outputs/qwen-context-recoverability-synthetic-only-champion-20261029. W&B run: jvelzrh2.
+
+Clean development accuracy: 0.956. Clean development macro F1: 0.48575489159175045. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.721248630887185, "macro_f1": 0.5404721463742853, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.956, "macro_f1": 0.48575489159175045, "confusion_matrix": [[242, 3, 5, 0], [3, 236, 10, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
