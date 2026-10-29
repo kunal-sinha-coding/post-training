@@ -8418,3 +8418,14 @@ fatal: updating files failed
 2026-10-29: Audit low-dose pilot and continue synthetic-data search.
 Commit name: Queue fresh low-dose synthetic tranche.
 Confirmed training, clean-validation, and aggregate black-box metrics for the latest completed model run. The 336-example synthetic continuation reached 0.960 validation accuracy / 0.487287 macro F1. Queued a fresh matched-size tool-rich tranche and a one-epoch continuation from its checkpoint. Generation is active and the trainer is queued. Test aggregates were not used for selection.
+
+2026-10-29T11:41:28.993476+00:00: Commit `Record research experiment when2call-tool-rich-low-dose-followup-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-29T11:41:32.595533+00:00: Commit `Record experiment synchronization failure` records the failed commit or push for when2call-tool-rich-low-dose-followup-20261029: fatal: Unable to create '/workspace/post-training/.git/index.lock': File exists.
+
+Another git process seems to be running in this repository, e.g.
+an editor opened by 'git commit'. Please make sure all processes
+are terminated then try again. If it still fails, a git process
+may have crashed in this repository earlier:
+remove the file manually to continue.
+. The result remains local and the worker queue continues.
