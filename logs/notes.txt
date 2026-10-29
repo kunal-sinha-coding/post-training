@@ -8255,3 +8255,8 @@ Confirmed complete training, clean-validation, and aggregate test evidence for `
 Commit name: Queue corrected one-draw screen and fresh paired-boundary pilot.
 
 Fixed the evaluator so its declared one-draw candidates are actually constructed. The previous frozen-inference run has clean-validation and aggregate test evidence for its other candidates; training is not applicable, but the requested k=1 measurement is missing. Queued that correction first. Then queued fresh train_pref-only generation of paired tool-call/request-for-info examples and a low unsupported share, followed by one synthetic-only continuation from the tool-rich champion. The data recipe follows the strongest recent clean-validation signal. Test examples and labels are not used for generation or candidate selection.
+
+## 2026-10-29: Queue random-anchor paired synthetic pilot
+Commit name: Queue matched random-anchor synthetic pilot.
+
+Audited the completed frozen-inference experiment. Training metrics are not applicable; 500-row clean-validation and full 3,652-row aggregate black-box metrics are recorded. The declared one-draw candidates were missing and their corrected evaluation is already running. Added a new follow-up data recipe after the existing tool-rich generation and continuation: 400 complete/incomplete pairs plus 200 unsupported requests from random train_pref anchors, followed by a one-epoch synthetic-only continuation from the current champion. This compares random and tool-rich anchoring while keeping the task structure and approximate data size fixed. Candidate selection remains based on clean validation, and test content is not inspected.

@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
-  "current_hypothesis": "The best clean-validation synthetic recipe was the 807-row pool with 620 paired tool-call/request-for-info examples and 187 unsupported examples, reaching 0.958 validation accuracy. Pure unsupported data reached only 0.900, and the 994-row tool-rich pool reached 0.954. Generate a fresh approximately 1,000-row tool-rich pool with the same paired-boundary structure and about 23 percent unsupported examples, then continue from the user-designated tool-rich champion. Measure train, clean validation, and full aggregate test; select by clean validation only.",
+  "current_hypothesis": "The latest completed frozen inference run has training marked not applicable and clean-validation plus aggregate black-box metrics recorded. Its declared one-draw measurement was absent and is now running. Then test fresh tool-rich paired-boundary data and continue the user-designated champion. After that, compare random versus tool-rich source anchors at similar size and label mix to isolate whether tool-rich contexts add value. Use training and held-out clean validation for selection, and report aggregate test metrics without inspecting test rows or labels.",
   "active_experiment": {
     "pid": 331430,
     "command": [
@@ -100,6 +100,61 @@
       "0.48363771417663637",
       "--augmentation-jsonl",
       "outputs/when2call-tool-rich-paired-unsupported-fresh-20261029/balanced_boundary_tool_rich.jsonl"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.generate_when2call_boundary_pilot",
+      "--output-dir",
+      "outputs/when2call-random-anchor-paired-unsupported-20261029",
+      "--pairs",
+      "400",
+      "--unsupported",
+      "200",
+      "--workers",
+      "24",
+      "--seed",
+      "20261147",
+      "--max-cost-usd",
+      "1.0",
+      "--anchor-strategy",
+      "random"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-random-anchor-paired-unsupported-synthetic-only-20261029",
+      "--adapter-checkpoint",
+      "outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/epoch-01",
+      "--synthetic-only",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "1",
+      "--seed",
+      "20261148",
+      "--learning-rate",
+      "5e-6",
+      "--baseline-validation-accuracy",
+      "0.95",
+      "--baseline-validation-macro-f1",
+      "0.48363771417663637",
+      "--augmentation-jsonl",
+      "outputs/when2call-random-anchor-paired-unsupported-20261029/balanced_boundary_random.jsonl"
     ]
   ],
   "_previous_command": [
@@ -129,7 +184,7 @@
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
   "last_heartbeat": "2026-10-29T08:00:19.199805+00:00",
-  "last_action": "Watchdog started validation worker pid 331430.",
+  "last_action": "Queued a matched random-anchor paired-boundary synthetic pilot and one-epoch continuation from the current champion after the existing tool-rich synthetic experiment sequence.",
   "watchdog_enabled": true,
   "research_log_size": 1761351,
   "stop_command": "STOP",
@@ -165,7 +220,7 @@
     "wandb_run_id": "vrfnnoq2",
     "selection": "Aggregate test result reported for ranking only. It was not used for candidate selection."
   },
-  "next_hypothesis": "After the fresh paired/unsupported pool, consider new recipes that emphasize confusable tool distractors or whether a missing argument is inferable from prior conversational context. Do not use test examples or labels to design these examples or select candidates.",
+  "next_hypothesis": "The current fresh tool-rich pair plus unsupported pilot tests the selected recipe. Next, generate the same number and class balance from random train_pref anchors and continue from the same champion. If random anchors perform similarly on clean validation, the paired decision boundary is the useful signal; if they perform worse, tool-rich contexts likely matter. Do not change inference settings during the synthetic-data search.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
