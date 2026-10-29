@@ -14619,3 +14619,15 @@ This record was written automatically. Candidate selection must use clean valida
 ## 2026-10-29: reconcile live trainer and requeue balanced pilot
 
 The weight-decay trainer PID 367159 remains live in aggregate test evaluation. An earlier gated follow-up exited before training because the watchdog compared the active PID against the queued wrapper command. No model training or measurement was produced by that wrapper. The state now points worker_command and active_experiment to the real live trainer, and keeps the gated balanced-data trainer queued after it. The latest completed model experiment remains the fusion transfer with all applicable evidence recorded.
+
+## qwen-fullpool-followup338-wd005-20261029
+
+Timestamp: 2026-10-29T18:43:13.357279+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-fullpool-followup338-wd005-20261029", "--adapter-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--synthetic-only", "--augmentation-jsonl", "outputs/when2call-tool-rich-low-dose-followup-20261029/balanced_boundary_tool_rich.jsonl", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--learning-rate", "5e-6", "--weight-decay", "0.05", "--baseline-validation-accuracy", "0.962", "--baseline-validation-macro-f1", "0.48832640709774233", "--seed", "20261183"]. Output: /workspace/post-training/outputs/qwen-fullpool-followup338-wd005-20261029. W&B run: cnettcuw.
+
+Clean development accuracy: 0.962. Clean development macro F1: 0.48832640709774233. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7020810514786419, "macro_f1": 0.5274643631656636, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.962, "macro_f1": 0.48832640709774233, "confusion_matrix": [[241, 4, 5, 0], [0, 240, 9, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
