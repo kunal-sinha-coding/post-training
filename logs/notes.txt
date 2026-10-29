@@ -8026,3 +8026,8 @@ Commit name: Queue encoder validation screen for 800-real checkpoint.
 The latest completed run, `qwen-tool-rich-boundary-replay800-20261028`, records training metrics on 500 examples (0.976 accuracy, 0.731789 macro F1), clean validation on 500 examples (0.958 accuracy, 0.486757 macro F1), and aggregate black-box test metrics on all 3,652 examples (0.723165 accuracy, 0.540689 macro F1). All required evidence is present, and test metrics are report-only.
 
 Queued a 500-example clean-validation screen combining the 800-real tool-rich checkpoint with the trained encoder. This tests whether the near-best validation checkpoint has complementary errors. The 800-real model scored 0.958 validation accuracy versus 0.960 for the 900-real model; the 1,500-real run scored 0.944. Candidate selection remains clean-validation-only.
+
+## 2026-10-29: Verify 800-real encoder screen launch
+Commit name: Verify 800-real encoder screen launch.
+
+The watchdog launched `qwen-tool-rich-replay800-encoder-clean-validation-20261029` as PID 310598. It is evaluating at most 500 clean-validation examples using the 800-real replay Qwen checkpoint and the trained encoder. State is active with planning disabled, and the queue is empty because this command was promoted. The underlying 800-real training run has all three evidence types recorded.
