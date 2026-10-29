@@ -1,32 +1,11 @@
 {
-  "status": "active",
+  "status": "awaiting_codex_planning",
   "planning_owner": "codex_primary",
-  "planning_required": false,
+  "planning_required": true,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
   "current_hypothesis": "The completed 750-row tool-rich pilot has complete evidence and clean-validation accuracy 0.956, versus 0.962 for the starting checkpoint. The full 983-row version is active to test whether the remaining accepted examples change clean-validation performance. A 500-row stratified rare-schema dose remains queued to test whether a smaller rare-schema training dose transfers better than the prior 1032-row dose.",
-  "active_experiment": {
-    "pid": 330054,
-    "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_qwen_llm_ensemble",
-      "--champion-checkpoint",
-      "outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/epoch-01",
-      "--comparison-checkpoint",
-      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
-      "--output-dir",
-      "outputs/qwen-llm-single-sample-vote-screen-20261029",
-      "--validation-size",
-      "500",
-      "--validation-seed",
-      "20261053",
-      "--batch-size",
-      "4"
-    ],
-    "started_at": "2026-10-29T07:34:36.447009+00:00"
-  },
+  "active_experiment": {},
   "worker_command": [
     "python",
     "-u",
@@ -73,38 +52,21 @@
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
   "last_heartbeat": "2026-10-29T07:34:36.447023+00:00",
-  "last_action": "Watchdog started validation worker pid 330054.",
+  "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
-  "research_log_size": 1757628,
+  "research_log_size": 1759279,
   "stop_command": "STOP",
-  "next_experiment": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.evaluate_qwen_llm_ensemble",
-    "--champion-checkpoint",
-    "outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/epoch-01",
-    "--comparison-checkpoint",
-    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
-    "--output-dir",
-    "outputs/qwen-llm-single-sample-vote-screen-20261029",
-    "--validation-size",
-    "500",
-    "--validation-seed",
-    "20261053",
-    "--batch-size",
-    "4"
-  ],
+  "next_experiment": null,
   "recording_jobs": [
     {
-      "pid": 330053,
-      "experiment_id": "qwen-fullpref-tool-rich-expansion-500-synthetic-only-20261029"
+      "pid": 331126,
+      "experiment_id": "qwen-llm-single-sample-vote-screen-20261029"
     }
   ],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-29T06:27:52.960346+00:00",
-  "planning_ack_deadline": "2026-10-29T06:29:52.960367+00:00",
-  "planning_attempts": 22,
+  "planning_notified_at": "2026-10-29T07:56:14.482476+00:00",
+  "planning_ack_deadline": "2026-10-29T07:58:14.482499+00:00",
+  "planning_attempts": 23,
   "best_observed_test": {
     "method": "qwen-pref900-synth450-tool-rich-20261028",
     "accuracy": 0.7332968236582694,
