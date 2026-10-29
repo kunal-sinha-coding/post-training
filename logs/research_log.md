@@ -13805,3 +13805,15 @@ The latest completed model run remains the random-anchor continuation, with all 
 ## 2026-10-29: Queue a lower unsupported share for tool-rich pairs
 
 The latest completed synthetic training run has complete evidence: training 0.992000 / 0.744897 on 500 sampled rows; clean validation 0.942000 / 0.481458 on 500 rows; aggregate black-box test 0.736309 / 0.548398 on all 3,652 rows. The random-anchor recipe is below the tool-rich champion on clean validation. While the feasible tool-rich 400-pair / 200-unsupported run is active, queued a distinct follow-up with 400 pairs and 100 unsupported requests. This tests whether a lower unsupported share helps, based on unsupported-only underperformance and the stronger paired-plus-minority-unsupported validation result. Both continuations use the same champion and fixed settings. Selection uses clean validation only.
+
+## when2call-tool-rich-paired-unsupported-feasible-20261029
+
+Timestamp: 2026-10-29T08:45:53.723744+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.generate_when2call_boundary_pilot", "--output-dir", "outputs/when2call-tool-rich-paired-unsupported-feasible-20261029", "--pairs", "400", "--unsupported", "200", "--workers", "24", "--seed", "20261149", "--max-cost-usd", "1.0", "--anchor-strategy", "tool_rich"]. Output: /workspace/post-training/outputs/when2call-tool-rich-paired-unsupported-feasible-20261029. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

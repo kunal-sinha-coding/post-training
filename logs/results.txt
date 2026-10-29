@@ -159951,3 +159951,71 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": null
 }
 ```
+
+## when2call-tool-rich-paired-unsupported-feasible-20261029
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.generate_when2call_boundary_pilot",
+    "--output-dir",
+    "outputs/when2call-tool-rich-paired-unsupported-feasible-20261029",
+    "--pairs",
+    "400",
+    "--unsupported",
+    "200",
+    "--workers",
+    "24",
+    "--seed",
+    "20261149",
+    "--max-cost-usd",
+    "1.0",
+    "--anchor-strategy",
+    "tool_rich"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "when2call-tool-rich-paired-unsupported-feasible-20261029",
+  "failure_reason": null,
+  "metadata": {
+    "accepted_pairs": 309,
+    "accepted_unsupported": 185,
+    "anchor_strategy": "tool_rich",
+    "class_counts": {
+      "cannot_answer": 185,
+      "request_for_info": 309,
+      "tool_call": 309
+    },
+    "concurrency": 24,
+    "cost_ledger": "outputs/when2call-tool-rich-paired-unsupported-feasible-20261029/cost-ledger.json",
+    "estimated_cost_usd": 0.1802453,
+    "generation_model": "gpt-6-luna",
+    "official_test_loaded": false,
+    "output_jsonl": "outputs/when2call-tool-rich-paired-unsupported-feasible-20261029/balanced_boundary_tool_rich.jsonl",
+    "pairs_requested": 400,
+    "rows_written": 803,
+    "seed": 20261149,
+    "source": "nvidia/When2Call train_pref",
+    "status": "completed",
+    "test_labels_used": false,
+    "unsupported_requested": 200
+  },
+  "metrics_path": "/workspace/post-training/outputs/when2call-tool-rich-paired-unsupported-feasible-20261029/metrics.json",
+  "official_test_loaded": false,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/when2call-tool-rich-paired-unsupported-feasible-20261029",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-29T08:43:21.320149+00:00",
+  "status": "completed",
+  "test_status": "not measured",
+  "timestamp": "2026-10-29T08:45:53.723744+00:00",
+  "train_metrics": {},
+  "wandb_run_id": null,
+  "wandb_run_url": null
+}
+```
