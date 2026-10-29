@@ -8689,3 +8689,5 @@ remove the file manually to continue.
 
 
 2026-10-29T19:25Z: The asynchronous recorder had already written the complete real-replay result, but its automatic commit collided with the research-state commit. Preserved the recorder error for audit. The result, metrics, and leaderboard entry are present; the next experiment is running and no worker was blocked.
+
+2026-10-29T19:57:43.803041+00:00: Commit `Record research experiment qwen-fullpool-balanced-tool-rich-real-replay-pref1000-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.

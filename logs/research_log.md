@@ -14720,3 +14720,15 @@ Command: `python -u -m experiments.train_qwen_when2call_fullpool --output-dir ou
 This control uses the same 1,000-row preference sample seed, checkpoint, learning rate, weight decay, validation sample, and stopping rule as the queued real-heavy mixture. It omits the 262 synthetic rows. The paired comparison will show whether those synthetic rows add clean-validation value beyond continued real-data training. Test aggregates remain report-only.
 
 Command: `python -u -m experiments.train_qwen_when2call_fullpool --output-dir outputs/qwen-fullpool-pref1000-replay-control-20261029 --adapter-checkpoint outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02 --preference-train-sample-size 1000 --validation-source sft --validation-sample-size 500 --validation-seed 20261053 --training-eval-sample-size 500 --training-eval-seed 20261059 --eval-batch-size 8 --epochs 3 --learning-rate 5e-6 --weight-decay 0.01 --baseline-validation-accuracy 0.962 --baseline-validation-macro-f1 0.48832640709774233 --stop-on-validation-non-improvement --seed 20261204`
+
+## qwen-fullpool-balanced-tool-rich-real-replay-pref1000-20261029
+
+Timestamp: 2026-10-29T19:57:39.484341+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-fullpool-balanced-tool-rich-real-replay-pref1000-20261029", "--adapter-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--augmentation-jsonl", "outputs/when2call-tool-rich-balanced-pilot-20261029/balanced_boundary_tool_rich.jsonl", "--preference-train-sample-size", "1000", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "3", "--learning-rate", "5e-6", "--weight-decay", "0.01", "--baseline-validation-accuracy", "0.962", "--baseline-validation-macro-f1", "0.48832640709774233", "--stop-on-validation-non-improvement", "--seed", "20261204"]. Output: /workspace/post-training/outputs/qwen-fullpool-balanced-tool-rich-real-replay-pref1000-20261029. W&B run: mb3ucqdd.
+
+Clean development accuracy: 0.948. Clean development macro F1: 0.48364052900135374. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.712486308871851, "macro_f1": 0.531766043794447, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.948, "macro_f1": 0.48364052900135374, "confusion_matrix": [[241, 3, 6, 0], [3, 233, 13, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

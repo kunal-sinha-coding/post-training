@@ -2421,3 +2421,6 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 | Candidate | qwen-fullpool-balanced-tool-rich-real-replay-pref1000-20261029 | — | — | [metrics](/workspace/post-training/outputs/qwen-fullpool-balanced-tool-rich-real-replay-pref1000-20261029/metrics.json) | Queued. Starts from selected original-data checkpoint with 1,000 preference rows and 262 balanced synthetic rows. Clean-validation accuracy controls continuation. Aggregate test metrics are report-only. | queued |
 
 | Candidate | qwen-fullpool-pref1000-replay-control-20261029 | — | — | [metrics](/workspace/post-training/outputs/qwen-fullpool-pref1000-replay-control-20261029/metrics.json) | Queued matched real-only control for the 1,000 preference plus 262 synthetic mixture. Same checkpoint, sample seed, and training settings. Clean-validation accuracy controls continuation. | queued |
+| Candidate | qwen-fullpool-balanced-tool-rich-real-replay-pref1000-20261029 | 0.948 | 0.48364052900135374 | [metrics](/workspace/post-training/outputs/qwen-fullpool-balanced-tool-rich-real-replay-pref1000-20261029/metrics.json) | completed |
+
+| qwen-fullpool-balanced-tool-rich-real-replay-pref1000-20261029 | 0.712486308871851 | 0.531766043794447 | mb3ucqdd | Aggregate-only frozen test measurement |
