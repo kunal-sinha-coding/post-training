@@ -13659,3 +13659,15 @@ This record was written automatically. Candidate selection must use clean valida
 ## 2026-10-29: Audit full tool-rich expansion and queue its 500-row dose
 
 `qwen-fullpref-tool-rich-expansion-983-synthetic-only-20261029` completed with training 0.992000 accuracy / 0.743859 macro F1 (500 sampled rows), clean validation 0.952000 / 0.483681 (500 rows), and aggregate black-box test 0.730285 / 0.545244 (3652 rows). All evidence types are recorded. Its validation accuracy is 0.952, compared with 0.956 for the 750-row subset and 0.962 for the starting checkpoint. Test metrics remain report-only. After the active 500-row rare-schema diagnostic, a 500-row stratified tool-rich subset is queued from the same base checkpoint to test the lower dose with matched settings.
+
+## qwen-fullpref-rare-schema-500-synthetic-only-20261029
+
+Timestamp: 2026-10-29T07:19:03.395165+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-fullpref-rare-schema-500-synthetic-only-20261029", "--adapter-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--synthetic-only", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261143", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.962", "--baseline-validation-macro-f1", "0.48832640709774233", "--augmentation-jsonl", "outputs/when2call-rare-schema-500-stratified-20261029/balanced_boundary_rare_schema_500.jsonl"]. Output: /workspace/post-training/outputs/qwen-fullpref-rare-schema-500-synthetic-only-20261029. W&B run: 1skea1xs.
+
+Clean development accuracy: 0.95. Clean development macro F1: 0.48316563146997926. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7256297918948521, "macro_f1": 0.5428772587684952, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.95, "macro_f1": 0.48316563146997926, "confusion_matrix": [[243, 2, 5, 0], [6, 232, 11, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

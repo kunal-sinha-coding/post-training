@@ -8239,3 +8239,5 @@ Updated research state to the latest completed run. Training measured 0.992000 a
 Commit name: Record full tool-rich pilot metrics and queue the 500-row dose.
 
 Recorded complete evidence for `qwen-fullpref-tool-rich-expansion-983-synthetic-only-20261029`: training 0.992000 accuracy / 0.743859 macro F1; clean validation 0.952000 / 0.483681; aggregate black-box test 0.730285 / 0.545244. The 500-row rare-schema run remains active. Queued a 500-row tool-rich subset after it to test dose with the same checkpoint and fixed setup. Test metrics are report-only.
+
+2026-10-29T07:19:06.266537+00:00: Commit `Record research experiment qwen-fullpref-rare-schema-500-synthetic-only-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
