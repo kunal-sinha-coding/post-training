@@ -8705,3 +8705,6 @@ remove the file manually to continue.
 2026-10-29T21:48:51.634090+00:00: Commit `Record research experiment qwen-fullpool-pref900-synth100-matched-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
 
 2026-10-29T22:15:31.645912+00:00: Commit `Record research experiment qwen-fullpool-pref1000-replay-rank8-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+
+2026-10-29T22:17Z: Audited qwen-fullpool-pref1000-replay-rank8-20261029. Both epochs have training, clean-validation, and full aggregate test metrics. Epoch 2 was 0.994000 training accuracy and 0.745500 macro F1, 0.950000 clean-validation accuracy and 0.485176 macro F1, and 0.701807 aggregate test accuracy with 0.524801 macro F1. Validation fell from 0.954 at epoch 1. Queued bounded fresh tool-rich generation followed by a roughly 2,000-row trial at the previously baseline-tied 26.2% synthetic share. Test aggregates are report-only.

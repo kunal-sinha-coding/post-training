@@ -14798,3 +14798,16 @@ Clean development accuracy: 0.95. Clean development macro F1: 0.4851755396404067
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.95, "macro_f1": 0.4851755396404067, "confusion_matrix": [[240, 3, 7, 0], [1, 235, 13, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+## 2026-10-29: scale the matched balanced tool-rich recipe
+
+Latest completed run `qwen-fullpool-pref1000-replay-rank8-20261029` has all three evidence types in both epochs. Epoch 2 training accuracy was 0.994000 and macro F1 0.745500 on 500 examples. Clean validation was 0.950000 accuracy and 0.485176 macro F1 on 500 examples. Full aggregate black-box test was 0.701807 accuracy and 0.524801 macro F1 on 3,652 examples. Epoch 1 validation was 0.954, so the lower-rank run regressed; aggregate test metrics are report-only.
+
+The matched 738-real/262-synthetic recipe reached 0.962 validation accuracy and 0.488821 macro F1 at epoch 2, tying the baseline accuracy. The 900-real/100-synthetic and real-only controls reached 0.958 and 0.954 accuracy. This supports scaling the 26.2% balanced synthetic share while keeping the total data and optimizer steps controlled.
+
+Queue bounded generation of 200 paired boundaries and 200 unsupported requests with a $0.50 generation cap. Then train from the matched recipe's epoch-2 checkpoint on 1,476 real rows plus the generated balanced pool, about 2,000 rows total. Train and validation evaluation remain capped at 500 rows. Evaluate the full aggregate test at each epoch for reporting only.
+
+Generation command: `python -u -m experiments.generate_when2call_boundary_pilot --output-dir outputs/when2call-tool-rich-balanced-expansion-20261029 --pairs 200 --unsupported 200 --workers 24 --seed 20261206 --max-cost-usd 0.50 --anchor-strategy tool_rich`
+
+Training command: `python -u -m experiments.train_qwen_when2call_fullpool --output-dir outputs/qwen-fullpool-tool-rich-expansion-2000-20261029 --adapter-checkpoint outputs/qwen-fullpool-pref738-synth262-matched-20261029/epoch-02 --augmentation-jsonl outputs/when2call-tool-rich-balanced-expansion-20261029/balanced_boundary_tool_rich.jsonl --preference-train-sample-size 1476 --validation-source sft --validation-sample-size 500 --validation-seed 20261053 --training-eval-sample-size 500 --training-eval-seed 20261059 --eval-batch-size 8 --epochs 3 --learning-rate 5e-6 --weight-decay 0.01 --baseline-validation-accuracy 0.962 --baseline-validation-macro-f1 0.48832640709774233 --stop-on-validation-non-improvement --seed 20261206`
