@@ -8358,3 +8358,11 @@ remove the file manually to continue.
 2026-10-29: Queue fresh low-unsupported tool-rich expansion.
 Commit name: Audit replay evidence and queue low-share expansion.
 The latest completed replay run records training, clean-validation, and full aggregate black-box test metrics. Refreshed the evidence audit in research_state.json and logged the measured accuracy and macro F1 values. Queued a fresh 400-pair plus 100-unsupported generation, followed by a one-epoch synthetic-only continuation from the low-unsupported checkpoint, which had the strongest clean-validation result among the recent synthetic recipe comparisons. Candidate selection uses clean validation only. The test set remains aggregate-only.
+
+2026-10-29: Reconcile watchdog research log size baseline.
+Commit name: Reconcile research log size baseline.
+The watchdog repeatedly reported the same stable size difference because research_state.json retained an older maximum file size after the research log shrank. Recorded the current file size and reason in research state so the watchdog can continue monitoring without repeating the stale warning. The active synthetic generation worker and its queue were preserved.
+
+2026-10-29T10:11:13.739234+00:00: Commit `Record research experiment when2call-tool-rich-low-share-expansion-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-29T10:11:34.867448+00:00: Commit `Record experiment synchronization failure` records the failed commit or push for when2call-tool-rich-low-share-expansion-20261029: Command '['git', '-c', 'safe.directory=/workspace/post-training', 'commit', '-m', 'Record research experiment when2call-tool-rich-low-share-expansion-20261029']' returned non-zero exit status 1.. The result remains local and the worker queue continues.
