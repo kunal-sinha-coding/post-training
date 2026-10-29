@@ -151,6 +151,48 @@
       "outputs/qwen-tool-rich-boundary-replay900-20261028/metrics.json",
       "--augmentation-jsonl",
       "outputs/when2call-multiturn-context-expansion-20261029/contextual_pairs.jsonl"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-tool-rich-two-pool-synthetic-only-20261029",
+      "--adapter-checkpoint",
+      "outputs/qwen-tool-rich-boundary-replay900-20261028/epoch-01",
+      "--synthetic-only",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "3",
+      "--stop-on-validation-non-improvement",
+      "--seed",
+      "20261126",
+      "--learning-rate",
+      "5e-6",
+      "--baseline-validation-accuracy",
+      "0.96",
+      "--baseline-validation-macro-f1",
+      "0.4872873318653768",
+      "--baseline-test-accuracy",
+      "0.7278203723986857",
+      "--baseline-test-macro-f1",
+      "0.5446447229603346",
+      "--baseline-test-source",
+      "outputs/qwen-tool-rich-boundary-replay900-20261028/metrics.json",
+      "--augmentation-jsonl",
+      "outputs/when2call-two-tool-rich-pools-20261029/balanced_boundary_combined.jsonl"
     ]
   ],
   "_previous_command": [
@@ -180,9 +222,9 @@
     "selection": "clean validation only"
   },
   "last_heartbeat": "2026-10-29T01:32:24.194599+00:00",
-  "last_action": "Watchdog started validation worker pid 315247.",
+  "last_action": "Queued a deduplicated two-pool tool-rich synthetic-only training experiment after existing tool-rich and contextual pilots.",
   "watchdog_enabled": true,
-  "research_log_size": 1718838,
+  "research_log_size": 1719645,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -226,12 +268,7 @@
     "--augmentation-jsonl",
     "outputs/when2call-tool-rich-expansion-20261029/balanced_boundary_tool_rich.jsonl"
   ],
-  "recording_jobs": [
-    {
-      "pid": 315246,
-      "experiment_id": "when2call-tool-rich-expansion-20261029"
-    }
-  ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-29T01:27:20.573883+00:00",
   "planning_ack_deadline": "2026-10-29T01:29:20.573903+00:00",
@@ -245,7 +282,7 @@
     "wandb_run_id": "vrfnnoq2",
     "selection": "Aggregate test result reported for ranking only. It was not used for candidate selection."
   },
-  "next_hypothesis": "After testing whether fresh tool-rich examples improve the clean-validation-best checkpoint, test multi-turn paired context examples as a distinct synthetic signal. A prior mixed replay reached 0.958 clean-validation accuracy but did not isolate the contextual pool. Generate 300 paired examples, then continue the same fixed clean-validation-best checkpoint on only those examples. Cap training and clean validation at 500 rows, record full aggregate test metrics for reporting only, and stop when clean-validation accuracy does not improve against 0.960.",
+  "next_hypothesis": "The active fresh-pool replay tests incremental tool-rich data. A distinct deduplicated 1,950-row pool now combines the earlier 994-row tool-rich set and the fresh 983-row set, removing 27 exact duplicate prompts. Train on this same-strategy larger pool from the fixed clean-validation-best checkpoint to test whether the previous mixed-pool drop came from mixing rare-schema data rather than from pool size. Use clean validation only for selection.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
@@ -254,20 +291,21 @@
   "paused_at": null,
   "api_generation_budget": {
     "cap_usd": 10.0,
-    "spent_usd": 1.6038502,
+    "spent_usd": 1.8347793,
     "since": "2026-10-26",
     "generation_started": true,
     "current_pilot_cap_usd": 1.0,
-    "last_ledger": "outputs/when2call-rare-schema-large-boundary-pilot-20261029/cost-ledger.json",
-    "last_generation_summary": "outputs/when2call-rare-schema-large-boundary-pilot-20261029/metrics.json",
+    "last_ledger": "outputs/when2call-tool-rich-expansion-20261029/cost-ledger.json",
+    "last_generation_summary": "outputs/when2call-tool-rich-expansion-20261029/metrics.json",
     "accepted_examples": {
       "new_tool_call": 893,
       "missing_required_info": 568,
       "unsupported_capability": 896,
       "composed_tool_call": 895
     },
-    "last_generation_summary_text": "Generated 1,032 rare-schema examples at estimated cost $0.210891; test data was not loaded.",
-    "rare_schema_cost_recorded_usd": 0.21089090000000002
+    "last_generation_summary_text": "Generated 983 tool-rich examples (306 paired tool-call/request pairs and 371 unsupported requests) at estimated cost $0.230929; test data was not loaded.",
+    "rare_schema_cost_recorded_usd": 0.21089090000000002,
+    "tool_rich_expansion_cost_recorded_usd": 0.2309291
   },
   "future_policy": {
     "evaluation_frequency": "At the end of each one-epoch pilot.",
@@ -436,7 +474,7 @@
       "examples": 3652
     }
   },
-  "updated_at": "2026-10-29T01:31:21.082126+00:00",
+  "updated_at": "2026-10-29T01:33:47.428366+00:00",
   "synthetic_pilot_results": [
     {
       "strategy": "missing_required_info",
