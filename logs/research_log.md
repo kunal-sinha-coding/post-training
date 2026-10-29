@@ -14659,3 +14659,10 @@ The prior balanced-pilot wrapper exited before training because its artifact-sta
 ## Queue clean-validation-gated balanced-pilot continuation
 
 The balanced-pilot experiment is active. Queued one conditional continuation after it completes. The command requires training, clean-validation, and aggregate black-box test metrics from its first epoch. It uses clean-validation accuracy and macro F1 only to decide whether to run one further epoch on the same data. A tie or regression skips additional training. Test metrics are report-only.
+
+
+## qwen-fullpool-balanced-tool-rich-real-replay-20261029: queued
+
+Hypothesis: mixing 262 original When2Call preference examples with the 262-row balanced synthetic boundary pilot may retain the original task distribution while adding boundary examples. The experiment starts from the selected original-data Qwen checkpoint, trains for up to three epochs, and stops when clean-validation accuracy does not improve. Training and clean-validation evaluations use at most 500 examples. The aggregate black-box evaluation uses all 3,652 examples and is report-only.
+
+Command: `python -u -m experiments.train_qwen_when2call_fullpool --output-dir outputs/qwen-fullpool-balanced-tool-rich-real-replay-20261029 --adapter-checkpoint outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02 --augmentation-jsonl outputs/when2call-tool-rich-balanced-pilot-20261029/balanced_boundary_tool_rich.jsonl --preference-train-sample-size 262 --validation-source sft --validation-sample-size 500 --validation-seed 20261053 --training-eval-sample-size 500 --training-eval-seed 20261059 --eval-batch-size 8 --epochs 3 --learning-rate 5e-6 --weight-decay 0.01 --baseline-validation-accuracy 0.962 --baseline-validation-macro-f1 0.48832640709774233 --stop-on-validation-non-improvement --seed 20261203`

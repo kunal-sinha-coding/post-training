@@ -8656,3 +8656,6 @@ remove the file manually to continue.
 2026-10-29T18:44Z: Updated the audit to the completed weight-decay experiment with all three metrics. It tied baseline clean validation. Removed the failed preflight wrapper and queued a direct balanced-pilot continuation from the baseline checkpoint. The data hypothesis is that counts 96/83/83 may generalize better than the previous synthetic pool counts 22/158/158.
 
 2026-10-29T18:46Z: Queued one gated continuation for the balanced synthetic pilot. It first requires all three completed measurement types, then continues only if clean-validation accuracy and macro F1 improve over the baseline. Aggregate test metrics do not control continuation.
+
+
+2026-10-29T18:48Z: The latest completed model run, qwen-fullpool-followup338-wd005-20261029, has training metrics (0.982249 accuracy, 0.730193 macro F1, 338 rows), clean-validation metrics (0.962000 accuracy, 0.488326 macro F1, 500 rows), and full aggregate black-box test metrics (0.702081 accuracy, 0.527464 macro F1, 3,652 rows). Validation tied the baseline, so it remains selected. The balanced synthetic pilot is active as PID 369147. Kept its validation-gated continuation first in queue and appended a distinct real-replay mixture experiment after it.
