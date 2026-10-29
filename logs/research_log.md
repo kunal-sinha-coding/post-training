@@ -14088,3 +14088,15 @@ This record was written automatically. Candidate selection must use clean valida
 The latest completed model experiment is `qwen-tool-rich-tiny-dose-synthetic-only-20261029`. It records training 1.000000 accuracy / 0.750000 macro F1 on 169 examples; clean validation 0.944000 / 0.482983 on 500; and aggregate black-box test 0.724261 / 0.539047 on all 3652. All evidence is present. No test rows or labels were inspected.
 
 This 169-row tiny-dose continuation reached 0.944 clean-validation accuracy, below the 0.960 result from the 336-row low-dose checkpoint. The next comparison uses that stronger checkpoint for both branches: 200 train_pref examples alone, then the same real replay plus a fresh low-dose synthetic pool. Matching the seed and evaluation samples tests whether new synthetic examples add clean-validation signal beyond authentic replay.
+
+## when2call-tool-rich-replay-mix-20261029
+
+Timestamp: 2026-10-29T12:21:12.736493+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.generate_when2call_boundary_pilot", "--output-dir", "outputs/when2call-tool-rich-replay-mix-20261029", "--pairs", "200", "--unsupported", "25", "--workers", "24", "--seed", "20261173", "--max-cost-usd", "1.0", "--anchor-strategy", "tool_rich"]. Output: /workspace/post-training/outputs/when2call-tool-rich-replay-mix-20261029. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
