@@ -13790,3 +13790,8 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+## 2026-10-29: Repair tool-rich queue dependency ordering
+
+The random-anchor continuation is fully measured: training 0.992000 / 0.744897 on 500 sampled rows, clean validation 0.942000 / 0.481458 on 500 rows, and aggregate black-box test 0.736309 / 0.548398 on 3,652 rows. No test examples or labels were inspected. The attempted feasible tool-rich continuation did not start training: the watchdog launched the training command before its generation dependency because the queue was ordered incorrectly. No tool-rich data file or checkpoint was produced. Requeued the two commands in dependency order, with generation first and training second.

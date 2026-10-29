@@ -71,19 +71,14 @@
   "last_heartbeat": "2026-10-29T08:38:12.010866+00:00",
   "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
-  "research_log_size": 1768903,
+  "research_log_size": 1770265,
   "stop_command": "STOP",
   "next_experiment": null,
-  "recording_jobs": [
-    {
-      "pid": 334115,
-      "experiment_id": "qwen-tool-rich-paired-unsupported-feasible-synthetic-only-20261029"
-    }
-  ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-29T08:38:45.308035+00:00",
-  "planning_ack_deadline": "2026-10-29T08:40:45.308060+00:00",
-  "planning_attempts": 27,
+  "planning_notified_at": "2026-10-29T08:40:48.612971+00:00",
+  "planning_ack_deadline": "2026-10-29T08:42:48.612994+00:00",
+  "planning_attempts": 28,
   "best_observed_test": {
     "method": "qwen-pref900-synth450-tool-rich-20261028",
     "accuracy": 0.7332968236582694,
