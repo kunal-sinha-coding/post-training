@@ -2192,3 +2192,6 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 | Candidate | qwen-tool-rich-two-pool-synthetic-only-20261029 | 0.95 | 0.4816657332059434 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-two-pool-synthetic-only-20261029/metrics.json) | completed |
 
 | qwen-tool-rich-two-pool-synthetic-only-20261029 | 0.7374041621029573 | 0.5484148001150332 | j543bz6y | Aggregate-only frozen test measurement |
+| Candidate | qwen-tool-rich-expansion-replay-lr1e6-20261029 | 0.958 | 0.4862680412371134 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-expansion-replay-lr1e6-20261029/metrics.json) | completed |
+
+| qwen-tool-rich-expansion-replay-lr1e6-20261029 | 0.7289156626506024 | 0.5435081307610965 | zweoesz8 | Aggregate-only frozen test measurement |
