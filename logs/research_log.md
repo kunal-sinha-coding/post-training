@@ -14649,3 +14649,9 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-fullpool-followup338-wd005-20261029: evidence audit and balanced pilot
+
+The regularized continuation has complete metrics: training accuracy 0.982249 and macro F1 0.730193 on 338 rows, training loss 0.213232; clean-validation accuracy 0.962000 and macro F1 0.488326 on 500 rows; full aggregate black-box test accuracy 0.702081 and macro F1 0.527464 on 3,652 rows. Clean validation tied the saved baseline, so the baseline remains selected. Test metrics are report-only.
+
+The prior balanced-pilot wrapper exited before training because its artifact-status gate was incompatible with the trainer metrics schema. Replaced it with a direct one-epoch training command. The command continues from the clean-validation baseline using the 262-row balanced pilot, records training and validation samples up to 500, and reports the full aggregate test.
