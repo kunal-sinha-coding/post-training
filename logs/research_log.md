@@ -14014,3 +14014,15 @@ This record was written automatically. Candidate selection must use clean valida
 ## 2026-10-29: Queue an intermediate synthetic data dose
 
 A fresh low-dose continuation is active. The prior 336-row tool-rich synthetic run reached 0.960 clean-validation accuracy, while the earlier 742-row continuation reached 0.946. Appended a distinct intermediate-dose pilot after the active run. It generates 300 pairs and 40 unsupported requests, then trains one epoch from the best known low-dose checkpoint. This brackets synthetic data volume while holding the generation recipe and optimizer settings fixed. Test metrics remain aggregate-only and are not used to select a candidate.
+
+## qwen-tool-rich-low-dose-followup-synthetic-only-20261029
+
+Timestamp: 2026-10-29T11:53:57.577411+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-tool-rich-low-dose-followup-synthetic-only-20261029", "--adapter-checkpoint", "outputs/qwen-tool-rich-low-dose-synthetic-only-20261029/epoch-01", "--synthetic-only", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261159", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.95", "--baseline-validation-macro-f1", "0.48363771417663637", "--augmentation-jsonl", "outputs/when2call-tool-rich-low-dose-followup-20261029/balanced_boundary_tool_rich.jsonl"]. Output: /workspace/post-training/outputs/qwen-tool-rich-low-dose-followup-synthetic-only-20261029. W&B run: 08gxo2v1.
+
+Clean development accuracy: 0.956. Clean development macro F1: 0.48573553719008267. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7302847754654983, "macro_f1": 0.5456009723602394, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.956, "macro_f1": 0.48573553719008267, "confusion_matrix": [[244, 1, 5, 0], [5, 234, 10, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

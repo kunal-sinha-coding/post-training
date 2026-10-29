@@ -8433,3 +8433,5 @@ remove the file manually to continue.
 2026-10-29: Queue an intermediate data-dose pilot.
 Commit name: Queue intermediate synthetic data dose.
 The latest completed low-dose synthetic run has complete training, validation, and aggregate test evidence. Its clean-validation accuracy is 0.960. The new low-dose follow-up is active. Added an intermediate 300-pair plus 40-unsupported generation and training pair to test whether a middle-sized data tranche preserves validation gains.
+
+2026-10-29T11:54:00.095992+00:00: Commit `Record research experiment qwen-tool-rich-low-dose-followup-synthetic-only-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
