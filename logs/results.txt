@@ -178073,3 +178073,195 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/b4ipprc8"
 }
 ```
+
+## qwen-balanced-tool-rich-five-vote-encoder-fusion-20261029
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_qwen_five_vote_encoder_fusion",
+    "--champion-checkpoint",
+    "outputs/qwen-fullpool-pref738-synth262-matched-20261029/epoch-02",
+    "--output-dir",
+    "outputs/qwen-balanced-tool-rich-five-vote-encoder-fusion-20261029",
+    "--validation-size",
+    "500",
+    "--validation-seed",
+    "20261053",
+    "--batch-size",
+    "1"
+  ],
+  "development_metrics": {
+    "accuracy": 0.966,
+    "examples": 500,
+    "macro_f1": 0.4898579704420526
+  },
+  "exit_code": "unknown",
+  "experiment_id": "qwen-balanced-tool-rich-five-vote-encoder-fusion-20261029",
+  "failure_reason": null,
+  "metadata": {
+    "champion_checkpoint": "outputs/qwen-fullpool-pref738-synth262-matched-20261029/epoch-02",
+    "encoder_checkpoints": [
+      "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065",
+      "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061",
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+    ],
+    "encoder_family_rule": "Weighted encoder logits are softmaxed, then treated as one expert family.",
+    "encoder_logit_weights": [
+      0.35625,
+      0.1375,
+      0.50625
+    ],
+    "experiment": "qwen_tool_rich_champion_five_vote_three_encoder_fusion",
+    "fusion_encoder_weights": [
+      0.25,
+      0.5,
+      0.75
+    ],
+    "git_commit": "41c394471bd3dc972508c2143afbe6d30c7028d5",
+    "method_selection": "Highest clean-validation accuracy among predeclared vote-frequency and vote-majority blends; macro F1 breaks ties.",
+    "purpose": "Fuse the current five-sampled-vote Qwen champion with the selected fixed three-encoder family.",
+    "runtime_seconds": 676.4122853279114,
+    "selected_fusion_by_clean_validation": "vote_frequency_encoder_50",
+    "status": "completed",
+    "test_black_box": true,
+    "test_examples": 3652,
+    "test_metrics": {
+      "encoder_ensemble": {
+        "accuracy": 0.4843921139101862,
+        "examples": 3652,
+        "macro_f1": 0.3370305248983622
+      },
+      "qwen_five_vote_majority": {
+        "accuracy": 0.6924972617743702,
+        "examples": 3652,
+        "macro_f1": 0.5205723819531507
+      },
+      "qwen_greedy": {
+        "accuracy": 0.6922234392113911,
+        "examples": 3652,
+        "macro_f1": 0.5204376148820397
+      },
+      "vote_frequency_encoder_25": {
+        "accuracy": 0.6946878422782037,
+        "examples": 3652,
+        "macro_f1": 0.5222030481468743
+      },
+      "vote_frequency_encoder_50": {
+        "accuracy": 0.6963307776560789,
+        "examples": 3652,
+        "macro_f1": 0.5232228941522374
+      },
+      "vote_frequency_encoder_75": {
+        "accuracy": 0.5449069003285871,
+        "examples": 3652,
+        "macro_f1": 0.39343859876358067
+      },
+      "vote_majority_encoder_25": {
+        "accuracy": 0.6924972617743702,
+        "examples": 3652,
+        "macro_f1": 0.5205723819531507
+      },
+      "vote_majority_encoder_50": {
+        "accuracy": 0.6924972617743702,
+        "examples": 3652,
+        "macro_f1": 0.5205723819531507
+      },
+      "vote_majority_encoder_75": {
+        "accuracy": 0.5454545454545454,
+        "examples": 3652,
+        "macro_f1": 0.3938969654150877
+      }
+    },
+    "test_rows_or_predictions_saved": false,
+    "test_selection_performed": false,
+    "training_metrics": null,
+    "training_metrics_status": "not applicable because this is frozen inference only",
+    "validation_metrics": {
+      "encoder_ensemble": {
+        "accuracy": 0.734,
+        "examples": 500,
+        "macro_f1": 0.3610581751693235
+      },
+      "qwen_five_vote_majority": {
+        "accuracy": 0.962,
+        "examples": 500,
+        "macro_f1": 0.4888210920297609
+      },
+      "qwen_greedy": {
+        "accuracy": 0.962,
+        "examples": 500,
+        "macro_f1": 0.48882113821138207
+      },
+      "vote_frequency_encoder_25": {
+        "accuracy": 0.962,
+        "examples": 500,
+        "macro_f1": 0.4888210920297609
+      },
+      "vote_frequency_encoder_50": {
+        "accuracy": 0.966,
+        "examples": 500,
+        "macro_f1": 0.4898579704420526
+      },
+      "vote_frequency_encoder_75": {
+        "accuracy": 0.788,
+        "examples": 500,
+        "macro_f1": 0.39201449238855723
+      },
+      "vote_majority_encoder_25": {
+        "accuracy": 0.962,
+        "examples": 500,
+        "macro_f1": 0.4888210920297609
+      },
+      "vote_majority_encoder_50": {
+        "accuracy": 0.962,
+        "examples": 500,
+        "macro_f1": 0.4888210920297609
+      },
+      "vote_majority_encoder_75": {
+        "accuracy": 0.788,
+        "examples": 500,
+        "macro_f1": 0.39218529944336394
+      }
+    },
+    "validation_source": {
+      "label_counts": {
+        "0": 250,
+        "1": 249,
+        "3": 1
+      },
+      "sample_fingerprint": "877a1a8e65a7b6d8c6f90f2bb22c85f140fb23a2dc694c42204a2f7eef499fc8",
+      "sample_rows": 500,
+      "sample_seed": 20261053,
+      "source": "nvidia/When2Call:train_sft",
+      "source_independent_of_train_pref_and_bfcl": true,
+      "source_rows": 15000
+    },
+    "vote_count": 5,
+    "vote_seed": 20261075,
+    "wandb_run_id": "dxllqg22",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/dxllqg22"
+  },
+  "metrics_path": "/workspace/post-training/outputs/qwen-balanced-tool-rich-five-vote-encoder-fusion-20261029/metrics.json",
+  "official_test_loaded": true,
+  "official_test_metrics": {
+    "accuracy": 0.6963307776560789,
+    "examples": 3652,
+    "macro_f1": 0.5232228941522374
+  },
+  "output_dir": "/workspace/post-training/outputs/qwen-balanced-tool-rich-five-vote-encoder-fusion-20261029",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-29T23:46:32.006515+00:00",
+  "status": "completed",
+  "test_status": "measured",
+  "timestamp": "2026-10-29T23:58:34.303043+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "dxllqg22",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/dxllqg22"
+}
+```

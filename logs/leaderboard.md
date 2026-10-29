@@ -2454,3 +2454,6 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 | qwen-fullpool-tool-rich-expansion-real-control-2000-20261029 | 0.7141292442497261 | 0.5325365291437971 | b4ipprc8 | Aggregate-only frozen test measurement |
 
 | Candidate | qwen-balanced-tool-rich-five-vote-encoder-fusion-20261029 | — | — | [metrics](/workspace/post-training/outputs/qwen-balanced-tool-rich-five-vote-encoder-fusion-20261029/metrics.json) | Queued frozen inference fusion. Uses the epoch-2 738-real/262-synthetic checkpoint and selects only by clean validation before full aggregate test reporting. | queued |
+| Candidate | qwen-balanced-tool-rich-five-vote-encoder-fusion-20261029 | 0.966 | 0.4898579704420526 | [metrics](/workspace/post-training/outputs/qwen-balanced-tool-rich-five-vote-encoder-fusion-20261029/metrics.json) | completed |
+
+| qwen-balanced-tool-rich-five-vote-encoder-fusion-20261029 | 0.6963307776560789 | 0.5232228941522374 | dxllqg22 | Aggregate-only frozen test measurement |

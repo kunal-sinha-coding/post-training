@@ -1,7 +1,7 @@
 {
-  "status": "active",
+  "status": "awaiting_codex_planning",
   "planning_owner": "codex_primary",
-  "planning_required": false,
+  "planning_required": true,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
   "current_hypothesis": "The approximately 2,000-row synthetic mixture and real-only control both regressed on clean validation, while the 1,000-row 738-real/262-synthetic checkpoint tied the baseline. A frozen fusion of that checkpoint with the selected three-encoder family may recover complementary errors without further fine-tuning.",
@@ -22,24 +22,7 @@
     "--batch-size",
     "1"
   ],
-  "worker_queue": [
-    [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_qwen_five_vote_encoder_fusion",
-      "--champion-checkpoint",
-      "outputs/qwen-fullpool-pref738-synth262-matched-20261029/epoch-02",
-      "--output-dir",
-      "outputs/qwen-balanced-tool-rich-five-vote-encoder-fusion-20261029",
-      "--validation-size",
-      "500",
-      "--validation-seed",
-      "20261053",
-      "--batch-size",
-      "1"
-    ]
-  ],
+  "worker_queue": [],
   "_previous_command": [
     "python",
     "-u",
@@ -66,32 +49,22 @@
     "validation_examples": 500,
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
-  "last_heartbeat": null,
-  "last_action": "Queued clean-validation-selected encoder fusion for the best clean-validation-tied synthetic checkpoint.",
+  "last_heartbeat": "2026-10-29T23:46:32.006527+00:00",
+  "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
-  "research_log_size": 1906087,
+  "research_log_size": 1907538,
   "stop_command": "STOP",
-  "next_experiment": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.evaluate_qwen_five_vote_encoder_fusion",
-    "--champion-checkpoint",
-    "outputs/qwen-fullpool-pref738-synth262-matched-20261029/epoch-02",
-    "--output-dir",
-    "outputs/qwen-balanced-tool-rich-five-vote-encoder-fusion-20261029",
-    "--validation-size",
-    "500",
-    "--validation-seed",
-    "20261053",
-    "--batch-size",
-    "1"
+  "next_experiment": null,
+  "recording_jobs": [
+    {
+      "pid": 381818,
+      "experiment_id": "qwen-balanced-tool-rich-five-vote-encoder-fusion-20261029"
+    }
   ],
-  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-29T23:45:30.963202+00:00",
-  "planning_ack_deadline": "2026-10-29T23:47:30.963220+00:00",
-  "planning_attempts": 63,
+  "planning_notified_at": "2026-10-29T23:58:34.883890+00:00",
+  "planning_ack_deadline": "2026-10-30T00:00:34.883908+00:00",
+  "planning_attempts": 64,
   "best_observed_test": {
     "method": "qwen-llm-ensemble-vote-screen-20261029, five sampled action-label votes",
     "accuracy": 0.7415115005476451,

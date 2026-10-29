@@ -14863,3 +14863,15 @@ The latest completed run `qwen-fullpool-tool-rich-expansion-real-control-2000-20
 The 1,000-row matched 738-real/262-synthetic checkpoint tied baseline clean-validation accuracy at 0.962 and had macro F1 0.488821. New hypothesis: a frozen blend with the selected three-encoder family may complement that checkpoint without more fine-tuning. Queue `evaluate_qwen_five_vote_encoder_fusion` on the epoch-2 checkpoint. It freezes candidate rules from the 500-row clean validation before loading the black-box test split. Test aggregates are report-only.
 
 Command: `python -u -m experiments.evaluate_qwen_five_vote_encoder_fusion --champion-checkpoint outputs/qwen-fullpool-pref738-synth262-matched-20261029/epoch-02 --output-dir outputs/qwen-balanced-tool-rich-five-vote-encoder-fusion-20261029 --validation-size 500 --validation-seed 20261053 --batch-size 1`
+
+## qwen-balanced-tool-rich-five-vote-encoder-fusion-20261029
+
+Timestamp: 2026-10-29T23:58:34.303043+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_qwen_five_vote_encoder_fusion", "--champion-checkpoint", "outputs/qwen-fullpool-pref738-synth262-matched-20261029/epoch-02", "--output-dir", "outputs/qwen-balanced-tool-rich-five-vote-encoder-fusion-20261029", "--validation-size", "500", "--validation-seed", "20261053", "--batch-size", "1"]. Output: /workspace/post-training/outputs/qwen-balanced-tool-rich-five-vote-encoder-fusion-20261029. W&B run: dxllqg22.
+
+Clean development accuracy: 0.966. Clean development macro F1: 0.4898579704420526. Official test loaded: True. Test status: measured. Official test metrics: {"accuracy": 0.6963307776560789, "macro_f1": 0.5232228941522374, "examples": 3652}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
