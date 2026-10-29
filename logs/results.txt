@@ -169081,3 +169081,318 @@ Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--ou
 Clean validation accuracy: 0.95. Clean validation macro F1: 0.4851626474344527. Aggregate test metrics: {"accuracy": 0.7094742606790799, "macro_f1": 0.531131758394713, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}. Training metrics: {"accuracy": 0.985, "macro_f1": 0.7388053467000836, "confusion_matrix": [[66, 0, 0, 0], [0, 66, 1, 0], [0, 2, 65, 0], [0, 0, 0, 0]], "examples": 200}.
 
 The run started from `outputs/qwen-tool-rich-low-dose-followup-synthetic-only-20261029/epoch-01` and used 200 When2Call `train_pref` examples, one epoch, learning rate 5e-6, and seed 20261181. It evaluated the fixed 500-example clean validation sample and the full 3652-row test split. All three evidence types are present in `outputs/qwen-followup-synthetic-then-pref200-20261029/metrics.json`. The aggregate test result is reporting-only. No individual test examples or labels were inspected.
+
+## qwen-fullpool-best-pref200-control-20261029
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.train_qwen_when2call_fullpool",
+    "--output-dir",
+    "outputs/qwen-fullpool-best-pref200-control-20261029",
+    "--adapter-checkpoint",
+    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "--preference-train-sample-size",
+    "200",
+    "--validation-source",
+    "sft",
+    "--validation-sample-size",
+    "500",
+    "--validation-seed",
+    "20261053",
+    "--training-eval-sample-size",
+    "500",
+    "--training-eval-seed",
+    "20261059",
+    "--eval-batch-size",
+    "8",
+    "--epochs",
+    "1",
+    "--seed",
+    "20261182",
+    "--learning-rate",
+    "5e-6",
+    "--baseline-validation-accuracy",
+    "0.962",
+    "--baseline-validation-macro-f1",
+    "0.48832640709774233"
+  ],
+  "development_metrics": {
+    "accuracy": 0.938,
+    "confusion_matrix": [
+      [
+        242,
+        3,
+        5,
+        0
+      ],
+      [
+        3,
+        227,
+        19,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0
+      ]
+    ],
+    "examples": 500,
+    "macro_f1": 0.4809035962017644
+  },
+  "exit_code": "unknown",
+  "experiment_id": "qwen-fullpool-best-pref200-control-20261029",
+  "failure_reason": null,
+  "metadata": {
+    "base_model": "Qwen/Qwen2.5-1.5B-Instruct",
+    "base_model_checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "baseline_black_box_test_metrics": null,
+    "baseline_clean_validation_metrics": null,
+    "best_validation_accuracy": 0.938,
+    "config": {
+      "adapter_checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "augmentation_jsonl": null,
+      "augmentation_mode": "none",
+      "augmentation_seed": 20261066,
+      "baseline_test_accuracy": null,
+      "baseline_test_macro_f1": null,
+      "baseline_test_source": null,
+      "baseline_validation_accuracy": 0.962,
+      "baseline_validation_macro_f1": 0.48832640709774233,
+      "batch_size": 1,
+      "bfcl_data": "data/bfcl_when2call_labeled.jsonl",
+      "epochs": 1,
+      "eval_batch_size": 8,
+      "evaluate_baseline": false,
+      "include_full_bfcl": false,
+      "learning_rate": 5e-06,
+      "lora_rank": 16,
+      "max_length": 4096,
+      "model": "Qwen/Qwen2.5-1.5B-Instruct",
+      "output_dir": "outputs/qwen-fullpool-best-pref200-control-20261029",
+      "preference_train_sample_size": 200,
+      "seed": 20261182,
+      "stop_on_test_non_improvement": false,
+      "stop_on_validation_non_improvement": false,
+      "synthetic_only": false,
+      "test_sample_seed": 20261070,
+      "test_sample_size": null,
+      "training_eval_sample_size": 500,
+      "training_eval_seed": 20261059,
+      "validation_sample_size": 500,
+      "validation_seed": 20261053,
+      "validation_source": "sft",
+      "weight_decay": 0.01
+    },
+    "data": {
+      "augmentation_jsonl": null,
+      "augmentation_jsonl_sha256": null,
+      "augmentation_mode": "none",
+      "augmentation_seed": 20261066,
+      "augmented_examples": 0,
+      "bfcl_file": "data/bfcl_when2call_labeled.jsonl",
+      "bfcl_sha256": "a4b817a01c109603c00fe9e682f11eb636afc139894a92d4960bde8bddfda27f",
+      "bfcl_train_examples": 0,
+      "dataset": "nvidia/When2Call",
+      "label_counts": {
+        "0": 66,
+        "1": 67,
+        "2": 67
+      },
+      "preference_examples": 200,
+      "preference_sample_seed": 20261182,
+      "preference_sample_size": 200,
+      "prompt_label_fingerprint": "d800325ddb348fcbf621a411d690e2bcc943cac653c6b8c9272bb30802f63592",
+      "split": "train_pref"
+    },
+    "device": "cuda",
+    "epoch_records": [
+      {
+        "black_box_test_metrics": {
+          "accuracy": 0.7168674698795181,
+          "examples": 3652,
+          "macro_f1": 0.5343559049807339,
+          "sample_method": "full test split",
+          "sample_seed": null
+        },
+        "checkpoint": "outputs/qwen-fullpool-best-pref200-control-20261029/epoch-01",
+        "epoch": 1,
+        "heldout_validation_metrics": {
+          "accuracy": 0.938,
+          "confusion_matrix": [
+            [
+              242,
+              3,
+              5,
+              0
+            ],
+            [
+              3,
+              227,
+              19,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              0
+            ]
+          ],
+          "examples": 500,
+          "macro_f1": 0.4809035962017644
+        },
+        "step": 200,
+        "training_evaluation_examples": 200,
+        "training_evaluation_fingerprint": "d800325ddb348fcbf621a411d690e2bcc943cac653c6b8c9272bb30802f63592",
+        "training_loss": 0.19816099550742364,
+        "training_metrics": {
+          "accuracy": 0.985,
+          "confusion_matrix": [
+            [
+              66,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              66,
+              1,
+              0
+            ],
+            [
+              0,
+              2,
+              65,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "examples": 200,
+          "macro_f1": 0.7388053467000836
+        },
+        "validation_examples": 500,
+        "validation_source": "sft"
+      }
+    ],
+    "experiment": "qwen25_1p5b_all_when2call_trainpref_sft",
+    "optimizer_steps": 200,
+    "purpose": "Train on the selected When2Call preference rows and optional synthetic examples, then report each epoch.",
+    "selection_procedure": "Clean held-out validation controls continuation unless the user explicitly enables --stop-on-test-non-improvement; then the same aggregate black-box test accuracy controls continuation for this declared pilot only.",
+    "test_label_use": "Test labels are accessed only inside the evaluator to compute aggregate accuracy and macro F1. Under the user's explicit pilot stopping rule, aggregate accuracy may control continuation. No individual test rows, labels, predictions, or correctness values are saved.",
+    "training_evaluation_examples_per_epoch": 200,
+    "training_loss_by_epoch": [
+      0.19816099550742364
+    ],
+    "validation_examples": 500,
+    "validation_source": "sft",
+    "wandb_run_id": "6l74zf5n",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/6l74zf5n"
+  },
+  "metrics_path": "/workspace/post-training/outputs/qwen-fullpool-best-pref200-control-20261029/metrics.json",
+  "official_test_loaded": null,
+  "official_test_metrics": {
+    "accuracy": 0.7168674698795181,
+    "examples": 3652,
+    "macro_f1": 0.5343559049807339,
+    "sample_method": "full test split",
+    "sample_seed": null
+  },
+  "output_dir": "/workspace/post-training/outputs/qwen-fullpool-best-pref200-control-20261029",
+  "source_validation_metrics": {
+    "heldout_validation_metrics": {
+      "accuracy": 0.938,
+      "confusion_matrix": [
+        [
+          242,
+          3,
+          5,
+          0
+        ],
+        [
+          3,
+          227,
+          19,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0
+        ]
+      ],
+      "examples": 500,
+      "macro_f1": 0.4809035962017644
+    }
+  },
+  "started_at": "2026-10-29T15:16:03.398182+00:00",
+  "status": "completed",
+  "test_status": "measured",
+  "timestamp": "2026-10-29T15:26:08.404605+00:00",
+  "train_metrics": {
+    "accuracy": 0.985,
+    "confusion_matrix": [
+      [
+        66,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        66,
+        1,
+        0
+      ],
+      [
+        0,
+        2,
+        65,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "examples": 200,
+    "macro_f1": 0.7388053467000836
+  },
+  "wandb_run_id": "6l74zf5n",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/6l74zf5n"
+}
+```
