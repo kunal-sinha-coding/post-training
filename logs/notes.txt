@@ -8528,3 +8528,5 @@ Description: Restored the research log and results file after an asynchronous re
 Context: The recorder failure is documented in the error log. The experiment has training, clean-validation, and aggregate black-box test metrics. The active matched data comparison was not changed. Test metrics remain report-only.
 
 2026-10-29T15:26:12.329877+00:00: Commit `Record research experiment qwen-fullpool-best-pref200-control-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-29T15:38:21.367012+00:00: Commit `Record research experiment qwen-fullpool-best-pref200-plus-followup169-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
