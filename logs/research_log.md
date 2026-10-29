@@ -14343,3 +14343,15 @@ Clean development accuracy: 0.952. Clean development macro F1: 0.485185185185185
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.952, "macro_f1": 0.4851851851851852, "confusion_matrix": [[242, 3, 5, 0], [2, 234, 13, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-fullpool-best-followup338-synthetic-only-20261029
+
+Timestamp: 2026-10-29T16:01:59.280249+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-fullpool-best-followup338-synthetic-only-20261029", "--adapter-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.962", "--baseline-validation-macro-f1", "0.48832640709774233", "--synthetic-only", "--seed", "20261183", "--augmentation-jsonl", "outputs/when2call-tool-rich-low-dose-followup-20261029/balanced_boundary_tool_rich.jsonl"]. Output: /workspace/post-training/outputs/qwen-fullpool-best-followup338-synthetic-only-20261029. W&B run: hpygdva3.
+
+Clean development accuracy: 0.962. Clean development macro F1: 0.48832640709774233. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7026286966046003, "macro_f1": 0.5277891894881619, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.962, "macro_f1": 0.48832640709774233, "confusion_matrix": [[241, 4, 5, 0], [0, 240, 9, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
