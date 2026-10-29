@@ -2189,3 +2189,6 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 | Candidate | qwen-multiturn-context-synthetic-only-20261029 | 0.952 | 0.48571404771424764 | [metrics](/workspace/post-training/outputs/qwen-multiturn-context-synthetic-only-20261029/metrics.json) | completed |
 
 | qwen-multiturn-context-synthetic-only-20261029 | 0.7020810514786419 | 0.5248822481536696 | dv6hoowy | Aggregate-only frozen test measurement |
+| Candidate | qwen-tool-rich-two-pool-synthetic-only-20261029 | 0.95 | 0.4816657332059434 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-two-pool-synthetic-only-20261029/metrics.json) | completed |
+
+| qwen-tool-rich-two-pool-synthetic-only-20261029 | 0.7374041621029573 | 0.5484148001150332 | j543bz6y | Aggregate-only frozen test measurement |
