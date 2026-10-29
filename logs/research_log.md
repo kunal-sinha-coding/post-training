@@ -13643,3 +13643,15 @@ This record was written automatically. Candidate selection must use clean valida
 ## 2026-10-29: Refresh evidence audit after 750-row pilot
 
 `qwen-fullpref-tool-rich-expansion-750-synthetic-only-20261029` completed with training accuracy 0.992000 and macro F1 0.743770 on 500 sampled rows; clean-validation accuracy 0.956000 and macro F1 0.485264 on 500 rows; and aggregate black-box test accuracy 0.710022 and macro F1 0.532709 on 3652 rows. All three evidence types are recorded. Test results are reporting-only. The 983-row tool-rich run is active at step 903, and the 500-row stratified rare-schema dose remains queued after it.
+
+## qwen-fullpref-tool-rich-expansion-983-synthetic-only-20261029
+
+Timestamp: 2026-10-29T07:05:01.778564+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-fullpref-tool-rich-expansion-983-synthetic-only-20261029", "--adapter-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--synthetic-only", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261142", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.962", "--baseline-validation-macro-f1", "0.48832640709774233", "--augmentation-jsonl", "outputs/when2call-tool-rich-expansion-20261029/balanced_boundary_tool_rich.jsonl"]. Output: /workspace/post-training/outputs/qwen-fullpref-tool-rich-expansion-983-synthetic-only-20261029. W&B run: u93q94sj.
+
+Clean development accuracy: 0.952. Clean development macro F1: 0.48368055555555556. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7302847754654983, "macro_f1": 0.5452437002995236, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.952, "macro_f1": 0.48368055555555556, "confusion_matrix": [[245, 0, 5, 0], [8, 231, 10, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
