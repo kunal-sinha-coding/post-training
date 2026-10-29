@@ -8588,3 +8588,5 @@ fatal: updating files failed
 Commit name: Queue rare-schema synthetic expansion.
 Description: Updated latest evidence pointers and queued a fresh rare-schema generation pool plus dependent training continuation.
 Context: The first rare-schema-only continuation improved clean-validation accuracy by 0.8 percentage points over its starting checkpoint. Aggregate test metrics are retained for reporting only and do not control selection.
+
+2026-10-29T17:32:46.468553+00:00: Commit `Record research experiment when2call-rare-schema-expansion-v2-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.

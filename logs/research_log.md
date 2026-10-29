@@ -14475,3 +14475,15 @@ This record was written automatically. Candidate selection must use clean valida
 The latest completed rare-schema synthetic-only continuation has all evidence recorded. Training accuracy is 0.995349 and macro F1 is 0.746454 on 430 examples. Clean validation is 0.958000 accuracy and 0.486268 macro F1 on 500 examples, up from the starting checkpoint at 0.950000 accuracy and 0.483638 macro F1. Aggregate black-box test reporting is 0.735487 accuracy and 0.549050 macro F1 on all 3,652 rows. Test labels and metrics did not select the follow-up.
 
 Queued a fresh rare-schema generation pilot with 200 call/request pairs plus 200 unsupported examples, a $0.50 generation cap, and train_pref-only anchors. Its dependent one-epoch training command continues the rare-schema checkpoint on this new pool alone. It evaluates at most 500 training rows and 500 clean-validation rows, then reports aggregate metrics on the full test set. The fixed clean SFT validation sample has no tool_call rows, which limits its class coverage.
+
+## when2call-rare-schema-expansion-v2-20261029
+
+Timestamp: 2026-10-29T17:32:44.003319+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.generate_when2call_boundary_pilot", "--output-dir", "outputs/when2call-rare-schema-expansion-v2-20261029", "--pairs", "200", "--unsupported", "200", "--workers", "24", "--seed", "20261193", "--max-cost-usd", "0.5", "--anchor-strategy", "rare_schema"]. Output: /workspace/post-training/outputs/when2call-rare-schema-expansion-v2-20261029. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
