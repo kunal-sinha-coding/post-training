@@ -8215,3 +8215,8 @@ The 620-row paired-only ablation reached 0.950 clean-validation accuracy. The co
 Commit name: Audit latest synthetic evidence and queue the 750-row pilot.
 
 Confirmed complete training, clean-validation, and aggregate black-box test metrics for the latest completed rare-schema run. Training was 0.990 accuracy and 0.742138 macro F1 on 500 rows. Clean validation was 0.954 accuracy and 0.485201 macro F1 on 500 rows. Aggregate test was 0.731106 accuracy and 0.546655 macro F1 on 3,652 rows. The test aggregate is report-only. Updated research state and log, then queued one distinct 750-row stratified tool-rich synthetic-only run from the clean-validation-selected checkpoint. It uses one epoch, capped train and validation evaluation, fixed learning rate, and full aggregate test evaluation.
+
+## 2026-10-29: Queue the full tool-rich expansion pool
+Commit name: Queue full 983-row tool-rich synthetic pilot.
+
+Audited the latest completed rare-schema run and confirmed all three evidence types are recorded. The current 750-row stratified tool-rich experiment remains active. Added a distinct 983-row full-pool synthetic-only run behind it, with the same checkpoint and fixed training settings, to test the next data-size increment. Candidate selection remains clean-validation-only, and the watchdog preserves one active GPU worker.
