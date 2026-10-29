@@ -14591,3 +14591,15 @@ This record was written automatically. Candidate selection must use clean valida
 ## 2026-10-29: balanced synthetic pilot queued behind active regularization run
 
 The weight-decay training process is still live and has reached evaluation, despite an early recorder row marked failed_or_incomplete before metrics.json existed. It is tracked as the active worker. The balanced generator completed with 262 rows: 96 cannot_answer, 83 request_for_info, and 83 tool_call, at estimated API cost $0.0651954. Queued a gated trainer that first requires complete training, clean-validation, and aggregate test evidence for the active run. It then chooses between the regularized checkpoint and baseline by clean-validation accuracy and macro F1 only, and trains one epoch on the balanced synthetic pool.
+
+## qwen-fullpool-followup338-wd005-20261029
+
+Timestamp: 2026-10-29T18:39:10.496257+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-fullpool-followup338-wd005-20261029", "--adapter-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--synthetic-only", "--augmentation-jsonl", "outputs/when2call-tool-rich-low-dose-followup-20261029/balanced_boundary_tool_rich.jsonl", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--learning-rate", "5e-6", "--weight-decay", "0.05", "--baseline-validation-accuracy", "0.962", "--baseline-validation-macro-f1", "0.48832640709774233", "--seed", "20261183"]. Output: /workspace/post-training/outputs/qwen-fullpool-followup338-wd005-20261029. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

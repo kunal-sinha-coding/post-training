@@ -2400,3 +2400,4 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 | qwen-fullpool-bestval-fivevote-three-encoder-fusion-20261029 | 0.7045454545454546 | 0.529299346118855 | ozmror6k | Aggregate-only frozen test measurement |
 | Candidate | qwen-fullpool-followup338-wd005-20261029 | — | — | [metrics](/workspace/post-training/outputs/qwen-fullpool-followup338-wd005-20261029/metrics.json) | failed_or_incomplete |
 | Candidate | when2call-tool-rich-balanced-pilot-20261029 | — | — | [metrics](/workspace/post-training/outputs/when2call-tool-rich-balanced-pilot-20261029/metrics.json) | completed |
+| Candidate | qwen-fullpool-followup338-wd005-20261029 | — | — | [metrics](/workspace/post-training/outputs/qwen-fullpool-followup338-wd005-20261029/metrics.json) | failed_or_incomplete |
