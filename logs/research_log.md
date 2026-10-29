@@ -14818,3 +14818,15 @@ Training command: `python -u -m experiments.train_qwen_when2call_fullpool --outp
 This control uses the same epoch-2 checkpoint, seed, optimization settings, and clean validation as the queued expanded synthetic mixture. It trains on 2,000 real preference rows and no synthetic rows. The expanded synthetic trial targets 1,476 real rows plus about 524 generated rows, so both runs have approximately 2,000 rows per epoch. The comparison tests whether added synthetic examples help clean validation beyond training dose. Test aggregates remain report-only.
 
 Command: `python -u -m experiments.train_qwen_when2call_fullpool --output-dir outputs/qwen-fullpool-tool-rich-expansion-real-control-2000-20261029 --adapter-checkpoint outputs/qwen-fullpool-pref738-synth262-matched-20261029/epoch-02 --preference-train-sample-size 2000 --validation-source sft --validation-sample-size 500 --validation-seed 20261053 --training-eval-sample-size 500 --training-eval-seed 20261059 --eval-batch-size 8 --epochs 3 --learning-rate 5e-6 --weight-decay 0.01 --baseline-validation-accuracy 0.962 --baseline-validation-macro-f1 0.48832640709774233 --stop-on-validation-non-improvement --seed 20261206`
+
+## when2call-tool-rich-balanced-expansion-20261029
+
+Timestamp: 2026-10-29T22:21:07.682599+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.generate_when2call_boundary_pilot", "--output-dir", "outputs/when2call-tool-rich-balanced-expansion-20261029", "--pairs", "200", "--unsupported", "200", "--workers", "24", "--seed", "20261206", "--max-cost-usd", "0.50", "--anchor-strategy", "tool_rich"]. Output: /workspace/post-training/outputs/when2call-tool-rich-balanced-expansion-20261029. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
