@@ -138,9 +138,9 @@
     "selection": "clean validation only"
   },
   "last_heartbeat": "2026-10-29T03:27:59.037497+00:00",
-  "last_action": "Watchdog started validation worker pid 319715.",
+  "last_action": "Applied the user\u2019s limit on LLM ensembles: one queued screen, with at most one follow-up only if it gives clear signal; otherwise resume data strategy research.",
   "watchdog_enabled": true,
-  "research_log_size": 1729861,
+  "research_log_size": 1731749,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -183,12 +183,7 @@
     "--augmentation-jsonl",
     "outputs/when2call-tool-rich-expansion-20261029/balanced_boundary_tool_rich.jsonl"
   ],
-  "recording_jobs": [
-    {
-      "pid": 319714,
-      "experiment_id": "qwen-tool-rich-champion-same-pool-continue-20261029"
-    }
-  ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-29T02:29:46.857085+00:00",
   "planning_ack_deadline": "2026-10-29T02:31:46.857110+00:00",
@@ -202,7 +197,7 @@
     "wandb_run_id": "vrfnnoq2",
     "selection": "Aggregate test result reported for ranking only. It was not used for candidate selection."
   },
-  "next_hypothesis": "After the two direct champion continuations, screen LLM-to-LLM probability fusion and repeated one-token action-label voting on the fixed 500-row clean SFT validation sample. Compare the tool-rich champion with the full-preference Qwen checkpoint. Freeze all fusion weights and vote counts before measuring aggregate black-box test accuracy and macro F1. Do not store or inspect per-example test outcomes.",
+  "next_hypothesis": "The queued Qwen-to-Qwen probability-fusion and one-token vote screen is the only ensemble screen. Compare against the best single Qwen using aggregate black-box test accuracy, with clean validation reported. Treat gains below 1 percentage point as noise. If no ensemble candidate clears that bar or shows a clear clean-validation benefit, stop LLM-ensemble exploration and return to dataset experiments on the current best checkpoint. Allow at most one additional ensemble follow-up, and only after clear positive signal. Prioritize testing useful real, synthetic, and mixed data pools on the best checkpoint.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."

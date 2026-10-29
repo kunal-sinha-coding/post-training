@@ -8161,3 +8161,8 @@ Commit name: Add LLM-only ensemble evaluation.
 The audit found prior Qwen-plus-encoder fusion and a stochastic encoder vote experiment, but no Qwen-to-Qwen ensemble or repeated Qwen label sampling result. Added `experiments/evaluate_qwen_llm_ensemble.py` to compare the tool-rich champion with the full-preference Qwen checkpoint. It screens fixed probability mixtures and 3, 5, and 9 stochastic one-token action-label votes on one 500-row clean SFT sample, then reports full aggregate black-box test accuracy and macro F1 for the predeclared candidates. It writes no per-example test labels, predictions, or correctness. The script is queued after the active dose experiment and the two direct champion continuations. It uses no training, so training metrics are not applicable.
 
 2026-10-29T03:28:02.812633+00:00: Commit `Record research experiment qwen-tool-rich-champion-same-pool-continue-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+## 2026-10-29: Limit LLM ensemble exploration
+Commit name: Limit Qwen ensemble exploration to one screen.
+
+The user directed that LLM-to-LLM ensemble work should be brief. The current queue has one validation-first screen comparing Qwen probability fusion and repeated one-token votes. Treat aggregate accuracy gains below one percentage point as noise. If this screen does not show a clear gain, end LLM ensemble exploration and return to dataset search using the current best checkpoint. Permit at most one additional ensemble experiment, only if the first screen provides clear positive signal.
