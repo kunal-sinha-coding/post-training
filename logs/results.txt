@@ -168747,3 +168747,10 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/8d3ji6tv"
 }
 ```
+
+
+## 2026-10-29: Synthetic then real continuation
+
+Experiment `qwen-followup-synthetic-then-pref400-20261029` started from `outputs/qwen-tool-rich-low-dose-followup-synthetic-only-20261029/epoch-01` and trained for one epoch on 400 sampled When2Call `train_pref` examples. It used seed 20261179, learning rate 5e-6, 500-row training and clean-validation probes, and full aggregate testing on 3652 rows. Full setup and W&B run 8d3ji6tv are in `outputs/qwen-followup-synthetic-then-pref400-20261029/metrics.json`.
+
+Training accuracy 0.970000, macro F1 0.727486; clean validation accuracy 0.942000, macro F1 0.480973; aggregate black-box test accuracy 0.717963, macro F1 0.532659. All three are recorded. Aggregate test metrics were report-only.

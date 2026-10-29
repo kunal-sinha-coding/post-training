@@ -14277,3 +14277,10 @@ Clean development accuracy: 0.942. Clean development macro F1: 0.480973381108688
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.942, "macro_f1": 0.4809733811086889, "confusion_matrix": [[244, 1, 5, 0], [7, 227, 15, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+## 2026-10-29: Audit training order and queue dose comparison
+
+Latest completed model run: `qwen-followup-synthetic-then-pref400-20261029`. Its metrics artifact contains all three evidence types: training 0.970000 accuracy / 0.727486 macro F1 on 400 examples; clean validation 0.942000 / 0.480973 on 500; full aggregate black-box test 0.717963 / 0.532659 on 3652. The test split was used only for aggregate reporting. No individual test content or labels were inspected.
+
+The prior real-then-synthetic continuation reached 0.958 validation accuracy, while this synthetic-then-400-real run reached 0.942. Queued two distinct follow-ups: 169 stratified synthetic examples after the 200-real checkpoint to test lower dose, then 200 real examples after the synthetic-only checkpoint to compare training order at matched replay size. Both select on the fixed clean validation set.
