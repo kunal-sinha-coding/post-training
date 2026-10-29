@@ -8250,3 +8250,8 @@ Confirmed complete training, clean-validation, and aggregate test evidence for `
 2026-10-29T07:34:39.648266+00:00: Commit `Record research experiment qwen-fullpref-tool-rich-expansion-500-synthetic-only-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
 
 2026-10-29T07:56:20.346396+00:00: Commit `Record research experiment qwen-llm-single-sample-vote-screen-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+## 2026-10-29: Queue missing inference measurement and new boundary-data recipe
+Commit name: Queue corrected one-draw screen and fresh paired-boundary pilot.
+
+Fixed the evaluator so its declared one-draw candidates are actually constructed. The previous frozen-inference run has clean-validation and aggregate test evidence for its other candidates; training is not applicable, but the requested k=1 measurement is missing. Queued that correction first. Then queued fresh train_pref-only generation of paired tool-call/request-for-info examples and a low unsupported share, followed by one synthetic-only continuation from the tool-rich champion. The data recipe follows the strongest recent clean-validation signal. Test examples and labels are not used for generation or candidate selection.

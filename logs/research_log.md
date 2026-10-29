@@ -13701,3 +13701,9 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## 2026-10-29: Queue the missing one-draw measurement and fresh paired-boundary data
+
+The latest completed evaluation, `qwen-llm-single-sample-vote-screen-20261029`, was frozen inference only, so training metrics are not applicable. It records clean-validation and aggregate-test metrics for greedy and 3-, 5-, and 9-draw candidates, but not the declared 1-draw candidates. The method list included 1 draw while the candidate construction omitted it. Queued the corrected measurement first.
+
+The strongest recent synthetic clean-validation signal was the 807-row recipe with 620 paired tool-call/request-for-info rows and 187 unsupported rows (0.958 validation accuracy). Pure unsupported-only data scored 0.900, and the 994-row tool-rich pool scored 0.954. Queued fresh tool-rich paired-boundary generation with 500 pair requests and 250 unsupported requests, then one synthetic-only epoch from the user-designated tool-rich champion. The generator uses train_pref only, independent structural and label checks, a $1 run cap, and no test data. Training and clean validation are capped at 500; aggregate test metrics are report-only.

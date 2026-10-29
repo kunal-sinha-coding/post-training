@@ -141,8 +141,8 @@ def main() -> int:
             "llm_probability_mix_25": 0.25 * first + 0.75 * second,
             "llm_probability_mix_50": 0.50 * first + 0.50 * second,
             "llm_probability_mix_75": 0.75 * first + 0.25 * second,
-            **{f"champion_sample_vote_{k}": sampled_majority(first, k, 20261070 + k) for k in (3, 5, 9)},
-            **{f"comparison_sample_vote_{k}": sampled_majority(second, k, 20261080 + k) for k in (3, 5, 9)},
+            **{f"champion_sample_vote_{k}": sampled_majority(first, k, 20261070 + k) for k in (1, 3, 5, 9)},
+            **{f"comparison_sample_vote_{k}": sampled_majority(second, k, 20261080 + k) for k in (1, 3, 5, 9)},
         }
     # Compute clean validation metrics before loading the official test rows.
     validation_results = {}
