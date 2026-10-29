@@ -14666,3 +14666,15 @@ The balanced-pilot experiment is active. Queued one conditional continuation aft
 Hypothesis: mixing 262 original When2Call preference examples with the 262-row balanced synthetic boundary pilot may retain the original task distribution while adding boundary examples. The experiment starts from the selected original-data Qwen checkpoint, trains for up to three epochs, and stops when clean-validation accuracy does not improve. Training and clean-validation evaluations use at most 500 examples. The aggregate black-box evaluation uses all 3,652 examples and is report-only.
 
 Command: `python -u -m experiments.train_qwen_when2call_fullpool --output-dir outputs/qwen-fullpool-balanced-tool-rich-real-replay-20261029 --adapter-checkpoint outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02 --augmentation-jsonl outputs/when2call-tool-rich-balanced-pilot-20261029/balanced_boundary_tool_rich.jsonl --preference-train-sample-size 262 --validation-source sft --validation-sample-size 500 --validation-seed 20261053 --training-eval-sample-size 500 --training-eval-seed 20261059 --eval-batch-size 8 --epochs 3 --learning-rate 5e-6 --weight-decay 0.01 --baseline-validation-accuracy 0.962 --baseline-validation-macro-f1 0.48832640709774233 --stop-on-validation-non-improvement --seed 20261203`
+
+## qwen-fullpool-balanced-tool-rich-pilot-20261029
+
+Timestamp: 2026-10-29T18:55:18.964059+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-fullpool-balanced-tool-rich-pilot-20261029", "--adapter-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--synthetic-only", "--augmentation-jsonl", "outputs/when2call-tool-rich-balanced-pilot-20261029/balanced_boundary_tool_rich.jsonl", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--learning-rate", "5e-6", "--weight-decay", "0.01", "--baseline-validation-accuracy", "0.962", "--baseline-validation-macro-f1", "0.48832640709774233", "--seed", "20261197"]. Output: /workspace/post-training/outputs/qwen-fullpool-balanced-tool-rich-pilot-20261029. W&B run: 83caeizm.
+
+Clean development accuracy: 0.956. Clean development macro F1: 0.4852640432760498. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7179627601314348, "macro_f1": 0.5385343177929207, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.956, "macro_f1": 0.4852640432760498, "confusion_matrix": [[242, 3, 5, 0], [4, 236, 9, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

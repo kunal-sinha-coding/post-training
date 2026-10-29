@@ -2408,3 +2408,6 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 | Candidate | qwen-fullpool-balanced-tool-rich-pilot-20261029 | — | — | [metrics](/workspace/post-training/outputs/qwen-fullpool-balanced-tool-rich-pilot-20261029/metrics.json) | failed_or_incomplete |
 
 | Candidate | qwen-fullpool-balanced-tool-rich-real-replay-20261029 | — | — | [metrics](/workspace/post-training/outputs/qwen-fullpool-balanced-tool-rich-real-replay-20261029/metrics.json) | Queued after the active balanced pilot gate. Mixes 262 real preference rows with 262 balanced synthetic rows. Clean-validation accuracy controls continuation. | queued |
+| Candidate | qwen-fullpool-balanced-tool-rich-pilot-20261029 | 0.956 | 0.4852640432760498 | [metrics](/workspace/post-training/outputs/qwen-fullpool-balanced-tool-rich-pilot-20261029/metrics.json) | completed |
+
+| qwen-fullpool-balanced-tool-rich-pilot-20261029 | 0.7179627601314348 | 0.5385343177929207 | 83caeizm | Aggregate-only frozen test measurement |
