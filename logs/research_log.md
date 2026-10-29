@@ -14174,3 +14174,15 @@ Clean development accuracy: 0.942. Clean development macro F1: 0.482002431254191
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.942, "macro_f1": 0.48200243125419184, "confusion_matrix": [[242, 2, 6, 0], [4, 229, 16, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-lowdose-best-pref400-plus-tiny-synth-20261029
+
+Timestamp: 2026-10-29T13:30:40.862579+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-lowdose-best-pref400-plus-tiny-synth-20261029", "--adapter-checkpoint", "outputs/qwen-tool-rich-low-dose-synthetic-only-20261029/epoch-01", "--preference-train-sample-size", "400", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261175", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.95", "--baseline-validation-macro-f1", "0.48363771417663637", "--augmentation-jsonl", "outputs/when2call-tool-rich-tiny-replay-mix-20261029/balanced_boundary_tool_rich.jsonl"]. Output: /workspace/post-training/outputs/qwen-lowdose-best-pref400-plus-tiny-synth-20261029. W&B run: piwkoe82.
+
+Clean development accuracy: 0.948. Clean development macro F1: 0.4840933568214265. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7168674698795181, "macro_f1": 0.5353623372662881, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.948, "macro_f1": 0.4840933568214265, "confusion_matrix": [[243, 2, 5, 0], [3, 231, 15, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
