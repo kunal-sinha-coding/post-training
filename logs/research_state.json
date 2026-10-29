@@ -114,6 +114,41 @@
       "0.48832640709774233",
       "--augmentation-jsonl",
       "outputs/when2call-tool-rich-expansion-20261029/balanced_boundary_tool_rich.jsonl"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-fullpref-rare-schema-500-synthetic-only-20261029",
+      "--adapter-checkpoint",
+      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+      "--synthetic-only",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "1",
+      "--seed",
+      "20261143",
+      "--learning-rate",
+      "5e-6",
+      "--baseline-validation-accuracy",
+      "0.962",
+      "--baseline-validation-macro-f1",
+      "0.48832640709774233",
+      "--augmentation-jsonl",
+      "outputs/when2call-rare-schema-500-stratified-20261029/balanced_boundary_rare_schema_500.jsonl"
     ]
   ],
   "_previous_command": [
@@ -143,7 +178,7 @@
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
   "last_heartbeat": "2026-10-29T06:29:53.560398+00:00",
-  "last_action": "Queued the full 983-row tool-rich synthetic pool behind the active 750-row dose pilot; the watchdog will preserve one GPU training worker.",
+  "last_action": "Queued a deterministic 500-row rare-schema dose diagnostic after the pending 983-row tool-rich experiment; the active 750-row worker remains unchanged.",
   "watchdog_enabled": true,
   "research_log_size": 1749014,
   "stop_command": "STOP",
@@ -196,7 +231,7 @@
     "wandb_run_id": "vrfnnoq2",
     "selection": "Aggregate test result reported for ranking only. It was not used for candidate selection."
   },
-  "next_hypothesis": "After the active 750-row stratified tool-rich pilot finishes, test the complete 983-row accepted pool from the same generation. This checks whether adding the remaining accepted examples helps clean-validation performance while holding the checkpoint, learning rate, evaluation sample, and one-epoch budget fixed. Use only clean validation for selection and record full aggregate black-box metrics for reporting.",
+  "next_hypothesis": "The completed 1032-row rare-schema pilot reached 0.990 training accuracy but 0.954 clean-validation accuracy, below the 0.962 starting checkpoint. After the queued 983-row tool-rich dose, compare a 500-row stratified sample of the rare-schema source from the same starting checkpoint. This tests whether a smaller dose reduces synthetic overfit while holding the source family, optimizer, training duration, and evaluation samples fixed. Use clean validation for selection; aggregate test metrics are report-only.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
