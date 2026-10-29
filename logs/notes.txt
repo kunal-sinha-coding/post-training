@@ -8429,3 +8429,7 @@ are terminated then try again. If it still fails, a git process
 may have crashed in this repository earlier:
 remove the file manually to continue.
 . The result remains local and the worker queue continues.
+
+2026-10-29: Queue an intermediate data-dose pilot.
+Commit name: Queue intermediate synthetic data dose.
+The latest completed low-dose synthetic run has complete training, validation, and aggregate test evidence. Its clean-validation accuracy is 0.960. The new low-dose follow-up is active. Added an intermediate 300-pair plus 40-unsupported generation and training pair to test whether a middle-sized data tranche preserves validation gains.

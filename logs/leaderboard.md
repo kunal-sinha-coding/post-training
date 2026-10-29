@@ -2302,3 +2302,4 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 | Candidate | qwen-tool-rich-low-dose-synthetic-only-20261029 | 0.96 | 0.4872873318653768 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-low-dose-synthetic-only-20261029/metrics.json) | completed |
 
 | qwen-tool-rich-low-dose-synthetic-only-20261029 | 0.726998904709748 | 0.5437870344203916 | anof45qh | Aggregate-only frozen test measurement |
+| Candidate | when2call-tool-rich-low-dose-followup-20261029 | — | — | [metrics](/workspace/post-training/outputs/when2call-tool-rich-low-dose-followup-20261029/metrics.json) | completed |

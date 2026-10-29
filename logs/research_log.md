@@ -13997,3 +13997,20 @@ This record was written automatically. Candidate selection must use clean valida
 The latest completed model run is `qwen-tool-rich-low-dose-synthetic-only-20261029`. It has all evidence recorded: training 0.994048 accuracy / 0.746795 macro F1 on 336 examples; clean validation 0.960000 / 0.487287 on 500 examples; aggregate black-box test 0.726999 / 0.543787 on all 3652 examples. The generation produced 336 examples from 156 accepted pairs and 24 unsupported requests. No test examples or labels were inspected.
 
 The low-dose continuation reached 0.960 clean-validation accuracy, compared with 0.956 for the starting low-unsupported checkpoint. Queued another fresh 200-pair plus 25-unsupported tranche and a one-epoch continuation from the low-dose checkpoint to test whether the signal persists. The generator is active; the trainer is next. Candidate selection uses clean validation only.
+
+## when2call-tool-rich-low-dose-followup-20261029
+
+Timestamp: 2026-10-29T11:41:23.865947+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.generate_when2call_boundary_pilot", "--output-dir", "outputs/when2call-tool-rich-low-dose-followup-20261029", "--pairs", "200", "--unsupported", "25", "--workers", "24", "--seed", "20261167", "--max-cost-usd", "1.0", "--anchor-strategy", "tool_rich"]. Output: /workspace/post-training/outputs/when2call-tool-rich-low-dose-followup-20261029. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+
+## 2026-10-29: Queue an intermediate synthetic data dose
+
+A fresh low-dose continuation is active. The prior 336-row tool-rich synthetic run reached 0.960 clean-validation accuracy, while the earlier 742-row continuation reached 0.946. Appended a distinct intermediate-dose pilot after the active run. It generates 300 pairs and 40 unsupported requests, then trains one epoch from the best known low-dose checkpoint. This brackets synthetic data volume while holding the generation recipe and optimizer settings fixed. Test metrics remain aggregate-only and are not used to select a candidate.
