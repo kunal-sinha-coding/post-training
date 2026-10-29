@@ -165,9 +165,9 @@
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
   "last_heartbeat": "2026-10-29T16:58:55.132521+00:00",
-  "last_action": "Watchdog started validation worker pid 360608.",
+  "last_action": "Audited the completed contextual synthetic-only continuation and confirmed training, clean-validation, and full aggregate test evidence. The contextual plus preference-anchored continuation is active; rare-schema generation and training remain queued.",
   "watchdog_enabled": true,
-  "research_log_size": 1848378,
+  "research_log_size": 1850008,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -205,12 +205,7 @@
     "--augmentation-jsonl",
     "outputs/when2call-multiturn-context-expansion-20261029/contextual_pairs.jsonl"
   ],
-  "recording_jobs": [
-    {
-      "pid": 360607,
-      "experiment_id": "qwen-best-tool-rich-context-expansion-synth-only-20261029"
-    }
-  ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-29T16:45:50.492131+00:00",
   "planning_ack_deadline": "2026-10-29T16:47:50.492155+00:00",
@@ -270,13 +265,12 @@
     "selection_use": "none"
   },
   "evidence_audit": {
-    "experiment": "qwen-followup-checkpoint-plus-pref200-20261029",
-    "training_metrics": "recorded: 0.970000 accuracy, 0.727612 macro F1, 200 examples",
-    "clean_validation_metrics": "recorded: 0.958000 accuracy, 0.486776 macro F1, 500 examples",
-    "aggregate_black_box_test_metrics": "recorded: 0.712760 accuracy, 0.534148 macro F1, 3652 examples",
+    "experiment": "qwen-best-tool-rich-context-expansion-synth-only-20261029",
+    "training_metrics": "recorded: 0.986000 accuracy, 0.493000 macro F1, 500 examples",
+    "clean_validation_metrics": "recorded: 0.954000 accuracy, 0.485718 macro F1, 500 examples",
+    "aggregate_black_box_test_metrics": "recorded: 0.718237 accuracy, 0.537119 macro F1, 3652 examples",
     "all_required_evidence_recorded": true,
-    "test_labels_used_for_selection": false,
-    "note": "The preceding encoder-fusion experiment is inference-only and records training metrics as not applicable."
+    "test_labels_used_for_selection": false
   },
   "duplicate_worker_failure": {
     "pid": 103632,
@@ -398,13 +392,13 @@
     }
   ],
   "latest_aggregate_test_report": {
-    "experiment": "qwen-followup-checkpoint-plus-pref200-20261029",
-    "accuracy": 0.7127601314348302,
-    "macro_f1": 0.5341475076686227,
+    "experiment": "qwen-best-tool-rich-context-expansion-synth-only-20261029",
+    "accuracy": 0.718236582694414,
+    "macro_f1": 0.5371191398468783,
     "examples": 3652,
     "selection_use": "report-only; not used to choose the next experiment"
   },
-  "updated_at": "2026-10-29T16:51:04.492569+00:00",
+  "updated_at": "2026-10-29T17:13:42.591439+00:00",
   "synthetic_pilot_results": [
     {
       "strategy": "missing_required_info",
@@ -511,7 +505,7 @@
     "ensemble_aggregate_test_accuracy": 0.7313800657174151,
     "test_metric_use": "Reporting only; not used for candidate selection."
   },
-  "latest_completed_experiment": "qwen-followup-checkpoint-plus-pref200-20261029",
+  "latest_completed_experiment": "qwen-best-tool-rich-context-expansion-synth-only-20261029",
   "evidence_policy": {
     "selection_metric": "clean held-out validation only",
     "aggregate_test": "reporting only; never use test-derived metrics for candidate selection",
@@ -684,16 +678,16 @@
   "research_log_size_reconciled_at": "2026-10-29T10:10:53.863543+00:00",
   "research_log_size_reconciliation": "Accepted current file size 1777226 after a stable earlier shrink from recorded size 1786879; the watchdog had repeated the same integrity warning.",
   "latest_training_report": {
-    "experiment": "qwen-followup-checkpoint-plus-pref200-20261029",
-    "accuracy": 0.97,
-    "macro_f1": 0.7276119402985075,
-    "examples": 200,
+    "experiment": "qwen-best-tool-rich-context-expansion-synth-only-20261029",
+    "accuracy": 0.986,
+    "macro_f1": 0.492999971999888,
+    "examples": 500,
     "selection_use": "recorded evidence only"
   },
   "latest_clean_validation_report": {
-    "experiment": "qwen-followup-checkpoint-plus-pref200-20261029",
-    "accuracy": 0.958,
-    "macro_f1": 0.48677573278800274,
+    "experiment": "qwen-best-tool-rich-context-expansion-synth-only-20261029",
+    "accuracy": 0.954,
+    "macro_f1": 0.48571754506046094,
     "examples": 500,
     "source": "nvidia/When2Call:train_sft",
     "seed": 20261053,
