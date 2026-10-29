@@ -8562,3 +8562,7 @@ Context: The earlier recorder entry omitted nested test metrics even though the 
 Commit name: Queue contextual synthetic continuation pilots.
 Description: Recorded the latest run evidence audit, updated research state, and queued two distinct synthetic continuation experiments from the best tool-rich checkpoint.
 Context: The latest preference continuation had complete training, clean-validation, and aggregate black-box test metrics. The new pilots compare a 552-row contextual synthetic pool alone against the same pool with 200 real preference examples. Selection remains based on clean validation, and test labels are not used for selection.
+
+Commit name: Queue isolated rare-schema synthetic pilot.
+Description: Appended distinct generation and dependent training commands after the existing contextual pilots. Kept the active worker and existing queue intact.
+Context: The new hypothesis isolates whether rare-schema coverage adds signal beyond the best tool-rich checkpoint. Generation uses train_pref only with a $0.50 cap. Candidate selection remains clean-validation-only, and test scores are report-only.
