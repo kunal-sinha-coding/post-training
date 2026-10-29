@@ -2352,3 +2352,6 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 | Candidate | qwen-pref200-checkpoint-plus-followup169-synthetic-20261029 | 0.956 | 0.4857454509395607 | [metrics](/workspace/post-training/outputs/qwen-pref200-checkpoint-plus-followup169-synthetic-20261029/metrics.json) | completed |
 
 | qwen-pref200-checkpoint-plus-followup169-synthetic-20261029 | 0.7163198247535597 | 0.5364388157420126 | 8gs1hpep | Aggregate-only frozen test measurement |
+| Candidate | qwen-followup-synthetic-then-pref200-20261029 | 0.95 | 0.4851626474344527 | [metrics](/workspace/post-training/outputs/qwen-followup-synthetic-then-pref200-20261029/metrics.json) | completed |
+
+| qwen-followup-synthetic-then-pref200-20261029 | 0.7094742606790799 | 0.531131758394713 | lco2dqk4 | Aggregate-only frozen test measurement |
