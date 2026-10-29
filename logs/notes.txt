@@ -8602,3 +8602,5 @@ Description: Added one distinct frozen-inference fusion comparison after the act
 Context: The latest completed experiment has complete evidence. The fusion weights will be chosen on clean validation, and black-box test metrics will be report-only.
 
 2026-10-29T18:02:01.604983+00:00: Commit `Record research experiment qwen-best-tool-rich-rare-schema-plus-pref500-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-29T18:08Z: Updated auto-research guidance after the user broadened the search beyond synthetic data. The next phase now reviews evidence and considers data, training, modeling, and inference changes. Clean validation remains the selection signal and aggregate black-box test scores remain report-only. Left the active encoder-fusion worker and queue unchanged.

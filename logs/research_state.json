@@ -71,7 +71,7 @@
   "last_heartbeat": "2026-10-29T18:01:51.823170+00:00",
   "last_action": "Watchdog started validation worker pid 365031.",
   "watchdog_enabled": true,
-  "research_log_size": 1860015,
+  "research_log_size": 1861552,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -89,12 +89,7 @@
     "--batch-size",
     "1"
   ],
-  "recording_jobs": [
-    {
-      "pid": 365030,
-      "experiment_id": "qwen-best-tool-rich-rare-schema-plus-pref500-20261029"
-    }
-  ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-29T17:47:46.933237+00:00",
   "planning_ack_deadline": "2026-10-29T17:49:46.933265+00:00",
@@ -141,7 +136,7 @@
     "full_test_evaluation": true,
     "test_metrics_use": "The evaluator may use hidden labels internally to compute aggregate accuracy and macro F1 for reporting only. Never use test labels or test-derived metrics to select experiments, checkpoints, data mixtures, hyperparameters, prompts, or ensemble rules. Never inspect, print, save, or use individual test examples, labels, predictions, or correctness."
   },
-  "open_ended_phase": "Continue broad synthetic data exploration. Use clean validation to select promising methods, narrow around methods that improve it, and return to broader hypotheses when a direction fails. Aggregate black-box test metrics are report-only.",
+  "open_ended_phase": "After the active encoder-fusion evaluation, explore evidence-based changes across data, training, modeling, and inference. Do not limit research to synthetic data. Review recorded results and diagnostics first, use clean validation for selection, and keep aggregate black-box test metrics report-only. Keep hyperparameters fixed unless training evidence supports a change.",
   "posthoc_validation_required": {
     "experiment": "qwen-when2call-plus-full-bfcl-base-seed20261056",
     "checkpoints": [
