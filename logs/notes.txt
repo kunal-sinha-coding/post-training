@@ -8199,3 +8199,10 @@ The 994-row tool-rich pool has two substantive subtypes: 620 paired required-arg
 2026-10-29T05:30:07.283174+00:00: Commit `Record research experiment qwen-fullpref-tool-rich-paired-only-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
 
 2026-10-29T05:43:10.485537+00:00: Commit `Record research experiment qwen-fullpref-tool-rich-unsupported-only-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+## 2026-10-29: Queue a tool-rich ratio and rare-schema transfer test
+Commit name: Queue intermediate tool-rich and rare-schema pilots.
+
+The latest completed experiment, `qwen-fullpref-tool-rich-unsupported-only-20261029`, has complete evidence: training on 374 rows at 1.000 accuracy and 0.250 macro F1; clean validation on 500 rows at 0.900 accuracy and 0.456903 macro F1; aggregate black-box test on 3,652 rows at 0.712212 accuracy and 0.526550 macro F1. No measurement is missing.
+
+The 620-row paired-only ablation reached 0.950 clean-validation accuracy. The complete 994-row tool-rich pool reached 0.954. The unsupported-only pool reached 0.900. Queued an intermediate mixture with all 620 paired rows plus a deterministic 187-row unsupported subset, then a 1,032-row rare-schema synthetic-only transfer. Both start from the same clean-validation-selected full-preference checkpoint, use fixed 5e-6 learning rate and the same capped evaluations, and report full aggregate test metrics without using them for selection.
