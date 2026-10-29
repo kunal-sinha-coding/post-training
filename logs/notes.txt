@@ -8574,3 +8574,11 @@ Description: Updated the research-state latest-result pointers and logged the co
 Context: Clean validation improved by 0.4 percentage points in accuracy from the starting tool-rich checkpoint. Aggregate test metrics are report-only. The next queued run adds real preference examples to the contextual pool.
 
 2026-10-29T17:15:32.012774+00:00: Commit `Record research experiment qwen-best-tool-rich-context-expansion-plus-pref200-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-29T17:17:37.749952+00:00: Commit `Record research experiment when2call-rare-schema-expansion-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-29T17:17:44.232052+00:00: Commit `Record experiment synchronization failure` records the failed commit or push for when2call-rare-schema-expansion-20261029: error: read error while indexing logs/research_state.json: No such file or directory
+error: logs/research_state.json: failed to insert into database
+error: unable to index file 'logs/research_state.json'
+fatal: updating files failed
+. The result remains local and the worker queue continues.
