@@ -8572,3 +8572,5 @@ Context: The new hypothesis isolates whether rare-schema coverage adds signal be
 Commit name: Record contextual pilot evidence audit.
 Description: Updated the research-state latest-result pointers and logged the complete evidence for the 552-row contextual synthetic-only continuation.
 Context: Clean validation improved by 0.4 percentage points in accuracy from the starting tool-rich checkpoint. Aggregate test metrics are report-only. The next queued run adds real preference examples to the contextual pool.
+
+2026-10-29T17:15:32.012774+00:00: Commit `Record research experiment qwen-best-tool-rich-context-expansion-plus-pref200-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.

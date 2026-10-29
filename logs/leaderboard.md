@@ -2378,3 +2378,6 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 | Candidate | qwen-best-tool-rich-context-expansion-synth-only-20261029 | 0.954 | 0.48571754506046094 | [metrics](/workspace/post-training/outputs/qwen-best-tool-rich-context-expansion-synth-only-20261029/metrics.json) | completed |
 
 | qwen-best-tool-rich-context-expansion-synth-only-20261029 | 0.718236582694414 | 0.5371191398468783 | jr9vr1mv | Aggregate-only frozen test measurement |
+| Candidate | qwen-best-tool-rich-context-expansion-plus-pref200-20261029 | 0.952 | 0.4852002261220893 | [metrics](/workspace/post-training/outputs/qwen-best-tool-rich-context-expansion-plus-pref200-20261029/metrics.json) | completed |
+
+| qwen-best-tool-rich-context-expansion-plus-pref200-20261029 | 0.7152245345016429 | 0.5349079941124917 | 43g600le | Aggregate-only frozen test measurement |

@@ -14433,3 +14433,15 @@ This record was written automatically. Candidate selection must use clean valida
 ## 2026-10-29: Context-pair continuation result and next hypotheses
 
 The completed 552-row contextual synthetic-only continuation from the best tool-rich checkpoint has all evidence recorded. Training metrics are 0.986000 accuracy and 0.493000 macro F1 on 500 rows. The fixed clean SFT validation sample is 0.954000 accuracy and 0.485718 macro F1 on 500 rows, compared with the starting checkpoint at 0.950000 and 0.483638. The full aggregate black-box test report is 0.718237 accuracy and 0.537119 macro F1 on 3,652 rows. Test metrics did not select the next run. The fixed validation sample has no tool_call rows, which limits its ability to judge this paired call-versus-clarification recipe. The preference-anchored contextual continuation is active, followed by rare-schema generation and training.
+
+## qwen-best-tool-rich-context-expansion-plus-pref200-20261029
+
+Timestamp: 2026-10-29T17:15:28.602090+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--adapter-checkpoint", "outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/epoch-01", "--output-dir", "outputs/qwen-best-tool-rich-context-expansion-plus-pref200-20261029", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.95", "--baseline-validation-macro-f1", "0.48363771417663637", "--preference-train-sample-size", "200", "--seed", "20261190", "--augmentation-jsonl", "outputs/when2call-multiturn-context-expansion-20261029/contextual_pairs.jsonl"]. Output: /workspace/post-training/outputs/qwen-best-tool-rich-context-expansion-plus-pref200-20261029. W&B run: 43g600le.
+
+Clean development accuracy: 0.952. Clean development macro F1: 0.4852002261220893. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7152245345016429, "macro_f1": 0.5349079941124917, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.952, "macro_f1": 0.4852002261220893, "confusion_matrix": [[241, 3, 6, 0], [2, 235, 12, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
