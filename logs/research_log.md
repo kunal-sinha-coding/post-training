@@ -14702,3 +14702,14 @@ Clean development accuracy: 0.952. Clean development macro F1: 0.485662156758197
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.952, "macro_f1": 0.4856621567581978, "confusion_matrix": [[243, 2, 5, 0], [2, 233, 14, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+## 2026-10-29: evidence audit and next data-mixture hypothesis
+
+The most recent completed experiment, `qwen-fullpool-balanced-tool-rich-real-replay-20261029`, has complete training, clean-validation, and aggregate black-box test evidence for both evaluated epochs. At epoch 2, sampled training accuracy was 0.998000 and macro F1 was 0.748462 on 500 examples. Clean-validation accuracy was 0.952000 and macro F1 was 0.485662 on 500 examples. Full aggregate black-box test accuracy was 0.7130339539978094 and macro F1 was 0.5319289460866379 on 3,652 examples. Validation accuracy remained 0.952 at epoch 1 and epoch 2, below the 0.962 baseline, so training stopped. The test aggregates are report-only.
+
+The balanced synthetic-only pilot also completed with all three evidence types: training accuracy 0.984733 and macro F1 0.738193 on 262 rows; validation accuracy 0.956000 and macro F1 0.485264 on 500; full aggregate test accuracy 0.717963 and macro F1 0.538534 on 3,652. Its second epoch was skipped because clean validation did not improve.
+
+New hypothesis: the 50/50 small replay mixture may be too synthetic-heavy. Queue a run from the same selected original-data checkpoint with 1,000 stratified preference rows plus all 262 balanced synthetic rows. Train for up to three epochs with clean-validation early stopping. Evaluate up to 500 training and validation examples and the full aggregate test set each epoch. Use clean validation only for continuation.
+
+Command: `python -u -m experiments.train_qwen_when2call_fullpool --output-dir outputs/qwen-fullpool-balanced-tool-rich-real-replay-pref1000-20261029 --adapter-checkpoint outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02 --augmentation-jsonl outputs/when2call-tool-rich-balanced-pilot-20261029/balanced_boundary_tool_rich.jsonl --preference-train-sample-size 1000 --validation-source sft --validation-sample-size 500 --validation-seed 20261053 --training-eval-sample-size 500 --training-eval-seed 20261059 --eval-batch-size 8 --epochs 3 --learning-rate 5e-6 --weight-decay 0.01 --baseline-validation-accuracy 0.962 --baseline-validation-macro-f1 0.48832640709774233 --stop-on-validation-non-improvement --seed 20261204`

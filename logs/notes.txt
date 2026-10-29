@@ -8671,3 +8671,15 @@ fatal: updating files failed
 . The result remains local and the worker queue continues.
 
 2026-10-29T19:21:32.852511+00:00: Commit `Record research experiment qwen-fullpool-balanced-tool-rich-real-replay-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-29T19:21:47.149166+00:00: Commit `Record experiment synchronization failure` records the failed commit or push for qwen-fullpool-balanced-tool-rich-real-replay-20261029: fatal: Unable to create '/workspace/post-training/.git/index.lock': File exists.
+
+Another git process seems to be running in this repository, e.g.
+an editor opened by 'git commit'. Please make sure all processes
+are terminated then try again. If it still fails, a git process
+may have crashed in this repository earlier:
+remove the file manually to continue.
+. The result remains local and the worker queue continues.
+
+
+2026-10-29T19:23Z: Audited qwen-fullpool-balanced-tool-rich-real-replay-20261029. Both epochs have training, clean-validation, and full aggregate black-box test metrics. Epoch 2 reached 0.998000 training accuracy and 0.748462 macro F1 on 500 examples, while clean validation stayed at 0.952000 accuracy and 0.485662 macro F1 on 500 examples. The full aggregate test report was 0.7130339539978094 accuracy and 0.5319289460866379 macro F1 on 3,652 rows. Clean validation was below the 0.962 baseline, so the run stopped. Queued a real-heavy 1,000 preference plus 262 balanced synthetic mixture from the selected original-data checkpoint. Test metrics remain report-only.
