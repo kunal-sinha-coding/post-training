@@ -1,49 +1,45 @@
 {
-  "status": "awaiting_codex_planning",
+  "status": "active",
   "planning_owner": "codex_primary",
-  "planning_required": true,
+  "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
-  "current_hypothesis": "The matched 738-real plus 262-synthetic mixture reached baseline clean-validation accuracy at epoch 2, while the 100-row synthetic dose and real-only controls scored lower. Scale the same balanced tool-rich recipe to about 524 fresh synthetic rows plus 1,476 real rows while keeping the 26.2% synthetic share and starting from the epoch-2 candidate.",
+  "current_hypothesis": "The approximately 2,000-row synthetic mixture and real-only control both regressed on clean validation, while the 1,000-row 738-real/262-synthetic checkpoint tied the baseline. A frozen fusion of that checkpoint with the selected three-encoder family may recover complementary errors without further fine-tuning.",
   "active_experiment": {},
   "worker_command": [
     "python",
     "-u",
     "-m",
-    "experiments.train_qwen_when2call_fullpool",
-    "--output-dir",
-    "outputs/qwen-fullpool-tool-rich-expansion-real-control-2000-20261029",
-    "--adapter-checkpoint",
+    "experiments.evaluate_qwen_five_vote_encoder_fusion",
+    "--champion-checkpoint",
     "outputs/qwen-fullpool-pref738-synth262-matched-20261029/epoch-02",
-    "--preference-train-sample-size",
-    "2000",
-    "--validation-source",
-    "sft",
-    "--validation-sample-size",
+    "--output-dir",
+    "outputs/qwen-balanced-tool-rich-five-vote-encoder-fusion-20261029",
+    "--validation-size",
     "500",
     "--validation-seed",
     "20261053",
-    "--training-eval-sample-size",
-    "500",
-    "--training-eval-seed",
-    "20261059",
-    "--eval-batch-size",
-    "8",
-    "--epochs",
-    "3",
-    "--learning-rate",
-    "5e-6",
-    "--weight-decay",
-    "0.01",
-    "--baseline-validation-accuracy",
-    "0.962",
-    "--baseline-validation-macro-f1",
-    "0.48832640709774233",
-    "--stop-on-validation-non-improvement",
-    "--seed",
-    "20261206"
+    "--batch-size",
+    "1"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_qwen_five_vote_encoder_fusion",
+      "--champion-checkpoint",
+      "outputs/qwen-fullpool-pref738-synth262-matched-20261029/epoch-02",
+      "--output-dir",
+      "outputs/qwen-balanced-tool-rich-five-vote-encoder-fusion-20261029",
+      "--validation-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--batch-size",
+      "1"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -70,18 +66,28 @@
     "validation_examples": 500,
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
-  "last_heartbeat": "2026-10-29T23:42:28.151502+00:00",
-  "last_action": "Watchdog handed planning control to the primary Codex process.",
+  "last_heartbeat": null,
+  "last_action": "Queued clean-validation-selected encoder fusion for the best clean-validation-tied synthetic checkpoint.",
   "watchdog_enabled": true,
-  "research_log_size": 1904471,
+  "research_log_size": 1906087,
   "stop_command": "STOP",
-  "next_experiment": null,
-  "recording_jobs": [
-    {
-      "pid": 381075,
-      "experiment_id": "qwen-fullpool-tool-rich-expansion-real-control-2000-20261029"
-    }
+  "next_experiment": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_qwen_five_vote_encoder_fusion",
+    "--champion-checkpoint",
+    "outputs/qwen-fullpool-pref738-synth262-matched-20261029/epoch-02",
+    "--output-dir",
+    "outputs/qwen-balanced-tool-rich-five-vote-encoder-fusion-20261029",
+    "--validation-size",
+    "500",
+    "--validation-seed",
+    "20261053",
+    "--batch-size",
+    "1"
   ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-29T23:45:30.963202+00:00",
   "planning_ack_deadline": "2026-10-29T23:47:30.963220+00:00",
@@ -94,7 +100,7 @@
     "artifact": "outputs/qwen-llm-ensemble-vote-screen-20261029/metrics.json",
     "selection": "Aggregate test result reported for ranking only. It was not used for candidate selection."
   },
-  "next_hypothesis": "Compare the expanded synthetic mixture with a same-checkpoint, same-seed real-only control of about 2,000 total rows. This will test whether fresh synthetic examples add clean-validation value beyond the same training dose. Aggregate test metrics remain report-only.",
+  "next_hypothesis": "Select among the predeclared five-vote and encoder probability blends using clean validation only. If none beats the selected clean-validation fusion, stop this inference branch and reassess the validation and data-generation mismatch.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
@@ -141,13 +147,13 @@
     "selection_use": "none"
   },
   "evidence_audit": {
-    "experiment": "qwen-fullpool-pref1000-replay-rank8-20261029",
-    "training_metrics": "recorded: 0.994000 accuracy, 0.745500 macro F1, 500 examples; loss 0.108995",
-    "clean_validation_metrics": "recorded: 0.950000 accuracy, 0.485176 macro F1, 500 examples",
-    "aggregate_black_box_test_metrics": "recorded: 0.701807 accuracy, 0.524801 macro F1, 3652 examples",
+    "experiment": "qwen-fullpool-tool-rich-expansion-real-control-2000-20261029",
+    "training_metrics": "recorded: 0.988000 accuracy, 0.741000 macro F1, 500 examples; loss 0.080441",
+    "clean_validation_metrics": "recorded: 0.942000 accuracy, 0.481514 macro F1, 500 examples",
+    "aggregate_black_box_test_metrics": "recorded: 0.714129 accuracy, 0.532537 macro F1, 3652 examples",
     "all_required_evidence_recorded": true,
     "test_labels_used_for_selection": false,
-    "note": "Clean validation controls continuation and selection. Aggregate test metrics are report-only."
+    "note": "Aggregate test metrics are report-only. The training run stopped when clean-validation accuracy stopped improving."
   },
   "duplicate_worker_failure": {
     "pid": 103632,
@@ -269,13 +275,13 @@
     }
   ],
   "latest_aggregate_test_report": {
-    "experiment": "qwen-fullpool-pref1000-replay-rank8-20261029",
-    "accuracy": 0.7018072289156626,
-    "macro_f1": 0.5248010943051262,
+    "experiment": "qwen-fullpool-tool-rich-expansion-real-control-2000-20261029",
+    "accuracy": 0.7141292442497261,
+    "macro_f1": 0.5325365291437971,
     "examples": 3652,
-    "selection_use": "report-only; not used for candidate selection"
+    "selection_use": "report-only"
   },
-  "updated_at": "2026-10-29T22:19:22Z",
+  "updated_at": "2026-10-29T23:46:29Z",
   "synthetic_pilot_results": [
     {
       "strategy": "missing_required_info",
@@ -382,7 +388,7 @@
     "ensemble_aggregate_test_accuracy": 0.7313800657174151,
     "test_metric_use": "Reporting only; not used for candidate selection."
   },
-  "latest_completed_experiment": "qwen-fullpool-pref1000-replay-rank8-20261029",
+  "latest_completed_experiment": "qwen-fullpool-tool-rich-expansion-real-control-2000-20261029",
   "evidence_policy": {
     "selection_metric": "clean held-out validation only",
     "aggregate_test": "reporting only; never use test-derived metrics for candidate selection",
@@ -555,21 +561,21 @@
   "research_log_size_reconciled_at": "2026-10-29T10:10:53.863543+00:00",
   "research_log_size_reconciliation": "Accepted current file size 1777226 after a stable earlier shrink from recorded size 1786879; the watchdog had repeated the same integrity warning.",
   "latest_training_report": {
-    "experiment": "qwen-fullpool-pref1000-replay-rank8-20261029",
-    "accuracy": 0.994,
-    "macro_f1": 0.745499991008973,
+    "experiment": "qwen-fullpool-tool-rich-expansion-real-control-2000-20261029",
+    "accuracy": 0.988,
+    "macro_f1": 0.7409999278551331,
     "examples": 500,
-    "training_loss": 0.10899496277830138,
-    "selection_use": "recorded training diagnostic"
+    "training_loss": 0.08044117547189708,
+    "selection_use": "training diagnostic"
   },
   "latest_clean_validation_report": {
-    "experiment": "qwen-fullpool-pref1000-replay-rank8-20261029",
-    "accuracy": 0.95,
-    "macro_f1": 0.4851755396404067,
+    "experiment": "qwen-fullpool-tool-rich-expansion-real-control-2000-20261029",
+    "accuracy": 0.942,
+    "macro_f1": 0.4815135542168675,
     "examples": 500,
     "source": "nvidia/When2Call:train_sft",
     "seed": 20261053,
     "selection_use": "clean validation only",
-    "note": "Epoch 1 scored 0.954 accuracy and epoch 2 declined to 0.950. Baseline remains 0.962."
+    "note": "The two-epoch result was below the 0.962 baseline."
   }
 }
