@@ -8489,3 +8489,8 @@ Context: The aggregate black-box test metrics are reporting-only. No test exampl
 2026-10-29T13:56:24.745473+00:00: Commit `Record research experiment qwen-lowdose-best-pref200-plus-lowdose336-synth-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
 
 2026-10-29T14:11:01.345741+00:00: Commit `Record research experiment qwen-lowdose-best-pref400-plus-lowdose-followup336-synth-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+
+Commit name: Audit follow-up synthetic mixture and queue staged-training comparisons.
+Description: Reconciled the latest completed low-dose follow-up run with its complete metrics artifact. Updated the evidence audit and current clean-validation and aggregate reporting pointers. Queued a 200-real plus 338-synthetic mixture and a synthetic-only continuation from the 200-real checkpoint.
+Context: Training and clean validation are selection evidence. Aggregate black-box test metrics are reporting only. No test examples or labels were inspected or used for selection. The next experiments use the watchdog sequentially.

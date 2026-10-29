@@ -14229,3 +14229,10 @@ Clean development accuracy: 0.952. Clean development macro F1: 0.484176874466834
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.952, "macro_f1": 0.484176874466834, "confusion_matrix": [[244, 1, 5, 0], [6, 232, 11, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+## 2026-10-29: Audit low-dose follow-up mixture and queue next comparisons
+
+The latest completed run is `qwen-lowdose-best-pref400-plus-lowdose-followup336-synth-20261029`. Its complete metrics artifact records training accuracy 0.982000 and macro F1 0.738036 on 500 examples, clean validation accuracy 0.952000 and macro F1 0.484177 on 500 examples, and aggregate black-box test accuracy 0.736857 and macro F1 0.548823 on all 3652 examples. The run used 400 sampled When2Call `train_pref` rows and 338 synthetic examples from `outputs/when2call-tool-rich-low-dose-followup-20261029/balanced_boundary_tool_rich.jsonl`, starting at `outputs/qwen-tool-rich-low-dose-synthetic-only-20261029/epoch-01`; the synthetic file SHA-256 is recorded in the metrics artifact. All three evidence types are present. Test examples and labels were not inspected; test metrics are report-only.
+
+Evidence-based next hypotheses: compare the same 338-row synthetic pool with 200 real examples to test the replay ratio, then continue from the 200-real-only checkpoint on synthetic examples alone to test staged training. Both use the fixed 500-row clean validation set for selection and the full test split only for aggregate reporting. The queue is sequential.

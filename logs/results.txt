@@ -167792,3 +167792,10 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/fia4zu6s"
 }
 ```
+
+
+## 2026-10-29: Low-dose follow-up pool with 400 real examples
+
+Experiment: `qwen-lowdose-best-pref400-plus-lowdose-followup336-synth-20261029`. Purpose: test a separately generated low-dose tool-rich pool alongside real When2Call preference examples. Source command, full configuration, candidate artifact, W&B run, device, optimizer steps, data hashes, and label counts are recorded in `logs/research_log.md` and `outputs/qwen-lowdose-best-pref400-plus-lowdose-followup336-synth-20261029/metrics.json`. The run started from `outputs/qwen-tool-rich-low-dose-synthetic-only-20261029/epoch-01`, used 400 `nvidia/When2Call:train_pref` examples sampled with seed 20261177, 338 synthetic examples, one epoch, learning rate 5e-6, and 500-row training and fixed clean-validation probes. It evaluated the full 3652-row aggregate test split. W&B run: `fia4zu6s`.
+
+Results: training accuracy 0.982000 and macro F1 0.738036; clean validation accuracy 0.952000 and macro F1 0.484177; aggregate black-box test accuracy 0.736857 and macro F1 0.548823. All evidence is recorded. The aggregate test score is for reporting only and did not select future candidates. No individual test examples, predictions, or labels were viewed or saved.
