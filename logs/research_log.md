@@ -14774,3 +14774,15 @@ Clean development accuracy: 0.954. Clean development macro F1: 0.486730473679607
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.954, "macro_f1": 0.48673047367960715, "confusion_matrix": [[240, 3, 7, 0], [0, 237, 12, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-fullpool-pref900-synth100-matched-20261029
+
+Timestamp: 2026-10-29T21:48:48.299709+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-fullpool-pref900-synth100-matched-20261029", "--adapter-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--augmentation-jsonl", "outputs/when2call-tool-rich-balanced-pilot-20261029/balanced_tool_rich_100.jsonl", "--preference-train-sample-size", "900", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "3", "--learning-rate", "5e-6", "--weight-decay", "0.01", "--baseline-validation-accuracy", "0.962", "--baseline-validation-macro-f1", "0.48832640709774233", "--stop-on-validation-non-improvement", "--seed", "20261204"]. Output: /workspace/post-training/outputs/qwen-fullpool-pref900-synth100-matched-20261029. W&B run: w5lqi0xb.
+
+Clean development accuracy: 0.958. Clean development macro F1: 0.4877800407331976. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7007119386637459, "macro_f1": 0.5249327610470407, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.958, "macro_f1": 0.4877800407331976, "confusion_matrix": [[240, 3, 7, 0], [0, 239, 10, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
