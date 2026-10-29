@@ -8225,3 +8225,5 @@ Audited the latest completed rare-schema run and confirmed all three evidence ty
 Commit name: Queue lower-dose rare-schema synthetic diagnostic.
 
 Confirmed complete train, clean-validation, and aggregate black-box test evidence for the latest completed rare-schema run. The 750-row tool-rich run remains active. Created a deterministic, label-stratified 500-row sample from the existing rare-schema training pool, recorded source and output hashes in a sampling manifest, and queued its one-epoch synthetic-only training run after the already pending 983-row tool-rich run. Selection uses clean validation only, and no test examples or labels were inspected.
+
+2026-10-29T06:45:30.725633+00:00: Commit `Record research experiment qwen-fullpref-tool-rich-expansion-750-synthetic-only-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.

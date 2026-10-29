@@ -13627,3 +13627,15 @@ The latest completed experiment remains `qwen-fullpref-rare-schema-1032-syntheti
 ## 2026-10-29: Queue a lower-dose rare-schema diagnostic
 
 The latest completed rare-schema run (`qwen-fullpref-rare-schema-1032-synthetic-only-20261029`) has all three evidence types recorded: 500-row training metrics, 500-row clean validation, and aggregate test metrics over 3,652 rows. It reached 0.990 training accuracy and 0.954 clean-validation accuracy, compared with the 0.962 starting clean-validation accuracy. The active 750-row tool-rich run is still loading and has no completed metrics. After the already queued 983-row tool-rich run, a deterministic 500-row stratified rare-schema sample is queued to test whether reducing the dose narrows this train-to-validation gap. The sample is drawn from training data only. Candidate selection remains clean-validation-only.
+
+## qwen-fullpref-tool-rich-expansion-750-synthetic-only-20261029
+
+Timestamp: 2026-10-29T06:45:27.312969+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-fullpref-tool-rich-expansion-750-synthetic-only-20261029", "--adapter-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--synthetic-only", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261141", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.962", "--baseline-validation-macro-f1", "0.48832640709774233", "--augmentation-jsonl", "outputs/when2call-tool-rich-expansion-750-stratified-20261029/balanced_boundary_tool_rich_750.jsonl"]. Output: /workspace/post-training/outputs/qwen-fullpref-tool-rich-expansion-750-synthetic-only-20261029. W&B run: lt8x34hf.
+
+Clean development accuracy: 0.956. Clean development macro F1: 0.4852640432760498. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7100219058050383, "macro_f1": 0.5327089126307236, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.956, "macro_f1": 0.4852640432760498, "confusion_matrix": [[242, 3, 5, 0], [4, 236, 9, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
