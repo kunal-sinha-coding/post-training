@@ -14193,3 +14193,15 @@ This record was written automatically. Candidate selection must use clean valida
 Most recent completed experiment: `qwen-lowdose-best-pref400-plus-tiny-synth-20261029`. The record contains all required evidence. Training probe: accuracy 0.988000 and macro F1 0.741344 on 500 examples. Clean validation: accuracy 0.948000 and macro F1 0.484093 on 500 examples. Aggregate black-box test: accuracy 0.716867 and macro F1 0.535362 on all 3652 examples. Metrics are in `outputs/qwen-lowdose-best-pref400-plus-tiny-synth-20261029/metrics.json`. No test examples or labels were inspected; aggregate test metrics are report-only.
 
 The active run is `qwen-lowdose-best-pref400-plus-lowdose336-synth-20261029`, launched by watchdog as PID 349490. It starts from `outputs/qwen-tool-rich-low-dose-synthetic-only-20261029/epoch-01`, adds 400 sampled preference examples and the 336-row low-dose synthetic pool, and evaluates the same 500-row train probe and clean validation plus the full test split. It is one experiment at a time. Two distinct follow-ups are queued: the same synthetic pool with 200 real examples to test the real/synthetic ratio, then 400 real examples with the independent low-dose follow-up pool to test whether the effect generalizes beyond one synthetic sample. Selection uses clean validation only.
+
+## qwen-lowdose-best-pref400-plus-lowdose336-synth-20261029
+
+Timestamp: 2026-10-29T13:44:16.398523+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-lowdose-best-pref400-plus-lowdose336-synth-20261029", "--adapter-checkpoint", "outputs/qwen-tool-rich-low-dose-synthetic-only-20261029/epoch-01", "--preference-train-sample-size", "400", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261175", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.95", "--baseline-validation-macro-f1", "0.48363771417663637", "--augmentation-jsonl", "outputs/when2call-tool-rich-low-dose-20261029/balanced_boundary_tool_rich.jsonl"]. Output: /workspace/post-training/outputs/qwen-lowdose-best-pref400-plus-lowdose336-synth-20261029. W&B run: 96vlywrq.
+
+Clean development accuracy: 0.936. Clean development macro F1: 0.4793148082774388. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7157721796276013, "macro_f1": 0.5301158660318346, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.936, "macro_f1": 0.4793148082774388, "confusion_matrix": [[244, 1, 5, 0], [7, 224, 18, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
