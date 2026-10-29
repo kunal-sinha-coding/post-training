@@ -14241,3 +14241,15 @@ Evidence-based next hypotheses: compare the same 338-row synthetic pool with 200
 ## 2026-10-29: Queue reverse-order continuation
 
 The current 200-real plus follow-up synthetic mixture remains active, with a real-then-synthetic continuation already queued. Added a distinct reverse-order hypothesis: train on 400 real preference rows after starting from the follow-up synthetic-only checkpoint. This tests whether real preference training after synthetic adaptation improves the fixed clean validation. The experiment is sequential behind existing queue entries. Test metrics remain report-only.
+
+## qwen-lowdose-best-pref200-plus-lowdose-followup338-synth-20261029
+
+Timestamp: 2026-10-29T14:25:37.110345+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-lowdose-best-pref200-plus-lowdose-followup338-synth-20261029", "--adapter-checkpoint", "outputs/qwen-tool-rich-low-dose-synthetic-only-20261029/epoch-01", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.95", "--baseline-validation-macro-f1", "0.48363771417663637", "--preference-train-sample-size", "200", "--seed", "20261176", "--augmentation-jsonl", "outputs/when2call-tool-rich-low-dose-followup-20261029/balanced_boundary_tool_rich.jsonl"]. Output: /workspace/post-training/outputs/qwen-lowdose-best-pref200-plus-lowdose-followup338-synth-20261029. W&B run: jovs8r5d.
+
+Clean development accuracy: 0.94. Clean development macro F1: 0.4819474375378814. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7108433734939759, "macro_f1": 0.529626417153025, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.94, "macro_f1": 0.4819474375378814, "confusion_matrix": [[242, 2, 6, 0], [3, 228, 18, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
