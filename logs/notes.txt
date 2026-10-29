@@ -8654,3 +8654,5 @@ remove the file manually to continue.
 2026-10-29T18:43:56.288597+00:00: Commit `Record research experiment qwen-fullpool-balanced-tool-rich-pilot-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
 
 2026-10-29T18:44Z: Updated the audit to the completed weight-decay experiment with all three metrics. It tied baseline clean validation. Removed the failed preflight wrapper and queued a direct balanced-pilot continuation from the baseline checkpoint. The data hypothesis is that counts 96/83/83 may generalize better than the previous synthetic pool counts 22/158/158.
+
+2026-10-29T18:46Z: Queued one gated continuation for the balanced synthetic pilot. It first requires all three completed measurement types, then continues only if clean-validation accuracy and macro F1 improve over the baseline. Aggregate test metrics do not control continuation.
