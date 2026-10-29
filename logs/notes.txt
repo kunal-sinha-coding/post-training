@@ -8210,3 +8210,8 @@ The 620-row paired-only ablation reached 0.950 clean-validation accuracy. The co
 2026-10-29T06:02:47.444170+00:00: Commit `Record research experiment qwen-fullpref-tool-rich-paired-half-unsupported-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
 
 2026-10-29T06:23:51.843839+00:00: Commit `Record research experiment qwen-fullpref-rare-schema-1032-synthetic-only-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+## 2026-10-29: Queue a 750-row tool-rich synthetic pilot
+Commit name: Audit latest synthetic evidence and queue the 750-row pilot.
+
+Confirmed complete training, clean-validation, and aggregate black-box test metrics for the latest completed rare-schema run. Training was 0.990 accuracy and 0.742138 macro F1 on 500 rows. Clean validation was 0.954 accuracy and 0.485201 macro F1 on 500 rows. Aggregate test was 0.731106 accuracy and 0.546655 macro F1 on 3,652 rows. The test aggregate is report-only. Updated research state and log, then queued one distinct 750-row stratified tool-rich synthetic-only run from the clean-validation-selected checkpoint. It uses one epoch, capped train and validation evaluation, fixed learning rate, and full aggregate test evaluation.

@@ -13613,3 +13613,9 @@ Clean development accuracy: 0.954. Clean development macro F1: 0.485200828157349
 Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.962, "macro_f1": 0.48832640709774233, "examples": 500, "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## 2026-10-29: Audit latest synthetic continuation and queue a 750-row pilot
+
+The latest completed experiment, `qwen-fullpref-rare-schema-1032-synthetic-only-20261029`, has all required evidence. Training used a 500-example evaluation sample and measured 0.990 accuracy and 0.742138 macro F1. Clean validation used 500 `train_sft` examples and measured 0.954 accuracy and 0.485201 macro F1. The aggregate black-box test measured 0.731106 accuracy and 0.546655 macro F1 over 3,652 rows. Test metrics are report-only. No test examples, labels, predictions, or correctness outcomes were inspected.
+
+The recent synthetic-only clean-validation results are 0.958 for the 807-row paired-plus-half-unsupported pool, 0.954 for the 994-row tool-rich pool, 0.954 for the 1,032-row rare-schema pool, 0.950 for the 620-row paired-only pool, and 0.900 for the 374-row unsupported-only pool. Queued a one-epoch, 750-row stratified tool-rich pilot from the clean-validation-selected full-preference checkpoint. It keeps the learning rate and evaluation samples fixed and records full aggregate test metrics without using them for selection.
