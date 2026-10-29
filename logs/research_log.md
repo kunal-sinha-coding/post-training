@@ -14284,3 +14284,15 @@ This record was written automatically. Candidate selection must use clean valida
 Latest completed model run: `qwen-followup-synthetic-then-pref400-20261029`. Its metrics artifact contains all three evidence types: training 0.970000 accuracy / 0.727486 macro F1 on 400 examples; clean validation 0.942000 / 0.480973 on 500; full aggregate black-box test 0.717963 / 0.532659 on 3652. The test split was used only for aggregate reporting. No individual test content or labels were inspected.
 
 The prior real-then-synthetic continuation reached 0.958 validation accuracy, while this synthetic-then-400-real run reached 0.942. Queued two distinct follow-ups: 169 stratified synthetic examples after the 200-real checkpoint to test lower dose, then 200 real examples after the synthetic-only checkpoint to compare training order at matched replay size. Both select on the fixed clean validation set.
+
+## qwen-pref200-checkpoint-plus-followup169-synthetic-20261029
+
+Timestamp: 2026-10-29T15:02:52.463204+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-pref200-checkpoint-plus-followup169-synthetic-20261029", "--adapter-checkpoint", "outputs/qwen-lowdose-best-pref200-control-20261029/epoch-01", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.95", "--baseline-validation-macro-f1", "0.48363771417663637", "--synthetic-only", "--seed", "20261180", "--augmentation-jsonl", "outputs/when2call-tool-rich-low-dose-followup-20261029/half_pool_stratified_169_seed20261180.jsonl"]. Output: /workspace/post-training/outputs/qwen-pref200-checkpoint-plus-followup169-synthetic-20261029. W&B run: 8gs1hpep.
+
+Clean development accuracy: 0.956. Clean development macro F1: 0.4857454509395607. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7163198247535597, "macro_f1": 0.5364388157420126, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.956, "macro_f1": 0.4857454509395607, "confusion_matrix": [[243, 2, 5, 0], [4, 235, 10, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
