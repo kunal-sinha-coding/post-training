@@ -6,53 +6,8 @@
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
   "current_hypothesis": "The latest completed model run has complete train, clean-validation, and aggregate test evidence. The tool-rich replay run is still evaluating; existing queue entries test replay quantity and synthetic pool composition. All generated examples so far use single-turn requests. A new hypothesis is that multi-turn examples where a required value appears earlier in conversation will improve context use and distinguish inferable values from missing ones. Generate paired conversations from train_pref anchors, validate labels independently, and compare one replay continuation on clean validation.",
   "active_experiment": {
-    "pid": 311089,
+    "pid": 311355,
     "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.existing_when2call_hybrid",
-      "prepare",
-      "--work-dir",
-      "outputs/qwen-tool-rich-replay800-encoder-blackbox-20261029/work",
-      "--output-dir",
-      "outputs/qwen-tool-rich-replay800-encoder-blackbox-20261029",
-      "--suite",
-      "single-disagree",
-      "--qwen-checkpoint",
-      "outputs/qwen-tool-rich-boundary-replay800-20261028/epoch-01",
-      "--methods",
-      "single_encoder_request_or_cannot_answer_conf_90",
-      "--primary-method",
-      "single_encoder_request_or_cannot_answer_conf_90",
-      "--batch-size",
-      "1"
-    ],
-    "started_at": "2026-10-29T00:05:51.549283+00:00"
-  },
-  "worker_command": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.existing_when2call_hybrid",
-    "prepare",
-    "--work-dir",
-    "outputs/qwen-tool-rich-replay800-encoder-blackbox-20261029/work",
-    "--output-dir",
-    "outputs/qwen-tool-rich-replay800-encoder-blackbox-20261029",
-    "--suite",
-    "single-disagree",
-    "--qwen-checkpoint",
-    "outputs/qwen-tool-rich-boundary-replay800-20261028/epoch-01",
-    "--methods",
-    "single_encoder_request_or_cannot_answer_conf_90",
-    "--primary-method",
-    "single_encoder_request_or_cannot_answer_conf_90",
-    "--batch-size",
-    "1"
-  ],
-  "worker_queue": [
-    [
       "python",
       "-u",
       "-m",
@@ -73,6 +28,30 @@
       "--batch-size",
       "1"
     ],
+    "started_at": "2026-10-29T00:06:52.158645+00:00"
+  },
+  "worker_command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.existing_when2call_hybrid",
+    "test",
+    "--work-dir",
+    "outputs/qwen-tool-rich-replay800-encoder-blackbox-20261029/work",
+    "--output-dir",
+    "outputs/qwen-tool-rich-replay800-encoder-blackbox-20261029",
+    "--suite",
+    "single-disagree",
+    "--qwen-checkpoint",
+    "outputs/qwen-tool-rich-boundary-replay800-20261028/epoch-01",
+    "--methods",
+    "single_encoder_request_or_cannot_answer_conf_90",
+    "--primary-method",
+    "single_encoder_request_or_cannot_answer_conf_90",
+    "--batch-size",
+    "1"
+  ],
+  "worker_queue": [
     [
       "python",
       "-u",
@@ -152,8 +131,8 @@
     "macro_f1": 0.48337889372616516,
     "selection": "clean validation only"
   },
-  "last_heartbeat": "2026-10-29T00:05:51.549309+00:00",
-  "last_action": "Watchdog started validation worker pid 311089.",
+  "last_heartbeat": "2026-10-29T00:06:52.158659+00:00",
+  "last_action": "Watchdog started validation worker pid 311355.",
   "watchdog_enabled": true,
   "research_log_size": 1711196,
   "stop_command": "STOP",
@@ -162,7 +141,7 @@
     "-u",
     "-m",
     "experiments.existing_when2call_hybrid",
-    "prepare",
+    "test",
     "--work-dir",
     "outputs/qwen-tool-rich-replay800-encoder-blackbox-20261029/work",
     "--output-dir",
@@ -178,7 +157,12 @@
     "--batch-size",
     "1"
   ],
-  "recording_jobs": [],
+  "recording_jobs": [
+    {
+      "pid": 311354,
+      "experiment_id": "qwen-tool-rich-replay800-encoder-blackbox-20261029"
+    }
+  ],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-29T00:04:50.954665+00:00",
   "planning_ack_deadline": "2026-10-29T00:06:50.954690+00:00",
