@@ -223,6 +223,61 @@
       "0.48363771417663637",
       "--augmentation-jsonl",
       "outputs/when2call-tool-rich-near-zero-unsupported-20261029/balanced_boundary_tool_rich.jsonl"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.generate_when2call_boundary_pilot",
+      "--output-dir",
+      "outputs/when2call-tool-rich-low-dose-20261029",
+      "--pairs",
+      "200",
+      "--unsupported",
+      "25",
+      "--workers",
+      "24",
+      "--seed",
+      "20261166",
+      "--max-cost-usd",
+      "1.0",
+      "--anchor-strategy",
+      "tool_rich"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-tool-rich-low-dose-synthetic-only-20261029",
+      "--adapter-checkpoint",
+      "outputs/qwen-tool-rich-paired-low-unsupported-synthetic-only-20261029/epoch-01",
+      "--synthetic-only",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "1",
+      "--seed",
+      "20261159",
+      "--learning-rate",
+      "5e-6",
+      "--baseline-validation-accuracy",
+      "0.95",
+      "--baseline-validation-macro-f1",
+      "0.48363771417663637",
+      "--augmentation-jsonl",
+      "outputs/when2call-tool-rich-low-dose-20261029/balanced_boundary_tool_rich.jsonl"
     ]
   ],
   "_previous_command": [
@@ -252,9 +307,9 @@
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
   "last_heartbeat": "2026-10-29T10:24:56.023979+00:00",
-  "last_action": "Watchdog started validation worker pid 340245.",
+  "last_action": "Recorded complete evidence for the low-share expansion and queued a smaller-dose continuation after the existing replay and synthetic pilots.",
   "watchdog_enabled": true,
-  "research_log_size": 1780601,
+  "research_log_size": 1783150,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -290,12 +345,7 @@
     "--baseline-validation-macro-f1",
     "0.48363771417663637"
   ],
-  "recording_jobs": [
-    {
-      "pid": 340244,
-      "experiment_id": "qwen-tool-rich-low-share-expansion-from-low-share-20261029"
-    }
-  ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-29T10:12:12.969654+00:00",
   "planning_ack_deadline": "2026-10-29T10:14:12.969678+00:00",
@@ -308,7 +358,7 @@
     "artifact": "outputs/qwen-llm-ensemble-vote-screen-20261029/metrics.json",
     "selection": "Aggregate test result reported for ranking only. It was not used for candidate selection."
   },
-  "next_hypothesis": "Recent clean-validation evidence favored the low-unsupported tool-rich recipe over recipes with larger unsupported shares. After the queued matched replay comparison and rare-schema pilot, test a near-zero unsupported share using 300 paired tool-rich boundaries and one unsupported example. This checks whether the useful signal comes mainly from paired tool-call versus request-for-information distinctions. Use a single epoch with fixed settings and clean-validation-only selection.",
+  "next_hypothesis": "The 900-example low-share continuation reached 0.946 clean-validation accuracy, down from 0.956 on its starting low-share checkpoint. A smaller 425-example tool-rich pool may preserve the useful boundary signal with less added training. Generate 200 pairs plus 25 unsupported requests and train one epoch from the same starting low-share checkpoint with fixed settings. Use clean validation for selection and keep aggregate black-box test metrics report-only.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
@@ -355,22 +405,22 @@
     "selection_use": "none"
   },
   "evidence_audit": {
-    "latest_completed_experiment": "qwen-tool-rich-paired-feasible-20pct-real-replay-20261029",
+    "latest_completed_experiment": "qwen-tool-rich-low-share-expansion-from-low-share-20261029",
     "training_metrics_recorded": true,
-    "training_metrics_source": "outputs/qwen-tool-rich-paired-feasible-20pct-real-replay-20261029/metrics.json:epoch_records[-1].training_metrics",
+    "training_metrics_source": "outputs/qwen-tool-rich-low-share-expansion-from-low-share-20261029/metrics.json:epoch_records[-1].training_metrics",
     "training_examples": 500,
     "training_accuracy": 0.994,
-    "training_macro_f1": 0.7456696956195966,
+    "training_macro_f1": 0.7451422003489963,
     "clean_validation_recorded": true,
-    "clean_validation_source": "outputs/qwen-tool-rich-paired-feasible-20pct-real-replay-20261029/metrics.json:epoch_records[-1].heldout_validation_metrics",
+    "clean_validation_source": "outputs/qwen-tool-rich-low-share-expansion-from-low-share-20261029/metrics.json:epoch_records[-1].heldout_validation_metrics",
     "clean_validation_examples": 500,
-    "clean_validation_accuracy": 0.952,
-    "clean_validation_macro_f1": 0.4846639004149378,
+    "clean_validation_accuracy": 0.946,
+    "clean_validation_macro_f1": 0.4830396659707724,
     "aggregate_black_box_test_metrics_recorded": true,
-    "aggregate_black_box_test_source": "outputs/qwen-tool-rich-paired-feasible-20pct-real-replay-20261029/metrics.json:epoch_records[-1].black_box_test_metrics",
+    "aggregate_black_box_test_source": "outputs/qwen-tool-rich-low-share-expansion-from-low-share-20261029/metrics.json:epoch_records[-1].black_box_test_metrics",
     "aggregate_black_box_test_examples": 3652,
-    "aggregate_black_box_test_accuracy": 0.7393209200438116,
-    "aggregate_black_box_test_macro_f1": 0.5522188090262636,
+    "aggregate_black_box_test_accuracy": 0.7319277108433735,
+    "aggregate_black_box_test_macro_f1": 0.5465785939052814,
     "test_rows_or_predictions_saved": false,
     "candidate_selection": "Clean held-out validation only. Aggregate black-box test metrics are report-only. No test examples or labels were inspected."
   },
@@ -494,13 +544,13 @@
     }
   ],
   "latest_aggregate_test_report": {
-    "experiment": "qwen-tool-rich-paired-feasible-20pct-real-replay-20261029",
-    "accuracy": 0.7393209200438116,
-    "macro_f1": 0.5522188090262636,
+    "experiment": "qwen-tool-rich-low-share-expansion-from-low-share-20261029",
+    "accuracy": 0.7319277108433735,
+    "macro_f1": 0.5465785939052814,
     "examples": 3652,
     "selection_use": "report-only; not used to choose the next experiment"
   },
-  "updated_at": "2026-10-29T10:24:20.010013+00:00",
+  "updated_at": "2026-10-29T10:26:27.870485+00:00",
   "synthetic_pilot_results": [
     {
       "strategy": "missing_required_info",
@@ -607,7 +657,7 @@
     "ensemble_aggregate_test_accuracy": 0.7313800657174151,
     "test_metric_use": "Reporting only; not used for candidate selection."
   },
-  "latest_completed_experiment": "qwen-tool-rich-paired-feasible-20pct-real-replay-20261029",
+  "latest_completed_experiment": "qwen-tool-rich-low-share-expansion-from-low-share-20261029",
   "evidence_policy": {
     "selection_metric": "clean held-out validation only",
     "aggregate_test": "reporting only; never use test-derived metrics for candidate selection",
@@ -771,9 +821,9 @@
     ]
   },
   "latest_clean_validation_screen": {
-    "experiment": "qwen-tool-rich-paired-feasible-20pct-real-replay-20261029",
-    "accuracy": 0.952,
-    "macro_f1": 0.4846639004149378,
+    "experiment": "qwen-tool-rich-low-share-expansion-from-low-share-20261029",
+    "accuracy": 0.946,
+    "macro_f1": 0.4830396659707724,
     "examples": 500,
     "selection": "Clean held-out validation only."
   },

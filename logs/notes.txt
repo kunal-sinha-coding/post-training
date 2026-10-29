@@ -8384,3 +8384,7 @@ Commit name: Queue near-zero unsupported pilot.
 The latest completed model experiment has complete training, validation, and aggregate test evidence. The low-share expansion run remains active. Added a paired-boundary synthetic pilot with 300 pairs and one unsupported request after existing replay and rare-schema tasks. This tests whether the validation improvement continues when unsupported examples are nearly removed. The trainer uses a fixed one-epoch setup and clean-validation-only selection.
 
 2026-10-29T10:25:01.555685+00:00: Commit `Record research experiment qwen-tool-rich-low-share-expansion-from-low-share-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-29: Record low-share expansion evidence and queue a smaller dose.
+Commit name: Audit low-share expansion and queue smaller dose.
+The completed 900-row low-share continuation records training, clean validation, and full aggregate black-box test metrics. Clean validation was 0.946 accuracy / 0.483040 macro F1, below the 0.956 accuracy of the starting low-unsupported checkpoint. Updated the evidence audit and queued a fresh 425-row synthetic pilot from the same starting checkpoint to test whether a smaller update preserves validation performance. Existing queued experiments and the active real-only replay control remain unchanged.

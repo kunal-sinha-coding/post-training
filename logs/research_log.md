@@ -13880,3 +13880,10 @@ Clean development accuracy: 0.946. Clean development macro F1: 0.483039665970772
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.946, "macro_f1": 0.4830396659707724, "confusion_matrix": [[244, 1, 5, 0], [5, 229, 15, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+## 2026-10-29: Audit low-share expansion and queue smaller data dose
+
+The latest completed model experiment is `qwen-tool-rich-low-share-expansion-from-low-share-20261029`. Its evidence is complete: training 0.994000 accuracy / 0.745142 macro F1 on 500 sampled rows; clean validation 0.946000 / 0.483040 on 500 rows; aggregate black-box test 0.731928 / 0.546579 on all 3652 rows. No test examples or labels were inspected.
+
+The previous low-unsupported checkpoint had 0.956 clean-validation accuracy. Continuing it on a fresh 900-row synthetic pool produced 0.946 clean-validation accuracy. To test whether that drop reflects too large an incremental dose, queued a fresh 425-row pool made from 200 pairs and 25 unsupported examples, followed by a one-epoch synthetic-only continuation from the same starting checkpoint. Existing matched replay and rare-schema tasks remain ahead in the queue.
