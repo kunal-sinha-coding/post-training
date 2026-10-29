@@ -13833,86 +13833,9 @@ The latest completed trained experiment remains `qwen-random-anchor-paired-unsup
 
 The latest completed trained experiment still has complete evidence: 500-row training accuracy 0.992000 / macro F1 0.744897, 500-row clean-validation accuracy 0.942000 / macro F1 0.481458, and full aggregate test accuracy 0.736309 / macro F1 0.548398 on 3,652 rows. The current tool-rich continuation is active. Added a follow-up training-only command after the queued data recipe comparisons. It uses 200 sampled train_pref examples with the already generated 803-row paired-boundary pool, warm-starts from the tool-rich champion, and keeps all training and validation settings fixed. This tests whether a small amount of authentic replay reduces the validation transfer drop seen with random-anchor synthetic-only training. Clean validation selects the candidate; test examples and labels are not used.
 
-## qwen-tool-rich-paired-unsupported-feasible-synthetic-only-20261029
 
-Timestamp: 2026-10-29T08:59:28.754465+00:00. Status: completed.
+## 2026-10-29: Complete evidence audit and queue low-share expansion
 
-Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-tool-rich-paired-unsupported-feasible-synthetic-only-20261029", "--adapter-checkpoint", "outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/epoch-01", "--synthetic-only", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261150", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.95", "--baseline-validation-macro-f1", "0.48363771417663637", "--augmentation-jsonl", "outputs/when2call-tool-rich-paired-unsupported-feasible-20261029/balanced_boundary_tool_rich.jsonl"]. Output: /workspace/post-training/outputs/qwen-tool-rich-paired-unsupported-feasible-synthetic-only-20261029. W&B run: h0c74l0q.
+The latest completed model run is `qwen-tool-rich-paired-feasible-20pct-real-replay-20261029`. Its artifact records all three required evidence types: training 0.994000 accuracy / 0.745670 macro F1 on 500 sampled examples; clean validation 0.952000 / 0.484664 on 500 examples; and aggregate black-box test 0.739321 / 0.552219 on all 3652 rows. The test set was scored only as an aggregate. No test rows, labels, or predictions were inspected.
 
-Clean development accuracy: 0.952. Clean development macro F1: 0.48320863202527575. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7376779846659365, "macro_f1": 0.5505144946319434, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
-
-Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.952, "macro_f1": 0.48320863202527575, "confusion_matrix": [[244, 1, 5, 0], [8, 232, 9, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
-
-This record was written automatically. Candidate selection must use clean validation only.
-
-## when2call-tool-rich-paired-low-unsupported-20261029
-
-Timestamp: 2026-10-29T09:01:36.134609+00:00. Status: completed.
-
-Setup: ["python", "-u", "-m", "experiments.generate_when2call_boundary_pilot", "--output-dir", "outputs/when2call-tool-rich-paired-low-unsupported-20261029", "--pairs", "400", "--unsupported", "100", "--workers", "24", "--seed", "20261151", "--max-cost-usd", "1.0", "--anchor-strategy", "tool_rich"]. Output: /workspace/post-training/outputs/when2call-tool-rich-paired-low-unsupported-20261029. W&B run: not available.
-
-Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
-
-Separate source validation metrics: {}. Failure reason: None.
-
-This record was written automatically. Candidate selection must use clean validation only.
-
-## qwen-tool-rich-paired-low-unsupported-synthetic-only-20261029
-
-Timestamp: 2026-10-29T09:14:37.047344+00:00. Status: completed.
-
-Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-tool-rich-paired-low-unsupported-synthetic-only-20261029", "--adapter-checkpoint", "outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/epoch-01", "--synthetic-only", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261152", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.95", "--baseline-validation-macro-f1", "0.48363771417663637", "--augmentation-jsonl", "outputs/when2call-tool-rich-paired-low-unsupported-20261029/balanced_boundary_tool_rich.jsonl"]. Output: /workspace/post-training/outputs/qwen-tool-rich-paired-low-unsupported-synthetic-only-20261029. W&B run: omsxg3qb.
-
-Clean development accuracy: 0.956. Clean development macro F1: 0.4862245151459944. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7294633077765608, "macro_f1": 0.5459190970652198, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
-
-Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.956, "macro_f1": 0.4862245151459944, "confusion_matrix": [[244, 1, 5, 0], [4, 234, 11, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
-
-This record was written automatically. Candidate selection must use clean validation only.
-
-## when2call-tool-rich-paired-medium-unsupported-20261029
-
-Timestamp: 2026-10-29T09:17:46.255668+00:00. Status: completed.
-
-Setup: ["python", "-u", "-m", "experiments.generate_when2call_boundary_pilot", "--output-dir", "outputs/when2call-tool-rich-paired-medium-unsupported-20261029", "--pairs", "400", "--unsupported", "300", "--workers", "24", "--seed", "20261153", "--max-cost-usd", "1.0", "--anchor-strategy", "tool_rich"]. Output: /workspace/post-training/outputs/when2call-tool-rich-paired-medium-unsupported-20261029. W&B run: not available.
-
-Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
-
-Separate source validation metrics: {}. Failure reason: None.
-
-This record was written automatically. Candidate selection must use clean validation only.
-
-## qwen-tool-rich-paired-medium-unsupported-synthetic-only-20261029
-
-Timestamp: 2026-10-29T09:31:46.179978+00:00. Status: completed.
-
-Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-tool-rich-paired-medium-unsupported-synthetic-only-20261029", "--adapter-checkpoint", "outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/epoch-01", "--synthetic-only", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261154", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.95", "--baseline-validation-macro-f1", "0.48363771417663637", "--augmentation-jsonl", "outputs/when2call-tool-rich-paired-medium-unsupported-20261029/balanced_boundary_tool_rich.jsonl"]. Output: /workspace/post-training/outputs/qwen-tool-rich-paired-medium-unsupported-synthetic-only-20261029. W&B run: nr2skozv.
-
-Clean development accuracy: 0.928. Clean development macro F1: 0.47420003350645. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7300109529025192, "macro_f1": 0.538780951031164, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
-
-Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.928, "macro_f1": 0.47420003350645, "confusion_matrix": [[244, 1, 5, 0], [13, 220, 16, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
-
-This record was written automatically. Candidate selection must use clean validation only.
-
-## when2call-context-recoverability-300pairs-champion-20261029
-
-Timestamp: 2026-10-29T09:33:17.506723+00:00. Status: completed.
-
-Setup: ["python", "-u", "-m", "experiments.generate_when2call_contextual_pilot", "--output-dir", "outputs/when2call-context-recoverability-300pairs-champion-20261029", "--pairs", "300", "--workers", "24", "--seed", "20261155", "--max-cost-usd", "1.0"]. Output: /workspace/post-training/outputs/when2call-context-recoverability-300pairs-champion-20261029. W&B run: not available.
-
-Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
-
-Separate source validation metrics: {}. Failure reason: None.
-
-This record was written automatically. Candidate selection must use clean validation only.
-
-## qwen-context-recoverability-synthetic-only-champion-20261029
-
-Timestamp: 2026-10-29T09:48:51.566973+00:00. Status: completed.
-
-Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-context-recoverability-synthetic-only-champion-20261029", "--adapter-checkpoint", "outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/epoch-01", "--synthetic-only", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261156", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.95", "--baseline-validation-macro-f1", "0.48363771417663637", "--augmentation-jsonl", "outputs/when2call-context-recoverability-300pairs-champion-20261029/contextual_pairs.jsonl"]. Output: /workspace/post-training/outputs/qwen-context-recoverability-synthetic-only-champion-20261029. W&B run: jvelzrh2.
-
-Clean development accuracy: 0.956. Clean development macro F1: 0.48575489159175045. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.721248630887185, "macro_f1": 0.5404721463742853, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
-
-Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.956, "macro_f1": 0.48575489159175045, "confusion_matrix": [[242, 3, 5, 0], [3, 236, 10, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
-
-This record was written automatically. Candidate selection must use clean validation only.
+Recent synthetic recipe comparisons show the low-unsupported tool-rich checkpoint has the strongest clean-validation result among these pilots at 0.956 accuracy / 0.486225 macro F1. The new queue first generates 400 matched tool-rich pairs plus 100 unsupported examples, then continues from that checkpoint for one epoch using the fixed training and validation settings. The hypothesis is that fresh examples at the lower unsupported share will improve coverage. Candidate selection remains clean-validation-only. The existing aggregate-test leaderboard leader remains the five-draw Qwen vote result at 0.741512 accuracy / 0.552921 macro F1, reported for ranking only.

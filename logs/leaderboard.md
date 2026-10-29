@@ -2277,3 +2277,6 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 | Candidate | qwen-context-recoverability-synthetic-only-champion-20261029 | 0.956 | 0.48575489159175045 | [metrics](/workspace/post-training/outputs/qwen-context-recoverability-synthetic-only-champion-20261029/metrics.json) | completed |
 
 | qwen-context-recoverability-synthetic-only-champion-20261029 | 0.721248630887185 | 0.5404721463742853 | jvelzrh2 | Aggregate-only frozen test measurement |
+| Candidate | qwen-tool-rich-paired-feasible-20pct-real-replay-20261029 | 0.952 | 0.4846639004149378 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-paired-feasible-20pct-real-replay-20261029/metrics.json) | completed |
+
+| qwen-tool-rich-paired-feasible-20pct-real-replay-20261029 | 0.7393209200438116 | 0.5522188090262636 | h7ck3r5x | Aggregate-only frozen test measurement |
