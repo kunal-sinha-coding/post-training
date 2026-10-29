@@ -8600,3 +8600,5 @@ Context: Clean validation declined by 0.2 percentage points after a larger rare-
 Commit name: Queue encoder fusion check for preference continuation.
 Description: Added one distinct frozen-inference fusion comparison after the active real-preference continuation.
 Context: The latest completed experiment has complete evidence. The fusion weights will be chosen on clean validation, and black-box test metrics will be report-only.
+
+2026-10-29T18:02:01.604983+00:00: Commit `Record research experiment qwen-best-tool-rich-rare-schema-plus-pref500-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.

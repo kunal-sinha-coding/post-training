@@ -14509,3 +14509,15 @@ Queued a one-epoch continuation from the first rare-schema checkpoint using 500 
 ## 2026-10-29: Queue fusion check for the preference continuation
 
 The latest completed rare-schema expansion has recorded training, clean-validation, and aggregate black-box test metrics. A real-preference-only continuation from the first rare-schema checkpoint is active. Queued a frozen inference comparison for its epoch-01 checkpoint using the established five-vote Qwen and weighted three-encoder family. It compares predeclared fusion weights on the fixed 500-row clean SFT validation sample, then reports full aggregate test metrics. Candidate selection uses clean validation only; no test labels select the fusion.
+
+## qwen-best-tool-rich-rare-schema-plus-pref500-20261029
+
+Timestamp: 2026-10-29T18:01:56.791955+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-best-tool-rich-rare-schema-plus-pref500-20261029", "--adapter-checkpoint", "outputs/qwen-best-tool-rich-rare-schema-synthetic-only-20261029/epoch-01", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.958", "--baseline-validation-macro-f1", "0.4862680412371134", "--preference-train-sample-size", "500", "--seed", "20261195"]. Output: /workspace/post-training/outputs/qwen-best-tool-rich-rare-schema-plus-pref500-20261029. W&B run: u3ent69l.
+
+Clean development accuracy: 0.952. Clean development macro F1: 0.48470744405035987. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7050930996714129, "macro_f1": 0.5281361147849764, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.952, "macro_f1": 0.48470744405035987, "confusion_matrix": [[241, 3, 6, 0], [3, 235, 11, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
