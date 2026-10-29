@@ -2256,3 +2256,6 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 | Candidate | when2call-tool-rich-paired-unsupported-fresh-20261029 | — | — | [metrics](/workspace/post-training/outputs/when2call-tool-rich-paired-unsupported-fresh-20261029/metrics.json) | failed_or_incomplete |
 | Candidate | qwen-tool-rich-paired-unsupported-fresh-synthetic-only-20261029 | — | — | [metrics](/workspace/post-training/outputs/qwen-tool-rich-paired-unsupported-fresh-synthetic-only-20261029/metrics.json) | failed_or_incomplete |
 | Candidate | when2call-random-anchor-paired-unsupported-20261029 | — | — | [metrics](/workspace/post-training/outputs/when2call-random-anchor-paired-unsupported-20261029/metrics.json) | completed |
+| Candidate | qwen-random-anchor-paired-unsupported-synthetic-only-20261029 | 0.942 | 0.48145846671437 | [metrics](/workspace/post-training/outputs/qwen-random-anchor-paired-unsupported-synthetic-only-20261029/metrics.json) | completed |
+
+| qwen-random-anchor-paired-unsupported-synthetic-only-20261029 | 0.7363088718510405 | 0.5483979327657029 | q8uazz1z | Aggregate-only frozen test measurement |
