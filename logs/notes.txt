@@ -8686,3 +8686,6 @@ remove the file manually to continue.
 
 
 2026-10-29T19:24Z: Added a matched real-only replay control after the active 1,000-preference plus 262-synthetic run. It uses the same source sample seed, checkpoint, optimization settings, validation sample, and early-stop rule. The comparison isolates whether synthetic rows add clean-validation value beyond another real-data replay. Aggregate black-box metrics remain report-only.
+
+
+2026-10-29T19:25Z: The asynchronous recorder had already written the complete real-replay result, but its automatic commit collided with the research-state commit. Preserved the recorder error for audit. The result, metrics, and leaderboard entry are present; the next experiment is running and no worker was blocked.
