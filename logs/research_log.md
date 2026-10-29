@@ -14533,3 +14533,9 @@ Clean development accuracy: 0.954. Clean development macro F1: 0.486202337994911
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-best-tool-rich-rare-schema-plus-pref500-encoder-fusion-20261029: evidence audit and next hypothesis
+
+This frozen inference experiment has all applicable evidence recorded. No training occurred, and the metrics artifact explicitly marks training metrics as not applicable. The source Qwen checkpoint has training accuracy 0.988000 and macro F1 0.741027 on 500 examples. Clean validation selected the 50% vote-frequency encoder blend at accuracy 0.954000 and macro F1 0.486202 on 500 examples. The validation sample has no label 2 rows and one label 3 row. Full aggregate black-box test metrics are accuracy 0.710570 and macro F1 0.531890 on 3652 examples. Test metrics are report-only.
+
+Hypothesis: the validation-selected fusion may transfer to the model checkpoint with the best recorded clean-validation score. Queued one fixed fusion comparison on `outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02`, selecting among predeclared blends on the same clean SFT validation sample.
