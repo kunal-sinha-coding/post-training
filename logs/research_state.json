@@ -1,30 +1,11 @@
 {
-  "status": "active",
+  "status": "awaiting_codex_planning",
   "planning_owner": "codex_primary",
-  "planning_required": false,
+  "planning_required": true,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
   "current_hypothesis": "The validation-selected 50% vote-frequency encoder blend improved clean validation from 0.950 to 0.954 on the preference-continuation checkpoint. Test whether this validation signal transfers to the checkpoint with the best recorded clean validation, using the same predeclared blends and fixed validation sample. Aggregate black-box metrics remain report-only.",
-  "active_experiment": {
-    "pid": 365996,
-    "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.evaluate_qwen_five_vote_encoder_fusion",
-      "--champion-checkpoint",
-      "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
-      "--output-dir",
-      "outputs/qwen-fullpool-bestval-fivevote-three-encoder-fusion-20261029",
-      "--validation-size",
-      "500",
-      "--validation-seed",
-      "20261053",
-      "--batch-size",
-      "1"
-    ],
-    "started_at": "2026-10-29T18:16:26.741225+00:00"
-  },
+  "active_experiment": {},
   "worker_command": [
     "python",
     "-u",
@@ -69,31 +50,21 @@
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
   "last_heartbeat": "2026-10-29T18:16:26.741244+00:00",
-  "last_action": "Watchdog adopted existing validation worker pid 365996.",
+  "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
   "research_log_size": 1863579,
   "stop_command": "STOP",
-  "next_experiment": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.evaluate_qwen_five_vote_encoder_fusion",
-    "--champion-checkpoint",
-    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
-    "--output-dir",
-    "outputs/qwen-fullpool-bestval-fivevote-three-encoder-fusion-20261029",
-    "--validation-size",
-    "500",
-    "--validation-seed",
-    "20261053",
-    "--batch-size",
-    "1"
+  "next_experiment": null,
+  "recording_jobs": [
+    {
+      "pid": 366673,
+      "experiment_id": "qwen-fullpool-bestval-fivevote-three-encoder-fusion-20261029"
+    }
   ],
-  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": null,
-  "planning_ack_deadline": null,
-  "planning_attempts": 51,
+  "planning_notified_at": "2026-10-29T18:28:02.235334+00:00",
+  "planning_ack_deadline": "2026-10-29T18:30:02.235360+00:00",
+  "planning_attempts": 52,
   "best_observed_test": {
     "method": "qwen-llm-ensemble-vote-screen-20261029, five sampled action-label votes",
     "accuracy": 0.7415115005476451,

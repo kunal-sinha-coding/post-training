@@ -14539,3 +14539,15 @@ This record was written automatically. Candidate selection must use clean valida
 This frozen inference experiment has all applicable evidence recorded. No training occurred, and the metrics artifact explicitly marks training metrics as not applicable. The source Qwen checkpoint has training accuracy 0.988000 and macro F1 0.741027 on 500 examples. Clean validation selected the 50% vote-frequency encoder blend at accuracy 0.954000 and macro F1 0.486202 on 500 examples. The validation sample has no label 2 rows and one label 3 row. Full aggregate black-box test metrics are accuracy 0.710570 and macro F1 0.531890 on 3652 examples. Test metrics are report-only.
 
 Hypothesis: the validation-selected fusion may transfer to the model checkpoint with the best recorded clean-validation score. Queued one fixed fusion comparison on `outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02`, selecting among predeclared blends on the same clean SFT validation sample.
+
+## qwen-fullpool-bestval-fivevote-three-encoder-fusion-20261029
+
+Timestamp: 2026-10-29T18:28:01.172632+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_qwen_five_vote_encoder_fusion", "--champion-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--output-dir", "outputs/qwen-fullpool-bestval-fivevote-three-encoder-fusion-20261029", "--validation-size", "500", "--validation-seed", "20261053", "--batch-size", "1"]. Output: /workspace/post-training/outputs/qwen-fullpool-bestval-fivevote-three-encoder-fusion-20261029. W&B run: ozmror6k.
+
+Clean development accuracy: 0.96. Clean development macro F1: 0.48780276209086065. Official test loaded: True. Test status: measured. Official test metrics: {"accuracy": 0.7045454545454546, "macro_f1": 0.529299346118855, "examples": 3652}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
