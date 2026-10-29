@@ -165815,3 +165815,71 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/34xurrcs"
 }
 ```
+
+## when2call-tool-rich-tiny-replay-mix-20261029
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.generate_when2call_boundary_pilot",
+    "--output-dir",
+    "outputs/when2call-tool-rich-tiny-replay-mix-20261029",
+    "--pairs",
+    "100",
+    "--unsupported",
+    "12",
+    "--workers",
+    "24",
+    "--seed",
+    "20261174",
+    "--max-cost-usd",
+    "1.0",
+    "--anchor-strategy",
+    "tool_rich"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "when2call-tool-rich-tiny-replay-mix-20261029",
+  "failure_reason": null,
+  "metadata": {
+    "accepted_pairs": 84,
+    "accepted_unsupported": 11,
+    "anchor_strategy": "tool_rich",
+    "class_counts": {
+      "cannot_answer": 11,
+      "request_for_info": 84,
+      "tool_call": 84
+    },
+    "concurrency": 24,
+    "cost_ledger": "outputs/when2call-tool-rich-tiny-replay-mix-20261029/cost-ledger.json",
+    "estimated_cost_usd": 0.0358489,
+    "generation_model": "gpt-6-luna",
+    "official_test_loaded": false,
+    "output_jsonl": "outputs/when2call-tool-rich-tiny-replay-mix-20261029/balanced_boundary_tool_rich.jsonl",
+    "pairs_requested": 100,
+    "rows_written": 179,
+    "seed": 20261174,
+    "source": "nvidia/When2Call train_pref",
+    "status": "completed",
+    "test_labels_used": false,
+    "unsupported_requested": 12
+  },
+  "metrics_path": "/workspace/post-training/outputs/when2call-tool-rich-tiny-replay-mix-20261029/metrics.json",
+  "official_test_loaded": false,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/when2call-tool-rich-tiny-replay-mix-20261029",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-29T12:46:24.081918+00:00",
+  "status": "completed",
+  "test_status": "not measured",
+  "timestamp": "2026-10-29T12:47:24.935888+00:00",
+  "train_metrics": {},
+  "wandb_run_id": null,
+  "wandb_run_url": null
+}
+```
