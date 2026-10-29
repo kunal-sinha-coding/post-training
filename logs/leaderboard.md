@@ -2175,3 +2175,6 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 | Candidate | qwen-rare-schema-large-boundary-replay900-20261029 | 0.946 | 0.4825526400226686 | [metrics](/workspace/post-training/outputs/qwen-rare-schema-large-boundary-replay900-20261029/metrics.json) | completed |
 
 | qwen-rare-schema-large-boundary-replay900-20261029 | 0.7275465498357064 | 0.5413206540451903 | pxpws40h | Aggregate-only frozen test measurement |
+| Candidate | qwen-rare-schema-boundary-synthetic-only-20261029 | 0.95 | 0.4826694717350781 | [metrics](/workspace/post-training/outputs/qwen-rare-schema-boundary-synthetic-only-20261029/metrics.json) | completed |
+
+| qwen-rare-schema-boundary-synthetic-only-20261029 | 0.7379518072289156 | 0.5498284299356742 | k4itv7bi | Aggregate-only frozen test measurement |

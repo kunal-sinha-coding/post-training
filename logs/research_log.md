@@ -13385,3 +13385,15 @@ Clean development accuracy: 0.946. Clean development macro F1: 0.482552640022668
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.946, "macro_f1": 0.4825526400226686, "confusion_matrix": [[244, 1, 5, 0], [6, 229, 14, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-rare-schema-boundary-synthetic-only-20261029
+
+Timestamp: 2026-10-29T00:58:36.591198+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-rare-schema-boundary-synthetic-only-20261029", "--adapter-checkpoint", "outputs/qwen-pref900-synth450-high-similarity-lr5e6-20261028/epoch-01", "--synthetic-only", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261120", "--learning-rate", "5e-6", "--augmentation-jsonl", "outputs/when2call-rare-schema-large-boundary-pilot-20261029/balanced_boundary_rare_schema.jsonl"]. Output: /workspace/post-training/outputs/qwen-rare-schema-boundary-synthetic-only-20261029. W&B run: k4itv7bi.
+
+Clean development accuracy: 0.95. Clean development macro F1: 0.4826694717350781. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7379518072289156, "macro_f1": 0.5498284299356742, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.95, "macro_f1": 0.4826694717350781, "confusion_matrix": [[244, 1, 5, 0], [8, 231, 10, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
