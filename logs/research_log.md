@@ -13868,3 +13868,15 @@ The most recent completed model experiment still has training, clean-validation,
 ## 2026-10-29: Queue a near-zero unsupported-share boundary pilot
 
 The latest completed model experiment remains the 200-example real replay mixed with the 803-row tool-rich pool. Training, clean validation, and full aggregate test metrics are all recorded. The low-share expansion model is active and has not written its epoch metrics yet. The queue already contains matched real-replay controls and a rare-schema synthetic pilot. Added a further distinct recipe after those jobs: generate 300 tool-rich paired boundaries and one unsupported request, then continue from the low-share checkpoint for one epoch. This probes whether lowering the unsupported share further helps, based on the validation trend across prior share levels. Candidate selection uses clean validation only; test data remains aggregate-only.
+
+## qwen-tool-rich-low-share-expansion-from-low-share-20261029
+
+Timestamp: 2026-10-29T10:24:56.128973+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-tool-rich-low-share-expansion-from-low-share-20261029", "--adapter-checkpoint", "outputs/qwen-tool-rich-paired-low-unsupported-synthetic-only-20261029/epoch-01", "--synthetic-only", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261159", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.95", "--baseline-validation-macro-f1", "0.48363771417663637", "--augmentation-jsonl", "outputs/when2call-tool-rich-low-share-expansion-20261029/balanced_boundary_tool_rich.jsonl"]. Output: /workspace/post-training/outputs/qwen-tool-rich-low-share-expansion-from-low-share-20261029. W&B run: umi60r4j.
+
+Clean development accuracy: 0.946. Clean development macro F1: 0.4830396659707724. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7319277108433735, "macro_f1": 0.5465785939052814, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.946, "macro_f1": 0.4830396659707724, "confusion_matrix": [[244, 1, 5, 0], [5, 229, 15, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

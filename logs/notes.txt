@@ -8382,3 +8382,5 @@ The latest completed model run has complete training, clean-validation, and aggr
 2026-10-29: Queue near-zero unsupported-share pilot.
 Commit name: Queue near-zero unsupported pilot.
 The latest completed model experiment has complete training, validation, and aggregate test evidence. The low-share expansion run remains active. Added a paired-boundary synthetic pilot with 300 pairs and one unsupported request after existing replay and rare-schema tasks. This tests whether the validation improvement continues when unsupported examples are nearly removed. The trainer uses a fixed one-epoch setup and clean-validation-only selection.
+
+2026-10-29T10:25:01.555685+00:00: Commit `Record research experiment qwen-tool-rich-low-share-expansion-from-low-share-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.

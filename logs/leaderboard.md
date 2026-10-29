@@ -2281,3 +2281,6 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 
 | qwen-tool-rich-paired-feasible-20pct-real-replay-20261029 | 0.7393209200438116 | 0.5522188090262636 | h7ck3r5x | Aggregate-only frozen test measurement |
 | Candidate | when2call-tool-rich-low-share-expansion-20261029 | — | — | [metrics](/workspace/post-training/outputs/when2call-tool-rich-low-share-expansion-20261029/metrics.json) | completed |
+| Candidate | qwen-tool-rich-low-share-expansion-from-low-share-20261029 | 0.946 | 0.4830396659707724 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-low-share-expansion-from-low-share-20261029/metrics.json) | completed |
+
+| qwen-tool-rich-low-share-expansion-from-low-share-20261029 | 0.7319277108433735 | 0.5465785939052814 | umi60r4j | Aggregate-only frozen test measurement |
