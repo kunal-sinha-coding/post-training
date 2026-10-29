@@ -93,50 +93,7 @@
     "--augmentation-jsonl",
     "outputs/when2call-tool-rich-expansion-500-stratified-20261029/balanced_boundary_tool_rich_500.jsonl"
   ],
-  "worker_queue": [
-    [
-      "python",
-      "-u",
-      "-m",
-      "experiments.train_qwen_when2call_fullpool",
-      "--output-dir",
-      "outputs/qwen-tool-rich-expansion-750-dose-replay-20261029",
-      "--adapter-checkpoint",
-      "outputs/qwen-tool-rich-boundary-replay900-20261028/epoch-01",
-      "--synthetic-only",
-      "--validation-source",
-      "sft",
-      "--validation-sample-size",
-      "500",
-      "--validation-seed",
-      "20261053",
-      "--training-eval-sample-size",
-      "500",
-      "--training-eval-seed",
-      "20261059",
-      "--eval-batch-size",
-      "8",
-      "--epochs",
-      "3",
-      "--stop-on-validation-non-improvement",
-      "--seed",
-      "20261129",
-      "--learning-rate",
-      "5e-6",
-      "--baseline-validation-accuracy",
-      "0.96",
-      "--baseline-validation-macro-f1",
-      "0.4872873318653768",
-      "--baseline-test-accuracy",
-      "0.7278203723986857",
-      "--baseline-test-macro-f1",
-      "0.5446447229603346",
-      "--baseline-test-source",
-      "outputs/qwen-tool-rich-boundary-replay900-20261028/metrics.json",
-      "--augmentation-jsonl",
-      "outputs/when2call-tool-rich-expansion-750-stratified-20261029/balanced_boundary_tool_rich_750.jsonl"
-    ]
-  ],
+  "worker_queue": [],
   "_previous_command": [
     "python",
     "-u",
@@ -164,9 +121,9 @@
     "selection": "clean validation only"
   },
   "last_heartbeat": "2026-10-29T02:51:51.681735+00:00",
-  "last_action": "Watchdog started validation worker pid 318217.",
+  "last_action": "Removed the automatic 750-row follow-up until the active 500-row dose passes the predeclared clean-validation non-harm screen. The 1e-6 trial completed without a clean-validation gain.",
   "watchdog_enabled": true,
-  "research_log_size": 1726072,
+  "research_log_size": 1727952,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -210,12 +167,7 @@
     "--augmentation-jsonl",
     "outputs/when2call-tool-rich-expansion-500-stratified-20261029/balanced_boundary_tool_rich_500.jsonl"
   ],
-  "recording_jobs": [
-    {
-      "pid": 318216,
-      "experiment_id": "qwen-tool-rich-expansion-replay-lr1e6-20261029"
-    }
-  ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-29T02:29:46.857085+00:00",
   "planning_ack_deadline": "2026-10-29T02:31:46.857110+00:00",
@@ -229,7 +181,7 @@
     "wandb_run_id": "vrfnnoq2",
     "selection": "Aggregate test result reported for ranking only. It was not used for candidate selection."
   },
-  "next_hypothesis": "The active 1e-6 run tests whether a smaller update reduces synthetic-data drift. The queued 500-row sample tests lower data exposure at 5e-6. A nested 750-row sample at the same 5e-6 isolates an intermediate exposure dose between 500 and the full 983-row pool. Compare all against the same 0.960 clean-validation baseline and never use aggregate test metrics for selection.",
+  "next_hypothesis": "The active 500-row stratified tool-rich synthetic dose is the only pending experiment. Compare its clean validation with the fixed 0.960 accuracy and 0.487287 macro F1 baseline. Queue a 750-row nested dose only if 500 rows does not reduce clean-validation accuracy by 1 percentage point or more. Do not change learning rate or other hyperparameters without a specific supporting signal.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
