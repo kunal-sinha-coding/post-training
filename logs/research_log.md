@@ -14367,3 +14367,15 @@ The run tied the best known clean-validation accuracy at 0.962. Queued two conti
 ## 2026-10-29: Queue encoder fusion for the five-vote champion
 
 The current tool-rich Qwen champion uses five sampled action-label votes. Added a frozen inference comparison with the previously selected weighted three-encoder family. The evaluator compares predeclared 25%, 50%, and 75% encoder probability contributions using both empirical vote frequencies and majority one-hot predictions. It selects a fusion by the fixed clean validation sample before loading the test split, then reports aggregate metrics for the frozen candidates. This is queued immediately after the active training worker and ahead of the older follow-up training run. No test labels select the fusion.
+
+## qwen-followup-checkpoint-plus-original-lowdose336-20261029
+
+Timestamp: 2026-10-29T16:17:04.665219+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-followup-checkpoint-plus-original-lowdose336-20261029", "--adapter-checkpoint", "outputs/qwen-fullpool-best-followup338-synthetic-only-20261029/epoch-01", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.962", "--baseline-validation-macro-f1", "0.48832640709774233", "--synthetic-only", "--seed", "20261184", "--augmentation-jsonl", "outputs/when2call-tool-rich-low-dose-20261029/balanced_boundary_tool_rich.jsonl"]. Output: /workspace/post-training/outputs/qwen-followup-checkpoint-plus-original-lowdose336-20261029. W&B run: 151nth46.
+
+Clean development accuracy: 0.958. Clean development macro F1: 0.48677573278800274. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7116648411829135, "macro_f1": 0.5333475190836465, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.958, "macro_f1": 0.48677573278800274, "confusion_matrix": [[242, 3, 5, 0], [2, 237, 10, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

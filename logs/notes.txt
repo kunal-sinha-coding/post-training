@@ -8544,3 +8544,5 @@ Context: All three metrics for the latest run are present. Clean validation is t
 Commit name: Queue encoder fusion for the five-vote champion.
 Description: Added an inference-only evaluator for fusing the five-sampled-vote tool-rich Qwen champion with the selected weighted three-encoder family. Queued it immediately after the current active training run, before the previous queued continuation.
 Context: Fusion candidates and weights are selected on clean validation. The full black-box test set is used only for aggregate reporting. No individual test examples or labels are saved or used for selection.
+
+2026-10-29T16:17:07.620164+00:00: Commit `Record research experiment qwen-followup-checkpoint-plus-original-lowdose336-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
