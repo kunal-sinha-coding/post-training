@@ -13966,3 +13966,27 @@ Clean development accuracy: 0.946. Clean development macro F1: 0.483061142699696
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.946, "macro_f1": 0.4830611426996969, "confusion_matrix": [[243, 2, 5, 0], [4, 230, 15, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## when2call-tool-rich-low-dose-20261029
+
+Timestamp: 2026-10-29T11:25:49.556097+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.generate_when2call_boundary_pilot", "--output-dir", "outputs/when2call-tool-rich-low-dose-20261029", "--pairs", "200", "--unsupported", "25", "--workers", "24", "--seed", "20261166", "--max-cost-usd", "1.0", "--anchor-strategy", "tool_rich"]. Output: /workspace/post-training/outputs/when2call-tool-rich-low-dose-20261029. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-tool-rich-low-dose-synthetic-only-20261029
+
+Timestamp: 2026-10-29T11:38:21.223023+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-tool-rich-low-dose-synthetic-only-20261029", "--adapter-checkpoint", "outputs/qwen-tool-rich-paired-low-unsupported-synthetic-only-20261029/epoch-01", "--synthetic-only", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261159", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.95", "--baseline-validation-macro-f1", "0.48363771417663637", "--augmentation-jsonl", "outputs/when2call-tool-rich-low-dose-20261029/balanced_boundary_tool_rich.jsonl"]. Output: /workspace/post-training/outputs/qwen-tool-rich-low-dose-synthetic-only-20261029. W&B run: anof45qh.
+
+Clean development accuracy: 0.96. Clean development macro F1: 0.4872873318653768. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.726998904709748, "macro_f1": 0.5437870344203916, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.96, "macro_f1": 0.4872873318653768, "confusion_matrix": [[244, 1, 5, 0], [4, 236, 9, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
