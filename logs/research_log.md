@@ -13778,3 +13778,15 @@ This record was written automatically. Candidate selection must use clean valida
 Latest completed training experiment: `qwen-random-anchor-paired-unsupported-synthetic-only-20261029`. Evidence is complete: training 0.992000 accuracy / 0.744897 macro F1 on 500 sampled rows; clean validation 0.942000 / 0.481458 on 500 rows; aggregate black-box test 0.736309 / 0.548398 on all 3,652 rows. Test examples and labels were not inspected, and test metrics did not select the candidate. The random-anchor continuation is below the user-designated tool-rich champion on clean validation (0.942 versus 0.950).
 
 The fresh tool-rich generation command failed before producing data. Its request for 500 paired tool-call anchors exceeded the 465 eligible source rows. The dependent training command therefore failed before training. Queued a feasible corrected pilot with 400 pairs and 200 unsupported requests, followed by a one-epoch synthetic-only continuation from the tool-rich champion. This compares anchor strategy at similar requested data scale.
+
+## qwen-tool-rich-paired-unsupported-feasible-synthetic-only-20261029
+
+Timestamp: 2026-10-29T08:38:42.698563+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-tool-rich-paired-unsupported-feasible-synthetic-only-20261029", "--adapter-checkpoint", "outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/epoch-01", "--synthetic-only", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261150", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.95", "--baseline-validation-macro-f1", "0.48363771417663637", "--augmentation-jsonl", "outputs/when2call-tool-rich-paired-unsupported-feasible-20261029/balanced_boundary_tool_rich.jsonl"]. Output: /workspace/post-training/outputs/qwen-tool-rich-paired-unsupported-feasible-synthetic-only-20261029. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
