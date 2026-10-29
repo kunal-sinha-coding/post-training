@@ -102,6 +102,10 @@ def record(repo: Path, args: argparse.Namespace) -> dict:
         output_dir = repo / output_dir
     metrics = load_metrics(output_dir)
     development = metrics.get("development_metrics") or {}
+    selected_method = metrics.get("selected_fusion_by_clean_validation")
+    if not development and selected_method and selected_method in (metrics.get("validation_metrics") or {}):
+        # Preserve the selected inference candidate's clean-validation score.
+        development = metrics["validation_metrics"][selected_method]
     source_validation = {key: value for key, value in metrics.items() if key.endswith("_validation_metrics") and value}
     checkpoint_records = metrics.get("epoch_records") or metrics.get("checkpoint_evaluations") or []
     latest_checkpoint = checkpoint_records[-1] if checkpoint_records else {}
@@ -118,9 +122,12 @@ def record(repo: Path, args: argparse.Namespace) -> dict:
             source_validation["heldout_validation_metrics"] = latest_checkpoint["heldout_validation_metrics"]
     # Preserve aggregate official test metrics when the worker is a black-box evaluator.
     official_test = metrics.get("official_test_metrics") or {}
+    if not official_test and selected_method and selected_method in (metrics.get("test_metrics") or {}):
+        # Record the selected frozen candidate while keeping all candidates in metadata.
+        official_test = metrics["test_metrics"][selected_method]
     if not official_test and latest_checkpoint.get("black_box_test_metrics"):
         official_test = latest_checkpoint["black_box_test_metrics"]
-    aggregate_only = bool(metrics.get("test_measurement_only") and metrics.get("black_box"))
+    aggregate_only = bool((metrics.get("test_measurement_only") and metrics.get("black_box")) or (metrics.get("test_black_box") and official_test))
     if not official_test and aggregate_only:
         official_test = {key: metrics.get("metrics", {}).get(key) for key in ("accuracy", "macro_f1") if key in metrics.get("metrics", {})}
     if args.development_accuracy is not None:

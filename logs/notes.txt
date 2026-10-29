@@ -8552,3 +8552,7 @@ Context: Fusion candidates and weights are selected on clean validation. The ful
 Commit name: Rank current champion encoder fusion.
 Description: Added the clean-validation-selected 25% three-encoder and five-vote-frequency fusion to the current aggregate test leaderboard at 0.740416 accuracy and 0.552062 macro F1.
 Context: This result is below the existing five-vote Qwen leader at 0.741512 accuracy. The full test set was used only for aggregate reporting after fusion selection on clean validation.
+
+Commit name: Repair the encoder fusion experiment record.
+Description: Added a correction record with clean-validation, aggregate black-box test, and all-candidate metrics. Updated the asynchronous recorder to recognize validation-selected inference evaluators.
+Context: The earlier recorder entry omitted nested test metrics even though the metrics artifact was complete. The selected 25% encoder blend did not exceed the current five-vote Qwen leaderboard leader.

@@ -14391,3 +14391,7 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## Correction: five-vote Qwen plus encoder fusion
+
+The asynchronous recorder marked the aggregate test measurement missing because this frozen evaluator stores candidate metrics under `test_metrics`. The selected clean-validation candidate was `vote_frequency_encoder_25`: validation accuracy 0.948 and macro F1 0.4830963073852296 on 500 examples. Training metrics are not applicable because no model training occurred. Full aggregate black-box test metrics were accuracy 0.7404162102957283 and macro F1 0.5520617525220826 on 3652 examples. Candidate selection used clean validation only. The test set was used only for aggregate reporting; no row-level test data or labels were saved. The fusion did not beat the current five-vote leaderboard leader.
