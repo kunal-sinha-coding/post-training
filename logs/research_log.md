@@ -13851,3 +13851,10 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+## 2026-10-29: Queue a matched replay versus replay-plus-synthetic comparison
+
+The most recent completed model experiment remains `qwen-tool-rich-paired-feasible-20pct-real-replay-20261029`. Its training, clean-validation, and aggregate black-box test metrics are all recorded. The current low-share synthetic continuation is still active, so it has no completed evaluation record yet.
+
+After that run, queue two one-epoch branches from its checkpoint. The control uses 200 sampled train_pref examples only. The second uses the same 200 real examples plus the newly generated low-share synthetic pool. Both use the same seed, optimizer settings, 500-example training probe, and 500-example clean validation sample. The hypothesis is that this matched comparison will show whether the synthetic pool adds validation signal beyond real replay. The full test split remains aggregate-only and report-only.
