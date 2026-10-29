@@ -14499,3 +14499,9 @@ Clean development accuracy: 0.956. Clean development macro F1: 0.485735537190082
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.956, "macro_f1": 0.48573553719008267, "confusion_matrix": [[244, 1, 5, 0], [5, 234, 10, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## 2026-10-29: Rare-schema expansion result and real-preference follow-up
+
+The latest completed run, `qwen-best-tool-rich-rare-schema-expanded-synthetic-only-20261029`, has all three evidence types recorded: training accuracy 1.000000 and macro F1 0.750000 on 500 rows; clean-validation accuracy 0.956000 and macro F1 0.485736 on 500 rows; aggregate black-box test accuracy 0.733297 and macro F1 0.547758 on all 3,652 rows. Compared with the first rare-schema run, clean validation fell from 0.958 to 0.956, so more of the same synthetic recipe did not help validation. The test result is report-only.
+
+Queued a one-epoch continuation from the first rare-schema checkpoint using 500 stratified real train_pref examples and no synthetic addition. It uses the same capped training evaluation and fixed clean SFT validation. The hypothesis is that additional gold preference data may complement the rare-schema checkpoint. Test labels and aggregate test metrics do not select the candidate.

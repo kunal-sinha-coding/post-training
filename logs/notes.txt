@@ -8592,3 +8592,7 @@ Context: The first rare-schema-only continuation improved clean-validation accur
 2026-10-29T17:32:46.468553+00:00: Commit `Record research experiment when2call-rare-schema-expansion-v2-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
 
 2026-10-29T17:45:47.141187+00:00: Commit `Record research experiment qwen-best-tool-rich-rare-schema-expanded-synthetic-only-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+Commit name: Queue real preference continuation after rare-schema expansion.
+Description: Recorded the completed expansion evidence and queued a distinct 500-example real preference continuation from the first rare-schema checkpoint.
+Context: Clean validation declined by 0.2 percentage points after a larger rare-schema synthetic continuation. The next hypothesis tests real data, with clean validation controlling selection and black-box test metrics report-only.

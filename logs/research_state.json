@@ -1,10 +1,10 @@
 {
-  "status": "awaiting_codex_planning",
+  "status": "active",
   "planning_owner": "codex_primary",
-  "planning_required": true,
+  "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
-  "current_hypothesis": "Rare-schema synthetic-only continuation improved clean-validation accuracy from 0.950 to 0.958. Test whether a distinct larger rare-schema pool continues that clean-validation gain when training from the rare-schema checkpoint. The fixed clean validation sample selects candidates; aggregate test scores are report-only.",
+  "current_hypothesis": "The second rare-schema synthetic expansion reduced clean validation from 0.958 to 0.956. Test whether 500 real preference examples add useful signal when continued from the first rare-schema checkpoint. Use only the fixed clean SFT validation sample for selection; full-test metrics are report-only.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -12,12 +12,9 @@
     "-m",
     "experiments.train_qwen_when2call_fullpool",
     "--output-dir",
-    "outputs/qwen-best-tool-rich-rare-schema-expanded-synthetic-only-20261029",
+    "outputs/qwen-best-tool-rich-rare-schema-plus-pref500-20261029",
     "--adapter-checkpoint",
     "outputs/qwen-best-tool-rich-rare-schema-synthetic-only-20261029/epoch-01",
-    "--synthetic-only",
-    "--augmentation-jsonl",
-    "outputs/when2call-rare-schema-expansion-v2-20261029/balanced_boundary_rare_schema.jsonl",
     "--validation-source",
     "sft",
     "--validation-sample-size",
@@ -38,10 +35,47 @@
     "0.958",
     "--baseline-validation-macro-f1",
     "0.4862680412371134",
+    "--preference-train-sample-size",
+    "500",
     "--seed",
-    "20261194"
+    "20261195"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-best-tool-rich-rare-schema-plus-pref500-20261029",
+      "--adapter-checkpoint",
+      "outputs/qwen-best-tool-rich-rare-schema-synthetic-only-20261029/epoch-01",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "1",
+      "--learning-rate",
+      "5e-6",
+      "--baseline-validation-accuracy",
+      "0.958",
+      "--baseline-validation-macro-f1",
+      "0.4862680412371134",
+      "--preference-train-sample-size",
+      "500",
+      "--seed",
+      "20261195"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -69,21 +103,49 @@
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
   "last_heartbeat": "2026-10-29T17:32:39.333496+00:00",
-  "last_action": "Watchdog handed planning control to the primary Codex process.",
+  "last_action": "Confirmed the expanded rare-schema run has training, clean-validation, and aggregate black-box test measurements. Queued one distinct gold-preference continuation hypothesis; test labels are not used for selection.",
   "watchdog_enabled": true,
-  "research_log_size": 1856737,
+  "research_log_size": 1858401,
   "stop_command": "STOP",
-  "next_experiment": null,
-  "recording_jobs": [
-    {
-      "pid": 363753,
-      "experiment_id": "qwen-best-tool-rich-rare-schema-expanded-synthetic-only-20261029"
-    }
+  "next_experiment": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.train_qwen_when2call_fullpool",
+    "--output-dir",
+    "outputs/qwen-best-tool-rich-rare-schema-plus-pref500-20261029",
+    "--adapter-checkpoint",
+    "outputs/qwen-best-tool-rich-rare-schema-synthetic-only-20261029/epoch-01",
+    "--validation-source",
+    "sft",
+    "--validation-sample-size",
+    "500",
+    "--validation-seed",
+    "20261053",
+    "--training-eval-sample-size",
+    "500",
+    "--training-eval-seed",
+    "20261059",
+    "--eval-batch-size",
+    "8",
+    "--epochs",
+    "1",
+    "--learning-rate",
+    "5e-6",
+    "--baseline-validation-accuracy",
+    "0.958",
+    "--baseline-validation-macro-f1",
+    "0.4862680412371134",
+    "--preference-train-sample-size",
+    "500",
+    "--seed",
+    "20261195"
   ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-29T17:45:45.066548+00:00",
-  "planning_ack_deadline": "2026-10-29T17:47:45.066573+00:00",
-  "planning_attempts": 49,
+  "planning_notified_at": "2026-10-29T17:47:46.933237+00:00",
+  "planning_ack_deadline": "2026-10-29T17:49:46.933265+00:00",
+  "planning_attempts": 50,
   "best_observed_test": {
     "method": "qwen-llm-ensemble-vote-screen-20261029, five sampled action-label votes",
     "accuracy": 0.7415115005476451,
@@ -92,7 +154,7 @@
     "artifact": "outputs/qwen-llm-ensemble-vote-screen-20261029/metrics.json",
     "selection": "Aggregate test result reported for ranking only. It was not used for candidate selection."
   },
-  "next_hypothesis": "If the larger rare-schema continuation improves clean validation, assess its inference variants on validation and consider another targeted rare-schema expansion. If not, return to the broader synthetic data search with emphasis on class-complete clean validation.",
+  "next_hypothesis": "If real preference continuation improves clean validation, test a larger dose or a targeted mixture. If it does not, stop repeating dose variants and develop synthetic examples that target overlapping tool schemas and tool-call versus missing-information decisions. Improve validation class coverage before optimizing those boundaries.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
@@ -139,10 +201,10 @@
     "selection_use": "none"
   },
   "evidence_audit": {
-    "experiment": "qwen-best-tool-rich-rare-schema-synthetic-only-20261029",
-    "training_metrics": "recorded: 0.995349 accuracy, 0.746454 macro F1, 430 examples",
-    "clean_validation_metrics": "recorded: 0.958000 accuracy, 0.486268 macro F1, 500 examples",
-    "aggregate_black_box_test_metrics": "recorded: 0.735487 accuracy, 0.549050 macro F1, 3652 examples",
+    "experiment": "qwen-best-tool-rich-rare-schema-expanded-synthetic-only-20261029",
+    "training_metrics": "recorded: 1.000000 accuracy, 0.750000 macro F1, 500 examples",
+    "clean_validation_metrics": "recorded: 0.956000 accuracy, 0.485736 macro F1, 500 examples",
+    "aggregate_black_box_test_metrics": "recorded: 0.733297 accuracy, 0.547758 macro F1, 3652 examples",
     "all_required_evidence_recorded": true,
     "test_labels_used_for_selection": false,
     "note": "The fixed clean SFT validation sample contains no tool_call rows, so its class coverage is limited."
@@ -267,13 +329,13 @@
     }
   ],
   "latest_aggregate_test_report": {
-    "experiment": "qwen-best-tool-rich-rare-schema-synthetic-only-20261029",
-    "accuracy": 0.735487404162103,
-    "macro_f1": 0.5490504384332825,
+    "experiment": "qwen-best-tool-rich-rare-schema-expanded-synthetic-only-20261029",
+    "accuracy": 0.7332968236582694,
+    "macro_f1": 0.5477580398196524,
     "examples": 3652,
     "selection_use": "report-only; not used to choose the next experiment"
   },
-  "updated_at": "2026-10-29T17:30:09.959759+00:00",
+  "updated_at": "2026-10-29T17:48:33.064407+00:00",
   "synthetic_pilot_results": [
     {
       "strategy": "missing_required_info",
@@ -380,7 +442,7 @@
     "ensemble_aggregate_test_accuracy": 0.7313800657174151,
     "test_metric_use": "Reporting only; not used for candidate selection."
   },
-  "latest_completed_experiment": "qwen-best-tool-rich-rare-schema-synthetic-only-20261029",
+  "latest_completed_experiment": "qwen-best-tool-rich-rare-schema-expanded-synthetic-only-20261029",
   "evidence_policy": {
     "selection_metric": "clean held-out validation only",
     "aggregate_test": "reporting only; never use test-derived metrics for candidate selection",
@@ -553,16 +615,16 @@
   "research_log_size_reconciled_at": "2026-10-29T10:10:53.863543+00:00",
   "research_log_size_reconciliation": "Accepted current file size 1777226 after a stable earlier shrink from recorded size 1786879; the watchdog had repeated the same integrity warning.",
   "latest_training_report": {
-    "experiment": "qwen-best-tool-rich-rare-schema-synthetic-only-20261029",
-    "accuracy": 0.9953488372093023,
-    "macro_f1": 0.746453722334004,
-    "examples": 430,
+    "experiment": "qwen-best-tool-rich-rare-schema-expanded-synthetic-only-20261029",
+    "accuracy": 1.0,
+    "macro_f1": 0.75,
+    "examples": 500,
     "selection_use": "recorded evidence only"
   },
   "latest_clean_validation_report": {
-    "experiment": "qwen-best-tool-rich-rare-schema-synthetic-only-20261029",
-    "accuracy": 0.958,
-    "macro_f1": 0.4862680412371134,
+    "experiment": "qwen-best-tool-rich-rare-schema-expanded-synthetic-only-20261029",
+    "accuracy": 0.956,
+    "macro_f1": 0.48573553719008267,
     "examples": 500,
     "source": "nvidia/When2Call:train_sft",
     "seed": 20261053,
