@@ -2270,3 +2270,6 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 
 | qwen-tool-rich-paired-low-unsupported-synthetic-only-20261029 | 0.7294633077765608 | 0.5459190970652198 | omsxg3qb | Aggregate-only frozen test measurement |
 | Candidate | when2call-tool-rich-paired-medium-unsupported-20261029 | — | — | [metrics](/workspace/post-training/outputs/when2call-tool-rich-paired-medium-unsupported-20261029/metrics.json) | completed |
+| Candidate | qwen-tool-rich-paired-medium-unsupported-synthetic-only-20261029 | 0.928 | 0.47420003350645 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-paired-medium-unsupported-synthetic-only-20261029/metrics.json) | completed |
+
+| qwen-tool-rich-paired-medium-unsupported-synthetic-only-20261029 | 0.7300109529025192 | 0.538780951031164 | nr2skozv | Aggregate-only frozen test measurement |
