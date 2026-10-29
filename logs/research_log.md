@@ -13800,3 +13800,8 @@ The random-anchor continuation is fully measured: training 0.992000 / 0.744897 o
 ## 2026-10-29: Requeue generation before its dependent trainer
 
 The latest completed model run remains the random-anchor continuation, with all three evidence types recorded. The attempted tool-rich continuation did not train because its generation command was not launched. The watchdog launches the first item in `worker_queue`, so the earlier queue setup still placed the trainer first at launch time. Reset the queue to `[feasible tool-rich generator, dependent trainer]` and set the first generator as the next experiment. The generator requests 400 pairs and 200 unsupported rows, within the observed 465 eligible tool-call anchor limit.
+
+
+## 2026-10-29: Queue a lower unsupported share for tool-rich pairs
+
+The latest completed synthetic training run has complete evidence: training 0.992000 / 0.744897 on 500 sampled rows; clean validation 0.942000 / 0.481458 on 500 rows; aggregate black-box test 0.736309 / 0.548398 on all 3,652 rows. The random-anchor recipe is below the tool-rich champion on clean validation. While the feasible tool-rich 400-pair / 200-unsupported run is active, queued a distinct follow-up with 400 pairs and 100 unsupported requests. This tests whether a lower unsupported share helps, based on unsupported-only underperformance and the stronger paired-plus-minority-unsupported validation result. Both continuations use the same champion and fixed settings. Selection uses clean validation only.

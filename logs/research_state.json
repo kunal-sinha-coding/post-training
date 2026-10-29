@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
-  "current_hypothesis": "The 827-row random-anchor paired-boundary continuation reached 0.992 training accuracy, 0.942 clean-validation accuracy, and 0.736309 aggregate test accuracy, below the 0.950 clean-validation tool-rich champion. The earlier fresh tool-rich generation attempt requested 500 pairs, above the 465 eligible anchors. Its correction was queued with 400 pairs, but the watchdog launched training before generation because worker_command and worker_queue were initialized with the wrong sequence. Queue generator first, then train only after its output exists.",
+  "current_hypothesis": "The most recent completed synthetic run has complete evidence: training 0.992 accuracy / 0.744897 macro F1 on 500 rows, clean validation 0.942 / 0.481458 on 500 rows, and aggregate test 0.736309 / 0.548398 on 3652 rows. Random anchors underperformed the 0.950 clean-validation tool-rich champion. The active worker is generating the feasible tool-rich paired-boundary 400-pair plus 200-unsupported pilot, followed by training from that champion. A lower unsupported dose is queued after that comparison.",
   "active_experiment": {
     "pid": 334538,
     "command": [
@@ -84,6 +84,61 @@
       "0.48363771417663637",
       "--augmentation-jsonl",
       "outputs/when2call-tool-rich-paired-unsupported-feasible-20261029/balanced_boundary_tool_rich.jsonl"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.generate_when2call_boundary_pilot",
+      "--output-dir",
+      "outputs/when2call-tool-rich-paired-low-unsupported-20261029",
+      "--pairs",
+      "400",
+      "--unsupported",
+      "100",
+      "--workers",
+      "24",
+      "--seed",
+      "20261151",
+      "--max-cost-usd",
+      "1.0",
+      "--anchor-strategy",
+      "tool_rich"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-tool-rich-paired-low-unsupported-synthetic-only-20261029",
+      "--adapter-checkpoint",
+      "outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/epoch-01",
+      "--synthetic-only",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "1",
+      "--seed",
+      "20261152",
+      "--learning-rate",
+      "5e-6",
+      "--baseline-validation-accuracy",
+      "0.95",
+      "--baseline-validation-macro-f1",
+      "0.48363771417663637",
+      "--augmentation-jsonl",
+      "outputs/when2call-tool-rich-paired-low-unsupported-20261029/balanced_boundary_tool_rich.jsonl"
     ]
   ],
   "_previous_command": [
@@ -113,7 +168,7 @@
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
   "last_heartbeat": "2026-10-29T08:43:21.320166+00:00",
-  "last_action": "Watchdog started validation worker pid 334538.",
+  "last_action": "Queued a distinct low-unsupported-dose tool-rich synthetic recipe and continuation after the active feasible tool-rich pilot; the next command remains the active generator.",
   "watchdog_enabled": true,
   "research_log_size": 1771559,
   "stop_command": "STOP",
@@ -151,7 +206,7 @@
     "wandb_run_id": "vrfnnoq2",
     "selection": "Aggregate test result reported for ranking only. It was not used for candidate selection."
   },
-  "next_hypothesis": "If the feasible tool-rich paired pilot restores clean validation relative to the random-anchor pilot, keep tool-rich anchors and test a lower unsupported share. If not, move to a different structural recipe such as recoverable versus absent conversational context. Keep the tool-rich champion as the warm start and change only the data recipe.",
+  "next_hypothesis": "After the active feasible tool-rich 20% unsupported pilot, test a 10% unsupported dose with the same 400-pair tool-rich anchor setup and same champion checkpoint. Unsupported-only training performed poorly, while the strongest paired recipe used unsupported examples as a minority. A lower dose may retain useful coverage while reducing its negative transfer. Change only the class mix; keep optimizer settings and validation sample fixed.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."

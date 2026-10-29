@@ -8292,3 +8292,8 @@ Confirmed the latest completed random-anchor training run has training, clean-va
 Commit name: Verify feasible tool-rich generation worker launch.
 
 Confirmed the watchdog launched the feasible tool-rich generator as the active worker, PID 334538. The trainer remains second in the queue and will start after generation completes. The latest completed model experiment remains the random-anchor pilot, with training, clean-validation, and aggregate test evidence recorded.
+
+## 2026-10-29: Queue lower unsupported-dose pilot
+Commit name: Test lower unsupported share in tool-rich synthetic data.
+
+Audited the latest completed random-anchor synthetic continuation and confirmed training, clean-validation, and aggregate test metrics are all recorded. Training accuracy was 0.992000 / macro F1 0.744897 on 500 sampled rows. Clean validation was 0.942000 / 0.481458 on 500 rows. Aggregate test was 0.736309 / 0.548398 on 3,652 rows. Added a lower 10% unsupported-share tool-rich recipe after the active feasible 20% unsupported recipe. The hypothesis follows the poor unsupported-only result and better validation from paired examples with unsupported examples as a minority. Both use the current champion and fixed training settings.
