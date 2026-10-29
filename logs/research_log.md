@@ -13771,3 +13771,10 @@ Clean development accuracy: 0.942. Clean development macro F1: 0.48145846671437.
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.942, "macro_f1": 0.48145846671437, "confusion_matrix": [[244, 1, 5, 0], [6, 227, 16, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+## 2026-10-29: Audit random-anchor pilot and retry feasible tool-rich comparison
+
+Latest completed training experiment: `qwen-random-anchor-paired-unsupported-synthetic-only-20261029`. Evidence is complete: training 0.992000 accuracy / 0.744897 macro F1 on 500 sampled rows; clean validation 0.942000 / 0.481458 on 500 rows; aggregate black-box test 0.736309 / 0.548398 on all 3,652 rows. Test examples and labels were not inspected, and test metrics did not select the candidate. The random-anchor continuation is below the user-designated tool-rich champion on clean validation (0.942 versus 0.950).
+
+The fresh tool-rich generation command failed before producing data. Its request for 500 paired tool-call anchors exceeded the 465 eligible source rows. The dependent training command therefore failed before training. Queued a feasible corrected pilot with 400 pairs and 200 unsupported requests, followed by a one-epoch synthetic-only continuation from the tool-rich champion. This compares anchor strategy at similar requested data scale.
