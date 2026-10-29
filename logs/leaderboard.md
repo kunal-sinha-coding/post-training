@@ -2171,3 +2171,4 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 | Candidate | qwen-tool-rich-replay800-encoder-blackbox-20261029 | — | — | [metrics](/workspace/post-training/outputs/qwen-tool-rich-replay800-encoder-blackbox-20261029/metrics.json) | completed |
 
 | qwen-tool-rich-replay800-encoder-blackbox-20261029 | 0.7127601314348302 | 0.532923467285034 | grj5aq2g | Aggregate-only frozen test measurement |
+| Candidate | when2call-rare-schema-large-boundary-pilot-20261029 | — | — | [metrics](/workspace/post-training/outputs/when2call-rare-schema-large-boundary-pilot-20261029/metrics.json) | completed |
