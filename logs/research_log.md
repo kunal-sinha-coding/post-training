@@ -13906,3 +13906,15 @@ Clean development accuracy: 0.946. Clean development macro F1: 0.483599974904322
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.946, "macro_f1": 0.4835999749043227, "confusion_matrix": [[241, 2, 7, 0], [3, 232, 14, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-low-share-checkpoint-pref200-plus-synth-20261029
+
+Timestamp: 2026-10-29T10:52:32.098007+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-low-share-checkpoint-pref200-plus-synth-20261029", "--adapter-checkpoint", "outputs/qwen-tool-rich-low-share-expansion-from-low-share-20261029/epoch-01", "--preference-train-sample-size", "200", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261160", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.95", "--baseline-validation-macro-f1", "0.48363771417663637", "--augmentation-jsonl", "outputs/when2call-tool-rich-low-share-expansion-20261029/balanced_boundary_tool_rich.jsonl"]. Output: /workspace/post-training/outputs/qwen-low-share-checkpoint-pref200-plus-synth-20261029. W&B run: 2s9heg3v.
+
+Clean development accuracy: 0.942. Clean development macro F1: 0.48198069779726815. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7176889375684556, "macro_f1": 0.5359721678689494, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.942, "macro_f1": 0.48198069779726815, "confusion_matrix": [[243, 1, 6, 0], [5, 228, 16, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
