@@ -8145,3 +8145,10 @@ The 500-row stratified tool-rich synthetic dose is active at the established 5e-
 Commit name: Require evidence for hyperparameter experiments.
 
 Updated `auto-research-prompt.md` to prohibit unsupported hyperparameter changes. Each proposed change must name a specific observed issue, cite recorded diagnostics that support the hypothesis, and explain why the setting could address it. The prompt uses the loss curve as an example for learning-rate changes and requires a stated success criterion and a controlled comparison with other settings held fixed when practical.
+
+## 2026-10-29: Continue from the current leaderboard champion
+Commit name: Queue direct continuations from tool-rich champion.
+
+The user directed that each new leaderboard-best checkpoint should become the starting point for follow-up research. The current champion is `outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/epoch-01`, trained on 994 tool-rich synthetic examples after an earlier Qwen checkpoint. No previous experiment directly continued from this checkpoint. I queued two one-epoch continuations after the active 500-row dose run. The first uses the same 994 examples to test another training pass. The second uses the distinct 983-example tool-rich expansion pool. Both retain the original 5e-6 learning rate and the fixed 500-row training and validation evaluations. The full aggregate test metric is recorded without inspecting example-level data.
+
+Updated `auto-research-prompt.md` to allow aggregate accuracy to identify the leaderboard champion checkpoint, while keeping every test example, label, prediction, and correctness result hidden. It now instructs the loop to queue controlled follow-ups from any new champion and hold hyperparameters fixed unless diagnostics justify a change.
