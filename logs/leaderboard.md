@@ -2233,3 +2233,6 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 | Candidate | qwen-fullpref-tool-rich-unsupported-only-20261029 | 0.9 | 0.45690300058183025 | [metrics](/workspace/post-training/outputs/qwen-fullpref-tool-rich-unsupported-only-20261029/metrics.json) | completed |
 
 | qwen-fullpref-tool-rich-unsupported-only-20261029 | 0.7122124863088719 | 0.5265499832185134 | n2a8s6wa | Aggregate-only frozen test measurement |
+| Candidate | qwen-fullpref-tool-rich-paired-half-unsupported-20261029 | 0.958 | 0.4862829012467841 | [metrics](/workspace/post-training/outputs/qwen-fullpref-tool-rich-paired-half-unsupported-20261029/metrics.json) | completed |
+
+| qwen-fullpref-tool-rich-paired-half-unsupported-20261029 | 0.7259036144578314 | 0.5442325053223626 | h2ildl3a | Aggregate-only frozen test measurement |
