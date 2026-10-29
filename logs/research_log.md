@@ -13433,3 +13433,15 @@ Clean development accuracy: 0.954. Clean development macro F1: 0.484228716603565
 Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.96, "macro_f1": 0.4872873318653768, "examples": 500, "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## when2call-multiturn-context-expansion-20261029
+
+Timestamp: 2026-10-29T01:55:03.846191+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.generate_when2call_contextual_pilot", "--output-dir", "outputs/when2call-multiturn-context-expansion-20261029", "--pairs", "300", "--workers", "24", "--seed", "20261124", "--max-cost-usd", "1.0"]. Output: /workspace/post-training/outputs/when2call-multiturn-context-expansion-20261029. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
