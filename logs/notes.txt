@@ -8070,3 +8070,5 @@ The watchdog completed hybrid preparation and launched the frozen aggregate-test
 Commit name: Queue rare-schema synthetic-only follow-up.
 
 The current active run uses 900 When2Call preference examples plus the newly generated 1,032-row rare-schema synthetic pool. I queued a distinct synthetic-only continuation using that pool and the fixed pref900+synth450 adapter checkpoint. It evaluates at most 500 training and 500 clean-validation examples, then records full aggregate test metrics for reporting. Clean validation remains the candidate-selection signal, and test-derived metrics remain report-only. This isolates whether rare-schema synthetic data adds value by itself before deciding whether to combine it with the promising tool-rich approach. No running process was stopped.
+
+2026-10-29T00:41:04.177572+00:00: Commit `Record research experiment qwen-rare-schema-large-boundary-replay900-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
