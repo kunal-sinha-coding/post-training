@@ -14469,3 +14469,9 @@ Clean development accuracy: 0.958. Clean development macro F1: 0.486268041237113
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.958, "macro_f1": 0.4862680412371134, "confusion_matrix": [[244, 1, 5, 0], [5, 235, 9, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## 2026-10-29: Rare-schema pilot audit and expansion queue
+
+The latest completed rare-schema synthetic-only continuation has all evidence recorded. Training accuracy is 0.995349 and macro F1 is 0.746454 on 430 examples. Clean validation is 0.958000 accuracy and 0.486268 macro F1 on 500 examples, up from the starting checkpoint at 0.950000 accuracy and 0.483638 macro F1. Aggregate black-box test reporting is 0.735487 accuracy and 0.549050 macro F1 on all 3,652 rows. Test labels and metrics did not select the follow-up.
+
+Queued a fresh rare-schema generation pilot with 200 call/request pairs plus 200 unsupported examples, a $0.50 generation cap, and train_pref-only anchors. Its dependent one-epoch training command continues the rare-schema checkpoint on this new pool alone. It evaluates at most 500 training rows and 500 clean-validation rows, then reports aggregate metrics on the full test set. The fixed clean SFT validation sample has no tool_call rows, which limits its class coverage.
