@@ -2255,3 +2255,4 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 | Candidate | qwen-llm-single-sample-vote-screen-retry-20261029 | — | — | [metrics](/workspace/post-training/outputs/qwen-llm-single-sample-vote-screen-retry-20261029/metrics.json) | completed |
 | Candidate | when2call-tool-rich-paired-unsupported-fresh-20261029 | — | — | [metrics](/workspace/post-training/outputs/when2call-tool-rich-paired-unsupported-fresh-20261029/metrics.json) | failed_or_incomplete |
 | Candidate | qwen-tool-rich-paired-unsupported-fresh-synthetic-only-20261029 | — | — | [metrics](/workspace/post-training/outputs/qwen-tool-rich-paired-unsupported-fresh-synthetic-only-20261029/metrics.json) | failed_or_incomplete |
+| Candidate | when2call-random-anchor-paired-unsupported-20261029 | — | — | [metrics](/workspace/post-training/outputs/when2call-random-anchor-paired-unsupported-20261029/metrics.json) | completed |

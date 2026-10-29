@@ -13747,3 +13747,15 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## when2call-random-anchor-paired-unsupported-20261029
+
+Timestamp: 2026-10-29T08:20:59.921322+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.generate_when2call_boundary_pilot", "--output-dir", "outputs/when2call-random-anchor-paired-unsupported-20261029", "--pairs", "400", "--unsupported", "200", "--workers", "24", "--seed", "20261147", "--max-cost-usd", "1.0", "--anchor-strategy", "random"]. Output: /workspace/post-training/outputs/when2call-random-anchor-paired-unsupported-20261029. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
