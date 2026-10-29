@@ -1,28 +1,11 @@
 {
-  "status": "active",
+  "status": "awaiting_codex_planning",
   "planning_owner": "codex_primary",
-  "planning_required": false,
+  "planning_required": true,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
   "current_hypothesis": "The weight-decay 0.05 continuation tied the clean-validation baseline, so stronger weight decay gave no evidence of a validation gain. The generated balanced 262-example pool has 96 cannot_answer, 83 request_for_info, and 83 tool_call examples. Train on this data from the clean-validation baseline checkpoint to test whether better class balance provides useful signal.",
-  "active_experiment": {
-    "pid": 368743,
-    "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.train_balanced_tool_rich_pilot",
-      "--regularization-metrics",
-      "outputs/qwen-fullpool-followup338-wd005-20261029/metrics.json",
-      "--generation-metrics",
-      "outputs/when2call-tool-rich-balanced-pilot-20261029/metrics.json",
-      "--pilot-data",
-      "outputs/when2call-tool-rich-balanced-pilot-20261029/balanced_boundary_tool_rich.jsonl",
-      "--output-dir",
-      "outputs/qwen-fullpool-balanced-tool-rich-pilot-20261029"
-    ],
-    "started_at": "2026-10-29T18:43:13.308057+00:00"
-  },
+  "active_experiment": {},
   "worker_command": [
     "python",
     "-u",
@@ -65,34 +48,21 @@
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
   "last_heartbeat": "2026-10-29T18:43:13.308071+00:00",
-  "last_action": "The weight-decay run finished with complete metrics. The gated balanced-pilot trainer is queued and will select its starting checkpoint using clean validation only.",
+  "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
-  "research_log_size": 1872450,
+  "research_log_size": 1874833,
   "stop_command": "STOP",
-  "next_experiment": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.train_balanced_tool_rich_pilot",
-    "--regularization-metrics",
-    "outputs/qwen-fullpool-followup338-wd005-20261029/metrics.json",
-    "--generation-metrics",
-    "outputs/when2call-tool-rich-balanced-pilot-20261029/metrics.json",
-    "--pilot-data",
-    "outputs/when2call-tool-rich-balanced-pilot-20261029/balanced_boundary_tool_rich.jsonl",
-    "--output-dir",
-    "outputs/qwen-fullpool-balanced-tool-rich-pilot-20261029"
-  ],
+  "next_experiment": null,
   "recording_jobs": [
     {
-      "pid": 368742,
-      "experiment_id": "qwen-fullpool-followup338-wd005-20261029"
+      "pid": 368869,
+      "experiment_id": "qwen-fullpool-balanced-tool-rich-pilot-20261029"
     }
   ],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": null,
-  "planning_ack_deadline": null,
-  "planning_attempts": 56,
+  "planning_notified_at": "2026-10-29T18:43:45.638216+00:00",
+  "planning_ack_deadline": "2026-10-29T18:45:45.638239+00:00",
+  "planning_attempts": 57,
   "best_observed_test": {
     "method": "qwen-llm-ensemble-vote-screen-20261029, five sampled action-label votes",
     "accuracy": 0.7415115005476451,
