@@ -8501,3 +8501,5 @@ Description: Added one distinct follow-up that starts from the low-dose follow-u
 Context: The latest completed run has training, clean-validation, and full aggregate black-box test metrics. Test labels and examples are not used for selection. Existing active work remains running.
 
 2026-10-29T14:25:40.441920+00:00: Commit `Record research experiment qwen-lowdose-best-pref200-plus-lowdose-followup338-synth-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-29T14:36:14.618056+00:00: Commit `Record research experiment qwen-lowdose-pref200-checkpoint-plus-followup338-synthetic-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
