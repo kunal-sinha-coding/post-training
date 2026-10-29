@@ -8019,3 +8019,10 @@ Commit name: Verify 800-real tool-rich replay launch.
 The watchdog launched `qwen-tool-rich-boundary-replay800-20261028` as PID 309781. The 800-real dose run is active with the 629-row tool-rich synthetic pool. The queue command was promoted, status is active, and planning is disabled. The preceding continuation run has complete training, clean-validation, and aggregate test measurements.
 
 2026-10-29T00:01:21.292960+00:00: Commit `Record research experiment qwen-tool-rich-boundary-replay800-20261028` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+## 2026-10-29: Queue 800-real encoder clean-validation screen
+Commit name: Queue encoder validation screen for 800-real checkpoint.
+
+The latest completed run, `qwen-tool-rich-boundary-replay800-20261028`, records training metrics on 500 examples (0.976 accuracy, 0.731789 macro F1), clean validation on 500 examples (0.958 accuracy, 0.486757 macro F1), and aggregate black-box test metrics on all 3,652 examples (0.723165 accuracy, 0.540689 macro F1). All required evidence is present, and test metrics are report-only.
+
+Queued a 500-example clean-validation screen combining the 800-real tool-rich checkpoint with the trained encoder. This tests whether the near-best validation checkpoint has complementary errors. The 800-real model scored 0.958 validation accuracy versus 0.960 for the 900-real model; the 1,500-real run scored 0.944. Candidate selection remains clean-validation-only.
