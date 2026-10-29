@@ -14057,3 +14057,15 @@ This record was written automatically. Candidate selection must use clean valida
 The latest completed model run is `qwen-tool-rich-mid-dose-synthetic-only-20261029`. Training is 0.991786 accuracy / 0.742923 macro F1 on 487 sampled rows; clean validation is 0.956000 / 0.485249 on 500 rows; aggregate black-box test is 0.733023 / 0.546420 on all 3652 rows. All three evidence types are present. No test examples or labels were inspected.
 
 The recent 336-row low-dose checkpoint reached 0.960 clean-validation accuracy. Fresh 338-row and 487-row continuations each reached 0.956. Queued a smaller fresh 100-pair plus 12-unsupported tranche from the 336-row checkpoint to test whether a smaller update can preserve the validation gain. Selection remains clean-validation-only.
+
+## when2call-tool-rich-tiny-dose-20261029
+
+Timestamp: 2026-10-29T12:08:36.403552+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.generate_when2call_boundary_pilot", "--output-dir", "outputs/when2call-tool-rich-tiny-dose-20261029", "--pairs", "100", "--unsupported", "12", "--workers", "24", "--seed", "20261170", "--max-cost-usd", "1.0", "--anchor-strategy", "tool_rich"]. Output: /workspace/post-training/outputs/when2call-tool-rich-tiny-dose-20261029. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
