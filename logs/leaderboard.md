@@ -2322,3 +2322,6 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 
 | qwen-lowdose-best-pref200-fresh-synthetic-mix-20261029 | 0.7193318729463308 | 0.5384650254333796 | 34xurrcs | Aggregate-only frozen test measurement |
 | Candidate | when2call-tool-rich-tiny-replay-mix-20261029 | — | — | [metrics](/workspace/post-training/outputs/when2call-tool-rich-tiny-replay-mix-20261029/metrics.json) | completed |
+| Candidate | qwen-lowdose-best-pref200-plus-tiny-synth-20261029 | 0.956 | 0.4857454509395607 | [metrics](/workspace/post-training/outputs/qwen-lowdose-best-pref200-plus-tiny-synth-20261029/metrics.json) | completed |
+
+| qwen-lowdose-best-pref200-plus-tiny-synth-20261029 | 0.7111171960569551 | 0.5332730509457523 | x3pq7if1 | Aggregate-only frozen test measurement |
