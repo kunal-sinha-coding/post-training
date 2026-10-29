@@ -8374,3 +8374,7 @@ The 400-pair plus 100-unsupported tool-rich synthetic generation completed and p
 2026-10-29: Queue matched replay and replay-plus-synthetic branches.
 Commit name: Queue matched low-share replay comparison.
 Audited the latest completed model run and confirmed that training, clean validation, and aggregate black-box test metrics are all recorded. The low-share synthetic continuation remains active. Queued two matched one-epoch branches to run after it completes. Both start from its checkpoint and use the same 200 sampled train_pref examples, seed, optimizer settings, and validation sample. One branch trains on real replay only. The other adds the new low-share synthetic pool. The comparison tests whether synthetic data adds validation signal beyond replay alone.
+
+2026-10-29: Queue rare-schema synthetic coverage pilot.
+Commit name: Queue rare-schema synthetic pilot.
+The latest completed model run has complete training, clean-validation, and aggregate test records. The current low-share run and matched replay comparison remain ahead in the queue. Added a distinct rare-schema generation and training pair. The generator prioritizes uncommon train_pref tool schemas and creates 300 paired boundaries plus 75 unsupported requests. The trainer continues from the low-share checkpoint with fixed settings. This tests whether schema diversity improves clean validation.

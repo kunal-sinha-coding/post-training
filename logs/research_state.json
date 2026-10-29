@@ -149,6 +149,61 @@
       "0.48363771417663637",
       "--augmentation-jsonl",
       "outputs/when2call-tool-rich-low-share-expansion-20261029/balanced_boundary_tool_rich.jsonl"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.generate_when2call_boundary_pilot",
+      "--output-dir",
+      "outputs/when2call-rare-schema-low-share-20261029",
+      "--pairs",
+      "300",
+      "--unsupported",
+      "75",
+      "--workers",
+      "24",
+      "--seed",
+      "20261162",
+      "--max-cost-usd",
+      "1.0",
+      "--anchor-strategy",
+      "rare_schema"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-rare-schema-low-share-synthetic-only-20261029",
+      "--adapter-checkpoint",
+      "outputs/qwen-tool-rich-low-share-expansion-from-low-share-20261029/epoch-01",
+      "--synthetic-only",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "1",
+      "--seed",
+      "20261163",
+      "--learning-rate",
+      "5e-6",
+      "--baseline-validation-accuracy",
+      "0.95",
+      "--baseline-validation-macro-f1",
+      "0.48363771417663637",
+      "--augmentation-jsonl",
+      "outputs/when2call-rare-schema-low-share-20261029/balanced_boundary_rare_schema.jsonl"
     ]
   ],
   "_previous_command": [
@@ -178,9 +233,9 @@
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
   "last_heartbeat": "2026-10-29T10:11:09.578135+00:00",
-  "last_action": "Queued matched continuations from the current low-share checkpoint: 200 real train_pref examples alone, then the same real replay plus the low-share synthetic pool.",
+  "last_action": "Appended a rare-schema synthetic pilot after the queued matched replay comparisons.",
   "watchdog_enabled": true,
-  "research_log_size": 1778967,
+  "research_log_size": 1779783,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -229,7 +284,7 @@
     "artifact": "outputs/qwen-llm-ensemble-vote-screen-20261029/metrics.json",
     "selection": "Aggregate test result reported for ranking only. It was not used for candidate selection."
   },
-  "next_hypothesis": "The completed low-unsupported pilot had strong clean validation, while a prior 200-example real replay plus tool-rich pool also improved validation over its baseline. After the active low-share expansion finishes, compare a 200-example authentic replay control with the same replay mixed with the new synthetic pool. Use the same checkpoint, sample size, optimizer, validation sample, and seed. This isolates whether the synthetic pool adds validation signal beyond replay alone. Train and validation evaluation remain capped at 500 examples; test evaluation remains full-split and report-only.",
+  "next_hypothesis": "The most recent completed replay run records training, clean validation, and full aggregate test evidence. A low-unsupported tool-rich recipe reached 0.956 clean-validation accuracy, while higher unsupported shares were weaker on validation. After the active continuation and matched replay comparison, test whether rare-schema anchors add coverage at a similar low unsupported share. The rare-schema generator prioritizes infrequent tool schemas in train_pref and requires paired tool-call and request-for-info cases. Use clean validation for candidate selection; aggregate test metrics are reporting only.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
@@ -421,7 +476,7 @@
     "examples": 3652,
     "selection_use": "report-only; not used to choose the next experiment"
   },
-  "updated_at": "2026-10-29T10:18:48.450932+00:00",
+  "updated_at": "2026-10-29T10:22:25.238049+00:00",
   "synthetic_pilot_results": [
     {
       "strategy": "missing_required_info",

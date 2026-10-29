@@ -13858,3 +13858,8 @@ This record was written automatically. Candidate selection must use clean valida
 The most recent completed model experiment remains `qwen-tool-rich-paired-feasible-20pct-real-replay-20261029`. Its training, clean-validation, and aggregate black-box test metrics are all recorded. The current low-share synthetic continuation is still active, so it has no completed evaluation record yet.
 
 After that run, queue two one-epoch branches from its checkpoint. The control uses 200 sampled train_pref examples only. The second uses the same 200 real examples plus the newly generated low-share synthetic pool. Both use the same seed, optimizer settings, 500-example training probe, and 500-example clean validation sample. The hypothesis is that this matched comparison will show whether the synthetic pool adds validation signal beyond real replay. The full test split remains aggregate-only and report-only.
+
+
+## 2026-10-29: Queue a rare-schema synthetic pilot
+
+The most recent completed model experiment still has training, clean-validation, and full aggregate black-box test measurements. The current low-share continuation remains active, followed by the two matched real-replay branches. Appended a new synthetic hypothesis after those commands. The generator will select 300 paired examples and 75 unsupported requests from train_pref using the existing rare-schema strategy. It targets uncommon tool schemas while keeping the unsupported share near the low-share recipe. A one-epoch continuation from the current low-share checkpoint will test whether this adds useful schema coverage. Training and validation probes are capped at 500; the full test split is scored only as an aggregate and is not used for selection.
