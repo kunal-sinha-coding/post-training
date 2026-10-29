@@ -14631,3 +14631,9 @@ Clean development accuracy: 0.962. Clean development macro F1: 0.488326407097742
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.962, "macro_f1": 0.48832640709774233, "confusion_matrix": [[241, 4, 5, 0], [0, 240, 9, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-fullpool-followup338-wd005-20261029: complete result and balanced-pilot gate fix
+
+Training accuracy was 0.982249 and macro F1 was 0.730193 on 338 rows, with mean training loss 0.213232. Clean-validation accuracy was 0.962000 and macro F1 was 0.488326 on 500 rows, tying the pre-run baseline. Aggregate black-box test accuracy was 0.702081 and macro F1 was 0.527464 on all 3,652 rows. Test results are report-only. All three evidence types are recorded in the metrics artifact.
+
+Fixed the queued follow-up gate to accept the trainer artifact when it has complete epoch evidence but no top-level status field. The command still requires training, clean-validation, and aggregate test metrics before it starts. It selects the starting checkpoint by clean validation only.

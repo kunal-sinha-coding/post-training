@@ -38,7 +38,7 @@ def main() -> int:
     # Require the prior experiment to have training, clean-validation, and aggregate test evidence.
     previous = read_json(args.regularization_metrics)
     epochs = previous.get("epoch_records") or []
-    if previous.get("status") != "completed" or not epochs:
+    if previous.get("status") not in (None, "completed") or not epochs:
         raise ValueError("The regularization run is not complete.")
     # Keep the evidence gate strict before a new model experiment starts.
     evidence = epochs[-1]

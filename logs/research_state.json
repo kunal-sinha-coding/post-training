@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
-  "current_hypothesis": "Recent synthetic-only training reached near-perfect training accuracy without lifting clean validation. A balanced 262-example pilot is ready. The current weight-decay run is still active and its final metrics are pending. After it completes, select the starting checkpoint by clean validation only, require all three applicable run measurements, then train on the balanced pool.",
+  "current_hypothesis": "The weight-decay 0.05 continuation tied the clean-validation baseline, so stronger weight decay gave no evidence of a validation gain. The generated balanced 262-example pool has 96 cannot_answer, 83 request_for_info, and 83 tool_call examples. Train on this data from the clean-validation baseline checkpoint to test whether better class balance provides useful signal.",
   "active_experiment": {
     "pid": 368743,
     "command": [
@@ -65,7 +65,7 @@
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
   "last_heartbeat": "2026-10-29T18:43:13.308071+00:00",
-  "last_action": "Watchdog started validation worker pid 368743.",
+  "last_action": "The weight-decay run finished with complete metrics. The gated balanced-pilot trainer is queued and will select its starting checkpoint using clean validation only.",
   "watchdog_enabled": true,
   "research_log_size": 1872450,
   "stop_command": "STOP",
@@ -101,7 +101,7 @@
     "artifact": "outputs/qwen-llm-ensemble-vote-screen-20261029/metrics.json",
     "selection": "Aggregate test result reported for ranking only. It was not used for candidate selection."
   },
-  "next_hypothesis": "If the balanced pilot improves clean validation, test one data-composition refinement from that checkpoint. If not, stop this composition and return to a distinct evidence-based training or inference direction.",
+  "next_hypothesis": "If the balanced pilot improves clean validation, continue that data-composition branch. If it does not, stop this pilot and choose a different evidence-based training or inference direction.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
@@ -148,13 +148,13 @@
     "selection_use": "none"
   },
   "evidence_audit": {
-    "experiment": "qwen-fullpool-bestval-fivevote-three-encoder-fusion-20261029",
-    "training_metrics": "not applicable because this is frozen inference only; source checkpoint epoch 2 records 0.960000 accuracy and 0.720145 macro F1 on 500 examples",
-    "clean_validation_metrics": "recorded: 0.960000 accuracy, 0.487803 macro F1, 500 examples",
-    "aggregate_black_box_test_metrics": "recorded: 0.704545 accuracy, 0.529299 macro F1, 3652 examples",
+    "experiment": "qwen-fullpool-followup338-wd005-20261029",
+    "training_metrics": "recorded: 0.982249 accuracy, 0.730193 macro F1, 338 examples; mean training loss 0.213232",
+    "clean_validation_metrics": "recorded: 0.962000 accuracy, 0.488326 macro F1, 500 examples",
+    "aggregate_black_box_test_metrics": "recorded: 0.702081 accuracy, 0.527464 macro F1, 3652 examples",
     "all_required_evidence_recorded": true,
     "test_labels_used_for_selection": false,
-    "note": "The selected 25% encoder blend ties Qwen accuracy on clean validation. Aggregate test metrics are report-only."
+    "note": "Clean validation tied the pre-run baseline. Aggregate test metrics are report-only."
   },
   "duplicate_worker_failure": {
     "pid": 103632,
@@ -276,9 +276,9 @@
     }
   ],
   "latest_aggregate_test_report": {
-    "experiment": "qwen-fullpool-bestval-fivevote-three-encoder-fusion-20261029",
-    "accuracy": 0.7045454545454546,
-    "macro_f1": 0.529299346118855,
+    "experiment": "qwen-fullpool-followup338-wd005-20261029",
+    "accuracy": 0.7020810514786419,
+    "macro_f1": 0.5274643631656636,
     "examples": 3652,
     "selection_use": "report-only; not used to choose the next experiment"
   },
@@ -389,7 +389,7 @@
     "ensemble_aggregate_test_accuracy": 0.7313800657174151,
     "test_metric_use": "Reporting only; not used for candidate selection."
   },
-  "latest_completed_experiment": "qwen-fullpool-bestval-fivevote-three-encoder-fusion-20261029",
+  "latest_completed_experiment": "qwen-fullpool-followup338-wd005-20261029",
   "evidence_policy": {
     "selection_metric": "clean held-out validation only",
     "aggregate_test": "reporting only; never use test-derived metrics for candidate selection",
@@ -562,24 +562,21 @@
   "research_log_size_reconciled_at": "2026-10-29T10:10:53.863543+00:00",
   "research_log_size_reconciliation": "Accepted current file size 1777226 after a stable earlier shrink from recorded size 1786879; the watchdog had repeated the same integrity warning.",
   "latest_training_report": {
-    "experiment": "qwen-fullpool-bestval-fivevote-three-encoder-fusion-20261029",
-    "status": "not_applicable_frozen_inference",
-    "upstream_checkpoint_experiment": "qwen-when2call-fullpool-base-seed20261055",
-    "epoch": 2,
-    "accuracy": 0.96,
-    "macro_f1": 0.7201450925439365,
-    "examples": 500,
-    "note": "The fusion evaluator made no training updates."
+    "experiment": "qwen-fullpool-followup338-wd005-20261029",
+    "accuracy": 0.9822485207100592,
+    "macro_f1": 0.7301931680315439,
+    "examples": 338,
+    "training_loss": 0.2132323910535156,
+    "selection_use": "recorded training diagnostic"
   },
   "latest_clean_validation_report": {
-    "experiment": "qwen-fullpool-bestval-fivevote-three-encoder-fusion-20261029",
-    "accuracy": 0.96,
-    "macro_f1": 0.48780276209086065,
+    "experiment": "qwen-fullpool-followup338-wd005-20261029",
+    "accuracy": 0.962,
+    "macro_f1": 0.48832640709774233,
     "examples": 500,
     "source": "nvidia/When2Call:train_sft",
     "seed": 20261053,
-    "selected_method": "vote_frequency_encoder_25",
     "selection_use": "clean validation only",
-    "note": "This ties Qwen accuracy; fixed encoder fusion did not improve validation."
+    "note": "Tied the pre-run baseline."
   }
 }
