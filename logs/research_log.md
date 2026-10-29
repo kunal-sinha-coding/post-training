@@ -14081,3 +14081,10 @@ Clean development accuracy: 0.944. Clean development macro F1: 0.482982701805284
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.944, "macro_f1": 0.48298270180528413, "confusion_matrix": [[244, 1, 5, 0], [4, 228, 17, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+## 2026-10-29: Audit tiny-dose result and queue replay comparison
+
+The latest completed model experiment is `qwen-tool-rich-tiny-dose-synthetic-only-20261029`. It records training 1.000000 accuracy / 0.750000 macro F1 on 169 examples; clean validation 0.944000 / 0.482983 on 500; and aggregate black-box test 0.724261 / 0.539047 on all 3652. All evidence is present. No test rows or labels were inspected.
+
+This 169-row tiny-dose continuation reached 0.944 clean-validation accuracy, below the 0.960 result from the 336-row low-dose checkpoint. The next comparison uses that stronger checkpoint for both branches: 200 train_pref examples alone, then the same real replay plus a fresh low-dose synthetic pool. Matching the seed and evaluation samples tests whether new synthetic examples add clean-validation signal beyond authentic replay.

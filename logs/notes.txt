@@ -8453,3 +8453,7 @@ The latest completed intermediate-dose model run has complete training, clean-va
 2026-10-29T12:08:39.014047+00:00: Commit `Record research experiment when2call-tool-rich-tiny-dose-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
 
 2026-10-29T12:19:13.909382+00:00: Commit `Record research experiment qwen-tool-rich-tiny-dose-synthetic-only-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-29: Queue matched real replay and fresh synthetic comparison.
+Commit name: Queue low-dose replay comparison.
+The latest completed tiny-dose model run has training, clean-validation, and aggregate black-box test metrics. Clean validation is 0.944 accuracy / 0.482983 macro F1. Queued a 200-example real-only control and a matched real-plus-fresh-synthetic continuation from the best recent clean-validation checkpoint. Both use the same sample and optimizer settings. Test metrics are report-only.
