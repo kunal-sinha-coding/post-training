@@ -14362,3 +14362,8 @@ This record was written automatically. Candidate selection must use clean valida
 Latest completed experiment `qwen-fullpool-best-followup338-synthetic-only-20261029` has all three evidence types: training 0.985207 accuracy / 0.737067 macro F1 on 338 examples; clean validation 0.962000 / 0.488326 on 500; full aggregate black-box test 0.702629 / 0.527789 on 3652. Metrics are in `outputs/qwen-fullpool-best-followup338-synthetic-only-20261029/metrics.json`. No test examples or labels were inspected.
 
 The run tied the best known clean-validation accuracy at 0.962. Queued two continuations from its epoch-01 checkpoint: train only on the distinct earlier 336-row low-dose synthetic pool, then train on 200 real preference examples. The fixed clean validation determines any candidate choice; test metrics are report-only.
+
+
+## 2026-10-29: Queue encoder fusion for the five-vote champion
+
+The current tool-rich Qwen champion uses five sampled action-label votes. Added a frozen inference comparison with the previously selected weighted three-encoder family. The evaluator compares predeclared 25%, 50%, and 75% encoder probability contributions using both empirical vote frequencies and majority one-hot predictions. It selects a fusion by the fixed clean validation sample before loading the test split, then reports aggregate metrics for the frozen candidates. This is queued immediately after the active training worker and ahead of the older follow-up training run. No test labels select the fusion.

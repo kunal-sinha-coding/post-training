@@ -8539,3 +8539,8 @@ Context: The recorder failure is documented in the error log. The experiment has
 Commit name: Audit synthetic-only continuation and queue two checkpoint continuations.
 Description: Updated the latest evidence audit and queued follow-up training on a distinct low-dose synthetic pool and on real preference data from the 0.962 clean-validation checkpoint.
 Context: All three metrics for the latest run are present. Clean validation is the selection measure. Aggregate black-box test metrics are report-only, and no test examples or labels were inspected.
+
+
+Commit name: Queue encoder fusion for the five-vote champion.
+Description: Added an inference-only evaluator for fusing the five-sampled-vote tool-rich Qwen champion with the selected weighted three-encoder family. Queued it immediately after the current active training run, before the previous queued continuation.
+Context: Fusion candidates and weights are selected on clean validation. The full black-box test set is used only for aggregate reporting. No individual test examples or labels are saved or used for selection.
