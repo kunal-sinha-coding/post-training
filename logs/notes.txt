@@ -8282,3 +8282,8 @@ Recorded complete evidence for the latest trained candidate, `qwen-random-anchor
 Commit name: Restore generation-before-training order in research queue.
 
 The last completed model run has complete training, clean-validation, and aggregate black-box evidence. The next tool-rich training attempt was not executed because the watchdog launched the training command before generating its input file. Corrected the worker queue so it launches the feasible 400-pair, 200-unsupported generator first and then the one-epoch synthetic-only continuation from the tool-rich champion. The random-anchor result remains fully recorded and the selection policy remains clean-validation-only.
+
+## 2026-10-29: Requeue feasible tool-rich generator first
+Commit name: Put the tool-rich generator before dependent training.
+
+Confirmed the latest completed random-anchor training run has training, clean-validation, and aggregate black-box test metrics recorded. The tool-rich continuation has not started because generation was skipped and its input file was missing. Set the generator as the first worker queue item, followed by its dependent trainer, with planning_required false and status active. The request is limited to 400 pairs and 200 unsupported requests, below the available source-anchor counts.

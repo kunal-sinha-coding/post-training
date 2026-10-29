@@ -13795,3 +13795,8 @@ This record was written automatically. Candidate selection must use clean valida
 ## 2026-10-29: Repair tool-rich queue dependency ordering
 
 The random-anchor continuation is fully measured: training 0.992000 / 0.744897 on 500 sampled rows, clean validation 0.942000 / 0.481458 on 500 rows, and aggregate black-box test 0.736309 / 0.548398 on 3,652 rows. No test examples or labels were inspected. The attempted feasible tool-rich continuation did not start training: the watchdog launched the training command before its generation dependency because the queue was ordered incorrectly. No tool-rich data file or checkpoint was produced. Requeued the two commands in dependency order, with generation first and training second.
+
+
+## 2026-10-29: Requeue generation before its dependent trainer
+
+The latest completed model run remains the random-anchor continuation, with all three evidence types recorded. The attempted tool-rich continuation did not train because its generation command was not launched. The watchdog launches the first item in `worker_queue`, so the earlier queue setup still placed the trainer first at launch time. Reset the queue to `[feasible tool-rich generator, dependent trainer]` and set the first generator as the next experiment. The generator requests 400 pairs and 200 unsupported rows, within the observed 465 eligible tool-call anchor limit.
