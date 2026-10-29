@@ -14615,3 +14615,7 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## 2026-10-29: reconcile live trainer and requeue balanced pilot
+
+The weight-decay trainer PID 367159 remains live in aggregate test evaluation. An earlier gated follow-up exited before training because the watchdog compared the active PID against the queued wrapper command. No model training or measurement was produced by that wrapper. The state now points worker_command and active_experiment to the real live trainer, and keeps the gated balanced-data trainer queued after it. The latest completed model experiment remains the fusion transfer with all applicable evidence recorded.
