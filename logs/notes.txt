@@ -8534,3 +8534,8 @@ Context: The recorder failure is documented in the error log. The experiment has
 2026-10-29T15:50:59.247090+00:00: Commit `Record research experiment qwen-fullpool-best-pref200-plus-followup338-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
 
 2026-10-29T16:02:06.248702+00:00: Commit `Record research experiment qwen-fullpool-best-followup338-synthetic-only-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+
+Commit name: Audit synthetic-only continuation and queue two checkpoint continuations.
+Description: Updated the latest evidence audit and queued follow-up training on a distinct low-dose synthetic pool and on real preference data from the 0.962 clean-validation checkpoint.
+Context: All three metrics for the latest run are present. Clean validation is the selection measure. Aggregate black-box test metrics are report-only, and no test examples or labels were inspected.

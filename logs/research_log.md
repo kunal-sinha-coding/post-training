@@ -14355,3 +14355,10 @@ Clean development accuracy: 0.962. Clean development macro F1: 0.488326407097742
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.962, "macro_f1": 0.48832640709774233, "confusion_matrix": [[241, 4, 5, 0], [0, 240, 9, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+## 2026-10-29: Audit best-checkpoint synthetic continuation
+
+Latest completed experiment `qwen-fullpool-best-followup338-synthetic-only-20261029` has all three evidence types: training 0.985207 accuracy / 0.737067 macro F1 on 338 examples; clean validation 0.962000 / 0.488326 on 500; full aggregate black-box test 0.702629 / 0.527789 on 3652. Metrics are in `outputs/qwen-fullpool-best-followup338-synthetic-only-20261029/metrics.json`. No test examples or labels were inspected.
+
+The run tied the best known clean-validation accuracy at 0.962. Queued two continuations from its epoch-01 checkpoint: train only on the distinct earlier 336-row low-dose synthetic pool, then train on 200 real preference examples. The fixed clean validation determines any candidate choice; test metrics are report-only.
