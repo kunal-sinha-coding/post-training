@@ -13553,3 +13553,15 @@ Clean development accuracy: 0.954. Clean development macro F1: 0.484713802209246
 Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.962, "macro_f1": 0.48832640709774233, "examples": 500, "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-fullpref-tool-rich-994-plus-pref900-20261029
+
+Timestamp: 2026-10-29T05:14:00.306122+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-fullpref-tool-rich-994-plus-pref900-20261029", "--adapter-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--preference-train-sample-size", "900", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "3", "--stop-on-validation-non-improvement", "--seed", "20261134", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.962", "--baseline-validation-macro-f1", "0.48832640709774233", "--baseline-test-accuracy", "0.702354874041621", "--baseline-test-macro-f1", "0.5277889126113546", "--baseline-test-source", "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json", "--augmentation-jsonl", "outputs/when2call-tool-rich-large-boundary-pilot-20261028/balanced_boundary_tool_rich.jsonl"]. Output: /workspace/post-training/outputs/qwen-fullpref-tool-rich-994-plus-pref900-20261029. W&B run: 345hwddi.
+
+Clean development accuracy: 0.942. Clean development macro F1: 0.48243447061838557. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7286418400876232, "macro_f1": 0.5429849238023519, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.962, "macro_f1": 0.48832640709774233, "examples": 500, "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

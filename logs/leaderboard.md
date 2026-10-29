@@ -2224,3 +2224,6 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 | Candidate | qwen-fullpref-tool-rich-994-synthetic-only-20261029 | 0.954 | 0.4847138022092461 | [metrics](/workspace/post-training/outputs/qwen-fullpref-tool-rich-994-synthetic-only-20261029/metrics.json) | completed |
 
 | qwen-fullpref-tool-rich-994-synthetic-only-20261029 | 0.7363088718510405 | 0.549894992967913 | zja28atb | Aggregate-only frozen test measurement |
+| Candidate | qwen-fullpref-tool-rich-994-plus-pref900-20261029 | 0.942 | 0.48243447061838557 | [metrics](/workspace/post-training/outputs/qwen-fullpref-tool-rich-994-plus-pref900-20261029/metrics.json) | completed |
+
+| qwen-fullpref-tool-rich-994-plus-pref900-20261029 | 0.7286418400876232 | 0.5429849238023519 | 345hwddi | Aggregate-only frozen test measurement |
