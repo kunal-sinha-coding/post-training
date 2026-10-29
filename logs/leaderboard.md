@@ -2284,3 +2284,6 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 | Candidate | qwen-tool-rich-low-share-expansion-from-low-share-20261029 | 0.946 | 0.4830396659707724 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-low-share-expansion-from-low-share-20261029/metrics.json) | completed |
 
 | qwen-tool-rich-low-share-expansion-from-low-share-20261029 | 0.7319277108433735 | 0.5465785939052814 | umi60r4j | Aggregate-only frozen test measurement |
+| Candidate | qwen-low-share-checkpoint-pref200-only-20261029 | 0.946 | 0.4835999749043227 | [metrics](/workspace/post-training/outputs/qwen-low-share-checkpoint-pref200-only-20261029/metrics.json) | completed |
+
+| qwen-low-share-checkpoint-pref200-only-20261029 | 0.7237130339539978 | 0.541359222211391 | wl05pk0k | Aggregate-only frozen test measurement |

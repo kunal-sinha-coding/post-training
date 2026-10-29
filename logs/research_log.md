@@ -13894,3 +13894,15 @@ The previous low-unsupported checkpoint had 0.956 clean-validation accuracy. Con
 The experiment recorder failed while committing its record, but the data-generation run succeeded. The final generation summary reports 325 accepted paired boundaries and 92 accepted unsupported requests, for 742 rows total. The worker log shows all 500 requested jobs reached the final progress event. The watchdog then advanced to the dependent Qwen trainer. The run used `gpt-6-luna`, 24 concurrent requests, seed 20261158, and the tool-rich anchor strategy. No validation or test set was loaded, and no test labels were used. The generator does not initialize W&B, so the W&B run ID and URL are correctly null.
 
 The repaired record marks exit code 0 as inferred from the completed summary and output artifacts because the original recorder did not preserve the subprocess return code. The summary cost is $0.1472608; the token ledger separately reports $0.1440014 usage estimate plus $0.0345 reserved, so both source values are retained without reconciliation. The event remains a data-generation result, not a scored model candidate. The active training run and remaining queue were not changed.
+
+## qwen-low-share-checkpoint-pref200-only-20261029
+
+Timestamp: 2026-10-29T10:35:57.569993+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-low-share-checkpoint-pref200-only-20261029", "--adapter-checkpoint", "outputs/qwen-tool-rich-low-share-expansion-from-low-share-20261029/epoch-01", "--preference-train-sample-size", "200", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261160", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.95", "--baseline-validation-macro-f1", "0.48363771417663637"]. Output: /workspace/post-training/outputs/qwen-low-share-checkpoint-pref200-only-20261029. W&B run: wl05pk0k.
+
+Clean development accuracy: 0.946. Clean development macro F1: 0.4835999749043227. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7237130339539978, "macro_f1": 0.541359222211391, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.946, "macro_f1": 0.4835999749043227, "confusion_matrix": [[241, 2, 7, 0], [3, 232, 14, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
