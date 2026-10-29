@@ -8140,3 +8140,8 @@ Commit name: Gate 750-row synthetic dose on 500-row result.
 The 1e-6 continuation completed with clean validation accuracy 0.958 and macro F1 0.486268, compared with the fixed baseline 0.960 and 0.487287. Its aggregate test accuracy was 0.728916 versus the baseline 0.727820, a 0.11 percentage point difference that is below the 1 percentage point noise threshold. This does not support further learning-rate tuning.
 
 The 500-row stratified tool-rich synthetic dose is active at the established 5e-6 learning rate. It holds the starting checkpoint, source pool, validation sample, and optimizer settings fixed while changing only synthetic exposure. The 750-row follow-up is removed from the automatic queue. It should be queued only if the 500-row result passes the existing clean-validation non-harm screen. Prior 629-row versus 994-row tool-rich results differ by less than 1 point in aggregate test accuracy, and clean validation is flat, so that comparison is suggestive but not strong evidence of a dose benefit.
+
+## 2026-10-29: Require evidence before hyperparameter changes
+Commit name: Require evidence for hyperparameter experiments.
+
+Updated `auto-research-prompt.md` to prohibit unsupported hyperparameter changes. Each proposed change must name a specific observed issue, cite recorded diagnostics that support the hypothesis, and explain why the setting could address it. The prompt uses the loss curve as an example for learning-rate changes and requires a stated success criterion and a controlled comparison with other settings held fixed when practical.
