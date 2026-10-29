@@ -2291,3 +2291,6 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 
 | qwen-low-share-checkpoint-pref200-plus-synth-20261029 | 0.7176889375684556 | 0.5359721678689494 | 2s9heg3v | Aggregate-only frozen test measurement |
 | Candidate | when2call-rare-schema-low-share-20261029 | — | — | [metrics](/workspace/post-training/outputs/when2call-rare-schema-low-share-20261029/metrics.json) | completed |
+| Candidate | qwen-rare-schema-low-share-synthetic-only-20261029 | 0.942 | 0.48145846671437 | [metrics](/workspace/post-training/outputs/qwen-rare-schema-low-share-synthetic-only-20261029/metrics.json) | completed |
+
+| qwen-rare-schema-low-share-synthetic-only-20261029 | 0.7319277108433735 | 0.5456266502814662 | lof7dq2k | Aggregate-only frozen test measurement |
