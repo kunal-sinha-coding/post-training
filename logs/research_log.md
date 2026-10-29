@@ -13918,3 +13918,15 @@ Clean development accuracy: 0.942. Clean development macro F1: 0.481980697797268
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.942, "macro_f1": 0.48198069779726815, "confusion_matrix": [[243, 1, 6, 0], [5, 228, 16, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## when2call-rare-schema-low-share-20261029
+
+Timestamp: 2026-10-29T10:54:38.874096+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.generate_when2call_boundary_pilot", "--output-dir", "outputs/when2call-rare-schema-low-share-20261029", "--pairs", "300", "--unsupported", "75", "--workers", "24", "--seed", "20261162", "--max-cost-usd", "1.0", "--anchor-strategy", "rare_schema"]. Output: /workspace/post-training/outputs/when2call-rare-schema-low-share-20261029. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: False. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
