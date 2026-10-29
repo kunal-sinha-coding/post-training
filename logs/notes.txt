@@ -8017,3 +8017,5 @@ error: failed to push some refs to 'https://github.com/kunal-sinha-coding/post-t
 Commit name: Verify 800-real tool-rich replay launch.
 
 The watchdog launched `qwen-tool-rich-boundary-replay800-20261028` as PID 309781. The 800-real dose run is active with the 629-row tool-rich synthetic pool. The queue command was promoted, status is active, and planning is disabled. The preceding continuation run has complete training, clean-validation, and aggregate test measurements.
+
+2026-10-29T00:01:21.292960+00:00: Commit `Record research experiment qwen-tool-rich-boundary-replay800-20261028` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
