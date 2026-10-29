@@ -13832,3 +13832,15 @@ The latest completed trained experiment remains `qwen-random-anchor-paired-unsup
 ## 2026-10-29: Queue a small gold-data replay comparison
 
 The latest completed trained experiment still has complete evidence: 500-row training accuracy 0.992000 / macro F1 0.744897, 500-row clean-validation accuracy 0.942000 / macro F1 0.481458, and full aggregate test accuracy 0.736309 / macro F1 0.548398 on 3,652 rows. The current tool-rich continuation is active. Added a follow-up training-only command after the queued data recipe comparisons. It uses 200 sampled train_pref examples with the already generated 803-row paired-boundary pool, warm-starts from the tool-rich champion, and keeps all training and validation settings fixed. This tests whether a small amount of authentic replay reduces the validation transfer drop seen with random-anchor synthetic-only training. Clean validation selects the candidate; test examples and labels are not used.
+
+## qwen-tool-rich-paired-unsupported-feasible-synthetic-only-20261029
+
+Timestamp: 2026-10-29T08:59:28.754465+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-tool-rich-paired-unsupported-feasible-synthetic-only-20261029", "--adapter-checkpoint", "outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/epoch-01", "--synthetic-only", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261150", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.95", "--baseline-validation-macro-f1", "0.48363771417663637", "--augmentation-jsonl", "outputs/when2call-tool-rich-paired-unsupported-feasible-20261029/balanced_boundary_tool_rich.jsonl"]. Output: /workspace/post-training/outputs/qwen-tool-rich-paired-unsupported-feasible-synthetic-only-20261029. W&B run: h0c74l0q.
+
+Clean development accuracy: 0.952. Clean development macro F1: 0.48320863202527575. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7376779846659365, "macro_f1": 0.5505144946319434, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.952, "macro_f1": 0.48320863202527575, "confusion_matrix": [[244, 1, 5, 0], [8, 232, 9, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
