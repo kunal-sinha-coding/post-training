@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
-  "current_hypothesis": "The latest completed trained model remains the 827-row random-anchor continuation with complete evidence: training 0.992 / 0.744897 on 500 rows, clean validation 0.942 / 0.481458 on 500 rows, and aggregate test 0.736309 / 0.548398 on 3652 rows. The feasible 803-row tool-rich continuation is active. The queue compares tool-rich unsupported shares near 13% and 30% against the prior stronger 23% recipe.",
+  "current_hypothesis": "The latest completed model run is the 827-row random-anchor synthetic continuation with all evidence recorded: training 0.992 / 0.744897 on 500 sampled rows, clean validation 0.942 / 0.481458 on 500 rows, and aggregate test 0.736309 / 0.548398 on all 3652 rows. The tool-rich 803-row synthetic continuation is still active. Existing queued tests compare the unsupported share and context recoverability.",
   "active_experiment": {
     "pid": 334865,
     "command": [
@@ -240,6 +240,42 @@
       "0.48363771417663637",
       "--augmentation-jsonl",
       "outputs/when2call-context-recoverability-300pairs-champion-20261029/contextual_pairs.jsonl"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-tool-rich-paired-feasible-20pct-real-replay-20261029",
+      "--adapter-checkpoint",
+      "outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/epoch-01",
+      "--preference-train-sample-size",
+      "200",
+      "--augmentation-jsonl",
+      "outputs/when2call-tool-rich-paired-unsupported-feasible-20261029/balanced_boundary_tool_rich.jsonl",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "1",
+      "--seed",
+      "20261157",
+      "--learning-rate",
+      "5e-6",
+      "--baseline-validation-accuracy",
+      "0.95",
+      "--baseline-validation-macro-f1",
+      "0.48363771417663637"
     ]
   ],
   "_previous_command": [
@@ -269,7 +305,7 @@
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
   "last_heartbeat": "2026-10-29T08:45:53.676625+00:00",
-  "last_action": "Queued a distinct context-recoverability synthetic generation and champion continuation after the unsupported-share experiments.",
+  "last_action": "Queued a small gold train_pref replay mix with the existing 803-row tool-rich synthetic pool after the currently planned recipe comparisons.",
   "watchdog_enabled": true,
   "research_log_size": 1773206,
   "stop_command": "STOP",
@@ -322,7 +358,7 @@
     "wandb_run_id": "vrfnnoq2",
     "selection": "Aggregate test result reported for ranking only. It was not used for candidate selection."
   },
-  "next_hypothesis": "After the unsupported-share comparisons, test a 300-pair multi-turn context-recoverability pool from train_pref. Each pair differs in whether the required value is present earlier in the conversation. The prior contextual synthetic continuation had weak aggregate transfer and used an older checkpoint. Repeating this distinct recipe from the tool-rich champion will test whether the checkpoint is a material factor. Keep all training settings fixed and select by clean validation only.",
+  "next_hypothesis": "The random synthetic run had high training accuracy but clean validation below the champion baseline. After the queued synthetic recipe comparisons, test a small 200-example real train_pref replay buffer mixed with the already generated 803-row tool-rich pool, starting from the same champion. This checks whether limited gold-data replay improves transfer while avoiding the earlier much larger real-plus-synthetic mixture. Keep the optimizer and validation sample fixed.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."

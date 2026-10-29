@@ -8323,3 +8323,8 @@ Re-audited the latest completed model run and confirmed training 0.992000 / macr
 Commit name: Test context recoverability from the tool-rich champion.
 
 Verified that the latest completed training run has training, clean-validation, and aggregate black-box metrics recorded. Added a distinct 300-pair contextual recoverability generator and a one-epoch synthetic-only continuation from the tool-rich champion after the current unsupported-share experiments. This tests whether prior context containing a required value versus a paired context that omits it transfers when starting from the stronger checkpoint. An older contextual run had weak aggregate transfer, so this is a bounded check rather than an assumed improvement. Validation remains the selection criterion; test data are aggregate-only.
+
+## 2026-10-29: Queue small train_pref replay with paired synthetic data
+Commit name: Test limited gold replay for synthetic continuation.
+
+Rechecked the latest completed model run. Training, clean validation, and aggregate black-box test are all present: 0.992000 / 0.744897 on 500 training rows; 0.942000 / 0.481458 on 500 validation rows; and 0.736309 / 0.548398 on 3,652 aggregate test rows. Queued a one-epoch continuation from the tool-rich champion using 200 sampled real train_pref examples plus the existing 803-row tool-rich paired-boundary pool. The hypothesis is that a small authentic replay set may preserve the original distribution when synthetic-only updates reduce clean validation. Selection uses clean validation only, with no inspection of test examples or labels.
