@@ -14762,3 +14762,15 @@ Queued command 2: `python -u -m experiments.train_qwen_when2call_fullpool --outp
 The completed 1,000-row real-only replay reached 99.6% sampled training accuracy but stayed below the baseline on clean validation. Queue a matched rank-8 LoRA run on the same preference sample and seed, starting checkpoint, and optimization settings as the rank-16 control. Lower adapter capacity may reduce overfitting. Train for up to three epochs and stop when clean-validation accuracy no longer improves. Evaluate at most 500 training and validation examples and all 3,652 black-box test rows. Test metrics are report-only.
 
 Command: `python -u -m experiments.train_qwen_when2call_fullpool --output-dir outputs/qwen-fullpool-pref1000-replay-rank8-20261029 --adapter-checkpoint outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02 --preference-train-sample-size 1000 --validation-source sft --validation-sample-size 500 --validation-seed 20261053 --training-eval-sample-size 500 --training-eval-seed 20261059 --eval-batch-size 8 --epochs 3 --learning-rate 5e-6 --weight-decay 0.01 --lora-rank 8 --baseline-validation-accuracy 0.962 --baseline-validation-macro-f1 0.48832640709774233 --stop-on-validation-non-improvement --seed 20261204`
+
+## qwen-fullpool-pref738-synth262-matched-20261029
+
+Timestamp: 2026-10-29T21:20:08.261137+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-fullpool-pref738-synth262-matched-20261029", "--adapter-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--augmentation-jsonl", "outputs/when2call-tool-rich-balanced-pilot-20261029/balanced_tool_rich_262_matched.jsonl", "--preference-train-sample-size", "738", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "3", "--learning-rate", "5e-6", "--weight-decay", "0.01", "--baseline-validation-accuracy", "0.962", "--baseline-validation-macro-f1", "0.48832640709774233", "--stop-on-validation-non-improvement", "--seed", "20261204"]. Output: /workspace/post-training/outputs/qwen-fullpool-pref738-synth262-matched-20261029. W&B run: 0web8zgu.
+
+Clean development accuracy: 0.954. Clean development macro F1: 0.48673047367960715. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7083789704271632, "macro_f1": 0.5304801998316296, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.954, "macro_f1": 0.48673047367960715, "confusion_matrix": [[240, 3, 7, 0], [0, 237, 12, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

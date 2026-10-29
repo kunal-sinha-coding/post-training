@@ -2432,3 +2432,6 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 | Candidate | qwen-fullpool-pref900-synth100-matched-20261029 | — | — | [metrics](/workspace/post-training/outputs/qwen-fullpool-pref900-synth100-matched-20261029/metrics.json) | Queued lower synthetic dose with 900 real and 100 synthetic rows, 1,000 total. Clean-validation accuracy controls continuation. | queued |
 
 | Candidate | qwen-fullpool-pref1000-replay-rank8-20261029 | — | — | [metrics](/workspace/post-training/outputs/qwen-fullpool-pref1000-replay-rank8-20261029/metrics.json) | Queued rank-8 capacity mitigation matched to the rank-16 real-only replay. Clean-validation accuracy controls continuation. | queued |
+| Candidate | qwen-fullpool-pref738-synth262-matched-20261029 | 0.954 | 0.48673047367960715 | [metrics](/workspace/post-training/outputs/qwen-fullpool-pref738-synth262-matched-20261029/metrics.json) | completed |
+
+| qwen-fullpool-pref738-synth262-matched-20261029 | 0.7083789704271632 | 0.5304801998316296 | 0web8zgu | Aggregate-only frozen test measurement |
