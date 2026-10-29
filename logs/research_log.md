@@ -13711,3 +13711,15 @@ The strongest recent synthetic clean-validation signal was the 807-row recipe wi
 ## 2026-10-29: Queue a matched random-anchor synthetic comparison
 
 The latest completed frozen inference experiment records training as not applicable and has 500-row clean-validation plus full 3652-row aggregate black-box metrics. The declared one-draw candidates were missing, so their corrected evaluation is already active. The existing queue then generates and trains a fresh tool-rich paired-boundary pool. Added a distinct follow-up that keeps the paired complete/incomplete structure and a 20% unsupported share, but samples random train_pref anchors. This isolates whether the prior signal came from tool-rich context or the paired decision boundary. The continuation uses the same user-designated champion checkpoint, one epoch, and fixed validation/training samples. No inference variants are added during this synthetic-data search.
+
+## qwen-llm-single-sample-vote-screen-retry-20261029
+
+Timestamp: 2026-10-29T08:17:23.187425+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_qwen_llm_ensemble", "--champion-checkpoint", "outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/epoch-01", "--comparison-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--output-dir", "outputs/qwen-llm-single-sample-vote-screen-retry-20261029", "--validation-size", "500", "--validation-seed", "20261053", "--batch-size", "4"]. Output: /workspace/post-training/outputs/qwen-llm-single-sample-vote-screen-retry-20261029. W&B run: vroz7p9q.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

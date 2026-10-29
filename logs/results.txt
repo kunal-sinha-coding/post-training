@@ -159179,3 +159179,223 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/1owtbjej"
 }
 ```
+
+## qwen-llm-single-sample-vote-screen-retry-20261029
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_qwen_llm_ensemble",
+    "--champion-checkpoint",
+    "outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/epoch-01",
+    "--comparison-checkpoint",
+    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "--output-dir",
+    "outputs/qwen-llm-single-sample-vote-screen-retry-20261029",
+    "--validation-size",
+    "500",
+    "--validation-seed",
+    "20261053",
+    "--batch-size",
+    "4"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "qwen-llm-single-sample-vote-screen-retry-20261029",
+  "failure_reason": null,
+  "metadata": {
+    "champion_checkpoint": "outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/epoch-01",
+    "comparison_checkpoint": "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "experiment": "qwen_llm_ensemble_and_sample_vote",
+    "method_names_frozen_before_test": [
+      "champion_greedy",
+      "comparison_greedy",
+      "llm_probability_mix_25",
+      "llm_probability_mix_50",
+      "llm_probability_mix_75",
+      "champion_sample_vote_1",
+      "champion_sample_vote_3",
+      "champion_sample_vote_5",
+      "champion_sample_vote_9",
+      "comparison_sample_vote_1",
+      "comparison_sample_vote_3",
+      "comparison_sample_vote_5",
+      "comparison_sample_vote_9"
+    ],
+    "purpose": "Compare independent Qwen probability fusion and repeated one-token label voting.",
+    "runtime_seconds": 986.5582642555237,
+    "status": "completed",
+    "test_black_box": true,
+    "test_examples": 3652,
+    "test_metrics": {
+      "champion_greedy": {
+        "accuracy": 0.7404162102957283,
+        "examples": 3652,
+        "macro_f1": 0.5521408788489595
+      },
+      "champion_sample_vote_1": {
+        "accuracy": 0.7365826944140197,
+        "examples": 3652,
+        "macro_f1": 0.5493666269288108
+      },
+      "champion_sample_vote_3": {
+        "accuracy": 0.7404162102957283,
+        "examples": 3652,
+        "macro_f1": 0.5523454710510468
+      },
+      "champion_sample_vote_5": {
+        "accuracy": 0.7415115005476451,
+        "examples": 3652,
+        "macro_f1": 0.5529212787999608
+      },
+      "champion_sample_vote_9": {
+        "accuracy": 0.7395947426067908,
+        "examples": 3652,
+        "macro_f1": 0.5515315704032396
+      },
+      "comparison_greedy": {
+        "accuracy": 0.702354874041621,
+        "examples": 3652,
+        "macro_f1": 0.5277889126113546
+      },
+      "comparison_sample_vote_1": {
+        "accuracy": 0.7012595837897043,
+        "examples": 3652,
+        "macro_f1": 0.5270924204485903
+      },
+      "comparison_sample_vote_3": {
+        "accuracy": 0.7026286966046003,
+        "examples": 3652,
+        "macro_f1": 0.5279271567455797
+      },
+      "comparison_sample_vote_5": {
+        "accuracy": 0.7029025191675794,
+        "examples": 3652,
+        "macro_f1": 0.5282723676137329
+      },
+      "comparison_sample_vote_9": {
+        "accuracy": 0.7034501642935378,
+        "examples": 3652,
+        "macro_f1": 0.5285904878333989
+      },
+      "llm_probability_mix_25": {
+        "accuracy": 0.7037239868565169,
+        "examples": 3652,
+        "macro_f1": 0.5286484083585283
+      },
+      "llm_probability_mix_50": {
+        "accuracy": 0.7387732749178533,
+        "examples": 3652,
+        "macro_f1": 0.5523508392327023
+      },
+      "llm_probability_mix_75": {
+        "accuracy": 0.7395947426067908,
+        "examples": 3652,
+        "macro_f1": 0.5517642613672771
+      }
+    },
+    "test_rows_or_predictions_saved": false,
+    "training_metrics": null,
+    "training_metrics_status": "not applicable because this is frozen inference only",
+    "validation_metrics": {
+      "champion_greedy": {
+        "accuracy": 0.952,
+        "examples": 500,
+        "macro_f1": 0.484176874466834
+      },
+      "champion_sample_vote_1": {
+        "accuracy": 0.946,
+        "examples": 500,
+        "macro_f1": 0.4825526400226686
+      },
+      "champion_sample_vote_3": {
+        "accuracy": 0.95,
+        "examples": 500,
+        "macro_f1": 0.48363771417663637
+      },
+      "champion_sample_vote_5": {
+        "accuracy": 0.95,
+        "examples": 500,
+        "macro_f1": 0.48363771417663637
+      },
+      "champion_sample_vote_9": {
+        "accuracy": 0.952,
+        "examples": 500,
+        "macro_f1": 0.484176874466834
+      },
+      "comparison_greedy": {
+        "accuracy": 0.962,
+        "examples": 500,
+        "macro_f1": 0.48832640709774233
+      },
+      "comparison_sample_vote_1": {
+        "accuracy": 0.96,
+        "examples": 500,
+        "macro_f1": 0.48730808555550054
+      },
+      "comparison_sample_vote_3": {
+        "accuracy": 0.96,
+        "examples": 500,
+        "macro_f1": 0.48829955458414054
+      },
+      "comparison_sample_vote_5": {
+        "accuracy": 0.96,
+        "examples": 500,
+        "macro_f1": 0.48780276209086065
+      },
+      "comparison_sample_vote_9": {
+        "accuracy": 0.962,
+        "examples": 500,
+        "macro_f1": 0.48832640709774233
+      },
+      "llm_probability_mix_25": {
+        "accuracy": 0.96,
+        "examples": 500,
+        "macro_f1": 0.48730808555550054
+      },
+      "llm_probability_mix_50": {
+        "accuracy": 0.954,
+        "examples": 500,
+        "macro_f1": 0.4852008281573499
+      },
+      "llm_probability_mix_75": {
+        "accuracy": 0.952,
+        "examples": 500,
+        "macro_f1": 0.484176874466834
+      }
+    },
+    "validation_source": {
+      "label_counts": {
+        "0": 250,
+        "1": 249,
+        "3": 1
+      },
+      "sample_fingerprint": "877a1a8e65a7b6d8c6f90f2bb22c85f140fb23a2dc694c42204a2f7eef499fc8",
+      "sample_rows": 500,
+      "sample_seed": 20261053,
+      "source": "nvidia/When2Call:train_sft",
+      "source_independent_of_train_pref_and_bfcl": true,
+      "source_rows": 15000
+    },
+    "wandb_run_id": "vroz7p9q",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/vroz7p9q"
+  },
+  "metrics_path": "/workspace/post-training/outputs/qwen-llm-single-sample-vote-screen-retry-20261029/metrics.json",
+  "official_test_loaded": null,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/qwen-llm-single-sample-vote-screen-retry-20261029",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-29T08:00:19.199793+00:00",
+  "status": "completed",
+  "test_status": "not measured",
+  "timestamp": "2026-10-29T08:17:23.187425+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "vroz7p9q",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/vroz7p9q"
+}
+```
