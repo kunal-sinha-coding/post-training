@@ -13349,3 +13349,15 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-tool-rich-replay800-encoder-blackbox-20261029
+
+Timestamp: 2026-10-29T00:15:28.427674+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.existing_when2call_hybrid", "test", "--work-dir", "outputs/qwen-tool-rich-replay800-encoder-blackbox-20261029/work", "--output-dir", "outputs/qwen-tool-rich-replay800-encoder-blackbox-20261029", "--suite", "single-disagree", "--qwen-checkpoint", "outputs/qwen-tool-rich-boundary-replay800-20261028/epoch-01", "--methods", "single_encoder_request_or_cannot_answer_conf_90", "--primary-method", "single_encoder_request_or_cannot_answer_conf_90", "--batch-size", "1"]. Output: /workspace/post-training/outputs/qwen-tool-rich-replay800-encoder-blackbox-20261029. W&B run: grj5aq2g.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: True. Test status: measured. Official test metrics: {"accuracy": 0.7127601314348302, "macro_f1": 0.532923467285034, "macro_f1_present_classes": 0.7105646230467121}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
