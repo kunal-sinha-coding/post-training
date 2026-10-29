@@ -2253,3 +2253,5 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 | qwen-fullpref-tool-rich-expansion-500-synthetic-only-20261029 | 0.7245345016429354 | 0.5417553333731471 | pdd3kivl | Aggregate-only frozen test measurement |
 | Candidate | qwen-llm-single-sample-vote-screen-20261029 | — | — | [metrics](/workspace/post-training/outputs/qwen-llm-single-sample-vote-screen-20261029/metrics.json) | completed |
 | Candidate | qwen-llm-single-sample-vote-screen-retry-20261029 | — | — | [metrics](/workspace/post-training/outputs/qwen-llm-single-sample-vote-screen-retry-20261029/metrics.json) | completed |
+| Candidate | when2call-tool-rich-paired-unsupported-fresh-20261029 | — | — | [metrics](/workspace/post-training/outputs/when2call-tool-rich-paired-unsupported-fresh-20261029/metrics.json) | failed_or_incomplete |
+| Candidate | qwen-tool-rich-paired-unsupported-fresh-synthetic-only-20261029 | — | — | [metrics](/workspace/post-training/outputs/qwen-tool-rich-paired-unsupported-fresh-synthetic-only-20261029/metrics.json) | failed_or_incomplete |
