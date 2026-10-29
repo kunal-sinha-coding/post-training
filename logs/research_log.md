@@ -14603,3 +14603,15 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-fullpool-balanced-tool-rich-pilot-20261029
+
+Timestamp: 2026-10-29T18:39:41.736414+00:00. Status: failed_or_incomplete.
+
+Setup: ["python", "-u", "-m", "experiments.train_balanced_tool_rich_pilot", "--regularization-metrics", "outputs/qwen-fullpool-followup338-wd005-20261029/metrics.json", "--generation-metrics", "outputs/when2call-tool-rich-balanced-pilot-20261029/metrics.json", "--pilot-data", "outputs/when2call-tool-rich-balanced-pilot-20261029/balanced_boundary_tool_rich.jsonl", "--output-dir", "outputs/qwen-fullpool-balanced-tool-rich-pilot-20261029"]. Output: /workspace/post-training/outputs/qwen-fullpool-balanced-tool-rich-pilot-20261029. W&B run: not available.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

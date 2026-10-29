@@ -2401,3 +2401,4 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 | Candidate | qwen-fullpool-followup338-wd005-20261029 | — | — | [metrics](/workspace/post-training/outputs/qwen-fullpool-followup338-wd005-20261029/metrics.json) | failed_or_incomplete |
 | Candidate | when2call-tool-rich-balanced-pilot-20261029 | — | — | [metrics](/workspace/post-training/outputs/when2call-tool-rich-balanced-pilot-20261029/metrics.json) | completed |
 | Candidate | qwen-fullpool-followup338-wd005-20261029 | — | — | [metrics](/workspace/post-training/outputs/qwen-fullpool-followup338-wd005-20261029/metrics.json) | failed_or_incomplete |
+| Candidate | qwen-fullpool-balanced-tool-rich-pilot-20261029 | — | — | [metrics](/workspace/post-training/outputs/qwen-fullpool-balanced-tool-rich-pilot-20261029/metrics.json) | failed_or_incomplete |
