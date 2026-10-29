@@ -14205,3 +14205,15 @@ Clean development accuracy: 0.936. Clean development macro F1: 0.479314808277438
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.936, "macro_f1": 0.4793148082774388, "confusion_matrix": [[244, 1, 5, 0], [7, 224, 18, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-lowdose-best-pref200-plus-lowdose336-synth-20261029
+
+Timestamp: 2026-10-29T13:56:21.172186+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-lowdose-best-pref200-plus-lowdose336-synth-20261029", "--adapter-checkpoint", "outputs/qwen-tool-rich-low-dose-synthetic-only-20261029/epoch-01", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.95", "--baseline-validation-macro-f1", "0.48363771417663637", "--preference-train-sample-size", "200", "--seed", "20261176", "--augmentation-jsonl", "outputs/when2call-tool-rich-low-dose-20261029/balanced_boundary_tool_rich.jsonl"]. Output: /workspace/post-training/outputs/qwen-lowdose-best-pref200-plus-lowdose336-synth-20261029. W&B run: n4uz55im.
+
+Clean development accuracy: 0.942. Clean development macro F1: 0.4819717282491134. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7154983570646222, "macro_f1": 0.5324836037487519, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.942, "macro_f1": 0.4819717282491134, "confusion_matrix": [[243, 2, 5, 0], [4, 228, 17, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
