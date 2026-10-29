@@ -8696,3 +8696,6 @@ remove the file manually to continue.
 
 
 2026-10-29T20:38Z: Audited qwen-fullpool-pref1000-replay-control-20261029. Training, clean-validation, and full aggregate black-box metrics are recorded for all three epochs. Best clean validation was epoch 2 at 0.954000 accuracy and 0.486234 macro F1 on 500 examples; epoch 3 fell to 0.950000 and 0.485672. Epoch 3 training was 0.996000 accuracy and 0.746997 macro F1, with loss 0.061680. The aggregate test report was 0.695783 accuracy and 0.519717 macro F1 on 3,652 rows. Added two matched-total-size synthetic dose trials, 738 real plus 262 synthetic and 900 real plus 100 synthetic, to separate composition from extra optimizer steps. Test aggregates remain report-only.
+
+
+2026-10-29T20:40Z: Queued a rank-8 LoRA capacity-mitigation comparison after the two equal-size synthetic-dose trials. The completed 1,000-row rank-16 replay reached 99.6% sampled training accuracy while clean validation remained below baseline, which supports testing reduced adapter capacity. The queued run matches the real-only replay sample seed and training settings apart from rank. Black-box aggregate metrics are report-only.
