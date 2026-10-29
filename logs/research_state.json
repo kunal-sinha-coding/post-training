@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
-  "current_hypothesis": "The latest completed model run has complete train, clean-validation, and aggregate test evidence. The tool-rich replay run is still evaluating; existing queue entries test replay quantity and synthetic pool composition. All generated examples so far use single-turn requests. A new hypothesis is that multi-turn examples where a required value appears earlier in conversation will improve context use and distinguish inferable values from missing ones. Generate paired conversations from train_pref anchors, validate labels independently, and compare one replay continuation on clean validation.",
+  "current_hypothesis": "The current 900-real plus 1,032-example rare-schema replay tests whether long-tail-schema synthetic data complements real preference data. The next queued synthetic-only run isolates the rare-schema pool contribution.",
   "active_experiment": {
     "pid": 312279,
     "command": [
@@ -73,7 +73,39 @@
     "--augmentation-jsonl",
     "outputs/when2call-rare-schema-large-boundary-pilot-20261029/balanced_boundary_rare_schema.jsonl"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-rare-schema-boundary-synthetic-only-20261029",
+      "--adapter-checkpoint",
+      "outputs/qwen-pref900-synth450-high-similarity-lr5e6-20261028/epoch-01",
+      "--synthetic-only",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "1",
+      "--seed",
+      "20261120",
+      "--learning-rate",
+      "5e-6",
+      "--augmentation-jsonl",
+      "outputs/when2call-rare-schema-large-boundary-pilot-20261029/balanced_boundary_rare_schema.jsonl"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -103,7 +135,7 @@
   "last_heartbeat": "2026-10-29T00:18:56.833676+00:00",
   "last_action": "Watchdog started validation worker pid 312279.",
   "watchdog_enabled": true,
-  "research_log_size": 1713390,
+  "research_log_size": 1714238,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -137,12 +169,7 @@
     "--augmentation-jsonl",
     "outputs/when2call-rare-schema-large-boundary-pilot-20261029/balanced_boundary_rare_schema.jsonl"
   ],
-  "recording_jobs": [
-    {
-      "pid": 312278,
-      "experiment_id": "when2call-rare-schema-large-boundary-pilot-20261029"
-    }
-  ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-29T00:04:50.954665+00:00",
   "planning_ack_deadline": "2026-10-29T00:06:50.954690+00:00",
@@ -156,7 +183,7 @@
     "wandb_run_id": "vrfnnoq2",
     "selection": "Aggregate test result reported for ranking only. It was not used for candidate selection."
   },
-  "next_hypothesis": "The selected encoder route for the 800-real Qwen scored 0.960 on 500 clean-validation examples versus 0.958 for Qwen alone. First measure this frozen rule on the full aggregate black-box test without inspecting individual cases or using the result for selection. Then test a larger rare-schema synthetic pool against the established 900-real replay recipe. The generation cap is $2, within the tracked $10 total budget. Select by clean validation only.",
+  "next_hypothesis": "Rare-schema data may add useful long-tail tool coverage. After the active 900-real plus rare-schema replay finishes, run one synthetic-only continuation on the same generated pool from the fixed pref900+synth450 checkpoint. Compare training and clean validation on at most 500 examples each. Record full aggregate test accuracy and macro F1 only as a report. Use clean validation for candidate decisions. If this passes, test a combined tool-rich and rare-schema pool; if it fails, return to expanding the tool-rich synthetic-only approach.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
@@ -346,7 +373,7 @@
       "examples": 3652
     }
   },
-  "updated_at": "2026-10-28T15:25:46.840487+00:00",
+  "updated_at": "2026-10-29T00:22:00+00:00",
   "synthetic_pilot_results": [
     {
       "strategy": "missing_required_info",
