@@ -8596,3 +8596,7 @@ Context: The first rare-schema-only continuation improved clean-validation accur
 Commit name: Queue real preference continuation after rare-schema expansion.
 Description: Recorded the completed expansion evidence and queued a distinct 500-example real preference continuation from the first rare-schema checkpoint.
 Context: Clean validation declined by 0.2 percentage points after a larger rare-schema synthetic continuation. The next hypothesis tests real data, with clean validation controlling selection and black-box test metrics report-only.
+
+Commit name: Queue encoder fusion check for preference continuation.
+Description: Added one distinct frozen-inference fusion comparison after the active real-preference continuation.
+Context: The latest completed experiment has complete evidence. The fusion weights will be chosen on clean validation, and black-box test metrics will be report-only.
