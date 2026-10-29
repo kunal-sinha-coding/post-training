@@ -13954,3 +13954,15 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-tool-rich-near-zero-unsupported-synthetic-only-20261029
+
+Timestamp: 2026-10-29T11:24:13.873465+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-tool-rich-near-zero-unsupported-synthetic-only-20261029", "--adapter-checkpoint", "outputs/qwen-tool-rich-low-share-expansion-from-low-share-20261029/epoch-01", "--synthetic-only", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "1", "--seed", "20261165", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.95", "--baseline-validation-macro-f1", "0.48363771417663637", "--augmentation-jsonl", "outputs/when2call-tool-rich-near-zero-unsupported-20261029/balanced_boundary_tool_rich.jsonl"]. Output: /workspace/post-training/outputs/qwen-tool-rich-near-zero-unsupported-synthetic-only-20261029. W&B run: xr8hjukf.
+
+Clean development accuracy: 0.946. Clean development macro F1: 0.4830611426996969. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7228915662650602, "macro_f1": 0.5411108325079633, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.946, "macro_f1": 0.4830611426996969, "confusion_matrix": [[243, 2, 5, 0], [4, 230, 15, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
