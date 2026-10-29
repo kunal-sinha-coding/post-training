@@ -8625,3 +8625,5 @@ are terminated then try again. If it still fails, a git process
 may have crashed in this repository earlier:
 remove the file manually to continue.
 . The result remains local and the worker queue continues.
+
+2026-10-29T18:35:08.958594+00:00: Commit `Record research experiment when2call-tool-rich-balanced-pilot-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.

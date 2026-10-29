@@ -1,34 +1,11 @@
 {
-  "status": "active",
+  "status": "awaiting_codex_planning",
   "planning_owner": "codex_primary",
-  "planning_required": false,
+  "planning_required": true,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
   "current_hypothesis": "The encoder blend did not improve clean validation on the best-validation checkpoint. The previous 338-example tool-rich synthetic pool contained only 22 cannot_answer examples and 158 each of request_for_info and tool_call, while a sampled train_pref set was approximately balanced. Test whether a small 100/100 paired-plus-unsupported generation yields a more balanced and useful pilot. Generate only after the active weight-decay run. Then inspect accepted counts and the active run validation before choosing the training checkpoint.",
-  "active_experiment": {
-    "pid": 367510,
-    "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.generate_when2call_boundary_pilot",
-      "--output-dir",
-      "outputs/when2call-tool-rich-balanced-pilot-20261029",
-      "--pairs",
-      "100",
-      "--unsupported",
-      "100",
-      "--workers",
-      "24",
-      "--seed",
-      "20261196",
-      "--max-cost-usd",
-      "0.5",
-      "--anchor-strategy",
-      "tool_rich"
-    ],
-    "started_at": "2026-10-29T18:34:05.376607+00:00"
-  },
+  "active_experiment": {},
   "worker_command": [
     "python",
     "-u",
@@ -77,40 +54,21 @@
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
   "last_heartbeat": "2026-10-29T18:34:05.376621+00:00",
-  "last_action": "Watchdog started validation worker pid 367510.",
+  "last_action": "Watchdog handed planning control to the primary Codex process.",
   "watchdog_enabled": true,
-  "research_log_size": 1866760,
+  "research_log_size": 1868049,
   "stop_command": "STOP",
-  "next_experiment": [
-    "python",
-    "-u",
-    "-m",
-    "experiments.generate_when2call_boundary_pilot",
-    "--output-dir",
-    "outputs/when2call-tool-rich-balanced-pilot-20261029",
-    "--pairs",
-    "100",
-    "--unsupported",
-    "100",
-    "--workers",
-    "24",
-    "--seed",
-    "20261196",
-    "--max-cost-usd",
-    "0.5",
-    "--anchor-strategy",
-    "tool_rich"
-  ],
+  "next_experiment": null,
   "recording_jobs": [
     {
-      "pid": 367509,
-      "experiment_id": "qwen-fullpool-followup338-wd005-20261029"
+      "pid": 367772,
+      "experiment_id": "when2call-tool-rich-balanced-pilot-20261029"
     }
   ],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": null,
-  "planning_ack_deadline": null,
-  "planning_attempts": 53,
+  "planning_notified_at": "2026-10-29T18:35:07.304374+00:00",
+  "planning_ack_deadline": "2026-10-29T18:37:07.304395+00:00",
+  "planning_attempts": 54,
   "best_observed_test": {
     "method": "qwen-llm-ensemble-vote-screen-20261029, five sampled action-label votes",
     "accuracy": 0.7415115005476451,

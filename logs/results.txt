@@ -173544,3 +173544,134 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/ozmror6k"
 }
 ```
+
+## qwen-fullpool-followup338-wd005-20261029
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.train_qwen_when2call_fullpool",
+    "--output-dir",
+    "outputs/qwen-fullpool-followup338-wd005-20261029",
+    "--adapter-checkpoint",
+    "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02",
+    "--synthetic-only",
+    "--augmentation-jsonl",
+    "outputs/when2call-tool-rich-low-dose-followup-20261029/balanced_boundary_tool_rich.jsonl",
+    "--validation-source",
+    "sft",
+    "--validation-sample-size",
+    "500",
+    "--validation-seed",
+    "20261053",
+    "--training-eval-sample-size",
+    "500",
+    "--training-eval-seed",
+    "20261059",
+    "--eval-batch-size",
+    "8",
+    "--epochs",
+    "1",
+    "--learning-rate",
+    "5e-6",
+    "--weight-decay",
+    "0.05",
+    "--baseline-validation-accuracy",
+    "0.962",
+    "--baseline-validation-macro-f1",
+    "0.48832640709774233",
+    "--seed",
+    "20261183"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "qwen-fullpool-followup338-wd005-20261029",
+  "failure_reason": null,
+  "metadata": {},
+  "metrics_path": "/workspace/post-training/outputs/qwen-fullpool-followup338-wd005-20261029/metrics.json",
+  "official_test_loaded": null,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/qwen-fullpool-followup338-wd005-20261029",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-29T18:32:04.412594+00:00",
+  "status": "failed_or_incomplete",
+  "test_status": "not measured",
+  "timestamp": "2026-10-29T18:34:06.191467+00:00",
+  "train_metrics": {},
+  "wandb_run_id": null,
+  "wandb_run_url": null
+}
+```
+
+## when2call-tool-rich-balanced-pilot-20261029
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.generate_when2call_boundary_pilot",
+    "--output-dir",
+    "outputs/when2call-tool-rich-balanced-pilot-20261029",
+    "--pairs",
+    "100",
+    "--unsupported",
+    "100",
+    "--workers",
+    "24",
+    "--seed",
+    "20261196",
+    "--max-cost-usd",
+    "0.5",
+    "--anchor-strategy",
+    "tool_rich"
+  ],
+  "development_metrics": {},
+  "exit_code": "unknown",
+  "experiment_id": "when2call-tool-rich-balanced-pilot-20261029",
+  "failure_reason": null,
+  "metadata": {
+    "accepted_pairs": 83,
+    "accepted_unsupported": 96,
+    "anchor_strategy": "tool_rich",
+    "class_counts": {
+      "cannot_answer": 96,
+      "request_for_info": 83,
+      "tool_call": 83
+    },
+    "concurrency": 24,
+    "cost_ledger": "outputs/when2call-tool-rich-balanced-pilot-20261029/cost-ledger.json",
+    "estimated_cost_usd": 0.0651954,
+    "generation_model": "gpt-6-luna",
+    "official_test_loaded": false,
+    "output_jsonl": "outputs/when2call-tool-rich-balanced-pilot-20261029/balanced_boundary_tool_rich.jsonl",
+    "pairs_requested": 100,
+    "rows_written": 262,
+    "seed": 20261196,
+    "source": "nvidia/When2Call train_pref",
+    "status": "completed",
+    "test_labels_used": false,
+    "unsupported_requested": 100
+  },
+  "metrics_path": "/workspace/post-training/outputs/when2call-tool-rich-balanced-pilot-20261029/metrics.json",
+  "official_test_loaded": false,
+  "official_test_metrics": {},
+  "output_dir": "/workspace/post-training/outputs/when2call-tool-rich-balanced-pilot-20261029",
+  "source_validation_metrics": {},
+  "started_at": "2026-10-29T18:34:05.376607+00:00",
+  "status": "completed",
+  "test_status": "not measured",
+  "timestamp": "2026-10-29T18:35:06.706650+00:00",
+  "train_metrics": {},
+  "wandb_run_id": null,
+  "wandb_run_url": null
+}
+```
