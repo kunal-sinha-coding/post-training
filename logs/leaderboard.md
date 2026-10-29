@@ -2204,3 +2204,4 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 | Candidate | qwen-tool-rich-champion-fresh-pool-continue-20261029 | 0.942 | 0.47903646912556985 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-champion-fresh-pool-continue-20261029/metrics.json) | completed |
 
 | qwen-tool-rich-champion-fresh-pool-continue-20261029 | 0.7412376779846659 | 0.5516795371751677 | ovne0tcz | Aggregate-only frozen test measurement |
+| Candidate | qwen-llm-ensemble-vote-screen-20261029 | — | — | [metrics](/workspace/post-training/outputs/qwen-llm-ensemble-vote-screen-20261029/metrics.json) | completed |

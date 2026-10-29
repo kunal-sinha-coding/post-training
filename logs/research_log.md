@@ -13517,3 +13517,15 @@ Clean development accuracy: 0.942. Clean development macro F1: 0.479036469125569
 Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.95, "macro_f1": 0.48363771417663637, "examples": 500, "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-llm-ensemble-vote-screen-20261029
+
+Timestamp: 2026-10-29T03:59:08.227760+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_qwen_llm_ensemble", "--champion-checkpoint", "outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/epoch-01", "--comparison-checkpoint", "outputs/qwen-when2call-fullpool-base-seed20261055/epoch-02", "--output-dir", "outputs/qwen-llm-ensemble-vote-screen-20261029", "--validation-size", "500", "--validation-seed", "20261053", "--batch-size", "4"]. Output: /workspace/post-training/outputs/qwen-llm-ensemble-vote-screen-20261029. W&B run: yuey6yyk.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
