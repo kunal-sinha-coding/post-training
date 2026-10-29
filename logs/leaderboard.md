@@ -2186,3 +2186,6 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 
 | qwen-tool-rich-synthetic-expansion-replay-20261029 | 0.7374041621029573 | 0.5496289675620498 | mk781snr | Aggregate-only frozen test measurement |
 | Candidate | when2call-multiturn-context-expansion-20261029 | — | — | [metrics](/workspace/post-training/outputs/when2call-multiturn-context-expansion-20261029/metrics.json) | completed |
+| Candidate | qwen-multiturn-context-synthetic-only-20261029 | 0.952 | 0.48571404771424764 | [metrics](/workspace/post-training/outputs/qwen-multiturn-context-synthetic-only-20261029/metrics.json) | completed |
+
+| qwen-multiturn-context-synthetic-only-20261029 | 0.7020810514786419 | 0.5248822481536696 | dv6hoowy | Aggregate-only frozen test measurement |

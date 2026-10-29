@@ -13445,3 +13445,15 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-multiturn-context-synthetic-only-20261029
+
+Timestamp: 2026-10-29T02:08:05.354160+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-multiturn-context-synthetic-only-20261029", "--adapter-checkpoint", "outputs/qwen-tool-rich-boundary-replay900-20261028/epoch-01", "--synthetic-only", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "3", "--stop-on-validation-non-improvement", "--seed", "20261125", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.96", "--baseline-validation-macro-f1", "0.4872873318653768", "--baseline-test-accuracy", "0.7278203723986857", "--baseline-test-macro-f1", "0.5446447229603346", "--baseline-test-source", "outputs/qwen-tool-rich-boundary-replay900-20261028/metrics.json", "--augmentation-jsonl", "outputs/when2call-multiturn-context-expansion-20261029/contextual_pairs.jsonl"]. Output: /workspace/post-training/outputs/qwen-multiturn-context-synthetic-only-20261029. W&B run: dv6hoowy.
+
+Clean development accuracy: 0.952. Clean development macro F1: 0.48571404771424764. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7020810514786419, "macro_f1": 0.5248822481536696, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.96, "macro_f1": 0.4872873318653768, "examples": 500, "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
