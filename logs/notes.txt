@@ -8558,3 +8558,7 @@ Description: Added a correction record with clean-validation, aggregate black-bo
 Context: The earlier recorder entry omitted nested test metrics even though the metrics artifact was complete. The selected 25% encoder blend did not exceed the current five-vote Qwen leaderboard leader.
 
 2026-10-29T16:41:52.060211+00:00: Commit `Record research experiment qwen-followup-checkpoint-plus-pref200-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+Commit name: Queue contextual synthetic continuation pilots.
+Description: Recorded the latest run evidence audit, updated research state, and queued two distinct synthetic continuation experiments from the best tool-rich checkpoint.
+Context: The latest preference continuation had complete training, clean-validation, and aggregate black-box test metrics. The new pilots compare a 552-row contextual synthetic pool alone against the same pool with 200 real preference examples. Selection remains based on clean validation, and test labels are not used for selection.

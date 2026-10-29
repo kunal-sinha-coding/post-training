@@ -14407,3 +14407,9 @@ Clean development accuracy: 0.958. Clean development macro F1: 0.486775732788002
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.958, "macro_f1": 0.48677573278800274, "confusion_matrix": [[242, 3, 5, 0], [2, 237, 10, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## 2026-10-29: Evidence audit and contextual synthetic pilots
+
+The latest completed training experiment, `qwen-followup-checkpoint-plus-pref200-20261029`, has all required evidence recorded. Training on 200 preference rows scored 0.970000 accuracy and 0.727612 macro F1. The fixed 500-row clean SFT validation sample scored 0.958000 accuracy and 0.486776 macro F1. Full aggregate black-box evaluation scored 0.712760 accuracy and 0.534148 macro F1 on 3,652 rows. The preceding encoder-fusion experiment is inference-only, so training metrics are explicitly not applicable; its validation and aggregate test metrics are recorded.
+
+Queued two distinct one-epoch continuation pilots from `outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/epoch-01`. The first uses the existing 552-row paired contextual pool alone. The second uses the same pool plus 200 sampled real preference examples. The hypothesis is that paired context-supplied versus context-missing examples improve call-versus-clarification decisions, and that a small real-data anchor may reduce drift. Both use the same fixed clean validation sample, at most 500 training evaluation rows, and full aggregate test evaluation. Candidate selection uses clean validation only. The fixed SFT validation sample contains no tool-call class rows, which limits its ability to assess that class.
