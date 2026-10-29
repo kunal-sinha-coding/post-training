@@ -14587,3 +14587,7 @@ Clean development accuracy: —. Clean development macro F1: —. Official test 
 Separate source validation metrics: {}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## 2026-10-29: balanced synthetic pilot queued behind active regularization run
+
+The weight-decay training process is still live and has reached evaluation, despite an early recorder row marked failed_or_incomplete before metrics.json existed. It is tracked as the active worker. The balanced generator completed with 262 rows: 96 cannot_answer, 83 request_for_info, and 83 tool_call, at estimated API cost $0.0651954. Queued a gated trainer that first requires complete training, clean-validation, and aggregate test evidence for the active run. It then chooses between the regularized checkpoint and baseline by clean-validation accuracy and macro F1 only, and trains one epoch on the balanced synthetic pool.
