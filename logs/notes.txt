@@ -8546,3 +8546,5 @@ Description: Added an inference-only evaluator for fusing the five-sampled-vote 
 Context: Fusion candidates and weights are selected on clean validation. The full black-box test set is used only for aggregate reporting. No individual test examples or labels are saved or used for selection.
 
 2026-10-29T16:17:07.620164+00:00: Commit `Record research experiment qwen-followup-checkpoint-plus-original-lowdose336-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-29T16:30:10.500552+00:00: Commit `Record research experiment qwen-tool-rich-champion-five-vote-three-encoder-fusion-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.

@@ -14379,3 +14379,15 @@ Clean development accuracy: 0.958. Clean development macro F1: 0.486775732788002
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.958, "macro_f1": 0.48677573278800274, "confusion_matrix": [[242, 3, 5, 0], [2, 237, 10, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-tool-rich-champion-five-vote-three-encoder-fusion-20261029
+
+Timestamp: 2026-10-29T16:30:06.627880+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_qwen_five_vote_encoder_fusion", "--champion-checkpoint", "outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/epoch-01", "--output-dir", "outputs/qwen-tool-rich-champion-five-vote-three-encoder-fusion-20261029", "--validation-size", "500", "--validation-seed", "20261053", "--batch-size", "1"]. Output: /workspace/post-training/outputs/qwen-tool-rich-champion-five-vote-three-encoder-fusion-20261029. W&B run: xe811wl6.
+
+Clean development accuracy: —. Clean development macro F1: —. Official test loaded: None. Test status: not measured. Official test metrics: {}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
