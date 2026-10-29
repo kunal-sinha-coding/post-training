@@ -8683,3 +8683,6 @@ remove the file manually to continue.
 
 
 2026-10-29T19:23Z: Audited qwen-fullpool-balanced-tool-rich-real-replay-20261029. Both epochs have training, clean-validation, and full aggregate black-box test metrics. Epoch 2 reached 0.998000 training accuracy and 0.748462 macro F1 on 500 examples, while clean validation stayed at 0.952000 accuracy and 0.485662 macro F1 on 500 examples. The full aggregate test report was 0.7130339539978094 accuracy and 0.5319289460866379 macro F1 on 3,652 rows. Clean validation was below the 0.962 baseline, so the run stopped. Queued a real-heavy 1,000 preference plus 262 balanced synthetic mixture from the selected original-data checkpoint. Test metrics remain report-only.
+
+
+2026-10-29T19:24Z: Added a matched real-only replay control after the active 1,000-preference plus 262-synthetic run. It uses the same source sample seed, checkpoint, optimization settings, validation sample, and early-stop rule. The comparison isolates whether synthetic rows add clean-validation value beyond another real-data replay. Aggregate black-box metrics remain report-only.
