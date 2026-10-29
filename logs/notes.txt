@@ -8548,3 +8548,7 @@ Context: Fusion candidates and weights are selected on clean validation. The ful
 2026-10-29T16:17:07.620164+00:00: Commit `Record research experiment qwen-followup-checkpoint-plus-original-lowdose336-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
 
 2026-10-29T16:30:10.500552+00:00: Commit `Record research experiment qwen-tool-rich-champion-five-vote-three-encoder-fusion-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+Commit name: Rank current champion encoder fusion.
+Description: Added the clean-validation-selected 25% three-encoder and five-vote-frequency fusion to the current aggregate test leaderboard at 0.740416 accuracy and 0.552062 macro F1.
+Context: This result is below the existing five-vote Qwen leader at 0.741512 accuracy. The full test set was used only for aggregate reporting after fusion selection on clean validation.
