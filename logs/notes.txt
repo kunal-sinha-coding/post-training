@@ -8463,3 +8463,7 @@ The latest completed tiny-dose model run has training, clean-validation, and agg
 2026-10-29T12:32:20.603779+00:00: Commit `Record research experiment qwen-lowdose-best-pref200-control-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
 
 2026-10-29T12:45:25.541452+00:00: Commit `Record research experiment qwen-lowdose-best-pref200-fresh-synthetic-mix-20261029` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-29: Queue smaller synthetic share with real replay.
+Commit name: Queue tiny replay mixture.
+The latest completed replay-plus-synthetic run has complete training, clean-validation, and aggregate test metrics. Its clean validation is 0.956 accuracy / 0.485745 macro F1. The real-only branch from the same checkpoint reached 0.960 validation accuracy. Queued a fresh small synthetic pool with the same real replay to test whether a lower synthetic share retains validation performance.

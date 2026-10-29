@@ -14124,3 +14124,10 @@ Clean development accuracy: 0.956. Clean development macro F1: 0.485745450939560
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.956, "macro_f1": 0.4857454509395607, "confusion_matrix": [[243, 2, 5, 0], [4, 235, 10, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+## 2026-10-29: Audit replay-plus-synthetic mix and queue a smaller share
+
+The latest completed model run is `qwen-lowdose-best-pref200-fresh-synthetic-mix-20261029`. Training is 0.996000 / 0.747613 on 500 sampled rows; clean validation is 0.956000 / 0.485745 on 500; full aggregate black-box test is 0.719332 / 0.538465 on all 3652 rows. All three evidence types are present. No test examples or labels were inspected.
+
+The 200-example real-only branch from the low-dose checkpoint reached 0.960 clean-validation accuracy. Adding a fresh 336-row synthetic pool reached 0.956. Queued a smaller fresh synthetic pool with the same 200-example real replay to test whether a lower synthetic share preserves validation performance. The prior real-only and larger-mix branches used the same checkpoint, seed, and validation sample.
