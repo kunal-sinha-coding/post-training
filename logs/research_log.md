@@ -15965,3 +15965,7 @@ The training evaluation contains no class-3 examples. On BFCL validation, all 60
 ## Nested direct-answer dose follow-up (2026-10-30T14:08:02.008087+00:00)
 
 Queued `qwen-bfcl-direct48-balanced-other24-continue-best-20261030` after the active 24-direct pilot. It keeps the same 24 non-direct BFCL rows, retains the initial 24 direct rows, and adds 24 new high-confidence direct rows, for 72 examples total. Label counts are `{'0': 8, '1': 8, '2': 8, '3': 48}`; data SHA-256 is `e8cfed54f6251d335ab7be7d9c8f885d806d639a7c2a21c6f758d8a924fc8d22`. It starts from the same validation-selected checkpoint and uses held-out BFCL validation only for selection.
+
+## Balanced four-class BFCL pilot (2026-10-30T14:10:07.730419+00:00)
+
+Queued `qwen-bfcl-balanced18each-continue-best-20261030` after the direct-answer dose pilot. It uses 18 high-confidence, review-clear BFCL training examples per class, sampled without overlap with the existing direct-targeted pilots. It tests whether a balanced class mix improves clean BFCL validation compared with the direct-heavy recipe. The data artifact has 72 rows, label counts `{'0': 18, '1': 18, '2': 18, '3': 18}`, and SHA-256 `699c38cc465cb8522a2bcb438f19bbafda258531deb7eab46ab229b729668a82`. Test metrics are report-only.

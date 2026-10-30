@@ -129,6 +129,46 @@
       "--stop-on-validation-non-improvement",
       "--seed",
       "20261222"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-bfcl-balanced18each-continue-best-20261030",
+      "--bfcl-data",
+      "outputs/bfcl_when2call_labeled_reviewclear_val165.jsonl",
+      "--adapter-checkpoint",
+      "outputs/qwen-postbalanced-real30-toolrich-nontoolrich-mix100-bfcl-reviewclear-val-20261030/epoch-01",
+      "--synthetic-only",
+      "--augmentation-jsonl",
+      "outputs/bfcl-highconf-balanced18each-pilot-20261030.jsonl",
+      "--validation-source",
+      "bfcl",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "3",
+      "--learning-rate",
+      "2.5e-6",
+      "--baseline-test-accuracy",
+      "0.7294633077765608",
+      "--baseline-test-macro-f1",
+      "0.5464140522479008",
+      "--baseline-test-source",
+      "outputs/qwen-postbalanced-real30-toolrich-nontoolrich-mix100-bfcl-reviewclear-val-20261030/metrics.json",
+      "--stop-on-validation-non-improvement",
+      "--seed",
+      "20261222"
     ]
   ],
   "_previous_command": [
@@ -158,7 +198,7 @@
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
   "last_heartbeat": "2026-10-30T14:06:57.750650+00:00",
-  "last_action": "Queued a nested larger direct-answer pilot behind the active 24-direct BFCL continuation.",
+  "last_action": "Added a 72-row balanced four-class BFCL continuation behind the direct-answer dose pilot.",
   "watchdog_enabled": true,
   "research_log_size": 2108621,
   "stop_command": "STOP",
@@ -397,7 +437,7 @@
     "epoch": 1,
     "selection_use": "aggregate reporting only; no individual test labels or outputs inspected"
   },
-  "updated_at": "2026-10-30T14:08:02.008087+00:00",
+  "updated_at": "2026-10-30T14:10:07.730419+00:00",
   "synthetic_pilot_results": [
     {
       "strategy": "missing_required_info",
@@ -702,7 +742,7 @@
     "examples": 3652,
     "selection_use": "aggregate reporting only; no individual test labels or outputs inspected"
   },
-  "queue_updated_at": "2026-10-30T14:08:02.008087+00:00",
+  "queue_updated_at": "2026-10-30T14:10:07.730419+00:00",
   "queued_hypotheses": [
     {
       "experiment": "qwen-postbalanced-real30-label0-1-2-45-45-10-bfcl-highconf-val-20261030",
@@ -791,6 +831,22 @@
         "3": 48
       },
       "source": "high-confidence, review-clear BFCL train split only",
+      "starting_checkpoint": "outputs/qwen-postbalanced-real30-toolrich-nontoolrich-mix100-bfcl-reviewclear-val-20261030/epoch-01"
+    },
+    {
+      "experiment": "qwen-bfcl-balanced18each-continue-best-20261030",
+      "hypothesis": "The 48-row direct-targeted pilot and queued 72-row higher-direct-dose pilot test whether extra direct examples fix the observed class-3 omission. A distinct 72-row high-confidence, four-class balanced pilot tests whether a less aggressive class-3 share gives better all-label BFCL validation accuracy and macro F1 than the direct-heavy recipes. It uses the same checkpoint, total example count, optimizer, and stopping rule.",
+      "selection": "review-clear held-out BFCL validation only; aggregate test metrics report-only",
+      "data_artifact": "outputs/bfcl-highconf-balanced18each-pilot-20261030.jsonl",
+      "data_sha256": "699c38cc465cb8522a2bcb438f19bbafda258531deb7eab46ab229b729668a82",
+      "training_rows": 72,
+      "training_label_counts": {
+        "0": 18,
+        "1": 18,
+        "2": 18,
+        "3": 18
+      },
+      "source": "disjoint high-confidence, review-clear BFCL train rows only",
       "starting_checkpoint": "outputs/qwen-postbalanced-real30-toolrich-nontoolrich-mix100-bfcl-reviewclear-val-20261030/epoch-01"
     }
   ],
