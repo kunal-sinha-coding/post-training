@@ -2462,3 +2462,7 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 | Candidate | qwen-balanced-tool-rich-probability-encoder-fusion-20261029 | 0.966 | 0.4898579704420526 | [metrics](/workspace/post-training/outputs/qwen-balanced-tool-rich-probability-encoder-fusion-20261029/metrics.json) | completed |
 
 | qwen-balanced-tool-rich-probability-encoder-fusion-20261029 | 0.6963307776560789 | 0.5232228941522374 | fsjfgmsm | Aggregate-only frozen test measurement |
+
+| 22 | Qwen five-vote frequency plus 50% selected encoder family | 0.6963307776560789 | 0.5232228941522374 | 0.966000 | 0.4898579704420526 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-balanced-tool-rich-probability-encoder-fusion-20261029/metrics.json) |
+
+Queued next: balanced 508-row tool-rich synthetic continuation and a matched 508-row real-only control. Both start from the 994-row tool-rich synthetic checkpoint and report training, clean-validation, and full aggregate test metrics at each epoch. Clean validation contains no class 2 examples. Test rows and labels remain uninspected.
