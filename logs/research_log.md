@@ -15943,3 +15943,15 @@ Clean development accuracy: 0.509090909090909. Clean development macro F1: 0.487
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.509090909090909, "macro_f1": 0.4876847290640394, "confusion_matrix": [[44, 8, 1, 0], [4, 30, 0, 0], [5, 3, 10, 0], [48, 12, 0, 0]], "examples": 165}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-postbalanced-real30-toolrich-complexitymix100-bfcl-reviewclear-val-20261030
+
+Timestamp: 2026-10-30T14:04:24.369892+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-postbalanced-real30-toolrich-complexitymix100-bfcl-reviewclear-val-20261030", "--bfcl-data", "outputs/bfcl_when2call_labeled_reviewclear_val165.jsonl", "--adapter-checkpoint", "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01", "--preference-train-sample-size", "30", "--augmentation-jsonl", "outputs/when2call-toolrich-complexitymix100-20261030.jsonl", "--validation-source", "bfcl", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "3", "--learning-rate", "2.5e-6", "--baseline-test-accuracy", "0.731106243154436", "--baseline-test-macro-f1", "0.5473409779598896", "--baseline-test-source", "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/metrics.json", "--stop-on-validation-non-improvement", "--seed", "20261222"]. Output: /workspace/post-training/outputs/qwen-postbalanced-real30-toolrich-complexitymix100-bfcl-reviewclear-val-20261030. W&B run: tnzoqio9.
+
+Clean development accuracy: 0.503030303030303. Clean development macro F1: 0.46376398392527424. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7234392113910186, "macro_f1": 0.5426410374097532, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.503030303030303, "macro_f1": 0.46376398392527424, "confusion_matrix": [[45, 7, 1, 0], [4, 30, 0, 0], [5, 5, 8, 0], [48, 12, 0, 0]], "examples": 165}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
