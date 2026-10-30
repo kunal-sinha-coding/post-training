@@ -8789,3 +8789,5 @@ Context: Synthetic-only continuations of 50 unsupported rows and 450 balanced ro
 Commit: Queue a real-preference control for the replay pilot.
 Description: Added a 50-example real preference continuation behind the active 25-real plus 25-balanced-synthetic replay pilot. The runs share a checkpoint, total training size, optimizer settings, and clean-validation stopping rule.
 Context: Recent synthetic-only continuations reduced clean-validation accuracy. This control isolates whether adding balanced synthetic examples helps beyond continued real-data training. Aggregate black-box test metrics remain report-only and do not select checkpoints.
+
+2026-10-30T02:33:46.724070+00:00: Commit `Record research experiment qwen-unsupported50-real25-balanced25-replay-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.

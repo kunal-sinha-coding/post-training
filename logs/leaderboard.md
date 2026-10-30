@@ -2501,3 +2501,6 @@ Queued follow-ups: clean-validation-selected five-vote and encoder fusion on the
 | Candidate | qwen-unsupported50-plus-balanced450-continuation-20261030 | 0.914 | 0.47160575668797977 | [metrics](/workspace/post-training/outputs/qwen-unsupported50-plus-balanced450-continuation-20261030/metrics.json) | completed |
 
 | qwen-unsupported50-plus-balanced450-continuation-20261030 | 0.7050930996714129 | 0.5168966366138523 | en77kiq4 | Aggregate-only frozen test measurement |
+| Candidate | qwen-unsupported50-real25-balanced25-replay-20261030 | 0.938 | 0.48087317824758147 | [metrics](/workspace/post-training/outputs/qwen-unsupported50-real25-balanced25-replay-20261030/metrics.json) | completed |
+
+| qwen-unsupported50-real25-balanced25-replay-20261030 | 0.735487404162103 | 0.549681387893057 | bykz5jel | Aggregate-only frozen test measurement |
