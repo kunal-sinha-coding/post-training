@@ -15834,3 +15834,19 @@ Clean development accuracy: 0.956. Clean development macro F1: 0.486236348129931
 Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.958, "macro_f1": 0.4872479609158282, "examples": 500, "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+## 2026-10-30: Queue lower-label-2 synthetic composition tests
+
+The latest completed experiment, `qwen-postbalanced-real30-nontoolrich-expansion200-mix-20261030`, has complete training, clean-validation, and aggregate black-box test evidence in `metrics.json` and the experiment journal. Training accuracy is 0.986957, macro F1 is 0.740196, and loss is 0.1567703692275481 on 230 examples. Clean validation accuracy is 0.956000 and macro F1 is 0.4862363481299319 on 500 examples. Aggregate test accuracy is 0.7300109529025192 and macro F1 is 0.5467242808223249 on all 3,652 examples. No measurement backfill is needed. Test metrics are report-only.
+
+Both 200-example source pilots scored 0.956 clean-validation accuracy, below the 0.958 baseline. The validation confusion matrix continues to show false predictions of label 2, with no true label-2 validation rows. The earlier 20-row no-label-2 pilot left the validation confusion matrix unchanged. I queued two 100-row class-composition tests to check whether a larger dose with fewer label-2 examples affects this error pattern. Both use the same real preference sample, checkpoint, optimizer, validation sample, and stopping rule. The first has label counts 45/45/10. The second has label counts 50/50/0.
+
+The 45/45/10 file SHA-256 is `06db31888d2608110577814b871e1b288298ce56a67fd75f4d23a2771e2ae8c1`. The 50/50 file SHA-256 is `4a2c5ff5338f17bfb7d1969f00b1e8417866dcd775b66208b8a4bb297cfef064`.
+
+Queued commands:
+
+1. `python -u -m experiments.train_qwen_when2call_fullpool --output-dir outputs/qwen-postbalanced-real30-label0-1-2-45-45-10-mix-20261030 --adapter-checkpoint outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01 --preference-train-sample-size 30 --augmentation-jsonl outputs/when2call-mix-label0-1-2-45-45-10-20261030.jsonl --validation-source sft --validation-sample-size 500 --validation-seed 20261053 --training-eval-sample-size 500 --training-eval-seed 20261059 --eval-batch-size 8 --epochs 3 --learning-rate 2.5e-6 --baseline-validation-accuracy 0.958 --baseline-validation-macro-f1 0.4872479609158282 --baseline-test-accuracy 0.731106243154436 --baseline-test-macro-f1 0.5473409779598896 --baseline-test-source outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/metrics.json --stop-on-validation-non-improvement --seed 20261222`
+2. `python -u -m experiments.train_qwen_when2call_fullpool --output-dir outputs/qwen-postbalanced-real30-label0-1-50-50-mix-20261030 --adapter-checkpoint outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01 --preference-train-sample-size 30 --augmentation-jsonl outputs/when2call-mix-label0-1-50-50-20261030.jsonl --validation-source sft --validation-sample-size 500 --validation-seed 20261053 --training-eval-sample-size 500 --training-eval-seed 20261059 --eval-batch-size 8 --epochs 3 --learning-rate 2.5e-6 --baseline-validation-accuracy 0.958 --baseline-validation-macro-f1 0.4872479609158282 --baseline-test-accuracy 0.731106243154436 --baseline-test-macro-f1 0.5473409779598896 --baseline-test-source outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/metrics.json --stop-on-validation-non-improvement --seed 20261222`
+
+Clean validation controls selection. Aggregate black-box test metrics are reported without inspecting individual examples or labels.
