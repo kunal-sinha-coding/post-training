@@ -9065,3 +9065,16 @@ Commit: Record and queue a matched follow-up behind the active structurally dive
 2026-10-30. Queue high-complexity tool-rich follow-up. Confirmed the newest completed experiment has training, clean-validation, and aggregate black-box test results. Kept the active process untouched. Added a structurally focused rare-schema pilot first and a balanced high-complexity tool-rich pilot second. Both retain the fixed checkpoint and controlled training setup. Clean validation remains the selection signal. Aggregate test metrics are report-only.
 
 2026-10-30T09:39:09.381525+00:00: Commit `Record research experiment qwen-postbalanced-real30-toolrich-structural20-mix-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-30T09:52:15.475435+00:00: Commit `Record research experiment qwen-postbalanced-real30-rareschema-structural20-mix-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-30T09:52:41.611662+00:00: Commit `Record experiment synchronization failure` records the failed commit or push for qwen-postbalanced-real30-rareschema-structural20-mix-20261030: fatal: cannot lock ref 'HEAD': Unable to create '/workspace/post-training/.git/HEAD.lock': File exists.
+
+Another git process seems to be running in this repository, e.g.
+an editor opened by 'git commit'. Please make sure all processes
+are terminated then try again. If it still fails, a git process
+may have crashed in this repository earlier:
+remove the file manually to continue.
+. The result remains local and the worker queue continues.
+
+2026-10-30T10:01:47.812424+00:00: Commit `Record research experiment qwen-postbalanced-real30-toolrich-highcomplexity20-mix-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
