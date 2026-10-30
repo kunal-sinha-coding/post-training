@@ -8887,3 +8887,9 @@ Corrected the leaderboard edit so that only rows in the current aggregate test r
 Commit name: Queue a distinct low-dose unsupported-capability continuation.
 
 Audited the latest run and confirmed complete training, 500-row clean-validation, and 3,652-row aggregate-test evidence for both epochs. Epoch 1 was selected by clean validation. Queued a synthetic-only continuation on 50 fresh unsupported-capability examples from that validation-selected checkpoint. The hypothesis tests whether a small unsupported-only dose adds boundary signal after real-data replay. It holds the learning rate fixed, caps train and validation probes at 500, and reports full-test aggregates each epoch. Test metrics remain report-only.
+
+## 2026-10-30: Verify research worker and watchdog supervision
+
+Commit name: Record launch verification for unsupported synthetic increment.
+
+The watchdog launched the queued trainer as PID 397244 with output in `outputs/qwen-postbalanced-unsupported-increment50-20261030`. The worker heartbeat reached training step 39. The existing watchdog (PID 185638) remained alive. Started the independent supervisor (PID 397553), which adopted the watchdog and wrote a fresh heartbeat. No duplicate trainer was detected.
