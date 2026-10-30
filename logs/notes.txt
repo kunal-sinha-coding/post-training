@@ -8931,3 +8931,5 @@ Verified that the completed 50-example unsupported-capability continuation has t
 Commit name: Add a disjoint 10-row unsupported synthetic dose control.
 
 The 50-row unsupported-only run lowered clean validation from 0.958 to 0.956. Added a 40-real plus 10-unsupported-synthetic continuation after the queued 25/25 mix. This tests whether a lower synthetic share retains useful signal while limiting label skew. The 10-row synthetic subset is disjoint from the 25-row subset used in the other queued mixture. Training size and optimization settings remain fixed. Clean validation is the only selection signal.
+
+2026-10-30T06:03:19.229799+00:00: Commit `Record research experiment qwen-postbalanced-real50-matched-control-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
