@@ -15887,3 +15887,7 @@ Validation audit: the existing SFT validation sample lacks true label-2 rows. Th
 ## Additional source-mixture hypothesis (2026-10-30T12:25:26.093140+00:00)
 
 Queued `qwen-postbalanced-real30-toolrich-nontoolrich-mix100-bfcl-reviewclear-val-20261030`. This experiment samples 50 rows from the existing tool-rich pool and 50 from the existing non-tool-rich pool, for 100 synthetic examples total. Label counts are `{'2': 34, '0': 35, '1': 31}`. The artifact SHA-256 is `e7c08cdc020c228aa4878484067a2b5a37469e530d8af6cd579ea48fff39fbab`. It uses the same Qwen checkpoint and 30-example real preference sample as the queued comparisons. Only the review-clear BFCL validation split selects checkpoints. Aggregate test metrics remain report-only.
+
+## Source-mixture dose hypothesis (2026-10-30T12:27:13.461910+00:00)
+
+Queued `qwen-postbalanced-real30-toolrich-nontoolrich-mix200-bfcl-reviewclear-val-20261030` after the 100-example source-mixture pilot. It combines a deterministic 100-row sample from each existing 200-row tool-rich and non-tool-rich pool. It has 200 synthetic rows, label counts `{'2': 70, '0': 63, '1': 67}`, and SHA-256 `155c47108ae0e4d3a8aef1a5a741fe37c6384b7f606c753eb783570d4ace925c`. The experiment tests whether doubling a 50/50 source mixture adds useful signal on the fixed review-clear BFCL validation set. Aggregate black-box metrics are report-only.
