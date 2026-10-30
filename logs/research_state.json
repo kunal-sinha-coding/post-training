@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
-  "current_hypothesis": "A balanced 25-real/25-synthetic continuation retained baseline clean validation at 0.958, but the 40-real/10-synthetic condition reached 0.956. An intermediate 35/15 mixture tests whether dose explains the difference.",
+  "current_hypothesis": "The active 35-real plus 15-balanced-synthetic pilot tests an intermediate dose after clean-validation results were 0.956 at 40/10 and 0.958 at 25/25.",
   "active_experiment": {
     "pid": 402412,
     "command": [
@@ -95,7 +95,51 @@
     "--seed",
     "20261222"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-postbalanced-real50-balanced50-mix-20261030",
+      "--adapter-checkpoint",
+      "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01",
+      "--preference-train-sample-size",
+      "50",
+      "--augmentation-jsonl",
+      "outputs/when2call-balanced-replay-pilot-next50-20261030.jsonl",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "3",
+      "--learning-rate",
+      "2.5e-6",
+      "--baseline-validation-accuracy",
+      "0.958",
+      "--baseline-validation-macro-f1",
+      "0.4872479609158282",
+      "--baseline-test-accuracy",
+      "0.731106243154436",
+      "--baseline-test-macro-f1",
+      "0.5473409779598896",
+      "--baseline-test-source",
+      "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/metrics.json",
+      "--stop-on-validation-non-improvement",
+      "--seed",
+      "20261222"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -122,10 +166,10 @@
     "validation_examples": 500,
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
-  "last_heartbeat": "2026-10-30T07:00:45.477760+00:00",
-  "last_action": "Watchdog started validation worker pid 402412.",
+  "last_heartbeat": "2026-10-30T07:06:49.489975+00:00",
+  "last_action": "Reconciled the live 35/15 worker after recorder state drift and queued a 50/50 real and balanced-synthetic scale test.",
   "watchdog_enabled": true,
-  "research_log_size": 1992245,
+  "research_log_size": 1994168,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -133,13 +177,13 @@
     "-m",
     "experiments.train_qwen_when2call_fullpool",
     "--output-dir",
-    "outputs/qwen-postbalanced-real35-balanced15-mix-20261030",
+    "outputs/qwen-postbalanced-real50-balanced50-mix-20261030",
     "--adapter-checkpoint",
     "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01",
     "--preference-train-sample-size",
-    "35",
+    "50",
     "--augmentation-jsonl",
-    "outputs/when2call-balanced-increment15-mix-20261030.jsonl",
+    "outputs/when2call-balanced-replay-pilot-next50-20261030.jsonl",
     "--validation-source",
     "sft",
     "--validation-sample-size",
@@ -172,8 +216,8 @@
   ],
   "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-30T06:59:14.707636+00:00",
-  "planning_ack_deadline": "2026-10-30T07:01:14.707659+00:00",
+  "planning_notified_at": "2026-10-30T07:05:22.273588+00:00",
+  "planning_ack_deadline": "2026-10-30T07:07:22.273610+00:00",
   "planning_attempts": 87,
   "best_observed_test": {
     "method": "Qwen after 50-example unsupported-capability synthetic continuation, greedy full-test evaluation",
@@ -183,7 +227,7 @@
     "artifact": "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030/metrics.json",
     "selection": "aggregate-only leaderboard report; improvement over 0.741512 is within 1-point noise"
   },
-  "next_hypothesis": "The completed 25-real plus 25-balanced-synthetic run retained 0.958 clean-validation accuracy, while the 40-real plus 10-balanced run reached 0.956. Test an intermediate 35-real plus 15-balanced-synthetic composition from the same fixed adapter. This checks whether the validation difference reflects synthetic dose and whether a smaller balanced dose can retain the validation baseline. Keep total rows, checkpoint, learning rate, evaluation samples, and stopping rule fixed. The 15 synthetic rows are class-balanced as 4/6/5 and disjoint from the prior balanced 10- and 25-row subsets. Select by clean validation only; aggregate test metrics remain report-only.",
+  "next_hypothesis": "The completed 25-real plus 25-balanced-synthetic pilot retained 0.958 clean-validation accuracy, while the 50-real-only and 50-balanced-synthetic-only pilots reached 0.956. Test whether doubling the successful mixed recipe to 50 real plus 50 balanced synthetic examples preserves or improves clean validation. Keep the same starting adapter, learning rate, validation sample, and stopping rule. This tests whether the observed mixed-source benefit scales with more training data. Clean validation alone controls selection; aggregate test metrics are report-only.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
@@ -236,7 +280,7 @@
     "aggregate_black_box_test_metrics": "recorded at epoch 1: accuracy 0.731653888280, macro F1 0.547687259615 on all 3652 test examples",
     "all_required_evidence_recorded": true,
     "test_labels_used_for_selection": false,
-    "note": "Clean validation tied the baseline at 0.958, so the run stopped after epoch 1. Aggregate test metrics are report-only."
+    "note": "Clean validation tied the 0.958 baseline, so the run stopped after epoch 1. Aggregate test metrics are report-only."
   },
   "duplicate_worker_failure": {
     "pid": 103632,
@@ -358,11 +402,12 @@
     }
   ],
   "latest_aggregate_test_report": {
-    "experiment": "qwen-balanced-tool-rich-five-vote-encoder-fusion-20261029",
-    "accuracy": 0.6963307776560789,
-    "macro_f1": 0.5232228941522374,
+    "experiment": "qwen-postbalanced-real25-balanced25-mix-20261030",
+    "accuracy": 0.7316538882803943,
+    "macro_f1": 0.547687259614674,
     "examples": 3652,
-    "selection_use": "report-only; not used to choose candidates"
+    "epoch": 1,
+    "selection_use": "aggregate reporting only; no individual test labels or outputs inspected"
   },
   "updated_at": "2026-10-30T05:56:28.974817+00:00",
   "synthetic_pilot_results": [
@@ -635,47 +680,47 @@
     ]
   },
   "latest_clean_validation_screen": {
-    "experiment": "qwen-fullpool-best-followup338-synthetic-only-20261029",
-    "accuracy": 0.962,
-    "macro_f1": 0.48832640709774233,
+    "experiment": "qwen-postbalanced-real25-balanced25-mix-20261030",
+    "accuracy": 0.958,
+    "macro_f1": 0.4872479609158282,
     "examples": 500,
     "selection": "Clean held-out validation only."
   },
   "research_log_size_reconciled_at": "2026-10-29T10:10:53.863543+00:00",
   "research_log_size_reconciliation": "Accepted current file size 1777226 after a stable earlier shrink from recorded size 1786879; the watchdog had repeated the same integrity warning.",
   "latest_training_report": {
-    "experiment": "qwen-unsupported50-plus-real25-balanced25-topup2-20261030",
-    "accuracy": 1.0,
-    "macro_f1": 0.75,
+    "experiment": "qwen-postbalanced-real25-balanced25-mix-20261030",
+    "accuracy": 0.96,
+    "macro_f1": 0.7201426024955437,
     "examples": 50,
     "epoch": 1,
     "step": 50,
-    "training_loss": 0.014736870679820413,
+    "training_loss": 0.34863317781519526,
     "data_examples": 50,
     "selection_use": "clean-validation-selected epoch"
   },
   "latest_clean_validation_report": {
-    "experiment": "qwen-unsupported50-plus-real25-balanced25-topup2-20261030",
-    "accuracy": 0.956,
-    "macro_f1": 0.4862363481299319,
+    "experiment": "qwen-postbalanced-real25-balanced25-mix-20261030",
+    "accuracy": 0.958,
+    "macro_f1": 0.4872479609158282,
     "examples": 500,
     "source": "nvidia/When2Call:train_sft",
     "seed": 20261053,
-    "selection_use": "clean validation only; epochs 1 and 2 tied"
+    "selection_use": "clean validation only; tied baseline"
   },
   "latest_aggregate_black_box_test_report": {
-    "experiment": "qwen-unsupported50-plus-real25-balanced25-topup2-20261030",
-    "accuracy": 0.7300109529025192,
-    "macro_f1": 0.5464604793962334,
+    "experiment": "qwen-postbalanced-real25-balanced25-mix-20261030",
+    "accuracy": 0.7316538882803943,
+    "macro_f1": 0.547687259614674,
     "examples": 3652,
     "epoch": 1,
-    "selection_use": "aggregate reporting only; no test labels or row-level outputs inspected"
+    "selection_use": "aggregate reporting only; no individual test labels or outputs inspected"
   },
-  "queue_updated_at": "2026-10-30T07:00:29.723534+00:00",
+  "queue_updated_at": "2026-10-30T07:06:49.489975+00:00",
   "queued_hypotheses": [
     {
-      "experiment": "qwen-postbalanced-real35-balanced15-mix-20261030",
-      "hypothesis": "The completed 25-real plus 25-balanced-synthetic run retained 0.958 clean-validation accuracy, while the 40-real plus 10-balanced run reached 0.956. Test an intermediate 35-real plus 15-balanced-synthetic composition from the same fixed adapter. This checks whether the validation difference reflects synthetic dose and whether a smaller balanced dose can retain the validation baseline. Keep total rows, checkpoint, learning rate, evaluation samples, and stopping rule fixed. The 15 synthetic rows are class-balanced as 4/6/5 and disjoint from the prior balanced 10- and 25-row subsets. Select by clean validation only; aggregate test metrics remain report-only.",
+      "experiment": "qwen-postbalanced-real50-balanced50-mix-20261030",
+      "hypothesis": "The completed 25-real plus 25-balanced-synthetic pilot retained 0.958 clean-validation accuracy, while the 50-real-only and 50-balanced-synthetic-only pilots reached 0.956. Test whether doubling the successful mixed recipe to 50 real plus 50 balanced synthetic examples preserves or improves clean validation. Keep the same starting adapter, learning rate, validation sample, and stopping rule. This tests whether the observed mixed-source benefit scales with more training data. Clean validation alone controls selection; aggregate test metrics are report-only.",
       "selection": "clean validation only; aggregate black-box test metrics report-only"
     }
   ],
@@ -694,18 +739,15 @@
     "selection": "stratified sample from existing balanced 50-row synthetic pool; no test data used"
   },
   "data_probe_next": {
-    "experiment": "qwen-postbalanced-real35-balanced15-mix-20261030",
-    "synthetic_pool": "outputs/when2call-balanced-increment15-mix-20261030.jsonl",
-    "synthetic_rows": 15,
+    "experiment": "qwen-postbalanced-real50-balanced50-mix-20261030",
+    "real_rows": 50,
+    "synthetic_rows": 50,
+    "synthetic_source": "outputs/when2call-balanced-replay-pilot-next50-20261030.jsonl",
     "synthetic_label_counts": {
-      "0": 4,
-      "1": 6,
-      "2": 5
+      "0": 17,
+      "1": 17,
+      "2": 16
     },
-    "synthetic_pool_sha256": "2d663dfb165a2cfd997cc9c60f2c632994166624ea3222d7f570a9d0fd547c84",
-    "disjoint_from_previous_balanced10_and25": true,
-    "real_rows": 35,
-    "real_sample_seed": 20261222,
-    "selection": "deterministic stratified sample from existing balanced pool after excluding prior 10- and 25-row subsets; no test data used"
+    "selection": "use the existing balanced synthetic pool and a deterministic real preference sample; no test data used"
   }
 }
