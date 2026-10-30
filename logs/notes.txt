@@ -8989,3 +8989,5 @@ remove the file manually to continue.
 . The result remains local and the worker queue continues.
 
 2026-10-30T07:42:50.666625+00:00: Commit `Queue combined-boundary mixture pilot` records that the latest completed tool-rich mixture has training, clean-validation, and aggregate test evidence, repairs watchdog state to preserve active rare-schema PID 404920, and queues a matched 25/25 real plus combined-boundary synthetic test. Earlier 25/25 balanced and tool-rich mixtures retained clean validation at 0.958, while larger synthetic-only combined-boundary runs were below baseline. The pilot checks a small real-anchored dose with all other settings fixed. Clean validation controls selection; test aggregates are report-only.
+
+2026-10-30T07:46:24.795190+00:00: Commit `Record research experiment qwen-postbalanced-real25-rareschema25-mix-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
