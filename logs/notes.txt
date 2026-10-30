@@ -8925,3 +8925,9 @@ The recorder failed while capturing `git ls-files` output because one diagnostic
 Commit name: Record complete unsupported increment metrics on the aggregate leaderboard.
 
 Verified that the completed 50-example unsupported-capability continuation has training accuracy 1.000000 and macro F1 0.250000 on all 50 rows, clean-validation accuracy 0.956000 and macro F1 0.486225 on 500 rows, and aggregate test accuracy 0.736583 and macro F1 0.550923 on all 3,652 rows. It stopped after one epoch because clean validation fell below the 0.958 baseline. Added the aggregate result at its accuracy rank in the current leaderboard and updated research_state evidence audit. Candidate selection did not use test labels or test metrics. The matched real control remains active, followed by the balanced synthetic and mixed-data comparisons.
+
+## 2026-10-30: Queue lower unsupported synthetic dose
+
+Commit name: Add a disjoint 10-row unsupported synthetic dose control.
+
+The 50-row unsupported-only run lowered clean validation from 0.958 to 0.956. Added a 40-real plus 10-unsupported-synthetic continuation after the queued 25/25 mix. This tests whether a lower synthetic share retains useful signal while limiting label skew. The 10-row synthetic subset is disjoint from the 25-row subset used in the other queued mixture. Training size and optimization settings remain fixed. Clean validation is the only selection signal.

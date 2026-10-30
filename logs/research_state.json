@@ -176,6 +176,49 @@
       "--stop-on-validation-non-improvement",
       "--seed",
       "20261222"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-postbalanced-real40-unsupported10-mix-20261030",
+      "--adapter-checkpoint",
+      "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01",
+      "--preference-train-sample-size",
+      "40",
+      "--augmentation-jsonl",
+      "outputs/when2call-unsupported-increment10-mix-20261030.jsonl",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "3",
+      "--learning-rate",
+      "2.5e-6",
+      "--baseline-validation-accuracy",
+      "0.958",
+      "--baseline-validation-macro-f1",
+      "0.4872479609158282",
+      "--baseline-test-accuracy",
+      "0.731106243154436",
+      "--baseline-test-macro-f1",
+      "0.5473409779598896",
+      "--baseline-test-source",
+      "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/metrics.json",
+      "--stop-on-validation-non-improvement",
+      "--seed",
+      "20261222"
     ]
   ],
   "_previous_command": [
@@ -205,7 +248,7 @@
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
   "last_heartbeat": "2026-10-30T05:54:13.518547+00:00",
-  "last_action": "Watchdog started validation worker pid 398303.",
+  "last_action": "Added a disjoint 40-real plus 10-unsupported-synthetic dose after the queued 25/25 mixture.",
   "watchdog_enabled": true,
   "research_log_size": 1972412,
   "stop_command": "STOP",
@@ -263,7 +306,7 @@
     "artifact": "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030/metrics.json",
     "selection": "aggregate-only leaderboard report; improvement over 0.741512 is within 1-point noise"
   },
-  "next_hypothesis": "After the real-only and balanced-synthetic-only controls, test a matched 25-real plus 25-unsupported-synthetic continuation from the same checkpoint. This checks whether a smaller unsupported synthetic share preserves any useful boundary signal while the real preference examples offset the all-class-0 synthetic batch. Keep all other settings fixed and select by clean validation.",
+  "next_hypothesis": "Compare a lower unsupported-synthetic share of 10/50 after the queued 25/25 mixture. This follows the observed validation decline from the 50-row unsupported-only dose and tests whether a smaller synthetic fraction preserves its possible signal without class-skewing the continuation. The sample is disjoint from the 25-row pool used by the queued 25/25 run.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
@@ -751,7 +794,7 @@
     "epoch": 1,
     "selection_use": "aggregate reporting only; no test labels or row-level outputs inspected"
   },
-  "queue_updated_at": "2026-10-30T05:52:52.670188+00:00",
+  "queue_updated_at": "2026-10-30T05:57:31.722078+00:00",
   "queued_hypotheses": [
     {
       "experiment": "qwen-postbalanced-real50-matched-control-20261030",
@@ -766,6 +809,11 @@
     {
       "experiment": "qwen-postbalanced-real25-unsupported25-mix-20261030",
       "hypothesis": "After the real-only and balanced-synthetic-only controls, test a matched 25-real plus 25-unsupported-synthetic continuation from the same checkpoint. This checks whether a smaller unsupported synthetic share preserves any useful boundary signal while the real preference examples offset the all-class-0 synthetic batch. Keep all other settings fixed and select by clean validation.",
+      "selection": "clean validation only"
+    },
+    {
+      "experiment": "qwen-postbalanced-real40-unsupported10-mix-20261030",
+      "hypothesis": "A 40-real plus 10-unsupported-synthetic continuation may retain the boundary signal of the unsupported data while limiting the validation decline seen with 50 unsupported-only rows. The 10 synthetic rows are disjoint from the queued 25-row unsupported subset. Keep total training size and all settings fixed.",
       "selection": "clean validation only"
     }
   ]
