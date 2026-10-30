@@ -9098,3 +9098,14 @@ remove the file manually to continue.
 2026-10-30T10:55:37.458350+00:00: Commit `Record research experiment qwen-postbalanced-real30-nontoolrich100-mix-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
 
 2026-10-30T11:05:39.392660+00:00: Commit `Record research experiment qwen-postbalanced-real50-toolrich80-mix-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-30T11:05:56.035128+00:00: Commit `Record experiment synchronization failure` records the failed commit or push for qwen-postbalanced-real50-toolrich80-mix-20261030: fatal: Unable to create '/workspace/post-training/.git/index.lock': File exists.
+
+Another git process seems to be running in this repository, e.g.
+an editor opened by 'git commit'. Please make sure all processes
+are terminated then try again. If it still fails, a git process
+may have crashed in this repository earlier:
+remove the file manually to continue.
+. The result remains local and the worker queue continues.
+
+2026-10-30. Recorded the complete training, clean-validation, and aggregate black-box metrics for the latest 50-real/80-synthetic run. Queued matched upper- and lower-complexity 100-example tool-rich pilots based on prior validation results. Both keep the same data size and label balance. Candidate selection uses clean validation only.

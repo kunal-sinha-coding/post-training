@@ -15756,3 +15756,19 @@ Clean development accuracy: 0.956. Clean development macro F1: 0.486224515145994
 Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.958, "macro_f1": 0.4872479609158282, "examples": 500, "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+## 2026-10-30: Queue matched tool-rich complexity pilots
+
+The latest completed experiment is `qwen-postbalanced-real50-toolrich80-mix-20261030`. Training accuracy is 0.969231, macro F1 is 0.727124, and loss is 0.1636028731789948 on 130 examples. Clean-validation accuracy is 0.956000 and macro F1 is 0.4862245151459944 on 500 examples. Aggregate black-box test accuracy is 0.7352135815991238 and macro F1 is 0.549882512265051 on all 3,652 examples. All required measurements are recorded. No backfill is needed. Test metrics are report-only and test labels are not used for selection.
+
+The broad 100-example tool-rich sample retained 0.958 clean-validation accuracy. The earlier 20-example high-complexity sample also retained 0.958, while the broad structural sample scored 0.954. I queued matched 100-example comparisons from the upper and lower complexity halves of the reviewed 750-row tool-rich pool. Both have label counts 34/33/33, use examples not present in the broad 100-row sample or prior 20-row structural samples, and keep the checkpoint, 30 real preference examples, optimizer, validation sample, and stopping rule fixed. Complexity is ranked by number of tools, required arguments, and optional properties.
+
+Upper-complexity sample SHA-256: `1a0ebcaef4e25f44009751e8e6cb1a454dae95a4190ffd082e2418641595f3f2`. Lower-complexity sample SHA-256: `954cd6afd46e4928ec6f318e2af43c2997ea55b1ca78976634908eba4d06941a`.
+
+Queued commands:
+
+1. `python -u -m experiments.train_qwen_when2call_fullpool --output-dir outputs/qwen-postbalanced-real30-toolrich-uppercomplex100-mix-20261030 --adapter-checkpoint outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01 --preference-train-sample-size 30 --augmentation-jsonl outputs/when2call-toolrich-uppercomplex100-20261030.jsonl --validation-source sft --validation-sample-size 500 --validation-seed 20261053 --training-eval-sample-size 500 --training-eval-seed 20261059 --eval-batch-size 8 --epochs 3 --learning-rate 2.5e-6 --baseline-validation-accuracy 0.958 --baseline-validation-macro-f1 0.4872479609158282 --baseline-test-accuracy 0.731106243154436 --baseline-test-macro-f1 0.5473409779598896 --baseline-test-source outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/metrics.json --stop-on-validation-non-improvement --seed 20261222`
+2. `python -u -m experiments.train_qwen_when2call_fullpool --output-dir outputs/qwen-postbalanced-real30-toolrich-lowercomplex100-mix-20261030 --adapter-checkpoint outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01 --preference-train-sample-size 30 --augmentation-jsonl outputs/when2call-toolrich-lowercomplex100-20261030.jsonl --validation-source sft --validation-sample-size 500 --validation-seed 20261053 --training-eval-sample-size 500 --training-eval-seed 20261059 --eval-batch-size 8 --epochs 3 --learning-rate 2.5e-6 --baseline-validation-accuracy 0.958 --baseline-validation-macro-f1 0.4872479609158282 --baseline-test-accuracy 0.731106243154436 --baseline-test-macro-f1 0.5473409779598896 --baseline-test-source outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/metrics.json --stop-on-validation-non-improvement --seed 20261222`
+
+Clean validation controls selection. Test aggregates are recorded only for reporting.
