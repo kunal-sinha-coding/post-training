@@ -5,7 +5,50 @@
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
   "current_hypothesis": "The latest BFCL validation run had no class-3 direct examples in its training sample, and the model predicted none of the 60 class-3 validation rows as class 3. Continue from the best clean-validation checkpoint using a small pilot of 24 high-confidence direct examples plus 8 examples from each other class. This tests whether adding direct-answer training signal fixes the observed class omission without changing the optimizer or adding a large data volume.",
-  "active_experiment": {},
+  "active_experiment": {
+    "pid": 428340,
+    "command": [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-bfcl-direct24-balanced-other24-continue-best-20261030",
+      "--bfcl-data",
+      "outputs/bfcl_when2call_labeled_reviewclear_val165.jsonl",
+      "--adapter-checkpoint",
+      "outputs/qwen-postbalanced-real30-toolrich-nontoolrich-mix100-bfcl-reviewclear-val-20261030/epoch-01",
+      "--synthetic-only",
+      "--augmentation-jsonl",
+      "outputs/bfcl-highconf-direct24-balanced-other24-pilot-20261030.jsonl",
+      "--validation-source",
+      "bfcl",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "3",
+      "--learning-rate",
+      "2.5e-6",
+      "--baseline-test-accuracy",
+      "0.7294633077765608",
+      "--baseline-test-macro-f1",
+      "0.5464140522479008",
+      "--baseline-test-source",
+      "outputs/qwen-postbalanced-real30-toolrich-nontoolrich-mix100-bfcl-reviewclear-val-20261030/metrics.json",
+      "--stop-on-validation-non-improvement",
+      "--seed",
+      "20261222"
+    ],
+    "started_at": "2026-10-30T14:06:57.750636+00:00"
+  },
   "worker_command": [
     "python",
     "-u",
@@ -53,14 +96,14 @@
       "-m",
       "experiments.train_qwen_when2call_fullpool",
       "--output-dir",
-      "outputs/qwen-bfcl-direct24-balanced-other24-continue-best-20261030",
+      "outputs/qwen-bfcl-direct48-balanced-other24-continue-best-20261030",
       "--bfcl-data",
       "outputs/bfcl_when2call_labeled_reviewclear_val165.jsonl",
       "--adapter-checkpoint",
       "outputs/qwen-postbalanced-real30-toolrich-nontoolrich-mix100-bfcl-reviewclear-val-20261030/epoch-01",
       "--synthetic-only",
       "--augmentation-jsonl",
-      "outputs/bfcl-highconf-direct24-balanced-other24-pilot-20261030.jsonl",
+      "outputs/bfcl-highconf-direct48-balanced-other24-pilot-20261030.jsonl",
       "--validation-source",
       "bfcl",
       "--validation-sample-size",
@@ -114,10 +157,10 @@
     "validation_examples": 500,
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
-  "last_heartbeat": "2026-10-30T13:47:21.466467+00:00",
-  "last_action": "Queued a targeted BFCL direct-answer continuation based on class-3 underprediction in the newest clean-validation results.",
+  "last_heartbeat": "2026-10-30T14:06:57.750650+00:00",
+  "last_action": "Queued a nested larger direct-answer pilot behind the active 24-direct BFCL continuation.",
   "watchdog_enabled": true,
-  "research_log_size": 2107514,
+  "research_log_size": 2108621,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -354,7 +397,7 @@
     "epoch": 1,
     "selection_use": "aggregate reporting only; no individual test labels or outputs inspected"
   },
-  "updated_at": "2026-10-30T14:06:38.337573+00:00",
+  "updated_at": "2026-10-30T14:08:02.008087+00:00",
   "synthetic_pilot_results": [
     {
       "strategy": "missing_required_info",
@@ -659,7 +702,7 @@
     "examples": 3652,
     "selection_use": "aggregate reporting only; no individual test labels or outputs inspected"
   },
-  "queue_updated_at": "2026-10-30T14:06:38.337573+00:00",
+  "queue_updated_at": "2026-10-30T14:08:02.008087+00:00",
   "queued_hypotheses": [
     {
       "experiment": "qwen-postbalanced-real30-label0-1-2-45-45-10-bfcl-highconf-val-20261030",
@@ -730,6 +773,22 @@
         "1": 8,
         "2": 8,
         "3": 24
+      },
+      "source": "high-confidence, review-clear BFCL train split only",
+      "starting_checkpoint": "outputs/qwen-postbalanced-real30-toolrich-nontoolrich-mix100-bfcl-reviewclear-val-20261030/epoch-01"
+    },
+    {
+      "experiment": "qwen-bfcl-direct48-balanced-other24-continue-best-20261030",
+      "hypothesis": "If the 48-example pilot with 24 direct examples improves BFCL validation, test a larger direct-answer dose while keeping the 24 non-direct examples fixed. This nested 72-example set retains the first 24 direct examples and adds 24 new high-confidence direct examples from BFCL train. It continues from the same validation-selected checkpoint to isolate the direct-example dose.",
+      "selection": "review-clear held-out BFCL validation only; aggregate test metrics report-only",
+      "data_artifact": "outputs/bfcl-highconf-direct48-balanced-other24-pilot-20261030.jsonl",
+      "data_sha256": "e8cfed54f6251d335ab7be7d9c8f885d806d639a7c2a21c6f758d8a924fc8d22",
+      "training_rows": 72,
+      "training_label_counts": {
+        "0": 8,
+        "1": 8,
+        "2": 8,
+        "3": 48
       },
       "source": "high-confidence, review-clear BFCL train split only",
       "starting_checkpoint": "outputs/qwen-postbalanced-real30-toolrich-nontoolrich-mix100-bfcl-reviewclear-val-20261030/epoch-01"
