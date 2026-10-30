@@ -15659,3 +15659,15 @@ The latest completed run remains `qwen-postbalanced-real30-toolrich-highcomplexi
 The clean-validation confusion matrix has no true label-2 examples, while it repeatedly predicts label 2 for rows whose labels are 0 or 1. I added a composition pilot after the existing 40-real/10-synthetic comparison. It uses 30 real preference examples and 20 structural synthetic examples balanced across labels 0 and 1, with no synthetic label-2 rows. It tests whether the observed clean-validation false positives relate to the balanced synthetic label mix. It keeps the checkpoint, optimizer, validation sample, and stopping rule fixed. The 20-row file has SHA-256 `47ad0669d8ae88252eaf99849f29dce4f6d6922213d9285e9743eafa7766366a`.
 
 Current order is: active mixed-source 30/20 pilot; queued mixed-source 40/10 dose pilot; queued 30/20 class-composition pilot. Clean validation alone controls selection. Aggregate test metrics remain report-only.
+
+## qwen-postbalanced-real30-mixedraretoolstructural20-mix-20261030
+
+Timestamp: 2026-10-30T10:13:51.268899+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-postbalanced-real30-mixedraretoolstructural20-mix-20261030", "--adapter-checkpoint", "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01", "--preference-train-sample-size", "30", "--augmentation-jsonl", "outputs/when2call-mixed-rare-toolstructural20-20261030.jsonl", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "3", "--learning-rate", "2.5e-6", "--baseline-validation-accuracy", "0.958", "--baseline-validation-macro-f1", "0.4872479609158282", "--baseline-test-accuracy", "0.731106243154436", "--baseline-test-macro-f1", "0.5473409779598896", "--baseline-test-source", "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/metrics.json", "--stop-on-validation-non-improvement", "--seed", "20261222"]. Output: /workspace/post-training/outputs/qwen-postbalanced-real30-mixedraretoolstructural20-mix-20261030. W&B run: dhafpcik.
+
+Clean development accuracy: 0.958. Clean development macro F1: 0.4872479609158282. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7313800657174151, "macro_f1": 0.5478080170581178, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.958, "macro_f1": 0.4872479609158282, "examples": 500, "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
