@@ -138,6 +138,49 @@
       "--stop-on-validation-non-improvement",
       "--seed",
       "20261222"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-postbalanced-real30-toolrich-highcomplexity20-mix-20261030",
+      "--adapter-checkpoint",
+      "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01",
+      "--preference-train-sample-size",
+      "30",
+      "--augmentation-jsonl",
+      "outputs/when2call-tool-rich-highcomplexity20-20261030.jsonl",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "3",
+      "--learning-rate",
+      "2.5e-6",
+      "--baseline-validation-accuracy",
+      "0.958",
+      "--baseline-validation-macro-f1",
+      "0.4872479609158282",
+      "--baseline-test-accuracy",
+      "0.731106243154436",
+      "--baseline-test-macro-f1",
+      "0.5473409779598896",
+      "--baseline-test-source",
+      "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/metrics.json",
+      "--stop-on-validation-non-improvement",
+      "--seed",
+      "20261222"
     ]
   ],
   "_previous_command": [
@@ -166,8 +209,8 @@
     "validation_examples": 500,
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
-  "last_heartbeat": "2026-10-30T09:31:12.719512+00:00",
-  "last_action": "Verified structural tool-rich worker launch and queued a distinct matched structural rare-schema comparison.",
+  "last_heartbeat": "2026-10-30T09:32:48.709016+00:00",
+  "last_action": "Appended a distinct high-complexity tool-rich pilot behind the two structural coverage comparisons.",
   "watchdog_enabled": true,
   "research_log_size": 2041632,
   "stop_command": "STOP",
@@ -227,7 +270,7 @@
     "artifact": "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030/metrics.json",
     "selection": "aggregate-only leaderboard report; improvement over 0.741512 is within 1-point noise"
   },
-  "next_hypothesis": "If structurally diverse tool-rich rows change clean validation, compare structurally diverse rare-schema rows at the same 30/20 dose to test whether the effect generalizes across synthetic sources.",
+  "next_hypothesis": "After comparing broad structural coverage across tool-rich and rare-schema data, test whether focusing on the upper half of tool-menu and argument complexity yields a stronger clean-validation signal than a broad complexity sample.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
@@ -409,7 +452,7 @@
     "epoch": 1,
     "selection_use": "aggregate reporting only; no individual test labels or outputs inspected"
   },
-  "updated_at": "2026-10-30T09:31:12.719512+00:00",
+  "updated_at": "2026-10-30T09:32:48.709016+00:00",
   "synthetic_pilot_results": [
     {
       "strategy": "missing_required_info",
