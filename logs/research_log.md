@@ -15149,3 +15149,9 @@ Clean development accuracy: 0.956. Clean development macro F1: 0.486236348129931
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.956, "macro_f1": 0.4862363481299319, "confusion_matrix": [[243, 2, 5, 0], [3, 235, 11, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## 2026-10-30: small top-up audit and second incremental pilot
+
+The newest completed experiment, `qwen-unsupported50-plus-real25-balanced25-small-topup-20261030`, has complete evidence. Epoch 1 training accuracy is 0.980000 and macro F1 is 0.734848 on 50 examples, with loss 0.244063. Clean SFT validation is 0.956000 accuracy and 0.486236 macro F1 on 500 examples. Full aggregate black-box test is 0.731928 accuracy and 0.548088 macro F1 on all 3,652 examples. Epoch 2 ties epoch 1 on both validation metrics. Epoch 1 is retained by the tie rule. Test metrics are report-only.
+
+This small 25-real plus 25-balanced-synthetic update improved clean validation from 0.954 to 0.956, while larger updates did not exceed the source score. Queued one more disjoint 25/25 top-up from the validation-selected epoch-1 checkpoint at 2.5e-6. Training and validation evaluation are capped at 500 examples; full aggregate test metrics are recorded separately. Clean validation alone controls checkpoint selection and stopping.

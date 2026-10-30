@@ -8849,3 +8849,7 @@ Description: Saved the watchdog's active PID and launch state for the 50-row rep
 Context: The worker is training 25 real preference examples plus 25 distinct balanced synthetic examples from the clean-validation-selected checkpoint. It uses 2.5e-6 and clean-validation-only stopping. Test metrics are report-only.
 
 2026-10-30T05:03:30.292763+00:00: Commit `Record research experiment qwen-unsupported50-plus-real25-balanced25-small-topup-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+Commit: Queue a second small replay top-up.
+Description: Recorded full evidence for the completed 50-row top-up and queued a second 25-real plus 25-new-balanced-synthetic continuation from its clean-validation-selected checkpoint.
+Context: The first small top-up improved clean validation to 0.956, while larger continuations did not beat the 0.954 source score. The next run tests whether a second small disjoint dose adds signal. Test aggregates remain report-only.
