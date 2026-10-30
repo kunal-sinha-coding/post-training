@@ -15077,3 +15077,9 @@ Clean development accuracy: 0.946. Clean development macro F1: 0.483103764921946
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.946, "macro_f1": 0.48310376492194673, "confusion_matrix": [[241, 3, 6, 0], [3, 232, 14, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## 2026-10-30: 75/25 replay evidence audit and lower-rate follow-up
+
+The latest completed experiment, `qwen-unsupported50-real75-balanced25-replay-20261030`, has all required evidence. At the clean-validation-selected first epoch, training accuracy is 0.990000 and macro F1 is 0.742423 on all 100 examples, with loss 0.294121. Clean validation is 0.948000 accuracy and 0.483130 macro F1 on 500 SFT examples. Full aggregate test is 0.724261 accuracy and 0.540454 macro F1 on all 3,652 rows. The second epoch reduced clean-validation accuracy to 0.946, so it was not selected. Test metrics are report-only.
+
+The 50/50 replay run on the same checkpoint and data reached 0.952 clean-validation accuracy at 5e-6, while the 2e-5 run reached 0.938. This observed clean-validation recovery supports one controlled follow-up at 2.5e-6. The queued run keeps the 100 training examples, sample seeds, checkpoint, and clean-validation stopping rule fixed. Test labels and aggregate test scores do not select the checkpoint.

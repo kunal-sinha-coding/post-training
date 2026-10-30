@@ -8817,3 +8817,7 @@ Context: The initial 25/25 mix had the strongest clean-validation result, while 
 2026-10-30T03:35:41.982331+00:00: Commit `Record research experiment qwen-unsupported50-real50-balanced50-lr5e6-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
 
 2026-10-30T03:52:19.024223+00:00: Commit `Record research experiment qwen-unsupported50-real75-balanced25-replay-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+Commit: Queue a second targeted rate reduction for replay training.
+Description: Updated the evidence audit for the latest 75/25 replay run and queued a 2.5e-6 continuation using the same 50/50 replay data and checkpoint as the completed 5e-6 run.
+Context: Clean validation fell under 2e-5 on the 100-row mixtures and recovered from 0.938 to 0.952 under 5e-6 on a matched 50/50 recipe. A further rate reduction is a controlled test of this observed response. Test metrics remain aggregate reports only.
