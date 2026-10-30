@@ -9199,3 +9199,5 @@ remove the file manually to continue.
 . The result remains local and the worker queue continues.
 
 2026-10-30T16:13:00.184209+00:00: Prepared commit `Restart BFCL synthetic dose pilots`. Reconciled all three recorded metric types for qwen-bfcl-cannot-answer-direct-replay48-continue-best-20261030, restored the active worker queue after watchdog planning handoff, and queued 48 cannot-answer-only and 48 cannot-answer plus 24 direct-replay validation-selected pilots. Full aggregate test metrics are report-only. Artifact SHA-256 values: 452f58307bf4dd7c054c9000ecf4a936cb2eef2d4b0e0ed6967a0beab6afb245, 39546690ad27cc5954b35a99e6a4879373f77fc4ce63adf54d483b67e13c7fb9.
+
+2026-10-30T16:14:53.290539+00:00: Prepared commit `Queue 24 to 48 BFCL replay ratio`. Confirmed latest completed run has all required evidence, kept the active and existing queued commands intact, and appended one distinct 24:48 data-mixture comparison. Selection remains based on held-out clean BFCL validation. Synthetic artifact SHA-256: 55c5fd040b964f0e9613db4c0dbefb8943a2ac3a9115b7dc4a4f32d909ded7fe.

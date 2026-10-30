@@ -141,6 +141,50 @@
       "--stop-on-validation-non-improvement",
       "--seed",
       "20261222"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-bfcl-cannot-answer24-direct-replay48-continue-best-20261030",
+      "--bfcl-data",
+      "outputs/bfcl_when2call_labeled_reviewclear_val165.jsonl",
+      "--adapter-checkpoint",
+      "outputs/qwen-bfcl-direct48-balanced-other24-fresh72-continue-best-20261030/epoch-01",
+      "--synthetic-only",
+      "--augmentation-jsonl",
+      "outputs/bfcl-highconf-cannot-answer24-direct-replay48-20261030.jsonl",
+      "--validation-source",
+      "bfcl",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "3",
+      "--learning-rate",
+      "2.5e-6",
+      "--baseline-validation-accuracy",
+      "0.5696969696969697",
+      "--baseline-validation-macro-f1",
+      "0.5311124061124062",
+      "--baseline-test-accuracy",
+      "0.46139101861993426",
+      "--baseline-test-macro-f1",
+      "0.3532465925394548",
+      "--baseline-test-source",
+      "outputs/qwen-bfcl-direct48-balanced-other24-fresh72-continue-best-20261030/metrics.json",
+      "--stop-on-validation-non-improvement",
+      "--seed",
+      "20261222"
     ]
   ],
   "_previous_command": [
@@ -170,7 +214,7 @@
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
   "last_heartbeat": "2026-10-30T16:13:02.540915+00:00",
-  "last_action": "Watchdog started validation worker pid 435223.",
+  "last_action": "Added a distinct 24:48 cannot-answer/direct rehearsal ratio behind the active and already queued pilots.",
   "watchdog_enabled": true,
   "research_log_size": 2132234,
   "stop_command": "STOP",
@@ -412,7 +456,7 @@
     "epoch": 1,
     "selection_use": "aggregate reporting only; no individual test labels or outputs inspected"
   },
-  "updated_at": "2026-10-30T16:13:00.184209+00:00",
+  "updated_at": "2026-10-30T16:14:53.290539+00:00",
   "synthetic_pilot_results": [
     {
       "strategy": "missing_required_info",
@@ -716,7 +760,7 @@
     "examples": 3652,
     "selection_use": "aggregate reporting only"
   },
-  "queue_updated_at": "2026-10-30T16:13:00.184209+00:00",
+  "queue_updated_at": "2026-10-30T16:14:53.290539+00:00",
   "queued_hypotheses": [
     {
       "experiment": "qwen-postbalanced-real30-label0-1-2-45-45-10-bfcl-highconf-val-20261030",
@@ -925,6 +969,18 @@
       "label_counts": {
         "0": 48,
         "3": 24
+      },
+      "starting_checkpoint": "outputs/qwen-bfcl-direct48-balanced-other24-fresh72-continue-best-20261030/epoch-01"
+    },
+    {
+      "experiment": "qwen-bfcl-cannot-answer24-direct-replay48-continue-best-20261030",
+      "hypothesis": "The 48:24 cannot-answer/direct mixture is queued as the matched rehearsal comparison. Test a 24:48 ratio from the same high-confidence source pools to see whether more direct replay preserves the baseline direct-call behavior while retaining cannot-answer coverage.",
+      "selection": "review-clear held-out BFCL validation only; aggregate test metrics report-only",
+      "artifact": "outputs/bfcl-highconf-cannot-answer24-direct-replay48-20261030.jsonl",
+      "sha256": "55c5fd040b964f0e9613db4c0dbefb8943a2ac3a9115b7dc4a4f32d909ded7fe",
+      "label_counts": {
+        "0": 24,
+        "3": 48
       },
       "starting_checkpoint": "outputs/qwen-bfcl-direct48-balanced-other24-fresh72-continue-best-20261030/epoch-01"
     }
