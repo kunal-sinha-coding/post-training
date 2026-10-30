@@ -8919,3 +8919,9 @@ Preserved the active worker and the real-only and balanced-synthetic controls. C
 Commit name: Make the asynchronous recorder decode Git output safely.
 
 The recorder failed while capturing `git ls-files` output because one diagnostic contained invalid UTF-8. Updated the Git subprocess wrapper to replace invalid diagnostic bytes while preserving the exit code and remaining output. This lets the recorder write complete experiment evidence and continue its existing non-blocking commit flow. The experiment metrics artifact already contains training, clean-validation, and aggregate test results.
+
+## 2026-10-30: Rank unsupported synthetic increment result and audit evidence
+
+Commit name: Record complete unsupported increment metrics on the aggregate leaderboard.
+
+Verified that the completed 50-example unsupported-capability continuation has training accuracy 1.000000 and macro F1 0.250000 on all 50 rows, clean-validation accuracy 0.956000 and macro F1 0.486225 on 500 rows, and aggregate test accuracy 0.736583 and macro F1 0.550923 on all 3,652 rows. It stopped after one epoch because clean validation fell below the 0.958 baseline. Added the aggregate result at its accuracy rank in the current leaderboard and updated research_state evidence audit. Candidate selection did not use test labels or test metrics. The matched real control remains active, followed by the balanced synthetic and mixed-data comparisons.

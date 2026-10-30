@@ -207,7 +207,7 @@
   "last_heartbeat": "2026-10-30T05:54:13.518547+00:00",
   "last_action": "Watchdog started validation worker pid 398303.",
   "watchdog_enabled": true,
-  "research_log_size": 1970496,
+  "research_log_size": 1972412,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -250,12 +250,7 @@
     "--seed",
     "20261222"
   ],
-  "recording_jobs": [
-    {
-      "pid": 398302,
-      "experiment_id": "qwen-postbalanced-unsupported-increment50-20261030"
-    }
-  ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-30T05:43:41.534641+00:00",
   "planning_ack_deadline": "2026-10-30T05:45:41.534667+00:00",
@@ -315,13 +310,13 @@
     "selection_use": "none"
   },
   "evidence_audit": {
-    "experiment": "qwen-unsupported50-real50-after-balanced-small-topup-20261030",
-    "training_metrics": "recorded for epoch 1 (accuracy 0.940000, macro F1 0.705844, loss 0.404716, 50 examples) and epoch 2 (accuracy 0.960000, macro F1 0.720486, loss 0.293798, 50 examples)",
-    "clean_validation_metrics": "recorded at epoch 1 (accuracy 0.958000, macro F1 0.487248, 500 examples) and epoch 2 (accuracy 0.956000, macro F1 0.486225, 500 examples)",
-    "aggregate_black_box_test_metrics": "recorded at epoch 1 (accuracy 0.731106, macro F1 0.547341) and epoch 2 (accuracy 0.733023, macro F1 0.549039), each on 3,652 examples",
+    "experiment": "qwen-postbalanced-unsupported-increment50-20261030",
+    "training_metrics": "recorded at epoch 1: accuracy 1.000000, macro F1 0.250000, loss 0.000003 on all 50 training examples",
+    "clean_validation_metrics": "recorded at epoch 1: accuracy 0.956000, macro F1 0.486225 on 500 SFT validation examples",
+    "aggregate_black_box_test_metrics": "recorded at epoch 1: accuracy 0.736583, macro F1 0.550923 on all 3,652 test examples",
     "all_required_evidence_recorded": true,
     "test_labels_used_for_selection": false,
-    "note": "Epoch 1 is retained by the higher clean-validation accuracy. Epoch 2 aggregate test score is report-only."
+    "note": "Stopped after epoch 1 because clean validation accuracy was below the 0.958 baseline. Test aggregates are report-only."
   },
   "duplicate_worker_failure": {
     "pid": 103632,
@@ -449,7 +444,7 @@
     "examples": 3652,
     "selection_use": "report-only; not used to choose candidates"
   },
-  "updated_at": "2026-10-30T05:44:51.607221+00:00",
+  "updated_at": "2026-10-30T05:56:28.974817+00:00",
   "synthetic_pilot_results": [
     {
       "strategy": "missing_required_info",
