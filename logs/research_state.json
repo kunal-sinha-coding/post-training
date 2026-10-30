@@ -138,6 +138,49 @@
       "--stop-on-validation-non-improvement",
       "--seed",
       "20261222"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-postbalanced-real30-mixedstructural-no-label2-20261030",
+      "--adapter-checkpoint",
+      "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01",
+      "--preference-train-sample-size",
+      "30",
+      "--augmentation-jsonl",
+      "outputs/when2call-mixed-structural-no-label2-20-20261030.jsonl",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "3",
+      "--learning-rate",
+      "2.5e-6",
+      "--baseline-validation-accuracy",
+      "0.958",
+      "--baseline-validation-macro-f1",
+      "0.4872479609158282",
+      "--baseline-test-accuracy",
+      "0.731106243154436",
+      "--baseline-test-macro-f1",
+      "0.5473409779598896",
+      "--baseline-test-source",
+      "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/metrics.json",
+      "--stop-on-validation-non-improvement",
+      "--seed",
+      "20261222"
     ]
   ],
   "_previous_command": [
@@ -167,7 +210,7 @@
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
   "last_heartbeat": "2026-10-30T10:04:18.609562+00:00",
-  "last_action": "Watchdog started validation worker pid 415146.",
+  "last_action": "Added a class-composition pilot based on clean-validation confusion: label 2 is absent in validation while false predictions to label 2 recur. The existing active worker and dose comparison remain unchanged.",
   "watchdog_enabled": true,
   "research_log_size": 2051607,
   "stop_command": "STOP",
@@ -227,7 +270,7 @@
     "artifact": "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030/metrics.json",
     "selection": "aggregate-only leaderboard report; improvement over 0.741512 is within 1-point noise"
   },
-  "next_hypothesis": "If a 20-example mixed structural pool does not improve clean validation, test whether a lower 10-example dose with 40 real preference examples retains or improves validation. The synthetic examples are a stratified subset of the same mixed pool, so this tests dose with a fixed checkpoint and training recipe.",
+  "next_hypothesis": "The fixed 500-example clean-validation sample has no true label-2 rows, yet recent checkpoints make repeated false label-2 predictions. The 30-real/20-synthetic training pool is currently nearly balanced across labels. Test a 20-row structural synthetic set containing only labels 0 and 1, balanced 10/10, while holding the adapter, real preference sample size, optimizer, validation sample, and stopping rule fixed. This checks whether synthetic label-2 exposure is contributing to these validation false positives. Clean validation alone controls selection; test aggregates are report-only.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
@@ -409,7 +452,7 @@
     "epoch": 1,
     "selection_use": "aggregate reporting only; no individual test labels or outputs inspected"
   },
-  "updated_at": "2026-10-30T10:04:16.711337+00:00",
+  "updated_at": "2026-10-30T10:06:34.266513+00:00",
   "synthetic_pilot_results": [
     {
       "strategy": "missing_required_info",
@@ -714,7 +757,7 @@
     "epoch": 1,
     "selection_use": "aggregate reporting only; no individual test labels or outputs inspected"
   },
-  "queue_updated_at": "2026-10-30T10:04:16.711337+00:00",
+  "queue_updated_at": "2026-10-30T10:06:34.266513+00:00",
   "queued_hypotheses": [
     {
       "experiment": "qwen-postbalanced-real30-mixedraretoolstructural20-mix-20261030",
@@ -724,6 +767,11 @@
     {
       "experiment": "qwen-postbalanced-real40-mixedraretoolstructural10-mix-20261030",
       "hypothesis": "If a 20-example mixed structural pool does not improve clean validation, test whether a lower 10-example dose with 40 real preference examples retains or improves validation. The synthetic examples are a stratified subset of the same mixed pool, so this tests dose with a fixed checkpoint and training recipe.",
+      "selection": "clean validation only; aggregate black-box test metrics report-only"
+    },
+    {
+      "experiment": "qwen-postbalanced-real30-mixedstructural-no-label2-20261030",
+      "hypothesis": "The fixed 500-example clean-validation sample has no true label-2 rows, yet recent checkpoints make repeated false label-2 predictions. The 30-real/20-synthetic training pool is currently nearly balanced across labels. Test a 20-row structural synthetic set containing only labels 0 and 1, balanced 10/10, while holding the adapter, real preference sample size, optimizer, validation sample, and stopping rule fixed. This checks whether synthetic label-2 exposure is contributing to these validation false positives. Clean validation alone controls selection; test aggregates are report-only.",
       "selection": "clean validation only; aggregate black-box test metrics report-only"
     }
   ],
