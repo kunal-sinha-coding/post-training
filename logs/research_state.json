@@ -1,24 +1,70 @@
 {
-  "status": "awaiting_codex_planning",
+  "status": "active",
   "planning_owner": "codex_primary",
-  "planning_required": true,
+  "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
-  "current_hypothesis": "A fresh 50-row unsupported-capability synthetic dose may add useful boundary signal after a validation-selected 50-row real-data continuation. The preceding real continuation reached 0.958 clean-validation accuracy, while larger synthetic doses previously lowered validation. Test whether this small, distinct unsupported-only dose improves clean validation without changing the model or learning rate.",
-  "active_experiment": {},
+  "current_hypothesis": "After the 40-real plus 10-unsupported pilot tied the 0.958 clean-validation baseline, test a 40-real plus 10-balanced-synthetic dose from the same adapter. Use the same real-row sampling seed and all unchanged training and evaluation settings. The balanced ten-row subset has labels 4/3/3. This tests whether a balanced synthetic dose preserves clean validation better than unsupported-only examples. Clean validation selects checkpoints; aggregate test metrics are report-only.",
+  "active_experiment": {
+    "pid": 400827,
+    "command": [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-postbalanced-real40-balanced10-mix-20261030",
+      "--adapter-checkpoint",
+      "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01",
+      "--preference-train-sample-size",
+      "40",
+      "--augmentation-jsonl",
+      "outputs/when2call-balanced-increment10-mix-20261030.jsonl",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "3",
+      "--learning-rate",
+      "2.5e-6",
+      "--baseline-validation-accuracy",
+      "0.958",
+      "--baseline-validation-macro-f1",
+      "0.4872479609158282",
+      "--baseline-test-accuracy",
+      "0.731106243154436",
+      "--baseline-test-macro-f1",
+      "0.5473409779598896",
+      "--baseline-test-source",
+      "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/metrics.json",
+      "--stop-on-validation-non-improvement",
+      "--seed",
+      "20261222"
+    ],
+    "started_at": "2026-10-30T06:32:58.751993+00:00"
+  },
   "worker_command": [
     "python",
     "-u",
     "-m",
     "experiments.train_qwen_when2call_fullpool",
     "--output-dir",
-    "outputs/qwen-postbalanced-real40-unsupported10-mix-20261030",
+    "outputs/qwen-postbalanced-real40-balanced10-mix-20261030",
     "--adapter-checkpoint",
     "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01",
     "--preference-train-sample-size",
     "40",
     "--augmentation-jsonl",
-    "outputs/when2call-unsupported-increment10-mix-20261030.jsonl",
+    "outputs/when2call-balanced-increment10-mix-20261030.jsonl",
     "--validation-source",
     "sft",
     "--validation-sample-size",
@@ -76,22 +122,59 @@
     "validation_examples": 500,
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
-  "last_heartbeat": "2026-10-30T06:20:51.894643+00:00",
-  "last_action": "Watchdog handed planning control to the primary Codex process.",
+  "last_heartbeat": "2026-10-30T06:32:58.752005+00:00",
+  "last_action": "Watchdog started validation worker pid 400827.",
   "watchdog_enabled": true,
-  "research_log_size": 1980021,
+  "research_log_size": 1984138,
   "stop_command": "STOP",
-  "next_experiment": null,
-  "recording_jobs": [
-    {
-      "pid": 400500,
-      "experiment_id": "qwen-postbalanced-real40-unsupported10-mix-20261030"
-    }
+  "next_experiment": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.train_qwen_when2call_fullpool",
+    "--output-dir",
+    "outputs/qwen-postbalanced-real40-balanced10-mix-20261030",
+    "--adapter-checkpoint",
+    "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01",
+    "--preference-train-sample-size",
+    "40",
+    "--augmentation-jsonl",
+    "outputs/when2call-balanced-increment10-mix-20261030.jsonl",
+    "--validation-source",
+    "sft",
+    "--validation-sample-size",
+    "500",
+    "--validation-seed",
+    "20261053",
+    "--training-eval-sample-size",
+    "500",
+    "--training-eval-seed",
+    "20261059",
+    "--eval-batch-size",
+    "8",
+    "--epochs",
+    "3",
+    "--learning-rate",
+    "2.5e-6",
+    "--baseline-validation-accuracy",
+    "0.958",
+    "--baseline-validation-macro-f1",
+    "0.4872479609158282",
+    "--baseline-test-accuracy",
+    "0.731106243154436",
+    "--baseline-test-macro-f1",
+    "0.5473409779598896",
+    "--baseline-test-source",
+    "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/metrics.json",
+    "--stop-on-validation-non-improvement",
+    "--seed",
+    "20261222"
   ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-30T06:29:56.415184+00:00",
-  "planning_ack_deadline": "2026-10-30T06:31:56.415209+00:00",
-  "planning_attempts": 85,
+  "planning_notified_at": "2026-10-30T06:31:58.028265+00:00",
+  "planning_ack_deadline": "2026-10-30T06:33:58.028325+00:00",
+  "planning_attempts": 86,
   "best_observed_test": {
     "method": "Qwen after 50-example unsupported-capability synthetic continuation, greedy full-test evaluation",
     "accuracy": 0.7417853231106243,
@@ -100,7 +183,7 @@
     "artifact": "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030/metrics.json",
     "selection": "aggregate-only leaderboard report; improvement over 0.741512 is within 1-point noise"
   },
-  "next_hypothesis": "Compare a lower unsupported-synthetic share of 10/50 after the queued 25/25 mixture. This follows the observed validation decline from the 50-row unsupported-only dose and tests whether a smaller synthetic fraction preserves its possible signal without class-skewing the continuation. The sample is disjoint from the 25-row pool used by the queued 25/25 run.",
+  "next_hypothesis": "After this balanced 10-row mixture, compare its clean-validation result with the matched 40/10 unsupported mixture and existing real-only/synthetic-only controls. Continue only with a composition that improves or preserves the best clean-validation accuracy; form the next distinct data hypothesis from those results.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
@@ -147,13 +230,13 @@
     "selection_use": "none"
   },
   "evidence_audit": {
-    "experiment": "qwen-postbalanced-unsupported-increment50-20261030",
-    "training_metrics": "recorded at epoch 1: accuracy 1.000000, macro F1 0.250000, loss 0.000003 on all 50 training examples",
-    "clean_validation_metrics": "recorded at epoch 1: accuracy 0.956000, macro F1 0.486225 on 500 SFT validation examples",
-    "aggregate_black_box_test_metrics": "recorded at epoch 1: accuracy 0.736583, macro F1 0.550923 on all 3,652 test examples",
+    "experiment": "qwen-postbalanced-real40-unsupported10-mix-20261030",
+    "training_metrics": "recorded at epoch 1: accuracy 1.000000, macro F1 0.750000, loss 0.003116 on 50 examples",
+    "clean_validation_metrics": "recorded at epoch 1: accuracy 0.958000, macro F1 0.487247960916 on 500 SFT validation examples",
+    "aggregate_black_box_test_metrics": "recorded at epoch 1: accuracy 0.730284775465, macro F1 0.546606628976 on all 3652 test examples",
     "all_required_evidence_recorded": true,
     "test_labels_used_for_selection": false,
-    "note": "Stopped after epoch 1 because clean validation accuracy was below the 0.958 baseline. Test aggregates are report-only."
+    "note": "Clean validation matched the 0.958 baseline, so the run stopped after epoch 1 under the clean-validation rule. Aggregate test metrics are report-only."
   },
   "duplicate_worker_failure": {
     "pid": 103632,
@@ -588,27 +671,26 @@
     "epoch": 1,
     "selection_use": "aggregate reporting only; no test labels or row-level outputs inspected"
   },
-  "queue_updated_at": "2026-10-30T05:57:31.722078+00:00",
+  "queue_updated_at": "2026-10-30T06:32:48.057229+00:00",
   "queued_hypotheses": [
     {
-      "experiment": "qwen-postbalanced-real50-matched-control-20261030",
-      "hypothesis": "A same-size real-preference continuation provides a reference for changes from the active synthetic-only continuation.",
-      "selection": "clean validation only"
-    },
-    {
-      "experiment": "qwen-postbalanced-balanced50-synthetic-only-20261030",
-      "hypothesis": "After the matched real-only control, compare a disjoint balanced 50-row synthetic-only continuation from the same fixed checkpoint. This separates the effect of a small balanced synthetic dose from the active unsupported-only dose and from further real-data optimization. The 50 balanced rows have label counts 17/17/16 and zero prompt overlap with the two balanced 25-row top-up sets. Use the unchanged learning rate and clean validation for stopping and selection.",
-      "selection": "clean validation only"
-    },
-    {
-      "experiment": "qwen-postbalanced-real25-unsupported25-mix-20261030",
-      "hypothesis": "After the real-only and balanced-synthetic-only controls, test a matched 25-real plus 25-unsupported-synthetic continuation from the same checkpoint. This checks whether a smaller unsupported synthetic share preserves any useful boundary signal while the real preference examples offset the all-class-0 synthetic batch. Keep all other settings fixed and select by clean validation.",
-      "selection": "clean validation only"
-    },
-    {
-      "experiment": "qwen-postbalanced-real40-unsupported10-mix-20261030",
-      "hypothesis": "A 40-real plus 10-unsupported-synthetic continuation may retain the boundary signal of the unsupported data while limiting the validation decline seen with 50 unsupported-only rows. The 10 synthetic rows are disjoint from the queued 25-row unsupported subset. Keep total training size and all settings fixed.",
-      "selection": "clean validation only"
+      "experiment": "qwen-postbalanced-real40-balanced10-mix-20261030",
+      "hypothesis": "After the 40-real plus 10-unsupported pilot tied the 0.958 clean-validation baseline, test a 40-real plus 10-balanced-synthetic dose from the same adapter. Use the same real-row sampling seed and all unchanged training and evaluation settings. The balanced ten-row subset has labels 4/3/3. This tests whether a balanced synthetic dose preserves clean validation better than unsupported-only examples. Clean validation selects checkpoints; aggregate test metrics are report-only.",
+      "selection": "clean validation only; aggregate black-box test metrics report-only"
     }
-  ]
+  ],
+  "data_probe": {
+    "experiment": "qwen-postbalanced-real40-balanced10-mix-20261030",
+    "synthetic_pool": "outputs/when2call-balanced-increment10-mix-20261030.jsonl",
+    "synthetic_rows": 10,
+    "synthetic_label_counts": {
+      "0": 4,
+      "1": 3,
+      "2": 3
+    },
+    "synthetic_pool_sha256": "0dbadb76d39003d239a5a5b38b8f256ecc93d23f9b83ca80782d500437dcd64f",
+    "real_rows": 40,
+    "real_sample_seed": 20261222,
+    "selection": "stratified sample from existing balanced 50-row synthetic pool; no test data used"
+  }
 }
