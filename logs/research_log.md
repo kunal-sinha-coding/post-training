@@ -15578,3 +15578,12 @@ Clean development accuracy: 0.958. Clean development macro F1: 0.487247960915828
 Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.958, "macro_f1": 0.4872479609158282, "examples": 500, "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+## 2026-10-30: Structural coverage within the tool-rich source
+
+Latest completed run `qwen-postbalanced-real30-combinedboundary20-mix-20261030` has all required evidence: training 1.0000 accuracy / 0.750000 macro F1 / loss 0.001662 on 50 examples; clean validation 0.9580 / 0.487247960916 on 500; aggregate black-box test 0.730558598028 / 0.547117796607 on all 3652. No measurement backfill is needed. Aggregate test metrics are report-only.
+
+The 30/20 tool-rich, rare-schema, and combined-boundary mixes all reached 0.958 clean-validation accuracy. Test a 30/20 tool-rich mixture selected evenly across tool and argument-count complexity, while keeping class counts 7/7/6, the same adapter, total rows, optimizer, validation sample, and stopping rule. The 20-row sample has SHA-256 `4b6a586f2648d79b9003dc64293ae174565f2c0163de456ba5c5a127bbfd7a19` and is prompt-disjoint from the recent 10/15/20/25 tool-rich increments. Select on clean validation only.
+
+Queued command: `python -u -m experiments.train_qwen_when2call_fullpool --output-dir outputs/qwen-postbalanced-real30-toolrich-structural20-mix-20261030 --adapter-checkpoint outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01 --preference-train-sample-size 30 --augmentation-jsonl outputs/when2call-tool-rich-structural-diversity20-20261030.jsonl --validation-source sft --validation-sample-size 500 --validation-seed 20261053 --training-eval-sample-size 500 --training-eval-seed 20261059 --eval-batch-size 8 --epochs 3 --learning-rate 2.5e-6 --baseline-validation-accuracy 0.958 --baseline-validation-macro-f1 0.4872479609158282 --baseline-test-accuracy 0.731106243154436 --baseline-test-macro-f1 0.5473409779598896 --baseline-test-source outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/metrics.json --stop-on-validation-non-improvement --seed 20261222`

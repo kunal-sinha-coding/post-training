@@ -9053,3 +9053,7 @@ Commit: Audit the latest completed metrics and add a source comparison behind th
 2026-10-30T09:17:28.057894+00:00: Commit `Record research experiment qwen-postbalanced-real30-rareschema20-mix-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
 
 2026-10-30T09:27:02.184896+00:00: Commit `Record research experiment qwen-postbalanced-real30-combinedboundary20-mix-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+## 2026-10-30: Queue structural diversity pilot after matched source tie
+
+Commit: Audit the latest completed matched source experiment and queue a distinct within-source sampling hypothesis. Training, clean validation, and aggregate test measurements are complete in the metrics file and journal. The three 30/20 source recipes tied on clean validation at 0.958. Queued a structurally stratified 30-real/20-tool-rich sample with balanced label counts and no prompt overlap with the recent tool-rich increments. Candidate selection uses clean validation only; test metrics are report-only.
