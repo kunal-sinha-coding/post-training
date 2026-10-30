@@ -8869,3 +8869,9 @@ Context: The active run continues 50 real preference examples from the clean-val
 Commit: Correct the current leaderboard summary.
 Description: Added the recent 50/50 low-rate replay result to the aggregate accuracy ranking and replaced a stale sentence that incorrectly named 0.741512 as the top score.
 Context: The report-only leaderboard now names the 0.741785 unsupported-capability continuation as the top aggregate accuracy and shows the close 0.741238 low-rate replay tie. Candidate selection remains based on clean validation only.
+
+## 2026-10-30: Record latest validation-selected continuation in leaderboard
+
+Commit name: Add validation-selected real-data continuation result to leaderboard.
+
+Added the latest completed 50-example real When2Call continuation to the aggregate leaderboard. The experiment continued from the second 25-real plus 25-balanced-synthetic top-up checkpoint, evaluated 50 training examples and 500 clean-validation examples per epoch, and evaluated all 3,652 black-box test rows. Epoch 1 was selected by clean validation at 0.958 accuracy and 0.487248 macro F1; its test result was 0.731106 accuracy and 0.547341 macro F1. Epoch 2 had lower clean-validation accuracy (0.956) and a higher aggregate test score (0.733023), so the leaderboard records epoch 1 to preserve validation-only candidate selection. This makes clear that aggregate test labels did not choose the checkpoint.
