@@ -8863,3 +8863,5 @@ Context: Two small disjoint synthetic replay top-ups both reached 0.956 clean-va
 Commit: Record real-only replay launch.
 Description: Saved the watchdog's active worker PID and launch command after queue advancement.
 Context: The active run continues 50 real preference examples from the clean-validation-selected second top-up checkpoint at 2.5e-6. Clean validation controls checkpoint selection and stopping. Test metrics are reporting-only.
+
+2026-10-30T05:37:39.022478+00:00: Commit `Record research experiment qwen-unsupported50-real50-after-balanced-small-topup-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.

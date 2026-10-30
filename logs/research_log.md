@@ -15173,3 +15173,15 @@ This record was written automatically. Candidate selection must use clean valida
 The latest completed run, `qwen-unsupported50-plus-real25-balanced25-topup2-20261030`, has all required evidence. At epoch 1, training accuracy is 1.000000 and macro F1 is 0.750000 on all 50 examples, with loss 0.014737. Clean SFT validation is 0.956000 accuracy and 0.486236 macro F1 on 500 examples. Full aggregate test is 0.730011 accuracy and 0.546460 macro F1 on all 3,652 examples. Epoch 2 ties on both validation metrics. Epoch 1 is retained by the tie rule. Test aggregates are reporting-only.
 
 The second disjoint 25/25 top-up matched the first small top-up's 0.956 validation accuracy but did not improve it. This suggests a plateau for repeating the balanced synthetic dose. Queued a 50-real-preference-only continuation from the latest validation-selected checkpoint at 2.5e-6 to test whether gold preference data adds distinct signal. Training and validation use at most 500 examples, and the full aggregate test is reported separately. Clean validation controls selection and stopping.
+
+## qwen-unsupported50-real50-after-balanced-small-topup-20261030
+
+Timestamp: 2026-10-30T05:37:36.360156+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030", "--adapter-checkpoint", "outputs/qwen-unsupported50-plus-real25-balanced25-topup2-20261030/epoch-01", "--preference-train-sample-size", "50", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "3", "--learning-rate", "2.5e-6", "--baseline-validation-accuracy", "0.956", "--baseline-validation-macro-f1", "0.4862363481299319", "--stop-on-validation-non-improvement", "--seed", "20261221"]. Output: /workspace/post-training/outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030. W&B run: oz1lh11f.
+
+Clean development accuracy: 0.956. Clean development macro F1: 0.4862245151459944. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7330230010952903, "macro_f1": 0.5490387329719686, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.956, "macro_f1": 0.4862245151459944, "confusion_matrix": [[244, 1, 5, 0], [4, 234, 11, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
