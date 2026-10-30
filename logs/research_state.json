@@ -1,10 +1,10 @@
 {
-  "status": "awaiting_codex_planning",
+  "status": "active",
   "planning_owner": "codex_primary",
-  "planning_required": true,
+  "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
-  "current_hypothesis": "Compare the 50-real/50-balanced-synthetic scale result with the validation-preserving 25/25 balanced mixture and the active tool-rich 25/25 source comparison.",
+  "current_hypothesis": "Compare the recent clean-validation-preserving balanced and tool-rich 25/25 mixtures with a matched rare-schema 25/25 mixture.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -12,13 +12,13 @@
     "-m",
     "experiments.train_qwen_when2call_fullpool",
     "--output-dir",
-    "outputs/qwen-postbalanced-real25-toolrich25-mix-20261030",
+    "outputs/qwen-postbalanced-real25-rareschema25-mix-20261030",
     "--adapter-checkpoint",
     "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01",
     "--preference-train-sample-size",
     "25",
     "--augmentation-jsonl",
-    "outputs/when2call-tool-rich-increment25-mix-20261030.jsonl",
+    "outputs/when2call-rare-schema-increment25-mix-20261030.jsonl",
     "--validation-source",
     "sft",
     "--validation-sample-size",
@@ -49,7 +49,51 @@
     "--seed",
     "20261222"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-postbalanced-real25-rareschema25-mix-20261030",
+      "--adapter-checkpoint",
+      "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01",
+      "--preference-train-sample-size",
+      "25",
+      "--augmentation-jsonl",
+      "outputs/when2call-rare-schema-increment25-mix-20261030.jsonl",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "3",
+      "--learning-rate",
+      "2.5e-6",
+      "--baseline-validation-accuracy",
+      "0.958",
+      "--baseline-validation-macro-f1",
+      "0.4872479609158282",
+      "--baseline-test-accuracy",
+      "0.731106243154436",
+      "--baseline-test-macro-f1",
+      "0.5473409779598896",
+      "--baseline-test-source",
+      "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/metrics.json",
+      "--stop-on-validation-non-improvement",
+      "--seed",
+      "20261222"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -76,18 +120,55 @@
     "validation_examples": 500,
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
-  "last_heartbeat": "2026-10-30T07:22:59.346955+00:00",
-  "last_action": "Watchdog handed planning control to the primary Codex process.",
+  "last_heartbeat": "2026-10-30T07:36:20.604879+00:00",
+  "last_action": "Audited complete evidence for the latest 25/25 tool-rich mixture and queued a matched rare-schema synthetic source comparison.",
   "watchdog_enabled": true,
-  "research_log_size": 2002254,
+  "research_log_size": 2004179,
   "stop_command": "STOP",
-  "next_experiment": null,
-  "recording_jobs": [
-    {
-      "pid": 404720,
-      "experiment_id": "qwen-postbalanced-real25-toolrich25-mix-20261030"
-    }
+  "next_experiment": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.train_qwen_when2call_fullpool",
+    "--output-dir",
+    "outputs/qwen-postbalanced-real25-rareschema25-mix-20261030",
+    "--adapter-checkpoint",
+    "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01",
+    "--preference-train-sample-size",
+    "25",
+    "--augmentation-jsonl",
+    "outputs/when2call-rare-schema-increment25-mix-20261030.jsonl",
+    "--validation-source",
+    "sft",
+    "--validation-sample-size",
+    "500",
+    "--validation-seed",
+    "20261053",
+    "--training-eval-sample-size",
+    "500",
+    "--training-eval-seed",
+    "20261059",
+    "--eval-batch-size",
+    "8",
+    "--epochs",
+    "3",
+    "--learning-rate",
+    "2.5e-6",
+    "--baseline-validation-accuracy",
+    "0.958",
+    "--baseline-validation-macro-f1",
+    "0.4872479609158282",
+    "--baseline-test-accuracy",
+    "0.731106243154436",
+    "--baseline-test-macro-f1",
+    "0.5473409779598896",
+    "--baseline-test-source",
+    "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/metrics.json",
+    "--stop-on-validation-non-improvement",
+    "--seed",
+    "20261222"
   ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
   "planning_notified_at": "2026-10-30T07:35:36.481660+00:00",
   "planning_ack_deadline": "2026-10-30T07:37:36.481683+00:00",
@@ -100,7 +181,7 @@
     "artifact": "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030/metrics.json",
     "selection": "aggregate-only leaderboard report; improvement over 0.741512 is within 1-point noise"
   },
-  "next_hypothesis": "The latest 50-real plus 50-balanced-synthetic mixture reached 0.954 clean-validation accuracy, while the earlier 25-real plus 25-balanced-replay mixture retained 0.958. Test whether a 25-real plus 25-tool-rich-synthetic mixture from the same fixed adapter retains the baseline, which would indicate that synthetic source quality matters at a fixed 50-row dose. The tool-rich source has near-balanced labels and prior tool-rich replay results reached 0.958 to 0.960 clean validation at some larger doses, though other tool-rich recipes fell below baseline. Use a stratified 9/8/8 sample and keep model, total rows, optimizer settings, validation, and stopping rule fixed. Clean validation selects; aggregate test scores are report-only.",
+  "next_hypothesis": "The latest 25-real plus 25-tool-rich-synthetic run retained 0.958 clean-validation accuracy, matching the 25/25 balanced-replay mixture. Earlier rare-schema synthetic training also reached the 0.958 validation baseline at some doses. Compare a 25-real plus 25-rare-schema-synthetic pilot from the same fixed adapter to test whether rare-schema coverage provides the same clean-validation compatibility. Keep total examples, learning rate, validation sample, and stopping rule fixed. The 25 synthetic rows are stratified 9/8/8. Clean validation controls selection; aggregate test metrics remain report-only.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
@@ -147,13 +228,13 @@
     "selection_use": "none"
   },
   "evidence_audit": {
-    "experiment": "qwen-postbalanced-real50-balanced50-mix-20261030",
-    "training_metrics": "recorded at epoch 1: accuracy 0.940000, macro F1 0.704973, loss 0.344311 on 100 examples",
-    "clean_validation_metrics": "recorded at epoch 1: accuracy 0.954000, macro F1 0.485689806113 on 500 SFT validation examples",
-    "aggregate_black_box_test_metrics": "recorded at epoch 1: accuracy 0.736308871851, macro F1 0.550342820198 on all 3652 test examples",
+    "experiment": "qwen-postbalanced-real25-toolrich25-mix-20261030",
+    "training_metrics": "recorded at epoch 1: accuracy 1.000000, macro F1 0.750000, loss 0.000989 on 50 examples",
+    "clean_validation_metrics": "recorded at epoch 1: accuracy 0.958000, macro F1 0.487247960916 on 500 SFT validation examples",
+    "aggregate_black_box_test_metrics": "recorded at epoch 1: accuracy 0.730284775465, macro F1 0.546782190678 on all 3652 test examples",
     "all_required_evidence_recorded": true,
     "test_labels_used_for_selection": false,
-    "note": "Clean validation was below the 0.958 baseline, so the run stopped after epoch 1. Aggregate test metrics are report-only."
+    "note": "Clean validation tied the 0.958 baseline, so the run stopped after epoch 1. Aggregate test metrics are report-only."
   },
   "duplicate_worker_failure": {
     "pid": 103632,
@@ -275,9 +356,9 @@
     }
   ],
   "latest_aggregate_test_report": {
-    "experiment": "qwen-postbalanced-real50-balanced50-mix-20261030",
-    "accuracy": 0.7363088718510405,
-    "macro_f1": 0.5503428201980998,
+    "experiment": "qwen-postbalanced-real25-toolrich25-mix-20261030",
+    "accuracy": 0.7302847754654983,
+    "macro_f1": 0.5467821906775395,
     "examples": 3652,
     "epoch": 1,
     "selection_use": "aggregate reporting only; no individual test labels or outputs inspected"
@@ -553,47 +634,47 @@
     ]
   },
   "latest_clean_validation_screen": {
-    "experiment": "qwen-postbalanced-real50-balanced50-mix-20261030",
-    "accuracy": 0.954,
-    "macro_f1": 0.4856898061132617,
+    "experiment": "qwen-postbalanced-real25-toolrich25-mix-20261030",
+    "accuracy": 0.958,
+    "macro_f1": 0.4872479609158282,
     "examples": 500,
     "selection": "Clean held-out validation only."
   },
   "research_log_size_reconciled_at": "2026-10-29T10:10:53.863543+00:00",
   "research_log_size_reconciliation": "Accepted current file size 1777226 after a stable earlier shrink from recorded size 1786879; the watchdog had repeated the same integrity warning.",
   "latest_training_report": {
-    "experiment": "qwen-postbalanced-real50-balanced50-mix-20261030",
-    "accuracy": 0.94,
-    "macro_f1": 0.7049731182795699,
-    "examples": 100,
+    "experiment": "qwen-postbalanced-real25-toolrich25-mix-20261030",
+    "accuracy": 1.0,
+    "macro_f1": 0.75,
+    "examples": 50,
     "epoch": 1,
-    "step": 100,
-    "training_loss": 0.3443112027385038,
-    "data_examples": 100,
+    "step": 50,
+    "training_loss": 0.0009889013285379633,
+    "data_examples": 50,
     "selection_use": "clean-validation-selected epoch"
   },
   "latest_clean_validation_report": {
-    "experiment": "qwen-postbalanced-real50-balanced50-mix-20261030",
-    "accuracy": 0.954,
-    "macro_f1": 0.4856898061132617,
+    "experiment": "qwen-postbalanced-real25-toolrich25-mix-20261030",
+    "accuracy": 0.958,
+    "macro_f1": 0.4872479609158282,
     "examples": 500,
     "source": "nvidia/When2Call:train_sft",
     "seed": 20261053,
     "selection_use": "clean validation only"
   },
   "latest_aggregate_black_box_test_report": {
-    "experiment": "qwen-postbalanced-real50-balanced50-mix-20261030",
-    "accuracy": 0.7363088718510405,
-    "macro_f1": 0.5503428201980998,
+    "experiment": "qwen-postbalanced-real25-toolrich25-mix-20261030",
+    "accuracy": 0.7302847754654983,
+    "macro_f1": 0.5467821906775395,
     "examples": 3652,
     "epoch": 1,
     "selection_use": "aggregate reporting only; no individual test labels or outputs inspected"
   },
-  "queue_updated_at": "2026-10-30T07:22:53.985142+00:00",
+  "queue_updated_at": "2026-10-30T07:36:20.604879+00:00",
   "queued_hypotheses": [
     {
-      "experiment": "qwen-postbalanced-real25-toolrich25-mix-20261030",
-      "hypothesis": "The latest 50-real plus 50-balanced-synthetic mixture reached 0.954 clean-validation accuracy, while the earlier 25-real plus 25-balanced-replay mixture retained 0.958. Test whether a 25-real plus 25-tool-rich-synthetic mixture from the same fixed adapter retains the baseline, which would indicate that synthetic source quality matters at a fixed 50-row dose. The tool-rich source has near-balanced labels and prior tool-rich replay results reached 0.958 to 0.960 clean validation at some larger doses, though other tool-rich recipes fell below baseline. Use a stratified 9/8/8 sample and keep model, total rows, optimizer settings, validation, and stopping rule fixed. Clean validation selects; aggregate test scores are report-only.",
+      "experiment": "qwen-postbalanced-real25-rareschema25-mix-20261030",
+      "hypothesis": "The latest 25-real plus 25-tool-rich-synthetic run retained 0.958 clean-validation accuracy, matching the 25/25 balanced-replay mixture. Earlier rare-schema synthetic training also reached the 0.958 validation baseline at some doses. Compare a 25-real plus 25-rare-schema-synthetic pilot from the same fixed adapter to test whether rare-schema coverage provides the same clean-validation compatibility. Keep total examples, learning rate, validation sample, and stopping rule fixed. The 25 synthetic rows are stratified 9/8/8. Clean validation controls selection; aggregate test metrics remain report-only.",
       "selection": "clean validation only; aggregate black-box test metrics report-only"
     }
   ],
@@ -612,17 +693,17 @@
     "selection": "stratified sample from existing balanced 50-row synthetic pool; no test data used"
   },
   "data_probe_next": {
-    "experiment": "qwen-postbalanced-real25-toolrich25-mix-20261030",
+    "experiment": "qwen-postbalanced-real25-rareschema25-mix-20261030",
     "real_rows": 25,
     "synthetic_rows": 25,
-    "synthetic_source": "outputs/when2call-tool-rich-boundary-pilot-20261028/balanced_boundary_tool_rich.jsonl",
-    "sample_path": "outputs/when2call-tool-rich-increment25-mix-20261030.jsonl",
+    "synthetic_source": "outputs/when2call-rare-schema-boundary-pilot-20261028/balanced_boundary_rare_schema.jsonl",
+    "sample_path": "outputs/when2call-rare-schema-increment25-mix-20261030.jsonl",
     "synthetic_label_counts": {
       "0": 9,
       "1": 8,
       "2": 8
     },
-    "synthetic_pool_sha256": "5a6931f8ee23f0752332982635f7349f83d0c81b10a2fc8e3b4c3868b899bf51",
-    "selection": "stratified deterministic sample; no test data used"
+    "synthetic_pool_sha256": "86fab6873faf400f322900c29fb04265e0cad59a3d0f68f2e799fc5240a05bcf",
+    "selection": "deterministic stratified sample; no test data used"
   }
 }
