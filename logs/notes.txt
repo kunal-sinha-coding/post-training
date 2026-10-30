@@ -8827,3 +8827,7 @@ Description: Saved the watchdog's active process ID and launch status for the qu
 Context: The run uses the fixed 50-real plus 50-balanced-synthetic data, the same source checkpoint as the 5e-6 experiment, and clean-validation-only stopping. The watchdog advanced the queue and launched it successfully.
 
 2026-10-30T04:10:29.858469+00:00: Commit `Record research experiment qwen-unsupported50-real50-balanced50-lr2p5e6-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+Commit: Queue lower-rate test for the real-heavy replay mixture.
+Description: Recorded complete evidence for the latest lower-rate 50/50 run and queued a 5e-6 comparison on the same 75/25 recipe, examples, and starting checkpoint as the prior 2e-5 run.
+Context: The 50/50 recipe's clean-validation score recovered from 0.938 at 2e-5 to 0.952 at 5e-6 and 0.954 at 2.5e-6. This motivates testing whether the lower rate helps the real-heavy mixture. Aggregate test scores are not used for selection.

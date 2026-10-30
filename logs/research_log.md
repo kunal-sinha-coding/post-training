@@ -15095,3 +15095,9 @@ Clean development accuracy: 0.95. Clean development macro F1: 0.4846137180806519
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.95, "macro_f1": 0.4846137180806519, "confusion_matrix": [[244, 1, 5, 0], [4, 231, 14, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## 2026-10-30: lower-rate 50/50 audit and 75/25 rate comparison
+
+The latest completed experiment, `qwen-unsupported50-real50-balanced50-lr2p5e6-20261030`, has all three evidence types. At the clean-validation-selected first epoch, training accuracy is 0.940000 and macro F1 is 0.705495 on all 100 training examples, with loss 0.284959. Clean SFT validation is 0.954000 accuracy and 0.485690 macro F1 on 500 examples. Full aggregate test is 0.736583 accuracy and 0.550639 macro F1 on all 3,652 examples. Test metrics are report-only.
+
+For the same 50/50 mixture, clean-validation accuracy was 0.938 at 2e-5, 0.952 at 5e-6, and 0.954 at 2.5e-6. The last two values are close, but the trend supports reducing the update magnitude after validation regression. Queued a controlled 5e-6 run on the same 75/25 data and checkpoint used by the prior 2e-5 run. It uses clean validation for stopping and selection and reports test aggregates separately.
