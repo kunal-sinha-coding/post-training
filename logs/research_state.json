@@ -4,65 +4,21 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
-  "current_hypothesis": "The completed 50-example unsupported-capability continuation has complete training, clean-validation, and aggregate-test evidence. Its training set contains one label class, so a distinct hypothesis is that balanced synthetic examples may add useful class coverage during continuation. The current fusion job runs first. Then compare the queued 50-row unsupported dose with a 450-row balanced synthetic continuation from the same checkpoint. Select or stop checkpoints using clean validation only. Report aggregate black-box test metrics, but do not use test labels or test metrics for selection.",
-  "active_experiment": {
-    "pid": 387058,
-    "command": [
-      "python",
-      "-u",
-      "-m",
-      "experiments.train_qwen_when2call_fullpool",
-      "--output-dir",
-      "outputs/qwen-when2call-unsupported50-plus50-continuation-20261030",
-      "--adapter-checkpoint",
-      "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-20261028/epoch-01",
-      "--synthetic-only",
-      "--augmentation-jsonl",
-      "outputs/when2call-unsupported-medium-increment50-20261030.jsonl",
-      "--validation-source",
-      "sft",
-      "--validation-sample-size",
-      "500",
-      "--validation-seed",
-      "20261053",
-      "--training-eval-sample-size",
-      "500",
-      "--training-eval-seed",
-      "20261059",
-      "--eval-batch-size",
-      "8",
-      "--epochs",
-      "3",
-      "--learning-rate",
-      "2e-5",
-      "--baseline-validation-accuracy",
-      "0.936",
-      "--baseline-validation-macro-f1",
-      "0.4759725779844653",
-      "--baseline-test-accuracy",
-      "0.7417853231106243",
-      "--baseline-test-macro-f1",
-      "0.5522560134517236",
-      "--baseline-test-source",
-      "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030/metrics.json",
-      "--seed",
-      "20261213",
-      "--stop-on-validation-non-improvement"
-    ],
-    "started_at": "2026-10-30T01:50:18.113802+00:00"
-  },
+  "current_hypothesis": "Two synthetic-only continuations from the same 50-example checkpoint stopped after one epoch when clean-validation accuracy fell from 0.936 to 0.916 on the 50-row dose and 0.914 on the balanced 450-row dose. This points to distribution shift or forgetting from synthetic-only updates. Test whether a matched 25-real plus 25-balanced-synthetic continuation preserves clean validation better. The source examples have no exact prompt overlap with the original 50-row unsupported pilot.",
+  "active_experiment": {},
   "worker_command": [
     "python",
     "-u",
     "-m",
     "experiments.train_qwen_when2call_fullpool",
     "--output-dir",
-    "outputs/qwen-when2call-unsupported50-plus50-continuation-20261030",
+    "outputs/qwen-unsupported50-real25-balanced25-replay-20261030",
     "--adapter-checkpoint",
     "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-20261028/epoch-01",
-    "--synthetic-only",
+    "--preference-train-sample-size",
+    "25",
     "--augmentation-jsonl",
-    "outputs/when2call-unsupported-medium-increment50-20261030.jsonl",
+    "outputs/when2call-balanced-replay-pilot-25-20261030.jsonl",
     "--validation-source",
     "sft",
     "--validation-sample-size",
@@ -89,54 +45,11 @@
     "0.5522560134517236",
     "--baseline-test-source",
     "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030/metrics.json",
+    "--stop-on-validation-non-improvement",
     "--seed",
-    "20261213",
-    "--stop-on-validation-non-improvement"
+    "20261215"
   ],
-  "worker_queue": [
-    [
-      "python",
-      "-u",
-      "-m",
-      "experiments.train_qwen_when2call_fullpool",
-      "--output-dir",
-      "outputs/qwen-unsupported50-plus-balanced450-continuation-20261030",
-      "--adapter-checkpoint",
-      "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-20261028/epoch-01",
-      "--synthetic-only",
-      "--augmentation-jsonl",
-      "outputs/when2call-synthetic-medium-pilots-20261028/balanced_mix450.jsonl",
-      "--validation-source",
-      "sft",
-      "--validation-sample-size",
-      "500",
-      "--validation-seed",
-      "20261053",
-      "--training-eval-sample-size",
-      "500",
-      "--training-eval-seed",
-      "20261059",
-      "--eval-batch-size",
-      "8",
-      "--epochs",
-      "3",
-      "--learning-rate",
-      "2e-5",
-      "--baseline-validation-accuracy",
-      "0.936",
-      "--baseline-validation-macro-f1",
-      "0.4759725779844653",
-      "--baseline-test-accuracy",
-      "0.7417853231106243",
-      "--baseline-test-macro-f1",
-      "0.5522560134517236",
-      "--baseline-test-source",
-      "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030/metrics.json",
-      "--stop-on-validation-non-improvement",
-      "--seed",
-      "20261214"
-    ]
-  ],
+  "worker_queue": [],
   "_previous_command": [
     "python",
     "-u",
@@ -163,10 +76,10 @@
     "validation_examples": 500,
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
-  "last_heartbeat": "2026-10-30T01:50:18.113820+00:00",
-  "last_action": "Watchdog started validation worker pid 387058.",
+  "last_heartbeat": "2026-10-30T02:01:54.310685+00:00",
+  "last_action": "Watchdog advanced the experiment queue after worker exit.",
   "watchdog_enabled": true,
-  "research_log_size": 1932651,
+  "research_log_size": 1934604,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -174,12 +87,13 @@
     "-m",
     "experiments.train_qwen_when2call_fullpool",
     "--output-dir",
-    "outputs/qwen-when2call-unsupported50-plus50-continuation-20261030",
+    "outputs/qwen-unsupported50-real25-balanced25-replay-20261030",
     "--adapter-checkpoint",
     "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-20261028/epoch-01",
-    "--synthetic-only",
+    "--preference-train-sample-size",
+    "25",
     "--augmentation-jsonl",
-    "outputs/when2call-unsupported-medium-increment50-20261030.jsonl",
+    "outputs/when2call-balanced-replay-pilot-25-20261030.jsonl",
     "--validation-source",
     "sft",
     "--validation-sample-size",
@@ -206,20 +120,15 @@
     "0.5522560134517236",
     "--baseline-test-source",
     "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030/metrics.json",
+    "--stop-on-validation-non-improvement",
     "--seed",
-    "20261213",
-    "--stop-on-validation-non-improvement"
+    "20261215"
   ],
-  "recording_jobs": [
-    {
-      "pid": 387057,
-      "experiment_id": "qwen-unsupported50-best-encoder-fusion-20261030"
-    }
-  ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": null,
-  "planning_ack_deadline": null,
-  "planning_attempts": 71,
+  "planning_notified_at": "2026-10-30T02:15:36.456187+00:00",
+  "planning_ack_deadline": "2026-10-30T02:17:36.456211+00:00",
+  "planning_attempts": 72,
   "best_observed_test": {
     "method": "Qwen after 50-example unsupported-capability synthetic continuation, greedy full-test evaluation",
     "accuracy": 0.7417853231106243,
@@ -228,7 +137,7 @@
     "artifact": "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030/metrics.json",
     "selection": "aggregate-only leaderboard report; improvement over 0.741512 is within 1-point noise"
   },
-  "next_hypothesis": "Balanced synthetic continuation may complement the single-class unsupported-capability pilot by adding label and request diversity. Evaluate every epoch, cap train and validation probes at 500 examples, use clean validation for stopping and checkpoint selection, and report full aggregate test metrics separately.",
+  "next_hypothesis": "A small real-preference replay mixed with balanced synthetic examples may reduce clean-validation degradation seen in synthetic-only continuation. The pilot keeps total new training rows at 50, uses 25 sampled real preference rows plus 25 balanced synthetic rows, and stops/selects by clean validation only. Report the full aggregate test score separately without using it for selection.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
@@ -275,13 +184,13 @@
     "selection_use": "none"
   },
   "evidence_audit": {
-    "experiment": "qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030",
-    "training_metrics": "recorded from source checkpoint: 1.000000 accuracy and 0.250000 macro F1 on all 50 training rows; loss 0.194747 at step 50",
-    "clean_validation_metrics": "recorded from source checkpoint: 0.936000 accuracy and 0.475973 macro F1 on 500 SFT rows; class 2 is absent from this validation sample",
-    "aggregate_black_box_test_metrics": "recorded: 0.741785 accuracy and 0.552256 macro F1 on the full 3652-row test split",
+    "experiment": "qwen-unsupported50-plus-balanced450-continuation-20261030",
+    "training_metrics": "recorded: 0.991111 accuracy, 0.743333 macro F1, loss 0.270283 on all 450 training examples",
+    "clean_validation_metrics": "recorded: 0.914000 accuracy and 0.471606 macro F1 on 500 SFT validation examples",
+    "aggregate_black_box_test_metrics": "recorded: 0.705093 accuracy and 0.516897 macro F1 on all 3652 test examples",
     "all_required_evidence_recorded": true,
     "test_labels_used_for_selection": false,
-    "note": "This was a frozen full-test measurement of the completed 50-example unsupported-capability continuation. The evaluator retained aggregate metrics only. Its accuracy is 3.943 percentage points above the original fullpool checkpoint and 0.027 percentage points above the previous five-vote leaderboard result, a near tie within the established 1-point noise band."
+    "note": "The trainer stopped after epoch 1 because clean validation accuracy did not improve. Aggregate test metrics are report-only."
   },
   "duplicate_worker_failure": {
     "pid": 103632,
@@ -409,7 +318,7 @@
     "examples": 3652,
     "selection_use": "report-only; not used to choose candidates"
   },
-  "updated_at": "2026-10-30T01:40:45.698755+00:00",
+  "updated_at": "2026-10-30T02:17:35.896897+00:00",
   "synthetic_pilot_results": [
     {
       "strategy": "missing_required_info",
@@ -516,7 +425,7 @@
     "ensemble_aggregate_test_accuracy": 0.7313800657174151,
     "test_metric_use": "Reporting only; not used for candidate selection."
   },
-  "latest_completed_experiment": "qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030",
+  "latest_completed_experiment": "qwen-unsupported50-plus-balanced450-continuation-20261030",
   "evidence_policy": {
     "selection_metric": "clean held-out validation only",
     "aggregate_test": "reporting only; never use test-derived metrics for candidate selection",
@@ -689,36 +598,29 @@
   "research_log_size_reconciled_at": "2026-10-29T10:10:53.863543+00:00",
   "research_log_size_reconciliation": "Accepted current file size 1777226 after a stable earlier shrink from recorded size 1786879; the watchdog had repeated the same integrity warning.",
   "latest_training_report": {
-    "experiment": "qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030",
-    "training_performed": true,
-    "accuracy": 1.0,
-    "macro_f1": 0.25,
-    "examples": 50,
+    "experiment": "qwen-unsupported50-plus-balanced450-continuation-20261030",
+    "accuracy": 0.9911111111111112,
+    "macro_f1": 0.7433330370238678,
+    "examples": 450,
     "epoch": 1,
-    "step": 50,
-    "training_loss": 0.1947460800409044,
-    "data_examples": 50,
-    "source_checkpoint": "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-20261028/epoch-01"
+    "step": 450,
+    "training_loss": 0.2702827572263382,
+    "data_examples": 450
   },
   "latest_clean_validation_report": {
-    "experiment": "qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030",
-    "accuracy": 0.936,
-    "macro_f1": 0.4759725779844653,
+    "experiment": "qwen-unsupported50-plus-balanced450-continuation-20261030",
+    "accuracy": 0.914,
+    "macro_f1": 0.47160575668797977,
     "examples": 500,
     "source": "nvidia/When2Call:train_sft",
     "seed": 20261053,
-    "label_counts": {
-      "0": 250,
-      "1": 249,
-      "3": 1
-    },
-    "selection_use": "held-out validation; test rows and labels not inspected"
+    "selection_use": "clean validation only"
   },
   "latest_aggregate_black_box_test_report": {
-    "experiment": "qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030",
-    "accuracy": 0.7417853231106243,
-    "macro_f1": 0.5522560134517236,
+    "experiment": "qwen-unsupported50-plus-balanced450-continuation-20261030",
+    "accuracy": 0.7050930996714129,
+    "macro_f1": 0.5168966366138523,
     "examples": 3652,
-    "selection_use": "aggregate-only reporting; no individual rows or labels inspected"
+    "selection_use": "aggregate reporting only; no test labels or row-level outputs inspected"
   }
 }

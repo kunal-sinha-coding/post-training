@@ -8766,3 +8766,22 @@ Description: Confirmed that the latest completed unsupported-capability full-tes
 Context: The prior 50-example synthetic pilot was single-class, while larger unsupported-only training did not show a monotonic benefit. The balanced continuation tests whether broader synthetic coverage helps without using black-box test labels for checkpoint selection.
 
 2026-10-30T01:50:21.057150+00:00: Commit `Record research experiment qwen-unsupported50-best-encoder-fusion-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-30T01:59:28.757563+00:00: Commit `Record research experiment qwen-when2call-unsupported50-plus50-continuation-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-30T01:59:42.958946+00:00: Commit `Record experiment synchronization failure` records the failed commit or push for qwen-when2call-unsupported50-plus50-continuation-20261030: Command '['git', '-c', 'safe.directory=/workspace/post-training', 'add', '--', 'logs/experiment_records.jsonl', 'logs/research_log.md', 'logs/leaderboard.md', 'logs/results.txt', 'logs/notes.txt', 'logs/research_state.json']' died with <Signals.SIGBUS: 7>.. The result remains local and the worker queue continues.
+
+2026-10-30T02:15:39.580142+00:00: Commit `Record research experiment qwen-unsupported50-plus-balanced450-continuation-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-30T02:15:40.725815+00:00: Commit `Record experiment synchronization failure` records the failed commit or push for qwen-unsupported50-plus-balanced450-continuation-20261030: fatal: Unable to create '/workspace/post-training/.git/index.lock': File exists.
+
+Another git process seems to be running in this repository, e.g.
+an editor opened by 'git commit'. Please make sure all processes
+are terminated then try again. If it still fails, a git process
+may have crashed in this repository earlier:
+remove the file manually to continue.
+. The result remains local and the worker queue continues.
+
+Commit: Queue a matched replay pilot after auditing completed continuations.
+Description: Updated the evidence audit to the latest completed balanced synthetic continuation, confirmed complete training, clean-validation, and full aggregate test evidence, and queued a 25-real plus 25-balanced-synthetic continuation from the 50-example checkpoint.
+Context: Synthetic-only continuations of 50 unsupported rows and 450 balanced rows both reduced clean validation. The encoder fusion did not improve the clean-validation-selected result. The new pilot tests whether a small amount of real preference replay reduces the validation decline. Checkpoint selection uses clean validation only. Test metrics remain aggregate reporting only.
