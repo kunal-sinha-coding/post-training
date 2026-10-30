@@ -1,6 +1,6 @@
-"""Evaluate five-vote Qwen predictions fused with the selected three-encoder family.
+"""Evaluate Qwen vote and raw probabilities fused with the selected three-encoder family.
 
-The flow scores fixed clean validation first, selects only among predeclared fusion weights,
+The flow scores fixed clean validation first, selects only among predeclared fusion rules,
 then measures the frozen candidates on the full test split and saves aggregate metrics only.
 """
 from __future__ import annotations
@@ -57,6 +57,8 @@ def candidate_probabilities(qwen: torch.Tensor, encoder: torch.Tensor) -> dict[s
     for weight in FUSION_ENCODER_WEIGHTS:
         candidates[f"vote_frequency_encoder_{int(weight * 100)}"] = (1 - weight) * vote_probs + weight * encoder
         candidates[f"vote_majority_encoder_{int(weight * 100)}"] = (1 - weight) * majority_tensor + weight * encoder
+    # Preserve the model's raw class probabilities as a distinct fusion signal.
+    candidates["vote_probability_encoder_50"] = 0.5 * qwen + 0.5 * encoder
     return candidates
 
 
@@ -106,7 +108,8 @@ def main() -> int:
     validation_qwen, validation_encoder = score_models(validation_rows, args, device, heartbeat)
     validation_candidates = candidate_probabilities(validation_qwen, validation_encoder)
     validation_metrics = score_candidates(validation_rows, validation_candidates)
-    fusion_names = [name for name in validation_metrics if name.startswith(("vote_frequency_encoder_", "vote_majority_encoder_"))]
+    # Select the fusion rule using only clean validation accuracy and macro F1.
+    fusion_names = [name for name in validation_metrics if name.startswith(("vote_frequency_encoder_", "vote_majority_encoder_", "vote_probability_encoder_"))]
     selected_fusion = max(fusion_names, key=lambda name: (validation_metrics[name]["accuracy"], validation_metrics[name]["macro_f1"]))
 
     # Freeze all candidate rules before loading the black-box test split.
