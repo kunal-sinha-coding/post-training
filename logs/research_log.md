@@ -15113,3 +15113,9 @@ Clean development accuracy: 0.948. Clean development macro F1: 0.484113865932047
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.948, "macro_f1": 0.48411386593204775, "confusion_matrix": [[242, 3, 5, 0], [2, 232, 15, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## 2026-10-30: 75/25 lower-rate evidence audit and final matched-rate check
+
+The latest completed experiment, `qwen-unsupported50-real75-balanced25-lr5e6-20261030`, has all three evidence types. At its clean-validation-selected first epoch, training accuracy is 0.960000 and macro F1 is 0.719585 on all 100 rows, with loss 0.312599. Clean SFT validation is 0.952000 accuracy and 0.485185 macro F1 on 500 rows. Full aggregate test is 0.724808 accuracy and 0.542695 macro F1 on all 3,652 rows. Test metrics are report-only.
+
+The matched 75/25 recipe improved from 0.948 validation accuracy at 2e-5 to 0.952 at 5e-6. The matched 50/50 recipe reached 0.952 at 5e-6 and 0.954 at 2.5e-6. Queued one final matched 2.5e-6 comparison for the 75/25 recipe, keeping its checkpoint, rows, and seed fixed. Clean validation controls stopping and selection; test aggregates do not.

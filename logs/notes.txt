@@ -8833,3 +8833,7 @@ Description: Recorded complete evidence for the latest lower-rate 50/50 run and 
 Context: The 50/50 recipe's clean-validation score recovered from 0.938 at 2e-5 to 0.952 at 5e-6 and 0.954 at 2.5e-6. This motivates testing whether the lower rate helps the real-heavy mixture. Aggregate test scores are not used for selection.
 
 2026-10-30T04:28:07.888052+00:00: Commit `Record research experiment qwen-unsupported50-real75-balanced25-lr5e6-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+Commit: Queue a matched 2.5e-6 run for the 75/25 replay recipe.
+Description: Recorded the latest lower-rate 75/25 experiment's training, clean-validation, and aggregate test evidence, then queued the same recipe at 2.5e-6.
+Context: The 75/25 recipe improved clean validation from 0.948 at 2e-5 to 0.952 at 5e-6. A matched 50/50 test improved from 0.952 at 5e-6 to 0.954 at 2.5e-6. This supports one final controlled rate comparison. Test metrics remain report-only.
