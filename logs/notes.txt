@@ -8791,3 +8791,5 @@ Description: Added a 50-example real preference continuation behind the active 2
 Context: Recent synthetic-only continuations reduced clean-validation accuracy. This control isolates whether adding balanced synthetic examples helps beyond continued real-data training. Aggregate black-box test metrics remain report-only and do not select checkpoints.
 
 2026-10-30T02:33:46.724070+00:00: Commit `Record research experiment qwen-unsupported50-real25-balanced25-replay-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-30T02:56:55.547019+00:00: Commit `Record research experiment qwen-unsupported50-real50-replay-control-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
