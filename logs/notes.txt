@@ -8855,3 +8855,7 @@ Description: Recorded full evidence for the completed 50-row top-up and queued a
 Context: The first small top-up improved clean validation to 0.956, while larger continuations did not beat the 0.954 source score. The next run tests whether a second small disjoint dose adds signal. Test aggregates remain report-only.
 
 2026-10-30T05:20:07.757526+00:00: Commit `Record research experiment qwen-unsupported50-plus-real25-balanced25-topup2-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+Commit: Queue a real-only continuation after the synthetic top-up plateau.
+Description: Recorded complete evidence for the second 25/25 top-up and queued a 50-row real preference continuation from its clean-validation-selected checkpoint.
+Context: Two small disjoint synthetic replay top-ups both reached 0.956 clean-validation accuracy, so more of the same did not add validation signal. The real-only continuation tests a distinct data source at the same low learning rate. Test metrics remain report-only.
