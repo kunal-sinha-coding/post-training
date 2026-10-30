@@ -9019,8 +9019,23 @@ Commit: Update research evidence and queue the 35/15 tool-rich comparison. The c
 
 2026-10-30T08:21:30.540664+00:00: Commit `Record research experiment qwen-postbalanced-real40-rareschema10-mix-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
 
-2026-10-30T08:31:40.545329+00:00: Commit `Record research experiment qwen-postbalanced-real35-toolrich15-mix-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+2026-10-30T08:42:26.518003+00:00: Commit `Record experiment synchronization failure` records the failed commit or push for qwen-postbalanced-real35-rareschema15-mix-20261030: Command '['git', '-c', 'safe.directory=/workspace/post-training', 'add', '--', 'logs/experiment_records.jsonl', 'logs/research_log.md', 'logs/leaderboard.md', 'logs/results.txt', 'logs/notes.txt', 'logs/research_state.json']' died with <Signals.SIGBUS: 7>.. The result remains local and the worker queue continues.
 
-## 2026-10-30: Audit 35/15 tool-rich run and queue combined-boundary comparison
+2026-10-30T08:53:52.326823+00:00: Commit `Record research experiment qwen-postbalanced-real35-combinedboundary15-mix-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
 
-Commit: Record complete evidence for the latest completed pilot and queue a distinct matched source recipe. The 35-real/15-tool-rich run has training, clean-validation, and aggregate test metrics in its output, journal, results file, and leaderboard. No measurement was missing. The watchdog launched the 35-real/15-rare-schema comparison as PID 408981, which remains the only training worker. Queued a 35-real/15-combined-boundary comparison using a balanced, prompt-disjoint sample. Candidate selection uses clean validation only; aggregate test metrics are report-only.
+2026-10-30T08:53:58.359084+00:00: Commit `Record experiment synchronization failure` records the failed commit or push for qwen-postbalanced-real35-combine
+2026-10-30T08:57:09.068916+00:00: Commit `Record research experiment qwen-postbalanced-real35-rareschema15-mix-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+he result remains local and the worker queue continues.
+
+## 2026-10-30: Record combined-boundary evidence and queue 30/20 tool-rich dose
+
+Commit: Audit the latest completed experiment and add a distinct dose test. The 35-real/15-combined-boundary run contains training, validation, and aggregate test measurements. No measurement was missing. The watchdog had completed the prior 35/15 source comparison and handed off planning. Queued 30-real/20-tool-rich using a balanced, prompt-disjoint sample from the existing 750-row pool. Clean validation is the only selection measure; test metrics are report-only.
+
+2026-10-30T08:57:22.278021+00:00: Commit `Record experiment synchronization failure` records the failed commit or push for qwen-postbalanced-real35-rareschema15-mix-20261030: fatal: Unable to create '/workspace/post-training/.git/index.lock': File exists.
+
+Another git process seems to be running in this repository, e.g.
+an editor opened by 'git commit'. Please make sure all processes
+are terminated then try again. If it still fails, a git process
+may have crashed in this repository earlier:
+remove the file manually to continue.
+. The result remains local and the worker queue continues.
