@@ -2473,3 +2473,6 @@ Queued next: balanced 508-row tool-rich synthetic continuation and a matched 508
 | Candidate | qwen-tool-rich-best-checkpoint-balanced508-continue-20261030 | 0.954 | 0.4847138022092461 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-best-checkpoint-balanced508-continue-20261030/metrics.json) | completed |
 
 | qwen-tool-rich-best-checkpoint-balanced508-continue-20261030 | 0.7368565169769989 | 0.5494969990329448 | l5laqm30 | Aggregate-only frozen test measurement |
+| Candidate | qwen-tool-rich-best-checkpoint-real508-control-20261030 | 0.95 | 0.48414153508443714 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-best-checkpoint-real508-control-20261030/metrics.json) | completed |
+
+| qwen-tool-rich-best-checkpoint-real508-control-20261030 | 0.718236582694414 | 0.5367378708589379 | viii55l9 | Aggregate-only frozen test measurement |
