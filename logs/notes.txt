@@ -8899,3 +8899,9 @@ The watchdog launched the queued trainer as PID 397244 with output in `outputs/q
 Commit name: Queue a matched real-preference control behind the active synthetic pilot.
 
 Audited the latest completed experiment and verified training metrics, clean validation, and full aggregate test metrics are present for both epochs. The higher-validation epoch remains selected. Kept the active unsupported-synthetic worker unchanged and queued a 50-row real-preference control from the same starting checkpoint with matching learning rate, validation sample, training evaluation cap, and full-test reporting. Test metrics are report-only.
+
+## 2026-10-30: Queue disjoint balanced synthetic-only comparison
+
+Commit name: Add balanced synthetic-only continuation after matched real control.
+
+Confirmed the latest completed run has all three required evidence types. Preserved the active unsupported-synthetic worker and the already queued matched real control. Added a 50-row balanced synthetic-only continuation after the control. Its pool is disjoint from the two balanced top-up sets. The experiment holds the checkpoint, learning rate, validation sample, and stopping rule fixed to isolate the data source. Test aggregates remain report-only.
