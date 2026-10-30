@@ -15955,3 +15955,9 @@ Clean development accuracy: 0.503030303030303. Clean development macro F1: 0.463
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.503030303030303, "macro_f1": 0.46376398392527424, "confusion_matrix": [[45, 7, 1, 0], [4, 30, 0, 0], [5, 5, 8, 0], [48, 12, 0, 0]], "examples": 165}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## Latest evidence audit and targeted direct-answer pilot (2026-10-30T14:06:38.337573+00:00)
+
+Most recent completed run: `qwen-postbalanced-real30-toolrich-complexitymix100-bfcl-reviewclear-val-20261030`. All epochs contain training, clean-validation, and aggregate black-box test measurements. The best validation checkpoint was epoch 1: training accuracy 0.961538, macro F1 0.723673, loss 0.229503 on 130; BFCL validation accuracy 0.515152, macro F1 0.484855 on 165; full aggregate test accuracy 0.726725, macro F1 0.544773 on 3652. Validation alone selected the checkpoint.
+
+The training evaluation contains no class-3 examples. On BFCL validation, all 60 class-3 rows were predicted as class 0 or 1. This motivates a small targeted pilot: 24 high-confidence direct examples plus 8 examples from each other class, sampled only from the BFCL training split. The pilot continues from the best BFCL-validation checkpoint, reports training, validation, and aggregate test metrics, and uses validation only for selection. Artifact SHA-256: `91d690cd21772c4115f0756556e59968459465f5fc8cb03b071340e7184a7a2a`.

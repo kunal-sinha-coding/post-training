@@ -1,10 +1,10 @@
 {
-  "status": "awaiting_codex_planning",
+  "status": "active",
   "planning_owner": "codex_primary",
-  "planning_required": true,
+  "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
-  "current_hypothesis": "The balanced 200-example tool-rich and non-tool-rich pilots both scored 0.956 clean-validation accuracy, below the 0.958 baseline. The fixed validation confusion matrix includes repeated false predictions of label 2, while label 2 has no true validation rows. Test whether a 100-row synthetic mixture with only 10 label-2 examples reduces this overprediction without changing the checkpoint, 30 real examples, optimizer, validation sample, or stopping rule.",
+  "current_hypothesis": "The latest BFCL validation run had no class-3 direct examples in its training sample, and the model predicted none of the 60 class-3 validation rows as class 3. Continue from the best clean-validation checkpoint using a small pilot of 24 high-confidence direct examples plus 8 examples from each other class. This tests whether adding direct-answer training signal fixes the observed class omission without changing the optimizer or adding a large data volume.",
   "active_experiment": {},
   "worker_command": [
     "python",
@@ -12,15 +12,14 @@
     "-m",
     "experiments.train_qwen_when2call_fullpool",
     "--output-dir",
-    "outputs/qwen-postbalanced-real30-toolrich-complexitymix100-bfcl-reviewclear-val-20261030",
+    "outputs/qwen-bfcl-direct24-balanced-other24-continue-best-20261030",
     "--bfcl-data",
     "outputs/bfcl_when2call_labeled_reviewclear_val165.jsonl",
     "--adapter-checkpoint",
-    "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01",
-    "--preference-train-sample-size",
-    "30",
+    "outputs/qwen-postbalanced-real30-toolrich-nontoolrich-mix100-bfcl-reviewclear-val-20261030/epoch-01",
+    "--synthetic-only",
     "--augmentation-jsonl",
-    "outputs/when2call-toolrich-complexitymix100-20261030.jsonl",
+    "outputs/bfcl-highconf-direct24-balanced-other24-pilot-20261030.jsonl",
     "--validation-source",
     "bfcl",
     "--validation-sample-size",
@@ -38,16 +37,57 @@
     "--learning-rate",
     "2.5e-6",
     "--baseline-test-accuracy",
-    "0.731106243154436",
+    "0.7294633077765608",
     "--baseline-test-macro-f1",
-    "0.5473409779598896",
+    "0.5464140522479008",
     "--baseline-test-source",
-    "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/metrics.json",
+    "outputs/qwen-postbalanced-real30-toolrich-nontoolrich-mix100-bfcl-reviewclear-val-20261030/metrics.json",
     "--stop-on-validation-non-improvement",
     "--seed",
     "20261222"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-bfcl-direct24-balanced-other24-continue-best-20261030",
+      "--bfcl-data",
+      "outputs/bfcl_when2call_labeled_reviewclear_val165.jsonl",
+      "--adapter-checkpoint",
+      "outputs/qwen-postbalanced-real30-toolrich-nontoolrich-mix100-bfcl-reviewclear-val-20261030/epoch-01",
+      "--synthetic-only",
+      "--augmentation-jsonl",
+      "outputs/bfcl-highconf-direct24-balanced-other24-pilot-20261030.jsonl",
+      "--validation-source",
+      "bfcl",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "3",
+      "--learning-rate",
+      "2.5e-6",
+      "--baseline-test-accuracy",
+      "0.7294633077765608",
+      "--baseline-test-macro-f1",
+      "0.5464140522479008",
+      "--baseline-test-source",
+      "outputs/qwen-postbalanced-real30-toolrich-nontoolrich-mix100-bfcl-reviewclear-val-20261030/metrics.json",
+      "--stop-on-validation-non-improvement",
+      "--seed",
+      "20261222"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -75,21 +115,55 @@
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
   "last_heartbeat": "2026-10-30T13:47:21.466467+00:00",
-  "last_action": "Watchdog handed planning control to the primary Codex process.",
+  "last_action": "Queued a targeted BFCL direct-answer continuation based on class-3 underprediction in the newest clean-validation results.",
   "watchdog_enabled": true,
-  "research_log_size": 2105553,
+  "research_log_size": 2107514,
   "stop_command": "STOP",
-  "next_experiment": null,
-  "recording_jobs": [
-    {
-      "pid": 427984,
-      "experiment_id": "qwen-postbalanced-real30-toolrich-complexitymix100-bfcl-reviewclear-val-20261030"
-    }
+  "next_experiment": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.train_qwen_when2call_fullpool",
+    "--output-dir",
+    "outputs/qwen-bfcl-direct24-balanced-other24-continue-best-20261030",
+    "--bfcl-data",
+    "outputs/bfcl_when2call_labeled_reviewclear_val165.jsonl",
+    "--adapter-checkpoint",
+    "outputs/qwen-postbalanced-real30-toolrich-nontoolrich-mix100-bfcl-reviewclear-val-20261030/epoch-01",
+    "--synthetic-only",
+    "--augmentation-jsonl",
+    "outputs/bfcl-highconf-direct24-balanced-other24-pilot-20261030.jsonl",
+    "--validation-source",
+    "bfcl",
+    "--validation-sample-size",
+    "500",
+    "--validation-seed",
+    "20261053",
+    "--training-eval-sample-size",
+    "500",
+    "--training-eval-seed",
+    "20261059",
+    "--eval-batch-size",
+    "8",
+    "--epochs",
+    "3",
+    "--learning-rate",
+    "2.5e-6",
+    "--baseline-test-accuracy",
+    "0.7294633077765608",
+    "--baseline-test-macro-f1",
+    "0.5464140522479008",
+    "--baseline-test-source",
+    "outputs/qwen-postbalanced-real30-toolrich-nontoolrich-mix100-bfcl-reviewclear-val-20261030/metrics.json",
+    "--stop-on-validation-non-improvement",
+    "--seed",
+    "20261222"
   ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-30T14:04:25.395935+00:00",
-  "planning_ack_deadline": "2026-10-30T14:06:25.395959+00:00",
-  "planning_attempts": 109,
+  "planning_notified_at": "2026-10-30T14:06:26.692152+00:00",
+  "planning_ack_deadline": "2026-10-30T14:08:26.692169+00:00",
+  "planning_attempts": 110,
   "best_observed_test": {
     "method": "Qwen after 50-example unsupported-capability synthetic continuation, greedy full-test evaluation",
     "accuracy": 0.7417853231106243,
@@ -145,13 +219,13 @@
     "selection_use": "none"
   },
   "evidence_audit": {
-    "experiment": "qwen-postbalanced-real30-label0-1-50-50-mix-20261030",
-    "training_metrics": "recorded at epoch 1: accuracy 0.984615, macro F1 0.723035, loss 0.258511 on 130 examples",
-    "clean_validation_metrics": "recorded at epoch 1: accuracy 0.958000, macro F1 0.486767 on 500 SFT validation examples",
-    "aggregate_black_box_test_metrics": "recorded at epoch 1: accuracy 0.721796, macro F1 0.541388 on all 3652 test examples",
+    "experiment": "qwen-postbalanced-real30-toolrich-complexitymix100-bfcl-reviewclear-val-20261030",
+    "training_metrics": "recorded at selected epoch 1: accuracy 0.961538, macro F1 0.723673, loss 0.229503 on 130 examples",
+    "clean_validation_metrics": "recorded at selected epoch 1: accuracy 0.515152, macro F1 0.484855 on 165 review-clear BFCL validation examples",
+    "aggregate_black_box_test_metrics": "recorded at selected epoch 1: accuracy 0.726725, macro F1 0.544773 on all 3652 test examples",
     "all_required_evidence_recorded": true,
     "test_labels_used_for_selection": false,
-    "note": "All three evidence types are present in metrics.json and the experiment journal. No backfill is needed. Test metrics are report-only."
+    "note": "Both epochs contain all three evidence types. Epoch selection uses BFCL validation accuracy only. Test metrics are report-only."
   },
   "duplicate_worker_failure": {
     "pid": 103632,
@@ -280,7 +354,7 @@
     "epoch": 1,
     "selection_use": "aggregate reporting only; no individual test labels or outputs inspected"
   },
-  "updated_at": "2026-10-30T12:28:31.721187+00:00",
+  "updated_at": "2026-10-30T14:06:38.337573+00:00",
   "synthetic_pilot_results": [
     {
       "strategy": "missing_required_info",
@@ -387,7 +461,7 @@
     "ensemble_aggregate_test_accuracy": 0.7313800657174151,
     "test_metric_use": "Reporting only; not used for candidate selection."
   },
-  "latest_completed_experiment": "qwen-postbalanced-real30-label0-1-50-50-mix-20261030",
+  "latest_completed_experiment": "qwen-postbalanced-real30-toolrich-complexitymix100-bfcl-reviewclear-val-20261030",
   "evidence_policy": {
     "selection_metric": "clean held-out validation only",
     "aggregate_test": "reporting only; never use test-derived metrics for candidate selection",
@@ -551,40 +625,41 @@
     ]
   },
   "latest_clean_validation_screen": {
-    "experiment": "qwen-postbalanced-real25-toolrich25-mix-20261030",
-    "accuracy": 0.958,
-    "macro_f1": 0.4872479609158282,
-    "examples": 500,
-    "selection": "Clean held-out validation only."
+    "experiment": "qwen-postbalanced-real30-toolrich-complexitymix100-bfcl-reviewclear-val-20261030",
+    "accuracy": 0.5151515151515151,
+    "macro_f1": 0.48485533453887886,
+    "examples": 165,
+    "selection": "Review-clear held-out BFCL validation only."
   },
   "research_log_size_reconciled_at": "2026-10-29T10:10:53.863543+00:00",
   "research_log_size_reconciliation": "Accepted current file size 1777226 after a stable earlier shrink from recorded size 1786879; the watchdog had repeated the same integrity warning.",
   "latest_training_report": {
-    "experiment": "qwen-postbalanced-real30-label0-1-50-50-mix-20261030",
-    "accuracy": 0.9846153846153847,
-    "macro_f1": 0.7230354391371341,
-    "loss": 0.25851078334005045,
-    "examples": 130,
+    "experiment": "qwen-postbalanced-real30-toolrich-complexitymix100-bfcl-reviewclear-val-20261030",
     "epoch": 1,
-    "selection_use": "training diagnostic only"
+    "accuracy": 0.9615384615384616,
+    "macro_f1": 0.723672541846802,
+    "loss": 0.22950325866890423,
+    "examples": 130,
+    "selection_use": "training diagnostic for validation-selected checkpoint"
   },
   "latest_clean_validation_report": {
-    "experiment": "qwen-postbalanced-real30-label0-1-50-50-mix-20261030",
-    "accuracy": 0.958,
-    "macro_f1": 0.48676659546601997,
-    "examples": 500,
-    "source": "sft",
-    "selection_use": "clean validation controls continuation; current metric is recorded"
+    "experiment": "qwen-postbalanced-real30-toolrich-complexitymix100-bfcl-reviewclear-val-20261030",
+    "epoch": 1,
+    "accuracy": 0.5151515151515151,
+    "macro_f1": 0.48485533453887886,
+    "examples": 165,
+    "source": "review-clear BFCL validation",
+    "selection_use": "checkpoint selection metric"
   },
   "latest_aggregate_black_box_test_report": {
-    "experiment": "qwen-postbalanced-real30-label0-1-50-50-mix-20261030",
-    "accuracy": 0.7217962760131434,
-    "macro_f1": 0.5413880588048613,
-    "examples": 3652,
+    "experiment": "qwen-postbalanced-real30-toolrich-complexitymix100-bfcl-reviewclear-val-20261030",
     "epoch": 1,
-    "selection_use": "aggregate-only report; no test labels used for selection"
+    "accuracy": 0.7267250821467689,
+    "macro_f1": 0.5447728115726593,
+    "examples": 3652,
+    "selection_use": "aggregate reporting only; no individual test labels or outputs inspected"
   },
-  "queue_updated_at": "2026-10-30T12:28:31.721187+00:00",
+  "queue_updated_at": "2026-10-30T14:06:38.337573+00:00",
   "queued_hypotheses": [
     {
       "experiment": "qwen-postbalanced-real30-label0-1-2-45-45-10-bfcl-highconf-val-20261030",
@@ -642,6 +717,22 @@
         "2": 37
       },
       "validation_quality": "No rows flagged needs_review; 158 high confidence and 7 medium confidence; all four labels represented."
+    },
+    {
+      "experiment": "qwen-bfcl-direct24-balanced-other24-continue-best-20261030",
+      "hypothesis": "The latest BFCL validation run had no class-3 direct examples in its training sample, and the model predicted none of the 60 class-3 validation rows as class 3. Continue from the best clean-validation checkpoint using a small pilot of 24 high-confidence direct examples plus 8 examples from each other class. This tests whether adding direct-answer training signal fixes the observed class omission without changing the optimizer or adding a large data volume.",
+      "selection": "review-clear held-out BFCL validation only; aggregate test metrics report-only",
+      "data_artifact": "outputs/bfcl-highconf-direct24-balanced-other24-pilot-20261030.jsonl",
+      "data_sha256": "91d690cd21772c4115f0756556e59968459465f5fc8cb03b071340e7184a7a2a",
+      "training_rows": 48,
+      "training_label_counts": {
+        "0": 8,
+        "1": 8,
+        "2": 8,
+        "3": 24
+      },
+      "source": "high-confidence, review-clear BFCL train split only",
+      "starting_checkpoint": "outputs/qwen-postbalanced-real30-toolrich-nontoolrich-mix100-bfcl-reviewclear-val-20261030/epoch-01"
     }
   ],
   "data_probe": {

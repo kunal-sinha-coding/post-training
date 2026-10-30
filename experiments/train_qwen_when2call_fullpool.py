@@ -156,8 +156,10 @@ def main() -> int:
     # Require both the trained adapter and one explicit synthetic pilot for this mode.
     if args.synthetic_only and (not args.adapter_checkpoint or not args.augmentation_jsonl):
         raise ValueError("Synthetic-only continuation requires --adapter-checkpoint and --augmentation-jsonl.")
-    # Keep BFCL data out of the pilot path entirely.
-    bfcl_train, bfcl_validation = ([], []) if args.synthetic_only else load_labeled_rows(args.bfcl_data)
+    # Keep BFCL training rows out of synthetic-only continuation while retaining held-out BFCL validation.
+    bfcl_train, bfcl_validation = load_labeled_rows(args.bfcl_data)
+    if args.synthetic_only:
+        bfcl_train = []
     bfcl_rows = bfcl_train + bfcl_validation
     augmented_rows = augment_preference_rows(preference_rows, args.augmentation_mode, args.augmentation_seed) if args.augmentation_mode != "none" else []
     # Load cached generated prompts without changing their inherited source labels.
