@@ -214,6 +214,47 @@
       "--stop-on-validation-non-improvement",
       "--seed",
       "20261222"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-postbalanced-real30-toolrich-complexitymix100-bfcl-reviewclear-val-20261030",
+      "--bfcl-data",
+      "outputs/bfcl_when2call_labeled_reviewclear_val165.jsonl",
+      "--adapter-checkpoint",
+      "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01",
+      "--preference-train-sample-size",
+      "30",
+      "--augmentation-jsonl",
+      "outputs/when2call-toolrich-complexitymix100-20261030.jsonl",
+      "--validation-source",
+      "bfcl",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "3",
+      "--learning-rate",
+      "2.5e-6",
+      "--baseline-test-accuracy",
+      "0.731106243154436",
+      "--baseline-test-macro-f1",
+      "0.5473409779598896",
+      "--baseline-test-source",
+      "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/metrics.json",
+      "--stop-on-validation-non-improvement",
+      "--seed",
+      "20261222"
     ]
   ],
   "_previous_command": [
@@ -243,7 +284,7 @@
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
   "last_heartbeat": "2026-10-30T12:21:34.654615+00:00",
-  "last_action": "Added a 200-example source-mixture dose comparison behind the queued 100-example source-mixture pilot; clean validation controls selection.",
+  "last_action": "Added a balanced upper/lower tool-rich complexity-mixture experiment after the queued source-mixture dose checks.",
   "watchdog_enabled": true,
   "research_log_size": 2095611,
   "stop_command": "STOP",
@@ -483,7 +524,7 @@
     "epoch": 1,
     "selection_use": "aggregate reporting only; no individual test labels or outputs inspected"
   },
-  "updated_at": "2026-10-30T12:27:13.461910+00:00",
+  "updated_at": "2026-10-30T12:28:31.721187+00:00",
   "synthetic_pilot_results": [
     {
       "strategy": "missing_required_info",
@@ -787,7 +828,7 @@
     "epoch": 1,
     "selection_use": "aggregate-only report; no test labels used for selection"
   },
-  "queue_updated_at": "2026-10-30T12:27:13.461910+00:00",
+  "queue_updated_at": "2026-10-30T12:28:31.721187+00:00",
   "queued_hypotheses": [
     {
       "experiment": "qwen-postbalanced-real30-label0-1-2-45-45-10-bfcl-highconf-val-20261030",
@@ -829,6 +870,20 @@
         "2": 70,
         "0": 63,
         "1": 67
+      },
+      "validation_quality": "No rows flagged needs_review; 158 high confidence and 7 medium confidence; all four labels represented."
+    },
+    {
+      "experiment": "qwen-postbalanced-real30-toolrich-complexitymix100-bfcl-reviewclear-val-20261030",
+      "hypothesis": "The prior upper-complexity and lower-complexity 100-row tool-rich pilots tied on SFT validation accuracy, but that validation has no true class-2 rows. Test whether combining 50 rows from each complexity stratum improves clean held-out BFCL validation compared with either stratum alone, while keeping synthetic size, real examples, checkpoint, optimizer, and stopping rule fixed.",
+      "selection": "165-row review-clear held-out BFCL validation only; aggregate test metrics report-only",
+      "data_artifact": "outputs/when2call-toolrich-complexitymix100-20261030.jsonl",
+      "data_sha256": "0c2bb0bf5e6b525e6bacb15c37b59726a8f08d12655582b4c5d4bbcb8680c91c",
+      "synthetic_rows": 100,
+      "label_counts": {
+        "1": 38,
+        "0": 25,
+        "2": 37
       },
       "validation_quality": "No rows flagged needs_review; 158 high confidence and 7 medium confidence; all four labels represented."
     }

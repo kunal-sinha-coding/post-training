@@ -15891,3 +15891,7 @@ Queued `qwen-postbalanced-real30-toolrich-nontoolrich-mix100-bfcl-reviewclear-va
 ## Source-mixture dose hypothesis (2026-10-30T12:27:13.461910+00:00)
 
 Queued `qwen-postbalanced-real30-toolrich-nontoolrich-mix200-bfcl-reviewclear-val-20261030` after the 100-example source-mixture pilot. It combines a deterministic 100-row sample from each existing 200-row tool-rich and non-tool-rich pool. It has 200 synthetic rows, label counts `{'2': 70, '0': 63, '1': 67}`, and SHA-256 `155c47108ae0e4d3a8aef1a5a741fe37c6384b7f606c753eb783570d4ace925c`. The experiment tests whether doubling a 50/50 source mixture adds useful signal on the fixed review-clear BFCL validation set. Aggregate black-box metrics are report-only.
+
+## Tool-rich complexity-mixture hypothesis (2026-10-30T12:28:31.721187+00:00)
+
+Queued `qwen-postbalanced-real30-toolrich-complexitymix100-bfcl-reviewclear-val-20261030`. It combines deterministic 50-row samples from the existing upper- and lower-complexity tool-rich pools, for 100 examples total. Label counts are `{'1': 38, '0': 25, '2': 37}` and artifact SHA-256 is `0c2bb0bf5e6b525e6bacb15c37b59726a8f08d12655582b4c5d4bbcb8680c91c`. Earlier separate complexity pilots tied on SFT validation accuracy, whose sample lacks true class-2 rows. This test uses the review-clear BFCL validation split for selection. Aggregate test metrics remain report-only.
