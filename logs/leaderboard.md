@@ -88,11 +88,11 @@ This fixed candidate family was evaluated on all 3,652 aggregate black-box examp
 
 | Rank | Experiment | Accuracy | Macro F1 | Artifact | Test status | Status |
 | --- | --- | ---: | ---: | --- | --- | --- |
-| 49 | EXP-20261020-006 training-only calibration | 0.949444 | 0.712267 | [metrics](../outputs/clean-validation-calibration.json) | Not measured | Current best |
-| 50 | EXP-20261020-005 argument cues seed 20261021 | 0.948333 | 0.711410 | [metrics](../outputs/clean-validation-argument-cues-seed21/metrics.json) | Not measured | Current |
-| 51 | EXP-20261020-004 argument cues seed 20261020 | 0.938889 | 0.704172 | [metrics](../outputs/clean-validation-argument-cues/metrics.json) | Not measured | Replicated |
-| 52 | EXP-20261020-001 clean Jina warm-start baseline | 0.936667 | 0.703032 | [metrics](../outputs/clean-validation-baseline/metrics.json) | Not measured | Current |
-| 53 | EXP-20261020-009 argument cues seed 20261022 | 0.922222 | 0.691627 | [metrics](../outputs/clean-validation-argument-cues-seed22/metrics.json) | Not measured | Negative replication |
+| 2 | EXP-20261020-006 training-only calibration | 0.949444 | 0.712267 | [metrics](../outputs/clean-validation-calibration.json) | Not measured | Current best |
+| 3 | EXP-20261020-005 argument cues seed 20261021 | 0.948333 | 0.711410 | [metrics](../outputs/clean-validation-argument-cues-seed21/metrics.json) | Not measured | Current |
+| 5 | EXP-20261020-004 argument cues seed 20261020 | 0.938889 | 0.704172 | [metrics](../outputs/clean-validation-argument-cues/metrics.json) | Not measured | Replicated |
+| 6 | EXP-20261020-001 clean Jina warm-start baseline | 0.936667 | 0.703032 | [metrics](../outputs/clean-validation-baseline/metrics.json) | Not measured | Current |
+| 7 | EXP-20261020-009 argument cues seed 20261022 | 0.922222 | 0.691627 | [metrics](../outputs/clean-validation-argument-cues-seed22/metrics.json) | Not measured | Negative replication |
 | Candidate | qwen-sft-15b-seed20261022 | 0.89444 | 0.67099 | [metrics](/workspace/post-training/outputs/qwen-when2call-sft-15b-seed20261022/metrics.json) | Not measured | Completed |
 | Candidate | qwen-sft-05b-seed20261022 | 0.87444 | 0.65687 | [metrics](/workspace/post-training/outputs/qwen-when2call-sft-05b-seed20261022/metrics.json) | Not measured | Completed |
 | Candidate | qwen-rpo-05b-seed20261022 | 0.83222 | 0.62484 | [metrics](/workspace/post-training/outputs/qwen-when2call-rpo-05b-seed20261022/metrics.json) | Not measured | Completed |
@@ -1256,8 +1256,8 @@ Source-specific result `qwen-when2call-qwen25-15b-pref-full-glaive100-seed202610
 | Glaive sample | Training accuracy | Training macro F1 | Preference validation accuracy | Preference validation macro F1 | Glaive validation accuracy | Glaive validation macro F1 | Aggregate test accuracy | Aggregate test macro F1 |
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | 1,000 | 0.919125 | 0.690275 | 0.893889 | 0.671443 | 0.910000 | 0.666983 | 0.631435 | 0.470737 |
-| 54 | 0.925125 | 0.694092 | 0.912778 | 0.685114 | 0.921569 | 0.676055 | 0.622946 | 0.447941 |
-| 55 | 0.925412 | 0.694604 | 0.893333 | 0.671178 | 0.800000 | 0.447273 | 0.629244 | 0.460926 |
+| 253 | 0.925125 | 0.694092 | 0.912778 | 0.685114 | 0.921569 | 0.676055 | 0.622946 | 0.447941 |
+| 103 | 0.925412 | 0.694604 | 0.893333 | 0.671178 | 0.800000 | 0.447273 | 0.629244 | 0.460926 |
 
 All test columns are aggregate-only reports and were not used for candidate selection. The latest completed 100-example experiment has training, clean-validation, and aggregate test evidence recorded. A matched preference-only control is queued using the same seed, split, and optimization settings as the 250-example condition.
 
@@ -2465,7 +2465,7 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 
 | qwen-balanced-tool-rich-probability-encoder-fusion-20261029 | 0.6963307776560789 | 0.5232228941522374 | fsjfgmsm | Aggregate-only frozen test measurement |
 
-| 56 | Qwen five-vote frequency plus 50% selected encoder family | 0.6963307776560789 | 0.5232228941522374 | 0.966000 | 0.4898579704420526 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-balanced-tool-rich-probability-encoder-fusion-20261029/metrics.json) |
+| 23 | Qwen five-vote frequency plus 50% selected encoder family | 0.6963307776560789 | 0.5232228941522374 | 0.966000 | 0.4898579704420526 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-balanced-tool-rich-probability-encoder-fusion-20261029/metrics.json) |
 
 Queued next: balanced 508-row tool-rich synthetic continuation and a matched 508-row real-only control. Both start from the 994-row tool-rich synthetic checkpoint and report training, clean-validation, and full aggregate test metrics at each epoch. Clean validation contains no class 2 examples. Test rows and labels remain uninspected.
 
