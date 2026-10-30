@@ -196834,3 +196834,395 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/ilhachpq"
 }
 ```
+
+## qwen-bfcl-direct48-balanced-other24-fresh72-continue-best-20261030
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.train_qwen_when2call_fullpool",
+    "--output-dir",
+    "outputs/qwen-bfcl-direct48-balanced-other24-fresh72-continue-best-20261030",
+    "--bfcl-data",
+    "outputs/bfcl_when2call_labeled_reviewclear_val165.jsonl",
+    "--adapter-checkpoint",
+    "outputs/qwen-bfcl-direct48-balanced-other24-continue-best-20261030/epoch-03",
+    "--synthetic-only",
+    "--augmentation-jsonl",
+    "outputs/bfcl-direct48-balanced-other24-fresh72-pilot-20261030.jsonl",
+    "--validation-source",
+    "bfcl",
+    "--validation-sample-size",
+    "500",
+    "--validation-seed",
+    "20261053",
+    "--training-eval-sample-size",
+    "500",
+    "--training-eval-seed",
+    "20261059",
+    "--eval-batch-size",
+    "8",
+    "--epochs",
+    "3",
+    "--learning-rate",
+    "2.5e-6",
+    "--baseline-validation-accuracy",
+    "0.5575757575757576",
+    "--baseline-validation-macro-f1",
+    "0.578327922077922",
+    "--baseline-test-accuracy",
+    "0.6566265060240963",
+    "--baseline-test-macro-f1",
+    "0.5167577677654558",
+    "--baseline-test-source",
+    "outputs/qwen-bfcl-direct48-balanced-other24-continue-best-20261030/metrics.json",
+    "--stop-on-validation-non-improvement",
+    "--seed",
+    "20261222"
+  ],
+  "development_metrics": {
+    "accuracy": 0.5636363636363636,
+    "confusion_matrix": [
+      [
+        1,
+        0,
+        1,
+        51
+      ],
+      [
+        0,
+        25,
+        0,
+        9
+      ],
+      [
+        0,
+        1,
+        9,
+        8
+      ],
+      [
+        0,
+        2,
+        0,
+        58
+      ]
+    ],
+    "examples": 165,
+    "macro_f1": 0.5275004266939751
+  },
+  "exit_code": "unknown",
+  "experiment_id": "qwen-bfcl-direct48-balanced-other24-fresh72-continue-best-20261030",
+  "failure_reason": null,
+  "metadata": {
+    "base_model": "Qwen/Qwen2.5-1.5B-Instruct",
+    "base_model_checkpoint": "outputs/qwen-bfcl-direct48-balanced-other24-continue-best-20261030/epoch-03",
+    "baseline_black_box_test_metrics": {
+      "accuracy": 0.6566265060240963,
+      "examples": 3652,
+      "macro_f1": 0.5167577677654558,
+      "source": "outputs/qwen-bfcl-direct48-balanced-other24-continue-best-20261030/metrics.json"
+    },
+    "baseline_clean_validation_metrics": {
+      "accuracy": 0.5575757575757576,
+      "examples": 165,
+      "macro_f1": 0.578327922077922,
+      "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"
+    },
+    "best_validation_accuracy": 0.5696969696969697,
+    "config": {
+      "adapter_checkpoint": "outputs/qwen-bfcl-direct48-balanced-other24-continue-best-20261030/epoch-03",
+      "augmentation_jsonl": "outputs/bfcl-direct48-balanced-other24-fresh72-pilot-20261030.jsonl",
+      "augmentation_mode": "none",
+      "augmentation_seed": 20261066,
+      "baseline_test_accuracy": 0.6566265060240963,
+      "baseline_test_macro_f1": 0.5167577677654558,
+      "baseline_test_source": "outputs/qwen-bfcl-direct48-balanced-other24-continue-best-20261030/metrics.json",
+      "baseline_validation_accuracy": 0.5575757575757576,
+      "baseline_validation_macro_f1": 0.578327922077922,
+      "batch_size": 1,
+      "bfcl_data": "outputs/bfcl_when2call_labeled_reviewclear_val165.jsonl",
+      "epochs": 3,
+      "eval_batch_size": 8,
+      "evaluate_baseline": false,
+      "include_full_bfcl": false,
+      "learning_rate": 2.5e-06,
+      "lora_rank": 16,
+      "max_length": 4096,
+      "model": "Qwen/Qwen2.5-1.5B-Instruct",
+      "output_dir": "outputs/qwen-bfcl-direct48-balanced-other24-fresh72-continue-best-20261030",
+      "preference_train_sample_size": null,
+      "seed": 20261222,
+      "stop_on_test_non_improvement": false,
+      "stop_on_validation_non_improvement": true,
+      "synthetic_only": true,
+      "test_sample_seed": 20261070,
+      "test_sample_size": null,
+      "training_eval_sample_size": 500,
+      "training_eval_seed": 20261059,
+      "validation_sample_size": 500,
+      "validation_seed": 20261053,
+      "validation_source": "bfcl",
+      "weight_decay": 0.01
+    },
+    "data": {
+      "augmentation_jsonl": "outputs/bfcl-direct48-balanced-other24-fresh72-pilot-20261030.jsonl",
+      "augmentation_jsonl_sha256": "538167a6d3b41d2177bd50db676012faa0b2890a11c78adffb29a782ffc21d77",
+      "augmentation_mode": "synthetic_pilot",
+      "augmentation_seed": 20261066,
+      "augmented_examples": 72,
+      "bfcl_file": "outputs/bfcl_when2call_labeled_reviewclear_val165.jsonl",
+      "bfcl_sha256": "0178fcd4beecf8b6e3dfed39fd146e7d02fdf92638b0767e58f67283f5bac293",
+      "bfcl_train_examples": 0,
+      "dataset": "synthetic pilot only",
+      "label_counts": {
+        "0": 8,
+        "1": 8,
+        "2": 8,
+        "3": 48
+      },
+      "preference_examples": 0,
+      "preference_sample_seed": null,
+      "preference_sample_size": null,
+      "prompt_label_fingerprint": "0a327ceeed4714a827145cde259563cbaebcea9a5aefd6d5481715ced19cfda2",
+      "split": "synthetic_pilot"
+    },
+    "device": "cuda",
+    "epoch_records": [
+      {
+        "black_box_test_metrics": {
+          "accuracy": 0.46139101861993426,
+          "examples": 3652,
+          "macro_f1": 0.3532465925394548,
+          "sample_method": "full test split",
+          "sample_seed": null
+        },
+        "checkpoint": "outputs/qwen-bfcl-direct48-balanced-other24-fresh72-continue-best-20261030/epoch-01",
+        "epoch": 1,
+        "heldout_validation_metrics": {
+          "accuracy": 0.5696969696969697,
+          "confusion_matrix": [
+            [
+              1,
+              0,
+              1,
+              51
+            ],
+            [
+              0,
+              27,
+              0,
+              7
+            ],
+            [
+              0,
+              2,
+              9,
+              7
+            ],
+            [
+              0,
+              3,
+              0,
+              57
+            ]
+          ],
+          "examples": 165,
+          "macro_f1": 0.5311124061124062
+        },
+        "step": 72,
+        "training_evaluation_examples": 72,
+        "training_evaluation_fingerprint": "0a327ceeed4714a827145cde259563cbaebcea9a5aefd6d5481715ced19cfda2",
+        "training_loss": 1.8610620521499692,
+        "training_metrics": {
+          "accuracy": 0.7361111111111112,
+          "confusion_matrix": [
+            [
+              0,
+              1,
+              1,
+              6
+            ],
+            [
+              0,
+              7,
+              0,
+              1
+            ],
+            [
+              0,
+              2,
+              4,
+              2
+            ],
+            [
+              0,
+              5,
+              1,
+              42
+            ]
+          ],
+          "examples": 72,
+          "macro_f1": 0.5071522680218332
+        },
+        "validation_examples": 165,
+        "validation_source": "bfcl"
+      },
+      {
+        "black_box_test_metrics": {
+          "accuracy": 0.4589266155531216,
+          "examples": 3652,
+          "macro_f1": 0.355848174813692,
+          "sample_method": "full test split",
+          "sample_seed": null
+        },
+        "checkpoint": "outputs/qwen-bfcl-direct48-balanced-other24-fresh72-continue-best-20261030/epoch-02",
+        "epoch": 2,
+        "heldout_validation_metrics": {
+          "accuracy": 0.5636363636363636,
+          "confusion_matrix": [
+            [
+              1,
+              0,
+              1,
+              51
+            ],
+            [
+              0,
+              25,
+              0,
+              9
+            ],
+            [
+              0,
+              1,
+              9,
+              8
+            ],
+            [
+              0,
+              2,
+              0,
+              58
+            ]
+          ],
+          "examples": 165,
+          "macro_f1": 0.5275004266939751
+        },
+        "step": 144,
+        "stop_reason": "held-out validation accuracy did not improve",
+        "training_evaluation_examples": 72,
+        "training_evaluation_fingerprint": "0a327ceeed4714a827145cde259563cbaebcea9a5aefd6d5481715ced19cfda2",
+        "training_loss": 1.495298338365602,
+        "training_metrics": {
+          "accuracy": 0.75,
+          "confusion_matrix": [
+            [
+              0,
+              1,
+              1,
+              6
+            ],
+            [
+              0,
+              7,
+              0,
+              1
+            ],
+            [
+              0,
+              2,
+              4,
+              2
+            ],
+            [
+              0,
+              4,
+              1,
+              43
+            ]
+          ],
+          "examples": 72,
+          "macro_f1": 0.5169480519480519
+        },
+        "validation_examples": 165,
+        "validation_source": "bfcl"
+      }
+    ],
+    "experiment": "qwen25_1p5b_synthetic_only_continuation",
+    "optimizer_steps": 216,
+    "purpose": "Continue the saved When2Call adapter using only a synthetic pilot set.",
+    "selection_procedure": "Clean held-out validation controls continuation unless the user explicitly enables --stop-on-test-non-improvement; then the same aggregate black-box test accuracy controls continuation for this declared pilot only.",
+    "test_label_use": "Test labels are accessed only inside the evaluator to compute aggregate accuracy and macro F1. Under the user's explicit pilot stopping rule, aggregate accuracy may control continuation. No individual test rows, labels, predictions, or correctness values are saved.",
+    "training_evaluation_examples_per_epoch": 72,
+    "training_loss_by_epoch": [
+      1.8610620521499692,
+      1.495298338365602
+    ],
+    "validation_examples": 165,
+    "validation_source": "bfcl",
+    "wandb_run_id": "vxj4bmcs",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/vxj4bmcs"
+  },
+  "metrics_path": "/workspace/post-training/outputs/qwen-bfcl-direct48-balanced-other24-fresh72-continue-best-20261030/metrics.json",
+  "official_test_loaded": null,
+  "official_test_metrics": {
+    "accuracy": 0.4589266155531216,
+    "examples": 3652,
+    "macro_f1": 0.355848174813692,
+    "sample_method": "full test split",
+    "sample_seed": null
+  },
+  "output_dir": "/workspace/post-training/outputs/qwen-bfcl-direct48-balanced-other24-fresh72-continue-best-20261030",
+  "source_validation_metrics": {
+    "baseline_clean_validation_metrics": {
+      "accuracy": 0.5575757575757576,
+      "examples": 165,
+      "macro_f1": 0.578327922077922,
+      "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"
+    }
+  },
+  "started_at": "2026-10-30T15:14:12.490240+00:00",
+  "status": "completed",
+  "test_status": "measured",
+  "timestamp": "2026-10-30T15:31:15.848252+00:00",
+  "train_metrics": {
+    "accuracy": 0.75,
+    "confusion_matrix": [
+      [
+        0,
+        1,
+        1,
+        6
+      ],
+      [
+        0,
+        7,
+        0,
+        1
+      ],
+      [
+        0,
+        2,
+        4,
+        2
+      ],
+      [
+        0,
+        4,
+        1,
+        43
+      ]
+    ],
+    "examples": 72,
+    "macro_f1": 0.5169480519480519
+  },
+  "wandb_run_id": "vxj4bmcs",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/vxj4bmcs"
+}
+```
