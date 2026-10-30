@@ -15969,3 +15969,15 @@ Queued `qwen-bfcl-direct48-balanced-other24-continue-best-20261030` after the ac
 ## Balanced four-class BFCL pilot (2026-10-30T14:10:07.730419+00:00)
 
 Queued `qwen-bfcl-balanced18each-continue-best-20261030` after the direct-answer dose pilot. It uses 18 high-confidence, review-clear BFCL training examples per class, sampled without overlap with the existing direct-targeted pilots. It tests whether a balanced class mix improves clean BFCL validation compared with the direct-heavy recipe. The data artifact has 72 rows, label counts `{'0': 18, '1': 18, '2': 18, '3': 18}`, and SHA-256 `699c38cc465cb8522a2bcb438f19bbafda258531deb7eab46ab229b729668a82`. Test metrics are report-only.
+
+## qwen-bfcl-direct24-balanced-other24-continue-best-20261030
+
+Timestamp: 2026-10-30T14:23:00.223972+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-bfcl-direct24-balanced-other24-continue-best-20261030", "--bfcl-data", "outputs/bfcl_when2call_labeled_reviewclear_val165.jsonl", "--adapter-checkpoint", "outputs/qwen-postbalanced-real30-toolrich-nontoolrich-mix100-bfcl-reviewclear-val-20261030/epoch-01", "--synthetic-only", "--augmentation-jsonl", "outputs/bfcl-highconf-direct24-balanced-other24-pilot-20261030.jsonl", "--validation-source", "bfcl", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "3", "--learning-rate", "2.5e-6", "--baseline-test-accuracy", "0.7294633077765608", "--baseline-test-macro-f1", "0.5464140522479008", "--baseline-test-source", "outputs/qwen-postbalanced-real30-toolrich-nontoolrich-mix100-bfcl-reviewclear-val-20261030/metrics.json", "--stop-on-validation-non-improvement", "--seed", "20261222"]. Output: /workspace/post-training/outputs/qwen-bfcl-direct24-balanced-other24-continue-best-20261030. W&B run: xyj4hx6y.
+
+Clean development accuracy: 0.5151515151515151. Clean development macro F1: 0.4757460397144132. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7349397590361446, "macro_f1": 0.5501923413184123, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.5151515151515151, "macro_f1": 0.4757460397144132, "confusion_matrix": [[47, 5, 1, 0], [4, 30, 0, 0], [5, 5, 8, 0], [51, 9, 0, 0]], "examples": 165}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
