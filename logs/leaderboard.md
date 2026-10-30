@@ -2635,3 +2635,6 @@ Queued follow-ups: clean-validation-selected five-vote and encoder fusion on the
 | Candidate | qwen-postbalanced-real50-toolrich80-mix-20261030 | 0.956 | 0.4862245151459944 | [metrics](/workspace/post-training/outputs/qwen-postbalanced-real50-toolrich80-mix-20261030/metrics.json) | completed |
 
 | qwen-postbalanced-real50-toolrich80-mix-20261030 | 0.7352135815991238 | 0.549882512265051 | 8jutaufr | Aggregate-only frozen test measurement |
+| Candidate | qwen-postbalanced-real30-toolrich-uppercomplex100-mix-20261030 | 0.958 | 0.4872479609158282 | [metrics](/workspace/post-training/outputs/qwen-postbalanced-real30-toolrich-uppercomplex100-mix-20261030/metrics.json) | completed |
+
+| qwen-postbalanced-real30-toolrich-uppercomplex100-mix-20261030 | 0.7322015334063526 | 0.5481253069059249 | l28zw3hz | Aggregate-only frozen test measurement |
