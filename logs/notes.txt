@@ -8809,3 +8809,7 @@ Context: The balanced replay pilot improved clean validation, and its matched 50
 Commit: Queue a lower-rate replay continuation based on validation regression.
 Description: Recorded complete evidence for the latest 100-real control and queued a matched lower-learning-rate continuation using the same 100-row real plus balanced synthetic recipe and starting checkpoint as the higher-rate run.
 Context: Both the 100-example mixed run and 100-real control lost clean-validation accuracy from the 0.954 source score. This justifies one targeted learning-rate reduction from 2e-5 to 5e-6. Test metrics do not select or stop the experiment.
+
+Commit: Queue a lower synthetic-share replay comparison.
+Description: Added a 75-real plus 25-balanced-synthetic 100-row experiment behind the active matched lower-rate trial. The command uses the same source checkpoint and clean-validation sample as prior replay comparisons.
+Context: The initial 25/25 mix had the strongest clean-validation result, while higher-dose 50/50 and real-only continuations regressed. This tests whether a lower synthetic share retains the signal. Test metrics remain reporting-only.
