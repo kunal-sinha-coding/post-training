@@ -8801,3 +8801,5 @@ Context: The 25-real plus 25-balanced-synthetic pilot peaked at 0.954 clean-vali
 Commit: Queue a 100-real-only dose control.
 Description: Added a real-only control behind the active 50-real plus 50-balanced-synthetic continuation. The control matches total training size and uses the same starting checkpoint and clean-validation stopping rule.
 Context: The balanced replay pilot improved clean validation, and its matched 50-real control performed similarly on clean validation. A dose-matched 100-row real control will test whether synthetic rows add useful signal as the mixture scales. Test metrics remain report-only.
+
+2026-10-30T03:08:29.930816+00:00: Commit `Record research experiment qwen-unsupported50-real50-balanced50-replay-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
