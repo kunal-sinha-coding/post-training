@@ -15053,3 +15053,15 @@ The latest completed experiment, `qwen-unsupported50-real100-scaled-control-2026
 The 100-example 50/50 replay run at 2e-5 also stopped after one epoch when clean validation fell to 0.938 from 0.954. The matched 100-real control fell to 0.946. This clean-validation evidence supports one targeted test of a fourfold lower learning rate on the same 50-real plus 50-balanced-synthetic rows and same starting checkpoint. It is a controlled response to observed validation regression. Clean validation remains the only selection and stopping signal. Test metrics are reported as aggregates only.
 
 Added a 75-real plus 25-balanced-synthetic ratio comparison behind the active lower-rate run. It keeps the 100-example dose and 2e-5 learning rate used by the earlier 100-row runs, while changing only the data ratio. This tests whether the 25/25 validation signal is preserved with a lower synthetic share and more real replay. The 25 synthetic rows are distinct from the previous balanced pilot rows. Selection and stopping use clean validation only; test metrics are report-only.
+
+## qwen-unsupported50-real50-balanced50-lr5e6-20261030
+
+Timestamp: 2026-10-30T03:35:39.015337+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-unsupported50-real50-balanced50-lr5e6-20261030", "--adapter-checkpoint", "outputs/qwen-unsupported50-real25-balanced25-replay-20261030/epoch-01", "--preference-train-sample-size", "50", "--augmentation-jsonl", "outputs/when2call-balanced-replay-pilot-next50-20261030.jsonl", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "3", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.954", "--baseline-validation-macro-f1", "0.4856898061132617", "--stop-on-validation-non-improvement", "--seed", "20261216"]. Output: /workspace/post-training/outputs/qwen-unsupported50-real50-balanced50-lr5e6-20261030. W&B run: 0ll80qq6.
+
+Clean development accuracy: 0.948. Clean development macro F1: 0.4830963073852296. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7412376779846659, "macro_f1": 0.5532739806540259, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.948, "macro_f1": 0.4830963073852296, "confusion_matrix": [[244, 1, 5, 0], [6, 230, 13, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
