@@ -2659,3 +2659,6 @@ Queued follow-ups: clean-validation-selected five-vote and encoder fusion on the
 | Candidate | qwen-postbalanced-real30-label0-1-50-50-bfcl-highconf-val-20261030 | 0.5151515151515151 | 0.4745183188579415 | [metrics](/workspace/post-training/outputs/qwen-postbalanced-real30-label0-1-50-50-bfcl-highconf-val-20261030/metrics.json) | completed |
 
 | qwen-postbalanced-real30-label0-1-50-50-bfcl-highconf-val-20261030 | 0.7152245345016429 | 0.5367015415180313 | 7hhp06tl | Aggregate-only frozen test measurement |
+| Candidate | qwen-postbalanced-real30-toolrich-nontoolrich-mix100-bfcl-reviewclear-val-20261030 | 0.5212121212121212 | 0.48923591941891553 | [metrics](/workspace/post-training/outputs/qwen-postbalanced-real30-toolrich-nontoolrich-mix100-bfcl-reviewclear-val-20261030/metrics.json) | completed |
+
+| qwen-postbalanced-real30-toolrich-nontoolrich-mix100-bfcl-reviewclear-val-20261030 | 0.7294633077765608 | 0.5464140522479008 | mn6nvmwg | Aggregate-only frozen test measurement |
