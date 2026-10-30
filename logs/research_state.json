@@ -138,6 +138,49 @@
       "--stop-on-validation-non-improvement",
       "--seed",
       "20261222"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-postbalanced-real50-toolrich80-mix-20261030",
+      "--adapter-checkpoint",
+      "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01",
+      "--preference-train-sample-size",
+      "50",
+      "--augmentation-jsonl",
+      "outputs/when2call-toolrich-expansion80-20261030.jsonl",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "3",
+      "--learning-rate",
+      "2.5e-6",
+      "--baseline-validation-accuracy",
+      "0.958",
+      "--baseline-validation-macro-f1",
+      "0.4872479609158282",
+      "--baseline-test-accuracy",
+      "0.731106243154436",
+      "--baseline-test-macro-f1",
+      "0.5473409779598896",
+      "--baseline-test-source",
+      "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/metrics.json",
+      "--stop-on-validation-non-improvement",
+      "--seed",
+      "20261222"
     ]
   ],
   "_previous_command": [
@@ -167,7 +210,7 @@
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
   "last_heartbeat": "2026-10-30T10:35:29.176952+00:00",
-  "last_action": "Watchdog started validation worker pid 417103.",
+  "last_action": "Added a fixed-total-size real-versus-synthetic composition comparison behind the two 100-example source pilots.",
   "watchdog_enabled": true,
   "research_log_size": 2064276,
   "stop_command": "STOP",
@@ -227,7 +270,7 @@
     "artifact": "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030/metrics.json",
     "selection": "aggregate-only leaderboard report; improvement over 0.741512 is within 1-point noise"
   },
-  "next_hypothesis": "Compare the 100-example scale-up from the reviewed non-tool-rich remainder of the combined pool against the tool-rich pool at the same real/synthetic ratio and training setup. This tests whether the source that supplies added synthetic coverage matters once the dose is large enough to move the model. Clean validation controls selection; test metrics are report-only.",
+  "next_hypothesis": "At the same total size of 130 training rows, compare 50 genuine preference examples plus 80 balanced tool-rich synthetic examples against the queued 30-real/100-synthetic recipe. Recent synthetic source and label-mix pilots did not change clean-validation predictions. Increasing the real-data share tests whether real preference examples carry more useful signal without changing total training-set size. Keep checkpoint, validation sample, optimizer, and stopping rule fixed. Clean validation controls selection; aggregate test metrics are report-only.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
@@ -409,7 +452,7 @@
     "epoch": 1,
     "selection_use": "aggregate reporting only; no individual test labels or outputs inspected"
   },
-  "updated_at": "2026-10-30T10:35:08.301487+00:00",
+  "updated_at": "2026-10-30T10:37:47.548151+00:00",
   "synthetic_pilot_results": [
     {
       "strategy": "missing_required_info",
@@ -714,7 +757,7 @@
     "epoch": 1,
     "selection_use": "aggregate reporting only; no individual test labels or outputs inspected"
   },
-  "queue_updated_at": "2026-10-30T10:35:08.301487+00:00",
+  "queue_updated_at": "2026-10-30T10:37:47.548151+00:00",
   "queued_hypotheses": [
     {
       "experiment": "qwen-postbalanced-real30-toolrich-expansion100-mix-20261030",
@@ -724,6 +767,11 @@
     {
       "experiment": "qwen-postbalanced-real30-nontoolrich100-mix-20261030",
       "hypothesis": "Compare the 100-example scale-up from the reviewed non-tool-rich remainder of the combined pool against the tool-rich pool at the same real/synthetic ratio and training setup. This tests whether the source that supplies added synthetic coverage matters once the dose is large enough to move the model. Clean validation controls selection; test metrics are report-only.",
+      "selection": "clean validation only; aggregate black-box test metrics report-only"
+    },
+    {
+      "experiment": "qwen-postbalanced-real50-toolrich80-mix-20261030",
+      "hypothesis": "At the same total size of 130 training rows, compare 50 genuine preference examples plus 80 balanced tool-rich synthetic examples against the queued 30-real/100-synthetic recipe. Recent synthetic source and label-mix pilots did not change clean-validation predictions. Increasing the real-data share tests whether real preference examples carry more useful signal without changing total training-set size. Keep checkpoint, validation sample, optimizer, and stopping rule fixed. Clean validation controls selection; aggregate test metrics are report-only.",
       "selection": "clean validation only; aggregate black-box test metrics report-only"
     }
   ],
