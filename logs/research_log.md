@@ -16097,3 +16097,9 @@ Clean development accuracy: 0.5575757575757576. Clean development macro F1: 0.52
 Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.5696969696969697, "macro_f1": 0.5311124061124062, "examples": 165, "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## Evidence audit and queue restart (2026-10-30T16:13:00.184209+00:00)
+
+The latest completed run is `qwen-bfcl-cannot-answer-direct-replay48-continue-best-20261030`. Training accuracy was 0.416667, macro F1 0.147059, loss 2.744791 on 48 rows. Review-clear BFCL validation accuracy was 0.557576 and macro F1 0.521775 on 165 rows. Aggregate black-box test accuracy was 0.458653 and macro F1 0.356518 on 3652 rows. All evidence is recorded. Candidate selection remains validation-only.
+
+The next pilots use the same starting adapter and training setup. First, 48 fresh high-confidence cannot-answer examples test dose. Second, 48 such examples plus 24 direct-call replay examples test rehearsal. Both stop on held-out BFCL validation non-improvement. Data SHA-256 values are 452f58307bf4dd7c054c9000ecf4a936cb2eef2d4b0e0ed6967a0beab6afb245 and 39546690ad27cc5954b35a99e6a4879373f77fc4ce63adf54d483b67e13c7fb9. The leaderboard remains ranked by full aggregate test accuracy for reporting only.

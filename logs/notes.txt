@@ -9197,3 +9197,5 @@ are terminated then try again. If it still fails, a git process
 may have crashed in this repository earlier:
 remove the file manually to continue.
 . The result remains local and the worker queue continues.
+
+2026-10-30T16:13:00.184209+00:00: Prepared commit `Restart BFCL synthetic dose pilots`. Reconciled all three recorded metric types for qwen-bfcl-cannot-answer-direct-replay48-continue-best-20261030, restored the active worker queue after watchdog planning handoff, and queued 48 cannot-answer-only and 48 cannot-answer plus 24 direct-replay validation-selected pilots. Full aggregate test metrics are report-only. Artifact SHA-256 values: 452f58307bf4dd7c054c9000ecf4a936cb2eef2d4b0e0ed6967a0beab6afb245, 39546690ad27cc5954b35a99e6a4879373f77fc4ce63adf54d483b67e13c7fb9.
