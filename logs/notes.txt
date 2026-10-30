@@ -8843,3 +8843,7 @@ Context: The 75/25 recipe improved clean validation from 0.948 at 2e-5 to 0.952 
 Commit: Queue a smaller low-rate replay top-up.
 Description: Updated the latest evidence audit and queued a 50-row 25-real plus 25-new-balanced-synthetic continuation at 2.5e-6 from the clean-validation-selected checkpoint.
 Context: Larger continuation doses did not exceed the source checkpoint's 0.954 validation accuracy. The smaller dose tests whether fewer new updates preserve the validation signal. Test metrics remain aggregate reports only.
+
+Commit: Record launch of smaller balanced replay top-up.
+Description: Saved the watchdog's active PID and launch state for the 50-row replay continuation.
+Context: The worker is training 25 real preference examples plus 25 distinct balanced synthetic examples from the clean-validation-selected checkpoint. It uses 2.5e-6 and clean-validation-only stopping. Test metrics are report-only.
