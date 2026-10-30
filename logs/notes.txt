@@ -9020,3 +9020,7 @@ Commit: Update research evidence and queue the 35/15 tool-rich comparison. The c
 2026-10-30T08:21:30.540664+00:00: Commit `Record research experiment qwen-postbalanced-real40-rareschema10-mix-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
 
 2026-10-30T08:31:40.545329+00:00: Commit `Record research experiment qwen-postbalanced-real35-toolrich15-mix-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+## 2026-10-30: Audit 35/15 tool-rich run and queue combined-boundary comparison
+
+Commit: Record complete evidence for the latest completed pilot and queue a distinct matched source recipe. The 35-real/15-tool-rich run has training, clean-validation, and aggregate test metrics in its output, journal, results file, and leaderboard. No measurement was missing. The watchdog launched the 35-real/15-rare-schema comparison as PID 408981, which remains the only training worker. Queued a 35-real/15-combined-boundary comparison using a balanced, prompt-disjoint sample. Candidate selection uses clean validation only; aggregate test metrics are report-only.
