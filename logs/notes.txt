@@ -8859,3 +8859,7 @@ Context: The first small top-up improved clean validation to 0.956, while larger
 Commit: Queue a real-only continuation after the synthetic top-up plateau.
 Description: Recorded complete evidence for the second 25/25 top-up and queued a 50-row real preference continuation from its clean-validation-selected checkpoint.
 Context: Two small disjoint synthetic replay top-ups both reached 0.956 clean-validation accuracy, so more of the same did not add validation signal. The real-only continuation tests a distinct data source at the same low learning rate. Test metrics remain report-only.
+
+Commit: Record real-only replay launch.
+Description: Saved the watchdog's active worker PID and launch command after queue advancement.
+Context: The active run continues 50 real preference examples from the clean-validation-selected second top-up checkpoint at 2.5e-6. Clean validation controls checkpoint selection and stopping. Test metrics are reporting-only.
