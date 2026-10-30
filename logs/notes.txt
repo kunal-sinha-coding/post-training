@@ -9057,3 +9057,7 @@ Commit: Audit the latest completed metrics and add a source comparison behind th
 ## 2026-10-30: Queue structural diversity pilot after matched source tie
 
 Commit: Audit the latest completed matched source experiment and queue a distinct within-source sampling hypothesis. Training, clean validation, and aggregate test measurements are complete in the metrics file and journal. The three 30/20 source recipes tied on clean validation at 0.958. Queued a structurally stratified 30-real/20-tool-rich sample with balanced label counts and no prompt overlap with the recent tool-rich increments. Candidate selection uses clean validation only; test metrics are report-only.
+
+## 2026-10-30: Queue rare-schema structural coverage control
+
+Commit: Record and queue a matched follow-up behind the active structurally diverse tool-rich pilot. The latest completed experiment has all evidence. The active tool-rich worker is PID 412843 and remains untouched. Added one rare-schema structural-diversity sample at the same 30/20 ratio to test whether a possible coverage effect generalizes across sources. The queue and state remain active with planning_required false. Selection uses clean validation only.
