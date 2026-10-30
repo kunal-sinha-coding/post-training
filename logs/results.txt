@@ -176582,3 +176582,316 @@ The complete setup and observed results are recorded below. Source validation sp
 ## Full aggregate test confirmation, 2026-10-30
 
 Experiment: qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030. Source checkpoint training was 1.000000 accuracy and 0.250000 macro F1 on 50 examples with 0.194746 loss. Held-out SFT validation was 0.936000 accuracy and 0.475973 macro F1 on 500 examples. Aggregate black-box test performance was 0.741785 accuracy and 0.552256 macro F1 on all 3,652 rows. Test rows and labels were not exposed. The result is within 0.027 percentage points of the previous 0.741512 top score and is a statistical near-tie under the 1-point noise rule. The same 50-example continuation improves 3.943 points over its 0.702355 full-test starting checkpoint. An 896-example unsupported-only run from the same base scored 0.700438.
+
+## qwen-unsupported50-best-encoder-fusion-20261030
+
+The complete setup and observed results are recorded below. Source validation splits are separate and are not ranked together.
+
+```json
+{
+  "command": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_qwen_five_vote_encoder_fusion",
+    "--champion-checkpoint",
+    "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-20261028/epoch-01",
+    "--output-dir",
+    "outputs/qwen-unsupported50-best-encoder-fusion-20261030",
+    "--validation-size",
+    "500",
+    "--validation-seed",
+    "20261053",
+    "--batch-size",
+    "1",
+    "--training-metrics-source",
+    "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-20261028/metrics.json"
+  ],
+  "development_metrics": {
+    "accuracy": 0.936,
+    "examples": 500,
+    "macro_f1": 0.4759725779844653
+  },
+  "exit_code": "unknown",
+  "experiment_id": "qwen-unsupported50-best-encoder-fusion-20261030",
+  "failure_reason": null,
+  "metadata": {
+    "champion_checkpoint": "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-20261028/epoch-01",
+    "encoder_checkpoints": [
+      "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065",
+      "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061",
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+    ],
+    "encoder_family_rule": "Weighted encoder logits are softmaxed, then treated as one expert family.",
+    "encoder_logit_weights": [
+      0.35625,
+      0.1375,
+      0.50625
+    ],
+    "experiment": "qwen_tool_rich_champion_five_vote_three_encoder_fusion",
+    "fusion_encoder_weights": [
+      0.25,
+      0.5,
+      0.75
+    ],
+    "git_commit": "fa0ae895de84e25c6b6ccdc4e1199338cb6d0a61",
+    "method_selection": "Highest clean-validation accuracy among predeclared vote-frequency and vote-majority blends; macro F1 breaks ties.",
+    "purpose": "Fuse the current five-sampled-vote Qwen champion with the selected fixed three-encoder family.",
+    "runtime_seconds": 662.718635559082,
+    "selected_fusion_by_clean_validation": "vote_frequency_encoder_25",
+    "source_checkpoint_clean_validation_metrics": {
+      "heldout_validation_metrics": {
+        "accuracy": 0.936,
+        "confusion_matrix": [
+          [
+            244,
+            1,
+            5,
+            0
+          ],
+          [
+            14,
+            224,
+            11,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0
+          ]
+        ],
+        "examples": 500,
+        "macro_f1": 0.4759725779844653
+      },
+      "validation_examples": 500,
+      "validation_source": "sft"
+    },
+    "source_checkpoint_training_metrics": {
+      "epoch": 1,
+      "step": 50,
+      "training_evaluation_examples": 50,
+      "training_loss": 0.1947460800409044,
+      "training_metrics": {
+        "accuracy": 1.0,
+        "confusion_matrix": [
+          [
+            50,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "examples": 50,
+        "macro_f1": 0.25
+      }
+    },
+    "status": "completed",
+    "test_black_box": true,
+    "test_examples": 3652,
+    "test_metrics": {
+      "encoder_ensemble": {
+        "accuracy": 0.4843921139101862,
+        "examples": 3652,
+        "macro_f1": 0.3370305248983622
+      },
+      "qwen_five_vote_majority": {
+        "accuracy": 0.7415115005476451,
+        "examples": 3652,
+        "macro_f1": 0.5520699906493631
+      },
+      "qwen_greedy": {
+        "accuracy": 0.7417853231106243,
+        "examples": 3652,
+        "macro_f1": 0.5522560134517236
+      },
+      "vote_frequency_encoder_25": {
+        "accuracy": 0.7404162102957283,
+        "examples": 3652,
+        "macro_f1": 0.5511264312487488
+      },
+      "vote_frequency_encoder_50": {
+        "accuracy": 0.7360350492880613,
+        "examples": 3652,
+        "macro_f1": 0.5476745304784686
+      },
+      "vote_frequency_encoder_75": {
+        "accuracy": 0.5465498357064622,
+        "examples": 3652,
+        "macro_f1": 0.39076538872407307
+      },
+      "vote_majority_encoder_25": {
+        "accuracy": 0.7415115005476451,
+        "examples": 3652,
+        "macro_f1": 0.5520699906493631
+      },
+      "vote_majority_encoder_50": {
+        "accuracy": 0.7415115005476451,
+        "examples": 3652,
+        "macro_f1": 0.5520699906493631
+      },
+      "vote_majority_encoder_75": {
+        "accuracy": 0.5479189485213581,
+        "examples": 3652,
+        "macro_f1": 0.39190150160099435
+      },
+      "vote_probability_encoder_50": {
+        "accuracy": 0.7382256297918949,
+        "examples": 3652,
+        "macro_f1": 0.5495691238852333
+      }
+    },
+    "test_rows_or_predictions_saved": false,
+    "test_selection_performed": false,
+    "training_metrics": null,
+    "training_metrics_source": "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-20261028/metrics.json",
+    "training_metrics_status": "not applicable because this is frozen inference only",
+    "validation_metrics": {
+      "encoder_ensemble": {
+        "accuracy": 0.734,
+        "examples": 500,
+        "macro_f1": 0.3610581751693235
+      },
+      "qwen_five_vote_majority": {
+        "accuracy": 0.936,
+        "examples": 500,
+        "macro_f1": 0.4759725779844653
+      },
+      "qwen_greedy": {
+        "accuracy": 0.936,
+        "examples": 500,
+        "macro_f1": 0.4759725779844653
+      },
+      "vote_frequency_encoder_25": {
+        "accuracy": 0.936,
+        "examples": 500,
+        "macro_f1": 0.4759725779844653
+      },
+      "vote_frequency_encoder_50": {
+        "accuracy": 0.928,
+        "examples": 500,
+        "macro_f1": 0.4713966387946022
+      },
+      "vote_frequency_encoder_75": {
+        "accuracy": 0.784,
+        "examples": 500,
+        "macro_f1": 0.39009287925696595
+      },
+      "vote_majority_encoder_25": {
+        "accuracy": 0.936,
+        "examples": 500,
+        "macro_f1": 0.4759725779844653
+      },
+      "vote_majority_encoder_50": {
+        "accuracy": 0.936,
+        "examples": 500,
+        "macro_f1": 0.4759725779844653
+      },
+      "vote_majority_encoder_75": {
+        "accuracy": 0.784,
+        "examples": 500,
+        "macro_f1": 0.39009287925696595
+      },
+      "vote_probability_encoder_50": {
+        "accuracy": 0.934,
+        "examples": 500,
+        "macro_f1": 0.47442730402542366
+      }
+    },
+    "validation_source": {
+      "label_counts": {
+        "0": 250,
+        "1": 249,
+        "3": 1
+      },
+      "sample_fingerprint": "877a1a8e65a7b6d8c6f90f2bb22c85f140fb23a2dc694c42204a2f7eef499fc8",
+      "sample_rows": 500,
+      "sample_seed": 20261053,
+      "source": "nvidia/When2Call:train_sft",
+      "source_independent_of_train_pref_and_bfcl": true,
+      "source_rows": 15000
+    },
+    "vote_count": 5,
+    "vote_seed": 20261075,
+    "wandb_run_id": "tzwm3rpm",
+    "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/tzwm3rpm"
+  },
+  "metrics_path": "/workspace/post-training/outputs/qwen-unsupported50-best-encoder-fusion-20261030/metrics.json",
+  "official_test_loaded": true,
+  "official_test_metrics": {
+    "accuracy": 0.7404162102957283,
+    "examples": 3652,
+    "macro_f1": 0.5511264312487488
+  },
+  "output_dir": "/workspace/post-training/outputs/qwen-unsupported50-best-encoder-fusion-20261030",
+  "source_validation_metrics": {
+    "source_checkpoint_clean_validation_metrics": {
+      "heldout_validation_metrics": {
+        "accuracy": 0.936,
+        "confusion_matrix": [
+          [
+            244,
+            1,
+            5,
+            0
+          ],
+          [
+            14,
+            224,
+            11,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0
+          ]
+        ],
+        "examples": 500,
+        "macro_f1": 0.4759725779844653
+      },
+      "validation_examples": 500,
+      "validation_source": "sft"
+    }
+  },
+  "started_at": "2026-10-30T01:38:46.470436+00:00",
+  "status": "completed",
+  "test_status": "measured",
+  "timestamp": "2026-10-30T01:50:18.242982+00:00",
+  "train_metrics": {},
+  "wandb_run_id": "tzwm3rpm",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/tzwm3rpm"
+}
+```

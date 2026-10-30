@@ -15000,3 +15000,15 @@ First queue the established five-vote Qwen plus selected three-encoder fusion on
 Audited the most recent completed experiment, `qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030`. Training metrics are linked to the source run and cover all 50 training examples: accuracy 1.000000, macro F1 0.250000, and loss 0.194746. Clean SFT validation covers 500 examples: accuracy 0.936000 and macro F1 0.475973. The aggregate black-box test covers all 3,652 examples: accuracy 0.741785 and macro F1 0.552256. All required evidence types are present. No row-level test examples, labels, or predictions were read.
 
 The encoder-fusion evaluation remains active. The existing 50-row incremental unsupported-capability continuation remains queued, but its stopping rule is set to clean validation. Added a distinct 450-row balanced synthetic continuation from the same 50-row checkpoint. This tests whether the balanced recipe adds broader label and request coverage after the single-class pilot. Both training experiments evaluate at each epoch with no more than 500 training probe rows and 500 clean-validation rows. Clean validation controls stopping and checkpoint selection. Full aggregate test metrics are reported separately and do not control selection.
+
+## qwen-unsupported50-best-encoder-fusion-20261030
+
+Timestamp: 2026-10-30T01:50:18.242982+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_qwen_five_vote_encoder_fusion", "--champion-checkpoint", "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-20261028/epoch-01", "--output-dir", "outputs/qwen-unsupported50-best-encoder-fusion-20261030", "--validation-size", "500", "--validation-seed", "20261053", "--batch-size", "1", "--training-metrics-source", "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-20261028/metrics.json"]. Output: /workspace/post-training/outputs/qwen-unsupported50-best-encoder-fusion-20261030. W&B run: tzwm3rpm.
+
+Clean development accuracy: 0.936. Clean development macro F1: 0.4759725779844653. Official test loaded: True. Test status: measured. Official test metrics: {"accuracy": 0.7404162102957283, "macro_f1": 0.5511264312487488, "examples": 3652}.
+
+Separate source validation metrics: {"source_checkpoint_clean_validation_metrics": {"heldout_validation_metrics": {"accuracy": 0.936, "macro_f1": 0.4759725779844653, "confusion_matrix": [[244, 1, 5, 0], [14, 224, 11, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}, "validation_source": "sft", "validation_examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

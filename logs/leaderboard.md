@@ -2492,3 +2492,6 @@ Source-specific result `qwen-when2call-synthetic-continuation-unsupported_capabi
 | qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030 | 0.7417853231106243 | 0.5522560134517236 | ujnzugbb | Aggregate-only frozen test measurement |
 
 Queued follow-ups: clean-validation-selected five-vote and encoder fusion on the 50-example checkpoint, followed by an additional 50-example unsupported-only continuation from that checkpoint. The latter uses a deterministic, nonoverlapping subset of the earlier 896-row pool.
+| Candidate | qwen-unsupported50-best-encoder-fusion-20261030 | 0.936 | 0.4759725779844653 | [metrics](/workspace/post-training/outputs/qwen-unsupported50-best-encoder-fusion-20261030/metrics.json) | completed |
+
+| qwen-unsupported50-best-encoder-fusion-20261030 | 0.7404162102957283 | 0.5511264312487488 | tzwm3rpm | Aggregate-only frozen test measurement |
