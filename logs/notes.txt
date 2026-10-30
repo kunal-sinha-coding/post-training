@@ -8821,3 +8821,7 @@ Context: The initial 25/25 mix had the strongest clean-validation result, while 
 Commit: Queue a second targeted rate reduction for replay training.
 Description: Updated the evidence audit for the latest 75/25 replay run and queued a 2.5e-6 continuation using the same 50/50 replay data and checkpoint as the completed 5e-6 run.
 Context: Clean validation fell under 2e-5 on the 100-row mixtures and recovered from 0.938 to 0.952 under 5e-6 on a matched 50/50 recipe. A further rate reduction is a controlled test of this observed response. Test metrics remain aggregate reports only.
+
+Commit: Record launch of the 2.5e-6 replay run.
+Description: Saved the watchdog's active process ID and launch status for the queued matched replay experiment.
+Context: The run uses the fixed 50-real plus 50-balanced-synthetic data, the same source checkpoint as the 5e-6 experiment, and clean-validation-only stopping. The watchdog advanced the queue and launched it successfully.
