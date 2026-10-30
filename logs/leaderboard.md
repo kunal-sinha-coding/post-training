@@ -2486,3 +2486,7 @@ Queued next: balanced 508-row tool-rich synthetic continuation and a matched 508
 | Pending | Unsupported-capability pilot, 50 synthetic examples, full-test confirmation | — | — | 0.936000 | 0.475973 | 3,652 pending; prior 500-row sample only | [metrics](/workspace/post-training/outputs/qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030/metrics.json) |
 
 | Pending | Qwen trained on 50 original preference examples, matched control | — | — | — | — | 3,652 | [metrics](/workspace/post-training/outputs/qwen-fullpool-unsupported50-real-control-20261030/metrics.json) |
+
+Source-specific result `qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"heldout_validation_metrics": {"accuracy": 0.936, "macro_f1": 0.4759725779844653, "confusion_matrix": [[244, 1, 5, 0], [14, 224, 11, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}, "validation_source": "sft", "validation_examples": 500}}. These values are not ranked against other splits.
+
+| qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030 | 0.7417853231106243 | 0.5522560134517236 | ujnzugbb | Aggregate-only frozen test measurement |
