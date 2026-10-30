@@ -16065,3 +16065,7 @@ Clean development accuracy: 0.5636363636363636. Clean development macro F1: 0.53
 Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.5696969696969697, "macro_f1": 0.5311124061124062, "examples": 165, "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## Latest ratio audit and cannot-answer hypotheses (2026-10-30T15:52:18.689271+00:00)
+
+Most recent completed run: `qwen-bfcl-direct36-other36-fresh72-continue-best-20261030`. Its selected epoch 1 has training accuracy 0.708333, macro F1 0.574457, loss 1.635484 on 72; clean BFCL validation accuracy 0.563636, macro F1 0.534977 on 165; and aggregate full-test accuracy 0.462486, macro F1 0.355436 on 3652. All three evidence types are recorded. The validation confusion predicts 51 of 53 cannot-answer rows as direct. Two targeted continuations are queued. Clean BFCL validation alone selects checkpoints. Aggregate test metrics are report-only.
