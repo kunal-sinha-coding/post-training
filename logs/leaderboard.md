@@ -2605,3 +2605,6 @@ Queued follow-ups: clean-validation-selected five-vote and encoder fusion on the
 | Candidate | qwen-postbalanced-real30-rareschema20-mix-20261030 | 0.958 | 0.4872479609158282 | [metrics](/workspace/post-training/outputs/qwen-postbalanced-real30-rareschema20-mix-20261030/metrics.json) | completed |
 
 | qwen-postbalanced-real30-rareschema20-mix-20261030 | 0.731106243154436 | 0.5473650714756974 | lr1wprz4 | Aggregate-only frozen test measurement |
+| Candidate | qwen-postbalanced-real30-combinedboundary20-mix-20261030 | 0.958 | 0.4872479609158282 | [metrics](/workspace/post-training/outputs/qwen-postbalanced-real30-combinedboundary20-mix-20261030/metrics.json) | completed |
+
+| qwen-postbalanced-real30-combinedboundary20-mix-20261030 | 0.7305585980284776 | 0.5471177966071303 | 4kdqrkwy | Aggregate-only frozen test measurement |
