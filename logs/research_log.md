@@ -15446,3 +15446,24 @@ Clean development accuracy: 0.956. Clean development macro F1: 0.486715456868797
 Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.958, "macro_f1": 0.4872479609158282, "examples": 500, "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## qwen-postbalanced-real25-combinedboundary25-mix-20261030
+
+Timestamp: 2026-10-30T07:55:24.296923+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-postbalanced-real25-combinedboundary25-mix-20261030", "--adapter-checkpoint", "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01", "--preference-train-sample-size", "25", "--augmentation-jsonl", "outputs/when2call-combined-boundary-increment25-mix-20261030.jsonl", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "3", "--learning-rate", "2.5e-6", "--baseline-validation-accuracy", "0.958", "--baseline-validation-macro-f1", "0.4872479609158282", "--baseline-test-accuracy", "0.731106243154436", "--baseline-test-macro-f1", "0.5473409779598896", "--baseline-test-source", "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/metrics.json", "--stop-on-validation-non-improvement", "--seed", "20261222"]. Output: /workspace/post-training/outputs/qwen-postbalanced-real25-combinedboundary25-mix-20261030. W&B run: 3qnqk9gu.
+
+Clean development accuracy: 0.956. Clean development macro F1: 0.48671545686879747. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7300109529025192, "macro_f1": 0.546452492211838, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.958, "macro_f1": 0.4872479609158282, "examples": 500, "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
+
+
+## 2026-10-30: Evidence audit and lower-dose tool-rich queue
+
+Latest completed run `qwen-postbalanced-real25-combinedboundary25-mix-20261030` has all three required evidence types: training 0.9800 / 0.734793 / loss 0.229597 on 50 rows; clean validation 0.9560 / 0.486715456869 on 500; aggregate test 0.730010952903 / 0.546452492212 on 3652. No measurement is missing. Test aggregates are report-only.
+
+The 25-real plus 25-tool-rich mixture retained 0.958 clean-validation accuracy, while the 25/25 rare-schema and combined-boundary mixtures reached 0.956. Test a smaller 40-real plus 10-tool-rich dose from the same fixed adapter to check whether the tool-rich source can retain validation with fewer synthetic rows. Use a disjoint stratified 4/3/3 sample from the same tool-rich pool and keep all other settings fixed. Clean validation controls selection; aggregate test metrics remain report-only. The ten selected rows are `outputs/when2call-tool-rich-increment10-mix-20261030.jsonl`, SHA-256 `a2ff225aa86106309f81645923dddc07292d7c261fe1cc3c202ddf6920ce3d1c`, label counts {'0': 4, '1': 3, '2': 3}. They are disjoint from the previous 25-row tool-rich sample.
+
+Queued command: `python -u -m experiments.train_qwen_when2call_fullpool --output-dir outputs/qwen-postbalanced-real40-toolrich10-mix-20261030 --adapter-checkpoint outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01 --preference-train-sample-size 40 --augmentation-jsonl outputs/when2call-tool-rich-increment10-mix-20261030.jsonl --validation-source sft --validation-sample-size 500 --validation-seed 20261053 --training-eval-sample-size 500 --training-eval-seed 20261059 --eval-batch-size 8 --epochs 3 --learning-rate 2.5e-6 --baseline-validation-accuracy 0.958 --baseline-validation-macro-f1 0.4872479609158282 --baseline-test-accuracy 0.731106243154436 --baseline-test-macro-f1 0.5473409779598896 --baseline-test-source outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/metrics.json --stop-on-validation-non-improvement --seed 20261222`.
