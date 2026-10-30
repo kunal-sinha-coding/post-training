@@ -16011,3 +16011,15 @@ This record was written automatically. Candidate selection must use clean valida
 Most recent completed run: `qwen-bfcl-balanced18each-continue-best-20261030`. Selected epoch 1 has training accuracy 0.694444, macro F1 0.605507, loss 3.610440 on 72; held-out BFCL validation accuracy 0.515152, macro F1 0.490931 on 165; aggregate full-test accuracy 0.730832, macro F1 0.547326 on 3652. Both epochs have all three evidence types. No backfill is needed. Test metrics are report-only.
 
 The direct-heavy 48:24 pilot reached the best BFCL validation accuracy so far, 0.557576 with macro F1 0.578328 at epoch 3. The 18-per-class pilot reached 0.515152 validation accuracy and 0.490931 macro F1 at epoch 1, then declined. Queued two fresh continuations from the direct-heavy epoch-3 checkpoint: 24 direct-only rows, then a 72-row 48:24 fresh dose. The direct pilot reports aggregate test accuracy 0.656627 at epoch 3; this is recorded but is not used for selection.
+
+## qwen-bfcl-direct-only-fresh24-continue-best-20261030
+
+Timestamp: 2026-10-30T15:14:13.131648+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-bfcl-direct-only-fresh24-continue-best-20261030", "--bfcl-data", "outputs/bfcl_when2call_labeled_reviewclear_val165.jsonl", "--adapter-checkpoint", "outputs/qwen-bfcl-direct48-balanced-other24-continue-best-20261030/epoch-03", "--synthetic-only", "--augmentation-jsonl", "outputs/bfcl-direct-only-fresh24-pilot-20261030.jsonl", "--validation-source", "bfcl", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "3", "--learning-rate", "2.5e-6", "--baseline-validation-accuracy", "0.5575757575757576", "--baseline-validation-macro-f1", "0.578327922077922", "--baseline-test-accuracy", "0.6566265060240963", "--baseline-test-macro-f1", "0.5167577677654558", "--baseline-test-source", "outputs/qwen-bfcl-direct48-balanced-other24-continue-best-20261030/metrics.json", "--stop-on-validation-non-improvement", "--seed", "20261222"]. Output: /workspace/post-training/outputs/qwen-bfcl-direct-only-fresh24-continue-best-20261030. W&B run: ilhachpq.
+
+Clean development accuracy: 0.5515151515151515. Clean development macro F1: 0.5098311887908615. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.46851040525739324, "macro_f1": 0.3552067740780416, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.5575757575757576, "macro_f1": 0.578327922077922, "examples": 165, "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
