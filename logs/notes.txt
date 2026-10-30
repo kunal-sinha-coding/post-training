@@ -9127,3 +9127,5 @@ remove the file manually to continue.
 2026-10-30. Audited the latest 200-example non-tool-rich run. All required evidence is present. Two 100-example label-composition pilots are queued to test the validation false-prediction pattern for label 2. Candidate selection uses clean validation only. Test labels are not used.
 
 2026-10-30T12:04:27.041246+00:00: Commit `Record research experiment qwen-postbalanced-real30-label0-1-2-45-45-10-mix-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-30T12:14:58.469203+00:00: Commit `Record research experiment qwen-postbalanced-real30-label0-1-50-50-mix-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
