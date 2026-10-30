@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
-  "current_hypothesis": "The active 30-real/20-tool-rich run tests a 40 percent tool-rich share between lower and higher doses that retained 0.958 validation.",
+  "current_hypothesis": "The active 30-real/20-tool-rich and queued 30-real/20-rare-schema pilots compare source effects at a 40 percent synthetic share.",
   "active_experiment": {
     "pid": 410424,
     "command": [
@@ -138,6 +138,49 @@
       "--stop-on-validation-non-improvement",
       "--seed",
       "20261222"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-postbalanced-real30-combinedboundary20-mix-20261030",
+      "--adapter-checkpoint",
+      "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01",
+      "--preference-train-sample-size",
+      "30",
+      "--augmentation-jsonl",
+      "outputs/when2call-combined-boundary-increment20-mix-20261030.jsonl",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "3",
+      "--learning-rate",
+      "2.5e-6",
+      "--baseline-validation-accuracy",
+      "0.958",
+      "--baseline-validation-macro-f1",
+      "0.4872479609158282",
+      "--baseline-test-accuracy",
+      "0.731106243154436",
+      "--baseline-test-macro-f1",
+      "0.5473409779598896",
+      "--baseline-test-source",
+      "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/metrics.json",
+      "--stop-on-validation-non-improvement",
+      "--seed",
+      "20261222"
     ]
   ],
   "_previous_command": [
@@ -166,8 +209,8 @@
     "validation_examples": 500,
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
-  "last_heartbeat": "2026-10-30T09:02:15.984696+00:00",
-  "last_action": "Reconciled stale watchdog state with live 30/20 tool-rich PID and requeued the matched 30/20 rare-schema comparison.",
+  "last_heartbeat": "2026-10-30T09:05:19.717607+00:00",
+  "last_action": "Confirmed complete evidence for the latest completed run, preserved active 30/20 tool-rich training, and appended a distinct 30/20 combined-boundary source comparison.",
   "watchdog_enabled": true,
   "research_log_size": 2032196,
   "stop_command": "STOP",
@@ -227,7 +270,7 @@
     "artifact": "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030/metrics.json",
     "selection": "aggregate-only leaderboard report; improvement over 0.741512 is within 1-point noise"
   },
-  "next_hypothesis": "Compare 30-real/20-rare-schema data at the same 40 percent synthetic share to determine whether the clean-validation response is source-specific. Use clean validation only for selection.",
+  "next_hypothesis": "The 30-real/20-combined-boundary comparison completes the matched source screen at the same synthetic share. Keep the base adapter, total rows, optimizer settings, and clean-validation sample fixed. Select only by clean validation.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
@@ -280,7 +323,7 @@
     "aggregate_black_box_test_metrics": "recorded at epoch 1: accuracy 0.730284775465, macro F1 0.546714111060 on all 3652 test examples",
     "all_required_evidence_recorded": true,
     "test_labels_used_for_selection": false,
-    "note": "All three evidence types exist in metrics.json and the experiment journal. No backfill is needed. Aggregate test metrics are report-only."
+    "note": "All evidence is present in metrics.json and experiment_records.jsonl. No backfill needed. Aggregate test metrics are report-only."
   },
   "duplicate_worker_failure": {
     "pid": 103632,
@@ -409,7 +452,7 @@
     "epoch": 1,
     "selection_use": "aggregate reporting only; no individual test labels or outputs inspected"
   },
-  "updated_at": "2026-10-30T09:02:15.984696+00:00",
+  "updated_at": "2026-10-30T09:05:19.717607+00:00",
   "synthetic_pilot_results": [
     {
       "strategy": "missing_required_info",

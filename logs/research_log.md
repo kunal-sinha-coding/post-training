@@ -15533,3 +15533,12 @@ Clean development accuracy: 0.956. Clean development macro F1: 0.486224515145994
 Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.958, "macro_f1": 0.4872479609158282, "examples": 500, "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+## 2026-10-30: Matched 40-percent synthetic source queue
+
+Latest completed experiment `qwen-postbalanced-real35-combinedboundary15-mix-20261030` has all required evidence: training 1.0000 accuracy / 0.750000 macro F1 / loss 0.001692 on 50 examples; clean validation 0.9560 / 0.486236348130 on 500; aggregate black-box test 0.730284775465 / 0.546714111060 on 3652. No backfill measurement is needed. The test aggregate is report-only.
+
+The 30-real/20-tool-rich worker is active. The 30-real/20-rare-schema comparison is next. A 30-real/20-combined-boundary comparison follows to complete a matched source screen at the same synthetic share. Its balanced 20-row sample is prompt-disjoint from the recent 10, 15, and 25 row increments and has SHA-256 `1b60ca12c21fb336af0b1b83271fe63827c682563130a9ed3ec83b11cb3c256f`. Selection uses clean validation only.
+
+Queued command: `python -u -m experiments.train_qwen_when2call_fullpool --output-dir outputs/qwen-postbalanced-real30-combinedboundary20-mix-20261030 --adapter-checkpoint outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01 --preference-train-sample-size 30 --augmentation-jsonl outputs/when2call-combined-boundary-increment20-mix-20261030.jsonl --validation-source sft --validation-sample-size 500 --validation-seed 20261053 --training-eval-sample-size 500 --training-eval-seed 20261059 --eval-batch-size 8 --epochs 3 --learning-rate 2.5e-6 --baseline-validation-accuracy 0.958 --baseline-validation-macro-f1 0.4872479609158282 --baseline-test-accuracy 0.731106243154436 --baseline-test-macro-f1 0.5473409779598896 --baseline-test-source outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/metrics.json --stop-on-validation-non-improvement --seed 20261222`

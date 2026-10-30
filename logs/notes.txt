@@ -9043,3 +9043,7 @@ remove the file manually to continue.
 ## 2026-10-30 state reconciliation after watchdog handoff
 
 Commit: Restore the live worker and queue after the watchdog sent a stale planning handoff. Rechecked the newest completed 35-real/15-combined-boundary run and confirmed training, clean-validation, and aggregate black-box test metrics were all recorded. No evidence measurement was missing. Recorded PID 410424 and its exact 30-real/20-tool-rich command as active, restored the distinct 30-real/20-rare-schema command to the queue, and set active status with planning_required false. Test aggregates remain report-only and selection uses clean validation.
+
+## 2026-10-30: Queue matched combined-boundary source experiment
+
+Commit: Audit the latest completed metrics and add a source comparison behind the existing queue. The 35-real/15-combined-boundary run has training, clean-validation, and aggregate black-box test metrics recorded. No evidence was missing. Kept the active 30-real/20-tool-rich worker and existing 30-real/20-rare-schema queue item. Added a balanced, prompt-disjoint 30-real/20-combined-boundary experiment after them. Selection remains based on clean validation only.
