@@ -79,11 +79,22 @@ def main() -> int:
     parser.add_argument("--output-dir", type=Path)
     parser.add_argument("--output", type=Path)
     parser.add_argument("--model", default="Qwen/Qwen2.5-0.5B-Instruct")
+    parser.add_argument("--training-metrics-source", type=Path)
     parser.add_argument("--lora-rank", type=int, default=16)
     parser.add_argument("--max-length", type=int, default=4096)
     parser.add_argument("--batch-size", type=int, default=1)
     parser.add_argument("--corrected-learned-label-order", action="store_true")
     args = parser.parse_args()
+    # Load training and clean-validation provenance from the exact checkpoint's experiment record.
+    source_training_metrics = None
+    source_validation_metrics = None
+    if args.training_metrics_source:
+        source_metrics = json.loads(args.training_metrics_source.read_text(encoding="utf-8"))
+        checkpoint_name = str(args.checkpoint)
+        source_epoch = next((item for item in source_metrics.get("epoch_records", []) if item.get("checkpoint") == checkpoint_name), None)
+        if source_epoch:
+            source_training_metrics = {key: source_epoch.get(key) for key in ("epoch", "step", "training_loss", "training_metrics", "training_evaluation_examples")}
+            source_validation_metrics = {key: source_epoch.get(key) for key in ("heldout_validation_metrics", "validation_source", "validation_examples")}
     # Require a worker output directory so the watchdog can monitor test progress.
     output_dir = args.output_dir or (args.output.parent if args.output else None)
     if output_dir is None:
@@ -122,7 +133,7 @@ def main() -> int:
     # Log and save only the permitted aggregate metrics and non-label operational metadata.
     run.log({"test/accuracy": metrics["accuracy"], "test/macro_f1": metrics["macro_f1"]})
     run.summary.update({"test_accuracy": metrics["accuracy"], "test_macro_f1": metrics["macro_f1"], "black_box": True, "selection_complete": True})
-    result = {"dataset": DATASET_NAME, "split": "test/mcq", "test_loaded": True, "official_test_loaded": True, "test_measurement_only": True, "black_box": True, "checkpoint": str(args.checkpoint), "base_model": args.model, "prompt_label_order": "A=cannot_answer, B=request_for_info, C=tool_call, D=direct" if args.corrected_learned_label_order else "historical training prompt order", "training_metrics_source": "outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json", "training_metrics": {"epoch": 2, "examples": 500, "training_loss": 0.408354387068056, "accuracy": 0.96, "macro_f1": 0.7201450925439365}, "examples": len(rows), "official_test_metrics": metrics, "metrics": metrics, "wandb_run_id": run.id, "wandb_run_url": run.url}
+    result = {"dataset": DATASET_NAME, "split": "test/mcq", "test_loaded": True, "official_test_loaded": True, "test_measurement_only": True, "black_box": True, "checkpoint": str(args.checkpoint), "base_model": args.model, "prompt_label_order": "A=cannot_answer, B=request_for_info, C=tool_call, D=direct" if args.corrected_learned_label_order else "historical training prompt order", "training_metrics_source": str(args.training_metrics_source) if args.training_metrics_source else None, "training_metrics": source_training_metrics, "clean_validation_metrics_source": str(args.training_metrics_source) if args.training_metrics_source else None, "clean_validation_metrics": source_validation_metrics, "examples": len(rows), "official_test_metrics": metrics, "metrics": metrics, "wandb_run_id": run.id, "wandb_run_url": run.url}
     result["output_dir"] = str(output_dir)
     output_path.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     write_heartbeat(output_dir / "heartbeat.json", "completed")

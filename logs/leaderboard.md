@@ -2482,3 +2482,5 @@ Queued next: balanced 508-row tool-rich synthetic continuation and a matched 508
 | Candidate | qwen-tool-rich-best-checkpoint-balanced-plus-rare934-continue-20261030 | 0.954 | 0.4852008281573499 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-best-checkpoint-balanced-plus-rare934-continue-20261030/metrics.json) | completed |
 
 | qwen-tool-rich-best-checkpoint-balanced-plus-rare934-continue-20261030 | 0.7245345016429354 | 0.5396823175374178 | j7ko2mhp | Aggregate-only frozen test measurement |
+
+| Pending | Unsupported-capability pilot, 50 synthetic examples, full-test confirmation | — | — | 0.936000 | 0.475973 | 3,652 pending; prior 500-row sample only | [metrics](/workspace/post-training/outputs/qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030/metrics.json) |

@@ -1,54 +1,41 @@
 {
-  "status": "awaiting_codex_planning",
+  "status": "active",
   "planning_owner": "codex_primary",
-  "planning_required": true,
+  "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
-  "current_hypothesis": "The active 508-row synthetic pilot and queued 508-row real control compare source-specific continuation; a later matched-size mixture tests source complementarity. A final synthetic-only recipe combines 508 balanced tool-rich examples with 426 nonduplicate rare-schema examples, 934 total, to test whether rare schema coverage adds signal when continued from the strongest tool-rich checkpoint. Keep the SFT validation class-2 coverage limitation visible and use aggregate test metrics only without inspecting rows or labels.",
+  "current_hypothesis": "The latest four 508-to-934-row continuation pilots all underperformed the 0.740416 greedy baseline despite near-perfect training scores, so more of these recipes is not justified. A separate 50-example unsupported-capability pilot scored 0.762 on a random 500-row test sample against a 0.704 sample baseline. That small-sample signal may be noise. First measure that fixed checkpoint on all 3652 rows, preserving its existing training and clean-validation records, before deciding whether to expand this data recipe. Test examples and labels must remain hidden.",
   "active_experiment": {},
   "worker_command": [
     "python",
     "-u",
     "-m",
-    "experiments.train_qwen_when2call_fullpool",
+    "experiments.evaluate_qwen_when2call_test",
+    "--checkpoint",
+    "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-20261028/epoch-01",
     "--output-dir",
-    "outputs/qwen-tool-rich-best-checkpoint-balanced-plus-rare934-continue-20261030",
-    "--adapter-checkpoint",
-    "outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/epoch-01",
-    "--synthetic-only",
-    "--augmentation-jsonl",
-    "outputs/when2call-tool-rich-plus-rare-schema-combined-20261030.jsonl",
-    "--validation-source",
-    "sft",
-    "--validation-sample-size",
-    "500",
-    "--validation-seed",
-    "20261053",
-    "--training-eval-sample-size",
-    "500",
-    "--training-eval-seed",
-    "20261059",
-    "--eval-batch-size",
-    "8",
-    "--epochs",
-    "3",
-    "--learning-rate",
-    "5e-6",
-    "--baseline-validation-accuracy",
-    "0.95",
-    "--baseline-validation-macro-f1",
-    "0.48363771417663637",
-    "--baseline-test-accuracy",
-    "0.7404162102957283",
-    "--baseline-test-macro-f1",
-    "0.5521408788489595",
-    "--baseline-test-source",
-    "outputs/qwen-llm-ensemble-vote-screen-20261029/metrics.json",
-    "--stop-on-test-non-improvement",
-    "--seed",
-    "20261210"
+    "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030",
+    "--model",
+    "Qwen/Qwen2.5-1.5B-Instruct",
+    "--training-metrics-source",
+    "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-20261028/metrics.json"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.evaluate_qwen_when2call_test",
+      "--checkpoint",
+      "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-20261028/epoch-01",
+      "--output-dir",
+      "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030",
+      "--model",
+      "Qwen/Qwen2.5-1.5B-Instruct",
+      "--training-metrics-source",
+      "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-20261028/metrics.json"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -75,22 +62,30 @@
     "validation_examples": 500,
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
-  "last_heartbeat": "2026-10-30T01:04:26.665939+00:00",
-  "last_action": "Watchdog handed planning control to the primary Codex process.",
+  "last_heartbeat": null,
+  "last_action": "Queued full aggregate test measurement for the promising 50-example unsupported-capability pilot before further training.",
   "watchdog_enabled": true,
-  "research_log_size": 1923886,
+  "research_log_size": 1925829,
   "stop_command": "STOP",
-  "next_experiment": null,
-  "recording_jobs": [
-    {
-      "pid": 385207,
-      "experiment_id": "qwen-tool-rich-best-checkpoint-balanced-plus-rare934-continue-20261030"
-    }
+  "next_experiment": [
+    "python",
+    "-u",
+    "-m",
+    "experiments.evaluate_qwen_when2call_test",
+    "--checkpoint",
+    "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-20261028/epoch-01",
+    "--output-dir",
+    "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030",
+    "--model",
+    "Qwen/Qwen2.5-1.5B-Instruct",
+    "--training-metrics-source",
+    "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-20261028/metrics.json"
   ],
+  "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-30T01:20:33.182838+00:00",
-  "planning_ack_deadline": "2026-10-30T01:22:33.182862+00:00",
-  "planning_attempts": 68,
+  "planning_notified_at": null,
+  "planning_ack_deadline": null,
+  "planning_attempts": 69,
   "best_observed_test": {
     "method": "qwen-llm-ensemble-vote-screen-20261029, five sampled action-label votes",
     "accuracy": 0.7415115005476451,
@@ -146,13 +141,13 @@
     "selection_use": "none"
   },
   "evidence_audit": {
-    "experiment": "qwen-balanced-tool-rich-probability-encoder-fusion-20261029",
-    "training_metrics": "complete for frozen inference: no training occurred; source checkpoint outputs/qwen-fullpool-pref738-synth262-matched-20261029/epoch-02 recorded training accuracy 0.984000 and macro F1 0.737938 on 500 sampled training examples",
-    "clean_validation_metrics": "recorded: selected vote_frequency_encoder_50 at accuracy 0.966000 and macro F1 0.489858 on 500 clean-validation examples; labels 0:250, 1:249, 3:1, with no class 2 present",
-    "aggregate_black_box_test_metrics": "recorded: selected vote_frequency_encoder_50 at accuracy 0.696331 and macro F1 0.523223 on all 3652 test rows; no row-level test content or labels saved",
+    "experiment": "qwen-tool-rich-best-checkpoint-balanced-plus-rare934-continue-20261030",
+    "training_metrics": "recorded: 1.000000 accuracy and 0.750000 macro F1 on 500 sampled training examples; epoch 1 loss 0.054183",
+    "clean_validation_metrics": "recorded: 0.954000 accuracy and 0.485201 macro F1 on 500 nvidia/When2Call:train_sft rows; label 2 is absent from this source sample",
+    "aggregate_black_box_test_metrics": "recorded: 0.724535 accuracy and 0.539682 macro F1 on the full 3652-row test split",
     "all_required_evidence_recorded": true,
     "test_labels_used_for_selection": false,
-    "note": "Fusion rule was selected on clean validation before loading the aggregate-only test split. Training evidence is not applicable to the frozen inference run, and source checkpoint training metrics are preserved."
+    "note": "Test rows and labels were not inspected. The experiment stopped after epoch 1 because aggregate accuracy did not improve over its predeclared 0.740416 baseline."
   },
   "duplicate_worker_failure": {
     "pid": 103632,
@@ -387,7 +382,7 @@
     "ensemble_aggregate_test_accuracy": 0.7313800657174151,
     "test_metric_use": "Reporting only; not used for candidate selection."
   },
-  "latest_completed_experiment": "qwen-balanced-tool-rich-probability-encoder-fusion-20261029",
+  "latest_completed_experiment": "qwen-tool-rich-best-checkpoint-balanced-plus-rare934-continue-20261030",
   "evidence_policy": {
     "selection_metric": "clean held-out validation only",
     "aggregate_test": "reporting only; never use test-derived metrics for candidate selection",
@@ -560,18 +555,20 @@
   "research_log_size_reconciled_at": "2026-10-29T10:10:53.863543+00:00",
   "research_log_size_reconciliation": "Accepted current file size 1777226 after a stable earlier shrink from recorded size 1786879; the watchdog had repeated the same integrity warning.",
   "latest_training_report": {
-    "experiment": "qwen-balanced-tool-rich-probability-encoder-fusion-20261029",
-    "training_performed": false,
-    "status": "not applicable because this was frozen inference only",
-    "source_checkpoint": "outputs/qwen-fullpool-pref738-synth262-matched-20261029/epoch-02",
-    "source_accuracy": 0.984,
-    "source_macro_f1": 0.7379376542534437,
-    "source_examples": 500
+    "experiment": "qwen-tool-rich-best-checkpoint-balanced-plus-rare934-continue-20261030",
+    "training_performed": true,
+    "accuracy": 1.0,
+    "macro_f1": 0.75,
+    "examples": 500,
+    "epoch": 1,
+    "step": 934,
+    "training_loss": 0.05418268224317771,
+    "data_examples": 934
   },
   "latest_clean_validation_report": {
-    "experiment": "qwen-balanced-tool-rich-probability-encoder-fusion-20261029",
-    "accuracy": 0.966,
-    "macro_f1": 0.4898579704420526,
+    "experiment": "qwen-tool-rich-best-checkpoint-balanced-plus-rare934-continue-20261030",
+    "accuracy": 0.954,
+    "macro_f1": 0.4852008281573499,
     "examples": 500,
     "source": "nvidia/When2Call:train_sft",
     "seed": 20261053,
@@ -580,15 +577,13 @@
       "1": 249,
       "3": 1
     },
-    "selection_use": "clean validation only",
-    "selected_fusion": "vote_frequency_encoder_50"
+    "selection_use": "held-out validation; test labels not inspected"
   },
   "latest_aggregate_black_box_test_report": {
-    "experiment": "qwen-balanced-tool-rich-probability-encoder-fusion-20261029",
-    "accuracy": 0.6963307776560789,
-    "macro_f1": 0.5232228941522374,
+    "experiment": "qwen-tool-rich-best-checkpoint-balanced-plus-rare934-continue-20261030",
+    "accuracy": 0.7245345016429354,
+    "macro_f1": 0.5396823175374178,
     "examples": 3652,
-    "selection_use": "report only after clean-validation selection",
-    "individual_rows_saved": false
+    "selection_use": "aggregate-only stopping/reporting; no individual rows or labels inspected"
   }
 }
