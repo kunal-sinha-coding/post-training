@@ -16035,3 +16035,9 @@ Clean development accuracy: 0.5636363636363636. Clean development macro F1: 0.52
 Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.5575757575757576, "macro_f1": 0.578327922077922, "examples": 165, "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## Latest direct-heavy evidence audit and next ratio tests (2026-10-30T15:32:16.634065+00:00)
+
+Most recent completed run: `qwen-bfcl-direct48-balanced-other24-fresh72-continue-best-20261030`. Epoch 1 was selected using validation accuracy: training accuracy 0.736111, macro F1 0.507152, loss 1.861062 on 72; clean BFCL validation accuracy 0.569697, macro F1 0.531112 on 165; aggregate full-test accuracy 0.461391, macro F1 0.353247 on 3652. Epoch 2 also has all metrics: training accuracy 0.750000, validation accuracy 0.563636, and test accuracy 0.458927. No evidence backfill is needed.
+
+The direct-heavy 48:24 ratio improved validation accuracy to 0.569697 at epoch 1 and declined slightly at epoch 2. Its macro F1 was 0.531112, below the previous direct-heavy checkpoint's 0.578328. Queued a fresh 48:24 dose and a 36:36 ratio comparison, each with 72 fresh examples and the same checkpoint. Clean validation alone selects checkpoints. Test metrics are report-only.
