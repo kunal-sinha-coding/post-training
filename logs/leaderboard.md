@@ -2647,3 +2647,6 @@ Queued follow-ups: clean-validation-selected five-vote and encoder fusion on the
 | Candidate | qwen-postbalanced-real30-nontoolrich-expansion200-mix-20261030 | 0.956 | 0.4862363481299319 | [metrics](/workspace/post-training/outputs/qwen-postbalanced-real30-nontoolrich-expansion200-mix-20261030/metrics.json) | completed |
 
 | qwen-postbalanced-real30-nontoolrich-expansion200-mix-20261030 | 0.7300109529025192 | 0.5467242808223249 | ai83gaji | Aggregate-only frozen test measurement |
+| Candidate | qwen-postbalanced-real30-label0-1-2-45-45-10-mix-20261030 | 0.958 | 0.4872479609158282 | [metrics](/workspace/post-training/outputs/qwen-postbalanced-real30-label0-1-2-45-45-10-mix-20261030/metrics.json) | completed |
+
+| qwen-postbalanced-real30-label0-1-2-45-45-10-mix-20261030 | 0.731106243154436 | 0.5477429408463885 | cl95el94 | Aggregate-only frozen test measurement |
