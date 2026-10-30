@@ -8865,3 +8865,7 @@ Description: Saved the watchdog's active worker PID and launch command after que
 Context: The active run continues 50 real preference examples from the clean-validation-selected second top-up checkpoint at 2.5e-6. Clean validation controls checkpoint selection and stopping. Test metrics are reporting-only.
 
 2026-10-30T05:37:39.022478+00:00: Commit `Record research experiment qwen-unsupported50-real50-after-balanced-small-topup-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+Commit: Correct the current leaderboard summary.
+Description: Added the recent 50/50 low-rate replay result to the aggregate accuracy ranking and replaced a stale sentence that incorrectly named 0.741512 as the top score.
+Context: The report-only leaderboard now names the 0.741785 unsupported-capability continuation as the top aggregate accuracy and shows the close 0.741238 low-rate replay tie. Candidate selection remains based on clean validation only.
