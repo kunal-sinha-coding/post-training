@@ -15119,3 +15119,15 @@ This record was written automatically. Candidate selection must use clean valida
 The latest completed experiment, `qwen-unsupported50-real75-balanced25-lr5e6-20261030`, has all three evidence types. At its clean-validation-selected first epoch, training accuracy is 0.960000 and macro F1 is 0.719585 on all 100 rows, with loss 0.312599. Clean SFT validation is 0.952000 accuracy and 0.485185 macro F1 on 500 rows. Full aggregate test is 0.724808 accuracy and 0.542695 macro F1 on all 3,652 rows. Test metrics are report-only.
 
 The matched 75/25 recipe improved from 0.948 validation accuracy at 2e-5 to 0.952 at 5e-6. The matched 50/50 recipe reached 0.952 at 5e-6 and 0.954 at 2.5e-6. Queued one final matched 2.5e-6 comparison for the 75/25 recipe, keeping its checkpoint, rows, and seed fixed. Clean validation controls stopping and selection; test aggregates do not.
+
+## qwen-unsupported50-real75-balanced25-lr2p5e6-20261030
+
+Timestamp: 2026-10-30T04:45:43.316260+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-unsupported50-real75-balanced25-lr2p5e6-20261030", "--adapter-checkpoint", "outputs/qwen-unsupported50-real25-balanced25-replay-20261030/epoch-01", "--preference-train-sample-size", "75", "--augmentation-jsonl", "outputs/when2call-balanced-replay-pilot-next25-20261030.jsonl", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "3", "--learning-rate", "2.5e-6", "--baseline-validation-accuracy", "0.954", "--baseline-validation-macro-f1", "0.4856898061132617", "--stop-on-validation-non-improvement", "--seed", "20261218"]. Output: /workspace/post-training/outputs/qwen-unsupported50-real75-balanced25-lr2p5e6-20261030. W&B run: tek1np77.
+
+Clean development accuracy: 0.95. Clean development macro F1: 0.4841577984702361. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7283680175246441, "macro_f1": 0.5449848028938364, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.95, "macro_f1": 0.4841577984702361, "confusion_matrix": [[242, 3, 5, 0], [3, 233, 13, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
