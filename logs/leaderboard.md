@@ -2519,3 +2519,6 @@ Queued follow-ups: clean-validation-selected five-vote and encoder fusion on the
 | Candidate | qwen-unsupported50-real75-balanced25-replay-20261030 | 0.946 | 0.48310376492194673 | [metrics](/workspace/post-training/outputs/qwen-unsupported50-real75-balanced25-replay-20261030/metrics.json) | completed |
 
 | qwen-unsupported50-real75-balanced25-replay-20261030 | 0.7176889375684556 | 0.5360120897241487 | ikd1aq7p | Aggregate-only frozen test measurement |
+| Candidate | qwen-unsupported50-real50-balanced50-lr2p5e6-20261030 | 0.95 | 0.4846137180806519 | [metrics](/workspace/post-training/outputs/qwen-unsupported50-real50-balanced50-lr2p5e6-20261030/metrics.json) | completed |
+
+| qwen-unsupported50-real50-balanced50-lr2p5e6-20261030 | 0.7379518072289156 | 0.5513474489642558 | nc4kr144 | Aggregate-only frozen test measurement |

@@ -8825,3 +8825,5 @@ Context: Clean validation fell under 2e-5 on the 100-row mixtures and recovered 
 Commit: Record launch of the 2.5e-6 replay run.
 Description: Saved the watchdog's active process ID and launch status for the queued matched replay experiment.
 Context: The run uses the fixed 50-real plus 50-balanced-synthetic data, the same source checkpoint as the 5e-6 experiment, and clean-validation-only stopping. The watchdog advanced the queue and launched it successfully.
+
+2026-10-30T04:10:29.858469+00:00: Commit `Record research experiment qwen-unsupported50-real50-balanced50-lr2p5e6-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
