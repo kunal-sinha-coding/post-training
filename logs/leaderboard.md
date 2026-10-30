@@ -2671,3 +2671,6 @@ Queued follow-ups: clean-validation-selected five-vote and encoder fusion on the
 | Candidate | qwen-bfcl-direct24-balanced-other24-continue-best-20261030 | 0.5151515151515151 | 0.4757460397144132 | [metrics](/workspace/post-training/outputs/qwen-bfcl-direct24-balanced-other24-continue-best-20261030/metrics.json) | completed |
 
 | qwen-bfcl-direct24-balanced-other24-continue-best-20261030 | 0.7349397590361446 | 0.5501923413184123 | xyj4hx6y | Aggregate-only frozen test measurement |
+| Candidate | qwen-bfcl-direct48-balanced-other24-continue-best-20261030 | 0.5575757575757576 | 0.578327922077922 | [metrics](/workspace/post-training/outputs/qwen-bfcl-direct48-balanced-other24-continue-best-20261030/metrics.json) | completed |
+
+| qwen-bfcl-direct48-balanced-other24-continue-best-20261030 | 0.6566265060240963 | 0.5167577677654558 | 5x6tteaw | Aggregate-only frozen test measurement |
