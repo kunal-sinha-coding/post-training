@@ -176,6 +176,49 @@
       "--stop-on-validation-non-improvement",
       "--seed",
       "20261222"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-postbalanced-real25-unsupported25-mix-20261030",
+      "--adapter-checkpoint",
+      "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01",
+      "--preference-train-sample-size",
+      "25",
+      "--augmentation-jsonl",
+      "outputs/when2call-unsupported-increment25-mix-20261030.jsonl",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "3",
+      "--learning-rate",
+      "2.5e-6",
+      "--baseline-validation-accuracy",
+      "0.958",
+      "--baseline-validation-macro-f1",
+      "0.4872479609158282",
+      "--baseline-test-accuracy",
+      "0.731106243154436",
+      "--baseline-test-macro-f1",
+      "0.5473409779598896",
+      "--baseline-test-source",
+      "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/metrics.json",
+      "--stop-on-validation-non-improvement",
+      "--seed",
+      "20261222"
     ]
   ],
   "_previous_command": [
@@ -205,7 +248,7 @@
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
   "last_heartbeat": "2026-10-30T05:45:12.389772+00:00",
-  "last_action": "Added a disjoint balanced-synthetic-only comparison behind the matched real-data control and active unsupported-synthetic pilot.",
+  "last_action": "Added a 25-real plus 25-unsupported-synthetic mix after the active pilot and two queued source controls.",
   "watchdog_enabled": true,
   "research_log_size": 1964380,
   "stop_command": "STOP",
@@ -263,7 +306,7 @@
     "artifact": "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030/metrics.json",
     "selection": "aggregate-only leaderboard report; improvement over 0.741512 is within 1-point noise"
   },
-  "next_hypothesis": "After the matched real-only control, compare a disjoint balanced 50-row synthetic-only continuation from the same fixed checkpoint. This separates the effect of a small balanced synthetic dose from the active unsupported-only dose and from further real-data optimization. The 50 balanced rows have label counts 17/17/16 and zero prompt overlap with the two balanced 25-row top-up sets. Use the unchanged learning rate and clean validation for stopping and selection.",
+  "next_hypothesis": "After the real-only and balanced-synthetic-only controls, test a matched 25-real plus 25-unsupported-synthetic continuation from the same checkpoint. This checks whether a smaller unsupported synthetic share preserves any useful boundary signal while the real preference examples offset the all-class-0 synthetic batch. Keep all other settings fixed and select by clean validation.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
@@ -751,7 +794,7 @@
     "epoch": 1,
     "selection_use": "aggregate reporting only; no test labels or row-level outputs inspected"
   },
-  "queue_updated_at": "2026-10-30T05:51:19.632146+00:00",
+  "queue_updated_at": "2026-10-30T05:52:52.670188+00:00",
   "queued_hypotheses": [
     {
       "experiment": "qwen-postbalanced-real50-matched-control-20261030",
@@ -761,6 +804,11 @@
     {
       "experiment": "qwen-postbalanced-balanced50-synthetic-only-20261030",
       "hypothesis": "After the matched real-only control, compare a disjoint balanced 50-row synthetic-only continuation from the same fixed checkpoint. This separates the effect of a small balanced synthetic dose from the active unsupported-only dose and from further real-data optimization. The 50 balanced rows have label counts 17/17/16 and zero prompt overlap with the two balanced 25-row top-up sets. Use the unchanged learning rate and clean validation for stopping and selection.",
+      "selection": "clean validation only"
+    },
+    {
+      "experiment": "qwen-postbalanced-real25-unsupported25-mix-20261030",
+      "hypothesis": "After the real-only and balanced-synthetic-only controls, test a matched 25-real plus 25-unsupported-synthetic continuation from the same checkpoint. This checks whether a smaller unsupported synthetic share preserves any useful boundary signal while the real preference examples offset the all-class-0 synthetic batch. Keep all other settings fixed and select by clean validation.",
       "selection": "clean validation only"
     }
   ]

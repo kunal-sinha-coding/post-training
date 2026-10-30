@@ -8905,3 +8905,9 @@ Audited the latest completed experiment and verified training metrics, clean val
 Commit name: Add balanced synthetic-only continuation after matched real control.
 
 Confirmed the latest completed run has all three required evidence types. Preserved the active unsupported-synthetic worker and the already queued matched real control. Added a 50-row balanced synthetic-only continuation after the control. Its pool is disjoint from the two balanced top-up sets. The experiment holds the checkpoint, learning rate, validation sample, and stopping rule fixed to isolate the data source. Test aggregates remain report-only.
+
+## 2026-10-30: Queue controlled unsupported-data mixture
+
+Commit name: Queue a 25-real plus 25-unsupported-synthetic continuation.
+
+Preserved the active worker and the real-only and balanced-synthetic controls. Created a deterministic 25-row subset from the unused unsupported-capability increment, then queued a 25-real plus 25-unsupported-synthetic continuation from the same checkpoint. This adds a controlled mix to test whether real examples offset the class-skewed synthetic dose. Clean validation controls selection; test metrics remain report-only.
