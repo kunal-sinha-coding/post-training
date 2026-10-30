@@ -8793,3 +8793,7 @@ Context: Recent synthetic-only continuations reduced clean-validation accuracy. 
 2026-10-30T02:33:46.724070+00:00: Commit `Record research experiment qwen-unsupported50-real25-balanced25-replay-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
 
 2026-10-30T02:56:55.547019+00:00: Commit `Record research experiment qwen-unsupported50-real50-replay-control-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+Commit: Queue a larger replay mixture from the validation-selected checkpoint.
+Description: Audited the 50-real control and confirmed complete training, clean-validation, and aggregate test evidence. Updated the latest result fields and queued a 50-real plus 50-new-balanced-synthetic continuation from the mixed replay checkpoint selected by clean validation.
+Context: The 25-real plus 25-balanced-synthetic pilot peaked at 0.954 clean-validation accuracy. The matched 50-real control peaked at 0.952. This motivates increasing the mixed data dose while keeping test metrics report-only and using clean validation for checkpoint decisions.

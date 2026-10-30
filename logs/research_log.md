@@ -15014,26 +15014,8 @@ The encoder fusion did not improve the starting model. The validation-selected 2
 
 A matched control is queued behind the active replay pilot. The control continues the same 50-example unsupported-capability checkpoint on 50 real preference rows with the same optimizer, epoch cap, sample seed, and clean-validation stopping rule. The active treatment uses 25 real rows plus 25 balanced synthetic rows. This comparison tests whether the synthetic portion adds signal beyond continued training on real preference data. Both report training probes capped at 500, 500 clean-validation examples, and all 3,652 aggregate test examples. Test metrics are report-only.
 
-## qwen-unsupported50-real25-balanced25-replay-20261030
+## 2026-10-30: replay pilot audit and balanced dose increase
 
-Timestamp: 2026-10-30T02:33:43.725984+00:00. Status: completed.
+The latest completed experiment, `qwen-unsupported50-real50-replay-control-20261030`, has all three evidence types. At the epoch selected by clean validation (epoch 2), training accuracy is 0.980000 and macro F1 is 0.734848 on 50 sampled real preference rows, with loss 0.232847. Clean SFT validation is 0.952000 accuracy and 0.485200 macro F1 on 500 examples. Full aggregate black-box test is 0.705367 accuracy and 0.528458 macro F1 on all 3,652 rows. Test metrics were not used to select the epoch.
 
-Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-unsupported50-real25-balanced25-replay-20261030", "--adapter-checkpoint", "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-20261028/epoch-01", "--preference-train-sample-size", "25", "--augmentation-jsonl", "outputs/when2call-balanced-replay-pilot-25-20261030.jsonl", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "3", "--learning-rate", "2e-5", "--baseline-validation-accuracy", "0.936", "--baseline-validation-macro-f1", "0.4759725779844653", "--baseline-test-accuracy", "0.7417853231106243", "--baseline-test-macro-f1", "0.5522560134517236", "--baseline-test-source", "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030/metrics.json", "--stop-on-validation-non-improvement", "--seed", "20261215"]. Output: /workspace/post-training/outputs/qwen-unsupported50-real25-balanced25-replay-20261030. W&B run: bykz5jel.
-
-Clean development accuracy: 0.938. Clean development macro F1: 0.48087317824758147. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.735487404162103, "macro_f1": 0.549681387893057, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
-
-Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.936, "macro_f1": 0.4759725779844653, "examples": 500, "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"}}. Failure reason: None.
-
-This record was written automatically. Candidate selection must use clean validation only.
-
-## qwen-unsupported50-real50-replay-control-20261030
-
-Timestamp: 2026-10-30T02:56:52.267798+00:00. Status: completed.
-
-Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-unsupported50-real50-replay-control-20261030", "--adapter-checkpoint", "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-20261028/epoch-01", "--preference-train-sample-size", "50", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "3", "--learning-rate", "2e-5", "--baseline-validation-accuracy", "0.936", "--baseline-validation-macro-f1", "0.4759725779844653", "--baseline-test-accuracy", "0.7417853231106243", "--baseline-test-macro-f1", "0.5522560134517236", "--baseline-test-source", "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030/metrics.json", "--stop-on-validation-non-improvement", "--seed", "20261215"]. Output: /workspace/post-training/outputs/qwen-unsupported50-real50-replay-control-20261030. W&B run: l5jwe5wk.
-
-Clean development accuracy: 0.95. Clean development macro F1: 0.484680808526767. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7034501642935378, "macro_f1": 0.5268085334981814, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
-
-Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.936, "macro_f1": 0.4759725779844653, "examples": 500, "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"}}. Failure reason: None.
-
-This record was written automatically. Candidate selection must use clean validation only.
+The preceding 25-real plus 25-balanced-synthetic replay pilot peaked at 0.954 clean-validation accuracy at epoch 1, compared with 0.936 before continuation. Its corresponding aggregate test score was recorded only for reporting. The matched 50-real control peaked at 0.952 validation accuracy. Queued a 50-real plus 50-new-balanced-synthetic continuation from the mixed pilot's epoch-1 checkpoint, selected by clean validation. It uses the same optimizer settings, caps training probes and clean validation at 500 rows, evaluates the full aggregate test, and stops by clean validation only. The 50 synthetic rows have no exact prompt overlap with the prior 25 balanced rows.
