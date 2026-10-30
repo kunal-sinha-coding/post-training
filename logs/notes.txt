@@ -8881,3 +8881,9 @@ Added the latest completed 50-example real When2Call continuation to the aggrega
 Commit name: Preserve historical table labels while ranking the latest result.
 
 Corrected the leaderboard edit so that only rows in the current aggregate test ranking receive rank numbers. Historical tables elsewhere in the file keep their original identifiers. The latest validation-selected epoch 1 remains inserted at rank 22.
+
+## 2026-10-30: Queue fresh unsupported-capability synthetic continuation
+
+Commit name: Queue a distinct low-dose unsupported-capability continuation.
+
+Audited the latest run and confirmed complete training, 500-row clean-validation, and 3,652-row aggregate-test evidence for both epochs. Epoch 1 was selected by clean validation. Queued a synthetic-only continuation on 50 fresh unsupported-capability examples from that validation-selected checkpoint. The hypothesis tests whether a small unsupported-only dose adds boundary signal after real-data replay. It holds the learning rate fixed, caps train and validation probes at 500, and reports full-test aggregates each epoch. Test metrics remain report-only.
