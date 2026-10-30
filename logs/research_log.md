@@ -15874,3 +15874,12 @@ Clean development accuracy: 0.958. Clean development macro F1: 0.486766595466019
 Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.958, "macro_f1": 0.4872479609158282, "examples": 500, "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## Evidence audit and next queue (2026-10-30T12:21:11.577629+00:00)
+
+Most recent completed run: `qwen-postbalanced-real30-label0-1-50-50-mix-20261030`. Training accuracy 0.984615, macro F1 0.723035, loss 0.258511 on 130 examples. Clean SFT validation accuracy 0.958000, macro F1 0.486767 on 500. Full aggregate black-box test accuracy 0.721796, macro F1 0.541388 on 3652. All required evidence is recorded; no measurement backfill is needed.
+
+Validation audit: the existing SFT validation sample lacks true label-2 rows. The original BFCL validation split has 184 rows; excluding 19 flagged for review leaves 165 high-confidence rows across all four labels. A fixed artifact was saved at `outputs/bfcl_when2call_labeled_highconf_val165.jsonl` with SHA-256 `0178fcd4beecf8b6e3dfed39fd146e7d02fdf92638b0767e58f67283f5bac293`. No test examples or labels were examined for these decisions.
+
+- `qwen-postbalanced-real30-label0-1-2-45-45-10-bfcl-highconf-val-20261030`: The SFT clean-validation split has no true class-2 rows, so its accuracy cannot reliably distinguish synthetic label-composition recipes. Re-evaluate the 45/45/10 synthetic recipe against the 158-row high-confidence BFCL validation subset, which contains all four labels. Keep the checkpoint, real-data sample, optimizer, and synthetic recipe fixed. Selection uses only high-confidence held-out BFCL validation.
+- `qwen-postbalanced-real30-label0-1-50-50-bfcl-highconf-val-20261030`: Use the same high-confidence all-label BFCL validation subset to assess the 50/50 label-0/label-1 synthetic recipe. Compare its validation results with the matched 45/45/10 recipe before deciding whether label-2 synthetic data helps. Selection uses only high-confidence held-out BFCL validation.
