@@ -4,7 +4,7 @@
   "planning_required": false,
   "non_idle_rule": "After every result or interruption, immediately analyze, log, and launch the next experiment. The watchdog recovers only declared queued workers. When the queue is empty, the primary Codex process must plan and enqueue the next experiments. Wait only for an active process, active Codex planning, or required external operation. Stop only on exact top-level STOP.",
   "protocol": "balanced_synthetic_mixture_with_sampled_pref_v1",
-  "current_hypothesis": "The active 40-real/10-tool-rich pilot compares dose with the validation-preserving 25/25 tool-rich mixture.",
+  "current_hypothesis": "At a matched 40-real/10-synthetic dose, compare rare-schema examples with the active tool-rich pilot to test whether validation retention is source-specific. Select by the fixed clean validation set only; aggregate test metrics are report-only.",
   "active_experiment": {
     "pid": 406462,
     "command": [
@@ -166,10 +166,10 @@
     "validation_examples": 500,
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
-  "last_heartbeat": "2026-10-30T08:01:56.888276+00:00",
-  "last_action": "Reconciled the active 40/10 tool-rich worker and queued a matched 40/10 rare-schema source comparison.",
+  "last_heartbeat": "2026-10-30T08:07:58.760859+00:00",
+  "last_action": "Primary planner reconciled research state with the live training PID, audited complete evidence, and queued one matched low-dose rare-schema comparison.",
   "watchdog_enabled": true,
-  "research_log_size": 2016449,
+  "research_log_size": 2018649,
   "stop_command": "STOP",
   "next_experiment": [
     "python",
@@ -216,9 +216,9 @@
   ],
   "recording_jobs": [],
   "codex_thread": "01a16ff8-b154-72f2-a2bc-9860e931833a",
-  "planning_notified_at": "2026-10-30T08:01:17.362153+00:00",
-  "planning_ack_deadline": "2026-10-30T08:03:17.362178+00:00",
-  "planning_attempts": 91,
+  "planning_notified_at": null,
+  "planning_ack_deadline": null,
+  "planning_attempts": 92,
   "best_observed_test": {
     "method": "Qwen after 50-example unsupported-capability synthetic continuation, greedy full-test evaluation",
     "accuracy": 0.7417853231106243,
@@ -227,7 +227,7 @@
     "artifact": "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030/metrics.json",
     "selection": "aggregate-only leaderboard report; improvement over 0.741512 is within 1-point noise"
   },
-  "next_hypothesis": "The 25/25 tool-rich mixture retained 0.958 clean-validation accuracy, while the 25/25 rare-schema mixture reached 0.956. The active 40/10 tool-rich pilot tests whether lowering the tool-rich dose preserves its validation result. Queue a matched 40-real/10-rare-schema comparison to test whether any low-dose benefit is specific to tool-rich data or also holds for rare-schema examples. Keep the same fixed adapter, total rows, optimizer settings, validation sample, and stopping rule. Use 10 disjoint, stratified rare-schema rows with labels 4/3/3. Clean validation alone controls selection; test aggregates are report-only.",
+  "next_hypothesis": "The 25/25 balanced-replay and tool-rich mixtures both retained 0.958 clean-validation accuracy. Prior large combined-boundary synthetic runs fell below the clean-validation baseline, but those used much larger synthetic-only doses. Test 25 real plus 25 examples from the combined tool-rich and rare-schema pool to determine whether a small, real-anchored mixed-boundary dose retains validation. Keep checkpoint, total rows, optimizer settings, evaluation samples, and stopping rule fixed. Select by clean validation only; aggregate test metrics are report-only.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
@@ -280,7 +280,7 @@
     "aggregate_black_box_test_metrics": "recorded at epoch 1: accuracy 0.730010952903, macro F1 0.546452492212 on all 3652 test examples",
     "all_required_evidence_recorded": true,
     "test_labels_used_for_selection": false,
-    "note": "Clean validation was below the 0.958 baseline, so the run stopped after epoch 1. Aggregate test metrics are report-only."
+    "note": "Evidence exists in metrics.json and experiment_records.jsonl. No backfill is required. Aggregate test metrics are report-only."
   },
   "duplicate_worker_failure": {
     "pid": 103632,
@@ -409,7 +409,7 @@
     "epoch": 1,
     "selection_use": "aggregate reporting only; no individual test labels or outputs inspected"
   },
-  "updated_at": "2026-10-30T05:56:28.974817+00:00",
+  "updated_at": "2026-10-30T08:07:58.760859+00:00",
   "synthetic_pilot_results": [
     {
       "strategy": "missing_required_info",
@@ -516,7 +516,7 @@
     "ensemble_aggregate_test_accuracy": 0.7313800657174151,
     "test_metric_use": "Reporting only; not used for candidate selection."
   },
-  "latest_completed_experiment": "qwen-unsupported50-plus-real25-balanced25-topup2-20261030",
+  "latest_completed_experiment": "qwen-postbalanced-real25-combinedboundary25-mix-20261030",
   "evidence_policy": {
     "selection_metric": "clean held-out validation only",
     "aggregate_test": "reporting only; never use test-derived metrics for candidate selection",
@@ -680,9 +680,9 @@
     ]
   },
   "latest_clean_validation_screen": {
-    "experiment": "qwen-postbalanced-real25-combinedboundary25-mix-20261030",
-    "accuracy": 0.956,
-    "macro_f1": 0.48671545686879747,
+    "experiment": "qwen-postbalanced-real25-toolrich25-mix-20261030",
+    "accuracy": 0.958,
+    "macro_f1": 0.4872479609158282,
     "examples": 500,
     "selection": "Clean held-out validation only."
   },
@@ -692,11 +692,9 @@
     "experiment": "qwen-postbalanced-real25-combinedboundary25-mix-20261030",
     "accuracy": 0.98,
     "macro_f1": 0.7347926267281106,
+    "loss": 0.22959664950328304,
     "examples": 50,
     "epoch": 1,
-    "step": 50,
-    "training_loss": 0.22959664950328304,
-    "data_examples": 50,
     "selection_use": "clean-validation-selected epoch"
   },
   "latest_clean_validation_report": {
@@ -704,7 +702,7 @@
     "accuracy": 0.956,
     "macro_f1": 0.48671545686879747,
     "examples": 500,
-    "source": "nvidia/When2Call:train_sft",
+    "source": "sft",
     "seed": 20261053,
     "selection_use": "clean validation only"
   },
@@ -716,11 +714,11 @@
     "epoch": 1,
     "selection_use": "aggregate reporting only; no individual test labels or outputs inspected"
   },
-  "queue_updated_at": "2026-10-30T08:01:56.888276+00:00",
+  "queue_updated_at": "2026-10-30T07:42:50.666625+00:00",
   "queued_hypotheses": [
     {
-      "experiment": "qwen-postbalanced-real40-rareschema10-mix-20261030",
-      "hypothesis": "The 25/25 tool-rich mixture retained 0.958 clean-validation accuracy, while the 25/25 rare-schema mixture reached 0.956. The active 40/10 tool-rich pilot tests whether lowering the tool-rich dose preserves its validation result. Queue a matched 40-real/10-rare-schema comparison to test whether any low-dose benefit is specific to tool-rich data or also holds for rare-schema examples. Keep the same fixed adapter, total rows, optimizer settings, validation sample, and stopping rule. Use 10 disjoint, stratified rare-schema rows with labels 4/3/3. Clean validation alone controls selection; test aggregates are report-only.",
+      "experiment": "qwen-postbalanced-real25-combinedboundary25-mix-20261030",
+      "hypothesis": "The 25/25 balanced-replay and tool-rich mixtures both retained 0.958 clean-validation accuracy. Prior large combined-boundary synthetic runs fell below the clean-validation baseline, but those used much larger synthetic-only doses. Test 25 real plus 25 examples from the combined tool-rich and rare-schema pool to determine whether a small, real-anchored mixed-boundary dose retains validation. Keep checkpoint, total rows, optimizer settings, evaluation samples, and stopping rule fixed. Select by clean validation only; aggregate test metrics are report-only.",
       "selection": "clean validation only; aggregate black-box test metrics report-only"
     }
   ],
@@ -739,18 +737,17 @@
     "selection": "stratified sample from existing balanced 50-row synthetic pool; no test data used"
   },
   "data_probe_next": {
-    "experiment": "qwen-postbalanced-real40-rareschema10-mix-20261030",
-    "real_rows": 40,
-    "synthetic_rows": 10,
-    "synthetic_source": "outputs/when2call-rare-schema-boundary-pilot-20261028/balanced_boundary_rare_schema.jsonl",
-    "sample_path": "outputs/when2call-rare-schema-increment10-mix-20261030.jsonl",
+    "experiment": "qwen-postbalanced-real25-combinedboundary25-mix-20261030",
+    "real_rows": 25,
+    "synthetic_rows": 25,
+    "synthetic_source": "outputs/when2call-combined-boundary-pilot-20261028/balanced_boundary_combined.jsonl",
+    "sample_path": "outputs/when2call-combined-boundary-increment25-mix-20261030.jsonl",
     "synthetic_label_counts": {
-      "0": 4,
-      "1": 3,
-      "2": 3
+      "0": 9,
+      "1": 8,
+      "2": 8
     },
-    "synthetic_pool_sha256": "c38cf8d68c71175913fd39386f21642280d00aed8b02095044883be298ebb60a",
-    "disjoint_from_rare_schema25": true,
-    "selection": "deterministic stratified sample excluding previous rare-schema 25 rows; no test data used"
+    "synthetic_pool_sha256": "50887c50022562b102725f7b12c2e319c54cd78a3f6c155da399643b09a7df41",
+    "selection": "deterministic stratified sample; no test data used"
   }
 }
