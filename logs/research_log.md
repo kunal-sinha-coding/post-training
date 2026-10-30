@@ -15101,3 +15101,15 @@ This record was written automatically. Candidate selection must use clean valida
 The latest completed experiment, `qwen-unsupported50-real50-balanced50-lr2p5e6-20261030`, has all three evidence types. At the clean-validation-selected first epoch, training accuracy is 0.940000 and macro F1 is 0.705495 on all 100 training examples, with loss 0.284959. Clean SFT validation is 0.954000 accuracy and 0.485690 macro F1 on 500 examples. Full aggregate test is 0.736583 accuracy and 0.550639 macro F1 on all 3,652 examples. Test metrics are report-only.
 
 For the same 50/50 mixture, clean-validation accuracy was 0.938 at 2e-5, 0.952 at 5e-6, and 0.954 at 2.5e-6. The last two values are close, but the trend supports reducing the update magnitude after validation regression. Queued a controlled 5e-6 run on the same 75/25 data and checkpoint used by the prior 2e-5 run. It uses clean validation for stopping and selection and reports test aggregates separately.
+
+## qwen-unsupported50-real75-balanced25-lr5e6-20261030
+
+Timestamp: 2026-10-30T04:28:04.755066+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-unsupported50-real75-balanced25-lr5e6-20261030", "--adapter-checkpoint", "outputs/qwen-unsupported50-real25-balanced25-replay-20261030/epoch-01", "--preference-train-sample-size", "75", "--augmentation-jsonl", "outputs/when2call-balanced-replay-pilot-next25-20261030.jsonl", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "3", "--learning-rate", "5e-6", "--baseline-validation-accuracy", "0.954", "--baseline-validation-macro-f1", "0.4856898061132617", "--stop-on-validation-non-improvement", "--seed", "20261218"]. Output: /workspace/post-training/outputs/qwen-unsupported50-real75-balanced25-lr5e6-20261030. W&B run: rytvmvs8.
+
+Clean development accuracy: 0.948. Clean development macro F1: 0.48411386593204775. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.71960569550931, "macro_f1": 0.5381320535395145, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.948, "macro_f1": 0.48411386593204775, "confusion_matrix": [[242, 3, 5, 0], [2, 232, 15, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
