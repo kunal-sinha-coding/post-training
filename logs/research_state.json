@@ -132,6 +132,47 @@
       "--stop-on-validation-non-improvement",
       "--seed",
       "20261222"
+    ],
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-postbalanced-real30-toolrich-nontoolrich-mix100-bfcl-reviewclear-val-20261030",
+      "--bfcl-data",
+      "outputs/bfcl_when2call_labeled_reviewclear_val165.jsonl",
+      "--adapter-checkpoint",
+      "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01",
+      "--preference-train-sample-size",
+      "30",
+      "--augmentation-jsonl",
+      "outputs/when2call-toolrich-nontoolrich-mix100-20261030.jsonl",
+      "--validation-source",
+      "bfcl",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "3",
+      "--learning-rate",
+      "2.5e-6",
+      "--baseline-test-accuracy",
+      "0.731106243154436",
+      "--baseline-test-macro-f1",
+      "0.5473409779598896",
+      "--baseline-test-source",
+      "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/metrics.json",
+      "--stop-on-validation-non-improvement",
+      "--seed",
+      "20261222"
     ]
   ],
   "_previous_command": [
@@ -161,7 +202,7 @@
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
   "last_heartbeat": "2026-10-30T12:21:34.654615+00:00",
-  "last_action": "Watchdog started validation worker pid 423617.",
+  "last_action": "Appended a distinct 50/50 tool-rich and non-tool-rich synthetic continuation after the two queued label-composition comparisons.",
   "watchdog_enabled": true,
   "research_log_size": 2095611,
   "stop_command": "STOP",
@@ -401,7 +442,7 @@
     "epoch": 1,
     "selection_use": "aggregate reporting only; no individual test labels or outputs inspected"
   },
-  "updated_at": "2026-10-30T12:22:41.451196+00:00",
+  "updated_at": "2026-10-30T12:25:26.093140+00:00",
   "synthetic_pilot_results": [
     {
       "strategy": "missing_required_info",
@@ -705,7 +746,7 @@
     "epoch": 1,
     "selection_use": "aggregate-only report; no test labels used for selection"
   },
-  "queue_updated_at": "2026-10-30T12:22:41.451196+00:00",
+  "queue_updated_at": "2026-10-30T12:25:26.093140+00:00",
   "queued_hypotheses": [
     {
       "experiment": "qwen-postbalanced-real30-label0-1-2-45-45-10-bfcl-highconf-val-20261030",
@@ -722,6 +763,19 @@
       "validation_artifact": "outputs/bfcl_when2call_labeled_reviewclear_val165.jsonl",
       "validation_sha256": "0178fcd4beecf8b6e3dfed39fd146e7d02fdf92638b0767e58f67283f5bac293",
       "validation_quality": "No rows flagged needs_review; 158 high confidence and 7 medium confidence; all four labels represented."
+    },
+    {
+      "experiment": "qwen-postbalanced-real30-toolrich-nontoolrich-mix100-bfcl-reviewclear-val-20261030",
+      "hypothesis": "The earlier 200-row tool-rich and non-tool-rich continuations did not improve SFT validation, but that validation lacks true class-2 rows. A 50/50 mix of the existing tool-rich and non-tool-rich 100-row pools may combine complementary tool coverage. Test this source mixture on the same 165-row review-clear BFCL validation split, with the same checkpoint, real sample, optimizer, and stopping rule.",
+      "selection": "165-row review-clear held-out BFCL validation only; full aggregate black-box test metrics report-only",
+      "data_artifact": "outputs/when2call-toolrich-nontoolrich-mix100-20261030.jsonl",
+      "data_sha256": "e7c08cdc020c228aa4878484067a2b5a37469e530d8af6cd579ea48fff39fbab",
+      "synthetic_rows": 100,
+      "label_counts": {
+        "2": 34,
+        "0": 35,
+        "1": 31
+      }
     }
   ],
   "data_probe": {
