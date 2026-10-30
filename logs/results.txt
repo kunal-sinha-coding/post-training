@@ -176578,3 +176578,7 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/ujnzugbb"
 }
 ```
+
+## Full aggregate test confirmation, 2026-10-30
+
+Experiment: qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030. Source checkpoint training was 1.000000 accuracy and 0.250000 macro F1 on 50 examples with 0.194746 loss. Held-out SFT validation was 0.936000 accuracy and 0.475973 macro F1 on 500 examples. Aggregate black-box test performance was 0.741785 accuracy and 0.552256 macro F1 on all 3,652 rows. Test rows and labels were not exposed. The result is within 0.027 percentage points of the previous 0.741512 top score and is a statistical near-tie under the 1-point noise rule. The same 50-example continuation improves 3.943 points over its 0.702355 full-test starting checkpoint. An 896-example unsupported-only run from the same base scored 0.700438.

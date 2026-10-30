@@ -86,7 +86,18 @@ def main() -> int:
     parser.add_argument("--validation-size", type=int, default=500)
     parser.add_argument("--validation-seed", type=int, default=20261053)
     parser.add_argument("--batch-size", type=int, default=1)
+    parser.add_argument("--training-metrics-source", type=Path)
     args = parser.parse_args()
+    # Link the frozen checkpoint's training and validation evidence to this inference-only run.
+    source_training_metrics = None
+    source_validation_metrics = None
+    if args.training_metrics_source:
+        source_metrics = json.loads(args.training_metrics_source.read_text(encoding="utf-8"))
+        checkpoint_name = str(args.champion_checkpoint)
+        source_epoch = next((item for item in source_metrics.get("epoch_records", []) if item.get("checkpoint") == checkpoint_name), None)
+        if source_epoch:
+            source_training_metrics = {key: source_epoch.get(key) for key in ("epoch", "step", "training_loss", "training_metrics", "training_evaluation_examples")}
+            source_validation_metrics = {key: source_epoch.get(key) for key in ("heldout_validation_metrics", "validation_source", "validation_examples")}
     if not 1 <= args.validation_size <= 500:
         parser.error("--validation-size must be between 1 and 500.")
     if not os.getenv("WANDB_API_KEY"):
@@ -98,7 +109,7 @@ def main() -> int:
         entity=os.getenv("WANDB_ENTITY"),
         name=args.output_dir.name,
         job_type="qwen-five-vote-encoder-fusion",
-        config={"champion_checkpoint": str(args.champion_checkpoint), "encoders": ENCODERS, "encoder_weights": WEIGHTS, "votes": VOTE_COUNT, "vote_seed": VOTE_SEED, "fusion_encoder_weights": FUSION_ENCODER_WEIGHTS, "validation_size": args.validation_size, "validation_seed": args.validation_seed, "test_selection": False},
+        config={"champion_checkpoint": str(args.champion_checkpoint), "encoders": ENCODERS, "encoder_weights": WEIGHTS, "votes": VOTE_COUNT, "vote_seed": VOTE_SEED, "fusion_encoder_weights": FUSION_ENCODER_WEIGHTS, "validation_size": args.validation_size, "validation_seed": args.validation_seed, "training_metrics_source": str(args.training_metrics_source) if args.training_metrics_source else None, "test_selection": False},
     )
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     heartbeat = args.output_dir / "heartbeat.json"
@@ -128,6 +139,9 @@ def main() -> int:
         "purpose": "Fuse the current five-sampled-vote Qwen champion with the selected fixed three-encoder family.",
         "training_metrics": None,
         "training_metrics_status": "not applicable because this is frozen inference only",
+        "training_metrics_source": str(args.training_metrics_source) if args.training_metrics_source else None,
+        "source_checkpoint_training_metrics": source_training_metrics,
+        "source_checkpoint_clean_validation_metrics": source_validation_metrics,
         "validation_source": validation_source,
         "validation_metrics": validation_metrics,
         "selected_fusion_by_clean_validation": selected_fusion,

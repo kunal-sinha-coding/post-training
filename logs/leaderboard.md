@@ -2,56 +2,57 @@
 
 Aggregate official test accuracy and macro F1 are report-only. Do not use test labels or test-derived metrics to select candidates. Keep individual test examples, labels, predictions, and correctness hidden. Scores below use all 3,652 test rows. Accuracy gaps under 1 percentage point are treated as likely noise. Clean validation is the selection signal.
 
-## Current aggregate test ranking — 2026-10-29
+## Current aggregate test ranking — 2026-10-30
 
 | Report rank | Candidate | Test accuracy | Test macro F1 | Clean validation accuracy | Clean validation macro F1 | Rows | Artifact |
 | ---: | --- | ---: | ---: | ---: | ---: | ---: | --- |
 
-| 1 | Qwen, 5 sampled action-label votes from tool-rich champion | 0.741511500548 | 0.5529212787999608 | 0.950000 | 0.48363771417663637 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-llm-ensemble-vote-screen-20261029/metrics.json) |
-| 2 | Qwen, champion continued on fresh 983-row tool-rich pool | 0.741237677985 | 0.5516795371751677 | 0.942000 | 0.47903646912556985 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-champion-fresh-pool-continue-20261029/metrics.json) |
-| 3 | Five-vote Qwen probability frequency plus 25% selected three-encoder family | 0.740416210296 | 0.5520617525220826 | 0.948000 | 0.4830963073852296 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-champion-five-vote-three-encoder-fusion-20261029/metrics.json) |
-| 4 | Qwen, 3 sampled action-label votes from tool-rich champion | 0.740416210296 | 0.5523454710510468 | 0.950000 | 0.48363771417663637 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-llm-ensemble-vote-screen-20261029/metrics.json) |
-| 5 | Qwen, tool-rich champion greedy inference | 0.740416210296 | 0.5521408788489595 | 0.952000 | 0.484176874466834 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-llm-ensemble-vote-screen-20261029/metrics.json) |
-| 6 | Qwen, 994-row tool-rich champion continued on same pool | 0.740142387733 | 0.5521023968666009 | 0.956000 | 0.48573553719008267 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-champion-same-pool-continue-20261029/metrics.json) |
-| 7 | Qwen, 994 tool-rich synthetic examples only | 0.739869 | 0.551691 | 0.950000 | 0.483638 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/metrics.json) |
-| 8 | Qwen, 75% champion probability plus 25% full-preference Qwen | 0.739594742607 | 0.5517642613672771 | 0.952000 | 0.484176874466834 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-llm-ensemble-vote-screen-20261029/metrics.json) |
-| 9 | Qwen, 9 sampled action-label votes from tool-rich champion | 0.739594742607 | 0.5515315704032396 | 0.952000 | 0.484176874466834 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-llm-ensemble-vote-screen-20261029/metrics.json) |
-| 10 | Qwen, 900 original plus 994 tool-rich synthetic examples | 0.739047097481 | 0.5516399070828788 | 0.956000 | 0.48573553719008267 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-large-boundary-replay900-20261028/metrics.json) |
-| 11 | Qwen, 900 real + 994 tool-rich synthetic examples | 0.739047 | 0.551640 | 0.956000 | 0.485736 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-large-boundary-replay900-20261028/metrics.json) |
-| 12 | Qwen, 50/50 probability average of champion and full-preference model | 0.738773274918 | 0.5523508392327023 | 0.954000 | 0.4852008281573499 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-llm-ensemble-vote-screen-20261029/metrics.json) |
-| 13 | Qwen, 827 random-anchor paired and unsupported synthetic examples | 0.736308871851 | 0.5483979327657029 | 0.942000 | 0.48145846671437 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-random-anchor-paired-unsupported-synthetic-only-20261029/metrics.json) |
-| 14 | Qwen, 629 tool-rich synthetic examples only | 0.734940 | 0.548238 | 0.950000 | 0.482669 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-boundary-synth-only-20261028/metrics.json) |
-| 15 | Qwen, combined rare-schema and tool-rich synthetic examples only | 0.734940 | 0.547107 | 0.948000 | 0.481135 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-combined-boundary-synthetic-only-20261028/metrics.json) |
-| 16 | Qwen, 900 real + 450 tool-rich synthetic examples | 0.733297 | 0.548167 | 0.920000 | 0.475334 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth450-tool-rich-20261028/metrics.json) |
-| 17 | Qwen continued on 900 real + 629 tool-rich synthetic examples | 0.732475 | 0.545645 | 0.960000 | 0.486779 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-boundary-replay900-continued-20261028/metrics.json) |
-| 18 | Qwen, 500 fresh tool-rich examples from earlier replay checkpoint | 0.732201533406 | 0.5455000477094911 | 0.956000 | 0.48573553719008267 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-expansion-500-dose-replay-20261029/metrics.json) |
-| 19 | Qwen + trained encoder, entropy-weighted fusion | 0.731380 | 0.546773 | 0.940000 | 0.962763 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-balanced-synth450-encoder-ensemble-20261028/test/aggregate-comparison.json) |
-| 20 | Qwen, 667 real + combined rare-schema and tool-rich synthetic examples | 0.728642 | 0.545275 | 0.954000 | 0.485690 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-combined-boundary-synth-replay-20261028/metrics.json) |
-| 21 | Qwen, 900 real + 629 tool-rich synthetic examples | 0.727820 | 0.544645 | 0.960000 | 0.487287 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-boundary-replay900-20261028/metrics.json) |
-| 22 | Tool-rich Qwen + encoder, request-confidence route | 0.726451 | 0.545033 | 0.924000 | 0.946782 | 3,652 | [metrics](/workspace/post-training/outputs/tool-rich-qwen-encoder-ensemble-20261028/test/aggregate-comparison.json) |
-| 23 | Qwen, pref900 synth600 high similarity lr5e6 | 0.725904 | 0.540824 | 0.952000 | 0.484177 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth600-high-similarity-lr5e6-20261028/metrics.json) |
-| 24 | Qwen, boundary pair synth667 from bestval | 0.725630 | 0.539094 | 0.940000 | 0.479458 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-boundary-pair-synth667-from-bestval-20261028/metrics.json) |
-| 25 | Qwen, pref900 balanced synth450 | 0.724535 | 0.542620 | 0.944000 | 0.482546 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-balanced-synth450-20261028/metrics.json) |
-| 26 | Qwen, pref900 balanced synth450 lr5e6 | 0.724535 | 0.541374 | 0.952000 | 0.483702 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-balanced-synth450-lr5e6-20261028/metrics.json) |
-| 27 | Qwen, pref900 balanced synth450 lr1e5 | 0.723439 | 0.540659 | 0.952000 | 0.484707 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-balanced-synth450-lr1e5-20261028/metrics.json) |
-| 28 | Qwen, 800 real + 629 tool-rich synthetic examples | 0.723165 | 0.540689 | 0.958000 | 0.486757 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-boundary-replay800-20261028/metrics.json) |
-| 29 | Qwen, pref900 synth450 high similarity lr5e6 | 0.722892 | 0.539668 | 0.958000 | 0.486757 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth450-high-similarity-lr5e6-20261028/metrics.json) |
-| 30 | Qwen, 1,100 real + 994 tool-rich synthetic examples | 0.722344 | 0.539683 | 0.956000 | 0.486735 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-large-boundary-replay1100-20261028/metrics.json) |
-| 31 | Tool-rich synthetic-only Qwen + encoder, request/cannot-answer confidence route | 0.722070 | 0.538615 | 0.976000 | 0.983808 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-synth-only-encoder-blackbox-20261028/aggregate-comparison.json) |
-| 32 | Qwen, pref900 synth375 high similarity lr5e6 | 0.720427 | 0.538857 | 0.952000 | 0.484678 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth375-high-similarity-lr5e6-20261028/metrics.json) |
-| 33 | Qwen, pref900 synth150 high similarity lr5e6 | 0.719880 | 0.536653 | 0.956000 | 0.486225 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth150-high-similarity-lr5e6-20261028/metrics.json) |
-| 34 | Qwen, 667 real + multi-turn contextual synthetic examples | 0.719606 | 0.538082 | 0.958000 | 0.486767 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-multiturn-context-boundary-replay-20261028/metrics.json) |
-| 35 | Qwen, pref900 synth300 fullpool high similarity lr5e6 | 0.719058 | 0.538917 | 0.956000 | 0.485745 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth300-fullpool-high-similarity-lr5e6-20261028/metrics.json) |
-| 36 | Qwen, 900 real + combined rare-schema and tool-rich synthetic examples | 0.718510 | 0.535061 | 0.948000 | 0.484072 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-combined-boundary-synth-replay900-20261028/metrics.json) |
-| 37 | Qwen, pref900 synth300 very high similarity lr5e6 | 0.718237 | 0.538021 | 0.958000 | 0.486276 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth300-very-high-similarity-lr5e6-20261028/metrics.json) |
-| 38 | Qwen, pref900 synth300 high similarity lr1e5 | 0.717689 | 0.538202 | 0.956000 | 0.485736 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth300-high-similarity-lr1e5-20261028/metrics.json) |
-| 39 | Qwen, pref900 synth450 composed tool call only | 0.717689 | 0.537257 | 0.934000 | 0.479841 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth450-composed-tool-call-only-20261028/metrics.json) |
-| 40 | Qwen, pref900 synth450 high similarity | 0.717689 | 0.536022 | 0.932000 | 0.479259 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth450-high-similarity-20261028/metrics.json) |
-| 41 | Qwen, pref900 synth450 fullpool high similarity lr5e6 | 0.716320 | 0.536241 | 0.956000 | 0.486236 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth450-fullpool-high-similarity-lr5e6-20261028/metrics.json) |
-| 42 | Qwen, pref900 synth300 high similarity lr5e6 multiepoch | 0.716046 | 0.536010 | 0.956000 | 0.485755 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth300-high-similarity-lr5e6-multiepoch-20261028/metrics.json) |
-| 43 | Qwen, 900 original plus 983 fresh tool-rich examples | 0.715224534502 | 0.529817274686615 | 0.940000 | 0.47997736517243395 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-champion-realfresh-mix-20261029/metrics.json) |
-| 44 | Qwen, 75% full-preference probability plus 25% champion | 0.703723986857 | 0.5286484083585283 | 0.960000 | 0.48730808555550054 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-llm-ensemble-vote-screen-20261029/metrics.json) |
-| 45 | Full-preference Qwen greedy checkpoint | 0.702354874042 | 0.5277889126113546 | 0.962000 | 0.48832640709774233 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json) |
+| 1 | Qwen, 50-example unsupported-capability continuation, greedy full-test score | 0.741785323111 | 0.5522560134517236 | 0.936000 | 0.4759725779844653 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030/metrics.json) |
+| 2 | Qwen, 5 sampled action-label votes from tool-rich champion | 0.741511500548 | 0.5529212787999608 | 0.950000 | 0.48363771417663637 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-llm-ensemble-vote-screen-20261029/metrics.json) |
+| 3 | Qwen, champion continued on fresh 983-row tool-rich pool | 0.741237677985 | 0.5516795371751677 | 0.942000 | 0.47903646912556985 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-champion-fresh-pool-continue-20261029/metrics.json) |
+| 4 | Five-vote Qwen probability frequency plus 25% selected three-encoder family | 0.740416210296 | 0.5520617525220826 | 0.948000 | 0.4830963073852296 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-champion-five-vote-three-encoder-fusion-20261029/metrics.json) |
+| 5 | Qwen, 3 sampled action-label votes from tool-rich champion | 0.740416210296 | 0.5523454710510468 | 0.950000 | 0.48363771417663637 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-llm-ensemble-vote-screen-20261029/metrics.json) |
+| 6 | Qwen, tool-rich champion greedy inference | 0.740416210296 | 0.5521408788489595 | 0.952000 | 0.484176874466834 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-llm-ensemble-vote-screen-20261029/metrics.json) |
+| 7 | Qwen, 994-row tool-rich champion continued on same pool | 0.740142387733 | 0.5521023968666009 | 0.956000 | 0.48573553719008267 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-champion-same-pool-continue-20261029/metrics.json) |
+| 8 | Qwen, 994 tool-rich synthetic examples only | 0.739869 | 0.551691 | 0.950000 | 0.483638 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/metrics.json) |
+| 9 | Qwen, 75% champion probability plus 25% full-preference Qwen | 0.739594742607 | 0.5517642613672771 | 0.952000 | 0.484176874466834 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-llm-ensemble-vote-screen-20261029/metrics.json) |
+| 10 | Qwen, 9 sampled action-label votes from tool-rich champion | 0.739594742607 | 0.5515315704032396 | 0.952000 | 0.484176874466834 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-llm-ensemble-vote-screen-20261029/metrics.json) |
+| 11 | Qwen, 900 original plus 994 tool-rich synthetic examples | 0.739047097481 | 0.5516399070828788 | 0.956000 | 0.48573553719008267 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-large-boundary-replay900-20261028/metrics.json) |
+| 12 | Qwen, 900 real + 994 tool-rich synthetic examples | 0.739047 | 0.551640 | 0.956000 | 0.485736 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-large-boundary-replay900-20261028/metrics.json) |
+| 13 | Qwen, 50/50 probability average of champion and full-preference model | 0.738773274918 | 0.5523508392327023 | 0.954000 | 0.4852008281573499 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-llm-ensemble-vote-screen-20261029/metrics.json) |
+| 14 | Qwen, 827 random-anchor paired and unsupported synthetic examples | 0.736308871851 | 0.5483979327657029 | 0.942000 | 0.48145846671437 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-random-anchor-paired-unsupported-synthetic-only-20261029/metrics.json) |
+| 15 | Qwen, 629 tool-rich synthetic examples only | 0.734940 | 0.548238 | 0.950000 | 0.482669 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-boundary-synth-only-20261028/metrics.json) |
+| 16 | Qwen, combined rare-schema and tool-rich synthetic examples only | 0.734940 | 0.547107 | 0.948000 | 0.481135 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-combined-boundary-synthetic-only-20261028/metrics.json) |
+| 17 | Qwen, 900 real + 450 tool-rich synthetic examples | 0.733297 | 0.548167 | 0.920000 | 0.475334 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth450-tool-rich-20261028/metrics.json) |
+| 18 | Qwen continued on 900 real + 629 tool-rich synthetic examples | 0.732475 | 0.545645 | 0.960000 | 0.486779 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-boundary-replay900-continued-20261028/metrics.json) |
+| 19 | Qwen, 500 fresh tool-rich examples from earlier replay checkpoint | 0.732201533406 | 0.5455000477094911 | 0.956000 | 0.48573553719008267 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-expansion-500-dose-replay-20261029/metrics.json) |
+| 20 | Qwen + trained encoder, entropy-weighted fusion | 0.731380 | 0.546773 | 0.940000 | 0.962763 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-balanced-synth450-encoder-ensemble-20261028/test/aggregate-comparison.json) |
+| 21 | Qwen, 667 real + combined rare-schema and tool-rich synthetic examples | 0.728642 | 0.545275 | 0.954000 | 0.485690 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-combined-boundary-synth-replay-20261028/metrics.json) |
+| 22 | Qwen, 900 real + 629 tool-rich synthetic examples | 0.727820 | 0.544645 | 0.960000 | 0.487287 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-boundary-replay900-20261028/metrics.json) |
+| 23 | Tool-rich Qwen + encoder, request-confidence route | 0.726451 | 0.545033 | 0.924000 | 0.946782 | 3,652 | [metrics](/workspace/post-training/outputs/tool-rich-qwen-encoder-ensemble-20261028/test/aggregate-comparison.json) |
+| 24 | Qwen, pref900 synth600 high similarity lr5e6 | 0.725904 | 0.540824 | 0.952000 | 0.484177 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth600-high-similarity-lr5e6-20261028/metrics.json) |
+| 25 | Qwen, boundary pair synth667 from bestval | 0.725630 | 0.539094 | 0.940000 | 0.479458 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-boundary-pair-synth667-from-bestval-20261028/metrics.json) |
+| 26 | Qwen, pref900 balanced synth450 | 0.724535 | 0.542620 | 0.944000 | 0.482546 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-balanced-synth450-20261028/metrics.json) |
+| 27 | Qwen, pref900 balanced synth450 lr5e6 | 0.724535 | 0.541374 | 0.952000 | 0.483702 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-balanced-synth450-lr5e6-20261028/metrics.json) |
+| 28 | Qwen, pref900 balanced synth450 lr1e5 | 0.723439 | 0.540659 | 0.952000 | 0.484707 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-balanced-synth450-lr1e5-20261028/metrics.json) |
+| 29 | Qwen, 800 real + 629 tool-rich synthetic examples | 0.723165 | 0.540689 | 0.958000 | 0.486757 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-boundary-replay800-20261028/metrics.json) |
+| 30 | Qwen, pref900 synth450 high similarity lr5e6 | 0.722892 | 0.539668 | 0.958000 | 0.486757 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth450-high-similarity-lr5e6-20261028/metrics.json) |
+| 31 | Qwen, 1,100 real + 994 tool-rich synthetic examples | 0.722344 | 0.539683 | 0.956000 | 0.486735 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-large-boundary-replay1100-20261028/metrics.json) |
+| 32 | Tool-rich synthetic-only Qwen + encoder, request/cannot-answer confidence route | 0.722070 | 0.538615 | 0.976000 | 0.983808 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-synth-only-encoder-blackbox-20261028/aggregate-comparison.json) |
+| 33 | Qwen, pref900 synth375 high similarity lr5e6 | 0.720427 | 0.538857 | 0.952000 | 0.484678 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth375-high-similarity-lr5e6-20261028/metrics.json) |
+| 34 | Qwen, pref900 synth150 high similarity lr5e6 | 0.719880 | 0.536653 | 0.956000 | 0.486225 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth150-high-similarity-lr5e6-20261028/metrics.json) |
+| 35 | Qwen, 667 real + multi-turn contextual synthetic examples | 0.719606 | 0.538082 | 0.958000 | 0.486767 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-multiturn-context-boundary-replay-20261028/metrics.json) |
+| 36 | Qwen, pref900 synth300 fullpool high similarity lr5e6 | 0.719058 | 0.538917 | 0.956000 | 0.485745 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth300-fullpool-high-similarity-lr5e6-20261028/metrics.json) |
+| 37 | Qwen, 900 real + combined rare-schema and tool-rich synthetic examples | 0.718510 | 0.535061 | 0.948000 | 0.484072 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-combined-boundary-synth-replay900-20261028/metrics.json) |
+| 38 | Qwen, pref900 synth300 very high similarity lr5e6 | 0.718237 | 0.538021 | 0.958000 | 0.486276 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth300-very-high-similarity-lr5e6-20261028/metrics.json) |
+| 39 | Qwen, pref900 synth300 high similarity lr1e5 | 0.717689 | 0.538202 | 0.956000 | 0.485736 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth300-high-similarity-lr1e5-20261028/metrics.json) |
+| 40 | Qwen, pref900 synth450 composed tool call only | 0.717689 | 0.537257 | 0.934000 | 0.479841 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth450-composed-tool-call-only-20261028/metrics.json) |
+| 41 | Qwen, pref900 synth450 high similarity | 0.717689 | 0.536022 | 0.932000 | 0.479259 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth450-high-similarity-20261028/metrics.json) |
+| 42 | Qwen, pref900 synth450 fullpool high similarity lr5e6 | 0.716320 | 0.536241 | 0.956000 | 0.486236 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth450-fullpool-high-similarity-lr5e6-20261028/metrics.json) |
+| 43 | Qwen, pref900 synth300 high similarity lr5e6 multiepoch | 0.716046 | 0.536010 | 0.956000 | 0.485755 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-pref900-synth300-high-similarity-lr5e6-multiepoch-20261028/metrics.json) |
+| 44 | Qwen, 900 original plus 983 fresh tool-rich examples | 0.715224534502 | 0.529817274686615 | 0.940000 | 0.47997736517243395 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-tool-rich-champion-realfresh-mix-20261029/metrics.json) |
+| 45 | Qwen, 75% full-preference probability plus 25% champion | 0.703723986857 | 0.5286484083585283 | 0.960000 | 0.48730808555550054 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-llm-ensemble-vote-screen-20261029/metrics.json) |
+| 46 | Full-preference Qwen greedy checkpoint | 0.702354874042 | 0.5277889126113546 | 0.962000 | 0.48832640709774233 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-when2call-fullpool-base-seed20261055/metrics.json) |
 The highest aggregate accuracy shown is 0.741512 for five sampled action-label votes from the tool-rich champion. Its clean-validation accuracy is 0.950, below the full-preference Qwen baseline at 0.962, so this result does not justify selecting or pursuing that ensemble. The aggregate table is descriptive only. Clean validation remains the candidate-selection signal. Differences under one percentage point are treated as likely noise.
 
 ## Historical clean-validation snapshot for 2026-10-27 04:27 UTC
@@ -86,11 +87,11 @@ This fixed candidate family was evaluated on all 3,652 aggregate black-box examp
 
 | Rank | Experiment | Accuracy | Macro F1 | Artifact | Test status | Status |
 | --- | --- | ---: | ---: | --- | --- | --- |
-| 1 | EXP-20261020-006 training-only calibration | 0.949444 | 0.712267 | [metrics](../outputs/clean-validation-calibration.json) | Not measured | Current best |
-| 2 | EXP-20261020-005 argument cues seed 20261021 | 0.948333 | 0.711410 | [metrics](../outputs/clean-validation-argument-cues-seed21/metrics.json) | Not measured | Current |
-| 4 | EXP-20261020-004 argument cues seed 20261020 | 0.938889 | 0.704172 | [metrics](../outputs/clean-validation-argument-cues/metrics.json) | Not measured | Replicated |
-| 5 | EXP-20261020-001 clean Jina warm-start baseline | 0.936667 | 0.703032 | [metrics](../outputs/clean-validation-baseline/metrics.json) | Not measured | Current |
-| 6 | EXP-20261020-009 argument cues seed 20261022 | 0.922222 | 0.691627 | [metrics](../outputs/clean-validation-argument-cues-seed22/metrics.json) | Not measured | Negative replication |
+| 2 | EXP-20261020-006 training-only calibration | 0.949444 | 0.712267 | [metrics](../outputs/clean-validation-calibration.json) | Not measured | Current best |
+| 3 | EXP-20261020-005 argument cues seed 20261021 | 0.948333 | 0.711410 | [metrics](../outputs/clean-validation-argument-cues-seed21/metrics.json) | Not measured | Current |
+| 5 | EXP-20261020-004 argument cues seed 20261020 | 0.938889 | 0.704172 | [metrics](../outputs/clean-validation-argument-cues/metrics.json) | Not measured | Replicated |
+| 6 | EXP-20261020-001 clean Jina warm-start baseline | 0.936667 | 0.703032 | [metrics](../outputs/clean-validation-baseline/metrics.json) | Not measured | Current |
+| 7 | EXP-20261020-009 argument cues seed 20261022 | 0.922222 | 0.691627 | [metrics](../outputs/clean-validation-argument-cues-seed22/metrics.json) | Not measured | Negative replication |
 | Candidate | qwen-sft-15b-seed20261022 | 0.89444 | 0.67099 | [metrics](/workspace/post-training/outputs/qwen-when2call-sft-15b-seed20261022/metrics.json) | Not measured | Completed |
 | Candidate | qwen-sft-05b-seed20261022 | 0.87444 | 0.65687 | [metrics](/workspace/post-training/outputs/qwen-when2call-sft-05b-seed20261022/metrics.json) | Not measured | Completed |
 | Candidate | qwen-rpo-05b-seed20261022 | 0.83222 | 0.62484 | [metrics](/workspace/post-training/outputs/qwen-when2call-rpo-05b-seed20261022/metrics.json) | Not measured | Completed |
@@ -1254,8 +1255,8 @@ Source-specific result `qwen-when2call-qwen25-15b-pref-full-glaive100-seed202610
 | Glaive sample | Training accuracy | Training macro F1 | Preference validation accuracy | Preference validation macro F1 | Glaive validation accuracy | Glaive validation macro F1 | Aggregate test accuracy | Aggregate test macro F1 |
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | 1,000 | 0.919125 | 0.690275 | 0.893889 | 0.671443 | 0.910000 | 0.666983 | 0.631435 | 0.470737 |
-| 252 | 0.925125 | 0.694092 | 0.912778 | 0.685114 | 0.921569 | 0.676055 | 0.622946 | 0.447941 |
-| 102 | 0.925412 | 0.694604 | 0.893333 | 0.671178 | 0.800000 | 0.447273 | 0.629244 | 0.460926 |
+| 253 | 0.925125 | 0.694092 | 0.912778 | 0.685114 | 0.921569 | 0.676055 | 0.622946 | 0.447941 |
+| 103 | 0.925412 | 0.694604 | 0.893333 | 0.671178 | 0.800000 | 0.447273 | 0.629244 | 0.460926 |
 
 All test columns are aggregate-only reports and were not used for candidate selection. The latest completed 100-example experiment has training, clean-validation, and aggregate test evidence recorded. A matched preference-only control is queued using the same seed, split, and optimization settings as the 250-example condition.
 
@@ -2463,7 +2464,7 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 
 | qwen-balanced-tool-rich-probability-encoder-fusion-20261029 | 0.6963307776560789 | 0.5232228941522374 | fsjfgmsm | Aggregate-only frozen test measurement |
 
-| 22 | Qwen five-vote frequency plus 50% selected encoder family | 0.6963307776560789 | 0.5232228941522374 | 0.966000 | 0.4898579704420526 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-balanced-tool-rich-probability-encoder-fusion-20261029/metrics.json) |
+| 23 | Qwen five-vote frequency plus 50% selected encoder family | 0.6963307776560789 | 0.5232228941522374 | 0.966000 | 0.4898579704420526 | 3,652 | [metrics](/workspace/post-training/outputs/qwen-balanced-tool-rich-probability-encoder-fusion-20261029/metrics.json) |
 
 Queued next: balanced 508-row tool-rich synthetic continuation and a matched 508-row real-only control. Both start from the 994-row tool-rich synthetic checkpoint and report training, clean-validation, and full aggregate test metrics at each epoch. Clean validation contains no class 2 examples. Test rows and labels remain uninspected.
 
@@ -2483,10 +2484,11 @@ Queued next: balanced 508-row tool-rich synthetic continuation and a matched 508
 
 | qwen-tool-rich-best-checkpoint-balanced-plus-rare934-continue-20261030 | 0.7245345016429354 | 0.5396823175374178 | j7ko2mhp | Aggregate-only frozen test measurement |
 
-| Pending | Unsupported-capability pilot, 50 synthetic examples, full-test confirmation | — | — | 0.936000 | 0.475973 | 3,652 pending; prior 500-row sample only | [metrics](/workspace/post-training/outputs/qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030/metrics.json) |
 
 | Pending | Qwen trained on 50 original preference examples, matched control | — | — | — | — | 3,652 | [metrics](/workspace/post-training/outputs/qwen-fullpool-unsupported50-real-control-20261030/metrics.json) |
 
 Source-specific result `qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030` has status completed. Its separate validation metrics are {"clean_validation_metrics": {"heldout_validation_metrics": {"accuracy": 0.936, "macro_f1": 0.4759725779844653, "confusion_matrix": [[244, 1, 5, 0], [14, 224, 11, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}, "validation_source": "sft", "validation_examples": 500}}. These values are not ranked against other splits.
 
 | qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030 | 0.7417853231106243 | 0.5522560134517236 | ujnzugbb | Aggregate-only frozen test measurement |
+
+Queued follow-ups: clean-validation-selected five-vote and encoder fusion on the 50-example checkpoint, followed by an additional 50-example unsupported-only continuation from that checkpoint. The latter uses a deterministic, nonoverlapping subset of the earlier 896-row pool.
