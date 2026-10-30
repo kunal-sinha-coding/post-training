@@ -9119,3 +9119,5 @@ remove the file manually to continue.
 2026-10-30. Audited the latest lower-complexity 100-example run. Training, clean-validation, and aggregate black-box metrics are recorded. The upper- and lower-complexity 100-row samples tied on clean validation, so queued a balanced 200-row tool-rich versus non-tool-rich source comparison. Test labels are not used for selection.
 
 2026-10-30. Verified watchdog launch of qwen-postbalanced-real30-toolrich-expansion200-mix-20261030 as PID 420431. The distinct nontool-rich 200-example comparison remains queued. Research state is active and planning_required is false.
+
+2026-10-30T11:40:50.626047+00:00: Commit `Record research experiment qwen-postbalanced-real30-toolrich-expansion200-mix-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
