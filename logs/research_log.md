@@ -16081,3 +16081,19 @@ Clean development accuracy: 0.5454545454545454. Clean development macro F1: 0.53
 Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.5696969696969697, "macro_f1": 0.5311124061124062, "examples": 165, "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## Latest result, leaderboard check, and cannot-answer dose queue (2026-10-30T16:09:56.840700+00:00)
+
+The most recent completed run, `qwen-bfcl-cannot-answer-fresh24-continue-best-20261030`, has training accuracy 0.000000, macro F1 0.000000, loss 3.754606 on 24; BFCL validation accuracy 0.545455, macro F1 0.531264 on 165; aggregate full-test accuracy 0.487130, macro F1 0.383796 on 3652. All three evidence types are present. The current aggregate-test leaderboard leader remains `qwen-when2call-synthetic-continuation-unsupported_capability-20261028` at 0.762 accuracy and 0.567838 macro F1. The active 24-cannot-answer plus direct-replay run is followed by 48 cannot-answer only and a 48:24 cannot-answer/direct rehearsal comparison. Test metrics remain report-only.
+
+## qwen-bfcl-cannot-answer-direct-replay48-continue-best-20261030
+
+Timestamp: 2026-10-30T16:09:59.109831+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-bfcl-cannot-answer-direct-replay48-continue-best-20261030", "--bfcl-data", "outputs/bfcl_when2call_labeled_reviewclear_val165.jsonl", "--adapter-checkpoint", "outputs/qwen-bfcl-direct48-balanced-other24-fresh72-continue-best-20261030/epoch-01", "--synthetic-only", "--augmentation-jsonl", "outputs/bfcl-highconf-cannot-answer-direct-replay48-20261030.jsonl", "--validation-source", "bfcl", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "3", "--learning-rate", "2.5e-6", "--baseline-validation-accuracy", "0.5696969696969697", "--baseline-validation-macro-f1", "0.5311124061124062", "--baseline-test-accuracy", "0.46139101861993426", "--baseline-test-macro-f1", "0.3532465925394548", "--baseline-test-source", "outputs/qwen-bfcl-direct48-balanced-other24-fresh72-continue-best-20261030/metrics.json", "--stop-on-validation-non-improvement", "--seed", "20261222"]. Output: /workspace/post-training/outputs/qwen-bfcl-cannot-answer-direct-replay48-continue-best-20261030. W&B run: g46wab19.
+
+Clean development accuracy: 0.5575757575757576. Clean development macro F1: 0.5217750703526981. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.4586527929901424, "macro_f1": 0.3565180058422512, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.5696969696969697, "macro_f1": 0.5311124061124062, "examples": 165, "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
