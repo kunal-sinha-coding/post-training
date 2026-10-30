@@ -93,7 +93,49 @@
     "--seed",
     "20261222"
   ],
-  "worker_queue": [],
+  "worker_queue": [
+    [
+      "python",
+      "-u",
+      "-m",
+      "experiments.train_qwen_when2call_fullpool",
+      "--output-dir",
+      "outputs/qwen-postbalanced-real50-matched-control-20261030",
+      "--adapter-checkpoint",
+      "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01",
+      "--preference-train-sample-size",
+      "50",
+      "--validation-source",
+      "sft",
+      "--validation-sample-size",
+      "500",
+      "--validation-seed",
+      "20261053",
+      "--training-eval-sample-size",
+      "500",
+      "--training-eval-seed",
+      "20261059",
+      "--eval-batch-size",
+      "8",
+      "--epochs",
+      "3",
+      "--learning-rate",
+      "2.5e-6",
+      "--baseline-validation-accuracy",
+      "0.958",
+      "--baseline-validation-macro-f1",
+      "0.4872479609158282",
+      "--baseline-test-accuracy",
+      "0.731106243154436",
+      "--baseline-test-macro-f1",
+      "0.5473409779598896",
+      "--baseline-test-source",
+      "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/metrics.json",
+      "--stop-on-validation-non-improvement",
+      "--seed",
+      "20261222"
+    ]
+  ],
   "_previous_command": [
     "python",
     "-u",
@@ -121,7 +163,7 @@
     "validation_source": "nvidia/When2Call:train_sft; fixed sample seed 20261053"
   },
   "last_heartbeat": "2026-10-30T05:45:12.389772+00:00",
-  "last_action": "Watchdog started validation worker pid 397244.",
+  "last_action": "Queued a matched real-preference control behind the active 50-row synthetic pilot.",
   "watchdog_enabled": true,
   "research_log_size": 1964380,
   "stop_command": "STOP",
@@ -131,12 +173,11 @@
     "-m",
     "experiments.train_qwen_when2call_fullpool",
     "--output-dir",
-    "outputs/qwen-postbalanced-unsupported-increment50-20261030",
+    "outputs/qwen-postbalanced-real50-matched-control-20261030",
     "--adapter-checkpoint",
     "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01",
-    "--augmentation-jsonl",
-    "outputs/when2call-unsupported-medium-increment50-20261030.jsonl",
-    "--synthetic-only",
+    "--preference-train-sample-size",
+    "50",
     "--validation-source",
     "sft",
     "--validation-sample-size",
@@ -180,7 +221,7 @@
     "artifact": "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-full-test-20261030/metrics.json",
     "selection": "aggregate-only leaderboard report; improvement over 0.741512 is within 1-point noise"
   },
-  "next_hypothesis": "A fresh 50-row unsupported-capability synthetic dose may add useful boundary signal after a validation-selected 50-row real-data continuation. The preceding real continuation reached 0.958 clean-validation accuracy, while larger synthetic doses previously lowered validation. Test whether this small, distinct unsupported-only dose improves clean validation without changing the model or learning rate.",
+  "next_hypothesis": "Run a size- and checkpoint-matched 50-row real-preference continuation after the current synthetic-only pilot. This control will show whether any clean-validation change comes from unsupported-capability synthetic signal or simply from further optimization on gold preference data. Keep the 2.5e-6 learning rate and validation sample fixed, and let clean validation control stopping.",
   "post_queue_report_required": {
     "required": false,
     "selection": "Clean validation only. Aggregate black-box test metrics are report-only."
@@ -667,5 +708,6 @@
     "examples": 3652,
     "epoch": 1,
     "selection_use": "aggregate reporting only; no test labels or row-level outputs inspected"
-  }
+  },
+  "queue_updated_at": "2026-10-30T05:49:25.001981+00:00"
 }

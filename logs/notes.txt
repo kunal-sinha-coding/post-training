@@ -8893,3 +8893,9 @@ Audited the latest run and confirmed complete training, 500-row clean-validation
 Commit name: Record launch verification for unsupported synthetic increment.
 
 The watchdog launched the queued trainer as PID 397244 with output in `outputs/qwen-postbalanced-unsupported-increment50-20261030`. The worker heartbeat reached training step 39. The existing watchdog (PID 185638) remained alive. Started the independent supervisor (PID 397553), which adopted the watchdog and wrote a fresh heartbeat. No duplicate trainer was detected.
+
+## 2026-10-30: Queue matched gold-data control after synthetic pilot
+
+Commit name: Queue a matched real-preference control behind the active synthetic pilot.
+
+Audited the latest completed experiment and verified training metrics, clean validation, and full aggregate test metrics are present for both epochs. The higher-validation epoch remains selected. Kept the active unsupported-synthetic worker unchanged and queued a 50-row real-preference control from the same starting checkpoint with matching learning rate, validation sample, training evaluation cap, and full-test reporting. Test metrics are report-only.
