@@ -9039,3 +9039,7 @@ are terminated then try again. If it still fails, a git process
 may have crashed in this repository earlier:
 remove the file manually to continue.
 . The result remains local and the worker queue continues.
+
+## 2026-10-30 state reconciliation after watchdog handoff
+
+Commit: Restore the live worker and queue after the watchdog sent a stale planning handoff. Rechecked the newest completed 35-real/15-combined-boundary run and confirmed training, clean-validation, and aggregate black-box test metrics were all recorded. No evidence measurement was missing. Recorded PID 410424 and its exact 30-real/20-tool-rich command as active, restored the distinct 30-real/20-rare-schema command to the queue, and set active status with planning_required false. Test aggregates remain report-only and selection uses clean validation.
