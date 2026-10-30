@@ -8847,3 +8847,5 @@ Context: Larger continuation doses did not exceed the source checkpoint's 0.954 
 Commit: Record launch of smaller balanced replay top-up.
 Description: Saved the watchdog's active PID and launch state for the 50-row replay continuation.
 Context: The worker is training 25 real preference examples plus 25 distinct balanced synthetic examples from the clean-validation-selected checkpoint. It uses 2.5e-6 and clean-validation-only stopping. Test metrics are report-only.
+
+2026-10-30T05:03:30.292763+00:00: Commit `Record research experiment qwen-unsupported50-plus-real25-balanced25-small-topup-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.

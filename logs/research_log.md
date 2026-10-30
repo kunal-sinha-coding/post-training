@@ -15137,3 +15137,15 @@ This record was written automatically. Candidate selection must use clean valida
 The latest completed run, `qwen-unsupported50-real75-balanced25-lr2p5e6-20261030`, has complete evidence. Epoch 1 has training accuracy 0.950000 and macro F1 0.711830 on 100 examples, with loss 0.328540. Clean validation is 0.950000 accuracy and 0.484158 macro F1 on 500 SFT examples. Full aggregate test is 0.729463 accuracy and 0.545976 macro F1 on all 3,652 examples. Epochs 1 and 2 tied on clean-validation accuracy and macro F1; epoch 1 is retained. Test metrics are report-only.
 
 The 75/25 recipe at 2.5e-6 remained below its 0.954 starting validation score, while the 5e-6 version reached 0.952. Larger 100-row continuations have not improved validation over the source. Queued a smaller continuation with 25 real and 25 distinct balanced synthetic examples at 2.5e-6 from the same source checkpoint. It evaluates up to 500 training examples, 500 clean-validation examples, and all aggregate test rows. Clean validation alone controls stopping and selection.
+
+## qwen-unsupported50-plus-real25-balanced25-small-topup-20261030
+
+Timestamp: 2026-10-30T05:03:21.415216+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-unsupported50-plus-real25-balanced25-small-topup-20261030", "--adapter-checkpoint", "outputs/qwen-unsupported50-real25-balanced25-replay-20261030/epoch-01", "--preference-train-sample-size", "25", "--augmentation-jsonl", "outputs/when2call-balanced-replay-pilot-next25b-20261030.jsonl", "--validation-source", "sft", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "3", "--learning-rate", "2.5e-6", "--baseline-validation-accuracy", "0.954", "--baseline-validation-macro-f1", "0.4856898061132617", "--stop-on-validation-non-improvement", "--seed", "20261219"]. Output: /workspace/post-training/outputs/qwen-unsupported50-plus-real25-balanced25-small-topup-20261030. W&B run: 9n3yxlh1.
+
+Clean development accuracy: 0.956. Clean development macro F1: 0.4862363481299319. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7302847754654983, "macro_f1": 0.5470414870783373, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.956, "macro_f1": 0.4862363481299319, "confusion_matrix": [[243, 2, 5, 0], [3, 235, 11, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
