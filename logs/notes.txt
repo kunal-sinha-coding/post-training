@@ -9115,3 +9115,5 @@ remove the file manually to continue.
 2026-10-30T11:17:43.913783+00:00: Commit `Record research experiment qwen-postbalanced-real30-toolrich-uppercomplex100-mix-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
 
 2026-10-30T11:27:47.293497+00:00: Commit `Record research experiment qwen-postbalanced-real30-toolrich-lowercomplex100-mix-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-30. Audited the latest lower-complexity 100-example run. Training, clean-validation, and aggregate black-box metrics are recorded. The upper- and lower-complexity 100-row samples tied on clean validation, so queued a balanced 200-row tool-rich versus non-tool-rich source comparison. Test labels are not used for selection.
