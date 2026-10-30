@@ -15131,3 +15131,9 @@ Clean development accuracy: 0.95. Clean development macro F1: 0.4841577984702361
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.95, "macro_f1": 0.4841577984702361, "confusion_matrix": [[242, 3, 5, 0], [3, 233, 13, 0], [0, 0, 0, 0], [1, 0, 0, 0]], "examples": 500}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## 2026-10-30: lower-rate 75/25 evidence audit and smaller top-up
+
+The latest completed run, `qwen-unsupported50-real75-balanced25-lr2p5e6-20261030`, has complete evidence. Epoch 1 has training accuracy 0.950000 and macro F1 0.711830 on 100 examples, with loss 0.328540. Clean validation is 0.950000 accuracy and 0.484158 macro F1 on 500 SFT examples. Full aggregate test is 0.729463 accuracy and 0.545976 macro F1 on all 3,652 examples. Epochs 1 and 2 tied on clean-validation accuracy and macro F1; epoch 1 is retained. Test metrics are report-only.
+
+The 75/25 recipe at 2.5e-6 remained below its 0.954 starting validation score, while the 5e-6 version reached 0.952. Larger 100-row continuations have not improved validation over the source. Queued a smaller continuation with 25 real and 25 distinct balanced synthetic examples at 2.5e-6 from the same source checkpoint. It evaluates up to 500 training examples, 500 clean-validation examples, and all aggregate test rows. Clean validation alone controls stopping and selection.
