@@ -16005,3 +16005,9 @@ Clean development accuracy: 0.503030303030303. Clean development macro F1: 0.468
 Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.503030303030303, "macro_f1": 0.4688354174561071, "confusion_matrix": [[43, 9, 1, 0], [3, 31, 0, 0], [5, 4, 9, 0], [46, 13, 1, 0]], "examples": 165}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## Latest completed evidence audit and direct-answer follow-ups (2026-10-30T15:05:00.280090+00:00)
+
+Most recent completed run: `qwen-bfcl-balanced18each-continue-best-20261030`. Selected epoch 1 has training accuracy 0.694444, macro F1 0.605507, loss 3.610440 on 72; held-out BFCL validation accuracy 0.515152, macro F1 0.490931 on 165; aggregate full-test accuracy 0.730832, macro F1 0.547326 on 3652. Both epochs have all three evidence types. No backfill is needed. Test metrics are report-only.
+
+The direct-heavy 48:24 pilot reached the best BFCL validation accuracy so far, 0.557576 with macro F1 0.578328 at epoch 3. The 18-per-class pilot reached 0.515152 validation accuracy and 0.490931 macro F1 at epoch 1, then declined. Queued two fresh continuations from the direct-heavy epoch-3 checkpoint: 24 direct-only rows, then a 72-row 48:24 fresh dose. The direct pilot reports aggregate test accuracy 0.656627 at epoch 3; this is recorded but is not used for selection.
