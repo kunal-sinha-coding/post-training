@@ -9078,3 +9078,5 @@ remove the file manually to continue.
 . The result remains local and the worker queue continues.
 
 2026-10-30T10:01:47.812424+00:00: Commit `Record research experiment qwen-postbalanced-real30-toolrich-highcomplexity20-mix-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+2026-10-30. Audited qwen-postbalanced-real30-toolrich-highcomplexity20-mix-20261030. Training, clean-validation, and aggregate black-box test evidence are all recorded, so no backfill was required. Refreshed the research state to the latest completed run. Queued a balanced mixed-source structural pilot and a lower synthetic-dose subset comparison. Both keep the checkpoint and evaluation setup fixed. Clean validation alone controls selection. Test metrics remain report-only.

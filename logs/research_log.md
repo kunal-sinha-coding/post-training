@@ -15641,3 +15641,12 @@ Clean development accuracy: 0.958. Clean development macro F1: 0.487247960915828
 Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.958, "macro_f1": 0.4872479609158282, "examples": 500, "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+
+## 2026-10-30: Audit high-complexity pilot and queue mixed-source dose tests
+
+The most recent completed experiment is `qwen-postbalanced-real30-toolrich-highcomplexity20-mix-20261030`. All required evidence is recorded in its metrics artifact and experiment journal. Training accuracy is 1.000000, macro F1 is 0.750000, and loss is 0.004918292079497064 on 50 examples. Clean validation accuracy is 0.958000 and macro F1 is 0.4872479609158282 on 500 examples. Aggregate black-box test accuracy is 0.7283680175246441 and macro F1 is 0.545733432570666 on all 3,652 examples. It stopped after epoch 1 because clean-validation accuracy did not improve. No measurement backfill is needed. Test metrics are report-only and test labels are not used for selection.
+
+Recent evidence shows the rare-schema structural pilot and tool-rich high-complexity pilot each retained 0.958 clean-validation accuracy, while broad tool-rich structural coverage scored 0.954. I queued a balanced mixture of rare-schema structural and high-complexity tool-rich examples at the same 20-example dose. I also queued a 10-example stratified subset with 40 real preference examples to test a lower synthetic dose. Both use the same adapter checkpoint, validation sample, optimizer settings, and validation stopping rule. The 20-row and 10-row synthetic files have SHA-256 values `447bf6ee1a9a7386ee44d3dfac9e78567e89dbfdbe6a163d4fc1c9eb88c34023` and `919af3e0ab8e4cc42aeb9a74ac6b732be45aac81569ca06953f4a800a84c82fd`.
+
+The first queued output is `qwen-postbalanced-real30-mixedraretoolstructural20-mix-20261030`. The second is `qwen-postbalanced-real40-mixedraretoolstructural10-mix-20261030`. The first command uses 30 real examples and the balanced 20-row mixed source file. The second uses 40 real examples and the balanced 10-row subset. Both evaluate up to 500 training and validation examples and the full black-box test set. Candidate selection uses clean validation only.
