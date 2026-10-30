@@ -14884,3 +14884,15 @@ The latest completed experiment `qwen-balanced-tool-rich-five-vote-encoder-fusio
 The 50% blend improved clean validation over Qwen greedy and five-vote majority (0.962). Hypothesis: using raw Qwen probabilities instead of sampled vote frequencies may preserve useful confidence information. Added a predeclared 50/50 raw-probability/encoder candidate to the frozen fusion evaluator. Queue it on the same checkpoint; the script selects only on clean validation before loading the full test set.
 
 Command: `python -u -m experiments.evaluate_qwen_five_vote_encoder_fusion --champion-checkpoint outputs/qwen-fullpool-pref738-synth262-matched-20261029/epoch-02 --output-dir outputs/qwen-balanced-tool-rich-probability-encoder-fusion-20261029 --validation-size 500 --validation-seed 20261053 --batch-size 1`
+
+## qwen-balanced-tool-rich-probability-encoder-fusion-20261029
+
+Timestamp: 2026-10-30T00:12:38.485753+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.evaluate_qwen_five_vote_encoder_fusion", "--champion-checkpoint", "outputs/qwen-fullpool-pref738-synth262-matched-20261029/epoch-02", "--output-dir", "outputs/qwen-balanced-tool-rich-probability-encoder-fusion-20261029", "--validation-size", "500", "--validation-seed", "20261053", "--batch-size", "1"]. Output: /workspace/post-training/outputs/qwen-balanced-tool-rich-probability-encoder-fusion-20261029. W&B run: fsjfgmsm.
+
+Clean development accuracy: 0.966. Clean development macro F1: 0.4898579704420526. Official test loaded: True. Test status: measured. Official test metrics: {"accuracy": 0.6963307776560789, "macro_f1": 0.5232228941522374, "examples": 3652}.
+
+Separate source validation metrics: {}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.

@@ -2459,3 +2459,6 @@ Source-specific result `qwen-tool-rich-replay800-encoder-clean-validation-202610
 | qwen-balanced-tool-rich-five-vote-encoder-fusion-20261029 | 0.6963307776560789 | 0.5232228941522374 | dxllqg22 | Aggregate-only frozen test measurement |
 
 | Candidate | qwen-balanced-tool-rich-probability-encoder-fusion-20261029 | — | — | [metrics](/workspace/post-training/outputs/qwen-balanced-tool-rich-probability-encoder-fusion-20261029/metrics.json) | Queued raw 50/50 Qwen probability and encoder blend on the same checkpoint. Fusion selection uses clean validation only. | queued |
+| Candidate | qwen-balanced-tool-rich-probability-encoder-fusion-20261029 | 0.966 | 0.4898579704420526 | [metrics](/workspace/post-training/outputs/qwen-balanced-tool-rich-probability-encoder-fusion-20261029/metrics.json) | completed |
+
+| qwen-balanced-tool-rich-probability-encoder-fusion-20261029 | 0.6963307776560789 | 0.5232228941522374 | fsjfgmsm | Aggregate-only frozen test measurement |
