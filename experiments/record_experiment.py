@@ -47,8 +47,8 @@ def append_locked(path: Path, text: str, lock_path: Path) -> None:
 
 def git_command(repo: Path, arguments: list[str], check: bool = True) -> subprocess.CompletedProcess:
     """Run Git against the configured repository without changing ownership settings."""
-    # Capture output so commit and push failures can be recorded without exposing environment secrets.
-    return subprocess.run(["git", "-c", f"safe.directory={repo}", *arguments], cwd=repo, text=True, capture_output=True, check=check)
+    # Replace invalid diagnostic bytes so unusual Git paths cannot break result recording.
+    return subprocess.run(["git", "-c", f"safe.directory={repo}", *arguments], cwd=repo, text=True, encoding="utf-8", errors="replace", capture_output=True, check=check)
 
 
 def commit_records(repo: Path, experiment_id: str) -> dict:

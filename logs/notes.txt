@@ -8913,3 +8913,9 @@ Commit name: Queue a 25-real plus 25-unsupported-synthetic continuation.
 Preserved the active worker and the real-only and balanced-synthetic controls. Created a deterministic 25-row subset from the unused unsupported-capability increment, then queued a 25-real plus 25-unsupported-synthetic continuation from the same checkpoint. This adds a controlled mix to test whether real examples offset the class-skewed synthetic dose. Clean validation controls selection; test metrics remain report-only.
 
 2026-10-30T05:54:16.239772+00:00: Commit `Record research experiment qwen-postbalanced-unsupported-increment50-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+## 2026-10-30: Harden experiment recorder against invalid Git diagnostic bytes
+
+Commit name: Make the asynchronous recorder decode Git output safely.
+
+The recorder failed while capturing `git ls-files` output because one diagnostic contained invalid UTF-8. Updated the Git subprocess wrapper to replace invalid diagnostic bytes while preserving the exit code and remaining output. This lets the recorder write complete experiment evidence and continue its existing non-blocking commit flow. The experiment metrics artifact already contains training, clean-validation, and aggregate test results.
