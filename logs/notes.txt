@@ -8805,3 +8805,7 @@ Context: The balanced replay pilot improved clean validation, and its matched 50
 2026-10-30T03:08:29.930816+00:00: Commit `Record research experiment qwen-unsupported50-real50-balanced50-replay-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
 
 2026-10-30T03:18:09.475968+00:00: Commit `Record research experiment qwen-unsupported50-real100-scaled-control-20261030` preserves the full experiment setup, metrics artifact, source-specific validation, explicit failure or test status, and aggregate official test measurement. The asynchronous recorder commits these records and tracked research state without delaying the next worker.
+
+Commit: Queue a lower-rate replay continuation based on validation regression.
+Description: Recorded complete evidence for the latest 100-real control and queued a matched lower-learning-rate continuation using the same 100-row real plus balanced synthetic recipe and starting checkpoint as the higher-rate run.
+Context: Both the 100-example mixed run and 100-real control lost clean-validation accuracy from the 0.954 source score. This justifies one targeted learning-rate reduction from 2e-5 to 5e-6. Test metrics do not select or stop the experiment.

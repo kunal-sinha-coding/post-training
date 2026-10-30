@@ -15045,3 +15045,9 @@ Clean development accuracy: 0.946. Clean development macro F1: 0.484091328181315
 Separate source validation metrics: {"baseline_clean_validation_metrics": {"accuracy": 0.954, "macro_f1": 0.4856898061132617, "examples": 500, "source": "outputs/qwen-when2call-synthetic-continuation-missing_required_info-20261028/metrics.json baseline_clean_validation_metrics"}}. Failure reason: None.
 
 This record was written automatically. Candidate selection must use clean validation only.
+
+## 2026-10-30: audit of 100-real control and targeted lower-rate replay
+
+The latest completed experiment, `qwen-unsupported50-real100-scaled-control-20261030`, has complete evidence. At epoch 1, training accuracy is 0.980000 and macro F1 is 0.734955 on 100 examples, with loss 0.409578. Clean validation is 0.946000 accuracy and 0.484091 macro F1 on 500 SFT examples. Full aggregate test is 0.699890 accuracy and 0.523207 macro F1 on all 3,652 examples. The run stopped because clean validation did not improve over 0.954. Test metrics did not control stopping or selection.
+
+The 100-example 50/50 replay run at 2e-5 also stopped after one epoch when clean validation fell to 0.938 from 0.954. The matched 100-real control fell to 0.946. This clean-validation evidence supports one targeted test of a fourfold lower learning rate on the same 50-real plus 50-balanced-synthetic rows and same starting checkpoint. It is a controlled response to observed validation regression. Clean validation remains the only selection and stopping signal. Test metrics are reported as aggregates only.
