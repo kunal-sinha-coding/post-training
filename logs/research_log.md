@@ -15895,3 +15895,15 @@ Queued `qwen-postbalanced-real30-toolrich-nontoolrich-mix200-bfcl-reviewclear-va
 ## Tool-rich complexity-mixture hypothesis (2026-10-30T12:28:31.721187+00:00)
 
 Queued `qwen-postbalanced-real30-toolrich-complexitymix100-bfcl-reviewclear-val-20261030`. It combines deterministic 50-row samples from the existing upper- and lower-complexity tool-rich pools, for 100 examples total. Label counts are `{'1': 38, '0': 25, '2': 37}` and artifact SHA-256 is `0c2bb0bf5e6b525e6bacb15c37b59726a8f08d12655582b4c5d4bbcb8680c91c`. Earlier separate complexity pilots tied on SFT validation accuracy, whose sample lacks true class-2 rows. This test uses the review-clear BFCL validation split for selection. Aggregate test metrics remain report-only.
+
+## qwen-postbalanced-real30-label0-1-2-45-45-10-bfcl-highconf-val-20261030
+
+Timestamp: 2026-10-30T12:39:41.334730+00:00. Status: completed.
+
+Setup: ["python", "-u", "-m", "experiments.train_qwen_when2call_fullpool", "--output-dir", "outputs/qwen-postbalanced-real30-label0-1-2-45-45-10-bfcl-highconf-val-20261030", "--bfcl-data", "outputs/bfcl_when2call_labeled_highconf_val165.jsonl", "--adapter-checkpoint", "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01", "--preference-train-sample-size", "30", "--augmentation-jsonl", "outputs/when2call-mix-label0-1-2-45-45-10-20261030.jsonl", "--validation-source", "bfcl", "--validation-sample-size", "500", "--validation-seed", "20261053", "--training-eval-sample-size", "500", "--training-eval-seed", "20261059", "--eval-batch-size", "8", "--epochs", "3", "--learning-rate", "2.5e-6", "--baseline-test-accuracy", "0.731106243154436", "--baseline-test-macro-f1", "0.5473409779598896", "--baseline-test-source", "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/metrics.json", "--stop-on-validation-non-improvement", "--seed", "20261222"]. Output: /workspace/post-training/outputs/qwen-postbalanced-real30-label0-1-2-45-45-10-bfcl-highconf-val-20261030. W&B run: d6isb9bx.
+
+Clean development accuracy: 0.509090909090909. Clean development macro F1: 0.4782893691403146. Official test loaded: None. Test status: measured. Official test metrics: {"accuracy": 0.7237130339539978, "macro_f1": 0.5428135848378347, "examples": 3652, "sample_seed": null, "sample_method": "full test split"}.
+
+Separate source validation metrics: {"heldout_validation_metrics": {"accuracy": 0.509090909090909, "macro_f1": 0.4782893691403146, "confusion_matrix": [[45, 7, 1, 0], [4, 30, 0, 0], [5, 4, 9, 0], [48, 12, 0, 0]], "examples": 165}}. Failure reason: None.
+
+This record was written automatically. Candidate selection must use clean validation only.
