@@ -100,7 +100,7 @@
       "--output-dir",
       "outputs/qwen-postbalanced-real30-label0-1-50-50-bfcl-highconf-val-20261030",
       "--bfcl-data",
-      "outputs/bfcl_when2call_labeled_highconf_val165.jsonl",
+      "outputs/bfcl_when2call_labeled_reviewclear_val165.jsonl",
       "--adapter-checkpoint",
       "outputs/qwen-unsupported50-real50-after-balanced-small-topup-20261030/epoch-01",
       "--preference-train-sample-size",
@@ -401,7 +401,7 @@
     "epoch": 1,
     "selection_use": "aggregate reporting only; no individual test labels or outputs inspected"
   },
-  "updated_at": "2026-10-30T12:21:11.577629+00:00",
+  "updated_at": "2026-10-30T12:22:41.451196+00:00",
   "synthetic_pilot_results": [
     {
       "strategy": "missing_required_info",
@@ -705,21 +705,23 @@
     "epoch": 1,
     "selection_use": "aggregate-only report; no test labels used for selection"
   },
-  "queue_updated_at": "2026-10-30T12:21:11.577629+00:00",
+  "queue_updated_at": "2026-10-30T12:22:41.451196+00:00",
   "queued_hypotheses": [
     {
       "experiment": "qwen-postbalanced-real30-label0-1-2-45-45-10-bfcl-highconf-val-20261030",
-      "hypothesis": "The SFT clean-validation split has no true class-2 rows, so its accuracy cannot reliably distinguish synthetic label-composition recipes. Re-evaluate the 45/45/10 synthetic recipe against the 158-row high-confidence BFCL validation subset, which contains all four labels. Keep the checkpoint, real-data sample, optimizer, and synthetic recipe fixed.",
+      "hypothesis": "The SFT clean-validation split has no true class-2 rows, so its accuracy cannot reliably distinguish synthetic label-composition recipes. Re-evaluate the 45/45/10 synthetic recipe against the 165-row review-clear BFCL validation subset, with 158 high-confidence and 7 medium-confidence rows, which contains all four labels. Keep the checkpoint, real-data sample, optimizer, and synthetic recipe fixed.",
       "selection": "high-confidence held-out BFCL validation only; aggregate test metrics report-only",
-      "validation_artifact": "outputs/bfcl_when2call_labeled_highconf_val165.jsonl",
-      "validation_sha256": "0178fcd4beecf8b6e3dfed39fd146e7d02fdf92638b0767e58f67283f5bac293"
+      "validation_artifact": "outputs/bfcl_when2call_labeled_reviewclear_val165.jsonl",
+      "validation_sha256": "0178fcd4beecf8b6e3dfed39fd146e7d02fdf92638b0767e58f67283f5bac293",
+      "validation_quality": "No rows flagged needs_review; 158 high confidence and 7 medium confidence; all four labels represented."
     },
     {
       "experiment": "qwen-postbalanced-real30-label0-1-50-50-bfcl-highconf-val-20261030",
-      "hypothesis": "Use the same high-confidence all-label BFCL validation subset to assess the 50/50 label-0/label-1 synthetic recipe. Compare its validation results with the matched 45/45/10 recipe before deciding whether label-2 synthetic data helps.",
+      "hypothesis": "Use the same review-clear all-label BFCL validation subset, with 158 high-confidence and 7 medium-confidence rows to assess the 50/50 label-0/label-1 synthetic recipe. Compare its validation results with the matched 45/45/10 recipe before deciding whether label-2 synthetic data helps.",
       "selection": "high-confidence held-out BFCL validation only; aggregate test metrics report-only",
-      "validation_artifact": "outputs/bfcl_when2call_labeled_highconf_val165.jsonl",
-      "validation_sha256": "0178fcd4beecf8b6e3dfed39fd146e7d02fdf92638b0767e58f67283f5bac293"
+      "validation_artifact": "outputs/bfcl_when2call_labeled_reviewclear_val165.jsonl",
+      "validation_sha256": "0178fcd4beecf8b6e3dfed39fd146e7d02fdf92638b0767e58f67283f5bac293",
+      "validation_quality": "No rows flagged needs_review; 158 high confidence and 7 medium confidence; all four labels represented."
     }
   ],
   "data_probe": {
