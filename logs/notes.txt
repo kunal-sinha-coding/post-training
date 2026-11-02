@@ -9205,3 +9205,5 @@ remove the file manually to continue.
 2026-10-30T16:16:36.836951+00:00: Prepared commit `Queue midpoint BFCL replay ratio`. Audited qwen-bfcl-cannot-answer-direct-replay48-continue-best-20261030 and verified training, clean-validation, and aggregate black-box metrics are present. Appended a distinct 36:36 cannot-answer/direct mixture after the existing 48:24 and 24:48 comparisons. Validation is the selection signal. Artifact SHA-256: 549d6be52e2cf99d8bcd0445cc18372afe72a4c8b8349d2d4a1f829b6e058a45.
 
 2026-11-02: Prepared commit `Update leaderboard with Artificial Analysis filtered scores`. Added filtered aggregate accuracy and macro F1 for all old top ten entries to logs/leaderboard.md, ranked by the 3,423 row subset, and appended reproducibility details to logs/results.txt. The rank five three encoder fusion was measured from its frozen Qwen and encoder artifacts. No per example test data was stored.
+
+2026-11-02: Prepared commit `Correct filtered leaderboard ordering`. Sorted the near-tied old rank two and rank five entries by their measured filtered accuracy.

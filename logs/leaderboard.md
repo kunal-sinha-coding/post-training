@@ -2705,8 +2705,8 @@ These results use 3,423 rows. The evaluator removed the 229 published `request_f
 | 1 | 3 | Fresh 983 row tool rich continuation, greedy | 0.774467 | 0.575392 | 3,423 | [metrics](../outputs/artificial-analysis-filtered-ranks-2-3-20261102/metrics.json) |
 | 2 | 8 | 994 row tool rich same pool continuation, greedy | 0.770377 | 0.573415 | 3,423 | [metrics](../outputs/artificial-analysis-filtered-top10-remaining-20261102/metrics.json) |
 | 3 | 1 | 50 example unsupported capability continuation, greedy | 0.768916 | 0.571267 | 3,423 | [metrics](../outputs/artificial-analysis-filtered-top-method-20261102/metrics.json) |
-| 4 | 5 | Five vote Qwen frequency plus 25 percent three encoder family | 0.767163 | 0.570365 | 3,423 | [metrics](../outputs/artificial-analysis-filtered-rank5-20261102/metrics.json) |
-| 5 | 2 | Five sampled action label votes from tool rich champion | 0.767455 | 0.570588 | 3,423 | [metrics](../outputs/artificial-analysis-filtered-ranks-2-3-20261102/metrics.json) |
+| 4 | 2 | Five sampled action label votes from tool rich champion | 0.767455 | 0.570588 | 3,423 | [metrics](../outputs/artificial-analysis-filtered-ranks-2-3-20261102/metrics.json) |
+| 5 | 5 | Five vote Qwen frequency plus 25 percent three encoder family | 0.767163 | 0.570365 | 3,423 | [metrics](../outputs/artificial-analysis-filtered-rank5-20261102/metrics.json) |
 | 6 | 7 | Tool rich champion greedy | 0.766871 | 0.570043 | 3,423 | [metrics](../outputs/artificial-analysis-filtered-top10-remaining-20261102/metrics.json) |
 | 7 | 9 | 994 tool rich synthetic examples only, greedy | 0.766871 | 0.570043 | 3,423 | [metrics](../outputs/artificial-analysis-filtered-top10-remaining-20261102/metrics.json) |
 | 8 | 10 | 75 percent champion and 25 percent full preference probability mix | 0.765410 | 0.569102 | 3,423 | [metrics](../outputs/artificial-analysis-filtered-top10-remaining-20261102/metrics.json) |
