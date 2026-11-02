@@ -1,0 +1,23 @@
+{
+  "evaluated_rows": 3423,
+  "excluded_rows": 229,
+  "accuracy": 0.7671633070406076,
+  "macro_f1": 0.5703652469850121,
+  "method": "Five sampled action label vote frequencies plus 25 percent weighted three encoder ensemble",
+  "checkpoints": {
+    "qwen": "outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/epoch-01",
+    "encoders": [
+      "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261065",
+      "outputs/clean-validation-when2call-pref6000-bfcl-simple-multiple-1000-seed20261061",
+      "outputs/clean-validation-when2call-pref6000-bfcl1500-callonly-seed20261048"
+    ]
+  },
+  "encoder_weights": [
+    0.35625,
+    0.1375,
+    0.50625
+  ],
+  "test_rows_or_predictions_saved": false,
+  "wandb_run_id": "w5hd0c58",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/w5hd0c58"
+}

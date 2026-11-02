@@ -198469,3 +198469,14 @@ The complete setup and observed results are recorded below. Source validation sp
   "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/g46wab19"
 }
 ```
+
+
+EXPERIMENT RESULTS
+Experiment: artificial-analysis-filtered-top10-20261102
+Purpose: Report aggregate performance for the old top ten leaderboard methods on the Artificial Analysis When2Call subset.
+Setup: Official nvidia/When2Call test/mcq artifact, revision 0582f7749df63a96fdc3070932e83e72396ace53, with the 229 published task IDs excluded only for rows labeled request_for_info. The resulting evaluation set had 3,423 rows. Candidate methods were frozen from the 2026-10-30 full-test leaderboard before the filtered measurements. No row level test outputs were saved.
+Selection: No candidate selection was performed from these filtered metrics. This is a report only comparison of the pre-existing top ten.
+Results: Rank 1 fresh pool continuation 0.774467 accuracy and 0.575392 macro F1. Rank 2 same pool continuation 0.770377 and 0.573415. Rank 3 unsupported capability continuation 0.768916 and 0.571267. Rank 4 five vote plus encoder family 0.767163 and 0.570365. Rank 5 five sampled votes 0.767455 and 0.570588. Rank 6 champion greedy 0.766871 and 0.570043. Rank 7 synthetic only greedy 0.766871 and 0.570043. Rank 8 75/25 probability mix 0.765410 and 0.569102. Rank 9 three sampled votes 0.765118 and 0.568756. Rank 10 balanced replay epoch 1 0.761905 and 0.567197. The full preference model alone scored 0.716331 accuracy and 0.535979 macro F1.
+Environment: NVIDIA RTX 2000 Ada Generation, Qwen/Qwen2.5-1.5B-Instruct, maximum input length 4096, batch size 4 for Qwen, clean HF cache at /tmp/hf-aa-when2call.
+Artifacts: outputs/artificial-analysis-filtered-top-method-20261102/metrics.json, outputs/artificial-analysis-filtered-ranks-2-3-20261102/metrics.json, outputs/artificial-analysis-filtered-top10-remaining-20261102/metrics.json, outputs/artificial-analysis-filtered-rank5-20261102/metrics.json. W&B runs: 42547w2a, fj1mbsia, i69kxslv, w5hd0c58.
+Limitations: Rank 2 and rank 5 differ by less than 0.01 percentage points and are a practical tie. The published exclusion list was mapped through source_id and correct_answer.

@@ -1,0 +1,14 @@
+{
+  "experiment": "artificial-analysis-filtered-top-method-20261102",
+  "checkpoint": "outputs/qwen-when2call-synthetic-continuation-unsupported_capability-20261028/epoch-01",
+  "base_model": "Qwen/Qwen2.5-1.5B-Instruct",
+  "source_test_rows": 3652,
+  "excluded_rows": 229,
+  "evaluated_rows": 3423,
+  "exclusion_source": "Artificial Analysis Decision Index methodology task ID list; request_for_info rows only",
+  "accuracy": 0.7689161554192229,
+  "macro_f1": 0.5712674303564306,
+  "test_rows_or_predictions_saved": false,
+  "wandb_run_id": "42547w2a",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/42547w2a"
+}

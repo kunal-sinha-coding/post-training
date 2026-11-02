@@ -2695,3 +2695,22 @@ Queued follow-ups: clean-validation-selected five-vote and encoder fusion on the
 | Candidate | qwen-bfcl-cannot-answer-direct-replay48-continue-best-20261030 | 0.5575757575757576 | 0.5217750703526981 | [metrics](/workspace/post-training/outputs/qwen-bfcl-cannot-answer-direct-replay48-continue-best-20261030/metrics.json) | completed |
 
 | qwen-bfcl-cannot-answer-direct-replay48-continue-best-20261030 | 0.4586527929901424 | 0.3565180058422512 | g46wab19 | Aggregate-only frozen test measurement |
+
+## Artificial Analysis filtered test results — 2026-11-02
+
+These results use 3,423 rows. The evaluator removed the 229 published `request_for_info` task rows. It saved aggregate metrics only. The old rank is from the full 3,652 row leaderboard above. The new order is a report only ranking by filtered accuracy. Differences under one percentage point are likely noise.
+
+| Filtered rank | Old rank | Candidate | Accuracy | Macro F1 | Rows | Artifact |
+| ---: | ---: | --- | ---: | ---: | ---: | --- |
+| 1 | 3 | Fresh 983 row tool rich continuation, greedy | 0.774467 | 0.575392 | 3,423 | [metrics](../outputs/artificial-analysis-filtered-ranks-2-3-20261102/metrics.json) |
+| 2 | 8 | 994 row tool rich same pool continuation, greedy | 0.770377 | 0.573415 | 3,423 | [metrics](../outputs/artificial-analysis-filtered-top10-remaining-20261102/metrics.json) |
+| 3 | 1 | 50 example unsupported capability continuation, greedy | 0.768916 | 0.571267 | 3,423 | [metrics](../outputs/artificial-analysis-filtered-top-method-20261102/metrics.json) |
+| 4 | 5 | Five vote Qwen frequency plus 25 percent three encoder family | 0.767163 | 0.570365 | 3,423 | [metrics](../outputs/artificial-analysis-filtered-rank5-20261102/metrics.json) |
+| 5 | 2 | Five sampled action label votes from tool rich champion | 0.767455 | 0.570588 | 3,423 | [metrics](../outputs/artificial-analysis-filtered-ranks-2-3-20261102/metrics.json) |
+| 6 | 7 | Tool rich champion greedy | 0.766871 | 0.570043 | 3,423 | [metrics](../outputs/artificial-analysis-filtered-top10-remaining-20261102/metrics.json) |
+| 7 | 9 | 994 tool rich synthetic examples only, greedy | 0.766871 | 0.570043 | 3,423 | [metrics](../outputs/artificial-analysis-filtered-top10-remaining-20261102/metrics.json) |
+| 8 | 10 | 75 percent champion and 25 percent full preference probability mix | 0.765410 | 0.569102 | 3,423 | [metrics](../outputs/artificial-analysis-filtered-top10-remaining-20261102/metrics.json) |
+| 9 | 6 | Three sampled action label votes from tool rich champion | 0.765118 | 0.568756 | 3,423 | [metrics](../outputs/artificial-analysis-filtered-top10-remaining-20261102/metrics.json) |
+| 10 | 4 | 50/50 real balanced synthetic replay at 5e-6, epoch 1 | 0.761905 | 0.567197 | 3,423 | [metrics](../outputs/artificial-analysis-filtered-top10-remaining-20261102/metrics.json) |
+
+The rank 2 and rank 5 entries are within 0.01 percentage points. Their displayed order does not indicate a meaningful difference. The full preference model alone scored 0.716331 on this subset.

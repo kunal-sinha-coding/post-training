@@ -1,0 +1,38 @@
+{
+  "evaluated_rows": 3423,
+  "excluded_rows": 229,
+  "results": {
+    "rank4_balanced_replay": {
+      "accuracy": 0.7619047619047619,
+      "macro_f1": 0.5671970948090677
+    },
+    "rank8_same_pool_continuation": {
+      "accuracy": 0.7703768624014022,
+      "macro_f1": 0.5734150624355394
+    },
+    "rank9_tool_rich_synth_only": {
+      "accuracy": 0.7668711656441718,
+      "macro_f1": 0.5700429105923713
+    },
+    "rank10_full_preference": {
+      "accuracy": 0.7163307040607654,
+      "macro_f1": 0.535978592111241
+    },
+    "rank6_three_sample_vote": {
+      "accuracy": 0.7651183172655566,
+      "macro_f1": 0.5687557311719258
+    },
+    "rank7_champion_greedy": {
+      "accuracy": 0.7668711656441718,
+      "macro_f1": 0.5700429105923713
+    },
+    "rank10_75_25_probability_mix": {
+      "accuracy": 0.7654104586619924,
+      "macro_f1": 0.5691016136287534
+    }
+  },
+  "rank5_status": "Encoder fusion still requires the frozen three encoder inference pass.",
+  "wandb_run_id": "i69kxslv",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/i69kxslv",
+  "test_rows_or_predictions_saved": false
+}

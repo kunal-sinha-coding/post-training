@@ -1,0 +1,22 @@
+{
+  "experiment": "artificial-analysis-filtered-ranks-2-3-20261102",
+  "source_test_rows": 3652,
+  "excluded_rows": 229,
+  "evaluated_rows": 3423,
+  "exclusion_source": "Artificial Analysis Decision Index methodology task ID list; request_for_info rows only",
+  "results": {
+    "leaderboard_rank_2_five_sample_vote": {
+      "checkpoint": "outputs/qwen-tool-rich-large-boundary-synthetic-only-20261028/epoch-01",
+      "accuracy": 0.7674554484370435,
+      "macro_f1": 0.5705876008456834
+    },
+    "leaderboard_rank_3_fresh_pool_continuation_greedy": {
+      "checkpoint": "outputs/qwen-tool-rich-champion-fresh-pool-continue-20261029/epoch-01",
+      "accuracy": 0.7744668419515045,
+      "macro_f1": 0.5753920893754119
+    }
+  },
+  "test_rows_or_predictions_saved": false,
+  "wandb_run_id": "fj1mbsia",
+  "wandb_run_url": "https://forge.coreweave.com/wandb/kunal-personal/when2call-research/runs/fj1mbsia"
+}
