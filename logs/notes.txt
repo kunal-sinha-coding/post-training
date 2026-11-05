@@ -9207,3 +9207,8 @@ remove the file manually to continue.
 2026-11-02: Prepared commit `Update leaderboard with Artificial Analysis filtered scores`. Added filtered aggregate accuracy and macro F1 for all old top ten entries to logs/leaderboard.md, ranked by the 3,423 row subset, and appended reproducibility details to logs/results.txt. The rank five three encoder fusion was measured from its frozen Qwen and encoder artifacts. No per example test data was stored.
 
 2026-11-02: Prepared commit `Correct filtered leaderboard ordering`. Sorted the near-tied old rank two and rank five entries by their measured filtered accuracy.
+
+
+Commit name: Require task completion and persistent blocker recovery.
+
+Updated and synchronized AGENTS.md across post-training, skills, and personal-website. The instructions now require completion through implementation, verification, and delivery, continued diagnosis and alternative attempts after failures, prompt blocker reports, and continued independent work. An external blocker permits stopping only when progress requires specific input, access, or an external change after reasonable alternatives fail. This implements the user's instruction to persist until the full task is complete.
